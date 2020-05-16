@@ -1,108 +1,193 @@
-Return-Path: <SRS0=gnyA=65=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=ISJk=66=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE637C433DF
-	for <linux-parisc@archiver.kernel.org>; Fri, 15 May 2020 19:00:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73F32C433DF
+	for <linux-parisc@archiver.kernel.org>; Sat, 16 May 2020 03:43:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BE64F20728
-	for <linux-parisc@archiver.kernel.org>; Fri, 15 May 2020 19:00:29 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oJBvAo8Z"
+	by mail.kernel.org (Postfix) with ESMTP id 4DA2220756
+	for <linux-parisc@archiver.kernel.org>; Sat, 16 May 2020 03:43:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1589600586;
+	bh=9Yr3NqlaT8J3yD/oIp4iOMhtlWnif5o5ocW4LHaILdM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
+	b=K8P6W2TqN07OzxJHl8FMKpXROV4Y7CzGUv68PuU4eFUfuar7zy33BGD+AbiqQEsh+
+	 71cvL2e1nu+yLlP/hIUkLCHNunv5oPvgCnVCRPUM4QPi5vLMDYg+ZaCy2yzKzFNAeO
+	 t9RvGPB52EUmRybfCHJ5b11qAo6chSQ/Wixdc7VA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgEOTA3 (ORCPT
+        id S1727938AbgEPDnG (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 15 May 2020 15:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgEOTA3 (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 15 May 2020 15:00:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6C2C061A0C;
-        Fri, 15 May 2020 12:00:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cpdp67EUtxwQ4pvAlHHorIRNUGF4UtquU7Pnx9Rww6E=; b=oJBvAo8ZP0MxYVgwBCVArAwAjU
-        ksi/m0csrnuZAbzFyX+GIi2y9tiwHZYjJUb9SWcRqRtAmVb/CL9oI2cGKoVw95o9gl+NlsGLOQvoG
-        Fg3QpYPy1cBLS6cdmi1kA1P0I7I4LVkxO64m23SkXTDu3tt/AotueGrwOkzDjJLTS3P0qnsoQYy7F
-        xAqYTLA06l0bJV0g84y3ZuqtM6UZjHvgoykv8NZBVSKUaiI/4dimcgIRb8+ajUcQ9iHaJ6AgeJjko
-        k0NLU9xyh5P5L5dCsKDJUm6q0DX4ly03R4uOHxEyZg8WjqhbToo8C81op/n0x9ndGLqRqa65ALEQw
-        rRDGLbUg==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZfZK-0005ND-Lw; Fri, 15 May 2020 19:00:26 +0000
-Date:   Fri, 15 May 2020 12:00:26 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     kbuild test robot <lkp@intel.com>
-Cc:     Michal Simek <monstr@monstr.eu>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
+        Fri, 15 May 2020 23:43:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726247AbgEPDnF (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 15 May 2020 23:43:05 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 773F320728;
+        Sat, 16 May 2020 03:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589600585;
+        bh=9Yr3NqlaT8J3yD/oIp4iOMhtlWnif5o5ocW4LHaILdM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gyBQnTy1kkqh/qqbQgXTvgoLZUb4vpkCq+qjNMxNfH2LO1uD/nFf2CQ93t2pqZ2HH
+         Nvv3z8XinGroioseW6l362KaQNKI1k7UrzuUhEywWLMpAOhwLDsF/32qhs84qDVP/z
+         cpTKthgjLlt17JXXUVZs8KirdFerSU19m7odBjKc=
+Date:   Sat, 16 May 2020 12:42:59 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Stefan Asserhall <stefan.asserhall@xilinx.com>,
-        linux-scsi@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: Re: drivers/scsi/ncr53c8xx.c:5306:9: sparse: sparse: cast truncates
- bits from constant value (58f becomes 8f)
-Message-ID: <20200515190026.GI16070@bombadil.infradead.org>
-References: <202005160227.h6Ieqnmz%lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202005160227.h6Ieqnmz%lkp@intel.com>
+        linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 14/18] maccess: allow architectures to provide kernel
+ probing directly
+Message-Id: <20200516124259.5b68a4e1d4670efa1397a1e0@kernel.org>
+In-Reply-To: <20200513160038.2482415-15-hch@lst.de>
+References: <20200513160038.2482415-1-hch@lst.de>
+        <20200513160038.2482415-15-hch@lst.de>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Sat, May 16, 2020 at 02:20:38AM +0800, kbuild test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   051e6b7e34b9bd24f46725f74994a4d3a653966e
-> commit: 06e85c7e9a1c1356038936566fc23f7c0d363b96 asm-generic: fix unistd_32.h generation format
-> date:   5 weeks ago
+Hi Christoph,
 
-I don't see how that commit in any way reflects this error message.
+On Wed, 13 May 2020 18:00:34 +0200
+Christoph Hellwig <hch@lst.de> wrote:
 
-> reproduce:
->         # apt-get install sparse
->         # sparse version: v0.6.1-193-gb8fad4bc-dirty
->         git checkout 06e85c7e9a1c1356038936566fc23f7c0d363b96
->         make ARCH=x86_64 allmodconfig
+> Provide alternative versions of probe_kernel_read, probe_kernel_write
+> and strncpy_from_kernel_unsafe that don't need set_fs magic, but instead
+> use arch hooks that are modelled after unsafe_{get,put}_user to access
+> kernel memory in an exception safe way.
 
-I can't even see a way to build the ncr53c8xx module with this config.
-Unless somebody reenabled EISA on x86, the only way I can see to
-still build this driver is on PA-RISC with the ZALON code.
+This patch seems to introduce new implementation of probe_kernel_read/write()
+and strncpy_from_kernel_unsafe(), but also drops copy_from/to_kernel_nofault()
+and strncpy_from_kernel_nofault() if HAVE_ARCH_PROBE_KERNEL is defined.
+In the result, this cause a link error with BPF and kprobe events.
 
->         make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+BTW, what is the difference of *_unsafe() and *_nofault()?
+(maybe we make those to *_nofault() finally?)
+
+Thank you,
+
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  mm/maccess.c | 76 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 76 insertions(+)
 > 
+> diff --git a/mm/maccess.c b/mm/maccess.c
+> index 9773e2253b495..e9efe2f98e34a 100644
+> --- a/mm/maccess.c
+> +++ b/mm/maccess.c
+> @@ -12,6 +12,81 @@ bool __weak probe_kernel_read_allowed(void *dst, const void *unsafe_src,
+>  	return true;
+>  }
+>  
+> +#ifdef HAVE_ARCH_PROBE_KERNEL
+> +
+> +#define probe_kernel_read_loop(dst, src, len, type, err_label)		\
+> +	while (len >= sizeof(type)) {					\
+> +		arch_kernel_read(dst, src, type, err_label);		\
+> +		dst += sizeof(type);					\
+> +		src += sizeof(type);					\
+> +		len -= sizeof(type);					\
+> +	}
+> +
+> +long probe_kernel_read(void *dst, const void *src, size_t size)
+> +{
+> +	if (!probe_kernel_read_allowed(dst, src, size))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +	probe_kernel_read_loop(dst, src, size, u64, Efault);
+> +	probe_kernel_read_loop(dst, src, size, u32, Efault);
+> +	probe_kernel_read_loop(dst, src, size, u16, Efault);
+> +	probe_kernel_read_loop(dst, src, size, u8, Efault);
+> +	pagefault_enable();
+> +	return 0;
+> +Efault:
+> +	pagefault_enable();
+> +	return -EFAULT;
+> +}
+> +EXPORT_SYMBOL_GPL(probe_kernel_read);
+> +
+> +#define probe_kernel_write_loop(dst, src, len, type, err_label)		\
+> +	while (len >= sizeof(type)) {					\
+> +		arch_kernel_write(dst, src, type, err_label);		\
+> +		dst += sizeof(type);					\
+> +		src += sizeof(type);					\
+> +		len -= sizeof(type);					\
+> +	}
+> +
+> +long probe_kernel_write(void *dst, const void *src, size_t size)
+> +{
+> +	pagefault_disable();
+> +	probe_kernel_write_loop(dst, src, size, u64, Efault);
+> +	probe_kernel_write_loop(dst, src, size, u32, Efault);
+> +	probe_kernel_write_loop(dst, src, size, u16, Efault);
+> +	probe_kernel_write_loop(dst, src, size, u8, Efault);
+> +	pagefault_enable();
+> +	return 0;
+> +Efault:
+> +	pagefault_enable();
+> +	return -EFAULT;
+> +}
+> +
+> +long strncpy_from_kernel_unsafe(char *dst, const void *unsafe_addr, long count)
+> +{
+> +	const void *src = unsafe_addr;
+> +
+> +	if (unlikely(count <= 0))
+> +		return 0;
+> +	if (!probe_kernel_read_allowed(dst, unsafe_addr, count))
+> +		return -EFAULT;
+> +
+> +	pagefault_disable();
+> +	do {
+> +		arch_kernel_read(dst, src, u8, Efault);
+> +		dst++;
+> +		src++;
+> +	} while (dst[-1] && src - unsafe_addr < count);
+> +	pagefault_enable();
+> +
+> +	dst[-1] = '\0';
+> +	return src - unsafe_addr;
+> +Efault:
+> +	pagefault_enable();
+> +	dst[-1] = '\0';
+> +	return -EFAULT;
+> +}
+> +#else /* HAVE_ARCH_PROBE_KERNEL */
+>  /**
+>   * probe_kernel_read(): safely attempt to read from kernel-space
+>   * @dst: pointer to the buffer that shall take the data
+> @@ -114,6 +189,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
+>  
+>  	return ret ? -EFAULT : src - unsafe_addr;
+>  }
+> +#endif /* HAVE_ARCH_PROBE_KERNEL */
+>  
+>  /**
+>   * probe_user_read(): safely attempt to read from a user-space location
+> -- 
+> 2.26.2
 > 
-> sparse warnings: (new ones prefixed by >>)
-> 
-> >> drivers/scsi/ncr53c8xx.c:5306:9: sparse: sparse: cast truncates bits from constant value (58f becomes 8f)
-> 
-> ^1da177e4c3f41 Linus Torvalds 2005-04-16 @5306  	OUTW (nc_sien , STO|HTH|MA|SGE|UDC|RST|PAR);
-
-This seems entirely intentional.
-
-Something like this should do the job (whitespace damaged):
-
-+++ b/drivers/scsi/ncr53c8xx.h
-@@ -407,7 +407,7 @@
- 
- #ifdef CONFIG_SCSI_NCR53C8XX_NO_WORD_TRANSFERS
- /* Only 8 or 32 bit transfers allowed */
--#define OUTW_OFF(o, val)       do { writeb((char)((val) >> 8), (char __iomem *)np->reg + ncr_offw(o)); writeb((char)(val), (char __iomem *)np->reg + ncr_offw(o) + 1); } while (0)
-+#define OUTW_OFF(o, val)       do { writeb((char)((val) >> 8), (char __iomem *)np->reg + ncr_offw(o)); writeb((char)((val) & 0xff), (char __iomem *)np->reg + ncr_offw(o) + 1); } while (0)
- #else
- #define OUTW_OFF(o, val)       writew_raw((val), (char __iomem *)np->reg + ncr_offw(o))
- #endif
 
 
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
