@@ -1,121 +1,94 @@
-Return-Path: <SRS0=b5MZ=7K=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=9LLW=7L=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59037C433DF
-	for <linux-parisc@archiver.kernel.org>; Thu, 28 May 2020 20:29:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E94DC433E0
+	for <linux-parisc@archiver.kernel.org>; Fri, 29 May 2020 13:55:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 252482088E
-	for <linux-parisc@archiver.kernel.org>; Thu, 28 May 2020 20:29:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3C10D2073B
+	for <linux-parisc@archiver.kernel.org>; Fri, 29 May 2020 13:55:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="Un/dj9/j"
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="X5Xqbt2H"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407228AbgE1U3p (ORCPT
+        id S1726939AbgE2Nzs (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 28 May 2020 16:29:45 -0400
-Received: from mout.gmx.net ([212.227.15.19]:41699 "EHLO mout.gmx.net"
+        Fri, 29 May 2020 09:55:48 -0400
+Received: from mout.gmx.net ([212.227.15.15]:53291 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407191AbgE1U3j (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 28 May 2020 16:29:39 -0400
+        id S1725901AbgE2Nzq (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 29 May 2020 09:55:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1590697769;
-        bh=UE8hKDPeB/h8OAGkeV6NFIg81bEu9PTU5Fi6my06Jao=;
+        s=badeba3b8450; t=1590760538;
+        bh=vOtlPo+kxfaF5urOoy4ajGIymjW7MTeGTHHQTTgEVBM=;
         h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=Un/dj9/jwhx5OPde8xuHBi57OSJA+bgn+gx9LvpTv+VXA8yV3H2gAnxr34QuzeG+9
-         VtxmRiZfJBONEt0J3MJW9tU3A9djwgsUzGSTPm53PfjGNuzP6NyLzG6iTTlaGHDM7B
-         pTuhr6OR13hECzgz0ycGg2S3rBuexEfHe433cxiQ=
+        b=X5Xqbt2H/G12f0IMXLBJOm3ZOVxEbiNuaQBaQu6O33pJvPP0b81oJC/83ATzwua3y
+         Vk6/P44VlxnPFU8vEcvpkx1gNUja7trUsjvfBWiGiFL66R8iwiMFsBpesI0UWoOq+N
+         kEVXIbKFx5Ez4svVXcu+DrBr/jSC4cUJf9YmMpqY=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.fritz.box ([92.116.162.134]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N6KUd-1iuhHd3WdV-016c7z; Thu, 28
- May 2020 22:29:28 +0200
-Date:   Thu, 28 May 2020 22:29:25 +0200
+Received: from ls3530.fritz.box ([92.116.188.156]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MQMuR-1jIRlQ3yAD-00MK0h; Fri, 29
+ May 2020 15:55:38 +0200
+Date:   Fri, 29 May 2020 15:55:34 +0200
 From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org,
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@hansenpartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Fix kernel panic in mem_init()
-Message-ID: <20200528202925.GA4575@ls3530.fritz.box>
+Subject: [GIT PULL] parisc architecture fix for kernel v5.7
+Message-ID: <20200529135534.GA14973@ls3530.fritz.box>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Provags-ID: V03:K1:LUU/q5egOpvnruq41WHMIQB53eEaS+UT41BTrIpGujayMp2h4SH
- 9KEDYklGKRC5bUBYqyiXXYCVB+XwvBz/9Rfdl0skWTz/wBWUPJB00uIT9tyzkS1lhNcKP/z
- amUkW3CRsuZif+1a4WlPro+TJ8RCCh7qv5dYnkWkNmyurh6G2gUufDt5MZxZEl8PEaNkSzv
- lmnbrhZBrc9RcB2cZ+VIA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+9JBu5DfHgg=:UiqS2oim76/kfm0KEWKp55
- RTTX8sy6YKlCgAHEItSsZqxCvzT4oWAGJiQvfQVXvOvohYrD9qcfOSxB1j6wYppsA3EoHMjaa
- eVTJjnDbojXY5SxRdjTHuHa5tFmdHxbfINninsX1ejYuv/vjq+CN7by8IV42Psc1xGR3wCB4n
- LCDRQqzzwb9841fy/dH0n1gAjCsUBTWe30WPnYZPaJVaqqYgjOg7rzuEiRBVJHsNPIOLFN4k4
- 2nNBjDtZqYk9ygiYqMQS+f8xnWQJoRQ2xHPkD0z2WOFIghnmJTIBUtK2LUCtKN/Oa81CujZTK
- svMcoe4KKNLb/s5yV1uop/w7yDUdvrarwAE+ldMSOIHKqSnNU961gAyGz6Xys8+jGTT6ZEawW
- 9FSUTdA1aCNgOGYTfnN1uoniRCpKa19J6PAC1dEcfrZVQXLoNGBImihTzNMcPFwaPsA6XWGwQ
- brQ7JuVyxl1YERb9H2Kf9vadPn8qrN/67M9nLi8/LZ5+PGqedtXo9O3YO4fPi6EWin+9TpPeL
- VePmMq7+6PkP1g2UGTgCA4pFKZm/FoOYAy12kFKhsycQ7MjUtXsZY5Q7I59GKVnJLE0FgCjj2
- 8IM6hoxjpc+B05J/+BRcXWfsQCbO4i+DKIyNtd7tEoJe7v4Oin5qQZB63Uu+2J/hwkqiEibcv
- XVOTC5Tx4dHVrgE8EtxEbrV3hueh8OJrdlyaExpyCLPu+xIMes/Vst4+5CJdHGYqZgyERTibu
- t1/5EctNEvNsDVA1pqGiq2P6MELWjPrhe9/Ts/+6DyyI5HqtfzNU2alfznruJKU18HVhGDPp+
- 7R6+x+YOLfqggpezIMV1AT3acnrCn4IsxM1sqWwxt6moQJI8Lh4JXFPtk4m/8gnHAC1N/f1JN
- 3tKid8OiLHL3sR20XMhOTq/lJZ8GrcRkQGIHpjvxeabmRIMBPDVBXYkeioKvL1iBzDNiygiYJ
- L+96VaWk12h1O/udLbhHhZHI93jSnzejMoqHay6SYgYjxJUcko22ycTxSPPKzfs6JF/7FB7fN
- glGu56rBm8XtZmNIBWr74hhcweXmrPjDVH+C+itqkBZqKDfpvNq8ycu/egw5H64okbxR9a36y
- gWZqCRwe2UDZGbrG84jcGPzBhCbOW9c2SziUw81pQXQXgRMbDLvfTCY52WOST2BXJ97n2PkYa
- DDvOFQE9eCysEbikwjf7mI2Xj9x2MIWtH07QpZnkM/auatz+yt7dAho0cI1UKazanYSGT/TpE
- 95oL+8FG8kPctmO34
+X-Provags-ID: V03:K1:wSUFAOI6IrImdYFaheneOISf2zfhYBBP1qqZ2gMe2fNTem7WcWm
+ 2bDGumueEAQUUw3uKbvIxr3R8tiuT4oRwnXPqq/k6vLlBwvwDb/wwJKKy0QGRe/FG+aOkf3
+ tyeVvy/WBnRahmi+JwDtrYgpuIv2cFS0qqaa+JM6Wn8rYOXvo3Eo6u9SlxG/wTKbldxIdcR
+ JHIsZ/H6Xm83G2qODf9nw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+cKNOiL8onU=:Bhequgb2EgK7DGcNSBrxX5
+ PtnabGeNQOvBxD7p0tg5LpfqwUZj96k+QH5kXo7bhsx5GDPWNpd8TK4Avk5ojg2zojNuI9LR/
+ Z9W5tvIAkEgiSA+cadAjEiZrS74Gjtct7v1Vn8XNHWUFiuXFdocQcSgwnLz/YxnM1IKsYhgfF
+ j66Bb/VX7S4+z885XPLXLb3QtiBURNSKn9tid8beFcYwMsA9CDM3fX66t2/uBX8eV6OrBNGHK
+ fsL4RVoVXIvTrcKo+uQkWkB7TxDvB0fkjARqTf4IB956QcriLqZLYt20/Vn6ODND/+CO4X4QR
+ Zf0U30OfWF/12G2cffSaFhz1BCIejHB+xXSyOaOoQfe86LyXWedJSRn9TBR+7CEiT3cHISBzf
+ 7FlTfRqFTWUpwq1uWSTLgennNMzAzUsjijPUtOqbAS9DSV39phfv7VSXQAYULNjeR6abQOukj
+ JqL9ouPTs0Haz+uhCZaLPgemoHQ778cfckGjAeE99nL/Vp+2NuPFgaEuNaeVm9yQgv9SrHn8S
+ 3I46ZYW23dL92mhvNFpmzwOX8AmnUkSPiVJVSkeSnHMGTFce5yXPSgSGhZEVEcn9+f2qBFTDL
+ pZlKIj8vn07dB1vRgTdKmmjuQKJB2XBM2vv5GJP5Qlfh+pOjuYM6JUch4ZeyO35pi14rp4B96
+ rc1WLpQSEj7hB+jWKjFC8laupi+fshALPsFNv3YLU+eW2ZAWmjc7NJpcGdycOaE6A5EgFda9x
+ +MMERt+F0MhQMvCfaZVLrM56I0tL4+CShceUZUL4Ot4Ed2jMGXztrkCVR+0Npmj3eOVqNjM0y
+ Y+0G5eMUso/PvV+gXXABwNBk/ihOo1F7UFJHM2pqWn7KtEm0W7KZ0Y4WEVtTfsPvp6fTiS/4O
+ 6fPsJhyIkBICSS+6AW1viJWaa9peuCbMqJcnhLXc3D79qre/ADUJhCbCWCBf2ZkbX9/qFNgtS
+ 5TLOKBwD+FgqsOCPmZZvkQg+1dhziJRQGYIja1e3HZRzKv5iHUy6UWFR6aG/dM8MvpHLxgR/Y
+ XdKCm2qToJVD6PHLkYPIP+mWJroOh0wp4WYKU/XYNhCFko94H3WbnyZ0NBrQAUAM1Hb/ZWkNk
+ 07eY6pDMcWi4p5bPm+4YgCSB8bv8/it2Pvh0G0YZ56WlgVhpAnOxSchoi21gEQ8g3kUG++ltU
+ oyMDjKKiVuaMvi+Uj8s2SOHfswPJz8xps/v1930L7dIXCMtqsDhM7agt3BlSu6vKNe6fd+vlo
+ azgxWYFQWt+7D07UC
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On a HP-PARISC rp3440 machine with this memory layout:
- Memory Ranges:
-  0) Start 0x0000000000000000 End 0x000000003fffffff Size   1024 MB
-  1) Start 0x0000004040000000 End 0x00000040ffdfffff Size   3070 MB
+Hi Linus,
 
-the Debian kernel v5.6 triggers a kernel panic:
+please pull a kernel panic fix for the parisc architecture for kernel 5.7 =
+from:
 
- Kernel panic - not syncing: Bad Address (null pointer deref?)
- Backtrace:
-  [<0000000040101ab4>] start_kernel+0x6c8/0x1190
-  [<0000000040108574>] start_parisc+0x158/0x1b8
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git pa=
+risc-5.7-2
 
- Bad Address (null pointer deref?): Code=3D26 (Data memory access rights t=
-rap) at addr 0000000000000000
- CPU: 0 PID: 0 Comm: swapper Not tainted 5.6.0-2-parisc64 #1 Debian 5.6.14=
--1
- Hardware name: 9000/800/rp3440
+Fix a kernel panic at boot time for some HP-PARISC machines.
 
-  IAOQ[0]: mem_init+0xb0/0x150
-  IAOQ[1]: mem_init+0xb4/0x150
-  RP(r2): start_kernel+0x6c8/0x1190
- Backtrace:
-  [<0000000040101ab4>] start_kernel+0x6c8/0x1190
-  [<0000000040108574>] start_parisc+0x158/0x1b8
+Thanks,
+Helge
 
-During memory initialization in mem_init() the memory zomes have not been =
-set
-up yet, so avoid using virt_to_page() and similar functions.
+=2D---------------------------------------------------------------
+Helge Deller (1):
+      parisc: Fix kernel panic in mem_init()
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: stable@vger.kernel.org # v5.0+
-
-
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 5224fb38d766..0904542966a2 100644
-=2D-- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -562,7 +562,8 @@ void __init mem_init(void)
- 			> BITS_PER_LONG);
-
- 	high_memory =3D __va((max_pfn << PAGE_SHIFT));
--	set_max_mapnr(page_to_pfn(virt_to_page(high_memory - 1)) + 1);
-+	set_max_mapnr(max_low_pfn);
-+
- 	memblock_free_all();
-
- #ifdef CONFIG_PA11
+ arch/parisc/mm/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
