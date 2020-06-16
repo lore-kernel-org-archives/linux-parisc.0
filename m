@@ -1,142 +1,79 @@
-Return-Path: <SRS0=BF+i=74=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=ORU2=75=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40716C433E0
-	for <linux-parisc@archiver.kernel.org>; Mon, 15 Jun 2020 22:16:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8EA9C433DF
+	for <linux-parisc@archiver.kernel.org>; Tue, 16 Jun 2020 14:46:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2261B20739
-	for <linux-parisc@archiver.kernel.org>; Mon, 15 Jun 2020 22:16:43 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RLUlysi/"
+	by mail.kernel.org (Postfix) with ESMTP id BD9A22098B
+	for <linux-parisc@archiver.kernel.org>; Tue, 16 Jun 2020 14:46:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgFOWQm (ORCPT
+        id S1729321AbgFPOqo (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 15 Jun 2020 18:16:42 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:23689 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726607AbgFOWQl (ORCPT
+        Tue, 16 Jun 2020 10:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729296AbgFPOqn (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 15 Jun 2020 18:16:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592259399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RqJKKw8a1NKRln+8zArdPqt59N0jqlX/yu/HW/s9kC4=;
-        b=RLUlysi/KLIyFM757BgJM53Q5bDKA8+90Yvf13v87FqQTRF0g0URn8h5J1usqIGUdjMVLz
-        kCQ2zhk7k3hl9CmDyrkqMoXj6LlwwenkpFMpQVY+LL1RjvWwzPO6vQ8plqW9WZzztH0Bx5
-        Qzivv+P+ilF13TCINXMWyEDJom6RPPw=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-BZXG226YNCaiwNAknkZQkA-1; Mon, 15 Jun 2020 18:16:38 -0400
-X-MC-Unique: BZXG226YNCaiwNAknkZQkA-1
-Received: by mail-qt1-f200.google.com with SMTP id y5so15213172qtd.0
-        for <linux-parisc@vger.kernel.org>; Mon, 15 Jun 2020 15:16:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RqJKKw8a1NKRln+8zArdPqt59N0jqlX/yu/HW/s9kC4=;
-        b=SlvK45YBnRYakShfp7Enzv5jJ+0DE2K3zLnB/woYFaF5SuBTXj2AKe7l6hoWpS412N
-         9eA1E0B9gO0pN3t1wsJZEg2Tlb/TIKX/QCuE+k5HS4SC+fUKy3FcjhJD5v/hemcGsXxp
-         e1ScQ7hcRK6krU9WSihbAXsT/SKIVAQLrYXXJk8do+rsFIJZesrEARXKnSHAfPNRf7bx
-         ecxmNEknAamLBQPFHEJTQgH7bhrzIEX5eWMvtrSLkXx6d6R4fmG3rlcYauJ/jl4Emf/v
-         dcukkFfOxa1iSmLMFPKngtRs5zFsyNZb4f3EuSxtKppqfer4JtUQBKEe/kwb91zdDm4f
-         xkiQ==
-X-Gm-Message-State: AOAM533snaScl0NSDjWiX0HLxq2pWUTBHioAD6xIj1LODL9SwMzzkOO/
-        WW1M2TFCxm4l8LofUBIWRVbvJ0R2v37GZqxZlH9964P5mGzbGcGtWLScOt4FV7gY9iNyaJWuKqi
-        wVRI0q21YjBptrLFBc8qvxR9x
-X-Received: by 2002:ac8:2b98:: with SMTP id m24mr18160583qtm.7.1592259397575;
-        Mon, 15 Jun 2020 15:16:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJym0dTv1jCtl4PPadaK3FtEqrEEdDfUimjvunbZFPifhmsxPtnWv/2yi5DBIOU+dU1tzU/YzA==
-X-Received: by 2002:ac8:2b98:: with SMTP id m24mr18160561qtm.7.1592259397379;
-        Mon, 15 Jun 2020 15:16:37 -0700 (PDT)
-Received: from xz-x1.hitronhub.home ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id w13sm12351509qkb.91.2020.06.15.15.16.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 15:16:36 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-Subject: [PATCH 16/25] mm/parisc: Use mm_fault_accounting()
-Date:   Mon, 15 Jun 2020 18:15:58 -0400
-Message-Id: <20200615221607.7764-17-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200615221607.7764-1-peterx@redhat.com>
-References: <20200615221607.7764-1-peterx@redhat.com>
+        Tue, 16 Jun 2020 10:46:43 -0400
+Received: from mail.sf-mail.de (mail.sf-mail.de [IPv6:2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C313CC061573
+        for <linux-parisc@vger.kernel.org>; Tue, 16 Jun 2020 07:46:41 -0700 (PDT)
+Received: (qmail 5978 invoked from network); 16 Jun 2020 14:45:42 -0000
+Received: from p548d4959.dip0.t-ipconnect.de ([::ffff:84.141.73.89]:59740 HELO daneel.sf-tec.de) (auth=eike@sf-mail.de)
+        by mail.sf-mail.de (Qsmtpd 0.37dev) with (DHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA
+        for <linux-parisc@vger.kernel.org>; Tue, 16 Jun 2020 16:45:42 +0200
+From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
+To:     linux-parisc <linux-parisc@vger.kernel.org>
+Subject: Re: [PATCH] parisc: Prevent optimization of loads and stores in atomic operations
+Date:   Tue, 16 Jun 2020 16:46:29 +0200
+Message-ID: <2690783.z6zax5hIIu@daneel.sf-tec.de>
+In-Reply-To: <55841e49-cf36-e49a-5b33-7b60d3275e56@bell.net>
+References: <55841e49-cf36-e49a-5b33-7b60d3275e56@bell.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="nextPart1597910.IeInXdVt9Q"; micalg="pgp-sha1"; protocol="application/pgp-signature"
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Use the new mm_fault_accounting() helper for page fault accounting.
+--nextPart1597910.IeInXdVt9Q
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Avoid doing page fault accounting multiple times if the page fault is retried.
-Also, the perf events for page faults will be accounted too when the config has
-CONFIG_PERF_EVENTS defined.
+> The fix is to use a volatile pointer for the accesses in spinlocks.  This
+> prevents gcc from optimizing the accesses.
+> 
+> I have now run 5.6.1[78] kernels for about 4 days without a stall or any
+> other obvious kernel issue.
 
-CC: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
-CC: Helge Deller <deller@gmx.de>
-CC: linux-parisc@vger.kernel.org
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- arch/parisc/mm/fault.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+It does not cleanly apply to 5.7.2, but the parts that do apply have made my 
+C8000 run longer in the gcc testsuite than before. I will run it for a few 
+days more to be sure, but it looks good so far.
 
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index 86e8c848f3d7..eab1ee8d18c6 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -263,7 +263,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
- 	struct task_struct *tsk;
- 	struct mm_struct *mm;
- 	unsigned long acc_type;
--	vm_fault_t fault = 0;
-+	vm_fault_t fault = 0, major = 0;
- 	unsigned int flags;
- 
- 	if (faulthandler_disabled())
-@@ -303,6 +303,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
- 	 */
- 
- 	fault = handle_mm_fault(vma, address, flags);
-+	major |= fault & VM_FAULT_MAJOR;
- 
- 	if (fault_signal_pending(fault, regs))
- 		return;
-@@ -323,10 +324,6 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
- 		BUG();
- 	}
- 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
--		if (fault & VM_FAULT_MAJOR)
--			current->maj_flt++;
--		else
--			current->min_flt++;
- 		if (fault & VM_FAULT_RETRY) {
- 			/*
- 			 * No need to up_read(&mm->mmap_sem) as we would
-@@ -338,6 +335,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
- 		}
- 	}
- 	up_read(&mm->mmap_sem);
-+	mm_fault_accounting(current, regs, address, major);
- 	return;
- 
- check_expansion:
--- 
-2.26.2
+My testcase is: run several CMake nightlies every day by cron, run emerge jobs 
+for Gentoo stabilization in a chroot. For the last few attempts it always 
+tried to run the gcc 8.4.0 testsuite at the end, which killed the machine 
+eventually.
+
+Eike
+--nextPart1597910.IeInXdVt9Q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCXujbRQAKCRBcpIk+abn8
+TmPRAJ4r/xmXI0lM7ajKU8JPNL18EiDBnQCfZqKcAuaPbJRcrCI0BR56qF48IKA=
+=k8mv
+-----END PGP SIGNATURE-----
+
+--nextPart1597910.IeInXdVt9Q--
+
+
 
