@@ -1,59 +1,73 @@
-Return-Path: <SRS0=6Ifd=AE=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=+RR/=AF=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F3A0C433E2
-	for <linux-parisc@archiver.kernel.org>; Tue, 23 Jun 2020 07:22:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3090CC433DF
+	for <linux-parisc@archiver.kernel.org>; Wed, 24 Jun 2020 03:33:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 287F32073E
-	for <linux-parisc@archiver.kernel.org>; Tue, 23 Jun 2020 07:22:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1A9DC20767
+	for <linux-parisc@archiver.kernel.org>; Wed, 24 Jun 2020 03:33:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731292AbgFWHWq (ORCPT
+        id S2388637AbgFXDde (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 23 Jun 2020 03:22:46 -0400
-Received: from verein.lst.de ([213.95.11.211]:38091 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730830AbgFWHWp (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 23 Jun 2020 03:22:45 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id D458668AEF; Tue, 23 Jun 2020 09:22:40 +0200 (CEST)
-Date:   Tue, 23 Jun 2020 09:22:40 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, linux-pci@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v2 14/15] docs: fix references for DMA*.txt files
-Message-ID: <20200623072240.GA974@lst.de>
-References: <cover.1592895969.git.mchehab+huawei@kernel.org> <37b2fd159fbc7655dbf33b3eb1215396a25f6344.1592895969.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37b2fd159fbc7655dbf33b3eb1215396a25f6344.1592895969.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        Tue, 23 Jun 2020 23:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388187AbgFXDde (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 23 Jun 2020 23:33:34 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C7CC061573;
+        Tue, 23 Jun 2020 20:33:34 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3B10A12986338;
+        Tue, 23 Jun 2020 20:33:33 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 20:33:31 -0700 (PDT)
+Message-Id: <20200623.203331.577057867637454372.davem@davemloft.net>
+To:     vaibhavgupta40@gmail.com
+Cc:     helgaas@kernel.org, bhelgaas@google.com, bjorn@helgaas.com,
+        kuba@kernel.org, vaibhav.varodek@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, netdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/5] ethernet: dec: tulip: use generic power
+ management
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200622114228.60027-1-vaibhavgupta40@gmail.com>
+References: <20200622114228.60027-1-vaibhavgupta40@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 23 Jun 2020 20:33:33 -0700 (PDT)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 09:09:10AM +0200, Mauro Carvalho Chehab wrote:
-> As we moved those files to core-api, fix references to point
-> to their newer locations.
+From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Date: Mon, 22 Jun 2020 17:12:23 +0530
 
-Can we please just revert the RST conversion that I didn't ACK?
+> Linux Kernel Mentee: Remove Legacy Power Management.
+> 
+> The purpose of this patch series is to remove legacy power management
+> callbacks and invocation of PCI helper functions, from tulip ethernet drivers.
+> 
+> With legacy PM, drivers themselves are responsible for handling the device's
+> power states. And they do this with the help of PCI helper functions like
+> pci_enable/disable_device(), pci_set/restore_state(), pci_set_powr_state(), etc.
+> which is not recommended.
+> 
+> In generic PM, all the required tasks are handled by PCI core and drivers need
+> to perform device-specific operations only.
+> 
+> All patches are compile-tested only.
+
+Series applied to net-next, thanks.
