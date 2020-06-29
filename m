@@ -1,4 +1,4 @@
-Return-Path: <SRS0=m4fe=AJ=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=dpRt=AK=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,39 +6,39 @@ X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED839C433E1
-	for <linux-parisc@archiver.kernel.org>; Sun, 28 Jun 2020 07:11:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FA4DC433E0
+	for <linux-parisc@archiver.kernel.org>; Mon, 29 Jun 2020 18:45:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CA43121473
-	for <linux-parisc@archiver.kernel.org>; Sun, 28 Jun 2020 07:11:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 05DC12064B
+	for <linux-parisc@archiver.kernel.org>; Mon, 29 Jun 2020 18:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1593328261;
-	bh=yK/mmEcayAp4K1SoJVYgv0KctiM5CGqsdRXbo6D8DTo=;
+	s=default; t=1593456334;
+	bh=O/nZ0BxK4nESVxMtlEZ3aR9HUzEjAJ3vpNzo90oK+Gw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=oPVymvqoI/N/56x6niF0y/8gThvDxS6HmA4yH9UOBPwnWOJ9GZFx3zxq5hBQHxAuA
-	 XY4LqBECE07rA2HuvKwhUHgzG0nmD3g2QgWVsa3xRQDqBBa0kCbk1Ci5RnORKJnilP
-	 bKI5NUzJtzprfwajfV8WFd2aC6jwlgC6s86LyReY=
+	b=WGj5bxUA2/yp/Q5ssISAhs9/+0/LGbfLnLsTw2jKW38bt+MDee+4MxDo6T3GwUASs
+	 wHX5Z63YziTVS7dO+jlOAecwtdXK8CJyOMp4WWJ3NmkUroXqOx5If+VDwZwQz4dTMy
+	 v0i58Revd8leZ7yqFh4JU9k2SW5OjpWYWzI64Hog=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726142AbgF1HK5 (ORCPT
+        id S1729271AbgF2SpR (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 28 Jun 2020 03:10:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57228 "EHLO mail.kernel.org"
+        Mon, 29 Jun 2020 14:45:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725958AbgF1HK4 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 28 Jun 2020 03:10:56 -0400
+        id S1729264AbgF2SpP (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:45:15 -0400
 Received: from kernel.org (unknown [87.71.40.38])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D65920775;
-        Sun, 28 Jun 2020 07:10:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E93025581;
+        Mon, 29 Jun 2020 15:59:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593328255;
-        bh=yK/mmEcayAp4K1SoJVYgv0KctiM5CGqsdRXbo6D8DTo=;
+        s=default; t=1593446372;
+        bh=O/nZ0BxK4nESVxMtlEZ3aR9HUzEjAJ3vpNzo90oK+Gw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UyijhxBtiPImkMHKkSGIyXWOBHqIqoPqHi03HWzaGBbmBhYKOSRUunGTmaRWc4Gjn
-         2TMA+ldpEEnMFu0kFYBgT1B2G/Iqyrdp18UacvMYdOXnb2Y4yh/FSazt4w3nUe/3UB
-         VKf4vf+8Dah0/sxlNf+Z75XPskzsJ/8NsyHkTS2A=
-Date:   Sun, 28 Jun 2020 10:10:44 +0300
+        b=Ve2Rt8tVmffLLnlIRt4m0+FLkplbTh12wsmkxiiXh2shMIztHBj9/nk/f9S/ai5jU
+         3BFQpw5Dz/XZFCZs/y8ymsBDt+3vvNo/l/kVYqcYBemM5Bac+QbcUhusbQGI9QlPev
+         vYsxGXmlFAgYBNiTAVuThytC5RkEIP2ptiiEd7Jg=
+Date:   Mon, 29 Jun 2020 18:59:20 +0300
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Matthew Wilcox <willy@infradead.org>
 Cc:     linux-kernel@vger.kernel.org,
@@ -67,7 +67,7 @@ Cc:     linux-kernel@vger.kernel.org,
         sparclinux@vger.kernel.org
 Subject: Re: [PATCH 4/8] asm-generic: pgalloc: provide generic
  pmd_alloc_one() and pmd_free_one()
-Message-ID: <20200628071044.GC576120@kernel.org>
+Message-ID: <20200629155920.GD1492837@kernel.org>
 References: <20200627143453.31835-1-rppt@kernel.org>
  <20200627143453.31835-5-rppt@kernel.org>
  <20200627190304.GG25039@casper.infradead.org>
@@ -96,7 +96,10 @@ On Sat, Jun 27, 2020 at 08:03:04PM +0100, Matthew Wilcox wrote:
 > Thanks for including this line; it reminded me that we're not setting
 > the PageTable flag on the page, nor accounting it to the zone page stats.
 > Hope you don't mind me tagging a patch to do that on as 9/8.
-> 
+
+We also never set PageTable flag for early page tables and for the page
+tables allocated directly with get_free_page(), e.g PTI, KASAN.
+
 > We could also do with a pud_page_[cd]tor and maybe even p4d/pgd versions.
 > But that brings me to the next question -- could/should some of this
 > be moved over to asm-generic/pgalloc.h?  The ctor/dtor aren't called
@@ -104,17 +107,6 @@ On Sat, Jun 27, 2020 at 08:03:04PM +0100, Matthew Wilcox wrote:
 > code in mm.h, but then there's also value to keeping all the ifdef
 > ARCH_ENABLE_SPLIT_PMD_PTLOCK code together too.  So I'm a bit torn.
 > What do you think?
-
-There are arhcitectures that don't use asm-generic/pgalloc.h but rather
-have their own, sometimes completely different, versoins of these
-funcitons.
-
-I've tried adding linux/pgalloc.h, but I've ended up with contradicting
-need to include asm/pgalloc.h before the generic code for some
-architecures or after the generic code for others :)
-
-I think let's leave it in mm.h for now, maybe after several more cleaups
-we could do better.
 
 -- 
 Sincerely yours,
