@@ -1,144 +1,147 @@
-Return-Path: <SRS0=rZ46=AP=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=+LlY=AS=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 543E1C433DF
-	for <linux-parisc@archiver.kernel.org>; Sat,  4 Jul 2020 15:52:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 276CFC433E7
+	for <linux-parisc@archiver.kernel.org>; Tue,  7 Jul 2020 22:50:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2078920826
-	for <linux-parisc@archiver.kernel.org>; Sat,  4 Jul 2020 15:52:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F16D22075B
+	for <linux-parisc@archiver.kernel.org>; Tue,  7 Jul 2020 22:50:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="KaPTBn58"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dGlQpsg4"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgGDPwW (ORCPT
+        id S1729647AbgGGWuz (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 4 Jul 2020 11:52:22 -0400
-Received: from mout.gmx.net ([212.227.15.18]:49151 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726643AbgGDPwV (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 4 Jul 2020 11:52:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1593877892;
-        bh=tAtI5rS5UHUyRq0DpLyYLjxEsQq2XtSEjG4HHyuWRE8=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=KaPTBn58KwDtI+RAJoTdSRRO2RqVshAASEmbHz4ul5cZgdMYJZ0JDRLyoVX/Ja2bo
-         VCaTmIlxuauNdxkSO/IEOoSQ42qs+MeojULRY7HcHwO+CQGmlVC3IaXew3P7b4EFqT
-         J3H16MesehMKeQ5y3ih+CxOFGprxuQSpCbJcxvc0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.73.70]) by mail.gmx.com
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MzhnH-1knAOb2GEz-00vhSn; Sat, 04 Jul 2020 17:51:32 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        Tue, 7 Jul 2020 18:50:55 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:37388 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729688AbgGGWuy (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 7 Jul 2020 18:50:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594162253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dSLF2JUETXiqlgMgrNmE+7rrHD1HC1gVnVSET6GUPpA=;
+        b=dGlQpsg4ZkK3a+rhiTUo11N0zKKC0nMwNofJCkqHwJzxOHn+r5akScap7acqxlQWhmJZP4
+        PmSzpndqz69TtFDx65RBLmiixycCOl5hRSTou9qSw6zU0VMaDgWlOWgcKLdM90Rku26eGm
+        coqVu/kPAbrCH/N934fYftsmVYY9pEE=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-493-qJkGghSCNeC5f1BCiKOTOA-1; Tue, 07 Jul 2020 18:50:49 -0400
+X-MC-Unique: qJkGghSCNeC5f1BCiKOTOA-1
+Received: by mail-qk1-f199.google.com with SMTP id q6so21047438qke.21
+        for <linux-parisc@vger.kernel.org>; Tue, 07 Jul 2020 15:50:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dSLF2JUETXiqlgMgrNmE+7rrHD1HC1gVnVSET6GUPpA=;
+        b=H2mM/kTF/It5isVX6mTxL0dyI2xVZI45HcUz4L+RzwmLl2qAWXcV+H0Pa4Eq5EwKDk
+         oPVSAX9ANa1UsnLW7bHng3C+C8mvweI4flxXooioiKUAd3+BNn32uTdT9w5aMVxlntwC
+         mjyK7x/5LqoWkxZVYz/yj+JWdNQ0gibzIea/xEDoKqaeB3GSPt/tytPghUKumGWZRAMV
+         fdM7BIpJkVwxBpyAoBrJicC0J+3jYD8ITTyrdhjbXK6GStzCCrpZws79weGfUIWTWvcX
+         /g6z8ORwxhHYQw8Gfe1FXELypPOAycpSX10BXyeeL/vwmpnRE+U4Rgy5xVh0qUXHDs86
+         MF9w==
+X-Gm-Message-State: AOAM531SZo2Kv1fCCXR3sEUTTtobTlaIf8Xg8vzIcGAzhem07os99VK5
+        Z3PaeE3mEGLi/Vmh42+fqiZWuiyO6GfOtHwy7d11aQIkRS8EmjIVBdYXhTuYC4WNCrDOkmrI1X9
+        MZ6Xe9NEI9tjPzanhJ4VlnNGB
+X-Received: by 2002:ad4:5307:: with SMTP id y7mr54932482qvr.63.1594162248905;
+        Tue, 07 Jul 2020 15:50:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxZZjK6Nn1bIXhPvAgy7jT1o0DD/8o7Kmnv40jvO5ZPTVwAW66E615v62v4cElkkeaFLjMBdA==
+X-Received: by 2002:ad4:5307:: with SMTP id y7mr54932474qvr.63.1594162248721;
+        Tue, 07 Jul 2020 15:50:48 -0700 (PDT)
+Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id j16sm26267642qtp.92.2020.07.07.15.50.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 15:50:48 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        peterx@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>
-Cc:     kernel-hardening@lists.openwall.com, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Oscar Carter <oscar.carter@gmx.com>
-Subject: [PATCH v2] parisc/kernel/ftrace: Remove function callback casts
-Date:   Sat,  4 Jul 2020 17:50:57 +0200
-Message-Id: <20200704155057.3959-1-oscar.carter@gmx.com>
-X-Mailer: git-send-email 2.20.1
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+Subject: [PATCH v5 15/25] mm/parisc: Use general page fault accounting
+Date:   Tue,  7 Jul 2020 18:50:11 -0400
+Message-Id: <20200707225021.200906-16-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200707225021.200906-1-peterx@redhat.com>
+References: <20200707225021.200906-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:R5hfiGVWqGDQ+lgUWVBXTSSU4VXpztSPSCW5LLJmeHirtrL6qjS
- h/OkEOlAmkQWjNgwbAmZBSa18vPP+iqfKLX1U55rOelFaBbimJgHUQ++ryBIxErjaluqiMt
- RIzTxmbduIX0Te4N5eAl07WmZfV7y8e3KkR/b3vie7Da24pcW5tpc54brxK6iJQd4j0bTmC
- oYpkkQ5YWFw1jesnCFPEw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KPr6d6wU2Tk=:/XQpyyxWJW59BDAc3HhAH3
- IXHbCmVEp97xXSOOgw3mmkjjdvuOjilAakJ42ogmcW37xhPjuG+LBkIujb/40lbDwhI2sKR3o
- nw2ExcoF2Gfyu1RBajF8GQ9IYcl9gGYABYcHhsjwnYmijWCqvnXsikMaQ1VKSoLZoNx/bu+0F
- 2CfJLJuMYfg1RisPaW4sJev9yiH0lPeRenDfWG6FC0nIUm2YVMuQd9gJkv3v1Q8L6jeQ2XFzc
- i5ecrrKCczi+Eekugon/tn200O31pD5v05hvJHXCqNch5DskoOlFNMXA1gtLfoL4oNkCBk84P
- 95XHMl7bQuoFOLPDFzyPKWlvjRNhcRYAA4aNJx/UnRWPxms5sWppXqL2x+XrXZjnqDpv6Qb0m
- Hxah4Nysds2rJy04IjB3qQxXBTYMZ0vQuXsjH1DtB64/ANF9Fmhc5ZBp3iGVdL5Ce5taP+0z1
- 68wHrNOfK9htjl+G4ZFl2fY0qh0PhCBOI1f/sk61sEJsp0rTPTzD1q3CzvymtjwFYorT9ubgk
- 8iJAe6uOWEIAv1zg2/aorozWcGRGyGpgrZWpubv6OAOay9FZo/HkrwjQ7V0u4R9iRh0fmzWKG
- BeFKtNXjXeXXgaBXlrrysojX8CfzL8ZKxtUVyhdsZGhwV3qOiKaJ37Wb/YOX5t67DPsJrFC/o
- EXUA8fhlkNR4GpcgOhmgRS0dJTV7CyvOyrCFSYJgKxPOiRP5fcxq1+j2S6mlLTqiQap5ekY6e
- 0uZs1XR3k4eMrLdxcTX6kcW22uj00lmKibRTiUIFp60Z1C5ppaM905kN7nRHUR93MYcmLik6a
- oHubOPv7Fslx49tL+K0EzCuoWpfxSCu2go5L4ZujE9WgmmcSW0n6t1iq/eJlfdlROcVZ5S3Ok
- wnQVb8V0cyFpjcQOFUgLLChyowo7x3lTATF5jtMIYYtDKliZMh2n2LFVXpLoB8LxL7MwPJRg1
- +j1HEHL43UUeox/AocpLz29sVHEfLZc9/8dRDDrCK598eDdcaJBxi0b1QaeN3A+fhTBgQB04B
- XTOK3vljJGNbTxfl9KkqXfecWjdJI8UHy1dRiYRppNb9lLAl5ogm1xZzroDF7A2MyG40WFtGK
- VYmOFabofs9uEkQZZF8A0A7mmVbYyDRlCZ+wWbEEZeOrmC2Ikt22MYMhE9PaIFca/CbQqaD4s
- KprKJSzGlLU8Bt+fqqZwUpqd5pgYHicIJiLEDIfoNKojbL53ODavYRlZ5SZg55XXdaTlBLkXw
- bsFBe4bDUCsu/sDF+zwCgueVfXEs9SF69YsjqCw==
+Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-In an effort to enable -Wcast-function-type in the top-level Makefile to
-support Control Flow Integrity builds, remove all the function callback
-casts.
+Use the general page fault accounting by passing regs into handle_mm_fault().
+It naturally solve the issue of multiple page fault accounting when page fault
+retry happened.
 
-To do this add an inline function helper to get the address of a
-function. This helper uses the "dereference_function_descriptor" as the
-parisc64 architecture uses function descriptors instead of direct
-addresses for functions.
+Add the missing PERF_COUNT_SW_PAGE_FAULTS perf events too.  Note, the other two
+perf events (PERF_COUNT_SW_PAGE_FAULTS_[MAJ|MIN]) were done in handle_mm_fault().
 
-Then, remove the cast to a function pointer type in the comparison
-statement and use the function helper to get the address of every
-function in the right and left operand. This can be done since the
-comparison is against function address (these operands are not function
-calls).
+CC: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
+CC: Helge Deller <deller@gmx.de>
+CC: linux-parisc@vger.kernel.org
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ arch/parisc/mm/fault.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Co-developed-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-=2D--
-Hi,
-
-I have added the Co-develop-by tag and Signed-off-by tag to give credit to
-Helge Deller if there are no objections.
-
-Thanks.
-
-Changelog v1->v2
-- Use the function "dereference_function_descriptor" to get the function
-  address instead of a direct cast to unsigned long type.
-- Modify the commit changelog accordingly.
-- Add the Co-developed-by tag and Signed-off-by tag to give credit to Helg=
-e
-  Deller.
-
- arch/parisc/kernel/ftrace.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-index 1df0f67ed667..c53576890881 100644
-=2D-- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -24,6 +24,11 @@
- #define __hot __attribute__ ((__section__ (".text.hot")))
-
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-+static inline unsigned long ftrace_get_function_address(void *function)
-+{
-+	return (unsigned long)dereference_function_descriptor(function);
-+}
-+
- /*
-  * Hook the return address and push it in the stack of return addrs
-  * in current thread info.
-@@ -64,7 +69,8 @@ void notrace __hot ftrace_function_trampoline(unsigned l=
-ong parent,
- 				function_trace_op, regs);
-
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
--	if (ftrace_graph_return !=3D (trace_func_graph_ret_t) ftrace_stub ||
-+	if (ftrace_get_function_address(ftrace_graph_return) !=3D
-+	    ftrace_get_function_address(ftrace_stub) ||
- 	    ftrace_graph_entry !=3D ftrace_graph_entry_stub) {
- 		unsigned long *parent_rp;
-
-=2D-
-2.20.1
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index e32d06928c24..4bfe2da9fbe3 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -18,6 +18,7 @@
+ #include <linux/extable.h>
+ #include <linux/uaccess.h>
+ #include <linux/hugetlb.h>
++#include <linux/perf_event.h>
+ 
+ #include <asm/traps.h>
+ 
+@@ -281,6 +282,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 	acc_type = parisc_acctyp(code, regs->iir);
+ 	if (acc_type & VM_WRITE)
+ 		flags |= FAULT_FLAG_WRITE;
++	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+ retry:
+ 	mmap_read_lock(mm);
+ 	vma = find_vma_prev(mm, address, &prev_vma);
+@@ -302,7 +304,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 	 * fault.
+ 	 */
+ 
+-	fault = handle_mm_fault(vma, address, flags, NULL);
++	fault = handle_mm_fault(vma, address, flags, regs);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+@@ -323,10 +325,6 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 		BUG();
+ 	}
+ 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+-		if (fault & VM_FAULT_MAJOR)
+-			current->maj_flt++;
+-		else
+-			current->min_flt++;
+ 		if (fault & VM_FAULT_RETRY) {
+ 			/*
+ 			 * No need to mmap_read_unlock(mm) as we would
+-- 
+2.26.2
 
