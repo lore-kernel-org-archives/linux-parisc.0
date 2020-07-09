@@ -2,43 +2,55 @@ Return-Path: <SRS0=qrT8=AU=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F8ABC433E0
-	for <linux-parisc@archiver.kernel.org>; Thu,  9 Jul 2020 07:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 420BCC433E1
+	for <linux-parisc@archiver.kernel.org>; Thu,  9 Jul 2020 07:33:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6C50320767
-	for <linux-parisc@archiver.kernel.org>; Thu,  9 Jul 2020 07:29:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1F34420767
+	for <linux-parisc@archiver.kernel.org>; Thu,  9 Jul 2020 07:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1594279775;
-	bh=1OlynJThW+neP7pY3D7VyCLvh+Wto82XT3VjJdSrf14=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=aKMu0UZlMfwQ5MJnkQMnZBgHfLaGlvyRyZ0kPidySBddtrx3f2UB8SRqrJpgBCMF8
-	 7Jc6tAy9+3AacRK1aKA9/LTyMdzhy7OglEYbKWJTFse/EeEXAyynJv8Ps1KOJxkSDN
-	 NlCiZX/ehfBxnIqEsK1Rh/4Wg7H4njjoQryBEzW0=
+	s=default; t=1594279984;
+	bh=qtKXUw7SgjgQcTBkUhxdUs/hh9nEmqm9RFtxqfv1xl0=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-ID:From;
+	b=iPBDGnZ3fNAyRW5FYGhZDfKMu9YyKfdUCTC5QlYvR92RWTHsjNOHI0Fe8o46NoB/h
+	 JhmT9co6Czf4A/rZ14qEILNHlfPPHlVjm/qoWkXGNzK6M8vQ/9U1L7PPS9MA5W1/KR
+	 Yy2/Al/V1XN9t2tUvRxISPyn7Wh7EGojm0mwdDeo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbgGIH3M (ORCPT
+        id S1726409AbgGIHc5 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 9 Jul 2020 03:29:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726006AbgGIH3J (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 9 Jul 2020 03:29:09 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.195])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF6E72073A;
-        Thu,  9 Jul 2020 07:29:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594279747;
-        bh=1OlynJThW+neP7pY3D7VyCLvh+Wto82XT3VjJdSrf14=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CeYbgd7M7raXSRvjskZzCtfjiycAwkJSBQbaYu7SzskR+FdjOBJrPceWVDV2X+OEo
-         wHxkB+BI5BO5O3chlrCGr7w6EPsitCmWmkZCYBWSFz8Zc40aAGUahEYYYI3PRdIg8z
-         FrXikqSbMIQzhNovF0HG+T4q1vtDnEkxMhBT0lbc=
+        Thu, 9 Jul 2020 03:32:57 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:39018 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726184AbgGIHc4 (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 9 Jul 2020 03:32:56 -0400
+Received: by mail-ed1-f65.google.com with SMTP id d18so1023768edv.6;
+        Thu, 09 Jul 2020 00:32:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=j7DqbPSyBqq2qwNcdYTCxivolsap4LLnpECg1M+YJYk=;
+        b=qZiNwlyRJ57VPjR+dosZ69Gym7GNS4FukUdkgaYsGriBesMWF22pXa3pVLiOfXPOJQ
+         tqPklsHrjCnY4xSsVGStmBcWYDca3eRq3xqpWrLoLZuZkxUTIRZSAS5SVCN/jt7UBvfC
+         JWkPCkrp2b7mAm7VCHEy3g5i2dU2f5qBGCOYds9I/9NHL+mxbckjgBUxczwV44RdlwiX
+         VuOd4cuKP7tVGADCX94TArCvW7SI+nzGX6N/nbOwRfqgA+xd2Rvlyo+rGQW756j6YjI8
+         RNUMh0ewYcb483hIjKyOB8jrUfNHW6gpl6RZ6jCN72lxM9HmtY9eqJ4CJ1sZY+/I4NUG
+         Tx/Q==
+X-Gm-Message-State: AOAM531GEd/SInI4qyhu3bABdWnHgQNCsywdZCeke95PuT+Mo+P9zEBG
+        EuYDAHLIhUr+a0PVB8zlGxQ=
+X-Google-Smtp-Source: ABdhPJwrkOg1VmskPen0ndAgGUffYWkrKR783vprCdOePKnp0T8h/KXoPOC3hmTqCSglRRVLLvqDkw==
+X-Received: by 2002:a50:d8c2:: with SMTP id y2mr62468108edj.114.1594279973653;
+        Thu, 09 Jul 2020 00:32:53 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.195])
+        by smtp.googlemail.com with ESMTPSA id sa10sm1258696ejb.79.2020.07.09.00.32.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 09 Jul 2020 00:32:52 -0700 (PDT)
+Date:   Thu, 9 Jul 2020 09:32:49 +0200
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Richard Henderson <rth@twiddle.net>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
@@ -66,73 +78,40 @@ To:     Richard Henderson <rth@twiddle.net>,
         netdev@vger.kernel.org, linux-ntb@googlegroups.com,
         virtualization@lists.linux-foundation.org,
         linux-arch@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 3/4] ntb: intel: Constify ioreadX() iomem argument (as in generic implementation)
-Date:   Thu,  9 Jul 2020 09:28:36 +0200
-Message-Id: <20200709072837.5869-4-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200709072837.5869-1-krzk@kernel.org>
+Subject: Re: [PATCH v3 1/4] iomap: Constify ioreadX() iomem argument (as in
+ generic implementation)
+Message-ID: <20200709073249.GA6335@kozik-lap>
 References: <20200709072837.5869-1-krzk@kernel.org>
+ <20200709072837.5869-2-krzk@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200709072837.5869-2-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The ioreadX() helpers have inconsistent interface.  On some architectures
-void *__iomem address argument is a pointer to const, on some not.
+On Thu, Jul 09, 2020 at 09:28:34AM +0200, Krzysztof Kozlowski wrote:
+> The ioreadX() and ioreadX_rep() helpers have inconsistent interface.  On
+> some architectures void *__iomem address argument is a pointer to const,
+> on some not.
+> 
+> Implementations of ioreadX() do not modify the memory under the address
+> so they can be converted to a "const" version for const-safety and
+> consistency among architectures.
+> 
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-Implementations of ioreadX() do not modify the memory under the address
-so they can be converted to a "const" version for const-safety and
-consistency among architectures.
+I forgot to put here one more Ack, for PowerPC:
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Dave Jiang <dave.jiang@intel.com>
----
- drivers/ntb/hw/intel/ntb_hw_gen1.c  | 2 +-
- drivers/ntb/hw/intel/ntb_hw_gen3.h  | 2 +-
- drivers/ntb/hw/intel/ntb_hw_intel.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+https://lore.kernel.org/lkml/87ftedj0zz.fsf@mpe.ellerman.id.au/
 
-diff --git a/drivers/ntb/hw/intel/ntb_hw_gen1.c b/drivers/ntb/hw/intel/ntb_hw_gen1.c
-index 423f9b8fbbcf..3185efeab487 100644
---- a/drivers/ntb/hw/intel/ntb_hw_gen1.c
-+++ b/drivers/ntb/hw/intel/ntb_hw_gen1.c
-@@ -1205,7 +1205,7 @@ int intel_ntb_peer_spad_write(struct ntb_dev *ntb, int pidx, int sidx,
- 			       ndev->peer_reg->spad);
- }
- 
--static u64 xeon_db_ioread(void __iomem *mmio)
-+static u64 xeon_db_ioread(const void __iomem *mmio)
- {
- 	return (u64)ioread16(mmio);
- }
-diff --git a/drivers/ntb/hw/intel/ntb_hw_gen3.h b/drivers/ntb/hw/intel/ntb_hw_gen3.h
-index 2bc5d8356045..dea93989942d 100644
---- a/drivers/ntb/hw/intel/ntb_hw_gen3.h
-+++ b/drivers/ntb/hw/intel/ntb_hw_gen3.h
-@@ -91,7 +91,7 @@
- #define GEN3_DB_TOTAL_SHIFT		33
- #define GEN3_SPAD_COUNT			16
- 
--static inline u64 gen3_db_ioread(void __iomem *mmio)
-+static inline u64 gen3_db_ioread(const void __iomem *mmio)
- {
- 	return ioread64(mmio);
- }
-diff --git a/drivers/ntb/hw/intel/ntb_hw_intel.h b/drivers/ntb/hw/intel/ntb_hw_intel.h
-index d61fcd91714b..05e2335c9596 100644
---- a/drivers/ntb/hw/intel/ntb_hw_intel.h
-+++ b/drivers/ntb/hw/intel/ntb_hw_intel.h
-@@ -103,7 +103,7 @@ struct intel_ntb_dev;
- struct intel_ntb_reg {
- 	int (*poll_link)(struct intel_ntb_dev *ndev);
- 	int (*link_is_up)(struct intel_ntb_dev *ndev);
--	u64 (*db_ioread)(void __iomem *mmio);
-+	u64 (*db_ioread)(const void __iomem *mmio);
- 	void (*db_iowrite)(u64 db_bits, void __iomem *mmio);
- 	unsigned long			ntb_ctl;
- 	resource_size_t			db_size;
--- 
-2.17.1
+Best regards,
+Krzysztof
 
