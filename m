@@ -1,78 +1,102 @@
-Return-Path: <SRS0=DV98=BA=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=fPvf=BD=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C52BC433DF
-	for <linux-parisc@archiver.kernel.org>; Tue, 21 Jul 2020 21:00:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EE05C433DF
+	for <linux-parisc@archiver.kernel.org>; Fri, 24 Jul 2020 17:18:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2A4812068F
-	for <linux-parisc@archiver.kernel.org>; Tue, 21 Jul 2020 21:00:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5C39720658
+	for <linux-parisc@archiver.kernel.org>; Fri, 24 Jul 2020 17:18:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="29p9nJvr"
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="KQ30s2op"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730214AbgGUVA3 (ORCPT
+        id S1726701AbgGXRSI (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 21 Jul 2020 17:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgGUVA2 (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 21 Jul 2020 17:00:28 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859BFC061794;
-        Tue, 21 Jul 2020 14:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=delRZux0mLS0jQqWSa4cDSDXHbHgMN/MHMG8w/uxu8c=; b=29p9nJvrs6X3lwKd5pPKY+xqGi
-        eyOAAKyqwhilFECaRrWdAPVa2mkabSqX2bffVqMvESVAEa0j6F7zloG3zHxACmuaYuK7q48dNrw7D
-        Ab1uW3hK2Z+vHmRbF1+zpxrp3/7Uf5148tvJKGoqzZjTizaqLSFK4lwfSohNtG5B/WEorZdEgjE32
-        ru2zR6KPC46eHwKpRTfi+gS17+45uddawhXZJt4JFOuhCPZX5ehGX4usOj9P8aGWPg6FhkAOLrhg0
-        CXYQVoAMXdg/wH39qYhUeYs3dPwqPbaVZ4a7CIV52RNDRbj5sC3LjiVQnoIJqUXcOBgdJgWnFJcE+
-        5g+XEcfg==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxzNC-0000bK-6B; Tue, 21 Jul 2020 21:00:26 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-Subject: [PATCH] PARISC: elf.h: delete a duplicated word
-Date:   Tue, 21 Jul 2020 14:00:22 -0700
-Message-Id: <20200721210022.15354-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Fri, 24 Jul 2020 13:18:08 -0400
+Received: from mout.gmx.net ([212.227.15.15]:38425 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726326AbgGXRSH (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 24 Jul 2020 13:18:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1595611075;
+        bh=SZYj7n6G4Lhr5a+IFOi8aym3UDQ2GOS0mtYwI3tKtaI=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=KQ30s2opY0ZXSTHEPqoBVxDyX9yCgFChFpc/sEMIvu57ngCh2vmOd5nkjBa//yhnM
+         PVKGDW2HdFQO8Dhoyz4Judz9XhM7sZn/cRkDfzUJBavzG/ZfKuicYHeptJutPHcvJj
+         OsOU/pDXEDI1PG1GqLSFbnK1s2MtjJkHPzWsgMYc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.174.101]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N2E1M-1kxD0H3Fqo-013hJX; Fri, 24
+ Jul 2020 19:17:55 +0200
+Date:   Fri, 24 Jul 2020 19:17:52 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Report bad pages as HardwareCorrupted
+Message-ID: <20200724171752.GA17395@ls3530.fritz.box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:lsxVAOnxNQKqVex1nzSVcn+s+11/ToTbxLe5Gu3tpsvfulh205S
+ dBdy59uSNLnTBU+tF5aJzmINrToNFpiehY+0HKkdqh55oimvwkvl94VXWemW8PaUBPr0ovB
+ HX3hK4jo/MCbYd5re1RP4S5qJXFxfBcLEIu/3+qNQNRcOMc6S7NHJokDHpxC7v1SgZmcxWX
+ NfdzxkAn1PylqXZXVPMrA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oifaUMNM2Go=:TIe+9QfoZynwYi+4eEVqzw
+ qyq50msloQIeDnxZKtcm6wFm+cifg4xGp8oPENX0AWBrORA5zybS33ygENCNW/iQ8SDMBg6jL
+ lsNchl+E4NG6XXZrCQzJ6uS4RMTtVIZNJ3x4JGymX8hh6YxMulInSaIOi0O4dEzDIWif9w40k
+ bK3z6b7OpV1OU1tVy11VNHq6r7MNZxuAc10dfywUEXrRUTaI3p7VT2b1SGG4cQlBJY1j0foHH
+ YBf+NZ45rYRcfGn1LIOqkMy1Y2fgxzvfF+s7xQW3eAXPZs6414VkfvX6pfpdObY4Fk2KJnsin
+ Jlt/hL0iq4VpR8vqWtYggvaH0jpzT9v/Cdf0jP7wxKX1I+TvX2I9TI/VAt+ce36oM1ixRoZGJ
+ PSmXkO6sG4YW2VSXGjbIX6HotQSjIJk1QJUQio4gytq2Kf5DyGB8rRlQlWaQyESzaPiLbL8PO
+ t+AtifuFdAGlJ8Qh1CAB+HWwJgXBLsyFjpKFhzr2B6o39EGM4iwRmshuaTm4yr4aqxHNGbio2
+ BIsrDfLJ24ae1ksSvy9e+g7jxhfMfLeiCQkLnVgwngrmo8njvuRZ9TEU/1gZ2QQWbloxhiqAz
+ T66k0zLjVpPRFKrAA4LMXhhSCskBVxCrAbNLgiPtpqKy5GgP+7Dx6MHA2U73VlP4vBAS3+/uO
+ Y4nj3mIB0+Ta/H4C+WbZZrdV/ozqv3atzOr2nhBPw2VAsajyXNS03wruEA+Jthc4Led4spVMm
+ VS9Gw/tkdaLmQY3hTn7/J658OicAMQ7O3IyWC0A0a33nDP6Xyon8KJtsMvwzKVYsnU8bnPl7T
+ VP2LrlEdc8PQ4Y6sG0fEj6n+a00JqdTa39ZyFie8asr5VjuUSivTDM1+113FwIpXn6sCAdsnn
+ Q502lb8D1xVSQHRhbaXfqXxc9KbmtaUbxU01ASwDnlrVWiFSnClzu2dRixUO9M5hF06vrf4l3
+ n1uyLLbtt6LMiak2h2VH1kFnhCX7RhVuHfgU4NrkmtAtEFm45kYSax+84f4dBoULxRa6eBZCi
+ LJei+1bZgCt+btlfpHWSxBiLolvOKc13qIXVehla/wZhaRuwGfqcEgZu9Bq+XcyNgmFEL2qTq
+ ZETVMVoovZN/OWBcg+GvNSyC2QEIOCurBf7bCdoXnbyPaiwvvpiBeYYLiwRK4ilo8YBMfByhS
+ 2UBuaIFORf5c59f93waJsujHOsO45qQziSykbY02ZfZg4aLU2lJQ35prd9gUA/Bij8IVlUBRE
+ 4e9wKKhEoRG+ecZWb
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Drop the repeated word "the".
+The /proc/meminfo file reports physically broken memory pages in the
+HardwareCorrupted field. When the parisc kernel boots report physically
+bad pages which were recorded in the page deallocation table (PDT) as
+HardwareCorrupted too.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
----
- arch/parisc/include/asm/elf.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Signed-off-by: Helge Deller <deller@gmx.de>
 
---- linux-next-20200720.orig/arch/parisc/include/asm/elf.h
-+++ linux-next-20200720/arch/parisc/include/asm/elf.h
-@@ -152,7 +152,7 @@
- /* The following are PA function descriptors 
-  *
-  * addr:	the absolute address of the function
-- * gp:		either the data pointer (r27) for non-PIC code or the
-+ * gp:		either the data pointer (r27) for non-PIC code or
-  *		the PLT pointer (r19) for PIC code */
- 
- /* Format for the Elf32 Function descriptor */
+diff --git a/arch/parisc/kernel/pdt.c b/arch/parisc/kernel/pdt.c
+index 6e8550fefad6..fcc761b0e11b 100644
+=2D-- a/arch/parisc/kernel/pdt.c
++++ b/arch/parisc/kernel/pdt.c
+@@ -18,6 +18,8 @@
+ #include <linux/kthread.h>
+ #include <linux/initrd.h>
+ #include <linux/pgtable.h>
++#include <linux/swap.h>
++#include <linux/swapops.h>
+
+ #include <asm/pdc.h>
+ #include <asm/pdcpat.h>
+@@ -230,6 +232,7 @@ void __init pdc_pdt_init(void)
+
+ 		/* mark memory page bad */
+ 		memblock_reserve(pdt_entry[i] & PAGE_MASK, PAGE_SIZE);
++		num_poisoned_pages_inc();
+ 	}
+ }
+
