@@ -7,38 +7,38 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B0CEC43464
-	for <linux-parisc@archiver.kernel.org>; Mon, 27 Jul 2020 23:26:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39E51C4361B
+	for <linux-parisc@archiver.kernel.org>; Mon, 27 Jul 2020 23:26:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7AEEC20A8B
-	for <linux-parisc@archiver.kernel.org>; Mon, 27 Jul 2020 23:26:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 193E921744
+	for <linux-parisc@archiver.kernel.org>; Mon, 27 Jul 2020 23:26:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1595892377;
-	bh=DkVXnVt7u6fmRfPOHCdUfUeOBDxtqXkAcojtf0bbp9A=;
+	s=default; t=1595892410;
+	bh=cW0MevAFt8H5njALXBT6v761SRuxFMSBRNmZHnFg2CY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ssjKmF3RkO4OrpKxS//WXc8R9+5PXjbv+330gW/oPn3YI7ad5/0CmtdcUfOgXNHNc
-	 xRe/ZYHiObg3HA58r9JTaUcaCl5nwpcunuMyaV2JRVweKARFfYLHLXQt0/6RXtDU1/
-	 mooY2UTI1aX9dJ8uAScrXKaQGSRb+OcA82VCjNXg=
+	b=EueHHZ6Zy59GBFIiL7j45AoxkyMfguHgyMaVBnf9KeT6JstX2ofYNyaWl5Wyc/sY/
+	 lDOgYhiF7ejCzeF8yAoneJqMXEGJ982V+0NjTL7YPX1z1b9yyKXqdAhztebE5ThUmo
+	 kGC5QZNhROWOxaqxANC4dhtkRPh4VIEkQwJdElN4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728714AbgG0X0Q (ORCPT
+        id S1728500AbgG0XZG (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 27 Jul 2020 19:26:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36632 "EHLO mail.kernel.org"
+        Mon, 27 Jul 2020 19:25:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728582AbgG0XZU (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 27 Jul 2020 19:25:20 -0400
+        id S1728492AbgG0XZF (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 27 Jul 2020 19:25:05 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89E9620A8B;
-        Mon, 27 Jul 2020 23:25:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0BAB20A8B;
+        Mon, 27 Jul 2020 23:25:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595892320;
-        bh=DkVXnVt7u6fmRfPOHCdUfUeOBDxtqXkAcojtf0bbp9A=;
+        s=default; t=1595892304;
+        bh=cW0MevAFt8H5njALXBT6v761SRuxFMSBRNmZHnFg2CY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jdK7E7fqLUydiHpuT3KuLDVGDpOe+CcCZ14BI5q/oRijQdybTa8NCMU2BQLgI5lgQ
-         azK2UYCHH9f5Jl8SKu2lHkwJaPBIsFA0iKEXxQNqMG7xRZsmz/g+AZCagv9lm0SK4v
-         aPyseK6KqLSBMYyPiKUlWP6LLtMS26nZUK6gUkKI=
+        b=0x1HAWRt5una4wHRP5eCJTirHsG2LDw0JaHkHd5973/KcwWm2uDKbosg9oBqbU0jE
+         GUKxoHX1Kd5a4gR5piJIJKq7/mtRtAevKFJy9gNWf2gv0uBS91NFfwiaDaJd1eiB+9
+         /zgh4T1QY2kVmKBIaYsEvYYA0XPSA8XQ8ylyOJY4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Liam Beguin <liambeguin@gmail.com>,
@@ -46,12 +46,12 @@ Cc:     Liam Beguin <liambeguin@gmail.com>,
         Dave Anglin <dave.anglin@bell.net>,
         Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
         linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 4/7] parisc: add support for cmpxchg on u8 pointers
-Date:   Mon, 27 Jul 2020 19:25:11 -0400
-Message-Id: <20200727232514.718265-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 04/10] parisc: add support for cmpxchg on u8 pointers
+Date:   Mon, 27 Jul 2020 19:24:52 -0400
+Message-Id: <20200727232458.718131-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200727232514.718265-1-sashal@kernel.org>
-References: <20200727232514.718265-1-sashal@kernel.org>
+In-Reply-To: <20200727232458.718131-1-sashal@kernel.org>
+References: <20200727232458.718131-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -88,10 +88,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 14 insertions(+)
 
 diff --git a/arch/parisc/include/asm/cmpxchg.h b/arch/parisc/include/asm/cmpxchg.h
-index 90253bdc2ee5e..536690a68917c 100644
+index ab5c215cf46c3..0689585758717 100644
 --- a/arch/parisc/include/asm/cmpxchg.h
 +++ b/arch/parisc/include/asm/cmpxchg.h
-@@ -59,6 +59,7 @@ extern void __cmpxchg_called_with_bad_pointer(void);
+@@ -60,6 +60,7 @@ extern void __cmpxchg_called_with_bad_pointer(void);
  extern unsigned long __cmpxchg_u32(volatile unsigned int *m, unsigned int old,
  				   unsigned int new_);
  extern u64 __cmpxchg_u64(volatile u64 *ptr, u64 old, u64 new_);
@@ -99,7 +99,7 @@ index 90253bdc2ee5e..536690a68917c 100644
  
  /* don't worry...optimizer will get rid of most of this */
  static inline unsigned long
-@@ -70,6 +71,7 @@ __cmpxchg(volatile void *ptr, unsigned long old, unsigned long new_, int size)
+@@ -71,6 +72,7 @@ __cmpxchg(volatile void *ptr, unsigned long old, unsigned long new_, int size)
  #endif
  	case 4: return __cmpxchg_u32((unsigned int *)ptr,
  				     (unsigned int)old, (unsigned int)new_);
@@ -108,10 +108,10 @@ index 90253bdc2ee5e..536690a68917c 100644
  	__cmpxchg_called_with_bad_pointer();
  	return old;
 diff --git a/arch/parisc/lib/bitops.c b/arch/parisc/lib/bitops.c
-index 8e45b0a97abf6..3284a7adb0a35 100644
+index 70ffbcf889b8e..2e4d1f05a9264 100644
 --- a/arch/parisc/lib/bitops.c
 +++ b/arch/parisc/lib/bitops.c
-@@ -78,3 +78,15 @@ unsigned long __cmpxchg_u32(volatile unsigned int *ptr, unsigned int old, unsign
+@@ -79,3 +79,15 @@ unsigned long __cmpxchg_u32(volatile unsigned int *ptr, unsigned int old, unsign
  	_atomic_spin_unlock_irqrestore(ptr, flags);
  	return (unsigned long)prev;
  }
