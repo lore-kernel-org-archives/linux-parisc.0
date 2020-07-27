@@ -1,92 +1,132 @@
-Return-Path: <SRS0=XPqF=BF=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=GKOc=BG=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC955C433E1
-	for <linux-parisc@archiver.kernel.org>; Sun, 26 Jul 2020 21:39:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B0CEC43464
+	for <linux-parisc@archiver.kernel.org>; Mon, 27 Jul 2020 23:26:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 84EDB206E3
-	for <linux-parisc@archiver.kernel.org>; Sun, 26 Jul 2020 21:39:18 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="G8Ur0Kqc"
+	by mail.kernel.org (Postfix) with ESMTP id 7AEEC20A8B
+	for <linux-parisc@archiver.kernel.org>; Mon, 27 Jul 2020 23:26:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1595892377;
+	bh=DkVXnVt7u6fmRfPOHCdUfUeOBDxtqXkAcojtf0bbp9A=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=ssjKmF3RkO4OrpKxS//WXc8R9+5PXjbv+330gW/oPn3YI7ad5/0CmtdcUfOgXNHNc
+	 xRe/ZYHiObg3HA58r9JTaUcaCl5nwpcunuMyaV2JRVweKARFfYLHLXQt0/6RXtDU1/
+	 mooY2UTI1aX9dJ8uAScrXKaQGSRb+OcA82VCjNXg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgGZVjQ (ORCPT
+        id S1728714AbgG0X0Q (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 26 Jul 2020 17:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbgGZVjP (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 26 Jul 2020 17:39:15 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC2FC0619D2;
-        Sun, 26 Jul 2020 14:39:15 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 27 Jul 2020 19:26:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728582AbgG0XZU (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 27 Jul 2020 19:25:20 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BFGXx4W2zz9sRR;
-        Mon, 27 Jul 2020 07:39:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595799554;
-        bh=ApcFR71qrvKz8PioBoSbgRamVmbBxjSOU4Y5stNUvfE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=G8Ur0KqcCo0vCUJKVUVFLwgXHE2nJOX0ddeFv2ugY2rpPs+3p7WidQIdyBlpLrbZn
-         Y6YAGYUB3UwreFnIW12SB/kXHtDskfCA6zzXI2qjQMNu+uZIPicKJLECWjovecf+GE
-         bRSLI/yqkupd3e+OHnHvRI0ibyEh1zk6lmJCpwvm1h9pwIZY10D7tdHgTWRYxtdinZ
-         Kg7Vhv3uDryqTWh+4vnoz5m8ookGA3syecW4ImiLVeUu14WLus5yhQzJIfdVzwDlHR
-         e7BqSu9c9icj98K2imlU+XrMFAWtPg4mB6B/akc+vYeRP75lN7EHY+fugrXKUqs0/h
-         C4RdP4iQsatAQ==
-Date:   Mon, 27 Jul 2020 07:39:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Helge Deller <deller@gmx.de>,
-        Parisc List <linux-parisc@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the parisc-hd tree
-Message-ID: <20200727073912.688c802c@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 89E9620A8B;
+        Mon, 27 Jul 2020 23:25:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595892320;
+        bh=DkVXnVt7u6fmRfPOHCdUfUeOBDxtqXkAcojtf0bbp9A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jdK7E7fqLUydiHpuT3KuLDVGDpOe+CcCZ14BI5q/oRijQdybTa8NCMU2BQLgI5lgQ
+         azK2UYCHH9f5Jl8SKu2lHkwJaPBIsFA0iKEXxQNqMG7xRZsmz/g+AZCagv9lm0SK4v
+         aPyseK6KqLSBMYyPiKUlWP6LLtMS26nZUK6gUkKI=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Liam Beguin <liambeguin@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Dave Anglin <dave.anglin@bell.net>,
+        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
+        linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 4/7] parisc: add support for cmpxchg on u8 pointers
+Date:   Mon, 27 Jul 2020 19:25:11 -0400
+Message-Id: <20200727232514.718265-4-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200727232514.718265-1-sashal@kernel.org>
+References: <20200727232514.718265-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BL4u6oDW_dp5CQnureH_gCr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
---Sig_/BL4u6oDW_dp5CQnureH_gCr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Liam Beguin <liambeguin@gmail.com>
 
-Hi all,
+[ Upstream commit b344d6a83d01c52fddbefa6b3b4764da5b1022a0 ]
 
-Commit
+The kernel test bot reported[1] that using set_mask_bits on a u8 causes
+the following issue on parisc:
 
-  41fbb820b797 ("PARISC: elf.h: delete a duplicated word")
+	hppa-linux-ld: drivers/phy/ti/phy-tusb1210.o: in function `tusb1210_probe':
+	>> (.text+0x2f4): undefined reference to `__cmpxchg_called_with_bad_pointer'
+	>> hppa-linux-ld: (.text+0x324): undefined reference to `__cmpxchg_called_with_bad_pointer'
+	hppa-linux-ld: (.text+0x354): undefined reference to `__cmpxchg_called_with_bad_pointer'
 
-is missing a Signed-off-by from its committer.
+Add support for cmpxchg on u8 pointers.
 
---=20
-Cheers,
-Stephen Rothwell
+[1] https://lore.kernel.org/patchwork/patch/1272617/#1468946
 
---Sig_/BL4u6oDW_dp5CQnureH_gCr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Liam Beguin <liambeguin@gmail.com>
+Tested-by: Dave Anglin <dave.anglin@bell.net>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/parisc/include/asm/cmpxchg.h |  2 ++
+ arch/parisc/lib/bitops.c          | 12 ++++++++++++
+ 2 files changed, 14 insertions(+)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/arch/parisc/include/asm/cmpxchg.h b/arch/parisc/include/asm/cmpxchg.h
+index 90253bdc2ee5e..536690a68917c 100644
+--- a/arch/parisc/include/asm/cmpxchg.h
++++ b/arch/parisc/include/asm/cmpxchg.h
+@@ -59,6 +59,7 @@ extern void __cmpxchg_called_with_bad_pointer(void);
+ extern unsigned long __cmpxchg_u32(volatile unsigned int *m, unsigned int old,
+ 				   unsigned int new_);
+ extern u64 __cmpxchg_u64(volatile u64 *ptr, u64 old, u64 new_);
++extern u8 __cmpxchg_u8(volatile u8 *ptr, u8 old, u8 new_);
+ 
+ /* don't worry...optimizer will get rid of most of this */
+ static inline unsigned long
+@@ -70,6 +71,7 @@ __cmpxchg(volatile void *ptr, unsigned long old, unsigned long new_, int size)
+ #endif
+ 	case 4: return __cmpxchg_u32((unsigned int *)ptr,
+ 				     (unsigned int)old, (unsigned int)new_);
++	case 1: return __cmpxchg_u8((u8 *)ptr, (u8)old, (u8)new_);
+ 	}
+ 	__cmpxchg_called_with_bad_pointer();
+ 	return old;
+diff --git a/arch/parisc/lib/bitops.c b/arch/parisc/lib/bitops.c
+index 8e45b0a97abf6..3284a7adb0a35 100644
+--- a/arch/parisc/lib/bitops.c
++++ b/arch/parisc/lib/bitops.c
+@@ -78,3 +78,15 @@ unsigned long __cmpxchg_u32(volatile unsigned int *ptr, unsigned int old, unsign
+ 	_atomic_spin_unlock_irqrestore(ptr, flags);
+ 	return (unsigned long)prev;
+ }
++
++u8 __cmpxchg_u8(volatile u8 *ptr, u8 old, u8 new)
++{
++	unsigned long flags;
++	u8 prev;
++
++	_atomic_spin_lock_irqsave(ptr, flags);
++	if ((prev = *ptr) == old)
++		*ptr = new;
++	_atomic_spin_unlock_irqrestore(ptr, flags);
++	return prev;
++}
+-- 
+2.25.1
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8d+AAACgkQAVBC80lX
-0GzsrAf/cvb/eY37GetAVDcjr0384JEGyaMOiMe7WdQpfUChTKe4m5FLxSqT4mZZ
-r3G0+Ls4BdRA9+qZjqn4eRqu5d1vorNLsnbizl9YKlIyH+u3P88HV0y0/fmA2oAm
-GVNqsvKhtBnye4/VImBConJ+XrV7BwDEgqaZguw4Xz3doNWBFIoPs8nRMJ1xW9wR
-+pM4+WXCQ+Iqe1CZXXoN1GY94OpI8F0jJtQqxSqV9H8Ftjoz7sArv1TeIuHgz2cM
-rLVeplLpj3BbLVWUlYez/5TUdt7jUo0g28TeC7if/DWbzjS4n+IWwg2l8R+tefwF
-m0IqxlteH5uo9Qb6dkSLxnWOvE+Ouw==
-=e5Ty
------END PGP SIGNATURE-----
-
---Sig_/BL4u6oDW_dp5CQnureH_gCr--
