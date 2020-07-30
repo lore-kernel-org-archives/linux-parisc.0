@@ -1,140 +1,184 @@
-Return-Path: <SRS0=3vfZ=BH=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=j9eN=BJ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B156AC433EB
-	for <linux-parisc@archiver.kernel.org>; Tue, 28 Jul 2020 03:35:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45328C433E0
+	for <linux-parisc@archiver.kernel.org>; Thu, 30 Jul 2020 12:59:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 90D1420714
-	for <linux-parisc@archiver.kernel.org>; Tue, 28 Jul 2020 03:35:18 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NBLIEBzi"
+	by mail.kernel.org (Postfix) with ESMTP id 2B14120842
+	for <linux-parisc@archiver.kernel.org>; Thu, 30 Jul 2020 12:59:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbgG1DfR (ORCPT
+        id S1727776AbgG3M7O (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 27 Jul 2020 23:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727889AbgG1DfQ (ORCPT
+        Thu, 30 Jul 2020 08:59:14 -0400
+Received: from belmont79srvr.owm.bell.net ([184.150.200.79]:33822 "EHLO
+        mtlfep01.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726799AbgG3M7N (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 27 Jul 2020 23:35:16 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF048C061794;
-        Mon, 27 Jul 2020 20:35:15 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t1so25462plq.0;
-        Mon, 27 Jul 2020 20:35:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+UmEzZhiPmisvbll7oEJdJkdQLeJHaSjFNwT4kfLFeI=;
-        b=NBLIEBziSUKeh73IjmJleu8E8SgNKOIcKBiJPr0MC2P56V7thIUc8GQY2cVLRReF1f
-         jofwolDuDOKPAnoFoNN36vVks1/7WpIslDewwf8eHfvFeuUxedsEFHXBLYMWYFx1AEdm
-         nYW34dxA2YhoTMMjAp6an0Q/7b6HNgGOqY0fPYycNxAE0qKpMsrefABHPNKNNOIUbjaQ
-         QgYcyxeuTJX1/5Wfc7DzrMAt5+hgUe5cmdYuRZlAnm7IjmLa8mgIQ3sxn/APLmY9+XWn
-         GAOF5euTRYk3JrHP+ej5JQ/0Rw2tmbXH1PvNs4J7JNiniIG5UPP8/3tOuwLk8dNURNSZ
-         U1lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+UmEzZhiPmisvbll7oEJdJkdQLeJHaSjFNwT4kfLFeI=;
-        b=cRyXW4Oh8L5LZhOYF1sA9xD8+BRES5MjIEQR06e8jxzxDC+fbiFYEweWnfdTx+yEdi
-         4Rj9RtwrRtmDv/CFnqBjm3aW7COtI4aYWivmd+Lvq3yfmydTus+t6LOhdpf9Mc9F1dHn
-         nH9SxWzsM2dEDRYoGDnIIopQsi14WY7eDiJvqA3QgCXkTrnglND+GGTfzYy/EhBPOmUK
-         8zDYJ5w8kGpCd+hkFnzBcy/ht/QNqBZ6KqRLWOhlCnO8Is9Crtyj7PlHy5rFcIG47GHP
-         k00Bg5D1Ko9RKrcOcm146GF9uQu+WS2CDOXuEyDNRsNjg9gyxikMDkkSJSBHIyM8gPgT
-         RQ4A==
-X-Gm-Message-State: AOAM531hSk4Th1I9LcxxsbRNT5jqpPRInELhmLnk1uvXQqblHBEc4eAj
-        RMrB+1aP0fUpHngRuBXLxxTUXpWF
-X-Google-Smtp-Source: ABdhPJyxmfIxm31ZlyLcRWm1fbvoFARyVjQ9SkiBxu4lx9zz6vwRMcmi+fNZuU0y04kQFc06xx4pxw==
-X-Received: by 2002:a17:90a:1589:: with SMTP id m9mr2444530pja.122.1595907315336;
-        Mon, 27 Jul 2020 20:35:15 -0700 (PDT)
-Received: from bobo.ozlabs.ibm.com (110-174-173-27.tpgi.com.au. [110.174.173.27])
-        by smtp.gmail.com with ESMTPSA id r4sm998707pji.37.2020.07.27.20.35.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 20:35:14 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-arch@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-Subject: [PATCH 15/24] parisc: use asm-generic/mmu_context.h for no-op implementations
-Date:   Tue, 28 Jul 2020 13:33:56 +1000
-Message-Id: <20200728033405.78469-16-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20200728033405.78469-1-npiggin@gmail.com>
-References: <20200728033405.78469-1-npiggin@gmail.com>
+        Thu, 30 Jul 2020 08:59:13 -0400
+Received: from bell.net mtlfep01 184.150.200.30 by mtlfep01.bell.net
+          with ESMTP
+          id <20200730125912.VFIK5779.mtlfep01.bell.net@mtlspm02.bell.net>
+          for <linux-parisc@vger.kernel.org>;
+          Thu, 30 Jul 2020 08:59:12 -0400
+Received: from [192.168.2.49] (really [70.53.53.104]) by mtlspm02.bell.net
+          with ESMTP
+          id <20200730125912.WKVI16482.mtlspm02.bell.net@[192.168.2.49]>;
+          Thu, 30 Jul 2020 08:59:12 -0400
+To:     linux-parisc <linux-parisc@vger.kernel.org>
+Cc:     Helge Deller <deller@gmx.de>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+From:   John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Implement __smp_store_release and __smp_load_acquire
+ barriers
+Message-ID: <042c9180-a392-4b4d-3154-9ade806173bf@bell.net>
+Date:   Thu, 30 Jul 2020 08:59:12 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-Analysis: v=2.3 cv=E9SzWpVl c=1 sm=1 tr=0 a=htCe9XT+XAlGhzqgweArVg==:117 a=htCe9XT+XAlGhzqgweArVg==:17 a=IkcTkHD0fZMA:10 a=_RQrkK6FrEwA:10 a=FBHGMhGWAAAA:8 a=jOa2Ci3pj8ZkyaXqPEUA:9 a=QEXdDO2ut3YA:10 a=9gvnlMMaQFpL9xblJ6ne:22
+X-CM-Envelope: MS4wfDEFJxsw3uzC5TTOziXQCgipxo+Q027m1Uy4PLDb09jLd2KAYhxROynsPA+xtm68mGlak/F36gk+Wqe5ICNc52H1QJUbd1+nfMo8Z60wctfK552247+i M+LfzSKPt4WMpOhSS+66FIjS8UCpJdUi72BJ2aMramcg4BxZwCeCsM01bXUpIz83XOHpmtvDJ5JpSQ==
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+This patch implements the __smp_store_release and __smp_load_acquire barriers using ordered stores
+and loads.  This avoids the sync instruction present in the generic implementation.
+
+Lightly tested on c8000 and rp3440.
+
+Signed-off-by: Dave Anglin <dave.anglin@bell.net>
 ---
- arch/parisc/include/asm/mmu_context.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/parisc/include/asm/mmu_context.h b/arch/parisc/include/asm/mmu_context.h
-index 07b89c74abeb..71f8a3679b83 100644
---- a/arch/parisc/include/asm/mmu_context.h
-+++ b/arch/parisc/include/asm/mmu_context.h
-@@ -8,16 +8,13 @@
- #include <asm/pgalloc.h>
- #include <asm-generic/mm_hooks.h>
- 
--static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
--{
--}
--
- /* on PA-RISC, we actually have enough contexts to justify an allocator
-  * for them.  prumpf */
- 
- extern unsigned long alloc_sid(void);
- extern void free_sid(unsigned long);
- 
-+#define init_new_context init_new_context
- static inline int
- init_new_context(struct task_struct *tsk, struct mm_struct *mm)
- {
-@@ -27,6 +24,7 @@ init_new_context(struct task_struct *tsk, struct mm_struct *mm)
- 	return 0;
- }
- 
-+#define destroy_context destroy_context
- static inline void
- destroy_context(struct mm_struct *mm)
- {
-@@ -72,8 +70,7 @@ static inline void switch_mm(struct mm_struct *prev,
- }
- #define switch_mm_irqs_off switch_mm_irqs_off
- 
--#define deactivate_mm(tsk,mm)	do { } while (0)
--
-+#define activate_mm activate_mm
- static inline void activate_mm(struct mm_struct *prev, struct mm_struct *next)
- {
- 	/*
-@@ -91,4 +88,7 @@ static inline void activate_mm(struct mm_struct *prev, struct mm_struct *next)
- 
- 	switch_mm(prev,next,current);
- }
-+
-+#include <asm-generic/mmu_context.h>
-+
- #endif
--- 
-2.23.0
+diff --git a/arch/parisc/include/asm/barrier.h b/arch/parisc/include/asm/barrier.h
+index dbaaca84f27f..a8e0d942c297 100644
+--- a/arch/parisc/include/asm/barrier.h
++++ b/arch/parisc/include/asm/barrier.h
+@@ -26,6 +26,118 @@
+ #define __smp_rmb()	mb()
+ #define __smp_wmb()	mb()
 
++#ifdef CONFIG_64BIT
++#define __smp_store_release(p, v)					\
++do {									\
++	typeof(p) __p = (p);						\
++        union { typeof(*p) __val; char __c[1]; } __u =			\
++                { .__val = (__force typeof(*p)) (v) };			\
++	compiletime_assert_atomic_type(*p);				\
++	switch (sizeof(*p)) {						\
++	case 1:								\
++		asm volatile("stb,ma %0,0(%1)"				\
++				: : "r"(*(__u8 *)__u.__c), "r"(__p)	\
++				: "memory");				\
++		break;							\
++	case 2:								\
++		asm volatile("sth,ma %0,0(%1)"				\
++				: : "r"(*(__u16 *)__u.__c), "r"(__p)	\
++				: "memory");				\
++		break;							\
++	case 4:								\
++		asm volatile("stw,ma %0,0(%1)"				\
++				: : "r"(*(__u32 *)__u.__c), "r"(__p)	\
++				: "memory");				\
++		break;							\
++	case 8:								\
++		asm volatile("std,ma %0,0(%1)"				\
++				: : "r"(*(__u64 *)__u.__c), "r"(__p)	\
++				: "memory");				\
++		break;							\
++	}								\
++} while (0)
++
++#define __smp_load_acquire(p)						\
++({									\
++	union { typeof(*p) __val; char __c[1]; } __u;			\
++	typeof(p) __p = (p);						\
++	compiletime_assert_atomic_type(*p);				\
++	switch (sizeof(*p)) {						\
++	case 1:								\
++		asm volatile("ldb,ma 0(%1),%0"				\
++				: "=r"(*(__u8 *)__u.__c) : "r"(__p)	\
++				: "memory");				\
++		break;							\
++	case 2:								\
++		asm volatile("ldh,ma 0(%1),%0"				\
++				: "=r"(*(__u16 *)__u.__c) : "r"(__p)	\
++				: "memory");				\
++		break;							\
++	case 4:								\
++		asm volatile("ldw,ma 0(%1),%0"				\
++				: "=r"(*(__u32 *)__u.__c) : "r"(__p)	\
++				: "memory");				\
++		break;							\
++	case 8:								\
++		asm volatile("ldd,ma 0(%1),%0"				\
++				: "=r"(*(__u64 *)__u.__c) : "r"(__p)	\
++				: "memory");				\
++		break;							\
++	}								\
++	__u.__val;							\
++})
++#else
++#define __smp_store_release(p, v)					\
++do {									\
++	typeof(p) __p = (p);						\
++        union { typeof(*p) __val; char __c[1]; } __u =			\
++                { .__val = (__force typeof(*p)) (v) };			\
++	compiletime_assert_atomic_type(*p);				\
++	switch (sizeof(*p)) {						\
++	case 1:								\
++		asm volatile("stb,ma %0,0(%1)"				\
++				: : "r"(*(__u8 *)__u.__c), "r"(__p)	\
++				: "memory");				\
++		break;							\
++	case 2:								\
++		asm volatile("sth,ma %0,0(%1)"				\
++				: : "r"(*(__u16 *)__u.__c), "r"(__p)	\
++				: "memory");				\
++		break;							\
++	case 4:								\
++		asm volatile("stw,ma %0,0(%1)"				\
++				: : "r"(*(__u32 *)__u.__c), "r"(__p)	\
++				: "memory");				\
++		break;							\
++	}								\
++} while (0)
++
++#define __smp_load_acquire(p)						\
++({									\
++	union { typeof(*p) __val; char __c[1]; } __u;			\
++	typeof(p) __p = (p);						\
++	compiletime_assert_atomic_type(*p);				\
++	switch (sizeof(*p)) {						\
++	case 1:								\
++		asm volatile("ldb,ma 0(%1),%0"				\
++				: "=r"(*(__u8 *)__u.__c) : "r"(__p)	\
++				: "memory");				\
++		break;							\
++	case 2:								\
++		asm volatile("ldh,ma 0(%1),%0"				\
++				: "=r"(*(__u16 *)__u.__c) : "r"(__p)	\
++				: "memory");				\
++		break;							\
++	case 4:								\
++		asm volatile("ldw,ma 0(%1),%0"				\
++				: "=r"(*(__u32 *)__u.__c) : "r"(__p)	\
++				: "memory");				\
++		break;							\
++	}								\
++	__u.__val;							\
++})
++#endif
++
+ #include <asm-generic/barrier.h>
+
+ #endif /* !__ASSEMBLY__ */
