@@ -1,77 +1,113 @@
-Return-Path: <SRS0=rzyv=BV=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=eKU9=BW=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36834C433E0
-	for <linux-parisc@archiver.kernel.org>; Tue, 11 Aug 2020 16:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6251AC433DF
+	for <linux-parisc@archiver.kernel.org>; Wed, 12 Aug 2020 13:58:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7652320774
-	for <linux-parisc@archiver.kernel.org>; Tue, 11 Aug 2020 16:19:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 346CB206B2
+	for <linux-parisc@archiver.kernel.org>; Wed, 12 Aug 2020 13:58:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=duncanthrax.net header.i=@duncanthrax.net header.b="BDZF80e2"
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="OSWjkt3m"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729008AbgHKQTa (ORCPT
+        id S1726506AbgHLN6J (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 11 Aug 2020 12:19:30 -0400
-Received: from smtp.duncanthrax.net ([178.63.180.169]:56370 "EHLO
-        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728797AbgHKQT3 (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 11 Aug 2020 12:19:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=duncanthrax.net; s=dkim; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ePGcjyXMqlG+HlALytqtbIej462UcIp2F+vaMfDx26U=; b=BDZF80e26kDFwoPyKCzKVYywUK
-        sUYSa1WI3DT5eI1L0b+Nz4vppsPh+R6aJvKVQgl0doP69fRbuEFwx8SsyJgSS5JupzZC7mFNnGoJl
-        4idTuc83RysRaLXJNwnRVUVj5sTLYXLgbRlk4qGmFv2q2K7tyBStpzCH7HO0o9zgu9UY=;
-Received: from hsi-kbw-091-089-248-125.hsi2.kabel-badenwuerttemberg.de ([91.89.248.125] helo=x280.stackframe.org)
-        by smtp.duncanthrax.net with esmtpa (Exim 4.90_1)
-        (envelope-from <svens@stackframe.org>)
-        id 1k5Wzn-00047o-CE; Tue, 11 Aug 2020 18:19:27 +0200
-From:   Sven Schnelle <svens@stackframe.org>
-To:     deller@gmx.de
-Cc:     linux-parisc@vger.kernel.org
-Subject: [PATCH] parisc: mask out enable and reserved bits from sba imask
-Date:   Tue, 11 Aug 2020 18:19:19 +0200
-Message-Id: <20200811161919.27657-1-svens@stackframe.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 12 Aug 2020 09:58:09 -0400
+Received: from mout.gmx.net ([212.227.17.21]:49623 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726492AbgHLN6I (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 12 Aug 2020 09:58:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1597240675;
+        bh=9VcFNbLqkkrfNbCLxuWEXQ2U74fNHzcMjg2FPaMwkKs=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=OSWjkt3mfoOzAdjZDs2unwg+edBufwHL4umdD2e/1qEiR3KCBsmTBvdIiS4tgF7Uk
+         NTnOzi/O73e7E6xu/vtsRHZ8gceQ/yi8ThsiyKXPMC3hK3CIVLy1mSrvgWig42alcg
+         znSbdPVdHGjpBPGU+DJQfvOoqM5VHknpl9iUqXLY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.153.63]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M6UZl-1k3NEI2cZN-006xEf; Wed, 12
+ Aug 2020 15:57:55 +0200
+Date:   Wed, 12 Aug 2020 15:57:50 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture updates for kernel v5.9
+Message-ID: <20200812135750.GA17014@ls3530.fritz.box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:/y1QGhODqNeXS1fXn+2WMCfX7ZEgRCD54/dnx4wD74wKJOBqkf0
+ qKiP2IM2YyEAjVAvIRFufQhxaxXLmUKGphrkLMqA7isW4PIe8ZVXunVDS/nWakpJswg5gpw
+ CiA9O8obbqIUL01nfWqxlba6B56yjJsHeUbZuuXYiE1c/4R+LLmF4Q1plezV/4kqDU/EDDW
+ UCZcudgVTAS7lAIFeb48A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qzVejtT3Pw4=:7o1UnmIZxuvgnkb9+dAaV7
+ 61Yyy0WzTyM4Y3RcaPxkckLk5eAWKC0fmKD3R+KMMnKQOumCJswM50xa7E/aZbfwuDJa3IT5D
+ aPDjX23Ey375OziJ+oJbEbjgMoHeBLJFLc/8aGD5DgSKMHePVFzU7UPxhhXd99F7CAehBo8By
+ aRKzxKqrrr/vAOCoMzAQjni9IUQR5zClS//1Oz0Yxs7LyJswBEHJq9M64sKeZjKK3DejFqi+J
+ 46/OWtE9rbbFtyUpROPVP1TXO/nofr1p+BALZ1ewHs9S0P8updImcnmqziYSiWg86HyHRsby1
+ q/vKVW1J/IILQ8XMJeWWwMIK+GPRNgK8ji8tL1csJvIFufGrmECqm4GiTDxe+2BTtxuoHJ+A0
+ 7QnfKfMcep8Lq3IEFv9ZXe8qBarhhZwOmSoO1+FQJbncqWQ2aiEiIDv3PaqPR3NpYKPfKe+uI
+ h6+rWnt2meDvojcfOX/memSCZUJfzWQUAoJZTJcQTpMnCWRWQOtiygtwbfZDd4/xrgB6UVJly
+ Nlg5kGJtrr8rx1WE+/LPGiTdrPqABL1Z6ANLKhNW7zBaIAc+SIBCWVVAvROEAfpy4m8s0ycjz
+ MkETTIrUUJC8ZDWDR0HDGfFl7+FycCd/6gUabKD77BaTphb3D6mnBcdj0HpuhKyeJXJCOSokm
+ 7TNqAIO7eoSskH0hSKjMH1+sCjWaTZJQVxaMQRKOn5hB9Qnwd5+p14vhLxWxxzjY8Ya5yORHo
+ PF6ZsSz01IPpNeCTOyBvO8VAs6mDU1XmoeB69JZ2d936ooCy+nEyKVUbZOG3jpxFsSFzQEBbL
+ 0Lt/QUMqN5TrFTzUztBg5c5EJC/9NfKIz2bJyxUBnKBGtXmYADxLhnKAFiRJOZ8QyNf727u5q
+ ejzXhW80nGl3gWipYZXBRCfL3qlrbMkOecnClXoeJo7WYfPtdErTaF15BB15F0bXcjj1uG6PU
+ dJpEG2vofSuXmtY5ORC7NPDJ8sU8Ke2dRvc1A/x/s1fMuqCs7U//1Kp4t3PqEW/57biBv3+1U
+ PcjlbmMgH3LbLE5DEDbN1gPbz96xx3rmT1tf5hq+Z6iGownblKhEvsPJOH+t0HAdURCP95+pU
+ IxTOrOn9xopY4KgAbAJaMPwGVcWW+6haHt1krxw+kVvJP+nmadKtXKgMWFie4YgwzEkDzKi5U
+ YchjMVtNVAF53vOpqWw3RFmhADt7jYl3W0VNWP+yo5R0wm80f2F0oZsyBuz5+6jNHC460YP66
+ Pw85O/K+mTZTnM1nO
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-When using kexec the SBA IOMMU IBASE might still have the RE
-bit set. This triggers a WARN_ON when trying to write back the
-IBASE register later, and it also makes some mask calculations fail.
+Hi Linus,
 
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
----
- drivers/parisc/sba_iommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+please pull another set of patches for the parisc architecture for kernel 5.9-rc1 from:
 
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index 5368452eb5a6..d4314fba0269 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -1270,7 +1270,7 @@ sba_ioc_init_pluto(struct parisc_device *sba, struct ioc *ioc, int ioc_num)
- 	** (one that doesn't overlap memory or LMMIO space) in the
- 	** IBASE and IMASK registers.
- 	*/
--	ioc->ibase = READ_REG(ioc->ioc_hpa + IOC_IBASE);
-+	ioc->ibase = READ_REG(ioc->ioc_hpa + IOC_IBASE) & ~0x1fffffULL;
- 	iova_space_size = ~(READ_REG(ioc->ioc_hpa + IOC_IMASK) & 0xFFFFFFFFUL) + 1;
- 
- 	if ((ioc->ibase < 0xfed00000UL) && ((ioc->ibase + iova_space_size) > 0xfee00000UL)) {
--- 
-2.27.0
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.9-2
 
+This patchset includes:
+- Oscar Carter contributed a patch which fixes parisc's usage of
+  dereference_function_descriptor() and thus will allow using the
+  -Wcast-function-type compiler option in the top-level Makefile
+- Sven Schnelle fixed a bug in the SBA code to prevent crashes during kexec
+- John David Anglin provided implementations for __smp_store_release() and
+  __smp_load_acquire barriers() which avoids using the sync assembler
+  instruction and thus speeds up barrier paths
+- Some whitespace cleanups in parisc's atomic.h header file
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+Helge Deller (2):
+      sections.h: dereference_function_descriptor() returns void pointer
+      parisc: Whitespace cleanups in atomic.h
+
+John David Anglin (1):
+      parisc: Implement __smp_store_release and __smp_load_acquire barriers
+
+Oscar Carter (1):
+      parisc/kernel/ftrace: Remove function callback casts
+
+Sven Schnelle (1):
+      parisc: mask out enable and reserved bits from sba imask
+
+ arch/parisc/include/asm/atomic.h  |  8 ++---
+ arch/parisc/include/asm/barrier.h | 61 +++++++++++++++++++++++++++++++++++++++
+ arch/parisc/kernel/ftrace.c       |  3 +-
+ drivers/parisc/sba_iommu.c        |  2 +-
+ include/asm-generic/sections.h    |  4 +--
+ 5 files changed, 70 insertions(+), 8 deletions(-)
