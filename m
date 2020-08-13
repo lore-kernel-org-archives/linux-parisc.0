@@ -2,94 +2,166 @@ Return-Path: <SRS0=i2eN=BX=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3792C433E3
-	for <linux-parisc@archiver.kernel.org>; Thu, 13 Aug 2020 03:57:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3661C433E1
+	for <linux-parisc@archiver.kernel.org>; Thu, 13 Aug 2020 08:19:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9EA21206A4
-	for <linux-parisc@archiver.kernel.org>; Thu, 13 Aug 2020 03:57:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BEA2020771
+	for <linux-parisc@archiver.kernel.org>; Thu, 13 Aug 2020 08:19:14 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="AGGDmvAu"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgHMD5G (ORCPT
+        id S1726542AbgHMITO (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 12 Aug 2020 23:57:06 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:54611 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726542AbgHMD5F (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 12 Aug 2020 23:57:05 -0400
-Received: by mail-il1-f200.google.com with SMTP id a17so3403754ilb.21
-        for <linux-parisc@vger.kernel.org>; Wed, 12 Aug 2020 20:57:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=818BGdNc1wvnUSaZirTtzYWcZvgSsVpOYq9GYar7pzo=;
-        b=sC+5eKMX7FuN8rPPZftLnTjvq27zYYC7jnmazZ5v5wYpwV8pnQc0oQDPQmv11052Ve
-         vRJJMHYvrkLbA6SwrdIfCsGuwOPYuvhTvVZ/6FmwdrUkgrY+bKwHeaeyv3h50GZgkoUK
-         KF0fbdiM7qw8EMF1cjPYHopcSywmnLs1WcCuReoeuO8NNO4lUTdoS+NmrRum3uGO0cq5
-         0ckl5b96msiKhNT0MJjnQaclw0AliVut/qbMZcPj2ynIrYn3YF2Aqqb6lXo/6ZO6tfrf
-         CgfFzuwtqy9ORYsXac4r7H1gyg8OAD4+Ro0zn+2ijzdttxDDaDBFLnbkzNxzVDKwgud5
-         qBYw==
-X-Gm-Message-State: AOAM533y/vLIX+kYrUlsvD6e2oFgR1JSysz4bhypwWEXssQ6VasJ3LSS
-        G9IF5KcK8gPPqYzj6mf+0NF6L9edp2+iE5qCY/PCZd6zceTj
-X-Google-Smtp-Source: ABdhPJxyW2a+ykA+fUEC8D6mFHSlTwIHpmNmLpjhnj+1O5R02Uizom5WTc4bNxK6AVfdyCvjg+GBZ9zseGC71qHLHgVFHLNbJAN8
+        Thu, 13 Aug 2020 04:19:14 -0400
+Received: from mout.gmx.net ([212.227.15.19]:44999 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726048AbgHMITN (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 13 Aug 2020 04:19:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1597306751;
+        bh=v1rpsyUWYXOzOHhA9lIjvaWMHhCNd0bm5Ks/kwkqn1o=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=AGGDmvAuOpvlN6M46TN2yOOmohegf2Klvqa4dWENVmjaol3moYZHMNj/EgZyd/JC0
+         BnmhkivfHimV1ZF46Xw956EX1CRDqGtnVBJXd4DgsnnuGg2gZvyMIQUCB/sahyfnIr
+         183eB6UzHL3LZE1/GF6niYGW2fKgY2ECY0d5u4lc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.146.187]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mplc7-1kTK6c392r-00qAj4; Thu, 13
+ Aug 2020 10:19:11 +0200
+Date:   Thu, 13 Aug 2020 10:19:10 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Helge Deller <deller@gmx.de>
+Cc:     linux-parisc@vger.kernel.org
+Subject: Re: [PATCH v2] parisc: Add raise_nmi() and
+ arch_trigger_cpumask_backtrace()
+Message-ID: <20200813081910.GA8106@ls3530.fritz.box>
+References: <20200219140938.GA27510@ls3530.fritz.box>
 MIME-Version: 1.0
-X-Received: by 2002:a92:874a:: with SMTP id d10mr2849478ilm.273.1597291024427;
- Wed, 12 Aug 2020 20:57:04 -0700 (PDT)
-Date:   Wed, 12 Aug 2020 20:57:04 -0700
-In-Reply-To: <00000000000084b59f05abe928ee@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001d3cbb05acba4cc2@google.com>
-Subject: Re: INFO: task hung in pipe_release (2)
-From:   syzbot <syzbot+61acc40a49a3e46e25ea@syzkaller.appspotmail.com>
-To:     James.Bottomley@HansenPartnership.com, amanieu@gmail.com,
-        arnd@arndb.de, benh@kernel.crashing.org, bfields@fieldses.org,
-        borntraeger@de.ibm.com, bp@alien8.de, catalin.marinas@arm.com,
-        chris@zankel.net, christian@brauner.io, corbet@lwn.net,
-        cyphar@cyphar.com, dalias@libc.org, davem@davemloft.net,
-        deller@gmx.de, dvyukov@google.com, fenghua.yu@intel.com,
-        geert@linux-m68k.org, gor@linux.ibm.com, heiko.carstens@de.ibm.com,
-        hpa@zytor.com, ink@jurassic.park.msu.ru, jcmvbkbc@gmail.com,
-        jhogan@kernel.org, jlayton@kernel.org, kvalo@codeaurora.org,
-        linux-alpha@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux@armlinux.org.uk,
-        linux@dominikbrodowski.net, linuxppc-dev@lists.ozlabs.org,
-        luis.f.correia@gmail.com, luto@kernel.org, martink@posteo.de,
-        mattst88@gmail.com, ming.lei@canonical.com, ming.lei@redhat.com,
-        mingo@redhat.com, monstr@monstr.eu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200219140938.GA27510@ls3530.fritz.box>
+X-Provags-ID: V03:K1:kRkToEOSBg6wM0D753ITSe8VS0rx79dNwgFpKAsd/Nsph6VsDrU
+ rKShpME78OQ8B04A00K4Vk6DeQacfyoq/IZj+n2jQm75DdldjDO34/i+JgjZ7e7EvLzXrT+
+ /YC2kzpXgMpsedcTA0vunbO8EedchOkLrXi8nLrEuEXF0Yar82wMqlnKZkDEL2TpL/FqQfa
+ kCf1kAn4y6LMy5uCcYtXQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:an3zWJop4wc=:KzK/YLrBVbwxXxKo6/mygZ
+ 5JlG32ls3nWigfepnFbIaR+ECYSRY6fYI7SE94DZWWjvYg2u1KxFLCrsxLJ2HYgrhG8V1kIHk
+ ojudhGA9FoD9n3HLu5Bmp85L6keg3AxmnYv43ZL5oTpjP3/GIcOiTvX49HWJrBvjQBC3PTRgK
+ l0+wngMhDnzF772EdNnQoRI6UbH7ik/Q/f4P+yRM8ZxpppIrH/DCq35AmzXKDEqekckAHNyGM
+ HsGOW+GEU243ry78PyAFc22AlC1DjVAirTzWXv5Lnwv4RNInMBMqCPulKnJGbYyu1xsaO5HCD
+ 9ZhhiXWmHDsKUYPR8yWJ8JIl0Cr/bt2iKT1ZpUnI5FpJ508PRdrdX3KLoEmPjeMpp+ml0I7Zr
+ y0MGxICadmUFPras05qeR5vPX2IEKm0iKvwo1JTrN4sKq4+0YynjE7KkfOikGBfvDOnwK8vtB
+ Ty/P8zT0XYKRAq7zm5KyQScnkkxTPOB0veB8A+wW4orBEfHMhhGeBf2TPkPINfiyq62OiMURN
+ QayO7zYbuuxCbX+P/u0aJCwHWKn9K/KeZ3TSfYfVYFSYSt77LU2El661GzE26StK4tTWBi44G
+ OkYpBo7e3ZHKgEcaJtSiI7DqdVcnom/qMNseNwLIergVXiWudddFJoLKKbOro+l9OX5SJFJ5m
+ jjVTccbY0LVeZWJ058WAYkumEd5GFpzGZqcINLaSnAuhVzSh9Z44GdgH4rcY6Ra84Yac/Xmop
+ vf99QamlQ2EbyS2OoxfdRKhArCrRkWR0+29m8GOhCPl+Me8Wq0kEZ/j0Zoo/hkO6GkCcsQ5Px
+ H1d+ekbvRYLsyEVq9DSAL/bDAgIHehIwQqKpTYHI85hldXYcpZr9K3HLHsvREFPiJOArdlBry
+ yExBbTVWJAjJe493VVNERvPM9sDDL/laGxWf/Fdrhi5Ah//VCTt/EJxGZuoXYANm1auhtE4Al
+ 7X066w+Yt+5XPAYVrcR371PKsjpNskD5fcFK2q8Au1+IUJoOfY0WQIguCx5f0Q0j4I0ZfUtPG
+ fjWVIbFHbp5VzUpzBLd0rJwBCzvdYCF9k38TyAXSOuyoFuclgql5cV/27r2oEoJBXVft8YM4f
+ Xe48BJbuuwep55Wyt7N3KZIradKFz1+yFFP0A+vRa4oF/0AX2L8qwtDMTcArxwaSKyx7BqejF
+ hhCV1IT1swh5YxGRcTQOq7r1kMLNuZlK5Vqjlj13ia38/LuGf0i8avBz40iFmy3KQv1fFtRgf
+ /RQq9H3M+o5pV5iLE
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-syzbot has bisected this issue to:
+Implement the parisc versions for raise_nmi() and arch_trigger_cpumask_bac=
+ktrace()
+functions to provide IPI-triggered per-CPU backtrace printouts.
 
-commit fddb5d430ad9fa91b49b1d34d0202ffe2fa0e179
-Author: Aleksa Sarai <cyphar@cyphar.com>
-Date:   Sat Jan 18 12:07:59 2020 +0000
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-    open: introduce openat2(2) syscall
+diff --git a/arch/parisc/include/asm/irq.h b/arch/parisc/include/asm/irq.h
+index 959e79cd2c14..c978d50bd29e 100644
+=2D-- a/arch/parisc/include/asm/irq.h
++++ b/arch/parisc/include/asm/irq.h
+@@ -50,4 +50,10 @@ extern int cpu_check_affinity(struct irq_data *d, const=
+ struct cpumask *dest);
+ /* soft power switch support (power.c) */
+ extern struct tasklet_struct power_tasklet;
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164e716a900000
-start commit:   6ba1b005 Merge tag 'asm-generic-fixes-5.8' of git://git.ke..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=154e716a900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=114e716a900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=84f076779e989e69
-dashboard link: https://syzkaller.appspot.com/bug?extid=61acc40a49a3e46e25ea
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=142ae224900000
++#ifdef CONFIG_SMP
++extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
++					   bool exclude_self);
++#define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
++#endif
++
+ #endif	/* _ASM_PARISC_IRQ_H */
+diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+index 6271139d2213..cd7694497428 100644
+=2D-- a/arch/parisc/kernel/smp.c
++++ b/arch/parisc/kernel/smp.c
+@@ -29,6 +29,7 @@
+ #include <linux/bitops.h>
+ #include <linux/ftrace.h>
+ #include <linux/cpu.h>
++#include <linux/nmi.h>
 
-Reported-by: syzbot+61acc40a49a3e46e25ea@syzkaller.appspotmail.com
-Fixes: fddb5d430ad9 ("open: introduce openat2(2) syscall")
+ #include <linux/atomic.h>
+ #include <asm/current.h>
+@@ -69,6 +70,7 @@ enum ipi_message_type {
+ 	IPI_CALL_FUNC,
+ 	IPI_CPU_START,
+ 	IPI_CPU_STOP,
++	IPI_CPU_BACKTRACE,
+ 	IPI_CPU_TEST
+ };
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+@@ -164,6 +166,14 @@ ipi_interrupt(int irq, void *dev_id)
+ 				halt_processor();
+ 				break;
+
++			case IPI_CPU_BACKTRACE:
++				printk_nmi_enter();
++				irq_enter();
++				nmi_cpu_backtrace(get_irq_regs());
++				irq_exit();
++				printk_nmi_exit();
++				break;
++
+ 			case IPI_CPU_TEST:
+ 				smp_debug(100, KERN_DEBUG "CPU%d is alive!\n", this_cpu);
+ 				break;
+@@ -173,9 +183,12 @@ ipi_interrupt(int irq, void *dev_id)
+ 					this_cpu, which);
+ 				return IRQ_NONE;
+ 			} /* Switch */
+-		/* let in any pending interrupts */
+-		local_irq_enable();
+-		local_irq_disable();
++
++			/* before doing more, let in any pending interrupts */
++			if (ops) {
++				local_irq_enable();
++				local_irq_disable();
++			}
+ 		} /* while (ops) */
+ 	}
+ 	return IRQ_HANDLED;
+@@ -246,6 +259,16 @@ void arch_send_call_function_single_ipi(int cpu)
+ 	send_IPI_single(cpu, IPI_CALL_FUNC);
+ }
+
++static void raise_nmi(cpumask_t *mask)
++{
++	send_IPI_mask(mask, IPI_CPU_BACKTRACE);
++}
++
++void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_s=
+elf)
++{
++	nmi_trigger_cpumask_backtrace(mask, exclude_self, raise_nmi);
++}
++
+ /*
+  * Called by secondaries to update state and initialize CPU registers.
+  */
