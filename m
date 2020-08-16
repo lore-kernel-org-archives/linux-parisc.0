@@ -1,32 +1,75 @@
-Return-Path: <SRS0=lJAE=BZ=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=6Uuw=B2=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A781BC433DF
-	for <linux-parisc@archiver.kernel.org>; Sat, 15 Aug 2020 22:13:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3BC6C433E1
+	for <linux-parisc@archiver.kernel.org>; Sun, 16 Aug 2020 07:35:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8B94E20639
-	for <linux-parisc@archiver.kernel.org>; Sat, 15 Aug 2020 22:13:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B9D3D2065D
+	for <linux-parisc@archiver.kernel.org>; Sun, 16 Aug 2020 07:35:18 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dulUFZCi"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgHOWNe (ORCPT
+        id S1728024AbgHPHfS (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 15 Aug 2020 18:13:34 -0400
-Received: from mx2.cyber.ee ([193.40.6.72]:46889 "EHLO mx2.cyber.ee"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727994AbgHOWNe (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:13:34 -0400
-Subject: (bisected) parisc boot crash in post-5.8 git - pgalloc changes
-From:   Meelis Roos <mroos@linux.ee>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-References: <820716ab-0c6d-5154-0789-072b01011313@linux.ee>
-Cc:     linux-parisc@vger.kernel.org,
+        Sun, 16 Aug 2020 03:35:18 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18204 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726850AbgHPHfS (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 16 Aug 2020 03:35:18 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07G7VoCQ030236;
+        Sun, 16 Aug 2020 03:34:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=MX7iGW7xp0QzVf03SPnzdpcgjzbnv8xL9gPkcoWqR9M=;
+ b=dulUFZCiyPmyEO/zRFhPZ6WWl1CehrtyWjejUDhtxm8vymnfkxpGftevIz4FZGlmu1ii
+ srIuEL+hxIHtCfi3wm/7mk3UJY6HLzAgMpf20hwe8WkysqdhTu+RC4bT+IkyZHR3w1NQ
+ El+0Xqs3nbzEhq63fcjRjOdoH4pRBECIpsSmjfJlg++0pC/HO2P6FPg5U1VwIo9FBQ7h
+ mIZJjOpxxl2rD8zDG+1SWCn+tFoqrqjgbAl9hP1PU8Kopr14bjIu5swzuilZ8dL0eeLI
+ ExK91KGbVcvvvFJxu0I2dLtZK77wGdIDIsqw+gkwMUSg4rXMcIlNL2s3yDAmfcFJ/AiJ 1g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32y05agck3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 16 Aug 2020 03:34:15 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07G7YF7g036786;
+        Sun, 16 Aug 2020 03:34:15 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32y05agcjf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 16 Aug 2020 03:34:15 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07G7UV5Q015784;
+        Sun, 16 Aug 2020 07:34:12 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com ([9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 32x7b80mn3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 16 Aug 2020 07:34:12 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07G7YA9S29622616
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 16 Aug 2020 07:34:10 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B6024204D;
+        Sun, 16 Aug 2020 07:34:10 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 607FC42047;
+        Sun, 16 Aug 2020 07:34:08 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.34.219])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sun, 16 Aug 2020 07:34:08 +0000 (GMT)
+Date:   Sun, 16 Aug 2020 10:34:06 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Meelis Roos <mroos@linux.ee>, linux-parisc@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
         Pekka Enberg <penberg@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
         Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
         Andy Lutomirski <luto@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -40,122 +83,83 @@ Cc:     linux-parisc@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <9f2b5ebd-e4a4-0fa1-6cd3-4b9f6892d1ad@linux.ee>
-Date:   Sat, 15 Aug 2020 21:35:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+Subject: Re: (bisected) parisc boot crash in post-5.8 git - pgalloc changes
+Message-ID: <20200816073406.GD969206@linux.ibm.com>
+References: <820716ab-0c6d-5154-0789-072b01011313@linux.ee>
+ <9f2b5ebd-e4a4-0fa1-6cd3-4b9f6892d1ad@linux.ee>
+ <20200815184200.GA17456@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <820716ab-0c6d-5154-0789-072b01011313@linux.ee>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200815184200.GA17456@casper.infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-16_01:2020-08-14,2020-08-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=999 bulkscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 suspectscore=5 lowpriorityscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008160058
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-> While 5.8.0 worked fine on my HP RP2470 (Gentoo with 10.2.0 kgcc), yesterdays dddcbc139e96 and todays a1d21081a60d crash on boot. I have started bisecting it.
+Hi,
 
-And finished now. I included all CC-s and SOB-s from the commit to this mail - sorry if too broad.
+On Sat, Aug 15, 2020 at 07:42:00PM +0100, Matthew Wilcox wrote:
+> On Sat, Aug 15, 2020 at 09:35:05PM +0300, Meelis Roos wrote:
+> > > While 5.8.0 worked fine on my HP RP2470 (Gentoo with 10.2.0 kgcc), yesterdays dddcbc139e96 and todays a1d21081a60d crash on boot. I have started bisecting it.
+> > 
+> > And finished now. I included all CC-s and SOB-s from the commit to this mail - sorry if too broad.
+> > 
+> > 1355c31eeb7ea61a7f2f2937d17cd4e343a6b5af is the first bad commit
+> 
+> yes, I see the problem.
+> 
+> arch/parisc/include/asm/pgtable.h:#define PMD_ORDER     1 /* Number of pages per pmd */
+> 
+> -static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+> -{
+> -       pmd_t *pmd = (pmd_t *)__get_free_pages(GFP_KERNEL, PMD_ORDER);
+> 
+> +       page = alloc_pages(gfp, 0);
+> 
+> So I think the quick fix is to restore the parisc pmd_alloc_one and define
+> __HAVE_ARCH_PMD_ALLOC_ONE.  I wasn't following this series too closely,
+> so I shan't propose a patch, but leave it up to Mike.  I'd probably miss
+> some subtlety.
 
-1355c31eeb7ea61a7f2f2937d17cd4e343a6b5af is the first bad commit
-commit 1355c31eeb7ea61a7f2f2937d17cd4e343a6b5af
-Author: Mike Rapoport <rppt@linux.ibm.com>
-Date:   Thu Aug 6 23:22:39 2020 -0700
+You are right, I've missed that parisc has PMD_ORDER != 0 and the
+simplest fix would be to revert changes to parisc pmd_alloc_one().
 
-     asm-generic: pgalloc: provide generic pmd_alloc_one() and pmd_free_one()
-     
-     For most architectures that support >2 levels of page tables,
-     pmd_alloc_one() is a wrapper for __get_free_pages(), sometimes with
-     __GFP_ZERO and sometimes followed by memset(0) instead.
-     
-     More elaborate versions on arm64 and x86 account memory for the user page
-     tables and call to pgtable_pmd_page_ctor() as the part of PMD page
-     initialization.
-     
-     Move the arm64 version to include/asm-generic/pgalloc.h and use the
-     generic version on several architectures.
-     
-     The pgtable_pmd_page_ctor() is a NOP when ARCH_ENABLE_SPLIT_PMD_PTLOCK is
-     not enabled, so there is no functional change for most architectures
-     except of the addition of __GFP_ACCOUNT for allocation of user page
-     tables.
-     
-     The pmd_free() is a wrapper for free_page() in all the cases, so no
-     functional change here.
-     
-     Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-     Reviewed-by: Pekka Enberg <penberg@kernel.org>
-     Cc: Matthew Wilcox <willy@infradead.org>
-     Cc: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
-     Cc: Andy Lutomirski <luto@kernel.org>
-     Cc: Arnd Bergmann <arnd@arndb.de>
-     Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-     Cc: Joerg Roedel <joro@8bytes.org>
-     Cc: Joerg Roedel <jroedel@suse.de>
-     Cc: Max Filippov <jcmvbkbc@gmail.com>
-     Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-     Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-     Cc: Stafford Horne <shorne@gmail.com>
-     Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-     Cc: Steven Rostedt <rostedt@goodmis.org>
-     Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-     Link: http://lkml.kernel.org/r/20200627143453.31835-5-rppt@kernel.org
-     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Meelis, can you please try the below patch:
 
-  arch/alpha/include/asm/pgalloc.h     | 15 +------------
-  arch/arm/include/asm/pgalloc.h       | 11 ---------
-  arch/arm64/include/asm/pgalloc.h     | 27 +---------------------
-  arch/ia64/include/asm/pgalloc.h      | 10 ---------
-  arch/mips/include/asm/pgalloc.h      |  8 ++-----
-  arch/parisc/include/asm/pgalloc.h    | 11 ++-------
-  arch/riscv/include/asm/pgalloc.h     | 13 +----------
-  arch/sh/include/asm/pgalloc.h        |  3 +++
-  arch/um/include/asm/pgalloc.h        |  8 +------
-  arch/um/include/asm/pgtable-3level.h |  3 ---
-  arch/um/kernel/mem.c                 | 12 ----------
-  arch/x86/include/asm/pgalloc.h       | 26 +---------------------
-  include/asm-generic/pgalloc.h        | 43 ++++++++++++++++++++++++++++++++++++
-  13 files changed, 55 insertions(+), 135 deletions(-)
-
-> Last output lines from 5.8.0-13161-gdddcbc139e96:
-> 
-> [    1.150985] 1. Crescendo 750 W2 at 0xfffffffffffa0000 [160] { 0, 0x0, 0x5e3, 0x00004 }
-> [    1.243570] 2. Memory at 0xfffffffffed08000 [8] { 1, 0x0, 0x09b, 0x00009 }
-> [    1.243792] 3. Astro BC Runway Port at 0xfffffffffed00000 [0] { 12, 0x0, 0x582, 0x0000b }
-> [    1.382893] 4. Elroy PCI Bridge at 0xfffffffffed30000 [0/0] { 13, 0x0, 0x782, 0x0000a }
-> [    1.522243] 5. Elroy PCI Bridge at 0xfffffffffed34000 [0/2] { 13, 0x0, 0x782, 0x0000a }
-> [    1.660767] 6. Elroy PCI Bridge at 0xfffffffffed38000 [0/4] { 13, 0x0, 0x782, 0x0000a }
-> [    1.799247] 7. Elroy PCI Bridge at 0xfffffffffed3c000 [0/6] { 13, 0x0, 0x782, 0x0000a }
-> [    1.799500]
-> ********** VIRTUAL FRONT PANEL **********
-> System Boot detected
-> *****************************************
-> LEDs:  RUN      ATTENTION     FAULT     REMOTE     POWER
->         ON       FLASH         OFF       ON         ON
-> LED State: There was a system interruption that did not take the system down.
-> Check Chassis and Console Logs for error messages.
-> 
-> processor                 system initialization      1C00
-> 
-> *****************************************
-> 
-> ************ EARLY BOOT VFP *************
-> End of early boot detected
-> *****************************************
-> h support not available.
-> [    2.639001] HugeTLB registered 2.00 MiB page size, pre-allocated 0 pages
-> 
-> ********** VIRTUAL FRONT PANEL **********
-> System Boot detected
-> *****************************************
-> LEDs:  RUN      ATTENTION     FAULT     REMOTE     POWER
->         ON       FLASH         FLASH     ON         ON
-> LED State: System Running.  Unexpected Reboot.  Non-critical Error Detected.
-> Check Chassis and Console Logs for error messages.
-> 
-> processor                 system panic               1B00
+diff --git a/arch/parisc/include/asm/pgalloc.h b/arch/parisc/include/asm/pgalloc.h
+index cc7ecc2ef55d..a6482b2ce0ea 100644
+--- a/arch/parisc/include/asm/pgalloc.h
++++ b/arch/parisc/include/asm/pgalloc.h
+@@ -10,6 +10,7 @@
+ 
+ #include <asm/cache.h>
+ 
++#define __HAVE_ARCH_PMD_ALLOC_ONE
+ #define __HAVE_ARCH_PMD_FREE
+ #define __HAVE_ARCH_PGD_FREE
+ #include <asm-generic/pgalloc.h>
+@@ -67,6 +68,11 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
+ 			(__u32)(__pa((unsigned long)pmd) >> PxD_VALUE_SHIFT)));
+ }
+ 
++static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
++{
++	return (pmd_t *)__get_free_pages(GFP_PGTABLE_KERNEL, PMD_ORDER);
++}
++
+ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+ {
+ 	if (pmd_flag(*pmd) & PxD_FLAG_ATTACHED) {
 
 -- 
-Meelis Roos <mroos@linux.ee>
+Sincerely yours,
+Mike.
