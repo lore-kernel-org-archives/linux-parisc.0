@@ -2,63 +2,61 @@ Return-Path: <SRS0=STAi=CJ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E311C433E7
-	for <linux-parisc@archiver.kernel.org>; Mon, 31 Aug 2020 20:39:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11E8AC433E2
+	for <linux-parisc@archiver.kernel.org>; Mon, 31 Aug 2020 20:39:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4D27F208A9
-	for <linux-parisc@archiver.kernel.org>; Mon, 31 Aug 2020 20:39:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DB83E208CA
+	for <linux-parisc@archiver.kernel.org>; Mon, 31 Aug 2020 20:39:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oHRLDva7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZkZqEI05"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730075AbgHaUjI (ORCPT
+        id S1728822AbgHaUio (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 31 Aug 2020 16:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
+        Mon, 31 Aug 2020 16:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729028AbgHaUiy (ORCPT
+        with ESMTP id S1726023AbgHaUio (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 31 Aug 2020 16:38:54 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93804C06123A;
-        Mon, 31 Aug 2020 13:38:53 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id mm21so491705pjb.4;
-        Mon, 31 Aug 2020 13:38:53 -0700 (PDT)
+        Mon, 31 Aug 2020 16:38:44 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF384C061573;
+        Mon, 31 Aug 2020 13:38:43 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id ds1so500207pjb.1;
+        Mon, 31 Aug 2020 13:38:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=/pybmE7a8FIpjQvJ6DGP3d+JulP7r92A2J59iMGiCLM=;
-        b=oHRLDva7bE8NCj84o3Pw6XZLnP1yvvF0hDph2uVI7flXevbbdOYILUTOYyZCQ8otre
-         cCxr652BWFhSBLsdzy27Cb7Mddqacgb0iPwA8elKbwwEAVUBN15xECe0ThRuaHCOMdkR
-         dc3HEMkslEYv9RGiOcoN0hJsz9vazpaaDe3s/dlsGh7DjUCEhA4GdnYvIBBSn8VtTHcx
-         lvbLByvCgW0dL5AoLO91GPQcrbxAg2llOaYkOG9iH1BZqv6X0lnc9Cwlvy6dFLfDqm2M
-         w4tgaSsKeklGE8LZkIFRnECIGasMSWsPpNmoSLShXelmGeMJiFCs2p43c9vhVvKrOpPS
-         4Bvw==
+        h=from:to:cc:subject:date:message-id;
+        bh=IwVRkCMCyZnv4TAjRBRmsSZkvVEHDfWBL3BIyYi4zQo=;
+        b=ZkZqEI05NuuUmHp4uq5a9dsrbwy6wdRKCA6iPyNirvHNYsQVEQqt6/lvse4QXcTqv2
+         3mJ1pK85ab2S9FLesU7vnJPgRPLpltd14LU7nZlzQx3sQAZgkcVa+sBCkKawqacB1437
+         b+9+HKTj8Bhj2BcACUf2G8k8rjyMCHPBsFUayVjGCPKiSuU3VdSX/AK3nzAUmLgYekB+
+         0n7keCtBO+JccJGJanwqSwRo70x6sH2B+iEoaUSPCdeeSiSwkKtkyAex8kV0D0W0hY0s
+         LZUJCW89ct/rL13iuPmo0Qg+ugXIe6iwZCeXUVA5RHMFZrGt2KQUK7HO1RotW/sE7agp
+         6EFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=/pybmE7a8FIpjQvJ6DGP3d+JulP7r92A2J59iMGiCLM=;
-        b=UnSbHLKTXEq1A8r6vt0UX7AC46YWjUgPNwUSQmcDyh49u8duuD56N1q9VtIK8vZB33
-         11c3dUM/7aPVdAn/V2NZJkNee7mBF38lvS2CQl1Za7dNdGPkkwvKJGPRlVncKjJWqXfn
-         y3hO1EOkqq/pOiGvO8Obr4418D1uoqzS+dCQtFApcgtBH7mgzmxHBdcD/jP9aJJAlEyP
-         jhcD+knCtmv8dLwFQBuxvM7mF/xVkuuHh8d6RGA0ITa1qJk1PhMzfPg3RAwCQy1jooM1
-         7+pBr0CIMvxpywuLeib5AdtmsLJBcXQzRSsf+lnD5rd4cr9Dy1KZAEZz7aMJ5K1bg5j+
-         3dwA==
-X-Gm-Message-State: AOAM5319ivjbF5lsnhOXqIx1O0V3y2VLArZgw2lkuUOFbbVH6UdwGB6x
-        JfOyZ9QVZyrGeBRReaSXaUM=
-X-Google-Smtp-Source: ABdhPJzxmla8Fw1rXgmVa/RE16rISQFkMFWRT5MPsRMrCIi9V2DCsAyGzGk3H5CzIrYzvPZULqAD2A==
-X-Received: by 2002:a17:902:a412:: with SMTP id p18mr2318693plq.283.1598906333078;
-        Mon, 31 Aug 2020 13:38:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=IwVRkCMCyZnv4TAjRBRmsSZkvVEHDfWBL3BIyYi4zQo=;
+        b=A2DORATqmT4OyPzIwhRYYVJj7YG0xDLuSBcCUjxGqHE0HEJnpXVtV5+pH+/DcAO3oH
+         amfIRM9jhDhqupsP7oPs7j2ih4krRCr6tmhWcKftk/hIp7g6QzFd7lZ57ugDZ/7ESZYj
+         sR43K8GOxtvnf6bAZy2MlXZtKZSCtOuPo0HHa0CBn72XSBWUKcvECwMIMdyIvRWyLFxw
+         is0cT/z575YtAn9esjVCvKdXZqg5jg9yOHXxaHmIfMYkMQH2K4AWfCM05GxqC65jJCZM
+         hlY6Ij6fcC5Ig3Z/j5aqlD1B4UH05hIM2gIRraSIG1DpCTiwPuEWOVl43Tdgt81DB8HH
+         lucg==
+X-Gm-Message-State: AOAM533mEG6ygSoA8WmQlxE+TaKdKjtqJWk2GRwG7QIqgBiDbXw7A4ew
+        nnw1TaTsEMRpoj6gX2B3RUQ=
+X-Google-Smtp-Source: ABdhPJxZWUFmKJnOqKQskXfTYVdxoI7lzl+mkXQEUEnR18yGX2dCIBolzAzimegoss/mYS3BHiIAsg==
+X-Received: by 2002:a17:902:b18e:: with SMTP id s14mr2351578plr.160.1598906323230;
+        Mon, 31 Aug 2020 13:38:43 -0700 (PDT)
 Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id a26sm116850pfn.93.2020.08.31.13.38.51
+        by smtp.gmail.com with ESMTPSA id a26sm116850pfn.93.2020.08.31.13.38.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 13:38:52 -0700 (PDT)
+        Mon, 31 Aug 2020 13:38:42 -0700 (PDT)
 From:   Nicolin Chen <nicoleotsuka@gmail.com>
 To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
         rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
@@ -71,20 +69,29 @@ Cc:     sfr@canb.auug.org.au, hch@lst.de, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
         linux-ia64@vger.kernel.org, linux-s390@vger.kernel.org,
         sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: [RESEND][PATCH 7/7] parisc: Avoid overflow at boundary_size
-Date:   Mon, 31 Aug 2020 13:38:11 -0700
-Message-Id: <20200831203811.8494-8-nicoleotsuka@gmail.com>
+Subject: [RESEND][PATCH 0/7] Avoid overflow at boundary_size
+Date:   Mon, 31 Aug 2020 13:38:04 -0700
+Message-Id: <20200831203811.8494-1-nicoleotsuka@gmail.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200831203811.8494-1-nicoleotsuka@gmail.com>
-References: <20200831203811.8494-1-nicoleotsuka@gmail.com>
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The boundary_size might be as large as ULONG_MAX, which means
-that a device has no specific boundary limit. So either "+ 1"
-or passing it to ALIGN() would potentially overflow.
+==== For this resend ====
+The original series have not been acked at any patch. So I am
+resending them, being suggested by Niklas.
+
+==== Coverletter ====
+We are expending the default DMA segmentation boundary to its
+possible maximum value (ULONG_MAX) to indicate that a device
+doesn't specify a boundary limit. So all dma_get_seg_boundary
+callers should take a precaution with the return values since
+it would easily get overflowed.
+
+I scanned the entire kernel tree for all the existing callers
+and found that most of callers may get overflowed in two ways:
+either "+ 1" or passing it to ALIGN() that does "+ mask".
 
 According to kernel defines:
     #define ALIGN_MASK(x, mask) (((x) + (mask)) & ~(mask))
@@ -98,45 +105,35 @@ We can simplify the logic here:
 = [b + (1 << s)] >> s
 = (b >> s) + 1
 
-So fixing a potential overflow with the safer shortcut.
+So this series of patches fix the potential overflow with this
+overflow-free shortcut.
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Christoph Hellwig <hch@lst.de>
----
- drivers/parisc/ccio-dma.c  | 4 ++--
- drivers/parisc/sba_iommu.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+As I don't have these platforms, testings/comments are welcome.
 
-diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index a5507f75b524..c667d6aba764 100644
---- a/drivers/parisc/ccio-dma.c
-+++ b/drivers/parisc/ccio-dma.c
-@@ -356,8 +356,8 @@ ccio_alloc_range(struct ioc *ioc, struct device *dev, size_t size)
- 	** ggg sacrifices another 710 to the computer gods.
- 	*/
- 
--	boundary_size = ALIGN((unsigned long long)dma_get_seg_boundary(dev) + 1,
--			      1ULL << IOVP_SHIFT) >> IOVP_SHIFT;
-+	/* Overflow-free shortcut for: ALIGN(b + 1, 1 << s) >> s */
-+	boundary_size = (dma_get_seg_boundary(dev) >> IOVP_SHIFT) + 1;
- 
- 	if (pages_needed <= 8) {
- 		/*
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index d4314fba0269..96bc2c617cbd 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -342,8 +342,8 @@ sba_search_bitmap(struct ioc *ioc, struct device *dev,
- 	unsigned long shift;
- 	int ret;
- 
--	boundary_size = ALIGN((unsigned long long)dma_get_seg_boundary(dev) + 1,
--			      1ULL << IOVP_SHIFT) >> IOVP_SHIFT;
-+	/* Overflow-free shortcut for: ALIGN(b + 1, 1 << s) >> s */
-+	boundary_size = (dma_get_seg_boundary(dev) >> IOVP_SHIFT) + 1;
- 
- #if defined(ZX1_SUPPORT)
- 	BUG_ON(ioc->ibase & ~IOVP_MASK);
+Thanks
+Nic
+
+Nicolin Chen (7):
+  powerpc/iommu: Avoid overflow at boundary_size
+  alpha: Avoid overflow at boundary_size
+  ia64/sba_iommu: Avoid overflow at boundary_size
+  s390/pci_dma: Avoid overflow at boundary_size
+  sparc: Avoid overflow at boundary_size
+  x86/amd_gart: Avoid overflow at boundary_size
+  parisc: Avoid overflow at boundary_size
+
+ arch/alpha/kernel/pci_iommu.c    | 10 ++++------
+ arch/ia64/hp/common/sba_iommu.c  |  4 ++--
+ arch/powerpc/kernel/iommu.c      | 11 +++++------
+ arch/s390/pci/pci_dma.c          |  4 ++--
+ arch/sparc/kernel/iommu-common.c |  9 +++------
+ arch/sparc/kernel/iommu.c        |  4 ++--
+ arch/sparc/kernel/pci_sun4v.c    |  4 ++--
+ arch/x86/kernel/amd_gart_64.c    |  4 ++--
+ drivers/parisc/ccio-dma.c        |  4 ++--
+ drivers/parisc/sba_iommu.c       |  4 ++--
+ 10 files changed, 26 insertions(+), 32 deletions(-)
+
 -- 
 2.17.1
 
