@@ -1,214 +1,217 @@
-Return-Path: <SRS0=UY92=CI=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=STAi=CJ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 990D3C433E2
-	for <linux-parisc@archiver.kernel.org>; Sun, 30 Aug 2020 17:07:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1DA5C433E2
+	for <linux-parisc@archiver.kernel.org>; Mon, 31 Aug 2020 16:22:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6901120720
-	for <linux-parisc@archiver.kernel.org>; Sun, 30 Aug 2020 17:07:50 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="NyT0d6JB"
+	by mail.kernel.org (Postfix) with ESMTP id BB5B22083E
+	for <linux-parisc@archiver.kernel.org>; Mon, 31 Aug 2020 16:22:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgH3RHu (ORCPT
+        id S1728266AbgHaQWV (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 30 Aug 2020 13:07:50 -0400
-Received: from mout.gmx.net ([212.227.15.15]:59491 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726105AbgH3RHs (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 30 Aug 2020 13:07:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1598807244;
-        bh=4V6QVme2vsGjmuUx5kScXxPjxkzq+v2XaKAlBP/W6Zs=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=NyT0d6JBZBCVrBe0RI0T3yY2ulGl67jjbT9LV4XYqA9rGet9ewZcC/5Heta+gebLf
-         2vojau+DTniJzFzTWv4STPN/Kksmh9yZaMlCumtXy1ph32aW6T/idz/GozvLny/aIt
-         r/AWtiFrRUWXmdOyKeLUwd8UP6tDioJxMTIUZxBE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.160.119]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MWih0-1k5ltE1Ung-00X0yo; Sun, 30
- Aug 2020 19:07:24 +0200
-Subject: Re: [PATCH v10 1/7] parisc: start using signal-defs.h
-To:     Peter Collingbourne <pcc@google.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc:     Richard Henderson <rth@twiddle.net>, linux-parisc@vger.kernel.org
-References: <cover.1598072840.git.pcc@google.com>
- <efdbcb5fc45a2dbdf1e2363d68ab0f7b5a276980.1598072840.git.pcc@google.com>
-From:   Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
- c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
-Message-ID: <c83eeeff-ae86-14e0-a8a4-bcf71e5acb5a@gmx.de>
-Date:   Sun, 30 Aug 2020 19:07:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Mon, 31 Aug 2020 12:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727046AbgHaQWU (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 31 Aug 2020 12:22:20 -0400
+Received: from mail.sf-mail.de (mail.sf-mail.de [IPv6:2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AD6C061573
+        for <linux-parisc@vger.kernel.org>; Mon, 31 Aug 2020 09:21:46 -0700 (PDT)
+Received: (qmail 7297 invoked from network); 31 Aug 2020 16:21:00 -0000
+Received: from p548d4372.dip0.t-ipconnect.de ([::ffff:84.141.67.114]:57308 HELO daneel.sf-tec.de) (auth=eike@sf-mail.de)
+        by mail.sf-mail.de (Qsmtpd 0.37dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
+        for <linux-parisc@vger.kernel.org>; Mon, 31 Aug 2020 18:21:00 +0200
+From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
+To:     linux-parisc <linux-parisc@vger.kernel.org>,
+        John David Anglin <dave.anglin@bell.net>
+Cc:     Helge Deller <deller@gmx.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+Subject: Re: [PATCH v5] parisc: Fix spinlock barriers
+Date:   Mon, 31 Aug 2020 18:21:29 +0200
+Message-ID: <11590248.O9o76ZdvQC@daneel.sf-tec.de>
+In-Reply-To: <b38abd19-0a61-8968-b98d-9b8b2efb6747@bell.net>
+References: <b38abd19-0a61-8968-b98d-9b8b2efb6747@bell.net>
 MIME-Version: 1.0
-In-Reply-To: <efdbcb5fc45a2dbdf1e2363d68ab0f7b5a276980.1598072840.git.pcc@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:r4o6psoawvtYa4k5ZSrFAnVh5x03Imkx6e1vrzA6z3IVx3PI3IW
- D6xkC/0NY2ZVrLe+9Nj5Cy8Fw6GDiL+nMTQPTO38JFmSuxrhs/fAQf6SLcnMnYxQLQPlZ2p
- 6cC+DCU3CmO9xVZMGjcFhewAF+1dmV1qeP4ZVl3Qf6+cc/D0041GuMpZr0dOwJFjuTzeLFj
- l1jlZQKUcw64jeP2m8Kxg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sleGZCWcvH0=:2B18HdtZrkjKdx6jAzS7S2
- 6Jjo6j9PoIP2h+Cs5a9cCPILriX6PRFhBwru8qfiD8a6wK1cjMeUPe6piEc9SnJ8ULPANF/Ox
- 9hk4faCG21GfMK935h94C+COCOgPpqbODbax3MDSxpIDtQTO8x8BkJ6mVwBBpu5oJ6uIjB0wO
- 9OwxBwqwcI6O+f22z01/8hHxWoU8D1yPaYxAQvrnB95DImClJE69aGEuK1CWCb8ET+fiqw66v
- IBNIooYz/xHqB1saqmqR2f7rCTzytGradZHVO8ClmgF/YiZU03VJhT/MyU/6CEt1daD3v4F7T
- tTsyefK2EprCXVfgmmKNRlX7hiot/cFrYVCpy0MXwwHwa96cY2KjlzkRZkfVogYHwxBK2tb8b
- bjGHaD0j2KoPFg48FODZg+x1Fr66s6zdW7Hf9jdkmtmg1mvUhQvDc4mIKGt6Cu+lEKywvRl/g
- 7WFm76wIlJLEqxs7TeFNhZ4b0sbiLsqtlP3URN/exDQnY5CCTiaB4J+8Evg/pQob0nLakl61E
- ttfx7mR2ePkzzVdd/t/jV5w5jvw+bwTqG5dxovxz7+mEe/ph369lR+NCgl3zCdZa+2eFrnNKD
- mVMXga58eEXmQDTDt90Guwu510EZSMGGG+jnLF5XMJCr/G8dg2alfhUSRWaMSCD4Wu3WFYFoC
- A9bGz7B65aaPUz6uVv12W150B+SZrovORhGOPl44XpboEPed+KsF+YX18bUKwVIHLnYNRcte1
- 0tr0D+rF0lThvgAamhuF8q/uOt2Ej4rPBIxr82tgXf8bgEO8perHhgGVbw/NIVvs3z3p1smHU
- TSpZdv7CMpZUW+EeHFX+5ASGEQNKgrPHlw5k+9dACp5Yzcg58y2nmT/58rBnZlAe2r15C5iR+
- S5B9qJZu2ZkfWHDtAw8G3Qpq+SV8YtxZmAsD0w2PKrEZLxphT64oo166vhlnhBFexFBS+QfFO
- ngibdaO7LWL9rAh3lI8BcuPymTNPTil5o1wqoSshAM9hqNqNK55ZH8iOxZxljlN5OYBJW9XFR
- NV0ULRbr9v8TsTj4JQi0PqsNAJtCZOfXGIqbSnGbgkjyfMgDkJiIBGFAoyYABVcj6cyx0lSpI
- DLKWZy7jdDDW1d3VYGocrgElSMBz8+FoE4a7ls0hAVBDvU4zlZ1lQ3lNp1hroyQq3ars+90DD
- BUI6/G2szQaI4s+gGqtR8idQHboKsKgJfkxJH/kCkpLrM14hPa4m1A2kAuFLeGyajaNpVwFAn
- 9F3rqr9A/RmdvFev4
+Content-Type: multipart/signed; boundary="nextPart5387554.DvuYhMxLoT"; micalg="pgp-sha1"; protocol="application/pgp-signature"
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 22.08.20 07:10, Peter Collingbourne wrote:
-> We currently include signal-defs.h on all architectures except parisc.
-> Make parisc fall in line. This will make maintenance easier once the
-> flag bits are moved here.
+--nextPart5387554.DvuYhMxLoT
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-The patch is basically OK, but....
+These things are in 5.8.4 AFAICT, and the lockups are still there:
 
-> Signed-off-by: Peter Collingbourne <pcc@google.com>
-> ---
-> View this change in Gerrit: https://linux-review.googlesource.com/q/If03=
-a5135fb514fe96548fb74610e6c3586a04064
->
->  arch/parisc/include/uapi/asm/signal.h  | 9 +--------
->  include/uapi/asm-generic/signal-defs.h | 6 ++++++
->  2 files changed, 7 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/parisc/include/uapi/asm/signal.h b/arch/parisc/include=
-/uapi/asm/signal.h
-> index d38563a394f2..92a1c7ea44b4 100644
-> --- a/arch/parisc/include/uapi/asm/signal.h
-> +++ b/arch/parisc/include/uapi/asm/signal.h
-> @@ -69,14 +69,7 @@
->  #define MINSIGSTKSZ	2048
->  #define SIGSTKSZ	8192
->
-> -
-> -#define SIG_BLOCK          0	/* for blocking signals */
-> -#define SIG_UNBLOCK        1	/* for unblocking signals */
-> -#define SIG_SETMASK        2	/* for setting the signal mask */
-> -
-> -#define SIG_DFL	((__sighandler_t)0)	/* default signal handling */
-> -#define SIG_IGN	((__sighandler_t)1)	/* ignore signal */
-> -#define SIG_ERR	((__sighandler_t)-1)	/* error return from signal */
-> +#include <asm/signal-defs.h>
->
->  # ifndef __ASSEMBLY__
->
-> diff --git a/include/uapi/asm-generic/signal-defs.h b/include/uapi/asm-g=
-eneric/signal-defs.h
-> index e9304c95ceea..ecdf6312bfa5 100644
-> --- a/include/uapi/asm-generic/signal-defs.h
-> +++ b/include/uapi/asm-generic/signal-defs.h
-> @@ -15,8 +15,14 @@
->  #endif
->
->  #ifndef __ASSEMBLY__
+[320616.602705] watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [hppa2.0-unknown:29093]
+[320616.602705] Modules linked in: 8021q ipmi_poweroff ipmi_si ipmi_devintf sata_via ipmi_msghandler cbc dm_zero dm_snapshot dm_mirror dm_region_hash dm_log dm_crypt dm_bufio pata_sil680 libata
+[320616.602705] CPU: 0 PID: 29093 Comm: hppa2.0-unknown Not tainted 5.8.4-gentoo-parisc64 #1
+[320616.602705] Hardware name: 9000/785/C8000
+[320616.602705]
+[320616.602705]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+[320616.602705] PSW: 00001000000001101111111100001111 Not tainted
+[320616.602705] r00-03  000000ff0806ff0f 0000000040558f08 00000000402706a8 00000040838787e0
+[320616.602705] r04-07  0000000040a303e0 00000000409eafa0 0000000040c5b690 0000000041fce0d0
+[320616.602705] r08-11  00000040838787e0 0000000000000001 00000000409fbf80 0000000040c5b740
+[320616.602705] r12-15  0000000041fce0d8 00000000409eafa0 0000000040187140 0000000040a56be0
+[320616.602705] r16-19  0000000040a56be0 0000000000000004 0000000001e92000 0000000000000002
+[320616.602705] r20-23  0000000000000001 0000000000000000 0000000000000000 0000000000000002
+[320616.602705] r24-27  0000000000000004 0000000000000000 0000000000000002 0000000040a303e0
+[320616.602705] r28-31  0000000000000011 00000040838788e0 0000004083878810 0000000042001140
+[320616.602705] sr00-03  00000000072a0800 0000000007296800 0000000000000000 00000000072a0800
+[320616.602705] sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[320616.602705]
+[320616.602705] IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000402706d0 00000000402706d4
+[320616.602705]  IIR: 0ff0109c    ISR: 000000005836f8a0  IOR: 0000000000000001
+[320616.602705]  CPU:        0   CR30: 0000004083878000 CR31: ffffffffffffffff
+[320616.602705]  ORIG_R28: 0000000000000801
+[320616.602705]  IAOQ[0]: smp_call_function_many_cond+0x490/0x500
+[320616.602705]  IAOQ[1]: smp_call_function_many_cond+0x494/0x500
+[320616.602705]  RP(r2): smp_call_function_many_cond+0x468/0x500
+[320616.602705] Backtrace:
+[320616.602705]  [<0000000040270824>] on_each_cpu+0x5c/0x98
+[320616.602705]  [<0000000040186a0c>] flush_tlb_all+0x204/0x228
+[320616.602705]  [<00000000402ef1f8>] tlb_finish_mmu+0x1d8/0x210
+[320616.602705]  [<00000000402eb820>] exit_mmap+0x1d8/0x370
+[320616.602705]  [<00000000401b5ec0>] mmput+0xe8/0x260
+[320616.602705]  [<00000000401c1690>] do_exit+0x558/0x12e8
+[320616.602705]  [<00000000401c3f18>] do_group_exit+0x50/0x118
+[320616.602705]  [<00000000401c4000>] sys_exit_group+0x20/0x28
+[320616.602705]  [<0000000040192018>] syscall_exit+0x0/0x14
+[320616.602705]
+[320619.854705] watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [sh:29109]
+[320619.854705] Modules linked in: 8021q ipmi_poweroff ipmi_si ipmi_devintf sata_via ipmi_msghandler cbc dm_zero dm_snapshot dm_mirror dm_region_hash dm_log dm_crypt dm_bufio pata_sil680 libata
+[320619.854705] CPU: 1 PID: 29109 Comm: sh Tainted: G             L    5.8.4-gentoo-parisc64 #1
+[320619.854705] Hardware name: 9000/785/C8000
+[320619.854705]
+[320619.854705]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+[320619.854705] PSW: 00001000000001001111111100001111 Tainted: G             L
+[320619.854705] r00-03  000000ff0804ff0f 0000000040558f08 00000000402706a8 0000004083b089e0
+[320619.854705] r04-07  0000000040a303e0 00000000409eafa0 0000000040c5b690 0000000041fe60d0
+[320619.854705] r08-11  0000004083b089e0 0000000000000001 00000000409fbf80 0000000040c5b740
+[320619.854705] r12-15  0000000041fe60d8 00000000409eafa0 0000000040187ce0 0000000040a56be0
+[320619.854705] r16-19  0000000040a56be0 0000000000000004 0000000001e92000 0000000000000002
+[320619.854705] r20-23  0000000000000001 0000000000000000 0000000000000000 0000000000000002
+[320619.854705] r24-27  0000000000000004 0000000000000000 0000000000000002 0000000040a303e0
+[320619.854705] r28-31  0000000000000011 0000004083b08ae0 0000004083b08a10 0000000042001ce0
+[320619.854705] sr00-03  00000000072a4800 00000000072a4800 0000000000000000 00000000072a5800
+[320619.854705] sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[320619.854705]
+[320619.854705] IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000402706d0 00000000402706d4
+[320619.854705]  IIR: 0ff0109c    ISR: 0000000000000000  IOR: 0000000000000001
+[320619.854705]  CPU:        1   CR30: 0000004083b08000 CR31: ffffffffffffffff
+[320619.854705]  ORIG_R28: 0000000000000801
+[320619.854705]  IAOQ[0]: smp_call_function_many_cond+0x490/0x500
+[320619.854705]  IAOQ[1]: smp_call_function_many_cond+0x494/0x500
+[320619.854705]  RP(r2): smp_call_function_many_cond+0x468/0x500
+[320619.854705] Backtrace:
+[320619.854705]  [<0000000040270824>] on_each_cpu+0x5c/0x98
+[320619.854705]  [<0000000040186a0c>] flush_tlb_all+0x204/0x228
+[320619.854705]  [<00000000402ef1f8>] tlb_finish_mmu+0x1d8/0x210
+[320619.854705]  [<00000000402eb820>] exit_mmap+0x1d8/0x370
+[320619.854705]  [<00000000401b5ec0>] mmput+0xe8/0x260
+[320619.854705]  [<0000000040343254>] begin_new_exec+0x684/0x1140
+[320619.854705]  [<00000000403e5790>] load_elf_binary+0xc00/0x18e0
+[320619.854705]  [<000000004034237c>] __do_execve_file.isra.0+0xaa4/0x10d0
+[320619.854705]  [<0000000040343eb8>] compat_sys_execve+0x70/0x88
+[320619.854705]  [<0000000040192018>] syscall_exit+0x0/0x14
+[320619.854705]
+[320656.138705] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+[320656.138705]         (detected by 0, t=15002 jiffies, g=29568801, q=103)
+[320656.138705] rcu: All QSes seen, last rcu_sched kthread activity 15000 (4375056330-4375041330), jiffies_till_next_fqs=1, root ->qsmask 0x0
+[320656.138705] rcu: rcu_sched kthread starved for 15000 jiffies! g29568801 f0x2 RCU_GP_WAIT_FQS(5) ->state=0x200 ->cpu=3
+[320656.138705] rcu:    Unless rcu_sched kthread gets sufficient CPU time, OOM is now expected behavior.
+[320656.138705] rcu: RCU grace-period kthread stack dump:
+[320656.138705] rcu_sched       R    0    10      2 0x00000000
+[320656.138705] Backtrace:
+[320656.138705]
+[320656.922716] BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 60s!
+[320657.026717] BUG: workqueue lockup - pool cpus=1 node=0 flags=0x0 nice=0 stuck for 60s!
+[320657.130716] Showing busy workqueues and worker pools:
+[320657.198716] workqueue events: flags=0x0
+[320657.250717]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+[320657.254705]     pending: vmstat_shepherd
+[320657.394718] workqueue events_power_efficient: flags=0x80
+[320657.466715]   pwq 2: cpus=1 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+[320657.470705]     pending: fb_flashcursor
+[320657.610716]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=2/256 refcnt=3
+[320657.614705]     pending: neigh_periodic_work, neigh_periodic_work
+[320657.782719] workqueue mm_percpu_wq: flags=0x8
+[320657.842715]   pwq 2: cpus=1 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+[320657.846705]     pending: vmstat_update
+[320657.982713]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+[320657.986705]     pending: vmstat_update
+[320658.126726] workqueue mpt_poll_1: flags=0x8
+[320658.182716]   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+[320658.186705]     pending: mpt_fault_reset_work
+[320684.602705] watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [hppa2.0-unknown:29093]
+[320684.602705] Modules linked in: 8021q ipmi_poweroff ipmi_si ipmi_devintf sata_via ipmi_msghandler cbc dm_zero dm_snapshot dm_mirror dm_region_hash dm_log dm_crypt dm_bufio pata_sil680 libata
+[320684.602705] CPU: 0 PID: 29093 Comm: hppa2.0-unknown Tainted: G             L    5.8.4-gentoo-parisc64 #1
+[320684.602705] Hardware name: 9000/785/C8000
+[320684.602705]
+[320684.602705]      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+[320684.602705] PSW: 00001000000001101111111100001111 Tainted: G             L
+[320684.602705] r00-03  000000ff0806ff0f 0000000040558f08 00000000402706a8 00000040838787e0
+[320684.602705] r04-07  0000000040a303e0 00000000409eafa0 0000000040c5b690 0000000041fce0d0
+[320684.602705] r08-11  00000040838787e0 0000000000000001 00000000409fbf80 0000000040c5b740
+[320684.602705] r12-15  0000000041fce0d8 00000000409eafa0 0000000040187140 0000000040a56be0
+[320684.602705] r16-19  0000000040a56be0 0000000000000004 0000000001e92000 0000000000000002
+[320684.602705] r20-23  0000000000000001 0000000000000000 0000000000000000 0000000000000002
+[320684.602705] r24-27  0000000000000004 0000000000000000 0000000000000002 0000000040a303e0
+[320684.602705] r28-31  0000000000000011 00000040838788e0 0000004083878810 0000000042001140
+[320684.602705] sr00-03  00000000072a0800 0000000007296800 0000000000000000 00000000072a0800
+[320684.602705] sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[320684.602705]
+[320684.602705] IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000402706d0 00000000402706d4
+[320684.602705]  IIR: 0ff0109c    ISR: 000000005836f8a0  IOR: 0000000000000001
+[320684.602705]  CPU:        0   CR30: 0000004083878000 CR31: ffffffffffffffff
+[320684.602705]  ORIG_R28: 0000000000000801
+[320684.602705]  IAOQ[0]: smp_call_function_many_cond+0x490/0x500
+[320684.602705]  IAOQ[1]: smp_call_function_many_cond+0x494/0x500
+[320684.602705]  RP(r2): smp_call_function_many_cond+0x468/0x500
+[320684.602705] Backtrace:
+[320684.602705]  [<0000000040270824>] on_each_cpu+0x5c/0x98
+[320684.602705]  [<0000000040186a0c>] flush_tlb_all+0x204/0x228
+[320684.602705]  [<00000000402ef1f8>] tlb_finish_mmu+0x1d8/0x210
+[320684.602705]  [<00000000402eb820>] exit_mmap+0x1d8/0x370
+[320684.602705]  [<00000000401b5ec0>] mmput+0xe8/0x260
+[320684.602705]  [<00000000401c1690>] do_exit+0x558/0x12e8
+[320684.602705]  [<00000000401c3f18>] do_group_exit+0x50/0x118
+[320684.602705]  [<00000000401c4000>] sys_exit_group+0x20/0x28
+[320684.602705]  [<0000000040192018>] syscall_exit+0x0/0x14
+[320684.602705]
+[320836.158705] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+[320836.158705]         (detected by 0, t=60007 jiffies, g=29568801, q=103)
+[320836.158705] rcu: All QSes seen, last rcu_sched kthread activity 60005 (4375101335-4375041330), jiffies_till_next_fqs=1, root ->qsmask 0x0
+[320836.158705] rcu: rcu_sched kthread starved for 60005 jiffies! g29568801 f0x2 RCU_GP_WAIT_FQS(5) ->state=0x200 ->cpu=3
+[320836.158705] rcu:    Unless rcu_sched kthread gets sufficient CPU time, OOM is now expected behavior.
+[320836.158705] rcu: RCU grace-period kthread stack dump:
+[320836.158705] rcu_sched       R    0    10      2 0x00000000
+[320836.158705] Backtrace:
+[320836.158705]
 
-> +#ifndef __hppa__
-> +/*
-> + * These have a special definition on parisc, see:
-> + * arch/parisc/include/uapi/asm/signal.h
-> + */
->  typedef void __signalfn_t(int);
->  typedef __signalfn_t __user *__sighandler_t;
+And then the machine rebooted.
 
-please drop this special-case/#ifdef for hppa/parisc.
-Instead please drop the typedef in arch/parisc/include/uapi/asm/signal.h,
-same as you did for the other architectures.
+--nextPart5387554.DvuYhMxLoT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-I've committed this patch to my tree, which will collide with yours:
- https://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git/c=
-ommit/?h=3Dfor-next
-If you like I can drop mine, and you fix it up on your side.
-Just let me know.
+-----BEGIN PGP SIGNATURE-----
 
-Other than that you can add:
-Acked-by: Helge Deller <deller@gmx.de>
+iF0EABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCX00jiQAKCRBcpIk+abn8
+Tgy2AKCHfK4dn34rsdqX5JJtPpSnZ44lIACfanBQnbN1Ocuv6Lj2ATTZoIm/bG0=
+=Q1NR
+-----END PGP SIGNATURE-----
 
-Thanks!
-Helge
+--nextPart5387554.DvuYhMxLoT--
 
-> +#endif
->
->  typedef void __restorefn_t(void);
->  typedef __restorefn_t __user *__sigrestore_t;
->
+
 
