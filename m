@@ -2,31 +2,30 @@ Return-Path: <SRS0=KvT3=CR=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE02CC433E2
-	for <linux-parisc@archiver.kernel.org>; Tue,  8 Sep 2020 15:15:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EAFFC433E2
+	for <linux-parisc@archiver.kernel.org>; Tue,  8 Sep 2020 19:50:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 90F7F23D6A
-	for <linux-parisc@archiver.kernel.org>; Tue,  8 Sep 2020 15:15:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F159F20658
+	for <linux-parisc@archiver.kernel.org>; Tue,  8 Sep 2020 19:50:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730239AbgIHPO5 (ORCPT
+        id S1730770AbgIHTus (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 8 Sep 2020 11:14:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:54986 "EHLO foss.arm.com"
+        Tue, 8 Sep 2020 15:50:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:56350 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730224AbgIHPOV (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:14:21 -0400
+        id S1730802AbgIHPuk (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:50:40 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B79E1169E;
-        Tue,  8 Sep 2020 08:13:10 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4D2E1692;
+        Tue,  8 Sep 2020 08:12:27 -0700 (PDT)
 Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7DE03F73C;
-        Tue,  8 Sep 2020 08:13:08 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 16:13:06 +0100
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C50A03F73C;
+        Tue,  8 Sep 2020 08:12:25 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 16:12:23 +0100
 From:   Dave Martin <Dave.Martin@arm.com>
 To:     Peter Collingbourne <pcc@google.com>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -42,99 +41,66 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         David Spickett <david.spickett@linaro.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Richard Henderson <rth@twiddle.net>
-Subject: Re: [PATCH v10 4/7] signal: define the SA_UNSUPPORTED bit in sa_flags
-Message-ID: <20200908151306.GU6642@arm.com>
+Subject: Re: [PATCH v10 2/7] arch: move SA_* definitions to generic headers
+Message-ID: <20200908151223.GS6642@arm.com>
 References: <cover.1598072840.git.pcc@google.com>
- <f37a8b86c53be4cc440a73be4123e0419deefe5f.1598072840.git.pcc@google.com>
+ <f5b9b91e7401d82c899fb6d1bb7fb2158103e5f3.1598072840.git.pcc@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f37a8b86c53be4cc440a73be4123e0419deefe5f.1598072840.git.pcc@google.com>
+In-Reply-To: <f5b9b91e7401d82c899fb6d1bb7fb2158103e5f3.1598072840.git.pcc@google.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 10:10:14PM -0700, Peter Collingbourne wrote:
-
-Nit: no statement of the chage being made (other than in the subject
-line).
-
-> This bit will never be supported in the uapi. The purpose of this flag
-> bit is to allow userspace to distinguish an old kernel that does not
-> clear unknown sa_flags bits from a kernel that supports every flag bit.
-> 
-> In other words, if userspace finds that this bit remains set in
-> oldact.sa_flags, it means that the kernel cannot be trusted to have
-> cleared unknown flag bits from sa_flags, so no assumptions about flag
-> bit support can be made.
-
-This isn't quite right?  After a single sigaction() call, oact will
-contain the sa_flags for the previously registered handler.  So a
-second sigaction() call would be needed to find out the newly effective
-sa_flags.
-
+On Fri, Aug 21, 2020 at 10:10:12PM -0700, Peter Collingbourne wrote:
+> Most architectures with the exception of alpha, mips, parisc and
+> sparc use the same values for these flags. Move their definitions into
+> asm-generic/signal-defs.h and allow the architectures with non-standard
+> values to override them. Also, document the non-standard flag values
+> in order to make it easier to add new generic flags in the future.
 > 
 > Signed-off-by: Peter Collingbourne <pcc@google.com>
-> ---
-> View this change in Gerrit: https://linux-review.googlesource.com/q/Ic2501ad150a3a79c1cf27fb8c99be342e9dffbcb
-> 
->  include/uapi/asm-generic/signal-defs.h | 7 +++++++
->  kernel/signal.c                        | 6 ++++++
->  2 files changed, 13 insertions(+)
-> 
-> diff --git a/include/uapi/asm-generic/signal-defs.h b/include/uapi/asm-generic/signal-defs.h
-> index 319628058a53..e853cbe8722d 100644
-> --- a/include/uapi/asm-generic/signal-defs.h
-> +++ b/include/uapi/asm-generic/signal-defs.h
-> @@ -14,6 +14,12 @@
->   * SA_RESTART flag to get restarting signals (which were the default long ago)
->   * SA_NODEFER prevents the current signal from being masked in the handler.
->   * SA_RESETHAND clears the handler when the signal is delivered.
-> + * SA_UNSUPPORTED is a flag bit that will never be supported. Kernels from
-> + * before the introduction of SA_UNSUPPORTED did not clear unknown bits from
-> + * sa_flags when read using the oldact argument to sigaction and rt_sigaction,
-> + * so this bit allows flag bit support to be detected from userspace while
-> + * allowing an old kernel to be distinguished from a kernel that supports every
-> + * flag bit.
->   *
->   * SA_ONESHOT and SA_NOMASK are the historical Linux names for the Single
->   * Unix names RESETHAND and NODEFER respectively.
-> @@ -42,6 +48,7 @@
->  #ifndef SA_RESETHAND
->  #define SA_RESETHAND	0x80000000
->  #endif
-> +#define SA_UNSUPPORTED	0x00000400
 
-I guess people may debate which bit is chosen, but your consolidation
-of these definitions should help to reduce the possibility of future
-collisions.  This bit appears unused for now, so I guess I don't have a
-strong opinion.
+While this looks reasonable, I've just realised that you strip the "U"
+from some arches' definitions here.
 
->  #define SA_NOMASK	SA_NODEFER
->  #define SA_ONESHOT	SA_RESETHAND
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index f802c82c7bcc..c80e70bde11d 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -3984,6 +3984,12 @@ int do_sigaction(int sig, struct k_sigaction *act, struct k_sigaction *oact)
->  	if (oact)
->  		*oact = *k;
->  
-> +	/*
-> +	 * Make sure that we never accidentally claim to support SA_UNSUPPORTED,
-> +	 * e.g. by having an architecture use the bit in their uapi.
-> +	 */
-> +	BUILD_BUG_ON(UAPI_SA_FLAGS & SA_UNSUPPORTED);
-> +
+So, on powerpc and x86, this changes the type of flags other than
+SA_RESETHAND from unsigned int to int.
 
-Seems reasonable.
+While I can't see this breaking any sensible use of these flags, there's
+a chance that there is software relying on this distinction by
+accident.
 
-With the above rewording in the commit message to clarify that a second
-sigaction() is needed:
 
-Reviewed-by: Dave Martin <Dave.Martin@arm.com>
+I wonder whether it's worth doing something like
+
+	#ifdef ARCH_WANT_STRICTLY_UNSIGNED_SA_FLAGS
+	#define __SA_FLAG_VAL(x) x ## U
+	#else
+	#define __SA_FLAG_VAL(x) x
+	#endif
+
+	#ifndef SA_NOCLDSTOP
+	#define SA_NOCLDSTOP __SA_FLAG_VAL(0x00000001)
+	#endif
+
+	/* ... */
+
+
+Mind you, the historical situation also has issues, e.g. because
+sa_flags in struct sigaction is an int, assigning
+
+	struct sigaction sa;
+
+	sa.sa_flags = SA_RESETHAND;
+
+implies an overflow and so isn't portably safe (at least in theory).  I
+guess we are getting away with it today.  Preserving the situation by
+keeping the "U"s where appropriate would at least avoid making the
+situation worse.
 
 [...]
 
