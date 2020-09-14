@@ -2,63 +2,66 @@ Return-Path: <SRS0=UiOX=CX=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A5BAC433E2
-	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 00:10:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B3B4C433E2
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 00:10:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 230A0221E7
-	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 00:10:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC9A721D1A
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 00:10:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600042224;
-	bh=TA+MXMLRb5cCWNKjIr+v/ilNC868VuI0Vn55BkifVqk=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=WjLbARzmgRIEag7oTtaixjiXSCDwqRGttjJaxGffjCx09Vm1rzOQABwCkPFTV5diF
-	 9QKCcH5AVdtCbXIyw8y0Cxno7914v1TUVxkSOjeA9sJSpdi1qWU4IMD4AE4PWmDOdJ
-	 R2rhob3vwXFmq8Z9lwfeXwIW3Fx9BtT7VXKsZ4Fw=
+	s=default; t=1600042228;
+	bh=HfK59QENEjRz/7gWFSOXHE/C1eABJ9pkwrPBmkjBS9g=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=wkwIqTyABPgxcRDSfszbyXsVWpavUYrNhYPliyyLK42Ox6ZdrXxgDbLXPzx8ZUPss
+	 21iplrZg/nb38lbNWwMuUIeFBK3RzhF2hVL+ap3Bt35aFosary+R1cxoXi6tCyDEm7
+	 G3e1GkeU+xnVh1+gh+sfyQHXY5+wNAQxzvgUuJn8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgINAKW (ORCPT
+        id S1726009AbgINAK1 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 13 Sep 2020 20:10:22 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:36779 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgINAKV (ORCPT
+        Sun, 13 Sep 2020 20:10:27 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:52931 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgINAKY (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 13 Sep 2020 20:10:21 -0400
-Received: by mail-pf1-f195.google.com with SMTP id d9so11065820pfd.3;
-        Sun, 13 Sep 2020 17:10:20 -0700 (PDT)
+        Sun, 13 Sep 2020 20:10:24 -0400
+Received: by mail-pj1-f68.google.com with SMTP id o16so4544037pjr.2;
+        Sun, 13 Sep 2020 17:10:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2020vfOHleSMQ3jNTKteIb40lgQ8OD0M2UcF4a1cpLM=;
-        b=NVvy3+3IDjEy5PsRTcxZFAmYjuJsbPFQtnQgG94FSpF+F2h2joy20D7GxLnVRM35cu
-         eFga+Mi5BPi7BTHaO87fQZg/xv83G+JieBuQ4N0cPU5LdmEyyZtFW6Rnnv4pkIjK0Vlm
-         DP+fIE7xk5SN7VPO+yi3wmThDE7yRJu64OPshaHK79GWxTr2WFgKFMyhJoBvJCdsMxBk
-         MAd3Fgs2TOxLWMyWrGdY4UVqS1VEsL/QAQErTa7IXiM7LKzzVvyJkmO5WXKEJ3OfP082
-         TvYAkvkbdqGbc9JXVLO38ZMwufwXPyZ58VVn3sZUdjebcAt7rRYUzrdXiRGSndjXN4w4
-         lLaA==
-X-Gm-Message-State: AOAM532HzL3xVfLG6VUKmp+VmqQGJ4dPxBpKphebec31aT3XRE30c2Je
-        L+OwrfbRLfAr80SriIQw1T0=
-X-Google-Smtp-Source: ABdhPJwYmUoHSk6yFuRytkiZU8vE8XqmEgZT0AUfa2O03802SdSttyg6JSnd5b49hy2fAlJw/iZtIg==
-X-Received: by 2002:a17:902:b703:: with SMTP id d3mr11661654pls.148.1600042220533;
-        Sun, 13 Sep 2020 17:10:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mvFFXcZ1+76mKofPZLr+kseVKd3+sG4bbeo2yjUvYe4=;
+        b=bmHuUHEKs8S4X1H5SceJaLajr/9Jh/3uM76dvcokQRefdihRxDCdIhyWp5Tsq4a0YK
+         yUOnUAN5VdJVV8/QM8yh1Jw6yUHXA/IUAzQ3PUubOYnWnRfJ+ZNQt2jVtLXKRQMp3XfQ
+         p6g97XpuON1vX57eWcg7vdj373BLQmNYTYX3lVZAVcQiJOyQYi8afd1virXy4gkuPY61
+         xG1yCbdwVBDjA3yYBjfrC1T02k24lKjOkygeZke2HSPDdI22YvusUDLA6LnY0/0+r4DH
+         Am8x/SzsfP3mnTwbPPdLH/DndcZuPT6Q4593MmcEdNlPtU9BZY90iJoPbLBzcpmuEPRG
+         3xiA==
+X-Gm-Message-State: AOAM533jro3vrlOFUR5xVMjU0CRUPgx3knPbWJDDgtGJF6N1yCmwzBeW
+        rCGqykUXmM8KUwqP8pFLqHz7s78lVzOcdg==
+X-Google-Smtp-Source: ABdhPJyIoFR8tBBd/eSfSluquJ1cqMZXSejoSblcQTEfFRkuxxsxui39TX/xmUM6x1UYMc0/WMicnA==
+X-Received: by 2002:a17:90a:4802:: with SMTP id a2mr11271354pjh.5.1600042223154;
+        Sun, 13 Sep 2020 17:10:23 -0700 (PDT)
 Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id i30sm6725093pgn.49.2020.09.13.17.10.19
+        by smtp.gmail.com with ESMTPSA id f5sm8023418pfj.212.2020.09.13.17.10.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 17:10:19 -0700 (PDT)
+        Sun, 13 Sep 2020 17:10:22 -0700 (PDT)
 From:   Moritz Fischer <mdf@kernel.org>
 To:     davem@davemloft.net
 Cc:     snelson@pensando.io, mst@redhat.com, hkallweit1@gmail.com,
         netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-kernel@vger.kernel.org, moritzf@google.com,
         Moritz Fischer <mdf@kernel.org>
-Subject: [PATCH net-next 0/3] First bunch of cleanups
-Date:   Sun, 13 Sep 2020 17:09:59 -0700
-Message-Id: <20200914001002.8623-1-mdf@kernel.org>
+Subject: [PATCH net-next 2/3] net: dec: tulip: de2104x: Replace pci_enable_device with devres version
+Date:   Sun, 13 Sep 2020 17:10:01 -0700
+Message-Id: <20200914001002.8623-3-mdf@kernel.org>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200914001002.8623-1-mdf@kernel.org>
+References: <20200914001002.8623-1-mdf@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-parisc-owner@vger.kernel.org
@@ -66,24 +69,52 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This series is the first bunch of minor cleanups for the de2104x driver
-to make it look and behave more like a modern driver.
+Replace pci_enable_device() with its devres counterpart
+pcim_enable_device().
 
-These changes replace some of the non-devres versions with devres
-versions of functions to simplify the error paths.
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
+---
+ drivers/net/ethernet/dec/tulip/de2104x.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Next up after this will be the ioremap part.
-
-Moritz Fischer (3):
-  net: dec: tulip: de2104x: Replace alloc_etherdev by
-    devm_alloc_etherdev
-  net: dec: tulip: de2104x: Replace pci_enable_device with devres
-    version
-  net: dec: tulip: de2104x: Replace kmemdup() with devm_kmempdup()
-
- drivers/net/ethernet/dec/tulip/de2104x.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
-
+diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
+index 9bcfc82b71d1..e4189c45c2ba 100644
+--- a/drivers/net/ethernet/dec/tulip/de2104x.c
++++ b/drivers/net/ethernet/dec/tulip/de2104x.c
+@@ -2009,14 +2009,14 @@ static int de_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	netif_carrier_off(dev);
+ 
+ 	/* wake up device, assign resources */
+-	rc = pci_enable_device(pdev);
++	rc = pcim_enable_device(pdev);
+ 	if (rc)
+ 		return rc;
+ 
+ 	/* reserve PCI resources to ensure driver atomicity */
+ 	rc = pci_request_regions(pdev, DRV_NAME);
+ 	if (rc)
+-		goto err_out_disable;
++		return rc;
+ 
+ 	/* check for invalid IRQ value */
+ 	if (pdev->irq < 2) {
+@@ -2096,8 +2096,6 @@ static int de_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	iounmap(regs);
+ err_out_res:
+ 	pci_release_regions(pdev);
+-err_out_disable:
+-	pci_disable_device(pdev);
+ 	return rc;
+ }
+ 
+@@ -2111,7 +2109,6 @@ static void de_remove_one(struct pci_dev *pdev)
+ 	kfree(de->ee_data);
+ 	iounmap(de->regs);
+ 	pci_release_regions(pdev);
+-	pci_disable_device(pdev);
+ }
+ 
+ #ifdef CONFIG_PM
 -- 
 2.28.0
 
