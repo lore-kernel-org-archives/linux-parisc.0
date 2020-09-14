@@ -2,43 +2,43 @@ Return-Path: <SRS0=UiOX=CX=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3DF8C43461
-	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 14:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BCE3C433E2
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 14:57:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A508720732
-	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 14:56:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EB1DF20829
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 14:57:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mhT31ujO"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IUgu2bMN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgINO4P (ORCPT
+        id S1726854AbgINOvs (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 14 Sep 2020 10:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
+        Mon, 14 Sep 2020 10:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726874AbgINO4F (ORCPT
+        with ESMTP id S1726419AbgINOvj (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:56:05 -0400
+        Mon, 14 Sep 2020 10:51:39 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19B0C06174A;
-        Mon, 14 Sep 2020 07:56:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2683AC061788;
+        Mon, 14 Sep 2020 07:51:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=eBdiOi8NPtkzomu53YzYl2srwsK9DIz9xkGY00o46Kk=; b=mhT31ujOX1b/Ylsrk64JksEtAs
-        9CsPlcH5hAWD0aGXvHImC3hCRVvIHTJrcou6cXnGT54zAGvwj93b4D9EhPcRhshY3Bs3eyUJoDDyp
-        /nP9B5kyV1bnmLEL7rLke8gT4SbmI5kPok0oRcdYsOzZhnvD9awZgmS7snbozBo6+h50CW3ovdNEQ
-        rNvm9WYDfrFebi3DEiL1j7UwRmtNNj8nVOQuwfdDkaun+xRqe4fJEwflFg4tSbH6LwHenuvtKtx+3
-        Mi3qOKO7kSBa3khR/+Da8yUmsINC/i/NvEQMvxt0qK0LL1lZ69X5uBkVi4w6Gw41ABUYpEPOn6KWS
-        UikZ1UiA==;
+        bh=yG7qWXKBUIxg7RQ3+cci8dpYxavPbFHR4ZLuySoica4=; b=IUgu2bMNuG9D3yRoXTao7ZJ8F0
+        bi9cOkVyJbzYiWWHUCJVQtCjtfS1WOJDrcjH+8xfTxuF32oJH+t+iwKJxIfH9cQIx0ubhC0x6cBUH
+        E7HyCBzJntz5qzVYF0OebK0LtgVouGMwPJoDrGil30HSYK3dlYRfK91E8XQSpnK7lIE1xiaTNBHi1
+        HtcwbVTlCRvy8GbmbHX7caUYl1HISztizQBCIDJTEas1Bg5MzPM/lh98U53IW6e9mpEmHWEg+HM3B
+        9zlDbT3UZzNeuyLd8r7YzrHdvg+/kFkPKOdOQ7URC8YirZWGUdedUJvmMj/yaNfps3p7zLv3CJ3EF
+        2aJ0nDkg==;
 Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHptG-0001vR-DT; Mon, 14 Sep 2020 14:55:34 +0000
+        id 1kHpp0-0001ag-7f; Mon, 14 Sep 2020 14:51:10 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -58,9 +58,9 @@ Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
         nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
         linux-scsi@vger.kernel.org, linux-mm@kvack.org,
         alsa-devel@alsa-project.org
-Subject: [PATCH 04/17] drm/nouveau/gk20a: stop setting DMA_ATTR_NON_CONSISTENT
-Date:   Mon, 14 Sep 2020 16:44:20 +0200
-Message-Id: <20200914144433.1622958-5-hch@lst.de>
+Subject: [PATCH 02/17] mm: turn alloc_pages into an inline function
+Date:   Mon, 14 Sep 2020 16:44:18 +0200
+Message-Id: <20200914144433.1622958-3-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200914144433.1622958-1-hch@lst.de>
 References: <20200914144433.1622958-1-hch@lst.de>
@@ -72,28 +72,31 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-DMA_ATTR_NON_CONSISTENT is a no-op except on PARISC and some mips
-configs, so don't set it in this ARM specific driver part.
+To prevent a compiler error when a method call alloc_pages is
+added (which I plan to for the dma_map_ops).
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ include/linux/gfp.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c b/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
-index 985f2990ab0dda..13d4d7ac0697b4 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
-@@ -594,8 +594,7 @@ gk20a_instmem_new(struct nvkm_device *device, int index,
- 
- 		nvkm_info(&imem->base.subdev, "using IOMMU\n");
- 	} else {
--		imem->attrs = DMA_ATTR_NON_CONSISTENT |
--			      DMA_ATTR_WEAK_ORDERING |
-+		imem->attrs = DMA_ATTR_WEAK_ORDERING |
- 			      DMA_ATTR_WRITE_COMBINE;
- 
- 		nvkm_info(&imem->base.subdev, "using DMA API\n");
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 67a0774e080b98..dd2577c5407112 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -550,8 +550,10 @@ extern struct page *alloc_pages_vma(gfp_t gfp_mask, int order,
+ #define alloc_hugepage_vma(gfp_mask, vma, addr, order) \
+ 	alloc_pages_vma(gfp_mask, order, vma, addr, numa_node_id(), true)
+ #else
+-#define alloc_pages(gfp_mask, order) \
+-		alloc_pages_node(numa_node_id(), gfp_mask, order)
++static inline struct page *alloc_pages(gfp_t gfp_mask, unsigned int order)
++{
++	return alloc_pages_node(numa_node_id(), gfp_mask, order);
++}
+ #define alloc_pages_vma(gfp_mask, order, vma, addr, node, false)\
+ 	alloc_pages(gfp_mask, order)
+ #define alloc_hugepage_vma(gfp_mask, vma, addr, order) \
 -- 
 2.28.0
 
