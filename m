@@ -2,45 +2,68 @@ Return-Path: <SRS0=UiOX=CX=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B6BBC43461
-	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 15:29:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 901F5C43461
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 15:34:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 410F120665
-	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 15:29:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B39A20756
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Sep 2020 15:34:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="lSFqfGN6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RSn2RJzb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbgINPPz (ORCPT
+        id S1726463AbgINPec (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 14 Sep 2020 11:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
+        Mon, 14 Sep 2020 11:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726091AbgINPP2 (ORCPT
+        with ESMTP id S1726196AbgINPeH (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:15:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF57C06174A;
-        Mon, 14 Sep 2020 08:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=GqwANsIxdNVU+rEM6+A08fDlq+cFQ0fUVRg0T9QOa8A=; b=lSFqfGN6ov3lHJYOzoc/cSYiUW
-        aBOJaO+Znak+R1VesU4Q+GCKpGIDoTjltJrKCfFKdaRzZ/X9JYpKLgoizBicuX7kwJ91rvKfj0PK1
-        38sODEPAok2XtTBoI639BDLiKCTuNdZsAgPi6jKdZEPoukiFvC9KsjM48xmr9vMSsqbPWMTe8XU5y
-        qGpwI8LLV18ogMIXavqlbQL+YJapq3/Y+TrfH5jPYVq9RO/6c+35asnDiSQNSFrvltDDGAorGkFZ1
-        eBwor+s8cQJcVmRJxGRqXksS7QpvAR7bPYiZ4S1Euupa624vUKbZm8VAkgNIW/LX2GYQMhzvi8e2n
-        Tyk14cPA==;
-Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHqCI-0003h2-7E; Mon, 14 Sep 2020 15:15:14 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mon, 14 Sep 2020 11:34:07 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A12DC06174A;
+        Mon, 14 Sep 2020 08:34:06 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a15so75289ljk.2;
+        Mon, 14 Sep 2020 08:34:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6QGIaljRH231VAywJdapvuATziOfA42BJnpSHpoIEVE=;
+        b=RSn2RJzblwAHTSK+plrf24n4vXY7/p/jXtG+T94xADRsRUBY8CHEBNgnMf/kQyrnxy
+         YieEPQGTw3bOqSmW8AmGOLLdGNA7YSDJLGbEMo+AGcNWh2pxH6XRgNcz8Cs5uCOpKkzC
+         gQyRsPyGfUidZAcBfjITy0I3uSNrMpc1xEktaPuU1N5ohOzXYJc8kuUdIFaZ6+PLkH1j
+         ej79ZdbMIfsu6iduHBqVwRFdln66PldWiNNCVGGJ8TfEu+jWybTfxA05D2VHpJvxymYA
+         bWH+DdU6BYBQ8HP2CiwI9zxdkYMl9jJc8yEPZeyVx3GZKr3H03N+EEitFWK+0KohnbKI
+         Gy2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6QGIaljRH231VAywJdapvuATziOfA42BJnpSHpoIEVE=;
+        b=YeYWECqoKGgbUSdB7xoMSOD7SkTRDc++YfYAp4jk2pcoR4iYbHtzsBxOMMgZAAkNIO
+         8QtdEuJPnlwOBQpkNGad07r0lsOxpKt1h2+UZ6i/kHMRtFHCAjel0r/VHQqr7/FtYbAe
+         tuG1V9nzlm84tLTlUTgV0QsgfadauDyZrs4kQmrzDhELpX9kRusWxY/R+w09JbzqL//8
+         TYkG0uoblChY5NtJ0UNIh+/C3iH4CPRt+4ThnH1eB3Vd9C4HM1RMAA0bqOKwZDTSwBwh
+         C48ANhNXerj6QSjh4FHIcX9eV8JXMcoF/jlBJK9h8vTDa7iPvTC9mCY2bplQ9NeFWN3p
+         W44g==
+X-Gm-Message-State: AOAM533/5JLXyTteFDb4tICppE4xrIsfS8mNU4Jh3XRiNR6b8pOfPFxa
+        xc5ym6NM7k92D0ZIoIA23D4=
+X-Google-Smtp-Source: ABdhPJwhd/LhTRq+JWSW5bzIk6PAoYzRDD2WFOZyHy/0zgbs8GXUoAwbOWmbxU7cQ/01j9Vl+1ORow==
+X-Received: by 2002:a05:651c:200b:: with SMTP id s11mr5091489ljo.196.1600097644849;
+        Mon, 14 Sep 2020 08:34:04 -0700 (PDT)
+Received: from wasted.omprussia.ru ([2a00:1fa0:44ca:acb2:3cb7:6882:b0eb:1108])
+        by smtp.gmail.com with ESMTPSA id l129sm3367001lfd.191.2020.09.14.08.34.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 08:34:04 -0700 (PDT)
+Subject: Re: [PATCH 03/17] drm/exynos: stop setting DMA_ATTR_NON_CONSISTENT
+To:     Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Joonyoung Shim <jy0922.shim@samsung.com>,
@@ -58,195 +81,31 @@ Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
         nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
         linux-scsi@vger.kernel.org, linux-mm@kvack.org,
         alsa-devel@alsa-project.org
-Subject: [PATCH 13/17] dma-mapping: remove dma_cache_sync
-Date:   Mon, 14 Sep 2020 16:44:29 +0200
-Message-Id: <20200914144433.1622958-14-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200914144433.1622958-1-hch@lst.de>
 References: <20200914144433.1622958-1-hch@lst.de>
+ <20200914144433.1622958-4-hch@lst.de>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <7a1d11c2-0fc5-e110-dabe-960e516bb343@gmail.com>
+Date:   Mon, 14 Sep 2020 18:34:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200914144433.1622958-4-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-parisc-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-All users are gone now, remove the API.
+On 9/14/20 5:44 PM, Christoph Hellwig wrote:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/mips/Kconfig               |  1 -
- arch/mips/jazz/jazzdma.c        |  1 -
- arch/mips/mm/dma-noncoherent.c  |  6 ------
- arch/parisc/Kconfig             |  1 -
- arch/parisc/kernel/pci-dma.c    |  6 ------
- include/linux/dma-mapping.h     |  8 --------
- include/linux/dma-noncoherent.h | 10 ----------
- kernel/dma/Kconfig              |  3 ---
- kernel/dma/mapping.c            | 14 --------------
- 9 files changed, 50 deletions(-)
+> DMA_ATTR_NON_CONSISTENT is a no-op except on PARISC and some mips
+> configs, so don't set it in this ARM specific driver.
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index c95fa3a2484cf0..1be91c5d666e61 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1134,7 +1134,6 @@ config DMA_NONCOHERENT
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
- 	select ARCH_HAS_DMA_SET_UNCACHED
- 	select DMA_NONCOHERENT_MMAP
--	select DMA_NONCOHERENT_CACHE_SYNC
- 	select NEED_DMA_MAP_STATE
- 
- config SYS_HAS_EARLY_PRINTK
-diff --git a/arch/mips/jazz/jazzdma.c b/arch/mips/jazz/jazzdma.c
-index dab4d058cea9b1..2bf849caf507b1 100644
---- a/arch/mips/jazz/jazzdma.c
-+++ b/arch/mips/jazz/jazzdma.c
-@@ -620,7 +620,6 @@ const struct dma_map_ops jazz_dma_ops = {
- 	.sync_single_for_device	= jazz_dma_sync_single_for_device,
- 	.sync_sg_for_cpu	= jazz_dma_sync_sg_for_cpu,
- 	.sync_sg_for_device	= jazz_dma_sync_sg_for_device,
--	.cache_sync		= arch_dma_cache_sync,
- 	.mmap			= dma_common_mmap,
- 	.get_sgtable		= dma_common_get_sgtable,
- };
-diff --git a/arch/mips/mm/dma-noncoherent.c b/arch/mips/mm/dma-noncoherent.c
-index 97a14adbafc99c..f34ad1f09799f1 100644
---- a/arch/mips/mm/dma-noncoherent.c
-+++ b/arch/mips/mm/dma-noncoherent.c
-@@ -137,12 +137,6 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
- }
- #endif
- 
--void arch_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--		enum dma_data_direction direction)
--{
--	dma_sync_virt_for_device(vaddr, size, direction);
--}
--
- #ifdef CONFIG_DMA_PERDEV_COHERENT
- void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
- 		const struct iommu_ops *iommu, bool coherent)
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 3b0f53dd70bc9b..ed15da1da174e0 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -195,7 +195,6 @@ config PA11
- 	depends on PA7000 || PA7100LC || PA7200 || PA7300LC
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
--	select DMA_NONCOHERENT_CACHE_SYNC
- 
- config PREFETCH
- 	def_bool y
-diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
-index 38c68e131bbe2a..ce38c0b9158125 100644
---- a/arch/parisc/kernel/pci-dma.c
-+++ b/arch/parisc/kernel/pci-dma.c
-@@ -454,9 +454,3 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
- {
- 	flush_kernel_dcache_range((unsigned long)phys_to_virt(paddr), size);
- }
--
--void arch_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--	       enum dma_data_direction direction)
--{
--	flush_kernel_dcache_range((unsigned long)vaddr, size);
--}
-diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index 4e1de194b45cbf..5b4e97b0846fd3 100644
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -123,8 +123,6 @@ struct dma_map_ops {
- 	void (*sync_sg_for_device)(struct device *dev,
- 				   struct scatterlist *sg, int nents,
- 				   enum dma_data_direction dir);
--	void (*cache_sync)(struct device *dev, void *vaddr, size_t size,
--			enum dma_data_direction direction);
- 	int (*dma_supported)(struct device *dev, u64 mask);
- 	u64 (*get_required_mask)(struct device *dev);
- 	size_t (*max_mapping_size)(struct device *dev);
-@@ -254,8 +252,6 @@ void *dmam_alloc_attrs(struct device *dev, size_t size, dma_addr_t *dma_handle,
- 		gfp_t gfp, unsigned long attrs);
- void dmam_free_coherent(struct device *dev, size_t size, void *vaddr,
- 		dma_addr_t dma_handle);
--void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--		enum dma_data_direction dir);
- int dma_get_sgtable_attrs(struct device *dev, struct sg_table *sgt,
- 		void *cpu_addr, dma_addr_t dma_addr, size_t size,
- 		unsigned long attrs);
-@@ -339,10 +335,6 @@ static inline void dmam_free_coherent(struct device *dev, size_t size,
- 		void *vaddr, dma_addr_t dma_handle)
- {
- }
--static inline void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--		enum dma_data_direction dir)
--{
--}
- static inline int dma_get_sgtable_attrs(struct device *dev,
- 		struct sg_table *sgt, void *cpu_addr, dma_addr_t dma_addr,
- 		size_t size, unsigned long attrs)
-diff --git a/include/linux/dma-noncoherent.h b/include/linux/dma-noncoherent.h
-index b9bc6c557ea46f..0888656369a45b 100644
---- a/include/linux/dma-noncoherent.h
-+++ b/include/linux/dma-noncoherent.h
-@@ -62,16 +62,6 @@ static inline pgprot_t dma_pgprot(struct device *dev, pgprot_t prot,
- }
- #endif /* CONFIG_MMU */
- 
--#ifdef CONFIG_DMA_NONCOHERENT_CACHE_SYNC
--void arch_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--		enum dma_data_direction direction);
--#else
--static inline void arch_dma_cache_sync(struct device *dev, void *vaddr,
--		size_t size, enum dma_data_direction direction)
--{
--}
--#endif /* CONFIG_DMA_NONCOHERENT_CACHE_SYNC */
--
- #ifdef CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE
- void arch_sync_dma_for_device(phys_addr_t paddr, size_t size,
- 		enum dma_data_direction dir);
-diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
-index 281785feb874db..c5f717021f5654 100644
---- a/kernel/dma/Kconfig
-+++ b/kernel/dma/Kconfig
-@@ -75,9 +75,6 @@ config ARCH_HAS_DMA_PREP_COHERENT
- config ARCH_HAS_FORCE_DMA_UNENCRYPTED
- 	bool
- 
--config DMA_NONCOHERENT_CACHE_SYNC
--	bool
--
- config DMA_VIRT_OPS
- 	bool
- 	depends on HAS_DMA
-diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-index 848c95c27d79ff..e71abcec8d3913 100644
---- a/kernel/dma/mapping.c
-+++ b/kernel/dma/mapping.c
-@@ -518,20 +518,6 @@ int dma_set_coherent_mask(struct device *dev, u64 mask)
- EXPORT_SYMBOL(dma_set_coherent_mask);
- #endif
- 
--void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
--		enum dma_data_direction dir)
--{
--	const struct dma_map_ops *ops = get_dma_ops(dev);
--
--	BUG_ON(!valid_dma_direction(dir));
--
--	if (dma_alloc_direct(dev, ops))
--		arch_dma_cache_sync(dev, vaddr, size, dir);
--	else if (ops->cache_sync)
--		ops->cache_sync(dev, vaddr, size, dir);
--}
--EXPORT_SYMBOL(dma_cache_sync);
--
- size_t dma_max_mapping_size(struct device *dev)
- {
- 	const struct dma_map_ops *ops = get_dma_ops(dev);
--- 
-2.28.0
+   Hm, PARICS and ARM capitalized but mips in lower case? :-)
 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+[...]
+
+MBR, Sergei
