@@ -1,97 +1,97 @@
-Return-Path: <SRS0=Kpyg=DE=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=x+in=DG=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.4 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E38BC4346E
-	for <linux-parisc@archiver.kernel.org>; Sun, 27 Sep 2020 21:24:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7296C2D0A8
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:32:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2D87721D95
-	for <linux-parisc@archiver.kernel.org>; Sun, 27 Sep 2020 21:24:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 746332075A
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:32:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1601343164;
+	bh=omDmb/EHkfaofnfyWtsh79Yx1RS9yvzCCe9Y5cUMIIs=;
+	h=From:To:Cc:Subject:Date:List-ID:From;
+	b=Fep4qWciW219IjH8zJc9QYokOuLyGU5v3arD/v6updc1pEgsRKhAvl5jUih1MhP8L
+	 kZoNg3tIQOp/IFLztGakN5x1/Gud5Y74Xmakwj/fUsTL7iyyrFcPCRV4AAEWKYUo4m
+	 doKVn/Z7G4qGbFYdsdqoYkO2HMFioTmsbBO1KrWg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgI0VYU (ORCPT
+        id S1727887AbgI2Bcn (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 27 Sep 2020 17:24:20 -0400
-Received: from belmont79srvr.owm.bell.net ([184.150.200.79]:37912 "EHLO
-        mtlfep01.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726267AbgI0VYU (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 27 Sep 2020 17:24:20 -0400
-Received: from bell.net mtlfep01 184.150.200.30 by mtlfep01.bell.net
-          with ESMTP
-          id <20200927212419.KUIN120733.mtlfep01.bell.net@mtlspm01.bell.net>
-          for <linux-parisc@vger.kernel.org>;
-          Sun, 27 Sep 2020 17:24:19 -0400
-Received: from [192.168.2.49] (really [70.53.61.197]) by mtlspm01.bell.net
-          with ESMTP
-          id <20200927212418.MUKT130487.mtlspm01.bell.net@[192.168.2.49]>;
-          Sun, 27 Sep 2020 17:24:18 -0400
-Subject: Re: v5.8.x stability on parisc
-To:     Helge Deller <deller@gmx.de>,
-        linux-parisc <linux-parisc@vger.kernel.org>
-Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>
-References: <bd1c6298-db1a-79ab-279b-60daad6bed22@bell.net>
- <387e5574-a270-f3cc-d0f2-a26d0383b7e6@gmx.de>
-From:   John David Anglin <dave.anglin@bell.net>
-Message-ID: <60f8a51e-ac6e-d49c-e63e-d2b83cf4de22@bell.net>
-Date:   Sun, 27 Sep 2020 17:24:19 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 28 Sep 2020 21:32:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727793AbgI2BcL (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:32:11 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CA6423444;
+        Tue, 29 Sep 2020 01:32:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601343127;
+        bh=omDmb/EHkfaofnfyWtsh79Yx1RS9yvzCCe9Y5cUMIIs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pqnoGJQ6tslYHVyNWVP4QznAqvnWcjPh7ayYC/KK8n2zN3x5MYaWFMDJAougLa1kA
+         SPHXzs1NuAe5n5RkWIBZWQ7GQENeO8Wqs4e9ejo58btHSZQjcp3eWtkRkPNNC2YzWK
+         mcizSDWd7rehIQf2UM/icd4kOgZazNYV03jLsZJc=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Lucy Yan <lucyyan@google.com>, Moritz Fischer <mdf@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 1/4] net: dec: de2104x: Increase receive ring size for Tulip
+Date:   Mon, 28 Sep 2020 21:32:02 -0400
+Message-Id: <20200929013205.2407201-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <387e5574-a270-f3cc-d0f2-a26d0383b7e6@gmx.de>
-Content-Type: text/plain; charset=utf-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-Analysis: v=2.3 cv=E9SzWpVl c=1 sm=1 tr=0 a=6x1y2OhCX1CAR/Lk3lU3cg==:117 a=6x1y2OhCX1CAR/Lk3lU3cg==:17 a=IkcTkHD0fZMA:10 a=reM5J-MqmosA:10 a=FBHGMhGWAAAA:8 a=jF78cOym1ND37BLKaacA:9 a=QEXdDO2ut3YA:10 a=9gvnlMMaQFpL9xblJ6ne:22
-X-CM-Envelope: MS4wfDS5J/wBLxOpo/wt3ysTypr1RMxWjaaLGgW5FKfVC9sg25t2ivadVIJ9leormybm/FZWPxuTjkMNQ6rJ1ttPTFmb/KYSvhTIMoIoEqwOlE+mAuZ+5zWq bsEES+FOGXYqggKaJZMJ8ZPw/WaYIqY8E/v+PJoQ5WKblKLXYOfyif0BXVUX7jaWbh4O17l99yvoSw==
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 2020-09-27 3:45 p.m., Helge Deller wrote:
-> On 9/27/20 4:17 PM, John David Anglin wrote:
->> With this patch collection, I haven't seen any stalls on my rp3440 and c8000 running v5.8.x.  Further,
->> I haven't had any signing failures on the buildd machine.  The rp3440 (mx3210) has also been successful in
->> building several packages that failed multiple time on the c8000 buildd.
->>
->> I think this is due to the three changes at the bottom from Linus.
-> Weren't thos added already upstream (or variants of them) ?
-Thought so but nothing has been committed to v5.8.x that conflicts with the changes.  I also searched the git log
-for similar commits but I didn't find anything.  So, I'm puzzled as to what happened to these changes.  This is the
-main reason I threw out my patch list for discussion.
+From: Lucy Yan <lucyyan@google.com>
 
-The following packages built successfully on mx3210 after falling on c8000: tigervnc, postgresql-13, verse, bali-phy
-and libbpf.  I also tried mariadb-10.5 but it had the same testsuite fail as before.
+[ Upstream commit ee460417d254d941dfea5fb7cff841f589643992 ]
 
->
->> diff --git a/arch/parisc/include/asm/barrier.h b/arch/parisc/include/asm/barrier.h
->> index 640d46edf32e..c705decf2bed 100644
->> --- a/arch/parisc/include/asm/barrier.h
->> +++ b/arch/parisc/include/asm/barrier.h
->> @@ -2,11 +2,15 @@
->>  /* The synchronize caches instruction executes as a nop on systems in
->>     which all memory references are performed in order. */
->> -#define synchronize_caches() __asm__ __volatile__ ("sync" : : : "memory")
->> +#define synchronize_caches() asm volatile("sync" \
->> +	ALTERNATIVE(ALT_COND_NO_SMP, INSN_NOP) \
->> +	: : : "memory")
-> I wonder if this has any impact.
-> If it's an UP system, won't this "sync" just be a "nop" anyway?
-I believe we want this when SMP kernel is run on a UP machine or a SMP machine running with one CPU.
-> Did you ran some performance tests, just to check?
-No.
->
-> Would you mind to send separate patches for each logical change?
->
-I'll try to get there but I'm currently focusing on toolchain issues.
+Increase Rx ring size to address issue where hardware is reaching
+the receive work limit.
 
-Regards,
-Dave
+Before:
 
+[  102.223342] de2104x 0000:17:00.0 eth0: rx work limit reached
+[  102.245695] de2104x 0000:17:00.0 eth0: rx work limit reached
+[  102.251387] de2104x 0000:17:00.0 eth0: rx work limit reached
+[  102.267444] de2104x 0000:17:00.0 eth0: rx work limit reached
+
+Signed-off-by: Lucy Yan <lucyyan@google.com>
+Reviewed-by: Moritz Fischer <mdf@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/dec/tulip/de2104x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
+index cadcee645f74e..11ce50a057998 100644
+--- a/drivers/net/ethernet/dec/tulip/de2104x.c
++++ b/drivers/net/ethernet/dec/tulip/de2104x.c
+@@ -91,7 +91,7 @@ MODULE_PARM_DESC (rx_copybreak, "de2104x Breakpoint at which Rx packets are copi
+ #define DSL			CONFIG_DE2104X_DSL
+ #endif
+ 
+-#define DE_RX_RING_SIZE		64
++#define DE_RX_RING_SIZE		128
+ #define DE_TX_RING_SIZE		64
+ #define DE_RING_BYTES		\
+ 		((sizeof(struct de_desc) * DE_RX_RING_SIZE) +	\
 -- 
-John David Anglin  dave.anglin@bell.net
+2.25.1
 
