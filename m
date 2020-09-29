@@ -2,98 +2,106 @@ Return-Path: <SRS0=x+in=DG=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6A08C4727E
-	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A353C4727C
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 12:47:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7C545221E7
-	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:36:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BE48220848
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 12:47:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1601343411;
-	bh=wQCFzCdhjnD9ZKAePJ3HjzMMAumFLdPf43/b/FMorBU=;
+	s=default; t=1601383631;
+	bh=9rCrCU/IlF42dXf6kWQ22ZRUzkR1Au7ZM8NK732koDk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=cpb/TE6k5B9gXzWbUXO48xzMbo/eMYcthpr4XQI3PYnJt5rdFmQlugnFgRmy66d1C
-	 UmppEA4sbFyIm5k+JdjYm4Bt9YlGQ5Eja7+T5nkLix2d7nhotq7XAQjSPyaDDhRTHr
-	 NHqlPwx0nujejemVyQRD0BziY3k2BxPA0VUzU1EE=
+	b=vXKorf5ZYdsf1lVrOh5T2tU3lR7yFjpIOWCnqppV/qaVolhU+OEabOpObVnmxXDJb
+	 JIMGSPliREHUhpwNxHGqvsiu710l4BfN9bBk9J4HBO1oAZHRUjq2L+Uxgd3N/Mh6HW
+	 R4xbjWObokmq8SHPsq/mZj9myPokvunMqz1Xb+t4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgI2Bgp (ORCPT
+        id S1732039AbgI2MrL (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 28 Sep 2020 21:36:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39644 "EHLO mail.kernel.org"
+        Tue, 29 Sep 2020 08:47:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727375AbgI2Bam (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:30:42 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728818AbgI2LGM (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:06:12 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A75702184D;
-        Tue, 29 Sep 2020 01:30:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4B8321D46;
+        Tue, 29 Sep 2020 11:06:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601343041;
-        bh=wQCFzCdhjnD9ZKAePJ3HjzMMAumFLdPf43/b/FMorBU=;
+        s=default; t=1601377571;
+        bh=9rCrCU/IlF42dXf6kWQ22ZRUzkR1Au7ZM8NK732koDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=snH42J9JWXk2fsq8vEYwJljXvPhedHOnLwndVFZeizOePgRI8PgaKmb7w3twnv+C9
-         cNU1gadAxhWQ38JbkzO4jeG6EiKwKK1W417n//68t2La/ZbKzhtvUEBYmzQ+KwIo/W
-         jYtoAo++i1UlswLP9ndz+hwYRUlpRdIdnx2rHF3Y=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lucy Yan <lucyyan@google.com>, Moritz Fischer <mdf@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 10/29] net: dec: de2104x: Increase receive ring size for Tulip
-Date:   Mon, 28 Sep 2020 21:30:07 -0400
-Message-Id: <20200929013027.2406344-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200929013027.2406344-1-sashal@kernel.org>
-References: <20200929013027.2406344-1-sashal@kernel.org>
+        b=vLN47IcCv+02TtMy39Ki5OQQeSkY6tqmy55VgoWoO3itK7B3l2D+TswXT8Cdkc7Ju
+         glO3f4W0ko11rHnkiSlyZgBpidgodNt5eVwTlc+kXEWbX1OmAjRxqf77TOmRfQMuaN
+         YfEZWCAEBmIiYbvriksi5NAnDqTKA/dzBzDjQHE0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        linux-usb@vger.kernel.org,
+        Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        "James E.J. Bottomley" <jejb@parisc-linux.org>,
+        Helge Deller <deller@gmx.de>, linux-fbdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org, Ajay Kaher <akaher@vmware.com>
+Subject: [PATCH 4.4 80/85] tty: vt, consw->con_scrolldelta cleanup
+Date:   Tue, 29 Sep 2020 13:00:47 +0200
+Message-Id: <20200929105932.191358795@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200929105928.198942536@linuxfoundation.org>
+References: <20200929105928.198942536@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Lucy Yan <lucyyan@google.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-[ Upstream commit ee460417d254d941dfea5fb7cff841f589643992 ]
+commit 97293de977365fe672daec2523e66ef457104921 upstream.
 
-Increase Rx ring size to address issue where hardware is reaching
-the receive work limit.
+* allow NULL consw->con_scrolldelta (some consoles define an empty
+  hook)
+* => remove empty hooks now
+* return value of consw->con_scrolldelta is never checked => make the
+  function void
+* document consw->con_scrolldelta a bit
 
-Before:
-
-[  102.223342] de2104x 0000:17:00.0 eth0: rx work limit reached
-[  102.245695] de2104x 0000:17:00.0 eth0: rx work limit reached
-[  102.251387] de2104x 0000:17:00.0 eth0: rx work limit reached
-[  102.267444] de2104x 0000:17:00.0 eth0: rx work limit reached
-
-Signed-off-by: Lucy Yan <lucyyan@google.com>
-Reviewed-by: Moritz Fischer <mdf@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Thomas Winischhofer <thomas@winischhofer.net>
+Cc: linux-usb@vger.kernel.org
+Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: "James E.J. Bottomley" <jejb@parisc-linux.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-fbdev@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: Ajay Kaher <akaher@vmware.com>
+[ for 4.4.y backport, only do the first change above, to prevent
+.con_scrolldelta from being called if not present - gregkh]
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/dec/tulip/de2104x.c | 2 +-
+ drivers/tty/vt/vt.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
-index 592454f444ce2..0b30011b9839e 100644
---- a/drivers/net/ethernet/dec/tulip/de2104x.c
-+++ b/drivers/net/ethernet/dec/tulip/de2104x.c
-@@ -85,7 +85,7 @@ MODULE_PARM_DESC (rx_copybreak, "de2104x Breakpoint at which Rx packets are copi
- #define DSL			CONFIG_DE2104X_DSL
- #endif
- 
--#define DE_RX_RING_SIZE		64
-+#define DE_RX_RING_SIZE		128
- #define DE_TX_RING_SIZE		64
- #define DE_RING_BYTES		\
- 		((sizeof(struct de_desc) * DE_RX_RING_SIZE) +	\
--- 
-2.25.1
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -2484,7 +2484,7 @@ static void console_callback(struct work
+ 	if (scrollback_delta) {
+ 		struct vc_data *vc = vc_cons[fg_console].d;
+ 		clear_selection();
+-		if (vc->vc_mode == KD_TEXT)
++		if (vc->vc_mode == KD_TEXT && vc->vc_sw->con_scrolldelta)
+ 			vc->vc_sw->con_scrolldelta(vc, scrollback_delta);
+ 		scrollback_delta = 0;
+ 	}
+
 
