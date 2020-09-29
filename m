@@ -5,49 +5,49 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7296C2D0A8
-	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:32:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4050BC2D0A8
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:33:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 746332075A
-	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:32:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 05DE12075A
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:33:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1601343164;
+	s=default; t=1601343239;
 	bh=omDmb/EHkfaofnfyWtsh79Yx1RS9yvzCCe9Y5cUMIIs=;
 	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=Fep4qWciW219IjH8zJc9QYokOuLyGU5v3arD/v6updc1pEgsRKhAvl5jUih1MhP8L
-	 kZoNg3tIQOp/IFLztGakN5x1/Gud5Y74Xmakwj/fUsTL7iyyrFcPCRV4AAEWKYUo4m
-	 doKVn/Z7G4qGbFYdsdqoYkO2HMFioTmsbBO1KrWg=
+	b=MUA3vns8x8fWNnDo8KEhY7OVBz0ErHEYKN+/RFAlrEYkIipK87ZCathuyCLVNi22h
+	 lE8dEFFKabkb2ePKO5F6Loc8689Schk108tixmNX9unUTtUZ3AVGaGcKx1sarDj4Lc
+	 dXpmTybhIDf2/rHzQx6Mes7EXUCekG6YTUKTMTzU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgI2Bcn (ORCPT
+        id S1727764AbgI2Bd3 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 28 Sep 2020 21:32:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41806 "EHLO mail.kernel.org"
+        Mon, 28 Sep 2020 21:33:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727793AbgI2BcL (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:32:11 -0400
+        id S1727763AbgI2BcH (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:32:07 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CA6423444;
-        Tue, 29 Sep 2020 01:32:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEEDA22204;
+        Tue, 29 Sep 2020 01:31:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601343127;
+        s=default; t=1601343119;
         bh=omDmb/EHkfaofnfyWtsh79Yx1RS9yvzCCe9Y5cUMIIs=;
         h=From:To:Cc:Subject:Date:From;
-        b=pqnoGJQ6tslYHVyNWVP4QznAqvnWcjPh7ayYC/KK8n2zN3x5MYaWFMDJAougLa1kA
-         SPHXzs1NuAe5n5RkWIBZWQ7GQENeO8Wqs4e9ejo58btHSZQjcp3eWtkRkPNNC2YzWK
-         mcizSDWd7rehIQf2UM/icd4kOgZazNYV03jLsZJc=
+        b=hr7N6wSzJ4VjjGCK8H0/jiAvFF32k0WzYLmQaqkqV4ahPMcpSb8zofFjtK0DTURcx
+         cjygfLNkeDr/GoNd+8tO4Ssry8XGK2L4aEB6n3nA7uVqWJSOdSfuK6m+i03ODQQe1e
+         COnVunG549U2FmOosOWguYzbfAdncAErjotg/6mI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Lucy Yan <lucyyan@google.com>, Moritz Fischer <mdf@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 1/4] net: dec: de2104x: Increase receive ring size for Tulip
-Date:   Mon, 28 Sep 2020 21:32:02 -0400
-Message-Id: <20200929013205.2407201-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 1/5] net: dec: de2104x: Increase receive ring size for Tulip
+Date:   Mon, 28 Sep 2020 21:31:53 -0400
+Message-Id: <20200929013157.2407108-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-stable: review
