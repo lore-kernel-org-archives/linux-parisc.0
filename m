@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4139C4727E
-	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:34:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1ADEC4727F
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:34:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8BE86216C4
-	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:34:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 77CE82075A
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Sep 2020 01:34:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1601343256;
-	bh=uhklsGMvmDuSfpQw0E0z9Z3B/B8b1QvtXsxAGER1tNQ=;
+	s=default; t=1601343272;
+	bh=PEntYgy3zPKWLs6qDtTuYLVAggIkX2FQwDO5O3lLVWM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ar6HBdbM0PcfBQUQywaK6xuT6bitHjFtlql684DG4uRjm6yDZtH3nRlUbWJFWH38w
-	 mwyV7RKBxnmbdnBn69Rnm8nNiBnwXa2LpsVRCogJ4c1uZTzHmCBosE3wUGVIDqBWN7
-	 CbWsZLBG0mh1rszbXKlgRT2SrHYRIJZ/ac2pocao=
+	b=cHLDL3C6kVoW9Ccyp3jki5hnnRUad3sux9WRAh85jo2ChheFoFM1rgugtilzIR58X
+	 fqlfX/Bw42RbV79U5a6cmSdxVr2Q/RO2ADoTCKiy6hi+8/1C31vGLnIqR70iBqzkme
+	 SANki/1b6wb6AkwXmZ6xlQ5x0zwwBLIxvN0COrTY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727378AbgI2BeD (ORCPT
+        id S1727612AbgI2BeS (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 28 Sep 2020 21:34:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41386 "EHLO mail.kernel.org"
+        Mon, 28 Sep 2020 21:34:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727711AbgI2Bbt (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:31:49 -0400
+        id S1727677AbgI2Bbl (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:31:41 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A460321D7D;
-        Tue, 29 Sep 2020 01:31:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77BDA2080A;
+        Tue, 29 Sep 2020 01:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601343109;
-        bh=uhklsGMvmDuSfpQw0E0z9Z3B/B8b1QvtXsxAGER1tNQ=;
+        s=default; t=1601343094;
+        bh=PEntYgy3zPKWLs6qDtTuYLVAggIkX2FQwDO5O3lLVWM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lawCZ8HA5bmetfyX0r0NmG8k/UfxckotX9ZgqHsJeXnzPWIkg6wO3/R2Bb77fP1/X
-         ZJnflFsRXo1a9tRt/ZYzgs/rl8K6fmZ+L5Zea/dSSL+cc5oPSFDYLfWBrVGr7PYP5M
-         jJD4AaqJhyS+uyowT8yQJGLQR+GtPjOHBbai7/Vw=
+        b=Lki/C2z0FSJAI2PEk5j5CB/qQm4c/CAzLqwNPvMxLfteXFN3vdGnVA49zQiN470mm
+         ante7hIhB4inpo0zBvLewms2cLBON4zYPILW3s5mT9GPVHFgv4g//bsM+r3eZcebNT
+         IUo86ek1XFs/jH9bcRO5tNpHsxtAE/+Rg2rwW214=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Lucy Yan <lucyyan@google.com>, Moritz Fischer <mdf@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 3/9] net: dec: de2104x: Increase receive ring size for Tulip
-Date:   Mon, 28 Sep 2020 21:31:38 -0400
-Message-Id: <20200929013144.2406985-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 03/11] net: dec: de2104x: Increase receive ring size for Tulip
+Date:   Mon, 28 Sep 2020 21:31:21 -0400
+Message-Id: <20200929013129.2406832-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200929013144.2406985-1-sashal@kernel.org>
-References: <20200929013144.2406985-1-sashal@kernel.org>
+In-Reply-To: <20200929013129.2406832-1-sashal@kernel.org>
+References: <20200929013129.2406832-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -82,7 +82,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
-index c87b8cc429638..6ca15c595f543 100644
+index 13430f75496cc..b312cd9bce169 100644
 --- a/drivers/net/ethernet/dec/tulip/de2104x.c
 +++ b/drivers/net/ethernet/dec/tulip/de2104x.c
 @@ -91,7 +91,7 @@ MODULE_PARM_DESC (rx_copybreak, "de2104x Breakpoint at which Rx packets are copi
