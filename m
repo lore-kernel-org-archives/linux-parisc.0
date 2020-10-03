@@ -1,135 +1,171 @@
-Return-Path: <SRS0=IEP4=DH=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=AsSW=DK=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_IN_DEF_DKIM_WL autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D30E3C4727E
-	for <linux-parisc@archiver.kernel.org>; Wed, 30 Sep 2020 15:21:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9AEBC4363C
+	for <linux-parisc@archiver.kernel.org>; Sat,  3 Oct 2020 01:14:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 71C6520789
-	for <linux-parisc@archiver.kernel.org>; Wed, 30 Sep 2020 15:21:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 43458206F8
+	for <linux-parisc@archiver.kernel.org>; Sat,  3 Oct 2020 01:14:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="RDIYozhQ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EEHUpZgD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730654AbgI3PVC (ORCPT
+        id S1725554AbgJCBOO (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 30 Sep 2020 11:21:02 -0400
-Received: from mout.gmx.net ([212.227.17.20]:42495 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725385AbgI3PUs (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:20:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601479239;
-        bh=fltS7dm/xul5s+VvCN1nG8/xZMrv7p+KXxJRx6aLVqg=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=RDIYozhQi5dsZMemQ+QQZBcW3Lct3R/fIBGncQv9WJEMx0unypbFHxNsOMXoZ08FP
-         U23XEYApa4nP1h9VEDmWY10S+s8UvEqmUqNsXiRbtcaPGCUeLOBqlcFXzb6Bpk57OM
-         JlPdwc/8TBayYZMfTOIZxkSmfjhM+8/iK70/6Oo4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.fritz.box ([92.116.141.77]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MbAci-1kyubP1AYi-00bf8S; Wed, 30
- Sep 2020 17:20:39 +0200
-Date:   Wed, 30 Sep 2020 17:20:36 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Add ioread64_hi_lo() and iowrite64_hi_lo()
-Message-ID: <20200930152036.GA27117@ls3530.fritz.box>
+        Fri, 2 Oct 2020 21:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgJCBON (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 2 Oct 2020 21:14:13 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892EAC0613D0
+        for <linux-parisc@vger.kernel.org>; Fri,  2 Oct 2020 18:14:13 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id 7so1445230vsp.6
+        for <linux-parisc@vger.kernel.org>; Fri, 02 Oct 2020 18:14:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/yGtfiNcgJrUat/PWCT0Vc/JxltyE26ffS/ZkS/4iVQ=;
+        b=EEHUpZgDu5KE0Q4tVfxvN0JPZZ0/MAbXwZ0v3s7R7HzmdBlmtc1hZGyazpuRU81d71
+         Eg8HwoMkYH3Jd01wFLHa3xEV+yN7M1+6dCWhDhTWTFanWXZWWjvhyIR3lZeGST8UlMBF
+         NZrosBDT/ia0VweqWqc+jw+PvqUEEyKL/CteWVsDRP1zKsXvtNC5+BWY56c2VVJZYWUy
+         6xhkyP1sP62oKUXoXu92gc7VsaMyAX7jqxsMKj2XM89aOyqYK+qyV7EcXo5KFcnkAgix
+         +PXit5f9d8M2ihWsRXRc1Pnu+jEwUbTp6FnGxt4OkNLfYGLtQf8cFuaQHWnQ7KbH3tj1
+         DPQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/yGtfiNcgJrUat/PWCT0Vc/JxltyE26ffS/ZkS/4iVQ=;
+        b=KV5M6/te5vQ6302V5GvdbAE+whjNZbKphw8CzSagpW0V3czS7F4uQQuR92tLqnWFqS
+         I0azDTnzB//oPkb2dH97cv8HWjblFChh8mb6mPRYfHJTUpBs7/n1LElgb0Vy6lcHTkqP
+         1UFkcIr4Pp19pJrd3L2ZfML+kBnhJy9RgqqCZ0gvU4vUH50srz5P26Nm6LIiLjV7+0zY
+         b5U7IHNyOss7j9eAAyZPuRrtakZ9HLxcrtsY0wX80AMutcDYN0LjyNh+Kbkn4Wy4p3xb
+         fEVWEJ5MKXPsyoCEdXMcfgLYghugXZYAu6EnEau6P0eRmHLLgwWd4xfaanMTILjWyVn6
+         yItA==
+X-Gm-Message-State: AOAM533C5WKiCl67LtyC+Vrf0IQglOAu0sK+TNvTEdze552kJyGjvjLW
+        lS3qzaQz2LVRHTo4VWp9eayuv8kyDUlMP3/MiRQ50A==
+X-Google-Smtp-Source: ABdhPJxpHQAdVC98juCmyvvbjXri9dDMJtKbGXfTsyo9dQXQXpMX25+5vDA76DsF+/oUSHm8NZya2GYwd6KHIDR2i70=
+X-Received: by 2002:a67:8a8a:: with SMTP id m132mr574047vsd.14.1601687652296;
+ Fri, 02 Oct 2020 18:14:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:XOQ2xSo3/M03JIPTbkp6TAgi/h9MkPYuRXgW46psg53NjYdnBpG
- lbKgtzlIkJI2lMZ3LUdInjY7yIUumvYWpP4JDI/WUd6JnW8GMQrStPr4fCeDle+0KmNOiqf
- FYCgSwJIPSHeezZBjvKGDgj9i2V0CgC12VvjwZRLuqLYCO3R8kcSMq743++atMXxX42kZNe
- iuZx/hhPg/Wr9GEneQe4A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fPlCEiTYPo0=://xKvMpqnEKLnpSI0yHzih
- I/krlkJE9NSEaQOu47iSN8D1RBM2vA8w+b0aPI1vRMpj1q7S3gvr/O7yYhSuP3pkFfcF2TELt
- KrPXxO5pJooyYOi6nL68WsIF1mXNNywU8qO+M61xU/3GC1VqqI+M2iVM3xKrwMnQD80qoWP/M
- jFSbk6BanFlqWmm8VFybFGDEcqaQ/DGmM27zVLVOQLfkwZpPSvlQge8sZ3OhOwn45hJkUu+0o
- 0W3jjzRZbmmI64eTWOWOzuTtKf0L7jeExEVbB50pyGrGL29DqsGwCz8KkewGq/YjP7nznPVHH
- +Cj6maLh9cRfHBsmKAzgZ2vfwEBKdzSCnm6/pV6VLIi820vY8/BgvreEgIp9MyhmBaNHewdng
- MGAqmN2gE58aKa7v0Rk5VCEwWq4GEZ7QyYwSjZsfjzp5Aq3Df03JwtyPqcPL0MG6GcJC//uZ3
- iS2715jJqZTtS9mpGiglq6nsBOJtR3ejs8nEY4+xSRBk+hE3kd14PRxnht6iBz//aAliH75kn
- 7Qh/PrXf/1i1729LEJlMsbkV2X9SSCMGzxQYJfd/fon1EVj/vGbAI7b3RpmBopUdxyyLKNwPn
- zxrLHKGyEUufBsb+tw2Zu1MFFCEFdke6MMCMZ2o1LgaVVmkgVsa1IYa430aSCnFW3wDRHHsTV
- Tfv64qBezrZqcN+l1yQI0dGeW5dS5bTPOYJNgKat+LPI5fWjGLb7n8k7dtdxyzSD4pk/ZDDsB
- nEB/c80XeHleTX0ztDbNGIYCr5MiJK0NiBaiLmVQVZQ9OjoRSYyHmzlz3fJusAXZH1jYvWIOc
- +2UZjy7N9HYwIq1RX3jwvX1nfd5DHF+St6OO1lkdpsC4YPq7/9Mct+LoisvmB777GMi1aGhAv
- FS7AZhLwUlKBmrlRx+OXYkCPW2d8suCBWa5lbrcomYsH+yozu5E0y+kvaL0KHQcTi8I/hIa6/
- KG13jl+LWTGQmxGk4rhMZi8Kl+n6E7WlNeFxDPpOZiAuAExn9FNk0h4nrIgyglMeIjoMeEMAH
- onbMKdJfdUXhr/074AxJbLnMUaxfAL7QlsueLjNlynb6bU/LZcCifH4jF1WeR9pYSxDjhBvJL
- FUEoXAWOF451JZOGWDi5FqcHtDtiLNnwUaWv418bMKbcFofyYVyleOiJ2P1zbCRZSrKANbB7H
- jTgsakT6CjgukJo/HLO5oQrJU3k1zr/05EudqHwtMLGjbRaVebxCytUbvw7PZHmuPtGg0NDwq
- XfHZ/pWOO6FQoeyEv
-Content-Transfer-Encoding: quoted-printable
+References: <cover.1598072840.git.pcc@google.com> <f5b9b91e7401d82c899fb6d1bb7fb2158103e5f3.1598072840.git.pcc@google.com>
+ <20200908151223.GS6642@arm.com>
+In-Reply-To: <20200908151223.GS6642@arm.com>
+From:   Peter Collingbourne <pcc@google.com>
+Date:   Fri, 2 Oct 2020 18:14:01 -0700
+Message-ID: <CAMn1gO7uBVL64KPv947AKSoOv9F1ghXkyB+c2St6g-pQnVPHDQ@mail.gmail.com>
+Subject: Re: [PATCH v10 2/7] arch: move SA_* definitions to generic headers
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        David Spickett <david.spickett@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Richard Henderson <rth@twiddle.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The kernel test robot reports missing functions. Add them.
+On Tue, Sep 8, 2020 at 8:12 AM Dave Martin <Dave.Martin@arm.com> wrote:
+>
+> On Fri, Aug 21, 2020 at 10:10:12PM -0700, Peter Collingbourne wrote:
+> > Most architectures with the exception of alpha, mips, parisc and
+> > sparc use the same values for these flags. Move their definitions into
+> > asm-generic/signal-defs.h and allow the architectures with non-standard
+> > values to override them. Also, document the non-standard flag values
+> > in order to make it easier to add new generic flags in the future.
+> >
+> > Signed-off-by: Peter Collingbourne <pcc@google.com>
+>
+> While this looks reasonable, I've just realised that you strip the "U"
+> from some arches' definitions here.
+>
+> So, on powerpc and x86, this changes the type of flags other than
+> SA_RESETHAND from unsigned int to int.
+>
+> While I can't see this breaking any sensible use of these flags, there's
+> a chance that there is software relying on this distinction by
+> accident.
 
-hppa-linux-ld: drivers/firmware/arm_scmi/perf.o: in function `scmi_perf_fc=
-_ring_db':
- (.text+0x610): undefined reference to `ioread64_hi_lo'
- (.text+0x63c): undefined reference to `iowrite64_hi_lo'
+While it's true that it's technically possible that making these
+signed could change semantics, I'm having trouble seeing a realistic
+way in which software could be relying on this. Can you see one? I can
+think of cases like if the code does something like left shifts one of
+the flag bits into the sign bit (technically undefined behavior) and
+then right shifts it back (in C this would need to all be done in a
+single expression without storing to a variable; in C++ I suppose you
+could use auto to preserve the signedness in a variable's type). For
+example:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Helge Deller <deller@gmx.de>
+int x = (SA_NODEFER << 1) >> 1;
 
-diff --git a/arch/parisc/lib/iomap.c b/arch/parisc/lib/iomap.c
-index ce400417d54e..f03adb1999e7 100644
-=2D-- a/arch/parisc/lib/iomap.c
-+++ b/arch/parisc/lib/iomap.c
-@@ -346,6 +346,16 @@ u64 ioread64be(const void __iomem *addr)
- 	return *((u64 *)addr);
- }
+would give a different value to x if we made SA_NODEFER signed. But I
+wouldn't really expect software to be doing this sort of thing even
+accidentally, or much more than or'ing the flags together and
+assigning them to a variable, or passing them as a parameter, or some
+other operation which would fix the type.
 
-+u64 ioread64_hi_lo(const void __iomem *addr)
-+{
-+	u32 low, high;
-+
-+	high =3D ioread32(addr + sizeof(u32));
-+	low =3D ioread32(addr);
-+
-+	return low + ((u64)high << 32);
-+}
-+
- void iowrite8(u8 datum, void __iomem *addr)
- {
- 	if (unlikely(INDIRECT_ADDR(addr))) {
-@@ -409,6 +419,12 @@ void iowrite64be(u64 datum, void __iomem *addr)
- 	}
- }
+I believe that the kernel's uapi guarantee applies at the binary
+level, not at the source level. If that were not the case, I think we
+would not be allowed to add any new declaration to an existing .h file
+for fear of conflicting with a user program's identically spelled
+declaration. And that seems more likely to me than software that would
+do this sort of thing.
 
-+void iowrite64_hi_lo(u64 val, void __iomem *addr)
-+{
-+	iowrite32(val >> 32, addr + sizeof(u32));
-+	iowrite32(val, addr);
-+}
-+
- /* Repeating interfaces */
+> I wonder whether it's worth doing something like
+>
+>         #ifdef ARCH_WANT_STRICTLY_UNSIGNED_SA_FLAGS
+>         #define __SA_FLAG_VAL(x) x ## U
+>         #else
+>         #define __SA_FLAG_VAL(x) x
+>         #endif
+>
+>         #ifndef SA_NOCLDSTOP
+>         #define SA_NOCLDSTOP __SA_FLAG_VAL(0x00000001)
+>         #endif
+>
+>         /* ... */
 
- void ioread8_rep(const void __iomem *addr, void *dst, unsigned long count=
-)
-@@ -511,6 +527,7 @@ EXPORT_SYMBOL(ioread32);
- EXPORT_SYMBOL(ioread32be);
- EXPORT_SYMBOL(ioread64);
- EXPORT_SYMBOL(ioread64be);
-+EXPORT_SYMBOL(ioread64_hi_lo);
- EXPORT_SYMBOL(iowrite8);
- EXPORT_SYMBOL(iowrite16);
- EXPORT_SYMBOL(iowrite16be);
-@@ -518,6 +535,7 @@ EXPORT_SYMBOL(iowrite32);
- EXPORT_SYMBOL(iowrite32be);
- EXPORT_SYMBOL(iowrite64);
- EXPORT_SYMBOL(iowrite64be);
-+EXPORT_SYMBOL(iowrite64_hi_lo);
- EXPORT_SYMBOL(ioread8_rep);
- EXPORT_SYMBOL(ioread16_rep);
- EXPORT_SYMBOL(ioread32_rep);
+If we do this I would mildly prefer to keep the existing #defines in
+the arch-specific headers as if the arch had different flag values, as
+this would leave the arch-specific legacy cruft in the arch-specific
+headers where it belongs.
+
+> Mind you, the historical situation also has issues, e.g. because
+> sa_flags in struct sigaction is an int, assigning
+>
+>         struct sigaction sa;
+>
+>         sa.sa_flags = SA_RESETHAND;
+>
+> implies an overflow and so isn't portably safe (at least in theory).  I
+> guess we are getting away with it today.  Preserving the situation by
+> keeping the "U"s where appropriate would at least avoid making the
+> situation worse.
+
+I believe that the result of this assignment (involving an unsigned to
+signed conversion) is implementation defined and not undefined (which
+would be problematic). And in all the implementations that matter, as
+well as the C++ standard starting with C++20, this is a no-op cast
+assuming two's complement. I'm not sure what this has to do with
+making the constants signed because, as you pointed out, SA_RESETHAND
+would remain unsigned despite the absence of 'U' because its value
+does not fit in an int.
+
+Peter
