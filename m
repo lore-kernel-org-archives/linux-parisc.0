@@ -2,27 +2,28 @@ Return-Path: <SRS0=wqxb=DP=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F0AEC04EBE
-	for <linux-parisc@archiver.kernel.org>; Thu,  8 Oct 2020 15:48:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B86A5C4363C
+	for <linux-parisc@archiver.kernel.org>; Thu,  8 Oct 2020 15:48:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 45D6E20739
-	for <linux-parisc@archiver.kernel.org>; Thu,  8 Oct 2020 15:48:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C4ED20578
+	for <linux-parisc@archiver.kernel.org>; Thu,  8 Oct 2020 15:48:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbgJHPsY (ORCPT
+        id S1731163AbgJHPsZ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 8 Oct 2020 11:48:24 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:36163 "EHLO
+        Thu, 8 Oct 2020 11:48:25 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:35595 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726165AbgJHPsV (ORCPT
+        with ESMTP id S1726304AbgJHPsW (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:48:21 -0400
+        Thu, 8 Oct 2020 11:48:22 -0400
 Received: from localhost.localdomain ([192.30.34.233]) by
  mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1M7KKA-1kIpyQ2KzM-007kBr; Thu, 08 Oct 2020 17:47:15 +0200
+ 1MQdMG-1k2x0a3lRe-00NkbV; Thu, 08 Oct 2020 17:47:35 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
 To:     linux-kernel@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -45,162 +46,109 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 00/13] Clean up legacy clock tick users
-Date:   Thu,  8 Oct 2020 17:46:38 +0200
-Message-Id: <20201008154651.1901126-1-arnd@arndb.de>
+Subject: [PATCH 03/13] ARM: rpc: use legacy_timer_tick
+Date:   Thu,  8 Oct 2020 17:46:41 +0200
+Message-Id: <20201008154651.1901126-4-arnd@arndb.de>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201008154651.1901126-1-arnd@arndb.de>
+References: <20201008154651.1901126-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:ToCg0sXzfof6vBLW0FBjjVXywAK/gLyirWECWdzB4HS8Fcsvfc3
- KICej28tXkzfQ4JRGwmkABm7jfD+Q1lU1BJw7T0Lwpe5f+9kcKbUsHe20Hl/PaNGaJm7f64
- vzJ+b6TvkgNmTNmKF4q0otuZPBYaKl04cVbqXwwhtpd4LjYBTPzdyr5BMwVWRMEtd03OY9O
- 9R1EBRW62aNmSfzzkZ7hQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XzC6G7gG190=:Cqm3PvhpJLmyzbv8maC2Qh
- dnY6yR+InSfpI2H7h2qKLgqXY0N/nDpx+LyKwsDfWCfy30pv1/X179z3M18wDXjMbMsUpzZ6F
- 4B5NNcDcFVMTUCUPlRfy2d3qzVZht/dx1zUdmL1xXlE9E6pFkyUCwoA1J8rrxWA6pnghYo8Ah
- 0QSFCJMZvvnYyDhAejrhQIiHSmxWuUyB1azRxHYtMm8V4BzxflkuuFqtzYNFyr5b7P1Avsz1e
- vjXufHhD9qmSPjaXhc5RcMXIkJAI+tb9RmveUbqRO0gARB+S5JRJAOPu55715IQVquUYc+Y5C
- N5gF9BoV3MEe9uywKU5G6DC9AoyVV+MojMMrN4HTf3AH28dnEbcQyqhAAvff+j+KTTMO4Hukl
- xIaBIKOo129/+r06dLt9e+ttV49J6xE04WgPvF5KAVvx7q18DrfiB7sQ+FWwkxcvLNlkgfqbV
- p3QRrIypBFfQvLQYH2yK74by+sk2YmiWpDsQOvIMimQy5W7CyoB4zE8YWuxKhPxD6hec9R/yc
- DqXtXjbeI22nK835/2cu3jL/ee7OYxq153PK5R+xpWaWMUEfgHODmzl2dQKvdlKKK0EUA6ude
- Kx5FnaKQM2AQen2RtvDCMpnrIY6mfmE7JyR1UYiwOBxq94oNhfYrqF51lwlEk+2IqfKP8p1pq
- 2Qpt//BK9nvrV4/feo5U6lbqA3jqVxd4+3SBbYvE4zeNuixTzu60EDSpJLikef7pvt3YItvJw
- F9NzxPuwnT+XRGwnAbbJtv/0NyKifs6ul5oBFvy4znZCAaP/bkNaai/drzAigtOY0YH+Cevib
- CIPjT954uXTsZoTu+YGOFhXj/r9QB5+3/FxlRKqwpWINpJmbBojGsvZ5XZYaHlnDgvrQbsx
+X-Provags-ID: V03:K1:AV/xQQR2jt9Rwk0ymjAs+h06lgep6VgQtpKXSCm3RsvPedqWUvi
+ k4xxlR1Egxcic8tT5i13A/WWoGB0lOB3XDe3RLEMa5aSAJ198tXUY5jfimFkr/t+H8PeSiO
+ ou+MyWyazink8mfnqoLPk4rmHIQhJJM8u6Z5luNIbJyW7sL8WLXmM7pDT7b710FQyzvF1pN
+ NYN6qpDk6KkYtg+eJTyYA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HJYHx377UCA=:x/7rjJt+7xnjvb99y4WTbl
+ cy+IsvGh3OG7yWjqodDRveTEuOWpIO3rbNU+jmFFmK/nohkqNWSVLuHFOOENtAxMhoMDjoNMC
+ LQSmtU7RW5FF2lTBKlhkOk81b7fJPfIQnlELDI1jxBFvAsSwwiq9ib7p+7jvwFytw3dMwM1ve
+ mJ4TMN44fIiPSxSM5RLxF6Wuc97rNJVa8fP3Dsm37YT6w+9xcQPCLVaAEx09tCCqFZBIeklsv
+ UtMeQdswWU5fX0EGDZoPZgTTO+Coe+Iuowo1hbJEkY2Vrp3a+QtX7Xpw8s8pkMzyweyGzxdrP
+ jIh4F6imG5gupoxZuP/mjiOxpsFGhP9UEmTpmxCvbnIB2sR4/fznuL0tlRku2KIBVWUZcb1yt
+ fY3VkGQoGi6+hZ+4mFC3Y4OMQ8qSw8CgbNZwexkb5sDBxBZuc4sciWmo0ZMkxYOm06CfySarx
+ JFUUwNLVoQHbZVydSdQX+BdwdK1Xh9rvnmtxQ1CTF+C7SMAoj440oBlhoAkZNbYG2G+v/qcTc
+ 08wZdcP5uwlOyrOPOTOvS7nRXZCL0No1XSk4gQ6C+d5QsVJDECW9vqCNQdAbtj2l7pbtcTlhQ
+ Zfw7MK94SfxGmGJNvmFb9a0lxL6YEshI5wwfBbobr/Q3E/w5n2UUwzj25x1BLRFebonP6KBRK
+ ELzh6zwYfL7jT6d5mL/fDVIBrqbJ7oja+bzAIWNyUJkmKCkZf4ZC+p5IcrE5UCOubLc/z/Kuj
+ LqYbQnUv6Lgspo76cwb7OIKKflco8Sk3Fzsrs6BSCmW3Y3Bc18QKuON2YgbdHaJsho8wpaFHM
+ 5dzeyP6tLppPFy+cEmdJmFeVQpJz8JO/CANIprUirlscJmMf1FeFBdBmNEcQ8HXK9Cj44ym
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-When I created the patch removing CONFIG_ARCH_GETTIMEOFFSET,
-I also had a look at CONFIG_GENERIC_CLOCKEVENTS, which is
-selected by most, but not all, platforms today, each of the
-ones that lack it doing the timer tick slightly differently.
+rpc is the only user of the timer_tick() function now, and can
+just call the newly added generic version instead.
 
-The cleanups here make the old platforms a bit more
-consistent, in multiple ways:
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm/Kconfig                 |  1 +
+ arch/arm/include/asm/mach/time.h |  2 --
+ arch/arm/kernel/time.c           | 14 --------------
+ arch/arm/mach-rpc/time.c         |  2 +-
+ 4 files changed, 2 insertions(+), 17 deletions(-)
 
-- rather than selecting GENERIC_CLOCKEVENTS on modern
-  platforms, select LEGACY_TIMER_TICK on the old ones.
-
-- Hide some more of the internal implementation and only
-  provide a single common entry point for the timer tick,
-  which also makes the behavior more consistent.
-
-- Remove the m68k and arm specific infrastructure pieces
-  and call the common helper directly from each timer
-  interrupt function.
-
-I tested the series on m68k with the qemu q800 target
-platform, both with the legacy_timer_tick() implementation
-and after converting that to a periodic clockevent driver.
-
-     Arnd
-
-Arnd Bergmann (13):
-  timekeeping: add CONFIG_LEGACY_TIMER_TICK
-  ia64: convert to legacy_timer_tick
-  ARM: rpc: use legacy_timer_tick
-  parisc: use legacy_timer_tick
-  m68k: coldfire: use legacy_timer_tick()
-  m68k: split heartbeat out of timer function
-  m68k: sun3/sun3c: use legacy_timer_tick
-  m68k: m68328: use legacy_timer_tick()
-  m68k: change remaining timers to legacy_timer_tick
-  m68k: remove timer_interrupt() function
-  timekeeping: remove xtime_update
-  timekeeping: default GENERIC_CLOCKEVENTS to enabled
-  [RFC] m68k: mac: convert to generic clockevent
-
- .../time/clockevents/arch-support.txt         |  8 ++--
- arch/alpha/Kconfig                            |  1 -
- arch/arc/Kconfig                              |  1 -
- arch/arm/Kconfig                              | 13 +-----
- arch/arm/include/asm/mach/time.h              |  2 -
- arch/arm/kernel/time.c                        | 14 ------
- arch/arm/mach-rpc/time.c                      |  2 +-
- arch/arm64/Kconfig                            |  1 -
- arch/arm64/Kconfig.platforms                  |  1 -
- arch/c6x/Kconfig                              |  1 -
- arch/csky/Kconfig                             |  1 -
- arch/h8300/Kconfig                            |  1 -
- arch/hexagon/Kconfig                          |  1 -
- arch/ia64/Kconfig                             |  1 +
- arch/ia64/kernel/time.c                       | 36 ++++++---------
- arch/m68k/68000/timers.c                      |  7 ++-
- arch/m68k/Kconfig.cpu                         | 34 +++++++++++---
- arch/m68k/Kconfig.machine                     | 15 +++++++
- arch/m68k/amiga/config.c                      | 11 +++--
- arch/m68k/apollo/config.c                     | 11 +++--
- arch/m68k/atari/config.c                      |  2 +-
- arch/m68k/atari/time.c                        |  9 ++--
- arch/m68k/bvme6000/config.c                   |  9 ++--
- arch/m68k/coldfire/Makefile                   | 32 ++++++++------
- arch/m68k/coldfire/pit.c                      |  2 +-
- arch/m68k/coldfire/sltimers.c                 |  8 ++--
- arch/m68k/coldfire/timers.c                   |  8 ++--
- arch/m68k/hp300/time.c                        |  8 ++--
- arch/m68k/hp300/time.h                        |  2 +-
- arch/m68k/include/asm/machdep.h               | 12 +++--
- arch/m68k/kernel/setup_mm.c                   |  2 +-
- arch/m68k/kernel/setup_no.c                   |  2 +-
- arch/m68k/kernel/time.c                       | 18 ++------
- arch/m68k/mac/config.c                        |  6 +--
- arch/m68k/mac/via.c                           | 44 +++++++++++++++----
- arch/m68k/mvme147/config.c                    |  9 ++--
- arch/m68k/mvme16x/config.c                    |  9 ++--
- arch/m68k/q40/config.c                        |  2 +-
- arch/m68k/q40/q40ints.c                       | 10 ++---
- arch/m68k/sun3/config.c                       |  4 +-
- arch/m68k/sun3/sun3ints.c                     |  3 +-
- arch/m68k/sun3x/time.c                        |  5 +--
- arch/m68k/sun3x/time.h                        |  2 +-
- arch/microblaze/Kconfig                       |  1 -
- arch/mips/Kconfig                             |  1 -
- arch/nds32/Kconfig                            |  1 -
- arch/nios2/Kconfig                            |  1 -
- arch/openrisc/Kconfig                         |  1 -
- arch/parisc/Kconfig                           |  2 +-
- arch/parisc/kernel/time.c                     |  9 ++--
- arch/powerpc/Kconfig                          |  1 -
- arch/riscv/Kconfig                            |  1 -
- arch/s390/Kconfig                             |  1 -
- arch/sh/Kconfig                               |  1 -
- arch/sparc/Kconfig                            |  1 -
- arch/um/Kconfig                               |  1 -
- arch/x86/Kconfig                              |  1 -
- arch/xtensa/Kconfig                           |  1 -
- include/linux/timekeeping.h                   |  5 +--
- kernel/time/Kconfig                           |  9 +++-
- kernel/time/Makefile                          |  1 +
- kernel/time/tick-legacy.c                     | 37 ++++++++++++++++
- kernel/time/timekeeping.c                     | 16 -------
- kernel/time/timekeeping.h                     |  1 +
- 64 files changed, 242 insertions(+), 221 deletions(-)
- create mode 100644 kernel/time/tick-legacy.c
-
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Finn Thain <fthain@telegraphics.com.au>
-Cc: Philip Blundell <philb@gnu.org>
-Cc: Joshua Thompson <funaho@jurai.org>
-Cc: Sam Creasey <sammy@sammy.net>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-ia64@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-arm-kernel@lists.infradead.org
-
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index fe2f17eb2b50..13af8d7a6c17 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -467,6 +467,7 @@ config ARCH_RPC
+ 	select HAVE_IDE
+ 	select HAVE_PATA_PLATFORM
+ 	select ISA_DMA_API
++	select LEGACY_TIMER_TICK
+ 	select NEED_MACH_IO_H
+ 	select NEED_MACH_MEMORY_H
+ 	select NO_IOPORT_MAP
+diff --git a/arch/arm/include/asm/mach/time.h b/arch/arm/include/asm/mach/time.h
+index d75d39280db7..5f522916ec99 100644
+--- a/arch/arm/include/asm/mach/time.h
++++ b/arch/arm/include/asm/mach/time.h
+@@ -7,8 +7,6 @@
+ #ifndef __ASM_ARM_MACH_TIME_H
+ #define __ASM_ARM_MACH_TIME_H
+ 
+-extern void timer_tick(void);
+-
+ typedef void (*clock_access_fn)(struct timespec64 *);
+ extern int register_persistent_clock(clock_access_fn read_persistent);
+ 
+diff --git a/arch/arm/kernel/time.c b/arch/arm/kernel/time.c
+index 09b149b09c43..b3836c94dc74 100644
+--- a/arch/arm/kernel/time.c
++++ b/arch/arm/kernel/time.c
+@@ -60,20 +60,6 @@ unsigned long profile_pc(struct pt_regs *regs)
+ EXPORT_SYMBOL(profile_pc);
+ #endif
+ 
+-#ifndef CONFIG_GENERIC_CLOCKEVENTS
+-/*
+- * Kernel system timer support.
+- */
+-void timer_tick(void)
+-{
+-	profile_tick(CPU_PROFILING);
+-	xtime_update(1);
+-#ifndef CONFIG_SMP
+-	update_process_times(user_mode(get_irq_regs()));
+-#endif
+-}
+-#endif
+-
+ static void dummy_clock_access(struct timespec64 *ts)
+ {
+ 	ts->tv_sec = 0;
+diff --git a/arch/arm/mach-rpc/time.c b/arch/arm/mach-rpc/time.c
+index da85cac761ba..9f8edcfe9357 100644
+--- a/arch/arm/mach-rpc/time.c
++++ b/arch/arm/mach-rpc/time.c
+@@ -81,7 +81,7 @@ static irqreturn_t
+ ioc_timer_interrupt(int irq, void *dev_id)
+ {
+ 	ioc_time += RPC_LATCH;
+-	timer_tick();
++	legacy_timer_tick(1);
+ 	return IRQ_HANDLED;
+ }
+ 
 -- 
 2.27.0
 
