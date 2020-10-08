@@ -7,23 +7,23 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 125E4C47095
-	for <linux-parisc@archiver.kernel.org>; Thu,  8 Oct 2020 15:48:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0736AC4363C
+	for <linux-parisc@archiver.kernel.org>; Thu,  8 Oct 2020 15:49:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D24EE20739
-	for <linux-parisc@archiver.kernel.org>; Thu,  8 Oct 2020 15:48:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BA36D20782
+	for <linux-parisc@archiver.kernel.org>; Thu,  8 Oct 2020 15:49:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731231AbgJHPsv (ORCPT
+        id S1731267AbgJHPtJ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 8 Oct 2020 11:48:51 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:55405 "EHLO
+        Thu, 8 Oct 2020 11:49:09 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:44205 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgJHPst (ORCPT
+        with ESMTP id S1725987AbgJHPtI (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:48:49 -0400
+        Thu, 8 Oct 2020 11:49:08 -0400
 Received: from localhost.localdomain ([192.30.34.233]) by
  mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MFbmS-1k9SJ504kA-00H3b3; Thu, 08 Oct 2020 17:48:09 +0200
+ 1Mjjvp-1ko2Pd2Nkx-00lBsW; Thu, 08 Oct 2020 17:48:23 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
 To:     linux-kernel@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -46,110 +46,467 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 08/13] m68k: m68328: use legacy_timer_tick()
-Date:   Thu,  8 Oct 2020 17:46:46 +0200
-Message-Id: <20201008154651.1901126-9-arnd@arndb.de>
+Subject: [PATCH 10/13] m68k: remove timer_interrupt() function
+Date:   Thu,  8 Oct 2020 17:46:48 +0200
+Message-Id: <20201008154651.1901126-11-arnd@arndb.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201008154651.1901126-1-arnd@arndb.de>
 References: <20201008154651.1901126-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:X94e4tE6h1ucE2ptsUxdCsFjY5Vt4Yxb8o2F6d+WCVsxW3/pMXg
- FSX762vrq4q7eZ/50hBxTz/TSg4JHk9WT8w2l5djQmOGWFTvkaMwMOKxbJHu0yBszQ/wLF9
- w8OAHadLWVgTzZ4+T9le/sPTI6CdGiJMJZGRacnqSQDG8Mfh/Bo4RRtSxrQju/Gu1WgZrdO
- P81KGjziyKRQaHc8+bi7g==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JZX3P9KuXIw=:RlCKXSHeShn4FJEVlMGuL8
- K/aJCs3QddlZYJRHnyZ4t/Pa4oGfXCF79wf/KHA5fssa/SOnPhNw/rV69J0NefDyw1Z7XajrW
- Gigo1IAyBHWzwyH0ceCSFrMn4BiKZRVwrGGXsJEHP3YEoaNAX07MaYmBw9g+75ufMsowTrjR/
- 4vfLnmXbv1+r4Za1/PrIPvrg71rPL7kh2PmNaXMGdj/WUhG+2+ykWCxoiRcfcY9jCmo9IOoGh
- qIxTfvFcKzwjRKpQCgLWxG+KYophSkeylusJML1y6ccJWUG+Qcrd5kLtfUFUStchrd4RVqATJ
- supGqhInRtECv2NX6R0CKNQboZ27f1b/7zbaC2LQtbnpvX2IIFd+guKZCwqEGtLXQlLXyLDZW
- 496wwMZRPCYihJkKon12c76/PXonZ7xcf6e1a0H/jnsTKW9UmFu93RdC13LVbXE01e17IVwFE
- K5r+mdqsknPcEFbHQd41irWcrVax4ScHJ7MOmDjPVowkodd5vNxspEbru5eh/E01uAy3z0BoB
- Fr17rxcpGpuFh1SipceLToKFWGdZ6nOFDkTi5As0RcSGGU5fGXPFrFSB8SRs3SnSjaxhuba/8
- w5tQ3uNjA+FSjURhyDsPNUx2IF+w1wz+IZP0ifMgPUupPo+JPY4/uQmCw6NbAnJVg4KvieFJA
- n+yFNexWC3vi9gDo+TSHLqfpIY7ZbHOsXNRF/P4t63VYvfbIicSYwNQ6xnGYxkuZ+uomTZT70
- hswbhza1vTpRnTNuy5u3NCSP+++jigRvTBIrTQsUB+cOnW+P34CBqAADz4orO9lnRndyibVqj
- P3A5NDBTaS6Qpj7orts+Y7ASc081u53+K3gPaHeltGUn2wTyyZtgUkb8LXQM+4JqM5/oHjV
+X-Provags-ID: V03:K1:o9+uqEYPJWMC8KyTN52xBCgB0YrMP/bIcn0nDknzLZHcnnYOdIx
+ 3bm5R2Hdnq3AnAuxrRAzZepaYCiFR0UGRJ8Rt73H883uyzHQheuY+w5XGHOTlLDho3TTvxf
+ xkvu4l/qV2OBfNZ6Pg0RuCYHQVwNo8uCvHsA+0MEY74yJAXNU9vx3sXEt7ro2w9w3LNtm0w
+ R600g0WjfvjDLrhZ29wjg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:dIaM/h8khPQ=:s0567C5Ew/S/tvdYmAQrfp
+ yt2ZClXgn1fTxpT+wZ2FaqSWsi9kYIm9skoATq7QdzHDgNEyidSqvnfjFBamk4syj48k/w0g2
+ 7wUqsAD54BVYmC31PigJUVSAJC0RV0Ajl4rOC3i+youTm+4swqdZe0bEXtMOzpEAyeX5kz6v6
+ JgrSBL+VKR1Ija/vgY4/Iaa1P32UA1V1BKJerm/2TuKRo9fBiym95A2Nu+IKTXPyVpotkysGm
+ x0qOxtbeWxQLGD3gPyxmTZRqMQxchlL7oFhFh9SrUSeqIW0qwVhxURHKfnonEaikAQuu/LWQR
+ T0ESuJu58Z3EiG+FYlhQ+rPpiSZBo0FCG9kyxfwOTUTpfnbKW9rL+Ced08ccHO0fqVQzxRhPD
+ OHztR2aZUWzlsvWqMkJCKbvazdsury/P95mh6WQ/BOj/b/dLfaZhCMSl50IiWoKCQTfrEIopS
+ MJJ1C07mxC8XO3lOjcnl4KVyG+pcY7cmfrbYZvJxzusb5yljQz1PtUX+Y5+ZvkTnPk1BoRIH/
+ 3u1BixKt4e+U+IGctfsb3o80vAanBX7HIu3i+COsBVn/yxCyhUYJvD9CRR/HhkVp5W1V93SpT
+ w1i1Yj9feQReuwXkX2I5hGksK7RaSCxpkqyPSoVUgNKg/NEz4cK6+ADtt9zRHPE3lItsuso2h
+ 13UPdK+JiCiPl8fcMZCHifvNWg1toLMtj2+37A6V1lQNd68nJGPgcXK7sDV0rAIn4s0xBKjjw
+ ZdESxPiK04mJMNgNpQs/H4rEUcsEsSvYHz4zu2hkpoHJcpTxcYShRbekihzGRM6fmtcUqMjqB
+ zlnhN19mD7MwMChfJ7mnlJNLxzY8YiBfEdacEhjRUkh1AaBx30SR4J+zwkH6x4qp/dQEtUA
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-A couple of machines share the m68328 timer code that
-is based on calling timer_interrupt(). Change these
-to the new and slightly more generic legacy_timer_tick()
-helper.
+This gets passed to a number of init functions, but is
+ignored everywhere, so remove the function and change the
+mach_sched_init callback to take no arguments.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/m68k/68000/timers.c  | 5 ++---
- arch/m68k/Kconfig.machine | 4 ++++
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ arch/m68k/68000/timers.c        |  2 +-
+ arch/m68k/amiga/config.c        |  4 ++--
+ arch/m68k/apollo/config.c       |  4 ++--
+ arch/m68k/atari/config.c        |  2 +-
+ arch/m68k/atari/time.c          |  2 +-
+ arch/m68k/bvme6000/config.c     |  4 ++--
+ arch/m68k/coldfire/pit.c        |  2 +-
+ arch/m68k/coldfire/sltimers.c   |  2 +-
+ arch/m68k/coldfire/timers.c     |  2 +-
+ arch/m68k/hp300/time.c          |  2 +-
+ arch/m68k/hp300/time.h          |  2 +-
+ arch/m68k/include/asm/machdep.h |  5 ++---
+ arch/m68k/kernel/setup_mm.c     |  2 +-
+ arch/m68k/kernel/setup_no.c     |  2 +-
+ arch/m68k/kernel/time.c         | 15 +--------------
+ arch/m68k/mac/config.c          |  6 +++---
+ arch/m68k/mac/via.c             |  2 +-
+ arch/m68k/mvme147/config.c      |  4 ++--
+ arch/m68k/mvme16x/config.c      |  4 ++--
+ arch/m68k/q40/config.c          |  2 +-
+ arch/m68k/q40/q40ints.c         |  2 +-
+ arch/m68k/sun3/config.c         |  4 ++--
+ arch/m68k/sun3x/time.c          |  2 +-
+ arch/m68k/sun3x/time.h          |  2 +-
+ 24 files changed, 33 insertions(+), 47 deletions(-)
 
 diff --git a/arch/m68k/68000/timers.c b/arch/m68k/68000/timers.c
-index e8dfdd2556a5..3aa006f8e7ea 100644
+index 3aa006f8e7ea..0d0417cebc7f 100644
 --- a/arch/m68k/68000/timers.c
 +++ b/arch/m68k/68000/timers.c
-@@ -52,7 +52,6 @@
+@@ -91,7 +91,7 @@ static struct clocksource m68328_clk = {
+ 
+ /***************************************************************************/
+ 
+-void hw_timer_init(irq_handler_t handler)
++void hw_timer_init(void)
+ {
+ 	int ret;
+ 
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index 91dc87b86411..50e9a2c6523e 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -92,7 +92,7 @@ static char *amiga_models[] __initdata = {
+ 
+ static char amiga_model_name[13] = "Amiga ";
+ 
+-static void amiga_sched_init(irq_handler_t handler);
++static void amiga_sched_init(void);
+ static void amiga_get_model(char *model);
+ static void amiga_get_hardware_list(struct seq_file *m);
+ extern void amiga_mksound(unsigned int count, unsigned int ticks);
+@@ -483,7 +483,7 @@ static irqreturn_t ciab_timer_handler(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void __init amiga_sched_init(irq_handler_t timer_routine)
++static void __init amiga_sched_init(void)
+ {
+ 	static struct resource sched_res = {
+ 		.name = "timer", .start = 0x00bfd400, .end = 0x00bfd5ff,
+diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
+index 17d59fa6b25b..36c2cd97f228 100644
+--- a/arch/m68k/apollo/config.c
++++ b/arch/m68k/apollo/config.c
+@@ -26,7 +26,7 @@ u_long cpuctrl_physaddr;
+ u_long timer_physaddr;
+ u_long apollo_model;
+ 
+-extern void dn_sched_init(irq_handler_t handler);
++extern void dn_sched_init(void);
+ extern void dn_init_IRQ(void);
+ extern int dn_dummy_hwclk(int, struct rtc_time *);
+ extern void dn_dummy_reset(void);
+@@ -179,7 +179,7 @@ irqreturn_t dn_timer_int(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-void dn_sched_init(irq_handler_t timer_routine)
++void dn_sched_init(void)
+ {
+ 	/* program timer 1 */
+ 	*(volatile unsigned char *)(apollo_timer + 3) = 0x01;
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index 7ec3161e8517..50fda4bea521 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -77,7 +77,7 @@ static void atari_heartbeat(int on);
  #endif
  
- static u32 m68328_tick_cnt;
--static irq_handler_t timer_interrupt;
+ /* atari specific timer functions (in time.c) */
+-extern void atari_sched_init(irq_handler_t);
++extern void atari_sched_init(void);
+ extern int atari_mste_hwclk (int, struct rtc_time *);
+ extern int atari_tt_hwclk (int, struct rtc_time *);
  
- /***************************************************************************/
- 
-@@ -62,7 +61,8 @@ static irqreturn_t hw_tick(int irq, void *dummy)
- 	TSTAT &= 0;
- 
- 	m68328_tick_cnt += TICKS_PER_JIFFY;
--	return timer_interrupt(irq, dummy);
-+	legacy_timer_tick(1);
-+	return IRQ_HANDLED;
+diff --git a/arch/m68k/atari/time.c b/arch/m68k/atari/time.c
+index 36d811ae09ee..1068670cb741 100644
+--- a/arch/m68k/atari/time.c
++++ b/arch/m68k/atari/time.c
+@@ -56,7 +56,7 @@ static irqreturn_t mfp_timer_c_handler(int irq, void *dev_id)
  }
  
+ void __init
+-atari_sched_init(irq_handler_t timer_routine)
++atari_sched_init(void)
+ {
+     /* set Timer C data Register */
+     st_mfp.tim_dt_c = INT_TICKS;
+diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
+index d3f5963021d3..b37f8ce034e7 100644
+--- a/arch/m68k/bvme6000/config.c
++++ b/arch/m68k/bvme6000/config.c
+@@ -38,7 +38,7 @@
+ #include <asm/bvme6000hw.h>
+ 
+ static void bvme6000_get_model(char *model);
+-extern void bvme6000_sched_init(irq_handler_t handler);
++extern void bvme6000_sched_init(void);
+ extern int bvme6000_hwclk (int, struct rtc_time *);
+ extern void bvme6000_reset (void);
+ void bvme6000_set_vectors (void);
+@@ -189,7 +189,7 @@ static irqreturn_t bvme6000_timer_int (int irq, void *dev_id)
+  * so divide by 8 to get the microsecond result.
+  */
+ 
+-void bvme6000_sched_init (irq_handler_t timer_routine)
++void bvme6000_sched_init (void)
+ {
+     volatile RtcPtr_t rtc = (RtcPtr_t)BVME_RTC_BASE;
+     unsigned char msr = rtc->msr & 0xc0;
+diff --git a/arch/m68k/coldfire/pit.c b/arch/m68k/coldfire/pit.c
+index fd1d9c915daa..855d0af47097 100644
+--- a/arch/m68k/coldfire/pit.c
++++ b/arch/m68k/coldfire/pit.c
+@@ -136,7 +136,7 @@ static struct clocksource pit_clk = {
+ 
  /***************************************************************************/
-@@ -113,7 +113,6 @@ void hw_timer_init(irq_handler_t handler)
- 	/* Enable timer 1 */
- 	TCTL |= TCTL_TEN;
- 	clocksource_register_hz(&m68328_clk, TICKS_PER_JIFFY*HZ);
--	timer_interrupt = handler;
+ 
+-void hw_timer_init(irq_handler_t handler)
++void hw_timer_init(void)
+ {
+ 	int ret;
+ 
+diff --git a/arch/m68k/coldfire/sltimers.c b/arch/m68k/coldfire/sltimers.c
+index 25a1319f3cb8..f9d572ee63db 100644
+--- a/arch/m68k/coldfire/sltimers.c
++++ b/arch/m68k/coldfire/sltimers.c
+@@ -118,7 +118,7 @@ static struct clocksource mcfslt_clk = {
+ 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
+ };
+ 
+-void hw_timer_init(irq_handler_t handler)
++void hw_timer_init(void)
+ {
+ 	int r;
+ 
+diff --git a/arch/m68k/coldfire/timers.c b/arch/m68k/coldfire/timers.c
+index 24b5e2d1b00b..05a42d8e0a59 100644
+--- a/arch/m68k/coldfire/timers.c
++++ b/arch/m68k/coldfire/timers.c
+@@ -107,7 +107,7 @@ static struct clocksource mcftmr_clk = {
+ 
+ /***************************************************************************/
+ 
+-void hw_timer_init(irq_handler_t handler)
++void hw_timer_init(void)
+ {
+ 	int r;
+ 
+diff --git a/arch/m68k/hp300/time.c b/arch/m68k/hp300/time.c
+index 011fc2e5a68a..1d1b7b3b5dd4 100644
+--- a/arch/m68k/hp300/time.c
++++ b/arch/m68k/hp300/time.c
+@@ -98,7 +98,7 @@ static u64 hp300_read_clk(struct clocksource *cs)
+ 	return ticks;
  }
  
- /***************************************************************************/
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index e3c835440d9a..0ff9338b958e 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -146,6 +146,7 @@ config PILOT
- config PILOT3
- 	bool "Pilot 1000/5000, PalmPilot Personal/Pro, or PalmIII support"
- 	depends on M68328
-+	select LEGACY_TIMER_TICK
- 	select PILOT
- 	help
- 	  Support for the Palm Pilot 1000/5000, Personal/Pro and PalmIII.
-@@ -159,18 +160,21 @@ config XCOPILOT_BUGS
- config UCSIMM
- 	bool "uCsimm module support"
- 	depends on M68EZ328
-+	select LEGACY_TIMER_TICK
- 	help
- 	  Support for the Arcturus Networks uCsimm module.
+-void __init hp300_sched_init(irq_handler_t vector)
++void __init hp300_sched_init(void)
+ {
+   out_8(CLOCKBASE + CLKCR2, 0x1);		/* select CR1 */
+   out_8(CLOCKBASE + CLKCR1, 0x1);		/* reset */
+diff --git a/arch/m68k/hp300/time.h b/arch/m68k/hp300/time.h
+index 1d77b55cc72a..040a098b7db1 100644
+--- a/arch/m68k/hp300/time.h
++++ b/arch/m68k/hp300/time.h
+@@ -1 +1 @@
+-extern void hp300_sched_init(irq_handler_t vector);
++extern void hp300_sched_init(void);
+diff --git a/arch/m68k/include/asm/machdep.h b/arch/m68k/include/asm/machdep.h
+index e62a39d01ae4..7181ed43ba22 100644
+--- a/arch/m68k/include/asm/machdep.h
++++ b/arch/m68k/include/asm/machdep.h
+@@ -12,7 +12,7 @@ struct rtc_time;
+ struct rtc_pll_info;
+ struct buffer_head;
  
- config UCDIMM
- 	bool "uDsimm module support"
- 	depends on M68VZ328
-+	select LEGACY_TIMER_TICK
- 	help
- 	  Support for the Arcturus Networks uDsimm module.
+-extern void (*mach_sched_init) (irq_handler_t handler);
++extern void (*mach_sched_init) (void);
+ /* machine dependent irq functions */
+ extern void (*mach_init_IRQ) (void);
+ extern void (*mach_get_model) (char *model);
+@@ -33,8 +33,7 @@ extern void (*mach_l2_flush) (int);
+ extern void (*mach_beep) (unsigned int, unsigned int);
  
- config DRAGEN2
- 	bool "DragenEngine II board support"
- 	depends on M68VZ328
-+	select LEGACY_TIMER_TICK
- 	help
- 	  Support for the DragenEngine II board.
+ /* Hardware clock functions */
+-extern void hw_timer_init(irq_handler_t handler);
+-extern unsigned long hw_timer_offset(void);
++extern void hw_timer_init(void);
+ #ifdef CONFIG_HEARTBEAT
+ extern void timer_heartbeat(void);
+ #else
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index ab8aa7be260f..0628733bfb88 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -82,7 +82,7 @@ static struct m68k_mem_info m68k_ramdisk __initdata;
  
+ static char m68k_command_line[CL_SIZE] __initdata;
+ 
+-void (*mach_sched_init) (irq_handler_t handler) __initdata = NULL;
++void (*mach_sched_init) (void) __initdata = NULL;
+ /* machine dependent irq functions */
+ void (*mach_init_IRQ) (void) __initdata = NULL;
+ void (*mach_get_model) (char *model);
+diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+index f66f4b1d062e..e377b4219528 100644
+--- a/arch/m68k/kernel/setup_no.c
++++ b/arch/m68k/kernel/setup_no.c
+@@ -49,7 +49,7 @@ EXPORT_SYMBOL(memory_end);
+ char __initdata command_line[COMMAND_LINE_SIZE];
+ 
+ /* machine dependent timer functions */
+-void (*mach_sched_init)(irq_handler_t handler) __initdata = NULL;
++void (*mach_sched_init)(void) __initdata = NULL;
+ int (*mach_hwclk) (int, struct rtc_time*);
+ 
+ /* machine dependent reboot functions */
+diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
+index c05cec21b05f..340ffeea0a9d 100644
+--- a/arch/m68k/kernel/time.c
++++ b/arch/m68k/kernel/time.c
+@@ -35,19 +35,6 @@
+ unsigned long (*mach_random_get_entropy)(void);
+ EXPORT_SYMBOL_GPL(mach_random_get_entropy);
+ 
+-
+-/*
+- * timer_interrupt() needs to keep up the real-time clock,
+- * as well as call the "xtime_update()" routine every clocktick
+- */
+-static irqreturn_t timer_interrupt(int irq, void *dummy)
+-{
+-	xtime_update(1);
+-	update_process_times(user_mode(get_irq_regs()));
+-	profile_tick(CPU_PROFILING);
+-	return IRQ_HANDLED;
+-}
+-
+ #ifdef CONFIG_HEARTBEAT
+ void timer_heartbeat(void)
+ {
+@@ -157,5 +144,5 @@ module_init(rtc_init);
+ 
+ void __init time_init(void)
+ {
+-	mach_sched_init(timer_interrupt);
++	mach_sched_init();
+ }
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 0ac53d87493c..0dbe0fedd826 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -58,7 +58,7 @@ extern int mac_hwclk(int, struct rtc_time *);
+ extern void iop_preinit(void);
+ extern void iop_init(void);
+ extern void via_init(void);
+-extern void via_init_clock(irq_handler_t func);
++extern void via_init_clock(void);
+ extern void oss_init(void);
+ extern void psc_init(void);
+ extern void baboon_init(void);
+@@ -69,9 +69,9 @@ static void mac_get_model(char *str);
+ static void mac_identify(void);
+ static void mac_report_hardware(void);
+ 
+-static void __init mac_sched_init(irq_handler_t vector)
++static void __init mac_sched_init(void)
+ {
+-	via_init_clock(vector);
++	via_init_clock();
+ }
+ 
+ /*
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index ba444e1774b8..8ad734e3c934 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -609,7 +609,7 @@ static irqreturn_t via_timer_handler(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-void __init via_init_clock(irq_handler_t timer_routine)
++void __init via_init_clock(void)
+ {
+ 	if (request_irq(IRQ_MAC_TIMER_1, via_timer_handler, IRQF_TIMER, "timer",
+ 			NULL)) {
+diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+index 5dabbc915b8d..4fc43b5d7545 100644
+--- a/arch/m68k/mvme147/config.c
++++ b/arch/m68k/mvme147/config.c
+@@ -37,7 +37,7 @@
+ 
+ 
+ static void mvme147_get_model(char *model);
+-extern void mvme147_sched_init(irq_handler_t handler);
++extern void mvme147_sched_init(void);
+ extern int mvme147_hwclk (int, struct rtc_time *);
+ extern void mvme147_reset (void);
+ 
+@@ -125,7 +125,7 @@ static irqreturn_t mvme147_timer_int (int irq, void *dev_id)
+ }
+ 
+ 
+-void mvme147_sched_init (irq_handler_t timer_routine)
++void mvme147_sched_init (void)
+ {
+ 	if (request_irq(PCC_IRQ_TIMER1, mvme147_timer_int, IRQF_TIMER,
+ 			"timer 1", NULL))
+diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+index ae9bb7fda161..18e158887ec9 100644
+--- a/arch/m68k/mvme16x/config.c
++++ b/arch/m68k/mvme16x/config.c
+@@ -43,7 +43,7 @@ extern t_bdid mvme_bdid;
+ static MK48T08ptr_t volatile rtc = (MK48T08ptr_t)MVME_RTC_BASE;
+ 
+ static void mvme16x_get_model(char *model);
+-extern void mvme16x_sched_init(irq_handler_t handler);
++extern void mvme16x_sched_init(void);
+ extern int mvme16x_hwclk (int, struct rtc_time *);
+ extern void mvme16x_reset (void);
+ 
+@@ -384,7 +384,7 @@ static irqreturn_t mvme16x_timer_int (int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-void mvme16x_sched_init (irq_handler_t timer_routine)
++void mvme16x_sched_init(void)
+ {
+     uint16_t brdno = be16_to_cpu(mvme_bdid.brdno);
+     int irq;
+diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
+index 4627de3c0603..55f76f0fa29b 100644
+--- a/arch/m68k/q40/config.c
++++ b/arch/m68k/q40/config.c
+@@ -37,7 +37,7 @@
+ 
+ extern void q40_init_IRQ(void);
+ static void q40_get_model(char *model);
+-extern void q40_sched_init(irq_handler_t handler);
++extern void q40_sched_init(void);
+ 
+ static int q40_hwclk(int, struct rtc_time *);
+ static unsigned int q40_get_ss(void);
+diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
+index 4c6c409053fd..6886a5d0007b 100644
+--- a/arch/m68k/q40/q40ints.c
++++ b/arch/m68k/q40/q40ints.c
+@@ -149,7 +149,7 @@ static irqreturn_t q40_timer_int(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-void q40_sched_init (irq_handler_t timer_routine)
++void q40_sched_init (void)
+ {
+ 	int timer_irq;
+ 
+diff --git a/arch/m68k/sun3/config.c b/arch/m68k/sun3/config.c
+index 7204c0ea0dc7..f7dd47232b6c 100644
+--- a/arch/m68k/sun3/config.c
++++ b/arch/m68k/sun3/config.c
+@@ -36,7 +36,7 @@
+ 
+ char sun3_reserved_pmeg[SUN3_PMEGS_NUM];
+ 
+-static void sun3_sched_init(irq_handler_t handler);
++static void sun3_sched_init(void);
+ extern void sun3_get_model (char* model);
+ extern int sun3_hwclk(int set, struct rtc_time *t);
+ 
+@@ -151,7 +151,7 @@ void __init config_sun3(void)
+ 	sun3_bootmem_alloc(memory_start, memory_end);
+ }
+ 
+-static void __init sun3_sched_init(irq_handler_t timer_routine)
++static void __init sun3_sched_init(void)
+ {
+ 	sun3_disable_interrupts();
+         intersil_clock->cmd_reg=(INTERSIL_RUN|INTERSIL_INT_DISABLE|INTERSIL_24H_MODE);
+diff --git a/arch/m68k/sun3x/time.c b/arch/m68k/sun3x/time.c
+index f6e25fdc008c..a2c97821faf2 100644
+--- a/arch/m68k/sun3x/time.c
++++ b/arch/m68k/sun3x/time.c
+@@ -90,7 +90,7 @@ static irqreturn_t sun3x_timer_tick(int irq, void *dev_id)
+ }
+ #endif
+ 
+-void __init sun3x_sched_init(irq_handler_t vector)
++void __init sun3x_sched_init(void)
+ {
+ 
+ 	sun3_disable_interrupts();
+diff --git a/arch/m68k/sun3x/time.h b/arch/m68k/sun3x/time.h
+index 86ce78bb3c28..7cfff22e4986 100644
+--- a/arch/m68k/sun3x/time.h
++++ b/arch/m68k/sun3x/time.h
+@@ -3,7 +3,7 @@
+ #define SUN3X_TIME_H
+ 
+ extern int sun3x_hwclk(int set, struct rtc_time *t);
+-void sun3x_sched_init(irq_handler_t vector);
++void sun3x_sched_init(void);
+ 
+ struct mostek_dt {
+ 	volatile unsigned char csr;
 -- 
 2.27.0
 
