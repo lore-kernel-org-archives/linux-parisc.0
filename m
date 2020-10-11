@@ -1,147 +1,184 @@
-Return-Path: <SRS0=QMOh=DR=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=Od0h=DS=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2683C433E7
-	for <linux-parisc@archiver.kernel.org>; Sat, 10 Oct 2020 23:07:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F863C433E7
+	for <linux-parisc@archiver.kernel.org>; Sun, 11 Oct 2020 11:56:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9ABD42067C
-	for <linux-parisc@archiver.kernel.org>; Sat, 10 Oct 2020 23:07:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D0D8320773
+	for <linux-parisc@archiver.kernel.org>; Sun, 11 Oct 2020 11:56:33 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="cnQLyeCm"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731553AbgJJW5Z (ORCPT
+        id S2387716AbgJKL4c (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 10 Oct 2020 18:57:25 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:51207 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730399AbgJJSwZ (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 10 Oct 2020 14:52:25 -0400
-Received: from mail-qk1-f171.google.com ([209.85.222.171]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Mq2vU-1k4xW42QHy-00nAAc; Sat, 10 Oct 2020 20:52:18 +0200
-Received: by mail-qk1-f171.google.com with SMTP id s4so14062039qkf.7;
-        Sat, 10 Oct 2020 11:52:18 -0700 (PDT)
-X-Gm-Message-State: AOAM531TjP10XUVHyhHvga/GBzubonVntEPI0GTwOJXYLyiQbofMycph
-        ulv7lPAq83cDPxrll7sgmbLdIEGaicanWLSCG04=
-X-Google-Smtp-Source: ABdhPJyHb97asLXMVebqtlWTvKZgLrTtP/hgQ4nxOJVaC7ZPWU+ccFfq4hg78Uvv2vpNcQYhAbXFOff6pGfcfHymFNw=
-X-Received: by 2002:a05:620a:b13:: with SMTP id t19mr3306996qkg.3.1602355937246;
- Sat, 10 Oct 2020 11:52:17 -0700 (PDT)
+        Sun, 11 Oct 2020 07:56:32 -0400
+Received: from mout.gmx.net ([212.227.17.22]:37877 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387690AbgJKL4a (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 11 Oct 2020 07:56:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1602417379;
+        bh=aCwJTasXSGutuCXfxx14Zy/SrMcqLgSB9diEc+V6GHY=;
+        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
+        b=cnQLyeCmGzBPu6LwDsO490F7F6q6mx2spo74VuzhuN1jwb6Jm1ji1uUu82ENuyDkg
+         otTg9gs4fOCiNMsr1cDoo5YMwCj4lark6V7ZmBBfvC3bVCV+NQop4pCS4deUz7mY6l
+         p/Zu+BqEdxcKvA5D5QoQuT1fhq8iYYgyz+1e8oJ0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.143.189]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MNsw4-1kphSV23xI-00OCsh; Sun, 11
+ Oct 2020 13:56:19 +0200
+Subject: Re: [PATCH] parisc: Add MAP_UNINITIALIZED define
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+References: <20201010215431.GA30936@ls3530.fritz.box>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+ c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
+Message-ID: <5ac6cd13-de63-c625-88a6-ba736480f79e@gmx.de>
+Date:   Sun, 11 Oct 2020 13:56:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de>
- <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 10 Oct 2020 20:52:01 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
-Message-ID: <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
-Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:otRuftNbB3lBySqwtS51xx3yn/t60U7b7y5rmpRvR+Mrfy+Wj+l
- DRYaNPPxivp2vURRNzBwUZYeyUieC6P6mg4LTACfQQgWXaWn4cKcV4PjyalR0KlYarDEukU
- SHmocmeKbLalNUv/mWh+nwh+GbX+XXxdhl0LS94xIqNufD4rlg4VFEY+BPwNgtl2znaCjuo
- Dkh5af7HVd+/VE2bjZGFw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0q4XvGn00f8=:Zejixq+2uSJ3eN+rQC46jy
- Cr09I9ImfBiqPmSSdKuj0GeUejVHklaeu2HyUiRc4F5nN0jKx21L/Uf/3xVdI/Pa0zXHIKoBt
- I8U7nEfGrfTU+bW3s3hehX7zxLMbOiB4Niuc36iuaii0YXTw12PjXDLwlQBzaCqs7eqT+nR/D
- kgZV6SqQq7u0MUVOFyIJbpmAckcckT3d423us+V09bGADbCs+WYsEffSKzM9BmJlqMsGTTowl
- vsN+cU9kpjJRr8j79tlaM/IWfV+6s09plA0en+JgMa9/UXDi/gjJiteufY6Weuf8GDsktCdLg
- a04sqbSQqZuR1NZ8seeq8MKjgjmtZi+rXEh2pstr2fHoeb2jXx+v6ZOO3eA80NrkpzuwIS4le
- /NvSsRuaLD91BEwpeZUQ4y6rTA6U9vOUA6npm4E9ud0fj+/9aLvDYJjdjmdh36i/yXvHDNCSh
- NRmO5AD5ToaOY4483ZR6Q6J6wyecJKaGA8+3vaxEgK+HDC156DMdxtENC119ViQcXus2Zuh4I
- EYo2BfCIX8HtB9XIYDmCMxl8HMagrCiLfhnIRMJ45ku3gkOGT4J4Vl+uwSRklKCbTt4+gWDRm
- SS0ZoNf+BoNvAsnp342Sv2knX5qzw4RuVDzkjUQF4YrFJt+UVWLorYtkoUvwT67ZnORGLxakb
- zc64zAZao8Jisq1weYALu1rB+wKyFFX14vFz/MDIoO0z6Ys8FC04bA8ciR5Ey2gCj3TK3gwYG
- mXQ1jGTMw+0vIdJsrcuFIUGkBM8XBhiJWXBxK3rO7lnOK3VLcgxYTzzUb6ShX62XgvUzrMVXW
- lmKCaiTCCm+crK7wodaXIuswAKEWD0bnQAceO3dz9/l7kD/k044MlADJR7x47TYxaPw625K
+In-Reply-To: <20201010215431.GA30936@ls3530.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Czt+Fq80VoZsHjzmn3nCqLWzpOuOJJOr58d1Q8soN59CBCLxTow
+ QFrcDxK71GmVzHvMWOk0T7mVIKV1vp4yGqw2KkCFJDCUrZsuvJDmOWR90Z3bw67DAMwwMOP
+ G+ig/BD9LzfDwMOVCWI6iZn3bBC+qMrvg3I4wqQISrU8GN9g5fO5of70b8P5ZkTAe2rQqx2
+ C9EpkGw9F4GAcAllBff8Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:M1sKYCc2T6o=:lPglXA9fCrLbsciCvfFts9
+ rKWHl5Yk/4Mh28ddWQaT9ckV48IfmMv5wiKZmiJCRFIGtCGZnkZ4Y99NXN+wHA8nWMr3/kQh/
+ LJWso2/Zu6d0M0x3PTDuHWDTor9z5TfDZ5cFNK9cgtxGWx22cszPlu9S4CYAx+/MkA0ENXIZ3
+ SyDfg83keBVA1bTOHmAZ4ZPCaDV3b17hKO/QUfhn9jW8b+9z9lwUWppedXE0ozu7oWK6s2UF/
+ fMvg8MhVFfqFkLmJqtNFYDQRbOjvDcBYKYMXkZVDlhqITdLw8gzuYUdJIX9UNreO8cohRk8xP
+ 00wrsPX3TUi+5H7O9/GESIOME9keGH292K1QDPTJP+6T6OV05onEyfw3nJnTzASyQAhL2aCx7
+ ztWKQTk9yfdd/V0WD+Iqe2czCOoOrduOHmV9KBBsNZQo4hB5Is0abqrc7/9iT7p/nwHVcw9EN
+ Ov7QXmYAjVhPP6VbNukQebEKlZs8ZBjzwKz+5Zo9nzHCnAd9kfmd49CNIiQwViwxhYFMa+bD8
+ v59RGXUDw6t/vxY2Q1tGinkF4setJHjJAW8wDDW/jVEJs1sWQ52c9N63Ki3sp1ZHF+MCc95sT
+ wiVM77oyXef8hMDhmJW4wGP1EuHHiyU40iEgVnbmX4LVsefRvsiLzwrS/AqIcfN+BjhmaJNio
+ yGzIpnzqbRtE0wEfiWL6UW/18TAFfjgVKAxoXyGfTaBTA/S+EQyIrj6mwwvuAtuh73ygZAlrl
+ 3iFlAvZXY30WU9MXCdnepgeEMMZCxpYf5dd9R3WDOLFd2W/NMGJe765DhBBrgSGgmPoGsEO06
+ mjGD//eE4Q0FPaRx/fhAzFlIdvpztliHP7SZ0+pvsqa6I45p1P4PMYw5Q7mOjhcyijMumehJ4
+ Jkt5/2TnFkHql5rHIOpNlbFrHESVjMflcM4KBeM01rNtcPC0HpQRRqTH7I4b/ex+n6AA4+G8P
+ giYaowSVOSw9zxSADcpznNRjvzKmZXoPRomXoRte0b8qJZW3NI72kAaUsxB5FaqcQO3gqpKwl
+ tcp0FbXMVaX03TwAMi6XTcBrf//LK+mdKOdAmbHSOL/2S1BTfUHtPacYf0HReWfv23DnR+Hdm
+ 2LONAi2lNWA5PCBExckTYA/4RHOgcXmlHi/h0mBJm56XNAPf4/QydFALmk8OezPa3cO2Vb3Ax
+ zt20hf87pv4ULxvM1dkZdjqJ9LoR2QsC59R/4OuhWqJ5i4CgH96tF+aix9u7quiDW2mg+V9qm
+ OWXSJh7MhTQObfOiF
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 12:21 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+On 10/10/20 11:54 PM, Helge Deller wrote:
+> Define MAP_UNINITIALIZED and use same value as other architectures.
+> Fixes build of debian foot package.
+
+I'm tempted to #define MAP_UNINITIALIZED to zero.
+That flag was invented for embedded usage, and becaue of security reasons
+we probably will never deliver uninitialized pages to userspace on parisc.
+So, defining it as 0 should be fine, as this fixes build errors and won't
+have any other (negative) effect.
+Thoughts?
+
+Helge
+
+
+> Suggested-by: John David Anglin <dave.anglin@bell.net>
+> Signed-off-by: Helge Deller <deller@gmx.de>
 >
-> Hi Arnd,
+> diff --git a/arch/parisc/include/uapi/asm/mman.h b/arch/parisc/include/u=
+api/asm/mman.h
+> index 6fd8871e4081..d828b293b6de 100644
+> --- a/arch/parisc/include/uapi/asm/mman.h
+> +++ b/arch/parisc/include/uapi/asm/mman.h
+> @@ -25,6 +25,8 @@
+>  #define MAP_STACK	0x40000		/* give out an address that is best suited f=
+or process/thread stacks */
+>  #define MAP_HUGETLB	0x80000		/* create a huge page mapping */
+>  #define MAP_FIXED_NOREPLACE 0x100000	/* MAP_FIXED which doesn't unmap u=
+nderlying mapping */
+> +#define MAP_UNINITIALIZED 0x4000000	/* For anonymous mmap, memory could=
+ be
+> +					 * uninitialized */
 >
-> Perhaps patch 13 does not belong in this series (?).
+>  #define MS_SYNC		1		/* synchronous memory sync */
+>  #define MS_ASYNC	2		/* sync memory asynchronously */
+> diff --git a/tools/arch/parisc/include/uapi/asm/mman.h b/tools/arch/pari=
+sc/include/uapi/asm/mman.h
+> index f9fd1325f5bd..c7af0f2292fc 100644
+> --- a/tools/arch/parisc/include/uapi/asm/mman.h
+> +++ b/tools/arch/parisc/include/uapi/asm/mman.h
+> @@ -39,6 +39,5 @@
+>  #define MADV_SOFT_OFFLINE 101
+>  /* MAP_32BIT is undefined on parisc, fix it for perf */
+>  #define MAP_32BIT	0
+> -/* MAP_UNINITIALIZED is undefined on parisc, fix it for perf */
+> -#define MAP_UNINITIALIZED	0
+> +#define MAP_UNINITIALIZED 0x4000000
+>  #endif
 >
-> All m68k platforms will need conversion before the TODO can be removed
-> from Documentation/features/time/clockevents/arch-support.txt.
 
-Yes, correct. I marked this patch as RFC instead of PATCH, as I'm
-just trying to find out where it should be headed. I would hope the
-other patches can just get merged.
-
-> On m68k, HZ is fixed at 100. Without addressing that, would there be any
-> benefit from adopting GENERIC_CLOCKEVENTS as per this RFC patch?
-
-I don't think so, I mainly did it to see if there is a problem with mixing
-the two modes, and I couldn't find any. The behavior seems unchanged
-before and after my patch, the main difference being a few extra kilobytes
-in kernel .text for the generic clockevents code.
-
-> On Thu, 8 Oct 2020, Arnd Bergmann wrote:
->
-> > Now that the infrastructure allows kernels to have both legacy timer
-> > ticks and clockevent drivers in the same image, start by moving one
-> > platform to generic clockevents.
-> >
-> > As qemu only supports the q800 platform among the classic m68k, use that
-> > as an example.
-> >
->
-> Correct VIA emulation is suprisingly difficult, so this kind of work
-> should be tested on real hardware.
->
-> I say that because when I did the clocksource conversion for m68k I ran
-> into a bug in QEMU (since fixed) and also because I once worked on some of
-> the bugs in the emulated VIA device used in MAME/MESS.
-
-Good point, though I would be surprised if anything went wrong with
-this patch on real hardware but not in emulation, as all the register-level
-interactions with the timer are the same.
-
-Adding oneshot mode is a completely different matter though, that
-clearly needs to be tested on real hardware.
-
-> > I also tried adding oneshot mode, which was successful but broke the
-> > clocksource. It's probably not hard to make it work properly, but this
-> > is where I've stopped.
-> >
->
-> I'm not so sure that one timer is able to support both a clocksource
-> driver and a clockevent driver. In some cases we may have to drop the
-> clocksource driver (i.e. fall back on the jiffies clocksource).
->
-> Anyway, even on Macs with only one VIA chip we still have two timers. So I
-> think we should try to use Timer 1 as a freerunning clocksource and Timer
-> 2 as a oneshot clock event. This may result in better accuracy and simpler
-> code. This may require some experimentation though.
-
-Ah, good. This is partly what I had been hoping for, as my patch
-can be used as a starting point for that if you want to give it a go.
-
-     Arnd
