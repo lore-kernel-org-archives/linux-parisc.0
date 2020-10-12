@@ -2,31 +2,30 @@ Return-Path: <SRS0=gxf5=DT=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F1D8C433E7
-	for <linux-parisc@archiver.kernel.org>; Mon, 12 Oct 2020 13:57:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51994C433E7
+	for <linux-parisc@archiver.kernel.org>; Mon, 12 Oct 2020 14:02:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 437AC2076E
-	for <linux-parisc@archiver.kernel.org>; Mon, 12 Oct 2020 13:57:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2392920838
+	for <linux-parisc@archiver.kernel.org>; Mon, 12 Oct 2020 14:02:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390573AbgJLN5Q (ORCPT
+        id S1726742AbgJLOCo (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 12 Oct 2020 09:57:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:48228 "EHLO foss.arm.com"
+        Mon, 12 Oct 2020 10:02:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:46658 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389400AbgJLN5P (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:57:15 -0400
+        id S2388681AbgJLNhp (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:37:45 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C5E7F31B;
-        Mon, 12 Oct 2020 06:57:14 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B528D6E;
+        Mon, 12 Oct 2020 06:37:44 -0700 (PDT)
 Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E50A13F66B;
-        Mon, 12 Oct 2020 06:57:12 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 14:57:09 +0100
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 961343F66B;
+        Mon, 12 Oct 2020 06:37:42 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 14:37:39 +0100
 From:   Dave Martin <Dave.Martin@arm.com>
 To:     Peter Collingbourne <pcc@google.com>
 Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
@@ -43,63 +42,60 @@ Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Will Deacon <will@kernel.org>,
         Evgenii Stepanov <eugenis@google.com>,
         Richard Henderson <rth@twiddle.net>
-Subject: Re: [PATCH v10 6/7] signal: define the field siginfo.si_xflags
-Message-ID: <20201012135701.GF32292@arm.com>
+Subject: Re: [PATCH v10 4/7] signal: define the SA_UNSUPPORTED bit in sa_flags
+Message-ID: <20201012133738.GD32292@arm.com>
 References: <cover.1598072840.git.pcc@google.com>
- <8a12152d54ea782f47bc55d791b064abe478473e.1598072840.git.pcc@google.com>
- <20200908151337.GW6642@arm.com>
- <CAMn1gO5ZyHxvNNRpRhqE7fOY_O1QkH37K0ShT2sq7vbo_J-RZA@mail.gmail.com>
- <CAMn1gO6inoGhmoqCb4A_yR3UakU3JsJ4jpsKa5aBqAPhDoPvSg@mail.gmail.com>
+ <f37a8b86c53be4cc440a73be4123e0419deefe5f.1598072840.git.pcc@google.com>
+ <20200908151306.GU6642@arm.com>
+ <CAMn1gO6rNqb-_Rm=7zXaRdP-QvcO5JfnUSBqj3E1uYe2T+YAiw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMn1gO6inoGhmoqCb4A_yR3UakU3JsJ4jpsKa5aBqAPhDoPvSg@mail.gmail.com>
+In-Reply-To: <CAMn1gO6rNqb-_Rm=7zXaRdP-QvcO5JfnUSBqj3E1uYe2T+YAiw@mail.gmail.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 11:19:55AM -0700, Peter Collingbourne wrote:
-> On Wed, Oct 7, 2020 at 7:11 PM Peter Collingbourne <pcc@google.com> wrote:
+On Wed, Oct 07, 2020 at 07:21:25PM -0700, Peter Collingbourne wrote:
+> On Tue, Sep 8, 2020 at 8:13 AM Dave Martin <Dave.Martin@arm.com> wrote:
 > >
-> > On Tue, Sep 8, 2020 at 8:13 AM Dave Martin <Dave.Martin@arm.com> wrote:
-> > >
-> > > On Fri, Aug 21, 2020 at 10:10:16PM -0700, Peter Collingbourne wrote:
-
-[...]
-
-> > > > diff --git a/include/linux/compat.h b/include/linux/compat.h
-> > > > index d38c4d7e83bd..55d4228dfd88 100644
-> > > > --- a/include/linux/compat.h
-> > > > +++ b/include/linux/compat.h
-> > > > @@ -231,7 +231,9 @@ typedef struct compat_siginfo {
-> > > >                                       char _dummy_pkey[__COMPAT_ADDR_BND_PKEY_PAD];
-> > > >                                       u32 _pkey;
-> > > >                               } _addr_pkey;
-> > > > +                             compat_uptr_t _pad[6];
-> > > >                       };
-> > > > +                     compat_uptr_t _xflags;
-> > >
-> > > Should we have the same type here for native and compat?
-> > >
-> > > I don't have a very strong opinion on this, but currently native on
-> > > 64-bit arches will have 32 extra bits in _xflags that can never be used
-> > > (or have to be defined differently for compat).
+> > On Fri, Aug 21, 2020 at 10:10:14PM -0700, Peter Collingbourne wrote:
 > >
-> > Good point. I will make this a u64 (although I think 32 bits will
-> > probably be more than enough, the distance between si_xflags and
-> > si_addr_ignored_bits will be 8 bytes on 64-bit architectures due to
-> > alignment so we may as well make all of the bits available).
+> > Nit: no statement of the chage being made (other than in the subject
+> > line).
 > 
-> It turns out that we can't actually make this a u64 because on 32-bit
-> platforms this increases the alignment of the union to 8, which breaks
-> layout for the other fields in the union. In v12 I will make this a
-> u32 so that we don't end up with unusable bits.
+> Will fix.
+> 
+> > > This bit will never be supported in the uapi. The purpose of this flag
+> > > bit is to allow userspace to distinguish an old kernel that does not
+> > > clear unknown sa_flags bits from a kernel that supports every flag bit.
+> > >
+> > > In other words, if userspace finds that this bit remains set in
+> > > oldact.sa_flags, it means that the kernel cannot be trusted to have
+> > > cleared unknown flag bits from sa_flags, so no assumptions about flag
+> > > bit support can be made.
+> >
+> > This isn't quite right?  After a single sigaction() call, oact will
+> > contain the sa_flags for the previously registered handler.  So a
+> > second sigaction() call would be needed to find out the newly effective
+> > sa_flags.
+> 
+> You're right, this is unclear to say the least. In v11 I will reword like so:
+> 
+>     In other words, if userspace does something like:
+> 
+>       act.sa_flags |= SA_UNSUPPORTED;
+>       sigaction(SIGSEGV, &act, 0);
+>       sigaction(SIGSEGV, 0, &oldact);
+> 
+>     and finds that SA_UNSUPPORTED remains set in oldact.sa_flags, it means
+>     that the kernel cannot be trusted to have cleared unknown flag bits
+>     from sa_flags, so no assumptions about flag bit support can be made.
 
-u32 seems fine to me.
-
-If we need more bits later, we can always use one of the 32 xflags bits
-to indicate that the new field(s) exist.
+Seems reasonable.  We'd need to make sure we're clear about which flags
+this applies for, though.  The pre-existing flags can be assumed to be
+supported irrespective of whether SA_UNSUPPORTED remains set.
 
 Cheers
 ---Dave
