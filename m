@@ -1,79 +1,165 @@
-Return-Path: <SRS0=SBoi=DU=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=imLG=DW=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: **
-X-Spam-Status: No, score=2.1 required=3.0 tests=ADVANCE_FEE_3_NEW_FRM_MNY,
-	BAYES_50,HEADER_FROM_DIFFERENT_DOMAINS,HK_NAME_MR_MRS,LOTS_OF_MONEY,
-	MAILING_LIST_MULTI,MONEY_FORM,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF368C433DF
-	for <linux-parisc@archiver.kernel.org>; Tue, 13 Oct 2020 08:13:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6022BC43457
+	for <linux-parisc@archiver.kernel.org>; Thu, 15 Oct 2020 01:19:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7DD1C20BED
-	for <linux-parisc@archiver.kernel.org>; Tue, 13 Oct 2020 08:13:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 136A722254
+	for <linux-parisc@archiver.kernel.org>; Thu, 15 Oct 2020 01:19:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391138AbgJMINJ convert rfc822-to-8bit (ORCPT
+        id S2387762AbgJOBTC (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 13 Oct 2020 04:13:09 -0400
-Received: from [178.252.167.140] ([178.252.167.140]:43877 "EHLO EXG16.DOE.ir"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2391391AbgJMINI (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:13:08 -0400
-X-Greylist: delayed 905 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 04:13:05 EDT
-Received: from doe.ir (217.218.14.250) by EXG16.DOE.ir (172.20.1.44) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1261.35; Tue, 13 Oct
- 2020 11:27:57 +0330
-Reply-To: <imfc@mail2washington.com>
-From:   "Mrs. Roonie Holbrook" <n.saffar@doe.ir>
-To:     <linux-parisc@vger.kernel.org>
-Subject: From Mrs. Roonie Holbrook !!
-Date:   Tue, 13 Oct 2020 00:57:35 -0700
-Message-ID: <20201013005734.132939086A544431@doe.ir>
+        Wed, 14 Oct 2020 21:19:02 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51716 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387621AbgJOBTB (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 14 Oct 2020 21:19:01 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 902C22ACDE;
+        Wed, 14 Oct 2020 21:18:55 -0400 (EDT)
+Date:   Thu, 15 Oct 2020 12:18:57 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-ia64@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
+In-Reply-To: <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
+Message-ID: <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de> <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [217.218.14.250]
-X-ClientProxiedBy: EXG16.DOE.ir (172.20.1.44) To EXG16.DOE.ir (172.20.1.44)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Attention,
+On Sat, 10 Oct 2020, Arnd Bergmann wrote:
 
-Nice day and Congratulations !!!.
+> > Perhaps patch 13 does not belong in this series (?).
+> >
+> > All m68k platforms will need conversion before the TODO can be removed 
+> > from Documentation/features/time/clockevents/arch-support.txt.
+> 
+> Yes, correct. I marked this patch as RFC instead of PATCH, as I'm just 
+> trying to find out where it should be headed. I would hope the other 
+> patches can just get merged.
+> 
 
-You are qualified for the IMFC Covid 19 grant of $750,000.00 
-dollars to support the people in your community. Now respond to 
-details to claim your money.
+I wonder whether we can improve support for your proposed configuration 
+i.e. a system with no oneshot clockevent device.
 
-You are directed to contact the below Office of Paymaster General 
-immediately through his contact details below:
+The 16 platforms you identified are not all in that category but I suspect 
+that there are others which are (though they don't appear in this series 
+because they already use GENERIC_CLOCKEVENTS).
 
-Mr. Williams Fox
-Email: claim.dept@mail2finance.com 
+One useful optimization would be some way to elide oneshot clockevent 
+support (perhaps with the help of Link Time Optimization).
 
-This is to avoid mistake while transferring your overdue payment 
-to you, You have to forward to him below details of yours to 
-start processing your payment file and this ref: 
-UN/FM14/WB/Covid-19:
- 
-Your Full Name:
-Your Contact Address:
-State:
-Country:
-Telephone and Fax Number:
-Occupation:
-Age:
- 
-Kindly get back to Mr. Williams Fox  as soon as possible so that 
-he will direct you on what to do for the claims through our 
-Affiliated Bank.
- 
+> > On m68k, HZ is fixed at 100. Without addressing that, would there be 
+> > any benefit from adopting GENERIC_CLOCKEVENTS as per this RFC patch?
+> 
+> I don't think so, I mainly did it to see if there is a problem with 
+> mixing the two modes, and I couldn't find any. The behavior seems 
+> unchanged before and after my patch, the main difference being a few 
+> extra kilobytes in kernel .text for the generic clockevents code.
+> 
 
-Best regards
+I think that is a good reason to convert all m68k platforms at once and to 
+elide some of the dead code.
 
-Mrs. Roonie Holbrook
-IMFC Grant Claim Department
-Email: imfc@mail2washington.com
+> > On Thu, 8 Oct 2020, Arnd Bergmann wrote:
+> >
+> > > Now that the infrastructure allows kernels to have both legacy timer 
+> > > ticks and clockevent drivers in the same image, start by moving one 
+> > > platform to generic clockevents.
+> > >
+> > > As qemu only supports the q800 platform among the classic m68k, use 
+> > > that as an example.
+> > >
+> >
+> > Correct VIA emulation is suprisingly difficult, so this kind of work 
+> > should be tested on real hardware.
+> >
+> > I say that because when I did the clocksource conversion for m68k I 
+> > ran into a bug in QEMU (since fixed) and also because I once worked on 
+> > some of the bugs in the emulated VIA device used in MAME/MESS.
+> 
+> Good point, though I would be surprised if anything went wrong with this 
+> patch on real hardware but not in emulation, as all the register-level 
+> interactions with the timer are the same.
+> 
+
+On the subject of register accesses, via1[ACR] is shared with ADB drivers, 
+so this patch probably has to protect those accesses with 
+local_irq_save/restore or local_irq_disable/enable. (I can't be sure of 
+the contexts in which .set_state_shutdown and .set_state_periodic methods 
+are called.)
+
+> Adding oneshot mode is a completely different matter though, that 
+> clearly needs to be tested on real hardware.
+> 
+
+Right, and many emulators trade-off timing accuracy for performance which 
+makes them unsuitable for testing invasive changes of that sort.
+
+> > > I also tried adding oneshot mode, which was successful but broke the 
+> > > clocksource. It's probably not hard to make it work properly, but 
+> > > this is where I've stopped.
+> > >
+> >
+> > I'm not so sure that one timer is able to support both a clocksource 
+> > driver and a clockevent driver. In some cases we may have to drop the 
+> > clocksource driver (i.e. fall back on the jiffies clocksource).
+> >
+> > Anyway, even on Macs with only one VIA chip we still have two timers. 
+> > So I think we should try to use Timer 1 as a freerunning clocksource 
+> > and Timer 2 as a oneshot clock event. This may result in better 
+> > accuracy and simpler code. This may require some experimentation 
+> > though.
+> 
+> Ah, good. This is partly what I had been hoping for, as my patch can be 
+> used as a starting point for that if you want to give it a go.
+> 
+
+After looking at the chip documentation I don't think it's viable to use 
+the hardware timers in the way I proposed. A VIA register access requires 
+at least one full VIA clock cycle (about 1.3 us) which means register 
+accesses themselves cause timing delays. They also make clocksource reads 
+expensive.
+
+I think this rules out oneshot clockevent devices because if the system 
+offered such a device it would preferentially get used as a tick device.
+
+So I think your approach (periodic clockevent device driven by the 
+existing periodic tick interrupt) is best for this platform due to 
+simplicity (not much code) and performance (good accuracy, no additional 
+overhead).
+
+I suspect the same approach would work equally well on other platforms too 
+(even though they are probably be capable of oneshot clockevent devices).
+
+>      Arnd
+> 
