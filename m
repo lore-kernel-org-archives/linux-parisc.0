@@ -1,69 +1,95 @@
-Return-Path: <SRS0=imLG=DW=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=HVWs=DX=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0510FC433E7
-	for <linux-parisc@archiver.kernel.org>; Thu, 15 Oct 2020 23:08:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D68DAC433E7
+	for <linux-parisc@archiver.kernel.org>; Fri, 16 Oct 2020 10:13:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A39B3207C4
-	for <linux-parisc@archiver.kernel.org>; Thu, 15 Oct 2020 23:08:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1602803319;
-	bh=WqQ0bB+ppe48oqRSyaUgLPUbMiAC3Z+q0QDdxMG8+CA=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
-	b=UokqtQiGAZW1LiqHR49gUVi8cKZeFZsIrs6Z0H6wb8aFl3vaM7JUEAteKlvsZq6C7
-	 YlrEm5gNHLsx4alIzbThZHF4lM6RS6hA9e+UsD9f7JoU/YN0LnmricQl0LVN9YnAtj
-	 srKq+B8p/nhoTqSzjnzZ7rNQ3rHz8cZLU2rqlFCg=
+	by mail.kernel.org (Postfix) with ESMTP id 6B1CB2084C
+	for <linux-parisc@archiver.kernel.org>; Fri, 16 Oct 2020 10:13:10 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="lgYUm/IC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732501AbgJOXIe (ORCPT
+        id S2406598AbgJPKNK (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 15 Oct 2020 19:08:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34786 "EHLO mail.kernel.org"
+        Fri, 16 Oct 2020 06:13:10 -0400
+Received: from mout.gmx.net ([212.227.15.15]:60501 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732395AbgJOXIe (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 15 Oct 2020 19:08:34 -0400
-Subject: Re: [GIT PULL] parisc architecture updates for kernel v5.10-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602803313;
-        bh=WqQ0bB+ppe48oqRSyaUgLPUbMiAC3Z+q0QDdxMG8+CA=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=1djlJORgOVkKRGJ/P1n31pimVOxCL9aCZTQPWwAZzOBOQqcjfZbHcwA5d4rnH5e1z
-         bMApgcP8cdFG9GbDVizXQ3bL+GIF6YscSt+8RpjL7YJ8ZKwnMXUMzC98rCOhV67U/Y
-         bezJXlHt2Y1mc52CWvTOBHX+rA5pXonPkU+XotjA=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201015072025.GA18655@ls3530.fritz.box>
-References: <20201015072025.GA18655@ls3530.fritz.box>
-X-PR-Tracked-List-Id: <linux-parisc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201015072025.GA18655@ls3530.fritz.box>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.10-1
-X-PR-Tracked-Commit-Id: 7ff3f14ddc355bfbc94c766f43b90606b1f79e83
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7286d2a37eb955c5eeec2b042844f1c1b3ff0fe1
-Message-Id: <160280331378.7173.14528913365089023034.pr-tracker-bot@kernel.org>
-Date:   Thu, 15 Oct 2020 23:08:33 +0000
-To:     Helge Deller <deller@gmx.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+        id S2406596AbgJPKNJ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 16 Oct 2020 06:13:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1602843182;
+        bh=9nssCMMBv7tzELS+fUZMBow//rn3xu+MNXAU4tgsZ6A=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+        b=lgYUm/ICOsAa06h00t0wQfL0ZaUune5jpNkiul8SqOcy1PMkbttWpcYoel1VsZOxI
+         2lAJ3DQXdKRRh2+FOQdug1VxRl7D4zNIP9Mx1uodr/zY+kX4L9kyTDjqJxPK7O9n1R
+         Uh1kfYi/4pt0lN2XnOXf0b7dZQIT+dE4Kj+D7PUk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.166.88]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MnaoZ-1k3tvv2xBV-00jZbf; Fri, 16
+ Oct 2020 12:13:02 +0200
+Date:   Fri, 16 Oct 2020 12:13:00 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+Subject: nfsroot: Default mount option should ask for built-in NFS version
+Message-ID: <20201016101300.GA364@ls3530.fritz.box>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:AlTZQWUaumXyJzzN41d431uYsCxjdUZ5t3Om5Lmt6bsPgYwjkEZ
+ 25cJPeu1FdA4XF25wU3U0uKoCewHCo3Fjxy2zMflq8ilTFj3pKKO7dB/0ryxRwQm/eRxcO3
+ WsP3daEvD5r3jqatGoZ15duwLoQNems1XF88ocOvc3DssWXGtyH+R51Dqi4OeuFu9edb4K5
+ o8CR/hr1fWBxNf7F0t3Dg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nZInG/kunyg=:ObGxnqK3YeQorDogqRtBi/
+ D9LxOk7CkXKNcnFwDJXK/3JfBGZv6sw2MXge6cGXx/ii8tPycXHxgR4ST95MqlVx7AvjLS57Z
+ 6CW+zoiUy9NjifAKivAwtXOv+r8/MCQqbRX1F9bBdeaL4a256dUmqeumpAXo1f7BzyIsQ7IZI
+ 3ABlHHk5aPqZG3beBSQUheHXaEeFk8aW7H4FxcDZNjT790EMcebOYJ1bipj9+omTuB8YBiMif
+ l+Aef6GdSmxHtIO8C+sggy+GiaNNHg0Iy/MXYzHTV+z9JDSvr3VW1bOIdXz6lUaKr3N7jwlhG
+ 41Thl0xqkiP+ybDK61dx97gPYZow9uDE39jVL4tFZ0rNIvSX6av8QimpzPqLDwr5IUQQrCd2V
+ O69iobacj2n1NrQvb060dEFQOlAwO95JYEsNWtkq+cRMShlkbWuDnd3vIBBkKkT/3ii4n6Tvu
+ 0serhmZD5i6cVIHmKw5uLCIdQTbJyqNHagxS6InN6/HU8Tm+RBO/rCLZWweTDAipshEIAiP3y
+ t7U1dYIgP74YNpTeUE4lqm2BrrrS8I5/hlMX0LSzDzzFfalKopUWDAlazYLU0JAmnr4gxkZ+E
+ bVUZGRmX62vdIhwMumvHtPzI1NW5ykq2QlfyhLScwPYW6DQU2k5OpgG0fMBpxoZygqqmFjioB
+ n+pugxPQ2T4KyRkrvnHjoa0z8n6+VL83yoAdg8j6DuJKiqGwuaCxJVMSzJ3g4E6ZVvmw0CrgV
+ 8zLjE3iuOJ93TATzINZsLvpUpqMrrPPfRdFd+8oFDMjbTzeaP8QX2yNyO+TewIk6cIYlPurZS
+ +/k4su77qHwg0wVNYIkIAr7ehX9uWYmYoaa16ZLsHgynmEaR9SN/+tMyXB/8bgMRFipOi4Ahm
+ Ncx+4dm4T1ZPIuxNn8xg==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The pull request you sent on Thu, 15 Oct 2020 09:20:25 +0200:
+Change the nfsroot default mount option to ask for NFSv2 only *if* the
+kernel was built with NFSv2 support.
+If not, default to NFSv3 or as last choice to NFSv4, depending on actual
+kernel config.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.10-1
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7286d2a37eb955c5eeec2b042844f1c1b3ff0fe1
+diff --git a/fs/nfs/nfsroot.c b/fs/nfs/nfsroot.c
+index 8d3278805602..fa148308822c 100644
+=2D-- a/fs/nfs/nfsroot.c
++++ b/fs/nfs/nfsroot.c
+@@ -88,7 +88,13 @@
+ #define NFS_ROOT		"/tftpboot/%s"
 
-Thank you!
+ /* Default NFSROOT mount options. */
++#if defined(CONFIG_NFS_V2)
+ #define NFS_DEF_OPTIONS		"vers=3D2,tcp,rsize=3D4096,wsize=3D4096"
++#elif defined(CONFIG_NFS_V3)
++#define NFS_DEF_OPTIONS		"vers=3D3,tcp,rsize=3D4096,wsize=3D4096"
++#else
++#define NFS_DEF_OPTIONS		"vers=3D4,tcp,rsize=3D4096,wsize=3D4096"
++#endif
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+ /* Parameters passed from the kernel command line */
+ static char nfs_root_parms[NFS_MAXPATHLEN + 1] __initdata =3D "";
