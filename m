@@ -1,196 +1,140 @@
-Return-Path: <SRS0=8qcE=D2=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=56SR=D3=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,PDS_TONAME_EQ_TOLOCAL_SHORT,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91B08C433DF
-	for <linux-parisc@archiver.kernel.org>; Mon, 19 Oct 2020 14:58:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD6E5C4363D
+	for <linux-parisc@archiver.kernel.org>; Tue, 20 Oct 2020 13:45:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 310E6222EA
-	for <linux-parisc@archiver.kernel.org>; Mon, 19 Oct 2020 14:58:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5E90B22253
+	for <linux-parisc@archiver.kernel.org>; Tue, 20 Oct 2020 13:45:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="BTr7RXvD"
+	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="PgF2VIn3"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729606AbgJSO6B (ORCPT
+        id S2407584AbgJTNpg (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 19 Oct 2020 10:58:01 -0400
-Received: from mout.gmx.net ([212.227.15.15]:38459 "EHLO mout.gmx.net"
+        Tue, 20 Oct 2020 09:45:36 -0400
+Received: from mout.gmx.net ([212.227.17.20]:60475 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729594AbgJSO6B (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:58:01 -0400
+        id S2407578AbgJTNpf (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 20 Oct 2020 09:45:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603119474;
-        bh=QS8WsNELMyK6RIybv3KtF3B1dm54ecJpsHcbqt+Mw0I=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=BTr7RXvDdcbwHXM27LaOa5vRDzk7Jio4vtSTr2T9Ma34iuEPvRUhVnOKWHlB6gONK
-         y8lz6kaKxdX6bwhEOtQ3qRchPyZIZ5r2NOz3+Puy7tDtLtll7sGhzCAlo8g5X6Ammz
-         EUeSmlzYCGAbg0adKfX9mHoj+GavVXssz9kZMe+Y=
+        s=badeba3b8450; t=1603201529;
+        bh=KzLTwHS0/YQJPb+eKDMRFfmbz6nSTIDkCofd9P4ebps=;
+        h=X-UI-Sender-Class:To:Cc:From:Subject:Date;
+        b=PgF2VIn3fD1i/RHIyuO+gRvK1UENyoMbrtLB3ZHGm0Iu/HWiY7RntiC89xbITo3Gp
+         Ox4EnUYM1aMKxOOYeb4r0ONqxMe9Mu0Y0bRUVH1koICCtDRd1YCs4Uspz0PSqJyvk6
+         KmTQ2P5iTUslWHodGsjhsj00ponC2gbEig7DRYyU=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.fritz.box ([92.116.136.179]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MORAa-1knrCu0H8g-00PvR7; Mon, 19
- Oct 2020 16:57:54 +0200
-Date:   Mon, 19 Oct 2020 16:57:50 +0200
+Received: from [192.168.20.58] ([92.116.166.32]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MPXhK-1kqGgV20QM-00MaLV; Tue, 20
+ Oct 2020 15:45:29 +0200
+To:     linux-parisc <linux-parisc@vger.kernel.org>
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>
 From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] hil/parisc: Disable HIL driver when it gets stuck
-Message-ID: <20201019145750.GA17788@ls3530.fritz.box>
+Subject: Kernel 5.8 and 5.9 fail to boot on C8000
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+ c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
+Message-ID: <e6e6dcfa-1a09-21d7-69e0-b9e3c0360eb6@gmx.de>
+Date:   Tue, 20 Oct 2020 15:45:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:bZLeCzN7yhoj656+ds66kFR2HzWJot/i0UggulM8asbwZnKD8Ob
- 2lv/1Rmwo2S49PMKMcy/KHp9e/kmzkSpw8tLiDGJ4Qz5dkzWjxZeFJN6Ys4ONaoI+7rmTXF
- tB1c42pXLf6eZDvcz4eK5cLJCyhgtpMXBAhRaxUeUK16I3wsauHB23pbNdK4FxopMPmpoMW
- oEEwxmZILRsH2QOY93rOw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kjRXG3SryFA=:+UeCf5jHySdi78GJIQdTko
- 8eiRO17lFh4voSaPXLi6pltRepkQl9GVm8X37dW8iTtqvHKmSNnpJyh7ZNpOY/zJmEC/gMkxB
- Yac+KE5K3CG1WGMeONA+vud7UHwd3xrvKDYTrw2qwGY0SR+kYfwzOHewSZuiSg7sRvcvd7moR
- R0CVDwgZv3BPqfrhaEZetTcV6m1thXb8pZx32AEJ1yCKJYjh0JzGvB6Omrb1/zk4MabfhNjAP
- gDZRv6H2X75uMXRQzqsJ89SnjcTEdOsB6oNoKZxPXSmA+8a58C9l6BbDHBzwzqYajr/HnKb1K
- DLJR22gfwn8HjPP7g6F3d2bGeUv4KikShvFBiuGvIjLrG7DuLrjv4fvA6dqpwDi9VKBYnT6Cc
- Pt/TZSjuSdxYCxfstClhhrF/COpTzkJc/5vsPKD0tEroMin2/lASCdLBVgiaqrnXVP2urIekh
- 5vlZD9h5FAQCu4B3sJDt3B+XkswR4gfqNGdhgxOnrOb5S5vF3DNxsWDcaPMcTzgym4ebLNHxV
- ImzALVuNDymOLP2GQwJGvpiZ2ps6mjLn0t1zSaO2EubBBomjl7ruTYBOibOXsdUpcP92WfwXk
- 6lfppXAmyRKcF7JHMqdwdJ5pWi8nkVeUA7oqrANdSwU7UG3HpLMs0350L547JesHXYZQOWmAU
- M14xIhCbU4llrtYpSnAceoJNE+vhWl8DpiQJ8CMMBK1nVTfAQQg1iAiJxrQJZvd4aWFYCFQ+E
- pgjL/XcuR4DIYexE06BGcW/UG7QaLCE5H9adqhZgfdI7AESNzUvI2qHJGX38jdWOAGDAzdlS2
- 6mvSqZyluZO9c1TCYlt6NT/GTABxfXFmcG6FQWq9k22kXVzi2niCAz4bKdI2eIFN0KSE87S+2
- 0vhijlv7AZJBhqyhxdFw==
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:It1JJZzkdjubMGA7kAndrXVewexCLS6DiQiisr5Z/OymP4z2GIw
+ SGV0bQTx0WoW5Ulr1Im7t8UgbJcC+/DuETWKU98KClH0ssYLG3Tf3COab7o9pT4hqHyWw3/
+ WaGNaG0vXEJoqsBHsOuAqCj+BdNCd9pMgb+IDUp5Ad2nH1wUCltPxwavu3V5LXWzZxhJISD
+ 0XTFLv7leAkjXB/EOQQrg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IlJ3ctHiqEw=:dLsxSEKMeyMbRPA11KS5lt
+ d0DSj1QlS8Pu+eNMgaQqdDBG+gngD2dI0tw349KkK+Qn8FM3WsR+W1rx+XtvjQBbhEvEdDCiD
+ BYtfOkNrc0LFZZFIsEIVw1hhJwY3hNz/GyJPTK4+Z1Kda7BcEAC6iO+lOPS8jzNpH7hCUjjWS
+ C5DRccbjT3h6wKbFJNGrsJrM2iFKvYwbPmP0x8ITRyhlZKLxWgl6fIkdK7IoEtuekIQKyqLP+
+ nCAhLVL5gXjvZKwy3Xtns4gP26bhVTKBId/hHRgdbx485+FE12qw7USo3POiO43RgQPOXy46i
+ 7rgc32GcCAgoVNCu+yMKGCZsUpZR/MGF3jUzr3lEWIFFnXmuKeYPggku3dOYdxBAYcj83xs+A
+ LgxRIzOePUa+k4kOjzdrIMbAQw0yfvBbkPVH3oSU+KhQ8WkcgSpFLS9eWGULT3ueBjVZNVLh2
+ 0G8Jbhb85ILJ1GqZqjXYDtjCJcv+O+AtKPzpWNSTZnrua1XjwUcuHpB/m9o8gmPUcO6CHCkRq
+ v2vX8v0dkGz2kUtUk0YYN7QVgnxneJGE2Ufy/rNF8sm0BrQA7fbBlZwFmDQ5Zq3ymVOHb1Lp8
+ tTqvQurYdXtickCx/w2k8xLKHLywYV2NW0cBY3MdNSJbVUwkUBw5MOMP9obrKSzlqo4V8NCvU
+ EX1Tx0wztCfSxyCtiFVNu63/DY4mdJxaxE2zSknef4IhifxTzxybXIKMMdLq/gFmezI76o94Y
+ mYJPE5s3SQf62AYH+HOSbnJ7H/evGALKJTjmWXSH7WKZ5SEYcho7m5xMAO285n/gwzsdk8GLx
+ kiFFea1HJJPPPKHF5+GdIBckp5voMfpeuQMycbU7WJ2EFyJ8ObARt05XplqpD9R1pE6L8zscQ
+ 4Zzy6E/aTafTsAa4MP2Q==
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-When starting a HP machine with HIL driver but without an HIL keyboard
-or HIL mouse attached, it may happen that data written to the HIL loop
-gets stuck (e.g. because the transaction queue is full).  Usually one
-will then have to reboot the machine because all you see is and endless
-output of:
- Transaction add failed: transaction already queued?
+Latest Linux kernels v5.8 and v5.9 fail to boot for me on the C8000
+machines with this error:
+ mptspi: probe of 0000:40:01.0 failed with error -12
+ mptbase: ioc1: ERROR - Insufficient memory to add adapter!
+ mptspi: probe of 0000:40:01.1 failed with error -12
 
-In the higher layers hp_sdc_enqueue_transaction() is called to queued up
-a HIL packet. This function returns an error code, and this patch adds
-the necessary checks for this return code and disables the HIL driver if
-further packets can't be sent.
+The c8000 has a built-in Broadcom / LSI 53c1030 PCI-X Fusion-MPT Dual
+Ultra320 SCSI controller.
 
-Tested on a HP 730 and a HP 715/64 machine.
+Do other people see this as well?
+Any idea?
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: <stable@vger.kernel.org>
-
-diff --git a/drivers/input/serio/hil_mlc.c b/drivers/input/serio/hil_mlc.c
-index 65f4e9d62a67..d36e89d6fc54 100644
-=2D-- a/drivers/input/serio/hil_mlc.c
-+++ b/drivers/input/serio/hil_mlc.c
-@@ -74,7 +74,7 @@ EXPORT_SYMBOL(hil_mlc_unregister);
- static LIST_HEAD(hil_mlcs);
- static DEFINE_RWLOCK(hil_mlcs_lock);
- static struct timer_list	hil_mlcs_kicker;
--static int			hil_mlcs_probe;
-+static int			hil_mlcs_probe, hil_mlc_stop;
-
- static void hil_mlcs_process(unsigned long unused);
- static DECLARE_TASKLET_DISABLED_OLD(hil_mlcs_tasklet, hil_mlcs_process);
-@@ -702,9 +702,13 @@ static int hilse_donode(hil_mlc *mlc)
- 		if (!mlc->ostarted) {
- 			mlc->ostarted =3D 1;
- 			mlc->opacket =3D pack;
--			mlc->out(mlc);
-+			rc =3D mlc->out(mlc);
- 			nextidx =3D HILSEN_DOZE;
- 			write_unlock_irqrestore(&mlc->lock, flags);
-+			if (rc) {
-+				hil_mlc_stop =3D 1;
-+				return 1;
-+			}
- 			break;
- 		}
- 		mlc->ostarted =3D 0;
-@@ -715,8 +719,13 @@ static int hilse_donode(hil_mlc *mlc)
-
- 	case HILSE_CTS:
- 		write_lock_irqsave(&mlc->lock, flags);
--		nextidx =3D mlc->cts(mlc) ? node->bad : node->good;
-+		rc =3D mlc->cts(mlc);
-+		nextidx =3D rc ? node->bad : node->good;
- 		write_unlock_irqrestore(&mlc->lock, flags);
-+		if (rc) {
-+			hil_mlc_stop =3D 1;
-+			return 1;
-+		}
- 		break;
-
- 	default:
-@@ -780,6 +789,12 @@ static void hil_mlcs_process(unsigned long unused)
-
- static void hil_mlcs_timer(struct timer_list *unused)
- {
-+	if (hil_mlc_stop) {
-+		/* could not send packet - stop immediately. */
-+		pr_warn(PREFIX "HIL seems stuck - Disabling HIL MLC.\n");
-+		return;
-+	}
-+
- 	hil_mlcs_probe =3D 1;
- 	tasklet_schedule(&hil_mlcs_tasklet);
- 	/* Re-insert the periodic task. */
-diff --git a/drivers/input/serio/hp_sdc_mlc.c b/drivers/input/serio/hp_sdc=
-_mlc.c
-index 232d30c825bd..3e85e9039374 100644
-=2D-- a/drivers/input/serio/hp_sdc_mlc.c
-+++ b/drivers/input/serio/hp_sdc_mlc.c
-@@ -210,7 +210,7 @@ static int hp_sdc_mlc_cts(hil_mlc *mlc)
- 	priv->tseq[2] =3D 1;
- 	priv->tseq[3] =3D 0;
- 	priv->tseq[4] =3D 0;
--	__hp_sdc_enqueue_transaction(&priv->trans);
-+	return __hp_sdc_enqueue_transaction(&priv->trans);
-  busy:
- 	return 1;
-  done:
-@@ -219,7 +219,7 @@ static int hp_sdc_mlc_cts(hil_mlc *mlc)
- 	return 0;
- }
-
--static void hp_sdc_mlc_out(hil_mlc *mlc)
-+static int hp_sdc_mlc_out(hil_mlc *mlc)
- {
- 	struct hp_sdc_mlc_priv_s *priv;
-
-@@ -234,7 +234,7 @@ static void hp_sdc_mlc_out(hil_mlc *mlc)
-  do_data:
- 	if (priv->emtestmode) {
- 		up(&mlc->osem);
--		return;
-+		return 0;
- 	}
- 	/* Shouldn't be sending commands when loop may be busy */
- 	BUG_ON(down_trylock(&mlc->csem));
-@@ -296,7 +296,7 @@ static void hp_sdc_mlc_out(hil_mlc *mlc)
- 		BUG_ON(down_trylock(&mlc->csem));
- 	}
-  enqueue:
--	hp_sdc_enqueue_transaction(&priv->trans);
-+	return hp_sdc_enqueue_transaction(&priv->trans);
- }
-
- static int __init hp_sdc_mlc_init(void)
-diff --git a/include/linux/hil_mlc.h b/include/linux/hil_mlc.h
-index 774f7d3b8f6a..369221fd5518 100644
-=2D-- a/include/linux/hil_mlc.h
-+++ b/include/linux/hil_mlc.h
-@@ -103,7 +103,7 @@ struct hilse_node {
-
- /* Methods for back-end drivers, e.g. hp_sdc_mlc */
- typedef int	(hil_mlc_cts) (hil_mlc *mlc);
--typedef void	(hil_mlc_out) (hil_mlc *mlc);
-+typedef int	(hil_mlc_out) (hil_mlc *mlc);
- typedef int	(hil_mlc_in)  (hil_mlc *mlc, suseconds_t timeout);
-
- struct hil_mlc_devinfo {
+Helge
