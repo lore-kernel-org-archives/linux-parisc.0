@@ -2,95 +2,129 @@ Return-Path: <SRS0=w2GA=EE=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D1CDC388F7
-	for <linux-parisc@archiver.kernel.org>; Thu, 29 Oct 2020 00:24:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94036C4363A
+	for <linux-parisc@archiver.kernel.org>; Thu, 29 Oct 2020 00:53:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C2C9D2080D
-	for <linux-parisc@archiver.kernel.org>; Thu, 29 Oct 2020 00:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1603931045;
-	bh=RG/Dac088H5GVmB7A3wzm+xNBIFvyWXhedgYOBuwUuA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=dyj/defV3gJDs3aVLBgq0V66d5gOYM8jDHEhI6FKzsLpPp3RmO1wDnKWv1VmlL6j8
-	 xY6TLoniqePcZc5zXN3R4husMY9VAB0WQvwsjAVD7+MpuFjef0MeiCrVGIKIcPaijZ
-	 zWX41ZpKva5k5P+/VBFbdZhMypQLtjdLgNdrBSFk=
+	by mail.kernel.org (Postfix) with ESMTP id 2991220724
+	for <linux-parisc@archiver.kernel.org>; Thu, 29 Oct 2020 00:53:55 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hy4ATO4/"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388465AbgJ2AYF (ORCPT
+        id S1731870AbgJ1WTV (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 28 Oct 2020 20:24:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388430AbgJ1WhX (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:37:23 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A423C247E7;
-        Wed, 28 Oct 2020 16:40:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603903240;
-        bh=RG/Dac088H5GVmB7A3wzm+xNBIFvyWXhedgYOBuwUuA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mp0mi5V8yuRZfhOasGBS8qD3xtNqW+453ws5nwNnegndxP833WyBMnr5XW7bNcW3D
-         Qu5goUOs2xTMMCynd2KTpZzxHBdPm3/izAVJrGVEKEndCOGCjJwD0AypGBM2QNaWqT
-         7KKfpi26hxuJ7sW4Qmx+gd3mScUPM4+0zS6o+4I0=
-Date:   Wed, 28 Oct 2020 09:40:38 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lucyyan@google.com, moritzf@google.com,
-        James.Bottomley@hansenpartnership.com
-Subject: Re: [PATCH/RFC net-next v3] net: dec: tulip: de2104x: Add shutdown
- handler to stop NIC
-Message-ID: <20201028094038.5bd6eccb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201028015909.GA52884@epycbox.lan>
-References: <20201023202834.660091-1-mdf@kernel.org>
-        <20201027161606.477a445e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201028015909.GA52884@epycbox.lan>
+        Wed, 28 Oct 2020 18:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732289AbgJ1WS4 (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:18:56 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF3AC0613D2;
+        Wed, 28 Oct 2020 15:18:55 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id s21so1251852oij.0;
+        Wed, 28 Oct 2020 15:18:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=W33YKVE+vIQUjqJmcEzgED3JxXxgJJnTqejIz5dWMio=;
+        b=Hy4ATO4/8bpMwbG9MepKQdZG8/CTf1/4URUhZZcmbcdWvW8+gkJ6cAXoyIwHrFIPTG
+         ph2he7bXY8k2pSLmYEZgpOpWlep9MeKw4VWXCdPayFqCN/QzcXzph26cbhGIMNKVkPoX
+         XjTfYkGXonGwT3mBLeJG8PqiJNAErVxFMoJ9vz/9LsRmSAVvCxLTSrC/iR0NgA9MZ8QY
+         4p37kPfhvWgpLp2517tIc3KmbGgehxrWRETTxFwC31QI9ZMO4iskheUBicyPAK7kvHS6
+         tpKR71qatexkU73Utm71Opjb8YHXxeBdlTjUDuKoP/T0wFnOL0/KjJzJfPtNDR5C7HVg
+         bWRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=W33YKVE+vIQUjqJmcEzgED3JxXxgJJnTqejIz5dWMio=;
+        b=nC077KWemVFKENLCo9JGk1JDtN8zUBQ6BQ0aaUFnB5TiYSB8PCx074f/C6gr7QgA4X
+         +B3bkmSURjoJioTXeiLDfBV1eaWw6umzpjWvdSvn87fgoPP4RGFtPUscBlOGiZcMWiV2
+         ayXUPzltb3Yd2mmVaUezB8h76/8ObJs/fRL7ncwG93FigSP64BAkgU5Y/q+GrHSq3KY4
+         RC+h10ycE50es9NbUTsp2L6J+88ZEAmlDpcLDxXXxzKoWxsL9jfm1FqJQShF8sVM+JqK
+         uV9SAm3R/1Yb0tFD3FTs3pOVxRcgsU9iPajIL0A6xMK4Tr1N9sCgTckjHHpX1eT0GRqT
+         qiNw==
+X-Gm-Message-State: AOAM5333N6nFIV9NOZAv3jNyLNyUPPr8jEWGuZPnQM8nhd+EJzOvsV58
+        h7vBZe+blIqr/S9hbHpddevAdb1M4r9Y
+X-Google-Smtp-Source: ABdhPJx7TI8kNqRv/CrbnxiDniRSurjnwwLGWS8CtOJHMecJHTWQceZLiEtKvb0qCu+u9Y22egpfOQ==
+X-Received: by 2002:a17:90b:20a:: with SMTP id fy10mr6294642pjb.20.1603882658040;
+        Wed, 28 Oct 2020 03:57:38 -0700 (PDT)
+Received: from localhost.localdomain (n11212042025.netvigator.com. [112.120.42.25])
+        by smtp.gmail.com with ESMTPSA id i24sm5377303pfd.15.2020.10.28.03.57.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 03:57:37 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH v2 2/5] Fonts: Make font size unsigned in font_desc
+Date:   Wed, 28 Oct 2020 06:56:47 -0400
+Message-Id: <20201028105647.1210161-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com>
+References: <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, 27 Oct 2020 18:59:09 -0700 Moritz Fischer wrote:
-> Hi Jakub,
-> 
-> On Tue, Oct 27, 2020 at 04:16:06PM -0700, Jakub Kicinski wrote:
-> > On Fri, 23 Oct 2020 13:28:34 -0700 Moritz Fischer wrote:  
-> > > diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
-> > > index d9f6c19940ef..ea7442cc8e75 100644
-> > > --- a/drivers/net/ethernet/dec/tulip/de2104x.c
-> > > +++ b/drivers/net/ethernet/dec/tulip/de2104x.c
-> > > @@ -2175,11 +2175,19 @@ static int __maybe_unused de_resume(struct device *dev_d)
-> > >  
-> > >  static SIMPLE_DEV_PM_OPS(de_pm_ops, de_suspend, de_resume);
-> > >  
-> > > +static void de_shutdown(struct pci_dev *pdev)
-> > > +{
-> > > +	struct net_device *dev = pci_get_drvdata(pdev);
-> > > +
-> > > +	de_close(dev);  
-> > 
-> > Apparently I get all the best ideas when I'm about to apply something..  
-> 
-> Better now than after =)
-> 
-> > I don't think you can just call de_close() like that, because 
-> > (a) it may expect rtnl_lock() to be held, and (b) it may not be open.  
-> 
-> how about:
-> 
-> rtnl_lock();
-> if (netif_running(dev))
-> 	dev_close(dev);
-> rtnl_unlock();
+`width` and `height` are defined as unsigned in our UAPI font descriptor
+`struct console_font`. Make them unsigned in our kernel font descriptor
+`struct font_desc`, too.
 
-That's fine as well, although dev_close() checks if the device is UP
-AFAICT.
+Also, change the corresponding printk() format identifiers from `%d` to
+`%u`, in sti_select_fbfont().
+
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+Change in v2:
+  - Mention `struct console_font` in the commit message. (Suggested by
+    Daniel Vetter <daniel@ffwll.ch>)
+
+ drivers/video/console/sticore.c | 2 +-
+ include/linux/font.h            | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/video/console/sticore.c b/drivers/video/console/sticore.c
+index 6a26a364f9bd..d1bb5915082b 100644
+--- a/drivers/video/console/sticore.c
++++ b/drivers/video/console/sticore.c
+@@ -502,7 +502,7 @@ sti_select_fbfont(struct sti_cooked_rom *cooked_rom, const char *fbfont_name)
+ 	if (!fbfont)
+ 		return NULL;
+ 
+-	pr_info("STI selected %dx%d framebuffer font %s for sticon\n",
++	pr_info("STI selected %ux%u framebuffer font %s for sticon\n",
+ 			fbfont->width, fbfont->height, fbfont->name);
+ 			
+ 	bpc = ((fbfont->width+7)/8) * fbfont->height; 
+diff --git a/include/linux/font.h b/include/linux/font.h
+index b5b312c19e46..4f50d736ea72 100644
+--- a/include/linux/font.h
++++ b/include/linux/font.h
+@@ -16,7 +16,7 @@
+ struct font_desc {
+     int idx;
+     const char *name;
+-    int width, height;
++    unsigned int width, height;
+     const void *data;
+     int pref;
+ };
+-- 
+2.25.1
+
