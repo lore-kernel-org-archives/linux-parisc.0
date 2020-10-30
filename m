@@ -2,43 +2,57 @@ Return-Path: <SRS0=+PjG=EF=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3215BC4363A
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 13:12:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46BDFC00A89
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:18:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B6A342075E
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 13:12:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E50932223F
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:18:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1604071099;
+	bh=taFQ/QYuCiye3DX/lZJhTO25JVRcc0x/wNovA78JpOY=;
+	h=From:To:Cc:Subject:Date:List-ID:From;
+	b=smN7oRBeOT56zMNiYt+i6DT5WXEsDFZIvdz9STow7/GQi2adh423bH2lO0D1jlYjO
+	 V9qg+EU939hD9L31kTBEbNUbvzX7ScSk13s1NPGe5IxCTUhQCKtDpLlMoMRsFqHvaz
+	 +uutUrhkby8D+zYRQdBfqKlt2Q8i/n6uC6JKadxc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgJ3NMf (ORCPT
+        id S1726844AbgJ3PSS (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 30 Oct 2020 09:12:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37264 "EHLO mail.kernel.org"
+        Fri, 30 Oct 2020 11:18:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725999AbgJ3NMf (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:12:35 -0400
-Received: from [192.168.0.244] (118-211-2-196.tpgi.com.au [118.211.2.196])
+        id S1726792AbgJ3PSS (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:18:18 -0400
+Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1167B206FA;
-        Fri, 30 Oct 2020 13:12:27 +0000 (UTC)
-Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
-To:     Finn Thain <fthain@telegraphics.com.au>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 02B1C20791;
+        Fri, 30 Oct 2020 15:18:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604071096;
+        bh=taFQ/QYuCiye3DX/lZJhTO25JVRcc0x/wNovA78JpOY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ufDt2Ll03VhYHtQFU6xb+wDDadJlHrC4o7pklktL1H164iohO0RVUvApxcyYUf8eT
+         cT6OeHSv9QAgLUSnpRQk706eIF0HPDMkzDFLu+FuAH9hbSDGMubrZsL8T1rHK7HsoM
+         wMfwqnjL+QtSIffHV9go0c9qiksw2jE54yt7dmD4=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
         Russell King <linux@armlinux.org.uk>,
         Tony Luck <tony.luck@intel.com>,
         Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
         Philip Blundell <philb@gnu.org>,
         Joshua Thompson <funaho@jurai.org>,
         Sam Creasey <sammy@sammy.net>,
         "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
         Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         John Stultz <john.stultz@linaro.org>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -47,163 +61,209 @@ Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Parisc List <linux-parisc@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <20201008154651.1901126-1-arnd@arndb.de>
- <20201008154651.1901126-14-arnd@arndb.de>
- <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet>
- <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
- <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet>
- <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com>
- <alpine.LNX.2.23.453.2010241025410.6@nippy.intranet>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <580c3542-92cc-7e33-a43d-bf6a68134a46@linux-m68k.org>
-Date:   Fri, 30 Oct 2020 23:12:29 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: [PATCH v2 00/15] timers: clean up ARCH_GETTIMEOFFSET, LEGACY_TIMER_TICK
+Date:   Fri, 30 Oct 2020 16:17:43 +0100
+Message-Id: <20201030151758.1241164-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.LNX.2.23.453.2010241025410.6@nippy.intranet>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
-On 30/10/20 10:41 am, Finn Thain wrote:
-> On Fri, 23 Oct 2020, Arnd Bergmann wrote:
->> On Sun, Oct 18, 2020 at 2:55 AM Finn Thain <fthain@telegraphics.com.au>  wrote:
->>> On Thu, 15 Oct 2020, Arnd Bergmann wrote:
->>>> On Thu, Oct 15, 2020 at 3:19 AM Finn Thain <fthain@telegraphics.com.au> wrote:
->>>>> On Sat, 10 Oct 2020, Arnd Bergmann wrote:
->>>
->>> That configuration still produces the same 5 KiB of bloat. I see that
->>> kernel/time/Kconfig has this --
->>>
->>> # Core internal switch. Selected by NO_HZ_COMMON / HIGH_RES_TIMERS. This is
->>> # only related to the tick functionality. Oneshot clockevent devices
->>> # are supported independent of this.
->>> config TICK_ONESHOT
->>>          bool
->>>
->>> But my question was really about both kinds of dead code (oneshot
->>> device support and oneshot tick support). Anyway, after playing with
->>> the code for a bit I don't see any easy way to reduce the growth in
->>> text size.
->>
->> Did you look more deeply into where those 5KB are? Is this just the code
->> in kernel/time/{clockevents,tick-common}.c and the added platform
->> specific bits, or is there something more?
-> 
-> What I did was to list the relevant functions using scripts/bloat-o-meter
-> and tried stubbing out some code related to oneshot clockevent devices. I
-> didn't find any low fruit and don't plan to pursue that without the help
-> of LTO.
-> 
->> I suppose the sysfs interface and the clockevents_update_freq() logic
->> are not really needed on m68k, but it wouldn't make much sense to split
->> those out either.
->>
->> How does the 5KB bloat compare to the average bloat we get from one
->> release to the next? Geert has been collecting statistics for this.
->>
-> 
-> Perhaps that 5 KB is justified by gaining the hrtimers feature... hard to
-> say; it's never been available on these platforms. I can see the value in
-> it though.
-> 
->>>> Yes, makes sense. I think the one remaining problem with the
->>>> periodic mode in this driver is that it can drop timer ticks when
->>>> interrupts are disabled for too long, while in oneshot mode there
->>>> may be a way to know how much time has passed since the last tick as
->>>> long as the counter does not overflow.
->>>
->>> Is there any benefit from adopting a oneshot tick (rather than
->>> periodic) if no clocksource is consulted when calculating the next
->>> interval? (I'm assuming NO_HZ is not in use, for reasons discussed
->>> below.)
->>
->> If the clocksource does not set CLOCK_SOURCE_IS_CONTINOUS, the kernel
->> will keep using periodic timers and not allow hrtimers.
->>
-> 
-> IIUC, when HIGH_RES_TIMERS=y, the kernel will enable hrtimers only if the
-> platform provides both a continuous clocksource device and a oneshot
-> clockevent device. However, the "jiffies" clocksource does not set
-> CLOCK_SOURCE_IS_CONTINOUS and neither does the one in
-> arch/arm/mach-rpc/time.c.
-> 
-> When HIGH_RES_TIMERS=n and NO_HZ_COMMON=n (which is presently the case for
-> all platforms with GENERIC_CLOCKEVENTS=n) there's no use for a oneshot
-> clockevent device, right?
-> 
-> It seems likely that NO_HZ_COMMON=n because the clocksources on these
-> platforms produce a periodic interrupt regardless (e.g.
-> clocksource/i8253.c, arm/rpc, m68k platform timers etc.).
-> 
-> Finally, HIGH_RES_TIMERS=n seems likely if the only clocksource is
-> unreliable (e.g. because it loses time due to interrupt priorities). There
-> may be a few of platforms in this category (Mac, Atari?).
-> 
->>>> I would agree that despite this oneshot mode is probably worse
->>>> overall for timekeeping if the register accesses introduce
->>>> systematic errors.
->>>>
->>>
->>> It probably has to be tried. But consulting a VIA clocksource on every
->>> tick would be expensive on this platform, so if that was the only way
->>> to avoid cumulative errors, I'd probably just stick with the periodic
->>> tick.
->>
->> I'm sure there is a tradeoff somewhere. Without hrtimers, some events
->> will take longer when they have to wait for the next tick, and using
->> NO_HZ_FULL can help help make things faster on some workloads.
->>
-> 
-> Yes, such a tradeoff is discussed in drivers/iio/adc/ep93xx_adc.c.
-> 
-> But OTOH, Documentation/timers/timers-howto.rst says,
-> 
->      On slower systems, (embedded, OR perhaps a speed-stepped PC!) the
->      overhead of setting up the hrtimers for usleep *may* not be worth it
-> 
-> I guess it has to be tried.
-> 
->> ...
->>> The other 11 platforms in that category also have 'synthetic'
->>> clocksources derived from a timer reload interrupt. In 3 cases, the
->>> clocksource read method does not (or can not) check for a pending
->>> counter reload interrupt. For these also, I see no practical
->>> alternative to the approach you've taken in your RFC patch:
->>>
->>> arch/m68k/68000/timers.c
->>> arch/m68k/atari/time.c
->>> arch/m68k/coldfire/timers.c
->>
->> Agreed. It's possible there is a way, but I don't see one either.
->>
-> 
-> For arch/m68k/68000/timers.c, I suppose we may be able to check for the
-> TMR1 bit in the Interrupt Status Register at 0xFFFFF30C or the COMP bit in
-> the Timer Status Register at 0xFFFFF60A. But testing that patch could be
-> difficult.
-> 
-> I expect that equivalent flags are available in Coldfire registers, making
-> it possible to improve upon mcftmr_read_clk() and m68328_read_clk() if
-> need be -- that is, if it turns out that the clocksource interrupt was
-> subject to higher priority IRQs that would slow down the clocksource or
-> defeat its monotonicity.
-> 
-> The other difficulty is a lack of hardware timers. There's only one timer
-> on MC68EZ328. On Atari, for now only Timer C is available though Michael
-> has said that it would be possible to free up Timer D. Some Coldfire chips
-> have only 2 timers and the second timer seems to be allocated to
-> profiling.
+This is a resend of the combined cleanups for CONFIG_ARCH_GETTIMEOFFSET,
+which gets removed, and CONFIG_LEGACY_TIMER_TICK, which replaces
+CONFIG_GENERIC_CLOCKEVENTS, with the reverse meaning.
 
-FWIW, I would have no problem with ditching the profiling clock,
-and using both on ColdFire platforms that have this. I doubt anyone has 
-used that profiling setup in a _very_ long time.
+CONFIG_ARCH_GETTIMEOFFSET has been gradually phased out from all
+platforms, with only ARM EBSA110 recently. As this has no more
+known users, the first three patches remove EBSA110 along with
+one platform specific driver and the ARCH_GETTIMEOFFSET
+infrastructure.
 
-Regards
-Greg
+When I created the patch removing CONFIG_ARCH_GETTIMEOFFSET, I also
+had a look at CONFIG_GENERIC_CLOCKEVENTS, which is selected by most,
+but not all, platforms today, each of the ones that lack it doing the
+timer tick slightly differently.
 
+The cleanups here make the old platforms a bit more consistent, in
+multiple ways:
+
+- rather than selecting GENERIC_CLOCKEVENTS on modern
+  platforms, select LEGACY_TIMER_TICK on the old ones.
+
+- Hide some more of the internal implementation and only
+  provide a single common entry point for the timer tick,
+  which also makes the behavior more consistent.
+
+- Remove the m68k and arm specific infrastructure pieces
+  and call the common helper directly from each timer
+  interrupt function.
+
+I tested the series on m68k with the qemu q800 target platform, both
+with the legacy_timer_tick() implementation and after converting that
+to a periodic clockevent driver (not included in v2).
+
+Since the patches touch a lot of architecture specific code, I've created
+a branch in my asm-generic tree[1] and plan to send it for the v5.11 merge
+window. If any maintainer has conflicting changes or wants to build on
+top of my work, feel free to merge that into additional subsystem trees.
+
+	Arnd
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git \
+							asm-generic-timers
+
+Arnd Bergmann (15):
+  ARM: remove ebsa110 platform
+  net: remove am79c961a driver
+  timekeeping: remove arch_gettimeoffset
+  timekeeping: add CONFIG_LEGACY_TIMER_TICK
+  ia64: convert to legacy_timer_tick
+  ARM: rpc: use legacy_timer_tick
+  parisc: use legacy_timer_tick
+  m68k: coldfire: use legacy_timer_tick()
+  m68k: split heartbeat out of timer function
+  m68k: sun3/sun3c: use legacy_timer_tick
+  m68k: m68328: use legacy_timer_tick()
+  m68k: change remaining timers to legacy_timer_tick
+  m68k: remove timer_interrupt() function
+  timekeeping: remove xtime_update
+  timekeeping: default GENERIC_CLOCKEVENTS to enabled
+
+ .../time/clockevents/arch-support.txt         |   8 +-
+ .../time/modern-timekeeping/arch-support.txt  |  33 -
+ MAINTAINERS                                   |   8 -
+ arch/alpha/Kconfig                            |   1 -
+ arch/arc/Kconfig                              |   1 -
+ arch/arm/Kconfig                              |  37 +-
+ arch/arm/Kconfig.debug                        |   6 +-
+ arch/arm/Makefile                             |   8 -
+ arch/arm/configs/ebsa110_defconfig            |  74 --
+ arch/arm/include/asm/mach/time.h              |   2 -
+ arch/arm/kernel/Makefile                      |   6 +-
+ arch/arm/kernel/time.c                        |  14 -
+ arch/arm/mach-ebsa110/Makefile                |   8 -
+ arch/arm/mach-ebsa110/Makefile.boot           |   5 -
+ arch/arm/mach-ebsa110/core.c                  | 323 --------
+ arch/arm/mach-ebsa110/core.h                  |  38 -
+ .../mach-ebsa110/include/mach/entry-macro.S   |  33 -
+ arch/arm/mach-ebsa110/include/mach/hardware.h |  21 -
+ arch/arm/mach-ebsa110/include/mach/io.h       |  89 --
+ arch/arm/mach-ebsa110/include/mach/irqs.h     |  17 -
+ arch/arm/mach-ebsa110/include/mach/memory.h   |  22 -
+ .../mach-ebsa110/include/mach/uncompress.h    |  41 -
+ arch/arm/mach-ebsa110/io.c                    | 440 ----------
+ arch/arm/mach-ebsa110/leds.c                  |  71 --
+ arch/arm/mach-rpc/time.c                      |   2 +-
+ arch/arm64/Kconfig                            |   1 -
+ arch/arm64/Kconfig.platforms                  |   1 -
+ arch/c6x/Kconfig                              |   1 -
+ arch/csky/Kconfig                             |   1 -
+ arch/h8300/Kconfig                            |   1 -
+ arch/hexagon/Kconfig                          |   1 -
+ arch/ia64/Kconfig                             |   1 +
+ arch/ia64/kernel/time.c                       |  36 +-
+ arch/m68k/68000/timers.c                      |   7 +-
+ arch/m68k/Kconfig.cpu                         |  37 +-
+ arch/m68k/Kconfig.machine                     |  11 +
+ arch/m68k/amiga/config.c                      |  11 +-
+ arch/m68k/apollo/config.c                     |  11 +-
+ arch/m68k/atari/config.c                      |   2 +-
+ arch/m68k/atari/time.c                        |   9 +-
+ arch/m68k/bvme6000/config.c                   |   9 +-
+ arch/m68k/coldfire/Makefile                   |  32 +-
+ arch/m68k/coldfire/pit.c                      |   2 +-
+ arch/m68k/coldfire/sltimers.c                 |   8 +-
+ arch/m68k/coldfire/timers.c                   |   8 +-
+ arch/m68k/hp300/time.c                        |   8 +-
+ arch/m68k/hp300/time.h                        |   2 +-
+ arch/m68k/include/asm/machdep.h               |  12 +-
+ arch/m68k/kernel/setup_mm.c                   |   2 +-
+ arch/m68k/kernel/setup_no.c                   |   2 +-
+ arch/m68k/kernel/time.c                       |  18 +-
+ arch/m68k/mac/config.c                        |   6 +-
+ arch/m68k/mac/via.c                           |   8 +-
+ arch/m68k/mvme147/config.c                    |   9 +-
+ arch/m68k/mvme16x/config.c                    |   9 +-
+ arch/m68k/q40/config.c                        |   2 +-
+ arch/m68k/q40/q40ints.c                       |  10 +-
+ arch/m68k/sun3/config.c                       |   4 +-
+ arch/m68k/sun3/sun3ints.c                     |   3 +-
+ arch/m68k/sun3x/time.c                        |   5 +-
+ arch/m68k/sun3x/time.h                        |   2 +-
+ arch/microblaze/Kconfig                       |   1 -
+ arch/mips/Kconfig                             |   1 -
+ arch/nds32/Kconfig                            |   1 -
+ arch/nios2/Kconfig                            |   1 -
+ arch/openrisc/Kconfig                         |   1 -
+ arch/parisc/Kconfig                           |   2 +-
+ arch/parisc/kernel/time.c                     |   9 +-
+ arch/powerpc/Kconfig                          |   1 -
+ arch/riscv/Kconfig                            |   1 -
+ arch/s390/Kconfig                             |   1 -
+ arch/sh/Kconfig                               |   1 -
+ arch/sparc/Kconfig                            |   1 -
+ arch/um/Kconfig                               |   1 -
+ arch/x86/Kconfig                              |   1 -
+ arch/xtensa/Kconfig                           |   1 -
+ drivers/Makefile                              |   2 -
+ drivers/clocksource/Kconfig                   |   2 +-
+ drivers/net/ethernet/amd/Kconfig              |  10 +-
+ drivers/net/ethernet/amd/Makefile             |   1 -
+ drivers/net/ethernet/amd/am79c961a.c          | 763 ------------------
+ drivers/net/ethernet/amd/am79c961a.h          | 143 ----
+ drivers/watchdog/Kconfig                      |   2 +-
+ include/linux/time.h                          |  13 -
+ include/linux/timekeeping.h                   |   3 +-
+ kernel/time/Kconfig                           |  18 +-
+ kernel/time/Makefile                          |   1 +
+ kernel/time/clocksource.c                     |   8 -
+ kernel/time/tick-legacy.c                     |  37 +
+ kernel/time/timekeeping.c                     |  41 +-
+ kernel/time/timekeeping.h                     |   1 +
+ kernel/trace/Kconfig                          |   2 -
+ 92 files changed, 218 insertions(+), 2453 deletions(-)
+ delete mode 100644 Documentation/features/time/modern-timekeeping/arch-support.txt
+ delete mode 100644 arch/arm/configs/ebsa110_defconfig
+ delete mode 100644 arch/arm/mach-ebsa110/Makefile
+ delete mode 100644 arch/arm/mach-ebsa110/Makefile.boot
+ delete mode 100644 arch/arm/mach-ebsa110/core.c
+ delete mode 100644 arch/arm/mach-ebsa110/core.h
+ delete mode 100644 arch/arm/mach-ebsa110/include/mach/entry-macro.S
+ delete mode 100644 arch/arm/mach-ebsa110/include/mach/hardware.h
+ delete mode 100644 arch/arm/mach-ebsa110/include/mach/io.h
+ delete mode 100644 arch/arm/mach-ebsa110/include/mach/irqs.h
+ delete mode 100644 arch/arm/mach-ebsa110/include/mach/memory.h
+ delete mode 100644 arch/arm/mach-ebsa110/include/mach/uncompress.h
+ delete mode 100644 arch/arm/mach-ebsa110/io.c
+ delete mode 100644 arch/arm/mach-ebsa110/leds.c
+ delete mode 100644 drivers/net/ethernet/amd/am79c961a.c
+ delete mode 100644 drivers/net/ethernet/amd/am79c961a.h
+ create mode 100644 kernel/time/tick-legacy.c
+
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Finn Thain <fthain@telegraphics.com.au>
+Cc: Philip Blundell <philb@gnu.org>
+Cc: Joshua Thompson <funaho@jurai.org>
+Cc: Sam Creasey <sammy@sammy.net>
+Cc: "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: <linux-ia64@vger.kernel.org>
+Cc: Parisc List <linux-parisc@vger.kernel.org>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Linux ARM <linux-arm-kernel@lists.infradead.org>
+
+
+-- 
+2.27.0
 
