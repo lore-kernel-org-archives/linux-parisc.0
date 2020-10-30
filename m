@@ -5,40 +5,40 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8B42C55179
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D537C56201
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7AADE2151B
+	by mail.kernel.org (Postfix) with ESMTP id 04E472151B
 	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604071229;
-	bh=PU/541LNe7KQVoj0GelP71V9M6lqpXqIzsKggfodUE0=;
+	s=default; t=1604071230;
+	bh=GMWfpBFvyWmdpvD5W/p2JKxKxss2ykxW3nbwOHA5BIY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=nTAqzxC9/lxt+Wh5rDCLyAd10QoljqBlT4Za3FDTEjp/KDw8WaWmM2a5YB+27AObn
-	 Hz3LQQQi90kXDiPuU7qdf3wfJw5lY9bQjCZ2AthKs2axwLoZfkfkzH6esIsL+Ko9V3
-	 k1vwbzm6hNIRpil9zEt4pEiD3fJBjpnQLQ6ClfZQ=
+	b=GBojUkCUfnog1FN3vbomRdckmj7G6XybvWI8KRMfg06w6OCTg5J8WRmWdGb2kDqef
+	 yueDGNqeQM33acendeoAbTby0PPNuFBh5PSwk+zqzltQ2H3R/YAgwEL+GvgwunToow
+	 LOwpWnmoBFc3snu9/N7tf5iPUDYxYXR0ZvKiMzz4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgJ3PUB (ORCPT
+        id S1727107AbgJ3PU3 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 30 Oct 2020 11:20:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52710 "EHLO mail.kernel.org"
+        Fri, 30 Oct 2020 11:20:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726820AbgJ3PUA (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:20:00 -0400
+        id S1726962AbgJ3PUB (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:20:01 -0400
 Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD8CD2151B;
-        Fri, 30 Oct 2020 15:18:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1728B2224A;
+        Fri, 30 Oct 2020 15:19:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604071131;
-        bh=PU/541LNe7KQVoj0GelP71V9M6lqpXqIzsKggfodUE0=;
+        s=default; t=1604071150;
+        bh=GMWfpBFvyWmdpvD5W/p2JKxKxss2ykxW3nbwOHA5BIY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FFLXIAKBFWVd9ecYM21HfZkJplkhfM3bZQ0R7PkQmzardEopUkKhAHjnTqwP+pTiP
-         2ttCQBI7+h4XcDTtbVlBwD5898pA49vyxKPJujloUB4o6Gickc+yrGhBahg3+OgUsI
-         pEYA6HGniIewW3Cg1KawLRzwLEB06wZJHC4s1qoA=
+        b=xDT3Y783NYX+tG7pWdWca/zrFnSprsM6qfu8QZFMPZoEuPGBW2xHqdzEh8CAx4NeA
+         jvnONs0HFU6mJY6HBbiuXPalLPmGM9or7mYFQ3m10Zc+sH3dKkSi/LF/0fRyn0SElE
+         5MLwWycQfi0CbL1vKogBaWCzLmpov/ll3Sq9P8Hc=
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -60,10 +60,11 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-ia64@vger.kernel.org,
         Parisc List <linux-parisc@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 07/15] parisc: use legacy_timer_tick
-Date:   Fri, 30 Oct 2020 16:17:50 +0100
-Message-Id: <20201030151758.1241164-8-arnd@kernel.org>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2 11/15] m68k: m68328: use legacy_timer_tick()
+Date:   Fri, 30 Oct 2020 16:17:54 +0100
+Message-Id: <20201030151758.1241164-12-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201030151758.1241164-1-arnd@kernel.org>
 References: <20201030151758.1241164-1-arnd@kernel.org>
@@ -75,75 +76,77 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-parisc has selected CONFIG_GENERIC_CLOCKEVENTS since commit 43b1f6abd590
-("parisc: Switch to generic sched_clock implementation"), but does not
-appear to actually be using it, and instead calls the low-level
-timekeeping functions directly.
+A couple of machines share the m68328 timer code that
+is based on calling timer_interrupt(). Change these
+to the new and slightly more generic legacy_timer_tick()
+helper.
 
-Remove the GENERIC_CLOCKEVENTS select again, and instead convert to
-the newly added legacy_timer_tick() helper.
-
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- Documentation/features/time/clockevents/arch-support.txt | 2 +-
- arch/parisc/Kconfig                                      | 2 +-
- arch/parisc/kernel/time.c                                | 9 +++------
- 3 files changed, 5 insertions(+), 8 deletions(-)
+ arch/m68k/68000/timers.c | 5 ++---
+ arch/m68k/Kconfig.cpu    | 3 +++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/features/time/clockevents/arch-support.txt b/Documentation/features/time/clockevents/arch-support.txt
-index 8287b6aa522e..61a5c9d68c15 100644
---- a/Documentation/features/time/clockevents/arch-support.txt
-+++ b/Documentation/features/time/clockevents/arch-support.txt
-@@ -21,7 +21,7 @@
-     |       nds32: |  ok  |
-     |       nios2: |  ok  |
-     |    openrisc: |  ok  |
--    |      parisc: |  ok  |
-+    |      parisc: | TODO |
-     |     powerpc: |  ok  |
-     |       riscv: |  ok  |
-     |        s390: |  ok  |
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index b234e8154cbd..78b17621ee4a 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -52,7 +52,7 @@ config PARISC
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select GENERIC_SCHED_CLOCK
- 	select HAVE_UNSTABLE_SCHED_CLOCK if SMP
--	select GENERIC_CLOCKEVENTS
+diff --git a/arch/m68k/68000/timers.c b/arch/m68k/68000/timers.c
+index e8dfdd2556a5..3aa006f8e7ea 100644
+--- a/arch/m68k/68000/timers.c
++++ b/arch/m68k/68000/timers.c
+@@ -52,7 +52,6 @@
+ #endif
+ 
+ static u32 m68328_tick_cnt;
+-static irq_handler_t timer_interrupt;
+ 
+ /***************************************************************************/
+ 
+@@ -62,7 +61,8 @@ static irqreturn_t hw_tick(int irq, void *dummy)
+ 	TSTAT &= 0;
+ 
+ 	m68328_tick_cnt += TICKS_PER_JIFFY;
+-	return timer_interrupt(irq, dummy);
++	legacy_timer_tick(1);
++	return IRQ_HANDLED;
+ }
+ 
+ /***************************************************************************/
+@@ -113,7 +113,6 @@ void hw_timer_init(irq_handler_t handler)
+ 	/* Enable timer 1 */
+ 	TCTL |= TCTL_TEN;
+ 	clocksource_register_hz(&m68328_clk, TICKS_PER_JIFFY*HZ);
+-	timer_interrupt = handler;
+ }
+ 
+ /***************************************************************************/
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 322a35ef14c6..648054d4f860 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -104,6 +104,7 @@ config M68060
+ config M68328
+ 	bool "MC68328"
+ 	depends on !MMU
 +	select LEGACY_TIMER_TICK
- 	select CPU_NO_EFFICIENT_FFS
- 	select NEED_DMA_MAP_STATE
- 	select NEED_SG_DMA_LENGTH
-diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
-index 13d94f0f94a0..08e4d480abe1 100644
---- a/arch/parisc/kernel/time.c
-+++ b/arch/parisc/kernel/time.c
-@@ -70,8 +70,6 @@ irqreturn_t __irq_entry timer_interrupt(int irq, void *dev_id)
- 	/* gcc can optimize for "read-only" case with a local clocktick */
- 	unsigned long cpt = clocktick;
- 
--	profile_tick(CPU_PROFILING);
--
- 	/* Initialize next_tick to the old expected tick time. */
- 	next_tick = cpuinfo->it_value;
- 
-@@ -86,10 +84,9 @@ irqreturn_t __irq_entry timer_interrupt(int irq, void *dev_id)
- 	cpuinfo->it_value = next_tick;
- 
- 	/* Go do system house keeping. */
--	if (cpu == 0)
--		xtime_update(ticks_elapsed);
--
--	update_process_times(user_mode(get_irq_regs()));
-+	if (cpu != 0)
-+		ticks_elapsed = 0;
-+	legacy_timer_tick(ticks_elapsed);
- 
- 	/* Skip clockticks on purpose if we know we would miss those.
- 	 * The new CR16 must be "later" than current CR16 otherwise
+ 	select M68000
+ 	help
+ 	  Motorola 68328 processor support.
+@@ -111,6 +112,7 @@ config M68328
+ config M68EZ328
+ 	bool "MC68EZ328"
+ 	depends on !MMU
++	select LEGACY_TIMER_TICK
+ 	select M68000
+ 	help
+ 	  Motorola 68EX328 processor support.
+@@ -118,6 +120,7 @@ config M68EZ328
+ config M68VZ328
+ 	bool "MC68VZ328"
+ 	depends on !MMU
++	select LEGACY_TIMER_TICK
+ 	select M68000
+ 	help
+ 	  Motorola 68VZ328 processor support.
 -- 
 2.27.0
 
