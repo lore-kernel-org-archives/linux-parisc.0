@@ -7,38 +7,38 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CDABC4741F
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BFADC4741F
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:21:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3FF2920756
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F0DFE22246
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:21:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604071254;
-	bh=iDfeVQLWc0H76d65dMCO1CjztYPtBiAdqFL9uiIlkxA=;
+	s=default; t=1604071261;
+	bh=PhzarcZdxvr8JzCPKjAwfHGDJNezhF1oA5Gxqya2WxA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=bYrsiZaYsiAdUrLAMB4C9FuO8H1Mnh04ANeVvf+ZF2g8t+6rtNZqFab+MQu8dxM2K
-	 kprAr3K3AoWMrYM9aviqaUnArjnd/oGPdTAgU0VzNz5w8oySjkoAaQkHVwxFv97/My
-	 FRgv/dGXSrLhGrJN5vht/krU3ul79e8OrIdFE9qo=
+	b=LxCoPdNGA11JPa4vyugoagNOBAGXWvcHONcAQ/uXsJIgvIZMmNc45lIgPN6gVVosF
+	 PHEl9QH6yWCsotXE9tHxp55zIFfELrZKGy/+laiHJZnzGpKhyljNvcTGQILURrzx3b
+	 35+vTgzvHNk4bNzG6Ylv1OxvslB712NoKbW8W3VA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgJ3PUr (ORCPT
+        id S1726996AbgJ3PUy (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 30 Oct 2020 11:20:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52708 "EHLO mail.kernel.org"
+        Fri, 30 Oct 2020 11:20:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726674AbgJ3PUB (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:20:01 -0400
+        id S1726970AbgJ3PUA (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:20:00 -0400
 Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D39820756;
-        Fri, 30 Oct 2020 15:18:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6395722249;
+        Fri, 30 Oct 2020 15:19:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604071127;
-        bh=iDfeVQLWc0H76d65dMCO1CjztYPtBiAdqFL9uiIlkxA=;
+        s=default; t=1604071145;
+        bh=PhzarcZdxvr8JzCPKjAwfHGDJNezhF1oA5Gxqya2WxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jhb1OIn10HVnUycRJeZeUqhvjqY7b4mZX550t1143M1pIBYLmQQr0nzbiZElXNTXc
-         bYTQ0X2dUf+nNTz58NXmdjsqCiSPXs5uSCmOEw7151a70EDxo3by7tfJNhBu9i2yER
-         0eNneQ49BRZzFLRnGlBHU9e+toxVifn5GrJivi9I=
+        b=J5ed3u+GT93CiIJpo4CV6B2Kf2eTdhI6CogSdoTb8qOL4XKTcGxynAdZovmqEp9YU
+         ywATfDwGaG7cWlJO557E8AUR7xCttz8fxCfIDapJLwr4YK5B0I6YYzXEcFz1PYgNBV
+         7enPMF3AaKBrq+4c4M96Obarw9GsEHORFB3LRBrc=
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -60,10 +60,11 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-ia64@vger.kernel.org,
         Parisc List <linux-parisc@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 06/15] ARM: rpc: use legacy_timer_tick
-Date:   Fri, 30 Oct 2020 16:17:49 +0100
-Message-Id: <20201030151758.1241164-7-arnd@kernel.org>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2 10/15] m68k: sun3/sun3c: use legacy_timer_tick
+Date:   Fri, 30 Oct 2020 16:17:53 +0100
+Message-Id: <20201030151758.1241164-11-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201030151758.1241164-1-arnd@kernel.org>
 References: <20201030151758.1241164-1-arnd@kernel.org>
@@ -75,81 +76,83 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-rpc is the only user of the timer_tick() function now, and can
-just call the newly added generic version instead.
+These two are different from all other machines:
 
+* sun3 does not call timer_routine() but open-codes it
+  except for the profile_tick() call that appears to
+  be unintentionally missing.
+
+* sun3x has a commented-out timer irq handler but no
+  functional timer tick I could find.
+
+Change both to calling the new legacy_timer_tick here,
+which includes the call to profile_tick() but does not
+fix sun3x as that is still commented out.
+
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/Kconfig                 |  1 +
- arch/arm/include/asm/mach/time.h |  2 --
- arch/arm/kernel/time.c           | 14 --------------
- arch/arm/mach-rpc/time.c         |  2 +-
- 4 files changed, 2 insertions(+), 17 deletions(-)
+ arch/m68k/Kconfig.machine | 2 ++
+ arch/m68k/sun3/sun3ints.c | 3 +--
+ arch/m68k/sun3x/time.c    | 3 +--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 1b9fda08b92f..dbadfa186f72 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -452,6 +452,7 @@ config ARCH_RPC
- 	select HAVE_IDE
- 	select HAVE_PATA_PLATFORM
- 	select ISA_DMA_API
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index 17e8c3a292d7..e3c835440d9a 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -99,6 +99,7 @@ config HP300
+ config SUN3X
+ 	bool "Sun3x support"
+ 	depends on MMU
 +	select LEGACY_TIMER_TICK
- 	select NEED_MACH_IO_H
- 	select NEED_MACH_MEMORY_H
- 	select NO_IOPORT_MAP
-diff --git a/arch/arm/include/asm/mach/time.h b/arch/arm/include/asm/mach/time.h
-index d75d39280db7..5f522916ec99 100644
---- a/arch/arm/include/asm/mach/time.h
-+++ b/arch/arm/include/asm/mach/time.h
-@@ -7,8 +7,6 @@
- #ifndef __ASM_ARM_MACH_TIME_H
- #define __ASM_ARM_MACH_TIME_H
- 
--extern void timer_tick(void);
--
- typedef void (*clock_access_fn)(struct timespec64 *);
- extern int register_persistent_clock(clock_access_fn read_persistent);
- 
-diff --git a/arch/arm/kernel/time.c b/arch/arm/kernel/time.c
-index 09b149b09c43..b3836c94dc74 100644
---- a/arch/arm/kernel/time.c
-+++ b/arch/arm/kernel/time.c
-@@ -60,20 +60,6 @@ unsigned long profile_pc(struct pt_regs *regs)
- EXPORT_SYMBOL(profile_pc);
+ 	select MMU_MOTOROLA if MMU
+ 	select M68030
+ 	help
+@@ -126,6 +127,7 @@ config SUN3
+ 	depends on MMU
+ 	depends on !MMU_MOTOROLA
+ 	select MMU_SUN3 if MMU
++	select LEGACY_TIMER_TICK
+ 	select NO_DMA
+ 	select M68020
+ 	help
+diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
+index a5824abb4a39..41ae422119d3 100644
+--- a/arch/m68k/sun3/sun3ints.c
++++ b/arch/m68k/sun3/sun3ints.c
+@@ -73,8 +73,7 @@ static irqreturn_t sun3_int5(int irq, void *dev_id)
+ #ifdef CONFIG_SUN3
+ 	intersil_clear();
  #endif
- 
--#ifndef CONFIG_GENERIC_CLOCKEVENTS
--/*
-- * Kernel system timer support.
-- */
--void timer_tick(void)
--{
--	profile_tick(CPU_PROFILING);
 -	xtime_update(1);
--#ifndef CONFIG_SMP
 -	update_process_times(user_mode(get_irq_regs()));
--#endif
--}
--#endif
--
- static void dummy_clock_access(struct timespec64 *ts)
- {
- 	ts->tv_sec = 0;
-diff --git a/arch/arm/mach-rpc/time.c b/arch/arm/mach-rpc/time.c
-index da85cac761ba..9f8edcfe9357 100644
---- a/arch/arm/mach-rpc/time.c
-+++ b/arch/arm/mach-rpc/time.c
-@@ -81,7 +81,7 @@ static irqreturn_t
- ioc_timer_interrupt(int irq, void *dev_id)
- {
- 	ioc_time += RPC_LATCH;
--	timer_tick();
 +	legacy_timer_tick(1);
- 	return IRQ_HANDLED;
- }
+ 	cnt = kstat_irqs_cpu(irq, 0);
+ 	if (!(cnt % 20))
+ 		sun3_leds(led_pattern[cnt % 160 / 20]);
+diff --git a/arch/m68k/sun3x/time.c b/arch/m68k/sun3x/time.c
+index 9163294b0fb6..f6e25fdc008c 100644
+--- a/arch/m68k/sun3x/time.c
++++ b/arch/m68k/sun3x/time.c
+@@ -77,14 +77,13 @@ int sun3x_hwclk(int set, struct rtc_time *t)
+ #if 0
+ static irqreturn_t sun3x_timer_tick(int irq, void *dev_id)
+ {
+-	irq_handler_t timer_routine = dev_id;
+ 	unsigned long flags;
  
+ 	local_irq_save(flags);
+ 	/* Clear the pending interrupt - pulse the enable line low */
+ 	disable_irq(5);
+ 	enable_irq(5);
+-	timer_routine(0, NULL);
++	legacy_timer_tick(1);
+ 	local_irq_restore(flags);
+ 
+ 	return IRQ_HANDLED;
 -- 
 2.27.0
 
