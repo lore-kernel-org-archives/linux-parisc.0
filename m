@@ -7,38 +7,38 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4CC5C5DF9D
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CDABC4741F
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 761262151B
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3FF2920756
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604071231;
-	bh=1U0ECVqd2hNgqIJBzCiaE0G3Htac28AHKdGuEc6XP0Y=;
+	s=default; t=1604071254;
+	bh=iDfeVQLWc0H76d65dMCO1CjztYPtBiAdqFL9uiIlkxA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=VA/uL1y3uBWWOwA2nt8CZ/O2in2MYfK7nKmBqWjepr136Bb3YKIlfIjFGsbMnDeTN
-	 l7u/6RBZLGsRelQ5a+T+92tkSKWAqUTVxzyXjCOA+ErTbdhvernEidePMDOZkw/+um
-	 2eAeOU8FF1KfTxUWFeRVUKudiBuDSL5GE/qlVv5c=
+	b=bYrsiZaYsiAdUrLAMB4C9FuO8H1Mnh04ANeVvf+ZF2g8t+6rtNZqFab+MQu8dxM2K
+	 kprAr3K3AoWMrYM9aviqaUnArjnd/oGPdTAgU0VzNz5w8oySjkoAaQkHVwxFv97/My
+	 FRgv/dGXSrLhGrJN5vht/krU3ul79e8OrIdFE9qo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbgJ3PUa (ORCPT
+        id S1727046AbgJ3PUr (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 30 Oct 2020 11:20:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52804 "EHLO mail.kernel.org"
+        Fri, 30 Oct 2020 11:20:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726867AbgJ3PUB (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        id S1726674AbgJ3PUB (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
         Fri, 30 Oct 2020 11:20:01 -0400
 Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF5EC22246;
-        Fri, 30 Oct 2020 15:18:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D39820756;
+        Fri, 30 Oct 2020 15:18:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604071140;
-        bh=1U0ECVqd2hNgqIJBzCiaE0G3Htac28AHKdGuEc6XP0Y=;
+        s=default; t=1604071127;
+        bh=iDfeVQLWc0H76d65dMCO1CjztYPtBiAdqFL9uiIlkxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mYdsPP8cT4riayqUCnHMvcpTSpOrhi3YSE4t0JqeIOcSvOMDaPTkYggDnUgQb2faP
-         h/CoXoTiH3Ok9f0NYQ9R/g3i6G1WgP0MSYZIfi+kiBxsYesZvCwAAJs1uQN9fFAKGG
-         SuIrZnPotazCQd8YQ5skHinbiEbDmJqn58vnt3kQ=
+        b=jhb1OIn10HVnUycRJeZeUqhvjqY7b4mZX550t1143M1pIBYLmQQr0nzbiZElXNTXc
+         bYTQ0X2dUf+nNTz58NXmdjsqCiSPXs5uSCmOEw7151a70EDxo3by7tfJNhBu9i2yER
+         0eNneQ49BRZzFLRnGlBHU9e+toxVifn5GrJivi9I=
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -60,11 +60,10 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-ia64@vger.kernel.org,
         Parisc List <linux-parisc@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 09/15] m68k: split heartbeat out of timer function
-Date:   Fri, 30 Oct 2020 16:17:52 +0100
-Message-Id: <20201030151758.1241164-10-arnd@kernel.org>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v2 06/15] ARM: rpc: use legacy_timer_tick
+Date:   Fri, 30 Oct 2020 16:17:49 +0100
+Message-Id: <20201030151758.1241164-7-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201030151758.1241164-1-arnd@kernel.org>
 References: <20201030151758.1241164-1-arnd@kernel.org>
@@ -76,150 +75,81 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The heartbeat functionality is mostly separate from the
-actual timer interrupt handling, and it is only used on
-five platforms.
+rpc is the only user of the timer_tick() function now, and can
+just call the newly added generic version instead.
 
-Split it out into a separate function and call that directly
-from the timer irq on those platforms.
-
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/m68k/amiga/config.c        | 1 +
- arch/m68k/apollo/config.c       | 1 +
- arch/m68k/atari/time.c          | 2 ++
- arch/m68k/hp300/time.c          | 1 +
- arch/m68k/include/asm/machdep.h | 7 +++++++
- arch/m68k/kernel/time.c         | 7 +++++--
- arch/m68k/q40/q40ints.c         | 2 ++
- 7 files changed, 19 insertions(+), 2 deletions(-)
+ arch/arm/Kconfig                 |  1 +
+ arch/arm/include/asm/mach/time.h |  2 --
+ arch/arm/kernel/time.c           | 14 --------------
+ arch/arm/mach-rpc/time.c         |  2 +-
+ 4 files changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-index bee9f240f35d..29f92333119e 100644
---- a/arch/m68k/amiga/config.c
-+++ b/arch/m68k/amiga/config.c
-@@ -480,6 +480,7 @@ static irqreturn_t ciab_timer_handler(int irq, void *dev_id)
- 	clk_total += jiffy_ticks;
- 	clk_offset = 0;
- 	timer_routine(0, NULL);
-+	timer_heartbeat();
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 1b9fda08b92f..dbadfa186f72 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -452,6 +452,7 @@ config ARCH_RPC
+ 	select HAVE_IDE
+ 	select HAVE_PATA_PLATFORM
+ 	select ISA_DMA_API
++	select LEGACY_TIMER_TICK
+ 	select NEED_MACH_IO_H
+ 	select NEED_MACH_MEMORY_H
+ 	select NO_IOPORT_MAP
+diff --git a/arch/arm/include/asm/mach/time.h b/arch/arm/include/asm/mach/time.h
+index d75d39280db7..5f522916ec99 100644
+--- a/arch/arm/include/asm/mach/time.h
++++ b/arch/arm/include/asm/mach/time.h
+@@ -7,8 +7,6 @@
+ #ifndef __ASM_ARM_MACH_TIME_H
+ #define __ASM_ARM_MACH_TIME_H
  
+-extern void timer_tick(void);
+-
+ typedef void (*clock_access_fn)(struct timespec64 *);
+ extern int register_persistent_clock(clock_access_fn read_persistent);
+ 
+diff --git a/arch/arm/kernel/time.c b/arch/arm/kernel/time.c
+index 09b149b09c43..b3836c94dc74 100644
+--- a/arch/arm/kernel/time.c
++++ b/arch/arm/kernel/time.c
+@@ -60,20 +60,6 @@ unsigned long profile_pc(struct pt_regs *regs)
+ EXPORT_SYMBOL(profile_pc);
+ #endif
+ 
+-#ifndef CONFIG_GENERIC_CLOCKEVENTS
+-/*
+- * Kernel system timer support.
+- */
+-void timer_tick(void)
+-{
+-	profile_tick(CPU_PROFILING);
+-	xtime_update(1);
+-#ifndef CONFIG_SMP
+-	update_process_times(user_mode(get_irq_regs()));
+-#endif
+-}
+-#endif
+-
+ static void dummy_clock_access(struct timespec64 *ts)
+ {
+ 	ts->tv_sec = 0;
+diff --git a/arch/arm/mach-rpc/time.c b/arch/arm/mach-rpc/time.c
+index da85cac761ba..9f8edcfe9357 100644
+--- a/arch/arm/mach-rpc/time.c
++++ b/arch/arm/mach-rpc/time.c
+@@ -81,7 +81,7 @@ static irqreturn_t
+ ioc_timer_interrupt(int irq, void *dev_id)
+ {
+ 	ioc_time += RPC_LATCH;
+-	timer_tick();
++	legacy_timer_tick(1);
  	return IRQ_HANDLED;
  }
-diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
-index 762da5d7a415..30915f1a8760 100644
---- a/arch/m68k/apollo/config.c
-+++ b/arch/m68k/apollo/config.c
-@@ -173,6 +173,7 @@ irqreturn_t dn_timer_int(int irq, void *dev_id)
- 	volatile unsigned char x;
  
- 	timer_handler(irq, dev_id);
-+	timer_heartbeat();
- 
- 	x = *(volatile unsigned char *)(apollo_timer + 3);
- 	x = *(volatile unsigned char *)(apollo_timer + 5);
-diff --git a/arch/m68k/atari/time.c b/arch/m68k/atari/time.c
-index ce923a523695..ce4a5961ca93 100644
---- a/arch/m68k/atari/time.c
-+++ b/arch/m68k/atari/time.c
-@@ -21,6 +21,7 @@
- #include <linux/export.h>
- 
- #include <asm/atariints.h>
-+#include <asm/machdep.h>
- 
- DEFINE_SPINLOCK(rtc_lock);
- EXPORT_SYMBOL_GPL(rtc_lock);
-@@ -49,6 +50,7 @@ static irqreturn_t mfp_timer_c_handler(int irq, void *dev_id)
- 	} while (last_timer_count == 1);
- 	clk_total += INT_TICKS;
- 	timer_routine(0, NULL);
-+	timer_heartbeat();
- 	local_irq_restore(flags);
- 
- 	return IRQ_HANDLED;
-diff --git a/arch/m68k/hp300/time.c b/arch/m68k/hp300/time.c
-index bfee13e1d0fe..e3cd938de0f9 100644
---- a/arch/m68k/hp300/time.c
-+++ b/arch/m68k/hp300/time.c
-@@ -65,6 +65,7 @@ static irqreturn_t hp300_tick(int irq, void *dev_id)
- 	clk_total += INTVAL;
- 	clk_offset = 0;
- 	timer_routine(0, NULL);
-+	timer_heartbeat();
- 	local_irq_restore(flags);
- 
- 	/* Turn off the network and SCSI leds */
-diff --git a/arch/m68k/include/asm/machdep.h b/arch/m68k/include/asm/machdep.h
-index 49bd3266b4b1..e62a39d01ae4 100644
---- a/arch/m68k/include/asm/machdep.h
-+++ b/arch/m68k/include/asm/machdep.h
-@@ -35,6 +35,13 @@ extern void (*mach_beep) (unsigned int, unsigned int);
- /* Hardware clock functions */
- extern void hw_timer_init(irq_handler_t handler);
- extern unsigned long hw_timer_offset(void);
-+#ifdef CONFIG_HEARTBEAT
-+extern void timer_heartbeat(void);
-+#else
-+static inline void timer_heartbeat(void)
-+{
-+}
-+#endif
- 
- extern void config_BSP(char *command, int len);
- 
-diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
-index c2697a4d4ddd..c05cec21b05f 100644
---- a/arch/m68k/kernel/time.c
-+++ b/arch/m68k/kernel/time.c
-@@ -45,8 +45,12 @@ static irqreturn_t timer_interrupt(int irq, void *dummy)
- 	xtime_update(1);
- 	update_process_times(user_mode(get_irq_regs()));
- 	profile_tick(CPU_PROFILING);
-+	return IRQ_HANDLED;
-+}
- 
- #ifdef CONFIG_HEARTBEAT
-+void timer_heartbeat(void)
-+{
- 	/* use power LED as a heartbeat instead -- much more useful
- 	   for debugging -- based on the version for PReP by Cort */
- 	/* acts like an actual heart beat -- ie thump-thump-pause... */
-@@ -68,9 +72,8 @@ static irqreturn_t timer_interrupt(int irq, void *dummy)
- 		dist = period / 4;
- 	    }
- 	}
--#endif /* CONFIG_HEARTBEAT */
--	return IRQ_HANDLED;
- }
-+#endif /* CONFIG_HEARTBEAT */
- 
- #ifdef CONFIG_M68KCLASSIC
- #if !IS_BUILTIN(CONFIG_RTC_DRV_GENERIC)
-diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
-index 1c696906c159..b01b545a2db0 100644
---- a/arch/m68k/q40/q40ints.c
-+++ b/arch/m68k/q40/q40ints.c
-@@ -17,6 +17,7 @@
- #include <linux/interrupt.h>
- #include <linux/irq.h>
- 
-+#include <asm/machdep.h>
- #include <asm/ptrace.h>
- #include <asm/traps.h>
- 
-@@ -144,6 +145,7 @@ static irqreturn_t q40_timer_int(int irq, void *dev_id)
- 
- 		local_irq_save(flags);
- 		timer_routine(0, NULL);
-+		timer_heartbeat();
- 		local_irq_restore(flags);
- 	}
- 	return IRQ_HANDLED;
 -- 
 2.27.0
 
