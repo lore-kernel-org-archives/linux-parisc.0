@@ -5,40 +5,40 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32503C55179
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 359B5C5DF9D
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CC1EB22246
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D672522241
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604071214;
-	bh=eKAnFlGG9v9rypqKJNnorqiTpdWvYKlEZQAp7FdGWdY=;
+	s=default; t=1604071217;
+	bh=pGAZMgkSQzQnK5XXMYMtPK06PKFW8k5jOE9zOrtJrI0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=hBcl9DN/Cm5HlRD8QARd1/h9MCGfGubNxQiWPi3FB7rO6YkSR5s5N5CCRc9EV1a0S
-	 yIRlh3Vgqi+Oe3ELrRgJ3KO0amf3U0DUguvI6wbhDENlyEnV8r7pkM78iGFmlo8JDF
-	 yrBh7G8n7e2+B064/cTadv8zQbT71O4mX3GnaFlU=
+	b=cQL2yOsjG/BljQ7q+O6leUieJmcn7CfJEJlh6p/5DoA4+hVpDRdLSjMx8NoWPtm/8
+	 105foqAfHPRDm8ffyj0KLmF2gFWMiG7EyJA7p0KrJWM0GQlCCQe6Wdb/7Rt0/hB9nV
+	 RKhrz9i7/t9xeFdZgtx/ETAvZi0jY8MX6ZQ8r/Y0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgJ3PUC (ORCPT
+        id S1726943AbgJ3PUR (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 30 Oct 2020 11:20:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53060 "EHLO mail.kernel.org"
+        Fri, 30 Oct 2020 11:20:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726991AbgJ3PUC (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        id S1726875AbgJ3PUC (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
         Fri, 30 Oct 2020 11:20:02 -0400
 Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D10F422254;
-        Fri, 30 Oct 2020 15:19:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3345A22241;
+        Fri, 30 Oct 2020 15:18:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604071169;
-        bh=eKAnFlGG9v9rypqKJNnorqiTpdWvYKlEZQAp7FdGWdY=;
+        s=default; t=1604071136;
+        bh=pGAZMgkSQzQnK5XXMYMtPK06PKFW8k5jOE9zOrtJrI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tVtTX/0Tq3ofKx8Rhva3pzMSuxxmBrLMz4P3BuhDAjDWVs/6P54O0csc7i0agoQ2c
-         O+boiafxfH/SCFbPUo2LwfK4vzkf0Zm0nMrDfgoCoVoylHquDvYVW6vYKL+sxn3t/1
-         4czvjPS4EZwVPTLk+TNSVxL4rxPkZcyQJsyVgNwg=
+        b=KqmTdXUczVYg8nzUmdKhkXwl62PsaUL9yYoXshAidiENZDTEhO+JINwM7OwkQ0RUU
+         guX5BIX0CKtUDZOUKuZWPfA+dB6l79hcbT7twhn1QRrwesrDBIRZ9dMjYPl4dL24mK
+         pYic3TVa5X+fORUfBbWbl7F2GE3Qf70TJjhvyY3U=
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -60,11 +60,10 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-ia64@vger.kernel.org,
         Parisc List <linux-parisc@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 15/15] timekeeping: default GENERIC_CLOCKEVENTS to enabled
-Date:   Fri, 30 Oct 2020 16:17:58 +0100
-Message-Id: <20201030151758.1241164-16-arnd@kernel.org>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v2 08/15] m68k: coldfire: use legacy_timer_tick()
+Date:   Fri, 30 Oct 2020 16:17:51 +0100
+Message-Id: <20201030151758.1241164-9-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201030151758.1241164-1-arnd@kernel.org>
 References: <20201030151758.1241164-1-arnd@kernel.org>
@@ -76,471 +75,297 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Almost all machines use GENERIC_CLOCKEVENTS, so it feels wrong to
-require each one to select that symbol manually.
+Replace the indirect function calls in the timer code
+with direct calls to the newly added legacy_timer_tick()
+helper for those that have not yet been converted to
+generic clockevents.
 
-Instead, enable it whenever CONFIG_LEGACY_TIMER_TICK is disabled as
-a simplification. It should be possible to select both
-GENERIC_CLOCKEVENTS and LEGACY_TIMER_TICK from an architecture now
-and decide at runtime between the two.
+This makes the timer code a little more self-contained.
 
-For the clockevents arch-support.txt file, this means that additional
-architectures are marked as TODO when they have at least one machine
-that still uses LEGACY_TIMER_TICK, rather than being marked 'ok' when
-at least one machine has been converted. This means that both m68k and
-arm (for riscpc) revert to TODO.
-
-At this point, we could just always enable CONFIG_GENERIC_CLOCKEVENTS
-rather than leaving it off when not needed. I built an m68k
-defconfig kernel (using gcc-10.1.0) and found that this would add
-around 5.5KB in kernel image size:
-
-   text	   data	    bss	    dec	    hex	filename
-3861936	1092236	 196656	5150828	 4e986c	obj-m68k/vmlinux-no-clockevent
-3866201	1093832	 196184	5156217	 4ead79	obj-m68k/vmlinux-clockevent
-
-On Arm (MACH_RPC), that difference appears to be twice as large,
-around 11KB on top of an 6MB vmlinux.
-
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Tested-by: Greg Ungerer <gerg@linux-m68k.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .../features/time/clockevents/arch-support.txt       |  6 +++---
- arch/alpha/Kconfig                                   |  1 -
- arch/arc/Kconfig                                     |  1 -
- arch/arm/Kconfig                                     | 12 ------------
- arch/arm64/Kconfig                                   |  1 -
- arch/arm64/Kconfig.platforms                         |  1 -
- arch/c6x/Kconfig                                     |  1 -
- arch/csky/Kconfig                                    |  1 -
- arch/h8300/Kconfig                                   |  1 -
- arch/hexagon/Kconfig                                 |  1 -
- arch/m68k/Kconfig.cpu                                |  1 -
- arch/microblaze/Kconfig                              |  1 -
- arch/mips/Kconfig                                    |  1 -
- arch/nds32/Kconfig                                   |  1 -
- arch/nios2/Kconfig                                   |  1 -
- arch/openrisc/Kconfig                                |  1 -
- arch/powerpc/Kconfig                                 |  1 -
- arch/riscv/Kconfig                                   |  1 -
- arch/s390/Kconfig                                    |  1 -
- arch/sh/Kconfig                                      |  1 -
- arch/sparc/Kconfig                                   |  1 -
- arch/um/Kconfig                                      |  1 -
- arch/x86/Kconfig                                     |  1 -
- arch/xtensa/Kconfig                                  |  1 -
- kernel/time/Kconfig                                  |  2 +-
- 25 files changed, 4 insertions(+), 38 deletions(-)
+ arch/m68k/Kconfig.cpu         | 35 +++++++++++++++++++++++++++++------
+ arch/m68k/coldfire/Makefile   | 32 ++++++++++++++++++--------------
+ arch/m68k/coldfire/sltimers.c |  6 ++----
+ arch/m68k/coldfire/timers.c   |  6 ++----
+ 4 files changed, 51 insertions(+), 28 deletions(-)
 
-diff --git a/Documentation/features/time/clockevents/arch-support.txt b/Documentation/features/time/clockevents/arch-support.txt
-index 61a5c9d68c15..6863a3fbddad 100644
---- a/Documentation/features/time/clockevents/arch-support.txt
-+++ b/Documentation/features/time/clockevents/arch-support.txt
-@@ -1,6 +1,6 @@
- #
- # Feature name:          clockevents
--#         Kconfig:       GENERIC_CLOCKEVENTS
-+#         Kconfig:       !LEGACY_TIMER_TICK
- #         description:   arch support generic clock events
- #
-     -----------------------
-@@ -8,14 +8,14 @@
-     -----------------------
-     |       alpha: |  ok  |
-     |         arc: |  ok  |
--    |         arm: |  ok  |
-+    |         arm: | TODO |
-     |       arm64: |  ok  |
-     |         c6x: |  ok  |
-     |        csky: |  ok  |
-     |       h8300: |  ok  |
-     |     hexagon: |  ok  |
-     |        ia64: | TODO |
--    |        m68k: |  ok  |
-+    |        m68k: | TODO |
-     |  microblaze: |  ok  |
-     |        mips: |  ok  |
-     |       nds32: |  ok  |
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index d6e9fc7a7b19..f0a700946cac 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -27,7 +27,6 @@ config ALPHA
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	select AUDIT_ARCH
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CPU_VULNERABILITIES
- 	select GENERIC_SMP_IDLE_THREAD
- 	select GENERIC_STRNCPY_FROM_USER
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index 0a89cc9def65..061eb8e23739 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -19,7 +19,6 @@ config ARC
- 	select COMMON_CLK
- 	select DMA_DIRECT_REMAP
- 	select GENERIC_ATOMIC64 if !ISA_ARCV2 || !(ARC_HAS_LL64 && ARC_HAS_LLSC)
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_FIND_FIRST_BIT
- 	# for now, we don't need GENERIC_IRQ_PROBE, CONFIG_GENERIC_IRQ_CHIP
- 	select GENERIC_IRQ_SHOW
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index dbadfa186f72..04a37a4cd9e0 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -321,7 +321,6 @@ config ARCH_MULTIPLATFORM
- 	select AUTO_ZRELADDR
- 	select TIMER_OF
- 	select COMMON_CLK
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select HAVE_PCI
- 	select PCI_DOMAINS_GENERIC if PCI
-@@ -336,7 +335,6 @@ config ARM_SINGLE_ARMV7M
- 	select TIMER_OF
- 	select COMMON_CLK
- 	select CPU_V7M
--	select GENERIC_CLOCKEVENTS
- 	select NO_IOPORT_MAP
- 	select SPARSE_IRQ
- 	select USE_OF
-@@ -351,7 +349,6 @@ config ARCH_EP93XX
- 	select CLKDEV_LOOKUP
- 	select CLKSRC_MMIO
- 	select CPU_ARM920T
--	select GENERIC_CLOCKEVENTS
- 	select GPIOLIB
- 	select HAVE_LEGACY_CLK
- 	help
-@@ -361,7 +358,6 @@ config ARCH_FOOTBRIDGE
- 	bool "FootBridge"
- 	select CPU_SA110
- 	select FOOTBRIDGE
--	select GENERIC_CLOCKEVENTS
- 	select HAVE_IDE
- 	select NEED_MACH_IO_H if !MMU
- 	select NEED_MACH_MEMORY_H
-@@ -389,7 +385,6 @@ config ARCH_IXP4XX
- 	select ARCH_SUPPORTS_BIG_ENDIAN
- 	select CPU_XSCALE
- 	select DMABOUNCE if PCI
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GPIO_IXP4XX
- 	select GPIOLIB
-@@ -405,7 +400,6 @@ config ARCH_IXP4XX
- config ARCH_DOVE
- 	bool "Marvell Dove"
- 	select CPU_PJ4
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GPIOLIB
- 	select HAVE_PCI
-@@ -429,7 +423,6 @@ config ARCH_PXA
- 	select CLKSRC_MMIO
- 	select TIMER_OF
- 	select CPU_XSCALE if !CPU_XSC3
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GPIO_PXA
- 	select GPIOLIB
-@@ -470,7 +463,6 @@ config ARCH_SA1100
- 	select COMMON_CLK
- 	select CPU_FREQ
- 	select CPU_SA1100
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GPIOLIB
- 	select HAVE_IDE
-@@ -485,7 +477,6 @@ config ARCH_S3C24XX
- 	bool "Samsung S3C24XX SoCs"
- 	select ATAGS
- 	select CLKSRC_SAMSUNG_PWM
--	select GENERIC_CLOCKEVENTS
- 	select GPIO_SAMSUNG
- 	select GPIOLIB
- 	select GENERIC_IRQ_MULTI_HANDLER
-@@ -509,7 +500,6 @@ config ARCH_OMAP1
- 	select ARCH_OMAP
- 	select CLKDEV_LOOKUP
- 	select CLKSRC_MMIO
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_CHIP
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GPIOLIB
-@@ -772,7 +762,6 @@ config ARCH_ACORN
- 
- config PLAT_IOP
- 	bool
--	select GENERIC_CLOCKEVENTS
- 
- config PLAT_ORION
- 	bool
-@@ -1163,7 +1152,6 @@ config HAVE_SMP
- config SMP
- 	bool "Symmetric Multi-Processing"
- 	depends on CPU_V6K || CPU_V7
--	depends on GENERIC_CLOCKEVENTS
- 	depends on HAVE_SMP
- 	depends on MMU || ARM_MPU
- 	select IRQ_WORK
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index f858c352f72a..fee87e4104fd 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -101,7 +101,6 @@ config ARM64
- 	select FRAME_POINTER
- 	select GENERIC_ALLOCATOR
- 	select GENERIC_ARCH_TOPOLOGY
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CLOCKEVENTS_BROADCAST
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_CPU_VULNERABILITIES
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index 6f2494dd6d60..748e6d8c3b94 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -256,7 +256,6 @@ config ARCH_TEGRA
- 	select ARM_GIC_PM
- 	select CLKSRC_MMIO
- 	select TIMER_OF
--	select GENERIC_CLOCKEVENTS
- 	select GPIOLIB
- 	select PINCTRL
- 	select PM
-diff --git a/arch/c6x/Kconfig b/arch/c6x/Kconfig
-index 48d66bf0465d..bdeeac28b1be 100644
---- a/arch/c6x/Kconfig
-+++ b/arch/c6x/Kconfig
-@@ -19,7 +19,6 @@ config C6X
- 	select IRQ_DOMAIN
- 	select OF
- 	select OF_EARLY_FLATTREE
--	select GENERIC_CLOCKEVENTS
- 	select MODULES_USE_ELF_RELA
- 	select MMU_GATHER_NO_RANGE if MMU
- 	select SET_FS
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index 268fad5f51cf..28fdf8303dff 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -28,7 +28,6 @@ config CSKY
- 	select GENERIC_LIB_UCMPDI2
- 	select GENERIC_ALLOCATOR
- 	select GENERIC_ATOMIC64
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IRQ_CHIP
- 	select GENERIC_IRQ_PROBE
-diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
-index 7945de067e9f..3e3e0f16f7e0 100644
---- a/arch/h8300/Kconfig
-+++ b/arch/h8300/Kconfig
-@@ -12,7 +12,6 @@ config H8300
- 	select FRAME_POINTER
- 	select GENERIC_CPU_DEVICES
- 	select MODULES_USE_ELF_RELA
--	select GENERIC_CLOCKEVENTS
- 	select COMMON_CLK
- 	select ARCH_WANT_FRAME_POINTERS
- 	select OF
-diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
-index f2afabbadd43..6e00c16a36b5 100644
---- a/arch/hexagon/Kconfig
-+++ b/arch/hexagon/Kconfig
-@@ -27,7 +27,6 @@ config HEXAGON
- 	select GENERIC_IOMAP
- 	select GENERIC_SMP_IDLE_THREAD
- 	select STACKTRACE_SUPPORT
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CLOCKEVENTS_BROADCAST
- 	select MODULES_USE_ELF_RELA
- 	select GENERIC_CPU_DEVICES
 diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 648054d4f860..ce09f993d858 100644
+index 694c4fca9f5d..322a35ef14c6 100644
 --- a/arch/m68k/Kconfig.cpu
 +++ b/arch/m68k/Kconfig.cpu
-@@ -318,7 +318,6 @@ config M54xx
- 
- config COLDFIRE_PIT_TIMER
- 	bool
--	select GENERIC_CLOCKEVENTS
- 
- config COLDFIRE_TIMERS
- 	bool
-diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-index 33925ffed68f..2f0d3f431faf 100644
---- a/arch/microblaze/Kconfig
-+++ b/arch/microblaze/Kconfig
-@@ -17,7 +17,6 @@ config MICROBLAZE
- 	select COMMON_CLK
- 	select DMA_DIRECT_REMAP if MMU
- 	select GENERIC_ATOMIC64
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IDLE_POLL_SETUP
- 	select GENERIC_IRQ_PROBE
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 2000bb2b0220..077c4ae09550 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -21,7 +21,6 @@ config MIPS
- 	select CPU_NO_EFFICIENT_FFS if (TARGET_ISA_REV < 1)
- 	select CPU_PM if CPU_IDLE
- 	select GENERIC_ATOMIC64 if !64BIT
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CMOS_UPDATE
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_GETTIMEOFDAY
-diff --git a/arch/nds32/Kconfig b/arch/nds32/Kconfig
-index e8e541fd2267..62313902d75d 100644
---- a/arch/nds32/Kconfig
-+++ b/arch/nds32/Kconfig
-@@ -17,7 +17,6 @@ config NDS32
- 	select DMA_DIRECT_REMAP
- 	select GENERIC_ATOMIC64
- 	select GENERIC_CPU_DEVICES
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_CHIP
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_IOREMAP
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index c7c6ba6bec9d..c24955c81c92 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -10,7 +10,6 @@ config NIOS2
- 	select COMMON_CLK
- 	select TIMER_OF
- 	select GENERIC_ATOMIC64
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IRQ_PROBE
- 	select GENERIC_IRQ_SHOW
-diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-index 6233c6293180..591acc5990dc 100644
---- a/arch/openrisc/Kconfig
-+++ b/arch/openrisc/Kconfig
-@@ -24,7 +24,6 @@ config OPENRISC
- 	select GENERIC_CPU_DEVICES
- 	select HAVE_UID16
- 	select GENERIC_ATOMIC64
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CLOCKEVENTS_BROADCAST
- 	select GENERIC_STRNCPY_FROM_USER
- 	select GENERIC_STRNLEN_USER
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index e9f13fe08492..57e2c75f76e9 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -163,7 +163,6 @@ config PPC
- 	select EDAC_ATOMIC_SCRUB
- 	select EDAC_SUPPORT
- 	select GENERIC_ATOMIC64			if PPC32
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CLOCKEVENTS_BROADCAST	if SMP
- 	select GENERIC_CMOS_UPDATE
- 	select GENERIC_CPU_AUTOPROBE
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 44377fd7860e..3842bbb4fe62 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -37,7 +37,6 @@ config RISCV
- 	select EDAC_SUPPORT
- 	select GENERIC_ARCH_TOPOLOGY if SMP
- 	select GENERIC_ATOMIC64 if !64BIT
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_EARLY_IOREMAP
- 	select GENERIC_GETTIMEOFDAY if HAVE_GENERIC_VDSO
- 	select GENERIC_IOREMAP
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 4a2a12be04c9..db246781844d 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -116,7 +116,6 @@ config S390
- 	select CLONE_BACKWARDS2
- 	select DMA_OPS if PCI
- 	select DYNAMIC_FTRACE if FUNCTION_TRACER
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_CPU_VULNERABILITIES
- 	select GENERIC_FIND_FIRST_BIT
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 159da4ed578f..5fa580219a86 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -16,7 +16,6 @@ config SUPERH
+@@ -137,6 +137,7 @@ config M5206
+ 	bool "MCF5206"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_MBAR
  	select CPU_NO_EFFICIENT_FFS
- 	select DMA_DECLARE_COHERENT
- 	select GENERIC_ATOMIC64
+ 	help
+@@ -146,6 +147,7 @@ config M5206e
+ 	bool "MCF5206e"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_MBAR
+ 	select CPU_NO_EFFICIENT_FFS
+ 	help
+@@ -154,7 +156,7 @@ config M5206e
+ config M520x
+ 	bool "MCF520x"
+ 	depends on !MMU
 -	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CMOS_UPDATE if SH_SH03 || SH_DREAMCAST
- 	select GENERIC_IDLE_POLL_SETUP
- 	select GENERIC_IRQ_SHOW
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index a6ca135442f9..718c51cf2c6c 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -39,7 +39,6 @@ config SPARC
- 	select HAVE_EBPF_JIT if SPARC64
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select GENERIC_SMP_IDLE_THREAD
++	select COLDFIRE_PIT_TIMER
+ 	select HAVE_CACHE_SPLIT
+ 	help
+ 	   Freescale Coldfire 5207/5208 processor support.
+@@ -162,7 +164,7 @@ config M520x
+ config M523x
+ 	bool "MCF523x"
+ 	depends on !MMU
 -	select GENERIC_CLOCKEVENTS
- 	select GENERIC_STRNCPY_FROM_USER
- 	select GENERIC_STRNLEN_USER
- 	select MODULES_USE_ELF_RELA
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 4b799fad8b48..43333e36e0ba 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -17,7 +17,6 @@ config UML
- 	select NO_DMA
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
++	select COLDFIRE_PIT_TIMER
+ 	select HAVE_CACHE_SPLIT
+ 	select HAVE_IPSBAR
+ 	help
+@@ -172,6 +174,7 @@ config M5249
+ 	bool "MCF5249"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_MBAR
+ 	select CPU_NO_EFFICIENT_FFS
+ 	help
+@@ -181,6 +184,7 @@ config M525x
+ 	bool "MCF525x"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_MBAR
+ 	select CPU_NO_EFFICIENT_FFS
+ 	help
+@@ -189,10 +193,10 @@ config M525x
+ config M5271
+ 	bool "MCF5271"
+ 	depends on !MMU
++	select COLDFIRE_PIT_TIMER
+ 	select M527x
+ 	select HAVE_CACHE_SPLIT
+ 	select HAVE_IPSBAR
 -	select GENERIC_CLOCKEVENTS
- 	select HAVE_GCC_PLUGINS
- 	select SET_FS
- 	select TTY # Needed for line.c
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index f6946b81f74a..0498d7596ccc 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -108,7 +108,6 @@ config X86
- 	select DCACHE_WORD_ACCESS
- 	select EDAC_ATOMIC_SCRUB
- 	select EDAC_SUPPORT
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CLOCKEVENTS_BROADCAST	if X86_64 || (X86_32 && X86_LOCAL_APIC)
- 	select GENERIC_CLOCKEVENTS_MIN_ADJUST
- 	select GENERIC_CMOS_UPDATE
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index d0dfa50bd0bb..2611ba336af8 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -16,7 +16,6 @@ config XTENSA
- 	select COMMON_CLK
- 	select DMA_REMAP if MMU
- 	select GENERIC_ATOMIC64
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_PCI_IOMAP
- 	select GENERIC_SCHED_CLOCK
-diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-index c6867f29d279..9a41848b6ebb 100644
---- a/kernel/time/Kconfig
-+++ b/kernel/time/Kconfig
-@@ -28,7 +28,7 @@ config GENERIC_TIME_VSYSCALL
+ 	help
+ 	  Freescale (Motorola) ColdFire 5270/5271 processor support.
  
- # The generic clock events infrastructure
- config GENERIC_CLOCKEVENTS
--	bool
-+	def_bool !LEGACY_TIMER_TICK
+@@ -200,6 +204,7 @@ config M5272
+ 	bool "MCF5272"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_MBAR
+ 	select CPU_NO_EFFICIENT_FFS
+ 	help
+@@ -208,17 +213,17 @@ config M5272
+ config M5275
+ 	bool "MCF5275"
+ 	depends on !MMU
++	select COLDFIRE_PIT_TIMER
+ 	select M527x
+ 	select HAVE_CACHE_SPLIT
+ 	select HAVE_IPSBAR
+-	select GENERIC_CLOCKEVENTS
+ 	help
+ 	  Freescale (Motorola) ColdFire 5274/5275 processor support.
  
- # Architecture can handle broadcast in a driver-agnostic way
- config ARCH_HAS_TICK_BROADCAST
+ config M528x
+ 	bool "MCF528x"
+ 	depends on !MMU
+-	select GENERIC_CLOCKEVENTS
++	select COLDFIRE_PIT_TIMER
+ 	select HAVE_CACHE_SPLIT
+ 	select HAVE_IPSBAR
+ 	help
+@@ -227,6 +232,7 @@ config M528x
+ config M5307
+ 	bool "MCF5307"
+ 	depends on !MMU
++	select COLDFIRE_TIMERS
+ 	select COLDFIRE_SW_A7
+ 	select HAVE_CACHE_CB
+ 	select HAVE_MBAR
+@@ -237,6 +243,7 @@ config M5307
+ config M532x
+ 	bool "MCF532x"
+ 	depends on !MMU
++	select COLDFIRE_TIMERS
+ 	select M53xx
+ 	select HAVE_CACHE_CB
+ 	help
+@@ -245,6 +252,7 @@ config M532x
+ config M537x
+ 	bool "MCF537x"
+ 	depends on !MMU
++	select COLDFIRE_TIMERS
+ 	select M53xx
+ 	select HAVE_CACHE_CB
+ 	help
+@@ -254,6 +262,7 @@ config M5407
+ 	bool "MCF5407"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_CACHE_CB
+ 	select HAVE_MBAR
+ 	select CPU_NO_EFFICIENT_FFS
+@@ -263,6 +272,7 @@ config M5407
+ config M547x
+ 	bool "MCF547x"
+ 	select M54xx
++	select COLDFIRE_SLTIMERS
+ 	select MMU_COLDFIRE if MMU
+ 	select FPU if MMU
+ 	select HAVE_CACHE_CB
+@@ -273,6 +283,7 @@ config M547x
+ 
+ config M548x
+ 	bool "MCF548x"
++	select COLDFIRE_SLTIMERS
+ 	select MMU_COLDFIRE if MMU
+ 	select FPU if MMU
+ 	select M54xx
+@@ -284,8 +295,8 @@ config M548x
+ 
+ config M5441x
+ 	bool "MCF5441x"
++	select COLDFIRE_PIT_TIMER
+ 	select MMU_COLDFIRE if MMU
+-	select GENERIC_CLOCKEVENTS
+ 	select HAVE_CACHE_CB
+ 	help
+ 	  Freescale Coldfire 54410/54415/54416/54417/54418 processor support.
+@@ -302,6 +313,18 @@ config M54xx
+ 	select HAVE_PCI
+ 	bool
+ 
++config COLDFIRE_PIT_TIMER
++	bool
++	select GENERIC_CLOCKEVENTS
++
++config COLDFIRE_TIMERS
++	bool
++	select LEGACY_TIMER_TICK
++
++config COLDFIRE_SLTIMERS
++	bool
++	select LEGACY_TIMER_TICK
++
+ endif # COLDFIRE
+ 
+ 
+diff --git a/arch/m68k/coldfire/Makefile b/arch/m68k/coldfire/Makefile
+index 573eabca1a3a..a3e18d73d8b8 100644
+--- a/arch/m68k/coldfire/Makefile
++++ b/arch/m68k/coldfire/Makefile
+@@ -16,20 +16,24 @@
+ asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
+ 
+ obj-$(CONFIG_COLDFIRE)	+= cache.o clk.o device.o dma.o entry.o vectors.o
+-obj-$(CONFIG_M5206)	+= m5206.o timers.o intc.o reset.o
+-obj-$(CONFIG_M5206e)	+= m5206.o timers.o intc.o reset.o
+-obj-$(CONFIG_M520x)	+= m520x.o pit.o intc-simr.o reset.o
+-obj-$(CONFIG_M523x)	+= m523x.o pit.o dma_timer.o intc-2.o reset.o
+-obj-$(CONFIG_M5249)	+= m5249.o timers.o intc.o intc-5249.o reset.o
+-obj-$(CONFIG_M525x)	+= m525x.o timers.o intc.o intc-525x.o reset.o
+-obj-$(CONFIG_M527x)	+= m527x.o pit.o intc-2.o reset.o
+-obj-$(CONFIG_M5272)	+= m5272.o intc-5272.o timers.o
+-obj-$(CONFIG_M528x)	+= m528x.o pit.o intc-2.o reset.o
+-obj-$(CONFIG_M5307)	+= m5307.o timers.o intc.o reset.o
+-obj-$(CONFIG_M53xx)	+= m53xx.o timers.o intc-simr.o reset.o
+-obj-$(CONFIG_M5407)	+= m5407.o timers.o intc.o reset.o
+-obj-$(CONFIG_M54xx)	+= m54xx.o sltimers.o intc-2.o
+-obj-$(CONFIG_M5441x)	+= m5441x.o pit.o intc-simr.o reset.o
++obj-$(CONFIG_M5206)	+= m5206.o intc.o reset.o
++obj-$(CONFIG_M5206e)	+= m5206.o intc.o reset.o
++obj-$(CONFIG_M520x)	+= m520x.o intc-simr.o reset.o
++obj-$(CONFIG_M523x)	+= m523x.o dma_timer.o intc-2.o reset.o
++obj-$(CONFIG_M5249)	+= m5249.o intc.o intc-5249.o reset.o
++obj-$(CONFIG_M525x)	+= m525x.o intc.o intc-525x.o reset.o
++obj-$(CONFIG_M527x)	+= m527x.o intc-2.o reset.o
++obj-$(CONFIG_M5272)	+= m5272.o intc-5272.o
++obj-$(CONFIG_M528x)	+= m528x.o intc-2.o reset.o
++obj-$(CONFIG_M5307)	+= m5307.o intc.o reset.o
++obj-$(CONFIG_M53xx)	+= m53xx.o intc-simr.o reset.o
++obj-$(CONFIG_M5407)	+= m5407.o intc.o reset.o
++obj-$(CONFIG_M54xx)	+= m54xx.o intc-2.o
++obj-$(CONFIG_M5441x)	+= m5441x.o intc-simr.o reset.o
++
++obj-$(CONFIG_COLDFIRE_PIT_TIMER) += pit.o
++obj-$(CONFIG_COLDFIRE_TIMERS)	 += timers.o
++obj-$(CONFIG_COLDFIRE_SLTIMERS)	 += sltimers.o
+ 
+ obj-$(CONFIG_NETtel)	+= nettel.o
+ obj-$(CONFIG_CLEOPATRA)	+= nettel.o
+diff --git a/arch/m68k/coldfire/sltimers.c b/arch/m68k/coldfire/sltimers.c
+index 5ab81c9c552d..25a1319f3cb8 100644
+--- a/arch/m68k/coldfire/sltimers.c
++++ b/arch/m68k/coldfire/sltimers.c
+@@ -83,14 +83,13 @@ void mcfslt_profile_init(void)
+ static u32 mcfslt_cycles_per_jiffy;
+ static u32 mcfslt_cnt;
+ 
+-static irq_handler_t timer_interrupt;
+-
+ static irqreturn_t mcfslt_tick(int irq, void *dummy)
+ {
+ 	/* Reset Slice Timer 0 */
+ 	__raw_writel(MCFSLT_SSR_BE | MCFSLT_SSR_TE, TA(MCFSLT_SSR));
+ 	mcfslt_cnt += mcfslt_cycles_per_jiffy;
+-	return timer_interrupt(irq, dummy);
++	legacy_timer_tick(1);
++	return IRQ_HANDLED;
+ }
+ 
+ static u64 mcfslt_read_clk(struct clocksource *cs)
+@@ -136,7 +135,6 @@ void hw_timer_init(irq_handler_t handler)
+ 	/* initialize mcfslt_cnt knowing that slice timers count down */
+ 	mcfslt_cnt = mcfslt_cycles_per_jiffy;
+ 
+-	timer_interrupt = handler;
+ 	r = request_irq(MCF_IRQ_TIMER, mcfslt_tick, IRQF_TIMER, "timer", NULL);
+ 	if (r) {
+ 		pr_err("Failed to request irq %d (timer): %pe\n", MCF_IRQ_TIMER,
+diff --git a/arch/m68k/coldfire/timers.c b/arch/m68k/coldfire/timers.c
+index b8301fddf901..24b5e2d1b00b 100644
+--- a/arch/m68k/coldfire/timers.c
++++ b/arch/m68k/coldfire/timers.c
+@@ -48,8 +48,6 @@ void coldfire_profile_init(void);
+ static u32 mcftmr_cycles_per_jiffy;
+ static u32 mcftmr_cnt;
+ 
+-static irq_handler_t timer_interrupt;
+-
+ /***************************************************************************/
+ 
+ static void init_timer_irq(void)
+@@ -77,7 +75,8 @@ static irqreturn_t mcftmr_tick(int irq, void *dummy)
+ 	__raw_writeb(MCFTIMER_TER_CAP | MCFTIMER_TER_REF, TA(MCFTIMER_TER));
+ 
+ 	mcftmr_cnt += mcftmr_cycles_per_jiffy;
+-	return timer_interrupt(irq, dummy);
++	legacy_timer_tick(1);
++	return IRQ_HANDLED;
+ }
+ 
+ /***************************************************************************/
+@@ -126,7 +125,6 @@ void hw_timer_init(irq_handler_t handler)
+ 
+ 	clocksource_register_hz(&mcftmr_clk, FREQ);
+ 
+-	timer_interrupt = handler;
+ 	init_timer_irq();
+ 	r = request_irq(MCF_IRQ_TIMER, mcftmr_tick, IRQF_TIMER, "timer", NULL);
+ 	if (r) {
 -- 
 2.27.0
 
