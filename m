@@ -2,43 +2,43 @@ Return-Path: <SRS0=+PjG=EF=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46BDFC00A89
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:18:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32503C55179
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E50932223F
-	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:18:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CC1EB22246
+	for <linux-parisc@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604071099;
-	bh=taFQ/QYuCiye3DX/lZJhTO25JVRcc0x/wNovA78JpOY=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=smN7oRBeOT56zMNiYt+i6DT5WXEsDFZIvdz9STow7/GQi2adh423bH2lO0D1jlYjO
-	 V9qg+EU939hD9L31kTBEbNUbvzX7ScSk13s1NPGe5IxCTUhQCKtDpLlMoMRsFqHvaz
-	 +uutUrhkby8D+zYRQdBfqKlt2Q8i/n6uC6JKadxc=
+	s=default; t=1604071214;
+	bh=eKAnFlGG9v9rypqKJNnorqiTpdWvYKlEZQAp7FdGWdY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=hBcl9DN/Cm5HlRD8QARd1/h9MCGfGubNxQiWPi3FB7rO6YkSR5s5N5CCRc9EV1a0S
+	 yIRlh3Vgqi+Oe3ELrRgJ3KO0amf3U0DUguvI6wbhDENlyEnV8r7pkM78iGFmlo8JDF
+	 yrBh7G8n7e2+B064/cTadv8zQbT71O4mX3GnaFlU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgJ3PSS (ORCPT
+        id S1727036AbgJ3PUC (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 30 Oct 2020 11:18:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51668 "EHLO mail.kernel.org"
+        Fri, 30 Oct 2020 11:20:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726792AbgJ3PSS (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:18:18 -0400
+        id S1726991AbgJ3PUC (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 30 Oct 2020 11:20:02 -0400
 Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02B1C20791;
-        Fri, 30 Oct 2020 15:18:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D10F422254;
+        Fri, 30 Oct 2020 15:19:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604071096;
-        bh=taFQ/QYuCiye3DX/lZJhTO25JVRcc0x/wNovA78JpOY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ufDt2Ll03VhYHtQFU6xb+wDDadJlHrC4o7pklktL1H164iohO0RVUvApxcyYUf8eT
-         cT6OeHSv9QAgLUSnpRQk706eIF0HPDMkzDFLu+FuAH9hbSDGMubrZsL8T1rHK7HsoM
-         wMfwqnjL+QtSIffHV9go0c9qiksw2jE54yt7dmD4=
+        s=default; t=1604071169;
+        bh=eKAnFlGG9v9rypqKJNnorqiTpdWvYKlEZQAp7FdGWdY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=tVtTX/0Tq3ofKx8Rhva3pzMSuxxmBrLMz4P3BuhDAjDWVs/6P54O0csc7i0agoQ2c
+         O+boiafxfH/SCFbPUo2LwfK4vzkf0Zm0nMrDfgoCoVoylHquDvYVW6vYKL+sxn3t/1
+         4czvjPS4EZwVPTLk+TNSVxL4rxPkZcyQJsyVgNwg=
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -60,11 +60,14 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-ia64@vger.kernel.org,
         Parisc List <linux-parisc@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 00/15] timers: clean up ARCH_GETTIMEOFFSET, LEGACY_TIMER_TICK
-Date:   Fri, 30 Oct 2020 16:17:43 +0100
-Message-Id: <20201030151758.1241164-1-arnd@kernel.org>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2 15/15] timekeeping: default GENERIC_CLOCKEVENTS to enabled
+Date:   Fri, 30 Oct 2020 16:17:58 +0100
+Message-Id: <20201030151758.1241164-16-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201030151758.1241164-1-arnd@kernel.org>
+References: <20201030151758.1241164-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -73,197 +76,471 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-This is a resend of the combined cleanups for CONFIG_ARCH_GETTIMEOFFSET,
-which gets removed, and CONFIG_LEGACY_TIMER_TICK, which replaces
-CONFIG_GENERIC_CLOCKEVENTS, with the reverse meaning.
+Almost all machines use GENERIC_CLOCKEVENTS, so it feels wrong to
+require each one to select that symbol manually.
 
-CONFIG_ARCH_GETTIMEOFFSET has been gradually phased out from all
-platforms, with only ARM EBSA110 recently. As this has no more
-known users, the first three patches remove EBSA110 along with
-one platform specific driver and the ARCH_GETTIMEOFFSET
-infrastructure.
+Instead, enable it whenever CONFIG_LEGACY_TIMER_TICK is disabled as
+a simplification. It should be possible to select both
+GENERIC_CLOCKEVENTS and LEGACY_TIMER_TICK from an architecture now
+and decide at runtime between the two.
 
-When I created the patch removing CONFIG_ARCH_GETTIMEOFFSET, I also
-had a look at CONFIG_GENERIC_CLOCKEVENTS, which is selected by most,
-but not all, platforms today, each of the ones that lack it doing the
-timer tick slightly differently.
+For the clockevents arch-support.txt file, this means that additional
+architectures are marked as TODO when they have at least one machine
+that still uses LEGACY_TIMER_TICK, rather than being marked 'ok' when
+at least one machine has been converted. This means that both m68k and
+arm (for riscpc) revert to TODO.
 
-The cleanups here make the old platforms a bit more consistent, in
-multiple ways:
+At this point, we could just always enable CONFIG_GENERIC_CLOCKEVENTS
+rather than leaving it off when not needed. I built an m68k
+defconfig kernel (using gcc-10.1.0) and found that this would add
+around 5.5KB in kernel image size:
 
-- rather than selecting GENERIC_CLOCKEVENTS on modern
-  platforms, select LEGACY_TIMER_TICK on the old ones.
+   text	   data	    bss	    dec	    hex	filename
+3861936	1092236	 196656	5150828	 4e986c	obj-m68k/vmlinux-no-clockevent
+3866201	1093832	 196184	5156217	 4ead79	obj-m68k/vmlinux-clockevent
 
-- Hide some more of the internal implementation and only
-  provide a single common entry point for the timer tick,
-  which also makes the behavior more consistent.
+On Arm (MACH_RPC), that difference appears to be twice as large,
+around 11KB on top of an 6MB vmlinux.
 
-- Remove the m68k and arm specific infrastructure pieces
-  and call the common helper directly from each timer
-  interrupt function.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ .../features/time/clockevents/arch-support.txt       |  6 +++---
+ arch/alpha/Kconfig                                   |  1 -
+ arch/arc/Kconfig                                     |  1 -
+ arch/arm/Kconfig                                     | 12 ------------
+ arch/arm64/Kconfig                                   |  1 -
+ arch/arm64/Kconfig.platforms                         |  1 -
+ arch/c6x/Kconfig                                     |  1 -
+ arch/csky/Kconfig                                    |  1 -
+ arch/h8300/Kconfig                                   |  1 -
+ arch/hexagon/Kconfig                                 |  1 -
+ arch/m68k/Kconfig.cpu                                |  1 -
+ arch/microblaze/Kconfig                              |  1 -
+ arch/mips/Kconfig                                    |  1 -
+ arch/nds32/Kconfig                                   |  1 -
+ arch/nios2/Kconfig                                   |  1 -
+ arch/openrisc/Kconfig                                |  1 -
+ arch/powerpc/Kconfig                                 |  1 -
+ arch/riscv/Kconfig                                   |  1 -
+ arch/s390/Kconfig                                    |  1 -
+ arch/sh/Kconfig                                      |  1 -
+ arch/sparc/Kconfig                                   |  1 -
+ arch/um/Kconfig                                      |  1 -
+ arch/x86/Kconfig                                     |  1 -
+ arch/xtensa/Kconfig                                  |  1 -
+ kernel/time/Kconfig                                  |  2 +-
+ 25 files changed, 4 insertions(+), 38 deletions(-)
 
-I tested the series on m68k with the qemu q800 target platform, both
-with the legacy_timer_tick() implementation and after converting that
-to a periodic clockevent driver (not included in v2).
-
-Since the patches touch a lot of architecture specific code, I've created
-a branch in my asm-generic tree[1] and plan to send it for the v5.11 merge
-window. If any maintainer has conflicting changes or wants to build on
-top of my work, feel free to merge that into additional subsystem trees.
-
-	Arnd
-
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git \
-							asm-generic-timers
-
-Arnd Bergmann (15):
-  ARM: remove ebsa110 platform
-  net: remove am79c961a driver
-  timekeeping: remove arch_gettimeoffset
-  timekeeping: add CONFIG_LEGACY_TIMER_TICK
-  ia64: convert to legacy_timer_tick
-  ARM: rpc: use legacy_timer_tick
-  parisc: use legacy_timer_tick
-  m68k: coldfire: use legacy_timer_tick()
-  m68k: split heartbeat out of timer function
-  m68k: sun3/sun3c: use legacy_timer_tick
-  m68k: m68328: use legacy_timer_tick()
-  m68k: change remaining timers to legacy_timer_tick
-  m68k: remove timer_interrupt() function
-  timekeeping: remove xtime_update
-  timekeeping: default GENERIC_CLOCKEVENTS to enabled
-
- .../time/clockevents/arch-support.txt         |   8 +-
- .../time/modern-timekeeping/arch-support.txt  |  33 -
- MAINTAINERS                                   |   8 -
- arch/alpha/Kconfig                            |   1 -
- arch/arc/Kconfig                              |   1 -
- arch/arm/Kconfig                              |  37 +-
- arch/arm/Kconfig.debug                        |   6 +-
- arch/arm/Makefile                             |   8 -
- arch/arm/configs/ebsa110_defconfig            |  74 --
- arch/arm/include/asm/mach/time.h              |   2 -
- arch/arm/kernel/Makefile                      |   6 +-
- arch/arm/kernel/time.c                        |  14 -
- arch/arm/mach-ebsa110/Makefile                |   8 -
- arch/arm/mach-ebsa110/Makefile.boot           |   5 -
- arch/arm/mach-ebsa110/core.c                  | 323 --------
- arch/arm/mach-ebsa110/core.h                  |  38 -
- .../mach-ebsa110/include/mach/entry-macro.S   |  33 -
- arch/arm/mach-ebsa110/include/mach/hardware.h |  21 -
- arch/arm/mach-ebsa110/include/mach/io.h       |  89 --
- arch/arm/mach-ebsa110/include/mach/irqs.h     |  17 -
- arch/arm/mach-ebsa110/include/mach/memory.h   |  22 -
- .../mach-ebsa110/include/mach/uncompress.h    |  41 -
- arch/arm/mach-ebsa110/io.c                    | 440 ----------
- arch/arm/mach-ebsa110/leds.c                  |  71 --
- arch/arm/mach-rpc/time.c                      |   2 +-
- arch/arm64/Kconfig                            |   1 -
- arch/arm64/Kconfig.platforms                  |   1 -
- arch/c6x/Kconfig                              |   1 -
- arch/csky/Kconfig                             |   1 -
- arch/h8300/Kconfig                            |   1 -
- arch/hexagon/Kconfig                          |   1 -
- arch/ia64/Kconfig                             |   1 +
- arch/ia64/kernel/time.c                       |  36 +-
- arch/m68k/68000/timers.c                      |   7 +-
- arch/m68k/Kconfig.cpu                         |  37 +-
- arch/m68k/Kconfig.machine                     |  11 +
- arch/m68k/amiga/config.c                      |  11 +-
- arch/m68k/apollo/config.c                     |  11 +-
- arch/m68k/atari/config.c                      |   2 +-
- arch/m68k/atari/time.c                        |   9 +-
- arch/m68k/bvme6000/config.c                   |   9 +-
- arch/m68k/coldfire/Makefile                   |  32 +-
- arch/m68k/coldfire/pit.c                      |   2 +-
- arch/m68k/coldfire/sltimers.c                 |   8 +-
- arch/m68k/coldfire/timers.c                   |   8 +-
- arch/m68k/hp300/time.c                        |   8 +-
- arch/m68k/hp300/time.h                        |   2 +-
- arch/m68k/include/asm/machdep.h               |  12 +-
- arch/m68k/kernel/setup_mm.c                   |   2 +-
- arch/m68k/kernel/setup_no.c                   |   2 +-
- arch/m68k/kernel/time.c                       |  18 +-
- arch/m68k/mac/config.c                        |   6 +-
- arch/m68k/mac/via.c                           |   8 +-
- arch/m68k/mvme147/config.c                    |   9 +-
- arch/m68k/mvme16x/config.c                    |   9 +-
- arch/m68k/q40/config.c                        |   2 +-
- arch/m68k/q40/q40ints.c                       |  10 +-
- arch/m68k/sun3/config.c                       |   4 +-
- arch/m68k/sun3/sun3ints.c                     |   3 +-
- arch/m68k/sun3x/time.c                        |   5 +-
- arch/m68k/sun3x/time.h                        |   2 +-
- arch/microblaze/Kconfig                       |   1 -
- arch/mips/Kconfig                             |   1 -
- arch/nds32/Kconfig                            |   1 -
- arch/nios2/Kconfig                            |   1 -
- arch/openrisc/Kconfig                         |   1 -
- arch/parisc/Kconfig                           |   2 +-
- arch/parisc/kernel/time.c                     |   9 +-
- arch/powerpc/Kconfig                          |   1 -
- arch/riscv/Kconfig                            |   1 -
- arch/s390/Kconfig                             |   1 -
- arch/sh/Kconfig                               |   1 -
- arch/sparc/Kconfig                            |   1 -
- arch/um/Kconfig                               |   1 -
- arch/x86/Kconfig                              |   1 -
- arch/xtensa/Kconfig                           |   1 -
- drivers/Makefile                              |   2 -
- drivers/clocksource/Kconfig                   |   2 +-
- drivers/net/ethernet/amd/Kconfig              |  10 +-
- drivers/net/ethernet/amd/Makefile             |   1 -
- drivers/net/ethernet/amd/am79c961a.c          | 763 ------------------
- drivers/net/ethernet/amd/am79c961a.h          | 143 ----
- drivers/watchdog/Kconfig                      |   2 +-
- include/linux/time.h                          |  13 -
- include/linux/timekeeping.h                   |   3 +-
- kernel/time/Kconfig                           |  18 +-
- kernel/time/Makefile                          |   1 +
- kernel/time/clocksource.c                     |   8 -
- kernel/time/tick-legacy.c                     |  37 +
- kernel/time/timekeeping.c                     |  41 +-
- kernel/time/timekeeping.h                     |   1 +
- kernel/trace/Kconfig                          |   2 -
- 92 files changed, 218 insertions(+), 2453 deletions(-)
- delete mode 100644 Documentation/features/time/modern-timekeeping/arch-support.txt
- delete mode 100644 arch/arm/configs/ebsa110_defconfig
- delete mode 100644 arch/arm/mach-ebsa110/Makefile
- delete mode 100644 arch/arm/mach-ebsa110/Makefile.boot
- delete mode 100644 arch/arm/mach-ebsa110/core.c
- delete mode 100644 arch/arm/mach-ebsa110/core.h
- delete mode 100644 arch/arm/mach-ebsa110/include/mach/entry-macro.S
- delete mode 100644 arch/arm/mach-ebsa110/include/mach/hardware.h
- delete mode 100644 arch/arm/mach-ebsa110/include/mach/io.h
- delete mode 100644 arch/arm/mach-ebsa110/include/mach/irqs.h
- delete mode 100644 arch/arm/mach-ebsa110/include/mach/memory.h
- delete mode 100644 arch/arm/mach-ebsa110/include/mach/uncompress.h
- delete mode 100644 arch/arm/mach-ebsa110/io.c
- delete mode 100644 arch/arm/mach-ebsa110/leds.c
- delete mode 100644 drivers/net/ethernet/amd/am79c961a.c
- delete mode 100644 drivers/net/ethernet/amd/am79c961a.h
- create mode 100644 kernel/time/tick-legacy.c
-
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: Finn Thain <fthain@telegraphics.com.au>
-Cc: Philip Blundell <philb@gnu.org>
-Cc: Joshua Thompson <funaho@jurai.org>
-Cc: Sam Creasey <sammy@sammy.net>
-Cc: "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: <linux-ia64@vger.kernel.org>
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
-Cc: Linux ARM <linux-arm-kernel@lists.infradead.org>
-
-
+diff --git a/Documentation/features/time/clockevents/arch-support.txt b/Documentation/features/time/clockevents/arch-support.txt
+index 61a5c9d68c15..6863a3fbddad 100644
+--- a/Documentation/features/time/clockevents/arch-support.txt
++++ b/Documentation/features/time/clockevents/arch-support.txt
+@@ -1,6 +1,6 @@
+ #
+ # Feature name:          clockevents
+-#         Kconfig:       GENERIC_CLOCKEVENTS
++#         Kconfig:       !LEGACY_TIMER_TICK
+ #         description:   arch support generic clock events
+ #
+     -----------------------
+@@ -8,14 +8,14 @@
+     -----------------------
+     |       alpha: |  ok  |
+     |         arc: |  ok  |
+-    |         arm: |  ok  |
++    |         arm: | TODO |
+     |       arm64: |  ok  |
+     |         c6x: |  ok  |
+     |        csky: |  ok  |
+     |       h8300: |  ok  |
+     |     hexagon: |  ok  |
+     |        ia64: | TODO |
+-    |        m68k: |  ok  |
++    |        m68k: | TODO |
+     |  microblaze: |  ok  |
+     |        mips: |  ok  |
+     |       nds32: |  ok  |
+diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+index d6e9fc7a7b19..f0a700946cac 100644
+--- a/arch/alpha/Kconfig
++++ b/arch/alpha/Kconfig
+@@ -27,7 +27,6 @@ config ALPHA
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select AUDIT_ARCH
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CPU_VULNERABILITIES
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_STRNCPY_FROM_USER
+diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+index 0a89cc9def65..061eb8e23739 100644
+--- a/arch/arc/Kconfig
++++ b/arch/arc/Kconfig
+@@ -19,7 +19,6 @@ config ARC
+ 	select COMMON_CLK
+ 	select DMA_DIRECT_REMAP
+ 	select GENERIC_ATOMIC64 if !ISA_ARCV2 || !(ARC_HAS_LL64 && ARC_HAS_LLSC)
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_FIND_FIRST_BIT
+ 	# for now, we don't need GENERIC_IRQ_PROBE, CONFIG_GENERIC_IRQ_CHIP
+ 	select GENERIC_IRQ_SHOW
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index dbadfa186f72..04a37a4cd9e0 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -321,7 +321,6 @@ config ARCH_MULTIPLATFORM
+ 	select AUTO_ZRELADDR
+ 	select TIMER_OF
+ 	select COMMON_CLK
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select HAVE_PCI
+ 	select PCI_DOMAINS_GENERIC if PCI
+@@ -336,7 +335,6 @@ config ARM_SINGLE_ARMV7M
+ 	select TIMER_OF
+ 	select COMMON_CLK
+ 	select CPU_V7M
+-	select GENERIC_CLOCKEVENTS
+ 	select NO_IOPORT_MAP
+ 	select SPARSE_IRQ
+ 	select USE_OF
+@@ -351,7 +349,6 @@ config ARCH_EP93XX
+ 	select CLKDEV_LOOKUP
+ 	select CLKSRC_MMIO
+ 	select CPU_ARM920T
+-	select GENERIC_CLOCKEVENTS
+ 	select GPIOLIB
+ 	select HAVE_LEGACY_CLK
+ 	help
+@@ -361,7 +358,6 @@ config ARCH_FOOTBRIDGE
+ 	bool "FootBridge"
+ 	select CPU_SA110
+ 	select FOOTBRIDGE
+-	select GENERIC_CLOCKEVENTS
+ 	select HAVE_IDE
+ 	select NEED_MACH_IO_H if !MMU
+ 	select NEED_MACH_MEMORY_H
+@@ -389,7 +385,6 @@ config ARCH_IXP4XX
+ 	select ARCH_SUPPORTS_BIG_ENDIAN
+ 	select CPU_XSCALE
+ 	select DMABOUNCE if PCI
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIO_IXP4XX
+ 	select GPIOLIB
+@@ -405,7 +400,6 @@ config ARCH_IXP4XX
+ config ARCH_DOVE
+ 	bool "Marvell Dove"
+ 	select CPU_PJ4
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIOLIB
+ 	select HAVE_PCI
+@@ -429,7 +423,6 @@ config ARCH_PXA
+ 	select CLKSRC_MMIO
+ 	select TIMER_OF
+ 	select CPU_XSCALE if !CPU_XSC3
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIO_PXA
+ 	select GPIOLIB
+@@ -470,7 +463,6 @@ config ARCH_SA1100
+ 	select COMMON_CLK
+ 	select CPU_FREQ
+ 	select CPU_SA1100
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIOLIB
+ 	select HAVE_IDE
+@@ -485,7 +477,6 @@ config ARCH_S3C24XX
+ 	bool "Samsung S3C24XX SoCs"
+ 	select ATAGS
+ 	select CLKSRC_SAMSUNG_PWM
+-	select GENERIC_CLOCKEVENTS
+ 	select GPIO_SAMSUNG
+ 	select GPIOLIB
+ 	select GENERIC_IRQ_MULTI_HANDLER
+@@ -509,7 +500,6 @@ config ARCH_OMAP1
+ 	select ARCH_OMAP
+ 	select CLKDEV_LOOKUP
+ 	select CLKSRC_MMIO
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_IRQ_CHIP
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIOLIB
+@@ -772,7 +762,6 @@ config ARCH_ACORN
+ 
+ config PLAT_IOP
+ 	bool
+-	select GENERIC_CLOCKEVENTS
+ 
+ config PLAT_ORION
+ 	bool
+@@ -1163,7 +1152,6 @@ config HAVE_SMP
+ config SMP
+ 	bool "Symmetric Multi-Processing"
+ 	depends on CPU_V6K || CPU_V7
+-	depends on GENERIC_CLOCKEVENTS
+ 	depends on HAVE_SMP
+ 	depends on MMU || ARM_MPU
+ 	select IRQ_WORK
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index f858c352f72a..fee87e4104fd 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -101,7 +101,6 @@ config ARM64
+ 	select FRAME_POINTER
+ 	select GENERIC_ALLOCATOR
+ 	select GENERIC_ARCH_TOPOLOGY
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CLOCKEVENTS_BROADCAST
+ 	select GENERIC_CPU_AUTOPROBE
+ 	select GENERIC_CPU_VULNERABILITIES
+diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+index 6f2494dd6d60..748e6d8c3b94 100644
+--- a/arch/arm64/Kconfig.platforms
++++ b/arch/arm64/Kconfig.platforms
+@@ -256,7 +256,6 @@ config ARCH_TEGRA
+ 	select ARM_GIC_PM
+ 	select CLKSRC_MMIO
+ 	select TIMER_OF
+-	select GENERIC_CLOCKEVENTS
+ 	select GPIOLIB
+ 	select PINCTRL
+ 	select PM
+diff --git a/arch/c6x/Kconfig b/arch/c6x/Kconfig
+index 48d66bf0465d..bdeeac28b1be 100644
+--- a/arch/c6x/Kconfig
++++ b/arch/c6x/Kconfig
+@@ -19,7 +19,6 @@ config C6X
+ 	select IRQ_DOMAIN
+ 	select OF
+ 	select OF_EARLY_FLATTREE
+-	select GENERIC_CLOCKEVENTS
+ 	select MODULES_USE_ELF_RELA
+ 	select MMU_GATHER_NO_RANGE if MMU
+ 	select SET_FS
+diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
+index 268fad5f51cf..28fdf8303dff 100644
+--- a/arch/csky/Kconfig
++++ b/arch/csky/Kconfig
+@@ -28,7 +28,6 @@ config CSKY
+ 	select GENERIC_LIB_UCMPDI2
+ 	select GENERIC_ALLOCATOR
+ 	select GENERIC_ATOMIC64
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_IRQ_CHIP
+ 	select GENERIC_IRQ_PROBE
+diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
+index 7945de067e9f..3e3e0f16f7e0 100644
+--- a/arch/h8300/Kconfig
++++ b/arch/h8300/Kconfig
+@@ -12,7 +12,6 @@ config H8300
+ 	select FRAME_POINTER
+ 	select GENERIC_CPU_DEVICES
+ 	select MODULES_USE_ELF_RELA
+-	select GENERIC_CLOCKEVENTS
+ 	select COMMON_CLK
+ 	select ARCH_WANT_FRAME_POINTERS
+ 	select OF
+diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
+index f2afabbadd43..6e00c16a36b5 100644
+--- a/arch/hexagon/Kconfig
++++ b/arch/hexagon/Kconfig
+@@ -27,7 +27,6 @@ config HEXAGON
+ 	select GENERIC_IOMAP
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select STACKTRACE_SUPPORT
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CLOCKEVENTS_BROADCAST
+ 	select MODULES_USE_ELF_RELA
+ 	select GENERIC_CPU_DEVICES
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 648054d4f860..ce09f993d858 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -318,7 +318,6 @@ config M54xx
+ 
+ config COLDFIRE_PIT_TIMER
+ 	bool
+-	select GENERIC_CLOCKEVENTS
+ 
+ config COLDFIRE_TIMERS
+ 	bool
+diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+index 33925ffed68f..2f0d3f431faf 100644
+--- a/arch/microblaze/Kconfig
++++ b/arch/microblaze/Kconfig
+@@ -17,7 +17,6 @@ config MICROBLAZE
+ 	select COMMON_CLK
+ 	select DMA_DIRECT_REMAP if MMU
+ 	select GENERIC_ATOMIC64
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_IDLE_POLL_SETUP
+ 	select GENERIC_IRQ_PROBE
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 2000bb2b0220..077c4ae09550 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -21,7 +21,6 @@ config MIPS
+ 	select CPU_NO_EFFICIENT_FFS if (TARGET_ISA_REV < 1)
+ 	select CPU_PM if CPU_IDLE
+ 	select GENERIC_ATOMIC64 if !64BIT
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CMOS_UPDATE
+ 	select GENERIC_CPU_AUTOPROBE
+ 	select GENERIC_GETTIMEOFDAY
+diff --git a/arch/nds32/Kconfig b/arch/nds32/Kconfig
+index e8e541fd2267..62313902d75d 100644
+--- a/arch/nds32/Kconfig
++++ b/arch/nds32/Kconfig
+@@ -17,7 +17,6 @@ config NDS32
+ 	select DMA_DIRECT_REMAP
+ 	select GENERIC_ATOMIC64
+ 	select GENERIC_CPU_DEVICES
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_IRQ_CHIP
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_IOREMAP
+diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
+index c7c6ba6bec9d..c24955c81c92 100644
+--- a/arch/nios2/Kconfig
++++ b/arch/nios2/Kconfig
+@@ -10,7 +10,6 @@ config NIOS2
+ 	select COMMON_CLK
+ 	select TIMER_OF
+ 	select GENERIC_ATOMIC64
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_IRQ_PROBE
+ 	select GENERIC_IRQ_SHOW
+diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+index 6233c6293180..591acc5990dc 100644
+--- a/arch/openrisc/Kconfig
++++ b/arch/openrisc/Kconfig
+@@ -24,7 +24,6 @@ config OPENRISC
+ 	select GENERIC_CPU_DEVICES
+ 	select HAVE_UID16
+ 	select GENERIC_ATOMIC64
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CLOCKEVENTS_BROADCAST
+ 	select GENERIC_STRNCPY_FROM_USER
+ 	select GENERIC_STRNLEN_USER
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index e9f13fe08492..57e2c75f76e9 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -163,7 +163,6 @@ config PPC
+ 	select EDAC_ATOMIC_SCRUB
+ 	select EDAC_SUPPORT
+ 	select GENERIC_ATOMIC64			if PPC32
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CLOCKEVENTS_BROADCAST	if SMP
+ 	select GENERIC_CMOS_UPDATE
+ 	select GENERIC_CPU_AUTOPROBE
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 44377fd7860e..3842bbb4fe62 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -37,7 +37,6 @@ config RISCV
+ 	select EDAC_SUPPORT
+ 	select GENERIC_ARCH_TOPOLOGY if SMP
+ 	select GENERIC_ATOMIC64 if !64BIT
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_EARLY_IOREMAP
+ 	select GENERIC_GETTIMEOFDAY if HAVE_GENERIC_VDSO
+ 	select GENERIC_IOREMAP
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index 4a2a12be04c9..db246781844d 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -116,7 +116,6 @@ config S390
+ 	select CLONE_BACKWARDS2
+ 	select DMA_OPS if PCI
+ 	select DYNAMIC_FTRACE if FUNCTION_TRACER
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CPU_AUTOPROBE
+ 	select GENERIC_CPU_VULNERABILITIES
+ 	select GENERIC_FIND_FIRST_BIT
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 159da4ed578f..5fa580219a86 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -16,7 +16,6 @@ config SUPERH
+ 	select CPU_NO_EFFICIENT_FFS
+ 	select DMA_DECLARE_COHERENT
+ 	select GENERIC_ATOMIC64
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CMOS_UPDATE if SH_SH03 || SH_DREAMCAST
+ 	select GENERIC_IDLE_POLL_SETUP
+ 	select GENERIC_IRQ_SHOW
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index a6ca135442f9..718c51cf2c6c 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -39,7 +39,6 @@ config SPARC
+ 	select HAVE_EBPF_JIT if SPARC64
+ 	select HAVE_DEBUG_BUGVERBOSE
+ 	select GENERIC_SMP_IDLE_THREAD
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_STRNCPY_FROM_USER
+ 	select GENERIC_STRNLEN_USER
+ 	select MODULES_USE_ELF_RELA
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 4b799fad8b48..43333e36e0ba 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -17,7 +17,6 @@ config UML
+ 	select NO_DMA
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_CPU_DEVICES
+-	select GENERIC_CLOCKEVENTS
+ 	select HAVE_GCC_PLUGINS
+ 	select SET_FS
+ 	select TTY # Needed for line.c
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index f6946b81f74a..0498d7596ccc 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -108,7 +108,6 @@ config X86
+ 	select DCACHE_WORD_ACCESS
+ 	select EDAC_ATOMIC_SCRUB
+ 	select EDAC_SUPPORT
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CLOCKEVENTS_BROADCAST	if X86_64 || (X86_32 && X86_LOCAL_APIC)
+ 	select GENERIC_CLOCKEVENTS_MIN_ADJUST
+ 	select GENERIC_CMOS_UPDATE
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index d0dfa50bd0bb..2611ba336af8 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -16,7 +16,6 @@ config XTENSA
+ 	select COMMON_CLK
+ 	select DMA_REMAP if MMU
+ 	select GENERIC_ATOMIC64
+-	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_PCI_IOMAP
+ 	select GENERIC_SCHED_CLOCK
+diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
+index c6867f29d279..9a41848b6ebb 100644
+--- a/kernel/time/Kconfig
++++ b/kernel/time/Kconfig
+@@ -28,7 +28,7 @@ config GENERIC_TIME_VSYSCALL
+ 
+ # The generic clock events infrastructure
+ config GENERIC_CLOCKEVENTS
+-	bool
++	def_bool !LEGACY_TIMER_TICK
+ 
+ # Architecture can handle broadcast in a driver-agnostic way
+ config ARCH_HAS_TICK_BROADCAST
 -- 
 2.27.0
 
