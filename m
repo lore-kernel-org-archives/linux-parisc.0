@@ -1,105 +1,108 @@
-Return-Path: <SRS0=LIOV=EH=vger.kernel.org=linux-parisc-owner@kernel.org>
+Return-Path: <SRS0=s4/f=EI=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3D74C55178
-	for <linux-parisc@archiver.kernel.org>; Sun,  1 Nov 2020 09:53:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB6D9C2D0A3
+	for <linux-parisc@archiver.kernel.org>; Mon,  2 Nov 2020 01:38:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6D4CF20853
-	for <linux-parisc@archiver.kernel.org>; Sun,  1 Nov 2020 09:53:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604224433;
-	bh=HyGP8CyzoSVv4MCtKqC0pz2ILBHefcA84mBlIyrXGQY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=14GHiFY8IK/YiV0rATo2wQIe20Gi/pxO6vuS6CzwntHyDc2+BW5cyq0WFP1ETby7t
-	 xtdkDBptr+1zOXwyeKJmdEdG230jJaGfdTPLyXSZeuiv2pVsLxluHcjgVyxHmP38yC
-	 Vok408Xp+RMjjHjvB41YBtaO8r8yCRUz4rdixF3U=
+	by mail.kernel.org (Postfix) with ESMTP id C37E920870
+	for <linux-parisc@archiver.kernel.org>; Mon,  2 Nov 2020 01:38:48 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ZGCoay7z"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726152AbgKAJxv (ORCPT
+        id S1727422AbgKBBis (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 1 Nov 2020 04:53:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726118AbgKAJxu (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 1 Nov 2020 04:53:50 -0500
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Sun, 1 Nov 2020 20:38:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727367AbgKBBis (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 1 Nov 2020 20:38:48 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE54AC0617A6;
+        Sun,  1 Nov 2020 17:38:47 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AF4C2224F;
-        Sun,  1 Nov 2020 09:53:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604224430;
-        bh=HyGP8CyzoSVv4MCtKqC0pz2ILBHefcA84mBlIyrXGQY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OMq+e5xfRYGK+MPaFvjA5XQ1EtstRGebvmfrK3+vfb+arDfLov6n8hi7lEhvA8JZE
-         z40cxD0hw5blLj6L2UKYdnzi/5gtxIYmBfUclxCvOu7zyF6h6jCeq4xX2W5yTZ2wGD
-         slN22E9LD6wvSE4f/dRWU2vJNnSXKl/+kfGMYbls=
-Received: by mail-qt1-f178.google.com with SMTP id j62so7328369qtd.0;
-        Sun, 01 Nov 2020 01:53:50 -0800 (PST)
-X-Gm-Message-State: AOAM5317nET48x+nl/anPhsPgD35Tm3tPMqLzxGI6ic3QT5r6MSHLApG
-        jWxlmLOLWyDqbxrrQ/3ba6fY0+eY/+0LM11vFeY=
-X-Google-Smtp-Source: ABdhPJysxelGXEjcD+tK3eXvueDK0E9An/zQqCvczumw3UuNNLcEVvMETDYrwUeexoouBWqMdjrPCeGJVcKk4WzZomA=
-X-Received: by 2002:ac8:7955:: with SMTP id r21mr9418714qtt.204.1604224429108;
- Sun, 01 Nov 2020 01:53:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20201030151758.1241164-1-arnd@kernel.org> <alpine.LNX.2.23.453.2011011441010.32@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.23.453.2011011441010.32@nippy.intranet>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 1 Nov 2020 10:53:33 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3Dg2UEN4MoVhHMUU=xd5x+uiue4nqZDeHBBK_CG6+LoA@mail.gmail.com>
-Message-ID: <CAK8P3a3Dg2UEN4MoVhHMUU=xd5x+uiue4nqZDeHBBK_CG6+LoA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/15] timers: clean up ARCH_GETTIMEOFFSET, LEGACY_TIMER_TICK
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org,
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CPbD405F9z9sVM;
+        Mon,  2 Nov 2020 12:38:43 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604281124;
+        bh=zK/ydDG40tBMu8RZeW7N9EO0OhY0hIJHkzDE5V8XJk4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZGCoay7zve6YwRATxZF92iHtuTCCntvhejmxi8wI5BySQISRUn3feYWR8g6oL253l
+         FCshHNocAseo0veroz9EE0GfXBvBYAS/Vu1gUmpl1OJbkou0BU6ZBadr+/oIRLACY+
+         jaxt9mObNxIZq+65xX37soga+YBM5CT+1L31t+4WaVyEEryBQtIZZ19oCREQ5WGOQS
+         1d1DvJUM1G3/xyq9X0gSUJefvvgxKJCjvKMgD5oTjHhDM948d3onGQ/UQECbZCo6Ds
+         uiOO5iO69xX+3tR7pD23cFC4eX6bICatco1B97CRnghjJqVFqEUKb0SEtLoiuGvTCB
+         DsT4/GMfw5jRQ==
+Date:   Mon, 2 Nov 2020 12:38:41 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Helge Deller <deller@gmx.de>,
         Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the parisc-hd tree with the asm-generic
+ tree
+Message-ID: <20201102123841.39eb4216@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/vsWjGt1DImMEyJlxtqWUcz0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Sun, Nov 1, 2020 at 4:47 AM Finn Thain <fthain@telegraphics.com.au> wrote:
->
-> On Fri, 30 Oct 2020, Arnd Bergmann wrote:
->
-> > CONFIG_ARCH_GETTIMEOFFSET has been gradually phased out from all
-> > platforms, with only ARM EBSA110 recently. As this has no more known
-> > users, the first three patches remove EBSA110 along with one platform
-> > specific driver and the ARCH_GETTIMEOFFSET infrastructure.
-> >
->
-> The CONFIG_ARCH_GETTIMEOFFSET patches weren't part of v1. Is there some
-> kind of dependency here?
+--Sig_/vsWjGt1DImMEyJlxtqWUcz0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-There is technically a dependency, though nobody would notice
-in practice: removing the ARM timer tick function in patch 6 would
-break the ebsa110 platform if we didn't first remove it in patch 1.
-Changing ebsa110 to use legacy_timer_tick in turn would introduce
-a conflict against the removal patch.
+Hi all,
 
-Neither of those is particularly harmful as there are no users of
-the affected ebsa110 code, but keeping the two series together
-avoids getting complaints from the build bots.
+Today's linux-next merge of the parisc-hd tree got a conflict in:
 
-      Arnd
+  arch/parisc/kernel/time.c
+
+between commit:
+
+  686092e7daaa ("parisc: use legacy_timer_tick")
+
+from the asm-generic tree and commit:
+
+  3b7ab4a74a2d ("parisc: Switch to clockevent based timers")
+
+from the parisc-hd tree.
+
+I fixed it up (I effectively reverted the former commit) and can carry the
+fix as necessary. This is now fixed as far as linux-next is concerned,
+but any non trivial conflicts should be mentioned to your upstream
+maintainer when your tree is submitted for merging.  You may also want
+to consider cooperating with the maintainer of the conflicting tree to
+minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/vsWjGt1DImMEyJlxtqWUcz0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+fYyEACgkQAVBC80lX
+0Gw0mAf/Q9jxVya+9wf5d0+CvtsHmaFBm9lXTg6leeRT9i7dmwL/P02XN/RwQdKb
+olvhmxI/YPIiaiZZoXnQAIBbamoOKE2IlwpoUMX5uKr8d2XGVSJ6iTpz1AsXOqwi
+A18bkLqUUhSuaK6XTSZPk9g9CWtOg90EQALBeNeG1F1r9fAF+iXI0+UT+H2Z2wOj
+d+OWKbXB+enWRUrznQs8X6UitP6Y+pWv0OKxaEmGFy4nsUh0I2yHPbcet7Or8GXN
+gkBKPbPKbt2s1A2Z54vLN2D7QCJt3N/9+vZjJDyDbiDAXMHKlpxDYV/jkbC7rpZW
+0qZotUvFDWaEepOJhrpla6ZHabWk2g==
+=3WyG
+-----END PGP SIGNATURE-----
+
+--Sig_/vsWjGt1DImMEyJlxtqWUcz0--
