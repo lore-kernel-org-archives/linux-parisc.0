@@ -2,141 +2,105 @@ Return-Path: <SRS0=pfle=EJ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FE1EC388F7
-	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 15:28:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40C12C2D0A3
+	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 16:14:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D933122226
-	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 15:28:51 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tG8I/1z0"
+	by mail.kernel.org (Postfix) with ESMTP id F2E5F223C7
+	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 16:14:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728918AbgKCNpH (ORCPT
+        id S1727812AbgKCQO1 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 3 Nov 2020 08:45:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgKCNpH (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:45:07 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B316C0613D1;
-        Tue,  3 Nov 2020 05:45:07 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id m65so11532057qte.11;
-        Tue, 03 Nov 2020 05:45:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2af8lawmvvDlOCNsCA7JIsdmqsCdB2rsVoy0htQN5ns=;
-        b=tG8I/1z0TzI4q4NRqPO0rLNCTHRPlcbPUisuwZGCHkTaA7gq31V+sIhXGjEgV0/vO6
-         pbNTw7LwqJ2BSRB+laFJtJlByIXmlZuy/6GU5jgLNMQiuBE8U4Tu//pUvxee4YY0nQ0c
-         k1RsAaL8qgvf6GpS53ldLQwM5sFzu943PYddpW6yoLTBmPW5+fsmDiA58lO3h3YiZxKA
-         1F8hhtjSQPz++5Bt4+shgsuVJGR+g/Uz2hsQEDd+OY//+xUtxXjKKJMY+Svoexxw1xC1
-         y9Pb+KBXnUylNFffJknKNkJidEoXJl2Lsu31GCkZxAv5KRlR4wsY/4vmMfzf53jrb4Lg
-         KfQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2af8lawmvvDlOCNsCA7JIsdmqsCdB2rsVoy0htQN5ns=;
-        b=Ebn1TweGkhKdcKJvsjTzcQmb4byAALvkGDQBFe4/Dj8CpV/vfnbrBMjp/YwfDCkHsw
-         xJ0hTuQZVNR6rzxJooewiOPiBcJADZIEqeO9mSY1oo2vLZPbqVhqMdGVBnxRhWpox0jr
-         rxjwIRjLMh85xByXr3QdUXb+8kYeuj5VyD/cgO56tNYE81332B8qpnp2F4oWnA9H17Aa
-         vGo0FBaIZzKa4cJy2hG1tfFQ+dEohnryQxqRTuaOFsV3eIgSwOOnZklB+/CRL+FJsp8u
-         cvQwZ/QsPHw3BIXMT+y/qcmfBnwrmbmf0bHVJm+qcFcJHRsmh/j+pFVDq/EHryxIXYpP
-         ZWuA==
-X-Gm-Message-State: AOAM530/tqtZXJuxU9a8In1OjGA0l/tCBldZd+qGBFhq4y1+4GFioLft
-        VzilhujLb2oOfe/VAc2i+Bs=
-X-Google-Smtp-Source: ABdhPJyVcGsn9BfmX6lMFbKU1u49HpMjynWi/XDV0GRg9SB/A1h+SY8oRaMOm+QQs2KcIwEHTdVD7w==
-X-Received: by 2002:ac8:5a01:: with SMTP id n1mr19342230qta.52.1604411106177;
-        Tue, 03 Nov 2020 05:45:06 -0800 (PST)
-Received: from zhuyifei1999-ThinkPad-T480.gw.illinois.edu ([2620:0:e00:400f::31])
-        by smtp.gmail.com with ESMTPSA id a206sm7356568qkb.64.2020.11.03.05.45.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 05:45:05 -0800 (PST)
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-To:     containers@lists.linux-foundation.org
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>, linux-csky@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
+        Tue, 3 Nov 2020 11:14:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgKCQO1 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:14:27 -0500
+Received: from rorschach.local.home (unknown [172.58.235.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3326C223AB;
+        Tue,  3 Nov 2020 16:14:15 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 11:14:10 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: [PATCH seccomp 0/8] seccomp: add bitmap cache support on remaining arches and report cache in procfs
-Date:   Tue,  3 Nov 2020 07:42:56 -0600
-Message-Id: <cover.1604410035.git.yifeifz2@illinois.edu>
-X-Mailer: git-send-email 2.29.2
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH 11/11 v2.2] ftrace: Add recording of functions that
+ caused recursion
+Message-ID: <20201103111410.64feac6c@rorschach.local.home>
+In-Reply-To: <20201103141043.GO20201@alley>
+References: <20201030213142.096102821@goodmis.org>
+        <20201030214014.801706340@goodmis.org>
+        <20201102164147.GJ20201@alley>
+        <20201102123721.4fcce2cb@gandalf.local.home>
+        <20201102124606.72bd89c5@gandalf.local.home>
+        <20201102142254.7e148f8a@gandalf.local.home>
+        <20201103141043.GO20201@alley>
+X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: YiFei Zhu <yifeifz2@illinois.edu>
+On Tue, 3 Nov 2020 15:10:43 +0100
+Petr Mladek <pmladek@suse.com> wrote:
 
-This patch series enables bitmap cache for the remaining arches with
-SECCOMP_FILTER, other than MIPS.
+> BTW: What is actually the purpose of paranoid_test, please?
+> 
+> It prevents nested ftrace_record_recursion() calls on the same CPU
+> (recursion, nesting from IRQ, NMI context).
+> 
+> Parallel calls from different CPUs are still possible:
+> 
+> CPU0					CPU1
+> if (!atomic_read(&paranoid_test))	if (!atomic_read(&paranoid_test))
+>    // passes				  // passes
+>    atomic_inc(&paranoid_test);            atomic_inc(&paranoid_test);
+> 
+> 
+> I do not see how a nested call could cause crash while a parallel
+> one would be OK.
+> 
 
-I was unable to find any of the arches having subarch-specific NR_syscalls
-macros, so generic NR_syscalls is used. SH's syscall_get_arch seems to
-only have the 32-bit subarch implementation. I'm not sure if this is
-expected.
+Yeah, I should make that per cpu, but was lazy. ;-)
 
-This series has not been tested; I have not built all the cross compilers
-necessary to build test, let alone run the kernel or benchmark the
-performance, so help on making sure the bitmap cache works as expected
-would be appreciated. The series applies on top of Kees's for-next/seccomp
-branch.
+It was added at the end.
 
-YiFei Zhu (8):
-  csky: Enable seccomp architecture tracking
-  parisc: Enable seccomp architecture tracking
-  powerpc: Enable seccomp architecture tracking
-  riscv: Enable seccomp architecture tracking
-  s390: Enable seccomp architecture tracking
-  sh: Enable seccomp architecture tracking
-  xtensa: Enable seccomp architecture tracking
-  seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+I'll update that to a per cpu, and local inc operations.
 
- arch/Kconfig                       | 15 ++++++++
- arch/csky/include/asm/Kbuild       |  1 -
- arch/csky/include/asm/seccomp.h    | 11 ++++++
- arch/parisc/include/asm/Kbuild     |  1 -
- arch/parisc/include/asm/seccomp.h  | 22 +++++++++++
- arch/powerpc/include/asm/seccomp.h | 21 +++++++++++
- arch/riscv/include/asm/seccomp.h   | 10 +++++
- arch/s390/include/asm/seccomp.h    |  9 +++++
- arch/sh/include/asm/seccomp.h      | 10 +++++
- arch/xtensa/include/asm/Kbuild     |  1 -
- arch/xtensa/include/asm/seccomp.h  | 11 ++++++
- fs/proc/base.c                     |  6 +++
- include/linux/seccomp.h            |  7 ++++
- kernel/seccomp.c                   | 59 ++++++++++++++++++++++++++++++
- 14 files changed, 181 insertions(+), 3 deletions(-)
- create mode 100644 arch/csky/include/asm/seccomp.h
- create mode 100644 arch/parisc/include/asm/seccomp.h
- create mode 100644 arch/xtensa/include/asm/seccomp.h
-
-
-base-commit: 38c37e8fd3d2590c4234d8cfbc22158362f0eb04
---
-2.29.2
+-- Steve
