@@ -5,61 +5,61 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E10DC388F7
-	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 14:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DB2FC388F9
+	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 14:58:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D2FF722280
-	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 14:22:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D38BE21534
+	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 14:58:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WQlGQ9Jd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HUmeo8PK"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729534AbgKCOUr (ORCPT
+        id S1729658AbgKCOUt (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 3 Nov 2020 09:20:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40292 "EHLO
+        Tue, 3 Nov 2020 09:20:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729240AbgKCNpQ (ORCPT
+        with ESMTP id S1726312AbgKCNpI (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:45:16 -0500
+        Tue, 3 Nov 2020 08:45:08 -0500
 Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C86AC0613D1;
-        Tue,  3 Nov 2020 05:45:16 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id k9so14611729qki.6;
-        Tue, 03 Nov 2020 05:45:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB9D9C0613D1;
+        Tue,  3 Nov 2020 05:45:08 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id 140so14628191qko.2;
+        Tue, 03 Nov 2020 05:45:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+eMXBOnvKPM7N/Eu0cs4UA1I6FeurfdgB6uFLVTMPX8=;
-        b=WQlGQ9Jd6IJQey7nb9UMUDYsL+DEjmMTVkMHPOOrYSdV926tvA93ywvzKvPW9EdJzQ
-         xWYruju83XXsh1i6XxcvxRg6hDqU6tq8BaNfGIDHsg2pgJYtsAkvynEeGwGPRGe+ZPsx
-         biGcniO7POm0x08s1Iwq88HHNGiqadVQYcORh5b/WkN2ytRV8n2H7zXHbG9CyN36/TNs
-         CvFVpr4PvgANBbzTT2RtpSiuCEWpI/CT6RmO+Fk+zaNRO64hUzWUoNMlpPKDi4ZwlNos
-         6rRlllg7BYoJdX53s9pkkLBvkmTEqozVXkK0+PARPMrbpsjLaiSLI/uef0UWqLlg9En5
-         LfmQ==
+        bh=/wWgXpwOKfWu89zfH4z55YdVS4FoKgsyU3KjhUPw2Xk=;
+        b=HUmeo8PKFkCINZljvfRc+P6j2X0+0GOhvVUFZGwDVi5RBcL6yCRRP7JuB0zv9c9+Po
+         E3+9kj9NX57UzwwDZNGdD8iaYBGU9wXX967tHeoCgvkJm1CovDmhTO1emhffrLi5usDF
+         0oEzRtLhoIuA39ggcO6eQcTv/OGvRmPgCQX4sTZrzio50ODOqs0YICXq0MgBjQAfHPdz
+         xl7tXTacq4qNhz9LC51MS1M++unu3TcfcbkGRzSQxWGdRezIwQbhQELfkQD+RH+S21A/
+         sax7yhctLMgZTMGgygja3clLmsRRE7W8PkbbGI7EUIeZ8EaqV18ap7HIw7j/Z7WF3HJx
+         8pfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+eMXBOnvKPM7N/Eu0cs4UA1I6FeurfdgB6uFLVTMPX8=;
-        b=HaayDovTTYcLgBXGwRpwF834DWJCnWt26Nyrkv9jU0mFLzanG2jws27siHN0vFu1kL
-         VF7IUlyXKExnFbU23Seq5Ym8g3b5R5a0cqH7hTVCOiYhK8IM7h0nH/r+h6U6fhtGCUYF
-         TnhvbOEfI+CQR1R72okp0nMIiDiMOv0U1ljFYam0QfbnAEqWBX3Ib/Y2f7vmOFFejeCJ
-         sAG/NsGhV5QLm8ASVCFb6Onx6pOkFUQY/5pwzl76uXfx4ztyGxY+c06YEim8zJbZ00xH
-         B4aF6DWckYlYinuJK8g+pNVqTKusGApegVWZUgvMHgJaMFv4GG/V+sb0X679CPFof7Rp
-         Jfbw==
-X-Gm-Message-State: AOAM532hEiDGtxucYTQXXbbmODfRf6sBpMLd462RD8tJ91Hnls+OYOFH
-        96ykj+alVkdTvHkz+tJyCmE=
-X-Google-Smtp-Source: ABdhPJwPGCoGB0mzNqbRbE7eqaQrs2dVEZ+ysMN9iFWpphI5Jv582QKy4aIVAjZqImUIW48ZcJyckw==
-X-Received: by 2002:a37:6187:: with SMTP id v129mr8374191qkb.31.1604411115473;
-        Tue, 03 Nov 2020 05:45:15 -0800 (PST)
+        bh=/wWgXpwOKfWu89zfH4z55YdVS4FoKgsyU3KjhUPw2Xk=;
+        b=L0THD44tUiobW8XHwy4mwOF08UXf/8Z/E7FezRNEKdPPigyZrw5AOfr+T56qEuZiBV
+         ZYhQeSevN+7xVzRVmi3C7WZpPa2Rc6rROTXe85qARb3s8rXKqbngzJA/CDYJZXy9/JRz
+         CayUhwy96wmaoiDAkjoIvPwo5wgHgU3UEsBYvD86ZMw3GozNBV1QRpEixmAyir3ksbRm
+         khhIWBNpBXd04GyBYYT4jHTVzE2fwoLuC2wpNb5T4At1pwkOUqLezuSoJSgRneayGTua
+         RjfnjDi3wfPkYH3DJm3btIQ3LezYW7wO+oy1QxQ5KjEWWTx5ztxbWx6V2eTgmw532B8c
+         XrYQ==
+X-Gm-Message-State: AOAM531xUy51m/4w23nI6W2NheIaKK9B1OLwMK3p7yLWnBgJpumd7VNM
+        LDCVod/dMGDJbWJyJpWaKQc=
+X-Google-Smtp-Source: ABdhPJyHAHCGbEEm09WION+/UIzzZ/lrqbH487CGEGOVROPc59579zIEupD9GaMmhFNRyF9+2N11RQ==
+X-Received: by 2002:ae9:dec5:: with SMTP id s188mr20227157qkf.250.1604411107951;
+        Tue, 03 Nov 2020 05:45:07 -0800 (PST)
 Received: from zhuyifei1999-ThinkPad-T480.gw.illinois.edu ([2620:0:e00:400f::31])
-        by smtp.gmail.com with ESMTPSA id a206sm7356568qkb.64.2020.11.03.05.45.14
+        by smtp.gmail.com with ESMTPSA id a206sm7356568qkb.64.2020.11.03.05.45.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 05:45:14 -0800 (PST)
+        Tue, 03 Nov 2020 05:45:07 -0800 (PST)
 From:   YiFei Zhu <zhuyifei1999@gmail.com>
 To:     containers@lists.linux-foundation.org
 Cc:     YiFei Zhu <yifeifz2@illinois.edu>, linux-csky@vger.kernel.org,
@@ -82,9 +82,9 @@ Cc:     YiFei Zhu <yifeifz2@illinois.edu>, linux-csky@vger.kernel.org,
         Tycho Andersen <tycho@tycho.pizza>,
         Valentin Rothberg <vrothber@redhat.com>,
         Will Drewry <wad@chromium.org>
-Subject: [PATCH seccomp 5/8] s390: Enable seccomp architecture tracking
-Date:   Tue,  3 Nov 2020 07:43:01 -0600
-Message-Id: <0fbe0c14d598e18effad3b648ab4808f9cd95eba.1604410035.git.yifeifz2@illinois.edu>
+Subject: [PATCH seccomp 1/8] csky: Enable seccomp architecture tracking
+Date:   Tue,  3 Nov 2020 07:42:57 -0600
+Message-Id: <f9219026d4803b22f3e57e3768b4e42e004ef236.1604410035.git.yifeifz2@illinois.edu>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1604410035.git.yifeifz2@illinois.edu>
 References: <cover.1604410035.git.yifeifz2@illinois.edu>
@@ -98,31 +98,43 @@ From: YiFei Zhu <yifeifz2@illinois.edu>
 
 To enable seccomp constant action bitmaps, we need to have a static
 mapping to the audit architecture and system call table size. Add these
-for s390.
+for csky.
 
 Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
 ---
- arch/s390/include/asm/seccomp.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/csky/include/asm/Kbuild    |  1 -
+ arch/csky/include/asm/seccomp.h | 11 +++++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+ create mode 100644 arch/csky/include/asm/seccomp.h
 
-diff --git a/arch/s390/include/asm/seccomp.h b/arch/s390/include/asm/seccomp.h
-index 795bbe0d7ca6..71d46f0ba97b 100644
---- a/arch/s390/include/asm/seccomp.h
-+++ b/arch/s390/include/asm/seccomp.h
-@@ -16,4 +16,13 @@
- 
- #include <asm-generic/seccomp.h>
- 
-+#define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_S390X
-+#define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
-+#define SECCOMP_ARCH_NATIVE_NAME	"s390x"
-+#ifdef CONFIG_COMPAT
-+# define SECCOMP_ARCH_COMPAT		AUDIT_ARCH_S390
-+# define SECCOMP_ARCH_COMPAT_NR		NR_syscalls
-+# define SECCOMP_ARCH_COMPAT_NAME	"s390"
-+#endif
+diff --git a/arch/csky/include/asm/Kbuild b/arch/csky/include/asm/Kbuild
+index 64876e59e2ef..93372255984d 100644
+--- a/arch/csky/include/asm/Kbuild
++++ b/arch/csky/include/asm/Kbuild
+@@ -4,6 +4,5 @@ generic-y += gpio.h
+ generic-y += kvm_para.h
+ generic-y += local64.h
+ generic-y += qrwlock.h
+-generic-y += seccomp.h
+ generic-y += user.h
+ generic-y += vmlinux.lds.h
+diff --git a/arch/csky/include/asm/seccomp.h b/arch/csky/include/asm/seccomp.h
+new file mode 100644
+index 000000000000..d33e758126fb
+--- /dev/null
++++ b/arch/csky/include/asm/seccomp.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _ASM_SECCOMP_H
++#define _ASM_SECCOMP_H
 +
- #endif	/* _ASM_S390_SECCOMP_H */
++#include <asm-generic/seccomp.h>
++
++#define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_CSKY
++#define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
++#define SECCOMP_ARCH_NATIVE_NAME	"csky"
++
++#endif /* _ASM_SECCOMP_H */
 -- 
 2.29.2
 
