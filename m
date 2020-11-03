@@ -2,45 +2,41 @@ Return-Path: <SRS0=pfle=EJ=vger.kernel.org=linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AC0FC4742C
-	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 11:23:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F6E7C56202
+	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 14:11:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 275B8208B6
-	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 11:23:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604402590;
-	bh=miw1KmiC65f8YnprkC3dEffuvVzO9uPuxKpkGSzVRd4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=sXORVCbJSYttocl5uUdzyccMsuao5/UsIoTK0aCUIXcznjpbk2PRA+bRxPhb+7Qcc
-	 aVywx1qZRw+PNhckvqPYa9xGCFi4j7TNrhZTZAq+ZEogkW1kNZxp45PN5JZeEKHPMr
-	 mO/4tpN0sT5XuDD0l+pcEVTx/ZYGeQ/YKhdMKXjI=
+	by mail.kernel.org (Postfix) with ESMTP id 4866022226
+	for <linux-parisc@archiver.kernel.org>; Tue,  3 Nov 2020 14:11:03 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IN3VErPd"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgKCLXG (ORCPT
+        id S1729380AbgKCOKs (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 3 Nov 2020 06:23:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45382 "EHLO mail.kernel.org"
+        Tue, 3 Nov 2020 09:10:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53118 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728092AbgKCLXF (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:23:05 -0500
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9561D20731;
-        Tue,  3 Nov 2020 11:22:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604402584;
-        bh=miw1KmiC65f8YnprkC3dEffuvVzO9uPuxKpkGSzVRd4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RbJ7yISctA2KuiVcvuzg/xkeLNmB1YRY1HOsjzx9flqELBpJT1V9eFqxkOc8y30nl
-         f9AVijA5fewrw/jyjA/6vkbIYD43mSjj+o9xEcbJcu99j9cYQ7JyXEnkfrbMcLtlkq
-         iB4AtvCZiedYkRfwXzZKpJ9seDNbEaP4BeKC2E9w=
-Date:   Tue, 3 Nov 2020 20:22:57 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
+        id S1729420AbgKCOKr (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 3 Nov 2020 09:10:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604412645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ba9qeE3P97TbQ2yvwB2ubaFiLUcB36w6IpkZF8tbKnk=;
+        b=IN3VErPdp1WBPWe8s7Z/Hom6zeEPN00JGakf0pmbE0tHXmmxXEWD5++Vr61N/M6YEB54w7
+        TkpVK9DRs5pQGU2sXeGrOyjWu6VljkU4rvLr/rLgtbNpT6gEfg2GSAQckNPRAvbykm4vni
+        bo/mIe9ANXQW2mhX2JkXe/I7Xbftp1o=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C3BEFABF4;
+        Tue,  3 Nov 2020 14:10:44 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 15:10:43 +0100
+From:   Petr Mladek <pmladek@suse.com>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org,
         Masami Hiramatsu <mhiramat@kernel.org>,
@@ -50,8 +46,8 @@ Cc:     linux-kernel@vger.kernel.org,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Jiri Kosina <jikos@kernel.org>,
         Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, Guo Ren <guoren@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
         Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -62,266 +58,255 @@ Cc:     linux-kernel@vger.kernel.org,
         Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@alien8.de>, x86@kernel.org,
         "H. Peter Anvin" <hpa@zytor.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-csky@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org
-Subject: Re: [PATCH 05/11 v2] kprobes/ftrace: Add recursion protection to
- the ftrace callback
-Message-Id: <20201103202257.029364fd78492fd8efc360dc@kernel.org>
-In-Reply-To: <20201030214013.824581418@goodmis.org>
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH 11/11 v2.2] ftrace: Add recording of functions that
+ caused recursion
+Message-ID: <20201103141043.GO20201@alley>
 References: <20201030213142.096102821@goodmis.org>
-        <20201030214013.824581418@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ <20201030214014.801706340@goodmis.org>
+ <20201102164147.GJ20201@alley>
+ <20201102123721.4fcce2cb@gandalf.local.home>
+ <20201102124606.72bd89c5@gandalf.local.home>
+ <20201102142254.7e148f8a@gandalf.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102142254.7e148f8a@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, 30 Oct 2020 17:31:47 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
+On Mon 2020-11-02 14:23:14, Steven Rostedt wrote:
+> From c532ff6b048dd4a12943b05c7b8ce30666c587c8 Mon Sep 17 00:00:00 2001
 > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> Date: Thu, 29 Oct 2020 15:27:06 -0400
+> Subject: [PATCH] ftrace: Add recording of functions that caused recursion
 > 
-> If a ftrace callback does not supply its own recursion protection and
-> does not set the RECURSION_SAFE flag in its ftrace_ops, then ftrace will
-> make a helper trampoline to do so before calling the callback instead of
-> just calling the callback directly.
+> This adds CONFIG_FTRACE_RECORD_RECURSION that will record to a file
+> "recursed_functions" all the functions that caused recursion while a
+> callback to the function tracer was running.
 > 
-> The default for ftrace_ops is going to change. It will expect that handlers
-> provide their own recursion protection, unless its ftrace_ops states
-> otherwise.
-> 
-> Link: https://lkml.kernel.org/r/20201028115613.140212174@goodmis.org
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Guo Ren <guoren@kernel.org>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-> Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: linux-csky@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-s390@vger.kernel.org
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  arch/csky/kernel/probes/ftrace.c     | 12 ++++++++++--
->  arch/parisc/kernel/ftrace.c          | 13 +++++++++++--
->  arch/powerpc/kernel/kprobes-ftrace.c | 11 ++++++++++-
->  arch/s390/kernel/ftrace.c            | 13 +++++++++++--
->  arch/x86/kernel/kprobes/ftrace.c     | 12 ++++++++++--
->  5 files changed, 52 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
-> index 5264763d05be..5eb2604fdf71 100644
-> --- a/arch/csky/kernel/probes/ftrace.c
-> +++ b/arch/csky/kernel/probes/ftrace.c
-> @@ -13,16 +13,21 @@ int arch_check_ftrace_location(struct kprobe *p)
->  void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  			   struct ftrace_ops *ops, struct pt_regs *regs)
->  {
-> +	int bit;
->  	bool lr_saver = false;
->  	struct kprobe *p;
->  	struct kprobe_ctlblk *kcb;
+> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+> index ac3d73484cb2..1cba5fe8777a 100644
+> --- a/include/linux/trace_recursion.h
+> +++ b/include/linux/trace_recursion.h
+> @@ -142,7 +142,28 @@ static __always_inline int trace_get_context_bit(void)
+>  			pc & HARDIRQ_MASK ? TRACE_CTX_IRQ : TRACE_CTX_SOFTIRQ;
+>  }
 >  
-> -	/* Preempt is disabled by ftrace */
-> +	bit = ftrace_test_recursion_trylock();
-> +	if (bit < 0)
+> -static __always_inline int trace_test_and_set_recursion(int start, int max)
+> +#ifdef CONFIG_FTRACE_RECORD_RECURSION
+> +extern void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip);
+> +/*
+> +* The paranoid_test check can cause dropped reports (unlikely), but
+> +* if the recursion is common, it will likely still be recorded later.
+> +* But the paranoid_test is needed to make sure we don't crash.
+> +*/
+> +# define do_ftrace_record_recursion(ip, pip)				\
+> +	do {								\
+> +		static atomic_t paranoid_test;				\
+> +		if (!atomic_read(&paranoid_test)) {			\
+> +			atomic_inc(&paranoid_test);			\
+> +			ftrace_record_recursion(ip, pip);		\
+> +			atomic_dec(&paranoid_test);			\
+
+BTW: What is actually the purpose of paranoid_test, please?
+
+It prevents nested ftrace_record_recursion() calls on the same CPU
+(recursion, nesting from IRQ, NMI context).
+
+Parallel calls from different CPUs are still possible:
+
+CPU0					CPU1
+if (!atomic_read(&paranoid_test))	if (!atomic_read(&paranoid_test))
+   // passes				  // passes
+   atomic_inc(&paranoid_test);            atomic_inc(&paranoid_test);
+
+
+I do not see how a nested call could cause crash while a parallel
+one would be OK.
+
+
+> --- /dev/null
+> +++ b/kernel/trace/trace_recursion_record.c
+> @@ -0,0 +1,236 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/seq_file.h>
+> +#include <linux/kallsyms.h>
+> +#include <linux/module.h>
+> +#include <linux/ftrace.h>
+> +#include <linux/fs.h>
+> +
+> +#include "trace_output.h"
+> +
+> +struct recursed_functions {
+> +	unsigned long		ip;
+> +	unsigned long		parent_ip;
+> +};
+> +
+> +static struct recursed_functions recursed_functions[CONFIG_FTRACE_RECORD_RECURSION_SIZE];
+> +static atomic_t nr_records;
+> +
+> +/*
+> + * Cache the last found function. Yes, updates to this is racey, but
+> + * so is memory cache ;-)
+> + */
+> +static unsigned long cached_function;
+> +
+> +void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip)
+> +{
+> +	int index = 0;
+> +	int i;
+> +	unsigned long old;
+> +
+> + again:
+> +	/* First check the last one recorded */
+> +	if (ip == cached_function)
 > +		return;
 > +
-> +	preempt_disable_notrace();
->  	p = get_kprobe((kprobe_opcode_t *)ip);
->  	if (!p) {
->  		p = get_kprobe((kprobe_opcode_t *)(ip - MCOUNT_INSN_SIZE));
->  		if (unlikely(!p) || kprobe_disabled(p))
-> -			return;
-> +			goto out;
->  		lr_saver = true;
->  	}
->  
-> @@ -56,6 +61,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  		 */
->  		__this_cpu_write(current_kprobe, NULL);
->  	}
-> +out:
-> +	preempt_enable_notrace();
-> +	ftrace_test_recursion_unlock(bit);
->  }
->  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
->  
-> diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-> index 63e3ecb9da81..4b1fdf15662c 100644
-> --- a/arch/parisc/kernel/ftrace.c
-> +++ b/arch/parisc/kernel/ftrace.c
-> @@ -208,13 +208,19 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  {
->  	struct kprobe_ctlblk *kcb;
->  	struct kprobe *p = get_kprobe((kprobe_opcode_t *)ip);
-> +	int bit;
->  
-> -	if (unlikely(!p) || kprobe_disabled(p))
-> +	bit = ftrace_test_recursion_trylock();
-> +	if (bit < 0)
->  		return;
->  
-> +	preempt_disable_notrace();
-
-If we disable preempt here, we also move the get_kprobe() here as below.
-(get_kprobe() accesses percpu variable)
-
-	p = get_kprobe((kprobe_opcode_t *)ip);
-
-
-> +	if (unlikely(!p) || kprobe_disabled(p))
-> +		goto out;
-> +
->  	if (kprobe_running()) {
->  		kprobes_inc_nmissed_count(p);
-> -		return;
-> +		goto out;
->  	}
->  
->  	__this_cpu_write(current_kprobe, p);
-> @@ -235,6 +241,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  		}
->  	}
->  	__this_cpu_write(current_kprobe, NULL);
-> +out:
-> +	preempt_enable_notrace();
-> +	ftrace_test_recursion_unlock(bit);
->  }
->  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
->  
-> diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
-> index 972cb28174b2..5df8d50c65ae 100644
-> --- a/arch/powerpc/kernel/kprobes-ftrace.c
-> +++ b/arch/powerpc/kernel/kprobes-ftrace.c
-> @@ -18,10 +18,16 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
->  {
->  	struct kprobe *p;
->  	struct kprobe_ctlblk *kcb;
-> +	int bit;
->  
-> +	bit = ftrace_test_recursion_trylock();
-> +	if (bit < 0)
+> +	i = atomic_read(&nr_records);
+> +	/* nr_records is -1 when clearing records */
+> +	smp_mb__after_atomic();
+> +	if (i < 0)
 > +		return;
 > +
-> +	preempt_disable_notrace();
->  	p = get_kprobe((kprobe_opcode_t *)nip);
->  	if (unlikely(!p) || kprobe_disabled(p))
-> -		return;
-> +		goto out;
->  
->  	kcb = get_kprobe_ctlblk();
->  	if (kprobe_running()) {
-> @@ -52,6 +58,9 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
->  		 */
->  		__this_cpu_write(current_kprobe, NULL);
->  	}
-> +out:
-> +	preempt_enable_notrace();
-> +	ftrace_test_recursion_unlock(bit);
->  }
->  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
->  
-> diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
-> index b388e87a08bf..88466d7fb6b2 100644
-> --- a/arch/s390/kernel/ftrace.c
-> +++ b/arch/s390/kernel/ftrace.c
-> @@ -202,13 +202,19 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  {
->  	struct kprobe_ctlblk *kcb;
->  	struct kprobe *p = get_kprobe((kprobe_opcode_t *)ip);
-> +	int bit;
->  
-> -	if (unlikely(!p) || kprobe_disabled(p))
-> +	bit = ftrace_test_recursion_trylock();
-> +	if (bit < 0)
->  		return;
->  
-> +	preempt_disable_notrace();
-
-Ditto.
-
-Others look good to me.
-
-Thank you,
-
-> +	if (unlikely(!p) || kprobe_disabled(p))
-> +		goto out;
-> +
->  	if (kprobe_running()) {
->  		kprobes_inc_nmissed_count(p);
-> -		return;
-> +		goto out;
->  	}
->  
->  	__this_cpu_write(current_kprobe, p);
-> @@ -228,6 +234,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  		}
->  	}
->  	__this_cpu_write(current_kprobe, NULL);
-> +out:
-> +	preempt_enable_notrace();
-> +	ftrace_test_recursion_unlock(bit);
->  }
->  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
->  
-> diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
-> index 681a4b36e9bb..a40a6cdfcca3 100644
-> --- a/arch/x86/kernel/kprobes/ftrace.c
-> +++ b/arch/x86/kernel/kprobes/ftrace.c
-> @@ -18,11 +18,16 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  {
->  	struct kprobe *p;
->  	struct kprobe_ctlblk *kcb;
-> +	int bit;
->  
-> -	/* Preempt is disabled by ftrace */
-> +	bit = ftrace_test_recursion_trylock();
-> +	if (bit < 0)
+> +	/*
+> +	 * If there's two writers and this writer comes in second,
+> +	 * the cmpxchg() below to update the ip will fail. Then this
+> +	 * writer will try again. It is possible that index will now
+> +	 * be greater than nr_records. This is because the writer
+> +	 * that succeeded has not updated the nr_records yet.
+> +	 * This writer could keep trying again until the other writer
+> +	 * updates nr_records. But if the other writer takes an
+> +	 * interrupt, and that interrupt locks up that CPU, we do
+> +	 * not want this CPU to lock up due to the recursion protection,
+> +	 * and have a bug report showing this CPU as the cause of
+> +	 * locking up the computer. To not lose this record, this
+> +	 * writer will simply use the next position to update the
+> +	 * recursed_functions, and it will update the nr_records
+> +	 * accordingly.
+> +	 */
+> +	if (index < i)
+> +		index = i;
+> +	if (index >= CONFIG_FTRACE_RECORD_RECURSION_SIZE)
 > +		return;
 > +
-> +	preempt_disable_notrace();
->  	p = get_kprobe((kprobe_opcode_t *)ip);
->  	if (unlikely(!p) || kprobe_disabled(p))
-> -		return;
-> +		goto out;
->  
->  	kcb = get_kprobe_ctlblk();
->  	if (kprobe_running()) {
-> @@ -52,6 +57,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
->  		 */
->  		__this_cpu_write(current_kprobe, NULL);
->  	}
-> +out:
-> +	preempt_enable_notrace();
-> +	ftrace_test_recursion_unlock(bit);
->  }
->  NOKPROBE_SYMBOL(kprobe_ftrace_handler);
->  
-> -- 
-> 2.28.0
-> 
-> 
+> +	for (i = index - 1; i >= 0; i--) {
+> +		if (recursed_functions[i].ip == ip) {
+> +			cached_function = ip;
+> +			return;
+> +		}
+> +	}
+> +
+> +	cached_function = ip;
+> +
+> +	/*
+> +	 * We only want to add a function if it hasn't been added before.
+> +	 * Add to the current location before incrementing the count.
+> +	 * If it fails to add, then increment the index (save in i)
+> +	 * and try again.
+> +	 */
+> +	old = cmpxchg(&recursed_functions[index].ip, 0, ip);
+> +	if (old != 0) {
+> +		/* Did something else already added this for us? */
+> +		if (old == ip)
+> +			return;
+> +		/* Try the next location (use i for the next index) */
+> +		index++;
+> +		goto again;
+> +	}
+> +
+> +	recursed_functions[index].parent_ip = parent_ip;
+> +
+> +	/*
+> +	 * It's still possible that we could race with the clearing
+> +	 *    CPU0                                    CPU1
+> +	 *    ----                                    ----
+> +	 *                                       ip = func
+> +	 *  nr_records = -1;
+> +	 *  recursed_functions[0] = 0;
+> +	 *                                       i = -1
+> +	 *                                       if (i < 0)
+> +	 *  nr_records = 0;
+> +	 *  (new recursion detected)
+> +	 *      recursed_functions[0] = func
+> +	 *                                            cmpxchg(recursed_functions[0],
+> +	 *                                                    func, 0)
+> +	 *
+> +	 * But the worse that could happen is that we get a zero in
+> +	 * the recursed_functions array, and it's likely that "func" will
+> +	 * be recorded again.
+> +	 */
+> +	i = atomic_read(&nr_records);
+> +	smp_mb__after_atomic();
+> +	if (i < 0)
+> +		cmpxchg(&recursed_functions[index].ip, ip, 0);
+> +	else if (i <= index)
+> +		atomic_cmpxchg(&nr_records, i, index + 1);
+
+Are you aware of the following race, please?
+
+CPU0					CPU1
+
+ftrace_record_recursion()
+
+   i = atomic_read(&nr_records);
+   // i = 20   (for example)
+   if (i < index)
+     index = i;
+     // index = 20;
+
+					recursed_function_open()
+					atomic_set(&nr_records, -1);
+					memset(recursed_functions, 0, );
+					atomic_set(&nr_records, 0);
+
+   // successfully store ip at index == 20
+   cmpxchg(&recursed_functions[index].ip, 0, ip);
+   recursed_functions[index].parent_ip = parent_ip;
+
+   // check race with clearing
+   i = atomic_read(&nr_records);
+   // i == 0
+   if (i < 0)
+      // no
+   else
+	atomic_cmpxchg(&nr_records, i, index + 1);
+
+RESULT:
+
+   + nr_records == 21
+   + and slots 0..19 are zeroed
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+I played with the code and ended with head entangled by chicken & egg
+like problems.
+
+I believe that a solution might be a combined atomic variable from
+nr_records + cleanup_count.
+
+ftrace_record_recursion() would be allowed to increase nr_records
+only when cleanup_count is still the same. cleanup_count would
+be incremented together with clearing nr_records.
+
+
+Well, I am not sure if it is worth the effort. The race is rather
+theoretical. In the worst case, the cache might contain many
+zero values.
+
+Anyway, it is yet another experience for me that lockless algorithms
+are more tricky that one would expect.
+
+Best Regards,
+Petr
