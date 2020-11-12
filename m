@@ -2,161 +2,696 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04C9BC388F9
-	for <linux-parisc@archiver.kernel.org>; Wed, 11 Nov 2020 19:04:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D97E2C4742C
+	for <linux-parisc@archiver.kernel.org>; Thu, 12 Nov 2020 01:34:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6E51020678
-	for <linux-parisc@archiver.kernel.org>; Wed, 11 Nov 2020 19:04:02 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=gmx.net header.i=@gmx.net header.b="hCk+042q"
+	by mail.kernel.org (Postfix) with ESMTP id 8F4B720791
+	for <linux-parisc@archiver.kernel.org>; Thu, 12 Nov 2020 01:34:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbgKKTEC (ORCPT
+        id S1728685AbgKLBeC (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 11 Nov 2020 14:04:02 -0500
-Received: from mout.gmx.net ([212.227.17.21]:50195 "EHLO mout.gmx.net"
+        Wed, 11 Nov 2020 20:34:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725949AbgKKTEB (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 11 Nov 2020 14:04:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605121433;
-        bh=RYsTj5FjqUvBgxqmeBhWll0MY0Wgr1pMVG/UHvWxZIo=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=hCk+042qd3h10VYMX+WnVEBWnqQ6Qd3MftiA/NPlmuXAHeRNuqJSpTlq80noWjSp4
-         YyTXLvu8NUUZYiLRpCGBOF9Pf0rT18pYm7EcBs2NdYUKjLaUh6ZqT9H3SSw8DcAQwV
-         zXj8SBEPtdEFTYPUJ+RrT9HtLi4MMNrlbPL7llfw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.155.75]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M3UZG-1kdTdj1N6w-000azp; Wed, 11
- Nov 2020 20:03:53 +0100
-Subject: Re: [PATCH] parisc/uapi: Use Kbuild logic to provide <asm/types.h>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201110165136.3411004-1-geert@linux-m68k.org>
-From:   Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
- c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
-Message-ID: <22e6906f-84d6-051b-ff72-66cfb718cbf5@gmx.de>
-Date:   Wed, 11 Nov 2020 20:03:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1728091AbgKLAfj (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 11 Nov 2020 19:35:39 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F04A52222C;
+        Thu, 12 Nov 2020 00:33:35 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1kd0YQ-0002Bm-Rq; Wed, 11 Nov 2020 19:33:34 -0500
+Message-ID: <20201112003334.744819436@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Wed, 11 Nov 2020 19:32:55 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, Guo Ren <guoren@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org
+Subject: [for-next][PATCH 11/17] ftrace: Add recording of functions that caused recursion
+References: <20201112003244.764326960@goodmis.org>
 MIME-Version: 1.0
-In-Reply-To: <20201110165136.3411004-1-geert@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pniPhszqb7q3viK7UX7xHOtzhuN3YExqvbXLMpGoNzg7MdWKe7h
- CQXw2yUvpqYQbLmM2qTkNMmT1Zi3JZAN4CXqZswE/3ldH1r4VtFvCrpyxinsT2bazq6DbG9
- piR9hXDN7pT/8B2l8pV0/19YDozGrXsk/as6kxVh8m/WK2YrIRQWJ1qGh5W5vAqN7mRSvmW
- x0mC3s872lyvLWPDYQJQA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:SmLO4s0dr8Q=:IzLVGoar9f/zzIwWpd/MXo
- /aEtRazmsG0UaUizM9JFfurUyuv8iD5GCl38cQQEc30VV7v6THj+1rjqeMssEBbL87rTx2Jbb
- 6yJsPXpJGA6y8nJl8wkSgNInLj4JoyOT4kXRZZ1Pwsq54u2dxRODSJGVackB2lyy05gr3FB18
- t0XyJ31eqFxK4gy4wZaJAgjjpgnTxG0RfGCXz3pRWTtwmEKdT/kma5glLg4Fzm8sGc979rmch
- RjMBsi+ylOTGdKaeowd339Lluh9WPiu4a6zGCKS+bAWQHJZclPRA+tHKnwz0TFsJvWuXOkinS
- i1KbcdwMAT78q39ZHQwRw6Nwdf81wUEK86MSXNzzPOJZOHGfaUe2hVS4HPghQ/cIE6GdioRpL
- UH0kFbdddMt25kfpjZ2kv0CU4YlDOGv5Br4lqZtu9GTXFy4deiJcKWsTaKnIYn9HSriFnUBt9
- pmOK+DrOAbTJY4BmqLZFrgxajntK/zdiz0AKLXZu0E10zGx5UUe0WMEHqwLPk5Esk9L3x1D18
- eVpftVmYU8t9/5b/FnW0Abp8WZl6FCukqB0miBqfcN1M+qBgfL2AO3Smw3PpdJg2gkPRNcDjH
- XfdATOaR0U7gl8+UtKqwDB0yZqBcHkW0/jeKbL7iqxO9oOS5Fwma/evVV5LnsbwNS7WSFO4C4
- jhCeuupb/6vF3x4UgsD1FbF23PynGowi31COUlA2lTibHYhQ2klCrUR+jqZGZnpoW58epVVog
- YaZvR6xaIfmJiKWb31pX3CTcs0ChH0+7nznc7OQNA9TLh54TcRP3S84J7XnDDVzF6DrA3ARRR
- xNOrA7X26kQv17ve52W/f/AAejo/UR4pQiu8TNKM15Gxokjhwf5Ay3huvwNjJxAOwKXgbhUEP
- +sExONDVeoDJhnAObgcw==
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 11/10/20 5:51 PM, Geert Uytterhoeven wrote:
-> Uapi <asm-generic/types.h> just includes <asm-generic/int-ll64.h>
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Thanks, applied to the parisc for-next tree.
+This adds CONFIG_FTRACE_RECORD_RECURSION that will record to a file
+"recursed_functions" all the functions that caused recursion while a
+callback to the function tracer was running.
 
-Helge
+Link: https://lkml.kernel.org/r/20201106023548.102375687@goodmis.org
 
-> ---
-> This is a resend of a very old patch from 2013, which is still valid.
->
->  arch/parisc/include/uapi/asm/types.h | 7 -------
->  1 file changed, 7 deletions(-)
->  delete mode 100644 arch/parisc/include/uapi/asm/types.h
->
-> diff --git a/arch/parisc/include/uapi/asm/types.h b/arch/parisc/include/=
-uapi/asm/types.h
-> deleted file mode 100644
-> index 28c7d7453b10f9b1..0000000000000000
-> --- a/arch/parisc/include/uapi/asm/types.h
-> +++ /dev/null
-> @@ -1,7 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> -#ifndef _PARISC_TYPES_H
-> -#define _PARISC_TYPES_H
-> -
-> -#include <asm-generic/int-ll64.h>
-> -
-> -#endif
->
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Anton Vorontsov <anton@enomsg.org>
+Cc: Colin Cross <ccross@android.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Jiri Kosina <jikos@kernel.org>
+Cc: Miroslav Benes <mbenes@suse.cz>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Joe Lawrence <joe.lawrence@redhat.com>
+Cc: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-s390@vger.kernel.org
+Cc: live-patching@vger.kernel.org
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ Documentation/trace/ftrace-uses.rst   |   6 +-
+ arch/csky/kernel/probes/ftrace.c      |   2 +-
+ arch/parisc/kernel/ftrace.c           |   2 +-
+ arch/powerpc/kernel/kprobes-ftrace.c  |   2 +-
+ arch/s390/kernel/ftrace.c             |   2 +-
+ arch/x86/kernel/kprobes/ftrace.c      |   2 +-
+ fs/pstore/ftrace.c                    |   2 +-
+ include/linux/trace_recursion.h       |  29 +++-
+ kernel/livepatch/patch.c              |   2 +-
+ kernel/trace/Kconfig                  |  25 +++
+ kernel/trace/Makefile                 |   1 +
+ kernel/trace/ftrace.c                 |   4 +-
+ kernel/trace/trace_event_perf.c       |   2 +-
+ kernel/trace/trace_functions.c        |   2 +-
+ kernel/trace/trace_output.c           |   6 +-
+ kernel/trace/trace_output.h           |   1 +
+ kernel/trace/trace_recursion_record.c | 236 ++++++++++++++++++++++++++
+ 17 files changed, 306 insertions(+), 20 deletions(-)
+ create mode 100644 kernel/trace/trace_recursion_record.c
+
+diff --git a/Documentation/trace/ftrace-uses.rst b/Documentation/trace/ftrace-uses.rst
+index 86cd14b8e126..5981d5691745 100644
+--- a/Documentation/trace/ftrace-uses.rst
++++ b/Documentation/trace/ftrace-uses.rst
+@@ -118,7 +118,7 @@ can help in this regard. If you start your code with:
+ 
+ 	int bit;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+@@ -130,7 +130,9 @@ The code in between will be safe to use, even if it ends up calling a
+ function that the callback is tracing. Note, on success,
+ ftrace_test_recursion_trylock() will disable preemption, and the
+ ftrace_test_recursion_unlock() will enable it again (if it was previously
+-enabled).
++enabled). The instruction pointer (ip) and its parent (parent_ip) is passed to
++ftrace_test_recursion_trylock() to record where the recursion happened
++(if CONFIG_FTRACE_RECORD_RECURSION is set).
+ 
+ Alternatively, if the FTRACE_OPS_FL_RECURSION flag is set on the ftrace_ops
+ (as explained below), then a helper trampoline will be used to test
+diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+index 5eb2604fdf71..f30b179924ef 100644
+--- a/arch/csky/kernel/probes/ftrace.c
++++ b/arch/csky/kernel/probes/ftrace.c
+@@ -18,7 +18,7 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe *p;
+ 	struct kprobe_ctlblk *kcb;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index 13d85042810a..1c5d3732bda2 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -210,7 +210,7 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe *p;
+ 	int bit;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
+index 5df8d50c65ae..fdfee39938ea 100644
+--- a/arch/powerpc/kernel/kprobes-ftrace.c
++++ b/arch/powerpc/kernel/kprobes-ftrace.c
+@@ -20,7 +20,7 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+ 	struct kprobe_ctlblk *kcb;
+ 	int bit;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(nip, parent_nip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+index 8f31c726537a..657c1ab45408 100644
+--- a/arch/s390/kernel/ftrace.c
++++ b/arch/s390/kernel/ftrace.c
+@@ -204,7 +204,7 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe *p;
+ 	int bit;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index a40a6cdfcca3..954d930a7127 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -20,7 +20,7 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe_ctlblk *kcb;
+ 	int bit;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/fs/pstore/ftrace.c b/fs/pstore/ftrace.c
+index 816210fc5d3a..adb0935eb062 100644
+--- a/fs/pstore/ftrace.c
++++ b/fs/pstore/ftrace.c
+@@ -41,7 +41,7 @@ static void notrace pstore_ftrace_call(unsigned long ip,
+ 	if (unlikely(oops_in_progress))
+ 		return;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+index ac3d73484cb2..228cc56ed66e 100644
+--- a/include/linux/trace_recursion.h
++++ b/include/linux/trace_recursion.h
+@@ -91,6 +91,9 @@ enum {
+ 	 * not be correct. Allow for a single recursion to cover this case.
+ 	 */
+ 	TRACE_TRANSITION_BIT,
++
++	/* Used to prevent recursion recording from recursing. */
++	TRACE_RECORD_RECURSION_BIT,
+ };
+ 
+ #define trace_recursion_set(bit)	do { (current)->trace_recursion |= (1<<(bit)); } while (0)
+@@ -142,7 +145,22 @@ static __always_inline int trace_get_context_bit(void)
+ 			pc & HARDIRQ_MASK ? TRACE_CTX_IRQ : TRACE_CTX_SOFTIRQ;
+ }
+ 
+-static __always_inline int trace_test_and_set_recursion(int start, int max)
++#ifdef CONFIG_FTRACE_RECORD_RECURSION
++extern void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip);
++# define do_ftrace_record_recursion(ip, pip)				\
++	do {								\
++		if (!trace_recursion_test(TRACE_RECORD_RECURSION_BIT)) { \
++			trace_recursion_set(TRACE_RECORD_RECURSION_BIT); \
++			ftrace_record_recursion(ip, pip);		\
++			trace_recursion_clear(TRACE_RECORD_RECURSION_BIT); \
++		}							\
++	} while (0)
++#else
++# define do_ftrace_record_recursion(ip, pip)	do { } while (0)
++#endif
++
++static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
++							int start, int max)
+ {
+ 	unsigned int val = current->trace_recursion;
+ 	int bit;
+@@ -158,8 +176,10 @@ static __always_inline int trace_test_and_set_recursion(int start, int max)
+ 		 * a switch between contexts. Allow for a single recursion.
+ 		 */
+ 		bit = TRACE_TRANSITION_BIT;
+-		if (trace_recursion_test(bit))
++		if (trace_recursion_test(bit)) {
++			do_ftrace_record_recursion(ip, pip);
+ 			return -1;
++		}
+ 		trace_recursion_set(bit);
+ 		barrier();
+ 		return bit + 1;
+@@ -199,9 +219,10 @@ static __always_inline void trace_clear_recursion(int bit)
+  * Returns: -1 if a recursion happened.
+  *           >= 0 if no recursion
+  */
+-static __always_inline int ftrace_test_recursion_trylock(void)
++static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
++							 unsigned long parent_ip)
+ {
+-	return trace_test_and_set_recursion(TRACE_FTRACE_START, TRACE_FTRACE_MAX);
++	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
+ }
+ 
+ /**
+diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
+index 15480bf3ce88..875c5dbbdd33 100644
+--- a/kernel/livepatch/patch.c
++++ b/kernel/livepatch/patch.c
+@@ -49,7 +49,7 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+ 
+ 	ops = container_of(fops, struct klp_ops, fops);
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (WARN_ON_ONCE(bit < 0))
+ 		return;
+ 	/*
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index a4020c0b4508..9b11c096d139 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -727,6 +727,31 @@ config TRACE_EVAL_MAP_FILE
+ 
+ 	If unsure, say N.
+ 
++config FTRACE_RECORD_RECURSION
++	bool "Record functions that recurse in function tracing"
++	depends on FUNCTION_TRACER
++	help
++	  All callbacks that attach to the function tracing have some sort
++	  of protection against recursion. Even though the protection exists,
++	  it adds overhead. This option will create a file in the tracefs
++	  file system called "recursed_functions" that will list the functions
++	  that triggered a recursion.
++
++	  This will add more overhead to cases that have recursion.
++
++	  If unsure, say N
++
++config FTRACE_RECORD_RECURSION_SIZE
++	int "Max number of recursed functions to record"
++	default	128
++	depends on FTRACE_RECORD_RECURSION
++	help
++	  This defines the limit of number of functions that can be
++	  listed in the "recursed_functions" file, that lists all
++	  the functions that caused a recursion to happen.
++	  This file can be reset, but the limit can not change in
++	  size at runtime.
++
+ config GCOV_PROFILE_FTRACE
+ 	bool "Enable GCOV profiling on ftrace subsystem"
+ 	depends on GCOV_KERNEL
+diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+index e153be351548..7e44cea89fdc 100644
+--- a/kernel/trace/Makefile
++++ b/kernel/trace/Makefile
+@@ -92,6 +92,7 @@ obj-$(CONFIG_DYNAMIC_EVENTS) += trace_dynevent.o
+ obj-$(CONFIG_PROBE_EVENTS) += trace_probe.o
+ obj-$(CONFIG_UPROBE_EVENTS) += trace_uprobe.o
+ obj-$(CONFIG_BOOTTIME_TRACING) += trace_boot.o
++obj-$(CONFIG_FTRACE_RECORD_RECURSION) += trace_recursion_record.o
+ 
+ obj-$(CONFIG_TRACEPOINT_BENCHMARK) += trace_benchmark.o
+ 
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 39f2bba89b76..03aad2b5cd5e 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -6918,7 +6918,7 @@ __ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
+ 	struct ftrace_ops *op;
+ 	int bit;
+ 
+-	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
++	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_LIST_START, TRACE_LIST_MAX);
+ 	if (bit < 0)
+ 		return;
+ 
+@@ -6993,7 +6993,7 @@ static void ftrace_ops_assist_func(unsigned long ip, unsigned long parent_ip,
+ {
+ 	int bit;
+ 
+-	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
++	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_LIST_START, TRACE_LIST_MAX);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index a2b9fddb8148..1b202e28dfaa 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -447,7 +447,7 @@ perf_ftrace_function_call(unsigned long ip, unsigned long parent_ip,
+ 	if ((unsigned long)ops->private != smp_processor_id())
+ 		return;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
+index 89c414ce1388..646eda6c44a5 100644
+--- a/kernel/trace/trace_functions.c
++++ b/kernel/trace/trace_functions.c
+@@ -141,7 +141,7 @@ function_trace_call(unsigned long ip, unsigned long parent_ip,
+ 	if (unlikely(!tr->function_enabled))
+ 		return;
+ 
+-	bit = ftrace_test_recursion_trylock();
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+ 
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 000e9dc224c6..92b1575ae0ca 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -353,8 +353,8 @@ static inline const char *kretprobed(const char *name)
+ }
+ #endif /* CONFIG_KRETPROBES */
+ 
+-static void
+-seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
++void
++trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
+ {
+ #ifdef CONFIG_KALLSYMS
+ 	char str[KSYM_SYMBOL_LEN];
+@@ -420,7 +420,7 @@ seq_print_ip_sym(struct trace_seq *s, unsigned long ip, unsigned long sym_flags)
+ 		goto out;
+ 	}
+ 
+-	seq_print_sym(s, ip, sym_flags & TRACE_ITER_SYM_OFFSET);
++	trace_seq_print_sym(s, ip, sym_flags & TRACE_ITER_SYM_OFFSET);
+ 
+ 	if (sym_flags & TRACE_ITER_SYM_ADDR)
+ 		trace_seq_printf(s, " <" IP_FMT ">", ip);
+diff --git a/kernel/trace/trace_output.h b/kernel/trace/trace_output.h
+index 2f742b74e7e6..4c954636caf0 100644
+--- a/kernel/trace/trace_output.h
++++ b/kernel/trace/trace_output.h
+@@ -16,6 +16,7 @@ extern int
+ seq_print_ip_sym(struct trace_seq *s, unsigned long ip,
+ 		unsigned long sym_flags);
+ 
++extern void trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset);
+ extern int trace_print_context(struct trace_iterator *iter);
+ extern int trace_print_lat_context(struct trace_iterator *iter);
+ 
+diff --git a/kernel/trace/trace_recursion_record.c b/kernel/trace/trace_recursion_record.c
+new file mode 100644
+index 000000000000..b2edac1fe156
+--- /dev/null
++++ b/kernel/trace/trace_recursion_record.c
+@@ -0,0 +1,236 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/seq_file.h>
++#include <linux/kallsyms.h>
++#include <linux/module.h>
++#include <linux/ftrace.h>
++#include <linux/fs.h>
++
++#include "trace_output.h"
++
++struct recursed_functions {
++	unsigned long		ip;
++	unsigned long		parent_ip;
++};
++
++static struct recursed_functions recursed_functions[CONFIG_FTRACE_RECORD_RECURSION_SIZE];
++static atomic_t nr_records;
++
++/*
++ * Cache the last found function. Yes, updates to this is racey, but
++ * so is memory cache ;-)
++ */
++static unsigned long cached_function;
++
++void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip)
++{
++	int index = 0;
++	int i;
++	unsigned long old;
++
++ again:
++	/* First check the last one recorded */
++	if (ip == cached_function)
++		return;
++
++	i = atomic_read(&nr_records);
++	/* nr_records is -1 when clearing records */
++	smp_mb__after_atomic();
++	if (i < 0)
++		return;
++
++	/*
++	 * If there's two writers and this writer comes in second,
++	 * the cmpxchg() below to update the ip will fail. Then this
++	 * writer will try again. It is possible that index will now
++	 * be greater than nr_records. This is because the writer
++	 * that succeeded has not updated the nr_records yet.
++	 * This writer could keep trying again until the other writer
++	 * updates nr_records. But if the other writer takes an
++	 * interrupt, and that interrupt locks up that CPU, we do
++	 * not want this CPU to lock up due to the recursion protection,
++	 * and have a bug report showing this CPU as the cause of
++	 * locking up the computer. To not lose this record, this
++	 * writer will simply use the next position to update the
++	 * recursed_functions, and it will update the nr_records
++	 * accordingly.
++	 */
++	if (index < i)
++		index = i;
++	if (index >= CONFIG_FTRACE_RECORD_RECURSION_SIZE)
++		return;
++
++	for (i = index - 1; i >= 0; i--) {
++		if (recursed_functions[i].ip == ip) {
++			cached_function = ip;
++			return;
++		}
++	}
++
++	cached_function = ip;
++
++	/*
++	 * We only want to add a function if it hasn't been added before.
++	 * Add to the current location before incrementing the count.
++	 * If it fails to add, then increment the index (save in i)
++	 * and try again.
++	 */
++	old = cmpxchg(&recursed_functions[index].ip, 0, ip);
++	if (old != 0) {
++		/* Did something else already added this for us? */
++		if (old == ip)
++			return;
++		/* Try the next location (use i for the next index) */
++		index++;
++		goto again;
++	}
++
++	recursed_functions[index].parent_ip = parent_ip;
++
++	/*
++	 * It's still possible that we could race with the clearing
++	 *    CPU0                                    CPU1
++	 *    ----                                    ----
++	 *                                       ip = func
++	 *  nr_records = -1;
++	 *  recursed_functions[0] = 0;
++	 *                                       i = -1
++	 *                                       if (i < 0)
++	 *  nr_records = 0;
++	 *  (new recursion detected)
++	 *      recursed_functions[0] = func
++	 *                                            cmpxchg(recursed_functions[0],
++	 *                                                    func, 0)
++	 *
++	 * But the worse that could happen is that we get a zero in
++	 * the recursed_functions array, and it's likely that "func" will
++	 * be recorded again.
++	 */
++	i = atomic_read(&nr_records);
++	smp_mb__after_atomic();
++	if (i < 0)
++		cmpxchg(&recursed_functions[index].ip, ip, 0);
++	else if (i <= index)
++		atomic_cmpxchg(&nr_records, i, index + 1);
++}
++EXPORT_SYMBOL_GPL(ftrace_record_recursion);
++
++static DEFINE_MUTEX(recursed_function_lock);
++static struct trace_seq *tseq;
++
++static void *recursed_function_seq_start(struct seq_file *m, loff_t *pos)
++{
++	void *ret = NULL;
++	int index;
++
++	mutex_lock(&recursed_function_lock);
++	index = atomic_read(&nr_records);
++	if (*pos < index) {
++		ret = &recursed_functions[*pos];
++	}
++
++	tseq = kzalloc(sizeof(*tseq), GFP_KERNEL);
++	if (!tseq)
++		return ERR_PTR(-ENOMEM);
++
++	trace_seq_init(tseq);
++
++	return ret;
++}
++
++static void *recursed_function_seq_next(struct seq_file *m, void *v, loff_t *pos)
++{
++	int index;
++	int p;
++
++	index = atomic_read(&nr_records);
++	p = ++(*pos);
++
++	return p < index ? &recursed_functions[p] : NULL;
++}
++
++static void recursed_function_seq_stop(struct seq_file *m, void *v)
++{
++	kfree(tseq);
++	mutex_unlock(&recursed_function_lock);
++}
++
++static int recursed_function_seq_show(struct seq_file *m, void *v)
++{
++	struct recursed_functions *record = v;
++	int ret = 0;
++
++	if (record) {
++		trace_seq_print_sym(tseq, record->parent_ip, true);
++		trace_seq_puts(tseq, ":\t");
++		trace_seq_print_sym(tseq, record->ip, true);
++		trace_seq_putc(tseq, '\n');
++		ret = trace_print_seq(m, tseq);
++	}
++
++	return ret;
++}
++
++static const struct seq_operations recursed_function_seq_ops = {
++	.start  = recursed_function_seq_start,
++	.next   = recursed_function_seq_next,
++	.stop   = recursed_function_seq_stop,
++	.show   = recursed_function_seq_show
++};
++
++static int recursed_function_open(struct inode *inode, struct file *file)
++{
++	int ret = 0;
++
++	mutex_lock(&recursed_function_lock);
++	/* If this file was opened for write, then erase contents */
++	if ((file->f_mode & FMODE_WRITE) && (file->f_flags & O_TRUNC)) {
++		/* disable updating records */
++		atomic_set(&nr_records, -1);
++		smp_mb__after_atomic();
++		memset(recursed_functions, 0, sizeof(recursed_functions));
++		smp_wmb();
++		/* enable them again */
++		atomic_set(&nr_records, 0);
++	}
++	if (file->f_mode & FMODE_READ)
++		ret = seq_open(file, &recursed_function_seq_ops);
++	mutex_unlock(&recursed_function_lock);
++
++	return ret;
++}
++
++static ssize_t recursed_function_write(struct file *file,
++				       const char __user *buffer,
++				       size_t count, loff_t *ppos)
++{
++	return count;
++}
++
++static int recursed_function_release(struct inode *inode, struct file *file)
++{
++	if (file->f_mode & FMODE_READ)
++		seq_release(inode, file);
++	return 0;
++}
++
++static const struct file_operations recursed_functions_fops = {
++	.open           = recursed_function_open,
++	.write		= recursed_function_write,
++	.read           = seq_read,
++	.llseek         = seq_lseek,
++	.release        = recursed_function_release,
++};
++
++__init static int create_recursed_functions(void)
++{
++	struct dentry *dentry;
++
++	dentry = trace_create_file("recursed_functions", 0644, NULL, NULL,
++				   &recursed_functions_fops);
++	if (!dentry)
++		pr_warn("WARNING: Failed to create recursed_functions\n");
++	return 0;
++}
++
++fs_initcall(create_recursed_functions);
+-- 
+2.28.0
+
 
