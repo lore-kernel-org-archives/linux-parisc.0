@@ -7,44 +7,44 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 425E6C63697
-	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:25:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E825EC4742C
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:25:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 05B2222226
-	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:25:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B078D22240
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:25:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="URSw8F8q";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Fz21tLWb"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oKGHrc6n";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IPeONiRz"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbgKMOZC (ORCPT
+        id S1726858AbgKMOY2 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 13 Nov 2020 09:25:02 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:52544 "EHLO
+        Fri, 13 Nov 2020 09:24:28 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52496 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbgKMOYb (ORCPT
+        with ESMTP id S1726830AbgKMOY1 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:24:31 -0500
-Message-Id: <20201113141734.207605126@linutronix.de>
+        Fri, 13 Nov 2020 09:24:27 -0500
+Message-Id: <20201113141733.737377332@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605277470;
+        s=2020; t=1605277465;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=hOeV4Uk7rTRj8OzrhfpKRZ7P0pi7lfMrsyiB2KyVEto=;
-        b=URSw8F8qCzxPeiiiqFqLJq9vgbvQvNB5bDnNWfPE+JIpuybZnnqa6IY2ofJgdJEzeECG1k
-        nhxbzeTOcEEvoxg1p1gpTnBtwmuhcli6AM1SNnRvxqaWxfgHNpCparobE9ZTa6h2KAAa+v
-        MBrwhlBSGWEvD5ZpHidwQC8lXS2eus6R0/70ep00jQRw4a9jRrgh1//4WmUXUh58ZUnCFL
-        xPUZYjZdaJI+U0Hp3OvS3r/2BITHOzsrQgk94F3mhIhmRjdcJz/nKaMQBzJN4VqrZeDiF+
-        dQnYFmwrcpE8ZJZTEriBYAiF9Sk4DG/6XxukcDyuOXKxIX9aB5EE6QSD48kitQ==
+        bh=S06QIqfNWoqS9gVbzzc2YmE/3ZeyYSj3ENqKW66z6Fk=;
+        b=oKGHrc6ngr7pniRBz0GCkmv8BaYBF1FeplvyjX2vJwsAUgrYdz4cnmB3wC6mJfdcpJ40/H
+        ux+ye5dfkWJDyog2W1IQX301wYzlzg7uWVTZrs75VYHHBnURdhLltHVQmJsjpqa9J9Hqgr
+        RvCdcuEChzRjZQ8L7ZVwtW5/vwPvKRX3p4g3WHLxCUiZgLizT+s06zATCfIPpMAgpHOek2
+        blevGecPsXV46jkSksH8VB2aY8+xrd0r+z1CmOkz77H4397toGWI/IsDpiSW1Qb0CCsW1q
+        vz+nLMNGXJ53AFfra+OdwJruy0uePrpJBb5PcFI3scSV7vN2wUJUtoHsTtiJVg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605277470;
+        s=2020e; t=1605277465;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=hOeV4Uk7rTRj8OzrhfpKRZ7P0pi7lfMrsyiB2KyVEto=;
-        b=Fz21tLWb3UVdRRr7AeS4qYH3y/k/kNtsttrdQl7tgpxPBCYlIGzhDVQ+drwgixYSrTaLVV
-        n5yXU+FH5qMvt3Dw==
-Date:   Fri, 13 Nov 2020 15:02:20 +0100
+        bh=S06QIqfNWoqS9gVbzzc2YmE/3ZeyYSj3ENqKW66z6Fk=;
+        b=IPeONiRzhIvWN0gM+Ny+HdS5Bcn9NO+HpkoDUkh8pXwqmmyh85sM7Nl+LVtoPIFtKmYPWZ
+        LACjWnVzSBcd/0BA==
+Date:   Fri, 13 Nov 2020 15:02:16 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -65,7 +65,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch 13/19] softirq: Move various protections into inline helpers
+Subject: [patch 09/19] irqstat: Move declaration into asm-generic/hardirq.h
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -74,120 +74,52 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-To allow reuse of the bulk of softirq processing code for RT and to avoid
-#ifdeffery all over the place, split protections for various code sections
-out into inline helpers so the RT variant can just replace them in one go.
+Move the declaration of the irq_cpustat per cpu variable to
+asm-generic/hardirq.h and remove the now empty linux/irq_cpustat.h header.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/softirq.c |   53 ++++++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 44 insertions(+), 9 deletions(-)
+ include/asm-generic/hardirq.h |    3 ++-
+ include/linux/irq_cpustat.h   |   24 ------------------------
+ 2 files changed, 2 insertions(+), 25 deletions(-)
 
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -204,6 +204,42 @@ void __local_bh_enable_ip(unsigned long
- }
- EXPORT_SYMBOL(__local_bh_enable_ip);
+--- a/include/asm-generic/hardirq.h
++++ b/include/asm-generic/hardirq.h
+@@ -12,7 +12,8 @@ typedef struct {
+ #endif
+ } ____cacheline_aligned irq_cpustat_t;
  
-+static inline void local_bh_disable_irq_enter(void)
-+{
-+	local_bh_disable();
-+}
+-#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
++DECLARE_PER_CPU_ALIGNED(irq_cpustat_t, irq_stat);
 +
-+static inline void local_bh_enable_irq_enter(void)
-+{
-+	_local_bh_enable();
-+}
-+
-+static inline void softirq_handle_begin(void)
-+{
-+	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
-+}
-+
-+static inline void softirq_handle_end(void)
-+{
-+	__local_bh_enable(SOFTIRQ_OFFSET);
-+	WARN_ON_ONCE(in_interrupt());
-+}
-+
-+static inline void ksoftirqd_run_begin(void)
-+{
-+	local_irq_disable();
-+}
-+
-+static inline void ksoftirqd_run_end(void)
-+{
-+	local_irq_enable();
-+}
-+
-+static inline bool should_wake_ksoftirqd(void)
-+{
-+	return true;
-+}
-+
- static inline void invoke_softirq(void)
- {
- 	if (ksoftirqd_running(local_softirq_pending()))
-@@ -317,7 +353,7 @@ asmlinkage __visible void __softirq_entr
- 	pending = local_softirq_pending();
- 	account_irq_enter_time(current);
+ #include <linux/irq.h>
  
--	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
-+	softirq_handle_begin();
- 	in_hardirq = lockdep_softirq_start();
- 
- restart:
-@@ -367,8 +403,7 @@ asmlinkage __visible void __softirq_entr
- 
- 	lockdep_softirq_end(in_hardirq);
- 	account_irq_exit_time(current);
--	__local_bh_enable(SOFTIRQ_OFFSET);
--	WARN_ON_ONCE(in_interrupt());
-+	softirq_handle_end();
- 	current_restore_flags(old_flags, PF_MEMALLOC);
- }
- 
-@@ -382,9 +417,9 @@ void irq_enter_rcu(void)
- 		 * Prevent raise_softirq from needlessly waking up ksoftirqd
- 		 * here, as softirq will be serviced on return from interrupt.
- 		 */
--		local_bh_disable();
-+		local_bh_disable_irq_enter();
- 		tick_irq_enter();
--		_local_bh_enable();
-+		local_bh_enable_irq_enter();
- 	}
- 	__irq_enter();
- }
-@@ -467,7 +502,7 @@ inline void raise_softirq_irqoff(unsigne
- 	 * Otherwise we wake up ksoftirqd to make sure we
- 	 * schedule the softirq soon.
- 	 */
--	if (!in_interrupt())
-+	if (!in_interrupt() && should_wake_ksoftirqd())
- 		wakeup_softirqd();
- }
- 
-@@ -645,18 +680,18 @@ static int ksoftirqd_should_run(unsigned
- 
- static void run_ksoftirqd(unsigned int cpu)
- {
--	local_irq_disable();
-+	ksoftirqd_run_begin();
- 	if (local_softirq_pending()) {
- 		/*
- 		 * We can safely run softirq on inline stack, as we are not deep
- 		 * in the task stack here.
- 		 */
- 		__do_softirq();
--		local_irq_enable();
-+		ksoftirqd_run_end();
- 		cond_resched();
- 		return;
- 	}
--	local_irq_enable();
-+	ksoftirqd_run_end();
- }
- 
- #ifdef CONFIG_HOTPLUG_CPU
+ #ifndef ack_bad_irq
+--- a/include/linux/irq_cpustat.h
++++ /dev/null
+@@ -1,24 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __irq_cpustat_h
+-#define __irq_cpustat_h
+-
+-/*
+- * Contains default mappings for irq_cpustat_t, used by almost every
+- * architecture.  Some arch (like s390) have per cpu hardware pages and
+- * they define their own mappings for irq_stat.
+- *
+- * Keith Owens <kaos@ocs.com.au> July 2000.
+- */
+-
+-
+-/*
+- * Simple wrappers reducing source bloat.  Define all irq_stat fields
+- * here, even ones that are arch dependent.  That way we get common
+- * definitions instead of differing sets for each arch.
+- */
+-
+-#ifndef __ARCH_IRQ_STAT
+-DECLARE_PER_CPU_ALIGNED(irq_cpustat_t, irq_stat);	/* defined in asm/hardirq.h */
+-#endif
+-
+-#endif	/* __irq_cpustat_h */
 
