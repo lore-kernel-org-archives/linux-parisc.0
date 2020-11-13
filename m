@@ -7,44 +7,44 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7133BC388F7
-	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BB73C4742C
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3268322240
-	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC60C22242
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CaNkSgmH";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0cKyj2lL"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="G1UREJyG";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Qk1c/61D"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgKMOYl (ORCPT
+        id S1726929AbgKMOYi (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 13 Nov 2020 09:24:41 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:52960 "EHLO
+        Fri, 13 Nov 2020 09:24:38 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52700 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726930AbgKMOYk (ORCPT
+        with ESMTP id S1726894AbgKMOYe (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:24:40 -0500
-Message-Id: <20201113141734.907075915@linutronix.de>
+        Fri, 13 Nov 2020 09:24:34 -0500
+Message-Id: <20201113141734.442990268@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605277477;
+        s=2020; t=1605277472;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=YBANw5+gKo0StNgfq2DAY2w568FUqe7IjvTxRxyhO0o=;
-        b=CaNkSgmHOT8cChidgcipppyqnkXkMwbX36+aFt96F4A75TGeSz5Zhl+di5OltLmYsPtOcx
-        quLDc5LLj6LblcQBRv5T8U2YTKstywSV4Fnr3VcKozPIF6fRJYoUQ1Olop/0XEo/nvWuKK
-        AaWYWZNs1SHuSgrkR+sSNNUqkK/BZ+Mzqxcz+uw6LWxyeMfi7P4VPTLfGShWD5dSRZcvmV
-        k6G5XKLQZrLBaSh78ZCTGlgHOMm+unqZIPu2euxm/TvxLdSaJIG/Ema0BvWrq4w4cjd3wq
-        /o6/AEK8K3F6hkA6SrcnJ6gUpmrTkYW/8FpCsAN598OKXx8HQHBM1zasSFWkjA==
+        bh=Ze6MlncdnmAY8gfHx7Z+rZEVhWAMCevnsPTsGbdb6v0=;
+        b=G1UREJyGcaUjT+N2wtoQyCERcLxyjyMAfw8NfT+wy0zwm0us+pf2Ntglv96NgSHbt9/Yjp
+        qoaQCmQHCEZLSl4tgh2fObbzd5Eg0IzKsZOwRDqSmqku7HiNL3S3LkyTYUFx3yi5dSfTxu
+        MFctcDrCS9gok9I097XT39eWW13m7iPU863iXCxWWkLue2i4sFBBOxeCX2J3FMIX3WJFOU
+        XfnbdSiKjTIyQx4waIuiaRF6W5mUn7JksZs9HbxgKcANUpu5giQHMT3WvlrsVLnuu9ttOJ
+        05xVo+iYIedu+Z/p/XcxdBOfYtlbWlAMcmQFwZfDQFcdF0rqvP2z6Iy7H5Dc2A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605277477;
+        s=2020e; t=1605277472;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=YBANw5+gKo0StNgfq2DAY2w568FUqe7IjvTxRxyhO0o=;
-        b=0cKyj2lLbsO8b/2NxbYx+cHBAmiqLRZavh3aPgFuRABbFMMdYZx0eS73Lzn7tmtBZWlqdE
-        UDGBXB070OjHFACQ==
-Date:   Fri, 13 Nov 2020 15:02:26 +0100
+        bh=Ze6MlncdnmAY8gfHx7Z+rZEVhWAMCevnsPTsGbdb6v0=;
+        b=Qk1c/61DOVl3kFFVW+aZ3dXfkp84eaNY2QVxxJLj8d6ltQSfXPHHs0VNAwsQ94XeTMC/Dx
+        80Ju8vg9dueyHvAQ==
+Date:   Fri, 13 Nov 2020 15:02:22 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -65,7 +65,8 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch 19/19] tasklets: Prevent kill/unlock_wait deadlock on RT
+Subject: [patch 15/19] tick/sched: Prevent false positive softirq pending
+ warnings on RT
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -74,101 +75,69 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-tasklet_kill() and tasklet_unlock_wait() spin and wait for the
-TASKLET_STATE_SCHED resp. TASKLET_STATE_RUN bit in the tasklet state to be
-cleared. This works on !RT nicely because the corresponding execution can
-only happen on a different CPU.
+On RT a task which has soft interrupts disabled can block on a lock and
+schedule out to idle while soft interrupts are pending. This triggers the
+warning in the NOHZ idle code which complains about going idle with pending
+soft interrupts. But as the task is blocked soft interrupt processing is
+temporarily blocked as well which means that such a warning is a false
+positive.
 
-On RT softirq processing is preemptible, therefore a task preempting the
-softirq processing thread can spin forever. Prevent this by invoking
-local_bh_disable()/enable() inside the loop. In case that the softirq
-processing thread was preempted by the current task, current will block on
-the local lock which yields the CPU to the preempted softirq processing
-thread. If the tasklet is processed on a different CPU then the
-local_bh_disable()/enable() pair is just a waste of processor cycles.
+To prevent that check the per CPU state which indicates that a scheduled
+out task has soft interrupts disabled.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/interrupt.h |    8 ++------
- kernel/softirq.c          |   38 +++++++++++++++++++++++++++++++++++++-
- 2 files changed, 39 insertions(+), 7 deletions(-)
+ include/linux/bottom_half.h |    6 ++++++
+ kernel/softirq.c            |   15 +++++++++++++++
+ kernel/time/tick-sched.c    |    2 +-
+ 3 files changed, 22 insertions(+), 1 deletion(-)
 
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -654,7 +654,7 @@ enum
- 	TASKLET_STATE_RUN	/* Tasklet is running (SMP only) */
- };
- 
--#ifdef CONFIG_SMP
-+#if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT)
- static inline int tasklet_trylock(struct tasklet_struct *t)
- {
- 	return !test_and_set_bit(TASKLET_STATE_RUN, &(t)->state);
-@@ -666,11 +666,7 @@ static inline void tasklet_unlock(struct
- 	clear_bit(TASKLET_STATE_RUN, &(t)->state);
+--- a/include/linux/bottom_half.h
++++ b/include/linux/bottom_half.h
+@@ -32,4 +32,10 @@ static inline void local_bh_enable(void)
+ 	__local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
  }
  
--static inline void tasklet_unlock_wait(struct tasklet_struct *t)
--{
--	while (test_bit(TASKLET_STATE_RUN, &(t)->state))
--		cpu_relax();
--}
-+void tasklet_unlock_wait(struct tasklet_struct *t);
- #else
- static inline int tasklet_trylock(struct tasklet_struct *t) { return 1; }
- static inline void tasklet_unlock(struct tasklet_struct *t) { }
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -851,6 +851,29 @@ void tasklet_init(struct tasklet_struct
- }
- EXPORT_SYMBOL(tasklet_init);
- 
-+#if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT)
-+
-+void tasklet_unlock_wait(struct tasklet_struct *t)
-+{
-+	while (test_bit(TASKLET_STATE_RUN, &(t)->state)) {
-+		if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+			/*
-+			 * Prevent a live lock when current preempted soft
-+			 * interrupt processing or prevents ksoftirqd from
-+			 * running. If the tasklet runs on a different CPU
-+			 * then this has no effect other than doing the BH
-+			 * disable/enable dance for nothing.
-+			 */
-+			local_bh_disable();
-+			local_bh_enable();
-+		} else {
-+			cpu_relax();
-+		}
-+	}
-+}
-+EXPORT_SYMBOL(tasklet_unlock_wait);
++#ifdef CONFIG_PREEMPT_RT
++extern bool local_bh_blocked(void);
++#else
++static inline bool local_bh_blocked(void) { return false; }
 +#endif
 +
- void tasklet_kill(struct tasklet_struct *t)
- {
- 	if (in_interrupt())
-@@ -858,7 +881,20 @@ void tasklet_kill(struct tasklet_struct
+ #endif /* _LINUX_BH_H */
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -138,6 +138,21 @@ static DEFINE_PER_CPU(struct softirq_ctr
+ 	.lock	= INIT_LOCAL_LOCK(softirq_ctrl.lock),
+ };
  
- 	while (test_and_set_bit(TASKLET_STATE_SCHED, &t->state)) {
- 		do {
--			yield();
-+			if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+				/*
-+				 * Prevent a live lock when current
-+				 * preempted soft interrupt processing or
-+				 * prevents ksoftirqd from running. If the
-+				 * tasklet runs on a different CPU then
-+				 * this has no effect other than doing the
-+				 * BH disable/enable dance for nothing.
-+				 */
-+				local_bh_disable();
-+				local_bh_enable();
-+			} else {
-+				yield();
-+			}
- 		} while (test_bit(TASKLET_STATE_SCHED, &t->state));
- 	}
- 	tasklet_unlock_wait(t);
++/**
++ * local_bh_blocked() - Check for idle whether BH processing is blocked
++ *
++ * Returns false if the per CPU softirq::cnt is 0 otherwise true.
++ *
++ * This is invoked from the idle task to guard against false positive
++ * softirq pending warnings, which would happen when the task which holds
++ * softirq_ctrl::lock was the only running task on the CPU and blocks on
++ * some other lock.
++ */
++bool local_bh_blocked(void)
++{
++	return this_cpu_read(softirq_ctrl.cnt) != 0;
++}
++
+ void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
+ {
+ 	unsigned long flags;
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -925,7 +925,7 @@ static bool can_stop_idle_tick(int cpu,
+ 	if (unlikely(local_softirq_pending())) {
+ 		static int ratelimit;
+ 
+-		if (ratelimit < 10 &&
++		if (ratelimit < 10 && !local_bh_blocked() &&
+ 		    (local_softirq_pending() & SOFTIRQ_STOP_IDLE_MASK)) {
+ 			pr_warn("NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #%02x!!!\n",
+ 				(unsigned int) local_softirq_pending());
 
