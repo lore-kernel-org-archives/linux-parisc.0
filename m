@@ -7,47 +7,44 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2322C61DD8
-	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F714C388F7
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AC3DF22248
-	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2552922248
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Oi7V+t3x";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xlFmjKxn"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="N4/KUa4u";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Qj6DBzLc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgKMOYS (ORCPT
+        id S1726755AbgKMOYV (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 13 Nov 2020 09:24:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgKMOYR (ORCPT
+        Fri, 13 Nov 2020 09:24:21 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52408 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726723AbgKMOYU (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:24:17 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC149C0613D1;
-        Fri, 13 Nov 2020 06:24:17 -0800 (PST)
-Message-Id: <20201113141732.680780121@linutronix.de>
+        Fri, 13 Nov 2020 09:24:20 -0500
+Message-Id: <20201113141733.005212732@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605277455;
+        s=2020; t=1605277457;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=RnPutIEhghgoo536rGP1gany4COll9eV5Xh0J3bCRIo=;
-        b=Oi7V+t3xMEVk/+5l6bz8QLaSNx3nUUoDN6UwYKH3pm2ZJbGJ8GLol3FoZmJPqe1Lh6/Dxh
-        1nFGYLlKHZhmFpXrxnk6JdbowHwTuGlO2STIeU8MeveK6O95OmP3Y/VreNOCTmosQKpltl
-        PodJ580NczVuQOFpRgrs7SX4Ei9k8aBdoe6gjx9954mt69zvRCw8nwR76Sh7ec51WIle3i
-        tn6ga8Tw6wzpm67El32MNj8AxrJlHq2DalzZhCV1JpZfLvMG75RYS9W5lWLRNni53vzQwG
-        5MLc2ApK4iDcWiRj9cBqcZj5cSawHc9QSGKYtcAM60QM6RanQU/pcQhN9wqsqA==
+        bh=dfL8LhZDRV94dZhXM7BmDFOhpOb0BGKj21oie+vBdLw=;
+        b=N4/KUa4uHiJso+C3WJViL7/en53R4HBsU3ogzm7nvCADvrlv1PVx1WIXj9lmd34MF6Ij/O
+        UvgrjMYr4bv3LIvsyHaCbL6ioUkvdEdsBLPBZB6Ea+mLaljackefDr+F/1JISg+lZycY0I
+        P1QsMCpTre+iuymcShE1lF0uOv9hDxCBZOse0P1gwG5Nts5zzaICKZuFHKcLR20+YBWTwe
+        vViTKdGDQZhL/TQZ6iY90jX1JkBAzVyT8cnzWWceZczuZKdbkV72PvXsq8gELAWXYWjW3K
+        YQ01fiBVVjQFARRJ9zQ0Bs2RhmHWe+rW2I9JA02PbfigdmJ1d/VdAQAx0BDtQA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605277455;
+        s=2020e; t=1605277457;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=RnPutIEhghgoo536rGP1gany4COll9eV5Xh0J3bCRIo=;
-        b=xlFmjKxnDnUjXDDS5b3QeICpxgLMcYIi4FZ/GuOqg1NYVyeTiU7BKlPKFqFLY+z+/eZi6x
-        enZDTrTmo4YKGdAg==
-Date:   Fri, 13 Nov 2020 15:02:08 +0100
+        bh=dfL8LhZDRV94dZhXM7BmDFOhpOb0BGKj21oie+vBdLw=;
+        b=Qj6DBzLcsREA7P1E6iB6NGDnQ44hCFII2Hz0w+ihai78OgVfJgByLiJi8lZgBMeRRl0hg2
+        TDFqllYwBkd7sQDw==
+Date:   Fri, 13 Nov 2020 15:02:10 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -68,7 +65,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch 01/19] parisc: Remove bogus __IRQ_STAT macro
+Subject: [patch 03/19] irqstat: Get rid of nmi_count() and __IRQ_STAT()
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -77,24 +74,24 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This is a leftover from a historical array based implementation and unused.
+Nothing uses this anymore.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
 ---
- arch/parisc/include/asm/hardirq.h |    1 -
- 1 file changed, 1 deletion(-)
+ include/linux/irq_cpustat.h |    4 ----
+ 1 file changed, 4 deletions(-)
 
---- a/arch/parisc/include/asm/hardirq.h
-+++ b/arch/parisc/include/asm/hardirq.h
-@@ -32,7 +32,6 @@ typedef struct {
- DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
+--- a/include/linux/irq_cpustat.h
++++ b/include/linux/irq_cpustat.h
+@@ -19,10 +19,6 @@
  
- #define __ARCH_IRQ_STAT
--#define __IRQ_STAT(cpu, member) (irq_stat[cpu].member)
- #define inc_irq_stat(member)	this_cpu_inc(irq_stat.member)
- #define __inc_irq_stat(member)	__this_cpu_inc(irq_stat.member)
- #define ack_bad_irq(irq) WARN(1, "unexpected IRQ trap at vector %02x\n", irq)
+ #ifndef __ARCH_IRQ_STAT
+ DECLARE_PER_CPU_ALIGNED(irq_cpustat_t, irq_stat);	/* defined in asm/hardirq.h */
+-#define __IRQ_STAT(cpu, member)	(per_cpu(irq_stat.member, cpu))
+ #endif
+ 
+-/* arch dependent irq_stat fields */
+-#define nmi_count(cpu)		__IRQ_STAT((cpu), __nmi_count)	/* i386 */
+-
+ #endif	/* __irq_cpustat_h */
 
