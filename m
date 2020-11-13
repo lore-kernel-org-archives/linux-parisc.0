@@ -7,44 +7,44 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 208DBC61DD8
-	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:25:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86646C4742C
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:25:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DD69122240
-	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:25:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5782922242
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:25:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="X0A7oXXL";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IfoJhzBO"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cSGo9Tj3";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="noONE0IN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgKMOZQ (ORCPT
+        id S1726815AbgKMOYY (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 13 Nov 2020 09:25:16 -0500
+        Fri, 13 Nov 2020 09:24:24 -0500
 Received: from Galois.linutronix.de ([193.142.43.55]:52408 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726808AbgKMOY0 (ORCPT
+        with ESMTP id S1726760AbgKMOYW (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:24:26 -0500
-Message-Id: <20201113141733.625146223@linutronix.de>
+        Fri, 13 Nov 2020 09:24:22 -0500
+Message-Id: <20201113141733.276505871@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605277464;
+        s=2020; t=1605277460;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=j4YFkLEVJW9mHHVjXYizVQN08g6GeJTUUb5qDNcMGts=;
-        b=X0A7oXXLl77tzShFHyL2be6dGuH2n0ajai/5PNHmXMm2Nduo9l3C78d2rRfs8um7hiajwz
-        LLHAaVgSEsf6QYSzwSiDzq7rbw2QitpZ/aAANOMbAqrig6bybRybNZB2muYuDrXv5T0Hog
-        aHx9kd4TQ2jtGQ+JxY6sbWUbsBVwCq+pV/QRiq3z6aaCJCLE9A1b9C5fsm24FrH0YwrudH
-        abLQf3y2N1gR3t9uvLayu0DU2BCqPqAeUlywRucg5A6Eb8qDHpfmNIYKW7ulE/xc0pSBjS
-        U0YyqBRBrS8x2r8DBsXej93yuZ/6flBjmjqANnRgpcLYv59gobr0sTeVHTdWZA==
+        bh=LTgrOO5Fq9FzIj5LSBGHqN8dEDpi/W15DA3S3hhXg70=;
+        b=cSGo9Tj3VjO3e4v7/dAH4IZZ25PwX3n0as7D8hV6VwZCQNPp1S/12d3Kuq14YP2Q+vyrH8
+        jJ/wX30Nie2wEr/7EzpBjuF3iQ1GzsFOZEuMiW2uttAjvlghPcqlVwST2tjAzHciJ3rLq2
+        7uMKgBEOH2VHJqnsUsfRZ0RZTXOPOxBG+ztScXR/kk53gqcz+APJbPKljJlmOTBDu0qFSd
+        geRk0h1rhyNhLZUWadkKhKDlm2LK9xR6e6jqW+rtDsZmAZ0P4di9X83bBTcSkBrFBjeZOz
+        jTvXn+8jksC0VgwFXsC/4El8Vh0d+LxM/viS14PxPZXkBWuZlPiBQb7W9OznGg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605277464;
+        s=2020e; t=1605277460;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=j4YFkLEVJW9mHHVjXYizVQN08g6GeJTUUb5qDNcMGts=;
-        b=IfoJhzBOzwM0Ah30l/7drK6GoTjrrURxvcwYoU7580CtlGXgaQQtBYwJYv96kjOc5mH649
-        PlRaWsaQfp6lUCDg==
-Date:   Fri, 13 Nov 2020 15:02:15 +0100
+        bh=LTgrOO5Fq9FzIj5LSBGHqN8dEDpi/W15DA3S3hhXg70=;
+        b=noONE0INwvcUkNhZIQyhLfhz07DlUVIlJ0h9nTo2GLLZIKCJd/IkkvvJH09DJ6hENwmy+q
+        rE/SZK+1OHpuQlDw==
+Date:   Fri, 13 Nov 2020 15:02:12 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -52,20 +52,21 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Paul McKenney <paulmck@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Arnd Bergmann <arnd@arndb.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
+        Russell King <linux@armlinux.org.uk>,
         Marc Zyngier <maz@kernel.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         linux-arm-kernel@lists.infradead.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch 08/19] sh: irqstat: Use the generic irq_cpustat_t
+Subject: [patch 05/19] ARM: irqstat: Get rid of duplicated declaration
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -74,38 +75,50 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-SH can now use the generic irq_cpustat_t. Define ack_bad_irq so the generic
-header does not emit the generic version of it.
+irq_cpustat_t is exactly the same as the asm-generic one. Define
+ack_bad_irq so the generic header does not emit the generic version of it.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
 ---
- arch/sh/include/asm/hardirq.h |   14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ arch/arm/include/asm/hardirq.h |   11 +++--------
+ arch/arm/include/asm/irq.h     |    2 ++
+ 2 files changed, 5 insertions(+), 8 deletions(-)
 
---- a/arch/sh/include/asm/hardirq.h
-+++ b/arch/sh/include/asm/hardirq.h
-@@ -2,16 +2,10 @@
- #ifndef __ASM_SH_HARDIRQ_H
- #define __ASM_SH_HARDIRQ_H
+--- a/arch/arm/include/asm/hardirq.h
++++ b/arch/arm/include/asm/hardirq.h
+@@ -2,16 +2,11 @@
+ #ifndef __ASM_HARDIRQ_H
+ #define __ASM_HARDIRQ_H
  
+-#include <linux/cache.h>
 -#include <linux/threads.h>
--#include <linux/irq.h>
--
+ #include <asm/irq.h>
+ 
 -typedef struct {
 -	unsigned int __softirq_pending;
--	unsigned int __nmi_count;		/* arch dependent */
 -} ____cacheline_aligned irq_cpustat_t;
 -
 -#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
 -
- extern void ack_bad_irq(unsigned int irq);
+ #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
 +#define ack_bad_irq ack_bad_irq
-+#define ARCH_WANTS_NMI_IRQSTAT
 +
 +#include <asm-generic/hardirq.h>
  
- #endif /* __ASM_SH_HARDIRQ_H */
+ #endif /* __ASM_HARDIRQ_H */
+--- a/arch/arm/include/asm/irq.h
++++ b/arch/arm/include/asm/irq.h
+@@ -31,6 +31,8 @@ void handle_IRQ(unsigned int, struct pt_
+ void init_IRQ(void);
+ 
+ #ifdef CONFIG_SMP
++#include <linux/cpumask.h>
++
+ extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
+ 					   bool exclude_self);
+ #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
 
