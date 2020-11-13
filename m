@@ -7,47 +7,44 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0353DC388F7
-	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 419B2C61DD8
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C3C5622240
-	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 031C822226
+	for <linux-parisc@archiver.kernel.org>; Fri, 13 Nov 2020 14:24:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tyt0Qkxw";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fnUwM9/d"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bibqvpSi";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="r81MeMUb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgKMOYh (ORCPT
+        id S1726945AbgKMOYj (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 13 Nov 2020 09:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726912AbgKMOYf (ORCPT
+        Fri, 13 Nov 2020 09:24:39 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52700 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726852AbgKMOYi (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:24:35 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABCAC0613D1;
-        Fri, 13 Nov 2020 06:24:35 -0800 (PST)
-Message-Id: <20201113141734.558782917@linutronix.de>
+        Fri, 13 Nov 2020 09:24:38 -0500
+Message-Id: <20201113141734.788853107@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605277474;
+        s=2020; t=1605277476;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=bJK1LO9o5t1YtWfdpnIDn/r1MfJlfGCVMVDvWJrraew=;
-        b=tyt0QkxwI34Q9lW1JnnsRXtivNBFuy/gK+3Wg6p8oacuKn8YRx4hzKHdlinpDrp/pth55z
-        /BAfQMJ9oWB1Hzij2dQW9TnNIt72zNuUSK2q7Y9sitLs8LbSezy690e41NnW6R8l+bjdLt
-        Dy9N0KzC4rjbiZvWJbppzIRBBCJaXY4iwlr6/VDI4DFLjpd+Wid0zoJ5Q8KMUVs9kyP8bn
-        TkcwawJ0a/VM2kifuvxHRxw/fuqLeI5ylL/tFMj9ii+lhwD4TeYdWFVfkRiSMmUrOKnq5i
-        Dd6AOCs0W4DGmkrLSJyCQlgdlvArt+4ylbScr0BlX4BWaQMR0kH/Ya66obWHBg==
+        bh=H39LibppQlvIcymGFnJumuF0TnrJv/wQeeJyrMh1wnE=;
+        b=bibqvpSiXbaOS4h7rid9FwsrfZSPl9dqxvvgGgVUV9uMsDpeVlzjuZBL5vmTImnrP8aKgV
+        W75ixYNzPjvGLHB88W8l/PfqJkl2eNqE+AOJfxUdflFalLioQXWlwzFwEOeErkpduUMv2T
+        hDTxcgjpz300WGMDoXe9QVdQolKoXoyQeFZRUG+sc6QOFdLOEug1POHDDMo0Rnw6dn/VhC
+        3bHFASxxIKjReHu3RkXYKgSweZTTUxfSnAG5kRhGsvHOJpthEpvQH0zTb/i3PIzTTYrKar
+        lGIj6hnPgNEg7qHHgMND18ig/lg3lWYVjZh91/LIpb63t+M6EiR2BKOd8cBqGQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605277474;
+        s=2020e; t=1605277476;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=bJK1LO9o5t1YtWfdpnIDn/r1MfJlfGCVMVDvWJrraew=;
-        b=fnUwM9/d5ZyoIg34+qJ50+11yImCVU3JOFQ12wxkKiRXsscC5nDPI2NL/xdAbOB6hy8cm9
-        lNk1ofd0+ZGBajBA==
-Date:   Fri, 13 Nov 2020 15:02:23 +0100
+        bh=H39LibppQlvIcymGFnJumuF0TnrJv/wQeeJyrMh1wnE=;
+        b=r81MeMUbNWSbPQgCuPKytMvpffni1swCI25j1iY9kSh6gfm/DKBFJAFvtL/QEa+0xZbfNJ
+        zDN9yQZWdSAL1bAQ==
+Date:   Fri, 13 Nov 2020 15:02:25 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -68,7 +65,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [patch 16/19] rcu: Prevent false positive softirq warning on RT
+Subject: [patch 18/19] tasklets: Use static inlines for stub implementations
 References: <20201113140207.499353218@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -77,25 +74,26 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Soft interrupt disabled sections can legitimately be preempted or schedule
-out when blocking on a lock on RT enabled kernels so the RCU preempt check
-warning has to be disabled for RT kernels.
+Inlines exist for a reason.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/rcupdate.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/interrupt.h |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -319,7 +319,8 @@ static inline void rcu_preempt_sleep_che
- #define rcu_sleep_check()						\
- 	do {								\
- 		rcu_preempt_sleep_check();				\
--		RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map),	\
-+		if (!IS_ENABLED(CONFIG_PREEMPT_RT))			\
-+		    RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map),	\
- 				 "Illegal context switch in RCU-bh read-side critical section"); \
- 		RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map),	\
- 				 "Illegal context switch in RCU-sched read-side critical section"); \
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -672,9 +672,9 @@ static inline void tasklet_unlock_wait(s
+ 		cpu_relax();
+ }
+ #else
+-#define tasklet_trylock(t) 1
+-#define tasklet_unlock_wait(t) do { } while (0)
+-#define tasklet_unlock(t) do { } while (0)
++static inline int tasklet_trylock(struct tasklet_struct *t) { return 1; }
++static inline void tasklet_unlock(struct tasklet_struct *t) { }
++static inline void tasklet_unlock_wait(struct tasklet_struct *t) { }
+ #endif
+ 
+ extern void __tasklet_schedule(struct tasklet_struct *t);
 
