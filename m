@@ -2,51 +2,40 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95465C63798
-	for <linux-parisc@archiver.kernel.org>; Fri, 20 Nov 2020 13:27:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A887C2D0E4
+	for <linux-parisc@archiver.kernel.org>; Mon, 23 Nov 2020 13:45:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 25EA022272
-	for <linux-parisc@archiver.kernel.org>; Fri, 20 Nov 2020 13:27:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D974420729
+	for <linux-parisc@archiver.kernel.org>; Mon, 23 Nov 2020 13:45:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HEhswiIm";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RZkuXUkt"
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="K+ehFd6U"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727608AbgKTN1V (ORCPT
+        id S1732193AbgKWNol (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 20 Nov 2020 08:27:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbgKTN1U (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:27:20 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F35C0613CF;
-        Fri, 20 Nov 2020 05:27:20 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605878838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cHqHNj7D5d9Cv8EzyvHSjgSpDYg4ETCAPafLpAfo//Q=;
-        b=HEhswiImS/dENygnbZ2I5TlKQ+4kWcihUrziVeV1d3qqfS3S26UnHRv/Ped0aUKXHjC9Nx
-        DgwT754SAUbLML1w4KO9RwBfh4sQ2O3PSAV5pp6fY0aRCPMDk+Ryzev4plDG17YzlQhCFN
-        dqjGb9veqbjv5/eG77x99PMJN/E0iPrxWkOOXMljHyyxsQXrY5Kjc24r2mEGZtvBSokEmc
-        +wT4EvfQN1L+I+rTB/YyTlA9HawaS+cC7iosldQh5dV51/fJq8R7Kzu0OdcAxdEJcpNSd6
-        zzvupz6s5Mp5GkbewQvx7NRr/TQ8pUfDtBascYj+a0qodcbS7k6TmB+sk3flmw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605878838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cHqHNj7D5d9Cv8EzyvHSjgSpDYg4ETCAPafLpAfo//Q=;
-        b=RZkuXUktbRUflzdqY4fITcI9dyb3o37qGwy9CStVW1rfFicwzfXkw4b0liQC4o1VRZpd5V
-        cwwxQS4BdJvQIABw==
-To:     Frederic Weisbecker <frederic@kernel.org>
+        Mon, 23 Nov 2020 08:44:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730068AbgKWNol (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:44:41 -0500
+Received: from localhost (unknown [176.167.152.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B2AF206F1;
+        Mon, 23 Nov 2020 13:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606139080;
+        bh=P9zQbHB28E6VtYusUFpATLlB1aKLlAxQSqrq/mCm4FA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K+ehFd6USfbS/TljS1tg/RC+MNXIQxsXIXc+xVORBRpWK5OMZqRunsbCJWvMXQuor
+         KDFJIax5mc0aaPeN/c15BVFH2tuZnwaXqQ1i+BgXEeLu1OjJBSAHJ+u0CKbLSlD45Q
+         2GlZcY3RVfb4H4uRcAcxIKt0VrsnKIWLDUKKugBA=
+Date:   Mon, 23 Nov 2020 14:44:37 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Paul McKenney <paulmck@kernel.org>,
@@ -65,63 +54,73 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: Re: [patch 14/19] softirq: Make softirq control and processing RT aware
-In-Reply-To: <20201120002621.GA32792@lothringen>
-References: <20201113140207.499353218@linutronix.de> <20201113141734.324061522@linutronix.de> <20201120002621.GA32792@lothringen>
-Date:   Fri, 20 Nov 2020 14:27:18 +0100
-Message-ID: <87o8jsnop5.fsf@nanos.tec.linutronix.de>
+Subject: Re: [patch 14/19] softirq: Make softirq control and processing RT
+ aware
+Message-ID: <20201123134437.GA95787@lothringen>
+References: <20201113140207.499353218@linutronix.de>
+ <20201113141734.324061522@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113141734.324061522@linutronix.de>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, Nov 20 2020 at 01:26, Frederic Weisbecker wrote:
-> On Fri, Nov 13, 2020 at 03:02:21PM +0100, Thomas Gleixner wrote:
->> +void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
->> +{
->> +	unsigned long flags;
->> +	int newcnt;
->> +
->> +	WARN_ON_ONCE(in_hardirq());
->> +
->> +	/* First entry of a task into a BH disabled section? */
->> +	if (!current->softirq_disable_cnt) {
->> +		if (preemptible()) {
->> +			local_lock(&softirq_ctrl.lock);
->> +			rcu_read_lock();
->
-> Ah you lock RCU because local_bh_disable() implies it and
-> since it doesn't disable preemption anymore, you must do it
-> explicitly?
->
-> Perhaps local_lock() should itself imply rcu_read_lock() ?
+On Fri, Nov 13, 2020 at 03:02:21PM +0100, Thomas Gleixner wrote:
+> +void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+> +{
+> +	bool preempt_on = preemptible();
+> +	unsigned long flags;
+> +	u32 pending;
+> +	int curcnt;
+> +
+> +	WARN_ON_ONCE(in_irq());
+> +	lockdep_assert_irqs_enabled();
+> +
+> +	local_irq_save(flags);
+> +	curcnt = this_cpu_read(softirq_ctrl.cnt);
+> +
+> +	/*
+> +	 * If this is not reenabling soft interrupts, no point in trying to
+> +	 * run pending ones.
+> +	 */
+> +	if (curcnt != cnt)
+> +		goto out;
+> +
+> +	pending = local_softirq_pending();
+> +	if (!pending || ksoftirqd_running(pending))
+> +		goto out;
+> +
+> +	/*
+> +	 * If this was called from non preemptible context, wake up the
+> +	 * softirq daemon.
+> +	 */
+> +	if (!preempt_on) {
+> +		wakeup_softirqd();
+> +		goto out;
+> +	}
+> +
+> +	/*
+> +	 * Adjust softirq count to SOFTIRQ_OFFSET which makes
+> +	 * in_serving_softirq() become true.
+> +	 */
+> +	cnt = SOFTIRQ_OFFSET;
+> +	__local_bh_enable(cnt, false);
 
-It's really only required for local_bh_disable(). Lemme add a comment.
+But then you enter __do_softirq() with softirq_count() == SOFTIRQ_OFFSET.
+__do_softirq() calls softirq_handle_begin() which then sets it back to SOFTIRQ_DISABLE_OFFSET...
 
->> +		} else {
->> +			DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt));
->> +		}
->> +	}
->> +
->> +	preempt_disable();
->
-> Do you really need to disable preemption here? Migration is disabled by local_lock()
-> and I can't figure out a scenario where the below can conflict with a
-> preempting task.
+> +	__do_softirq();
+> +
+> +out:
+> +	__local_bh_enable(cnt, preempt_on);
 
-Indeed it's pointless.
+You escape from there with a correct preempt_count() but still the softirq executes
+under SOFTIRQ_DISABLE_OFFSET and not SOFTIRQ_OFFSET, making in_serving_softirq() false.
 
->> +	/*
->> +	 * Track the per CPU softirq disabled state. On RT this is per CPU
->> +	 * state to allow preemption of bottom half disabled sections.
->> +	 */
->> +	newcnt = this_cpu_add_return(softirq_ctrl.cnt, cnt);
->
-> __this_cpu_add_return() ?
+> +	local_irq_restore(flags);
+> +}
+> +EXPORT_SYMBOL(__local_bh_enable_ip);
 
-Yep.
-
-Thanks,
-
-        tglx
+Thanks.
