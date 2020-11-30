@@ -2,99 +2,168 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84099C64E7B
-	for <linux-parisc@archiver.kernel.org>; Mon, 30 Nov 2020 15:07:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16815C83018
+	for <linux-parisc@archiver.kernel.org>; Mon, 30 Nov 2020 15:22:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2CCEB20719
-	for <linux-parisc@archiver.kernel.org>; Mon, 30 Nov 2020 15:07:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BB74620719
+	for <linux-parisc@archiver.kernel.org>; Mon, 30 Nov 2020 15:22:47 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="smh/9VAd"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgK3PHs (ORCPT
+        id S1728156AbgK3PWf (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 30 Nov 2020 10:07:48 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:47706 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgK3PHs (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 30 Nov 2020 10:07:48 -0500
-X-Greylist: delayed 1309 seconds by postgrey-1.27 at vger.kernel.org; Mon, 30 Nov 2020 10:07:48 EST
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kjkQY-000kSf-4d; Mon, 30 Nov 2020 07:45:18 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kjkQU-001Uc9-1V; Mon, 30 Nov 2020 07:45:17 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-References: <20201127200457.1ffb6aaf@canb.auug.org.au>
-        <155a20fd-09c4-df35-9cc6-8526a89c2933@infradead.org>
-        <20201128084414.3daa87d2@canb.auug.org.au>
-Date:   Mon, 30 Nov 2020 08:44:44 -0600
-In-Reply-To: <20201128084414.3daa87d2@canb.auug.org.au> (Stephen Rothwell's
-        message of "Sat, 28 Nov 2020 08:44:13 +1100")
-Message-ID: <87pn3unbtv.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
+        Mon, 30 Nov 2020 10:22:35 -0500
+Received: from mail-eopbgr80122.outbound.protection.outlook.com ([40.107.8.122]:22176
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726769AbgK3PWe (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 30 Nov 2020 10:22:34 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YH2MNBgbN1y//UqnRkt+4+Q8QOHB5J+SrJDlmpbFbRfzh6Rmk9Q1dAmURn492rWqzVLEXnFAWQyNJOihsa4sakbPAib2oryTczf0SZt+BmT8gEkFwHsKWHXNbl3hhzVi9HFTDbgiB3hkx/ljXeI24oc51aSHm38ssWUO0n0sa8FGpues5eQXiFq7KlbfpPvhpVTAqHfKUPaAELvulj/78gYcCZwg87NZb1VZhMhfSOy0E0qBYr+ilPi47w2KmBpI4mnIcKmQgGgTBUKAwNT0URX1OvHZAE+YHVCOXpcAMKHXR+KApKz4cTcrIWeGK4gyYY38/fG7rnBcyt8/dya1qQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JYFF0S35be+pE4+Hs+KM/e13O4Xj03iMy1mvVlKlyMg=;
+ b=fhKz5MblxEMvIAlFMXZzPX1JLYKr0j5QDo3jH/gvVLF0vL1eClrb+5BYzCcKl/NcQS7U5BUA8kui+Q7XqhEt+iBYwOBps0fPuK7tEd8uDgfkRRR4c+GhN3AptHT6V707H+ZKqdFOgdy2PpUfm/05B02U6YDYVPvy0jUvK8pqj1EoDH//c3WNcO15OuVruc1seoSCm+N4MPiTzAEt+eJnCUm+SFNsp4iEoseULQjOZknkgnWh8Ov/a7Qu1OdHtbeg32A8rosSbfoMswKwHjlvPblgFtI1g63S/BdAGwVKCD7s227FZrUouC6AdGBBbVZ6I3Dhv3rB3nqtaDK26E3/Ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
+ header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JYFF0S35be+pE4+Hs+KM/e13O4Xj03iMy1mvVlKlyMg=;
+ b=smh/9VAdWgcG1D9dJ0gWO6DXa1E4U+VmEpj5NTC/P6Abw2NbB+efRz7VI5jIk/E93kuxq10FaOwVCiEDl6Z59sBmnGRPCaYT3YihPiny8JZGIHJA6S64b7pTlz9Ud2T22NXBFhsRTSnv4EPOOaji627cuY//AditXkHX2Ml3jGM=
+Authentication-Results: armlinux.org.uk; dkim=none (message not signed)
+ header.d=none;armlinux.org.uk; dmarc=none action=none
+ header.from=leica-geosystems.com;
+Received: from DB6PR0602MB2886.eurprd06.prod.outlook.com (2603:10a6:4:9b::11)
+ by DB6PR0602MB2887.eurprd06.prod.outlook.com (2603:10a6:4:9a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Mon, 30 Nov
+ 2020 15:21:44 +0000
+Received: from DB6PR0602MB2886.eurprd06.prod.outlook.com
+ ([fe80::49c3:4b5b:289c:d62c]) by DB6PR0602MB2886.eurprd06.prod.outlook.com
+ ([fe80::49c3:4b5b:289c:d62c%12]) with mapi id 15.20.3611.025; Mon, 30 Nov
+ 2020 15:21:44 +0000
+From:   Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+To:     linux@armlinux.org.uk, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        tony@atomide.com, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@siol.net, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
+        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, lee.jones@linaro.org, sam@ravnborg.org,
+        emil.l.velikov@gmail.com, daniel.thompson@linaro.org,
+        krzk@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 0/5] drop unused BACKLIGHT_GENERIC option
+Date:   Mon, 30 Nov 2020 15:21:32 +0000
+Message-Id: <20201130152137.24909-1-andrey.zhizhikin@leica-geosystems.com>
+X-Mailer: git-send-email 2.17.1
 Content-Type: text/plain
-X-XM-SPF: eid=1kjkQU-001Uc9-1V;;;mid=<87pn3unbtv.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18L++z/WGJY5Gw4SH8IUJ/lWI0CwB3Tf5E=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-Subject: Re: linux-next: Tree for Nov 27 (parisc: signal flags)
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+X-Originating-IP: [193.8.40.112]
+X-ClientProxiedBy: ZRAP278CA0002.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:10::12) To DB6PR0602MB2886.eurprd06.prod.outlook.com
+ (2603:10a6:4:9b::11)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from aherlnxbspsrv01.lgs-net.com (193.8.40.112) by ZRAP278CA0002.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:10::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Mon, 30 Nov 2020 15:21:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 95d7b698-5292-4930-f51d-08d89543a538
+X-MS-TrafficTypeDiagnostic: DB6PR0602MB2887:
+X-Microsoft-Antispam-PRVS: <DB6PR0602MB2887AD8134FEDEE884AD46CEA6F50@DB6PR0602MB2887.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1169;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Nd3loQ15nj+k6hYQLhmPL9e6smY/UmSaTcWyqEPpv13qIpQHfXiHzpKmYs6yRY88IoM7OA8EI+HInQSY0+DDtLAvWit+QiYWdpsGKxJTeX5U2pkZjvq03zh3TDujFKSB5IMcr3NH8p8c6Pp9HkrgJuvY+qAR3DAWW7u5Ft/oxRZAQMHMNbSxpCfBpbKDHoNdni18QjUyxFT5diCDmw/8NFm/fQm4VBwJeoyPGTbRerF/DcsG8p4qkR3T0tolmusJrEw1Y+JWCi8iT2A891VKG0HsArjY+t3AFkSnoVnD6br7Knj3HjMBXvVvMx5zWqne0cRIBj92zEorv3wzAVExcT6BRWXtEz/xR5uGystDlu7jLgCN/v9mRu1s6xKj0/GE4WbBjPdN667LxTpLcIcrgw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0602MB2886.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(396003)(39860400002)(5660300002)(2616005)(1076003)(52116002)(6506007)(16526019)(956004)(26005)(186003)(7406005)(7416002)(36756003)(2906002)(316002)(6666004)(44832011)(86362001)(83380400001)(6486002)(6512007)(921005)(66946007)(478600001)(8676002)(8936002)(66556008)(66476007)(41533002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?kitQGbAHk3EE3Ey9YOYZ7O8FLyJVuIMD1TiiWcmL9t1mNsQjrB4jtGmbTHNl?=
+ =?us-ascii?Q?BMursxnuITuEajAo6wSx6Z9SsYtX4l2T+R+7R2lNDa/81FA+Bo3GMT+NqSWf?=
+ =?us-ascii?Q?dxiKc7Fg7DO3u5sAv37BjM/JiqRiwBy/lfxzQ6wAyiF8uqsZwa8Ji/Kmb6p9?=
+ =?us-ascii?Q?xDbRMAgpNHBHQIHQXqU+4/19o8V3G/T7nK4J9RoRaSGMRgoSON98yvuX2qmR?=
+ =?us-ascii?Q?hyOgfIfExql8V+hBO5mLO5bzK26KWqhXLljT5/+tml4gFV+uIPkDvMWxKDrT?=
+ =?us-ascii?Q?iV4nXHvZTBIeU4u+p9m9k686qgHh20bQnrvHaoULkKpPbye811iNYqvARczh?=
+ =?us-ascii?Q?B9RyPYsB3mP82COFVkIsI7hjdFYNQaXum8+T8LqqUCoiQ1Njlw+kihsqHEmh?=
+ =?us-ascii?Q?g1bIHw0R7zxGmUG5H+03cFMO20XpvbrM/avQ3orGP36/4T1uRT6MQLFb/OK8?=
+ =?us-ascii?Q?LxiEn5z5KvoENpEG5SSjehnRxmUMcSPZuw17yjVAPmArN/shoCI2cvNUPCU5?=
+ =?us-ascii?Q?0IjipO4xhampV+3d3Nw+GiTRpKPmyzeaKSlxgLc0jKtuq6178DTXzM+0WQ//?=
+ =?us-ascii?Q?jdcLDl4KEPjmsshx/4CgCtkMQ6Y4bG8JQh+6ScX+G13uc6flF1KbZDNPnygO?=
+ =?us-ascii?Q?lyC+trjlg298EN6jEliGM3n4mhstypRQoLQJCvq36/4bGcZYDe3W5qTbR+rT?=
+ =?us-ascii?Q?MA5BsGvM6TKrzeGJ+lmboFadqXB/JC6b4g3XAfBZmbA1bPYDxLnjeZ/Uu/Ak?=
+ =?us-ascii?Q?209edxpv6/zl8+Bi2H92im7c7B5dVlAjB9Njif94cFamVeXDRuqg8R2v/EzA?=
+ =?us-ascii?Q?KOLaXTfMvh1Flzjg0nuQFalsliJP1hud6MdceJVmU8L9x0B1JFD3vixKeJKX?=
+ =?us-ascii?Q?fm8GjVbaEQs6oZZuc200FYIzeOPphD9uNY7jJXFMBQSKG8UlIWqzqjNlamdp?=
+ =?us-ascii?Q?20XrACDjUK4kLAkEs5EDustyLpTxtxycPGD0ze1wLgF3KF5AjmX7wPuPuWv1?=
+ =?us-ascii?Q?6MVd?=
+X-OriginatorOrg: leica-geosystems.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95d7b698-5292-4930-f51d-08d89543a538
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0602MB2886.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 15:21:44.1425
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: z2W1ShaxXCjALLxQbLA6jmqUp8Gi08QpaeQ8KWrj3vdSv3nL/R6SJp8BNxNRSjHk1dDcifGMCRU3GPdULbk7pR062FCDnmHrSD8upGxQrEw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0602MB2887
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
+Since the removal of generic_bl driver from the source tree in commit
+7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is
+unused") BACKLIGHT_GENERIC config option became obsolete as well and
+therefore subject to clean-up from all configuration files.
 
-> Hi all,
->
-> On Fri, 27 Nov 2020 10:43:07 -0800 Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 11/27/20 1:04 AM, Stephen Rothwell wrote:
->> > Hi all,
->> > 
->> > Changes since 20201126:
->> >   
->> 
->> on parisc, _SA_SIGGFAULT is undefined and causing build errors.
->> 
->> commit 23acdc76f1798b090bb9dcc90671cd29d929834e
->> Author: Peter Collingbourne <pcc@google.com>
->> Date:   Thu Nov 12 18:53:34 2020 -0800
->> 
->>     signal: clear non-uapi flag bits when passing/returning sa_flags
->> 
->> 
->> 
->> _SA_SIGGFAULT is not used or defined anywhere else in the
->> kernel source tree.
->
->
-> _SA_SIGGFAULT was removed by commit
->
->   41f5a81c07cd ("parisc: Drop HP-UX specific fcntl and signal flags")
->
-> which was added to Linus' tree in v5.10-rc1.
+This series introduces patches to address this removal, separated by
+architectures in the kernel tree.
 
-Thanks.
+Andrey Zhizhikin (5):
+  ARM: configs: drop unused BACKLIGHT_GENERIC option
+  arm64: defconfig: drop unused BACKLIGHT_GENERIC option
+  MIPS: configs: drop unused BACKLIGHT_GENERIC option
+  parisc: configs: drop unused BACKLIGHT_GENERIC option
+  powerpc/configs: drop unused BACKLIGHT_GENERIC option
 
-It looks like one of the patches in the patchset took so long it got out
-of date.  I will sort it out.
+ arch/arm/configs/at91_dt_defconfig          | 1 -
+ arch/arm/configs/cm_x300_defconfig          | 1 -
+ arch/arm/configs/colibri_pxa300_defconfig   | 1 -
+ arch/arm/configs/jornada720_defconfig       | 1 -
+ arch/arm/configs/magician_defconfig         | 1 -
+ arch/arm/configs/mini2440_defconfig         | 1 -
+ arch/arm/configs/omap2plus_defconfig        | 1 -
+ arch/arm/configs/pxa3xx_defconfig           | 1 -
+ arch/arm/configs/qcom_defconfig             | 1 -
+ arch/arm/configs/sama5_defconfig            | 1 -
+ arch/arm/configs/sunxi_defconfig            | 1 -
+ arch/arm/configs/tegra_defconfig            | 1 -
+ arch/arm/configs/u8500_defconfig            | 1 -
+ arch/arm64/configs/defconfig                | 1 -
+ arch/mips/configs/gcw0_defconfig            | 1 -
+ arch/mips/configs/gpr_defconfig             | 1 -
+ arch/mips/configs/lemote2f_defconfig        | 1 -
+ arch/mips/configs/loongson3_defconfig       | 1 -
+ arch/mips/configs/mtx1_defconfig            | 1 -
+ arch/mips/configs/rs90_defconfig            | 1 -
+ arch/parisc/configs/generic-64bit_defconfig | 1 -
+ arch/powerpc/configs/powernv_defconfig      | 1 -
+ 22 files changed, 22 deletions(-)
 
-Eric
+
+base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
+prerequisite-patch-id: bfd382cf1dc021d20204f10ea9403319c1c32b12
+prerequisite-patch-id: 5397c0c8648bb3e0b830207ea867138c11c6e644
+prerequisite-patch-id: a3c284dff5fe6d02828918a886db6a8ed3197e20
+-- 
+2.17.1
 
