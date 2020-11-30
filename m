@@ -2,115 +2,99 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07181C3E8C5
-	for <linux-parisc@archiver.kernel.org>; Fri, 27 Nov 2020 21:47:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84099C64E7B
+	for <linux-parisc@archiver.kernel.org>; Mon, 30 Nov 2020 15:07:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 84C5D21534
-	for <linux-parisc@archiver.kernel.org>; Fri, 27 Nov 2020 21:47:00 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="VyJTWwTQ"
+	by mail.kernel.org (Postfix) with ESMTP id 2CCEB20719
+	for <linux-parisc@archiver.kernel.org>; Mon, 30 Nov 2020 15:07:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731681AbgK0Vpu (ORCPT
+        id S1726775AbgK3PHs (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 27 Nov 2020 16:45:50 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48849 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732380AbgK0VpF (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 27 Nov 2020 16:45:05 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CjSnV5F0qz9s0b;
-        Sat, 28 Nov 2020 08:44:14 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1606513455;
-        bh=ub5PZnR5+XaV7QtxRqzhr61Zeo2CaES2yY+8j2LiOBo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VyJTWwTQs6JyWRW7wCopRXFaKqEqIeXynFXJyza6Ft0CgHRrEbzonwAeSwjfD35CU
-         YFEbFd6pqOvHPArAMQ/DgSY3KflMm7EPAgUbdZEoADNwZU9hD5TjeWh5S0AkIZCSDb
-         xbFr3QkVmT2wDfSP2IMqo4MNiQtjJ9q4N8wiAfXSX5J4aZ1EdsZNlrIvrBor7fl86T
-         8AUzVocijT6MxtJR2OLPAAYUboQXYlvVXots2bZre7XLE7cshXvWaRMsCUxpRqIjvf
-         qbwxgj9cOyTsBSR9rUlCPvk2g3mo5XeTVjLxRhgD4lA5/2ju9V1KvCXPgB/BOIrysR
-         CTFsbznxgOkYQ==
-Date:   Sat, 28 Nov 2020 08:44:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mon, 30 Nov 2020 10:07:48 -0500
+Received: from out02.mta.xmission.com ([166.70.13.232]:47706 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgK3PHs (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 30 Nov 2020 10:07:48 -0500
+X-Greylist: delayed 1309 seconds by postgrey-1.27 at vger.kernel.org; Mon, 30 Nov 2020 10:07:48 EST
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kjkQY-000kSf-4d; Mon, 30 Nov 2020 07:45:18 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kjkQU-001Uc9-1V; Mon, 30 Nov 2020 07:45:17 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Peter Collingbourne <pcc@google.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: linux-next: Tree for Nov 27 (parisc: signal flags)
-Message-ID: <20201128084414.3daa87d2@canb.auug.org.au>
-In-Reply-To: <155a20fd-09c4-df35-9cc6-8526a89c2933@infradead.org>
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
 References: <20201127200457.1ffb6aaf@canb.auug.org.au>
         <155a20fd-09c4-df35-9cc6-8526a89c2933@infradead.org>
+        <20201128084414.3daa87d2@canb.auug.org.au>
+Date:   Mon, 30 Nov 2020 08:44:44 -0600
+In-Reply-To: <20201128084414.3daa87d2@canb.auug.org.au> (Stephen Rothwell's
+        message of "Sat, 28 Nov 2020 08:44:13 +1100")
+Message-ID: <87pn3unbtv.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wQycoIya6A4=Fb8SpZ=hKS4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-XM-SPF: eid=1kjkQU-001Uc9-1V;;;mid=<87pn3unbtv.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18L++z/WGJY5Gw4SH8IUJ/lWI0CwB3Tf5E=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: linux-next: Tree for Nov 27 (parisc: signal flags)
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
---Sig_/wQycoIya6A4=Fb8SpZ=hKS4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
 
-Hi all,
-
-On Fri, 27 Nov 2020 10:43:07 -0800 Randy Dunlap <rdunlap@infradead.org> wro=
-te:
+> Hi all,
 >
-> On 11/27/20 1:04 AM, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > Changes since 20201126:
-> >  =20
->=20
-> on parisc, _SA_SIGGFAULT is undefined and causing build errors.
->=20
-> commit 23acdc76f1798b090bb9dcc90671cd29d929834e
-> Author: Peter Collingbourne <pcc@google.com>
-> Date:   Thu Nov 12 18:53:34 2020 -0800
->=20
->     signal: clear non-uapi flag bits when passing/returning sa_flags
->=20
->=20
->=20
-> _SA_SIGGFAULT is not used or defined anywhere else in the
-> kernel source tree.
+> On Fri, 27 Nov 2020 10:43:07 -0800 Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 11/27/20 1:04 AM, Stephen Rothwell wrote:
+>> > Hi all,
+>> > 
+>> > Changes since 20201126:
+>> >   
+>> 
+>> on parisc, _SA_SIGGFAULT is undefined and causing build errors.
+>> 
+>> commit 23acdc76f1798b090bb9dcc90671cd29d929834e
+>> Author: Peter Collingbourne <pcc@google.com>
+>> Date:   Thu Nov 12 18:53:34 2020 -0800
+>> 
+>>     signal: clear non-uapi flag bits when passing/returning sa_flags
+>> 
+>> 
+>> 
+>> _SA_SIGGFAULT is not used or defined anywhere else in the
+>> kernel source tree.
+>
+>
+> _SA_SIGGFAULT was removed by commit
+>
+>   41f5a81c07cd ("parisc: Drop HP-UX specific fcntl and signal flags")
+>
+> which was added to Linus' tree in v5.10-rc1.
 
+Thanks.
 
-_SA_SIGGFAULT was removed by commit
+It looks like one of the patches in the patchset took so long it got out
+of date.  I will sort it out.
 
-  41f5a81c07cd ("parisc: Drop HP-UX specific fcntl and signal flags")
+Eric
 
-which was added to Linus' tree in v5.10-rc1.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/wQycoIya6A4=Fb8SpZ=hKS4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Bcy4ACgkQAVBC80lX
-0GxIdQf+Jf2y/pnPzPbXSLELtuT+08SDoBstIe5ZBx9ZNjJe9928V543Pp8dT4ff
-zdglHKyu/Jx1A4PGzK1pEJUgpk50B0SGg3wMrnSW0SA3PdAjeSiurfzblGhS8DJH
-RioYdjqZrOwbNAAwX2nOwFSKDZclRkcgUuYyWBWz7bpKxbHKQYMLQEh3pNAQUSKt
-Fxfrfs/7XweCZYWV+wuBPeyyQ0bit69A9c/xVvTlPDNvj98ttFK7wYEimXYYj+Li
-rt1rQCQmZdwvr6LjtkZcA//vo++4D1selopI1E5+eQe9UeaNOg4kXXtRlFrTsht3
-yPIisKYL7+TeH78VwIVi0dOhIJgtGg==
-=Qxxn
------END PGP SIGNATURE-----
-
---Sig_/wQycoIya6A4=Fb8SpZ=hKS4--
