@@ -7,61 +7,56 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B59BDC2BB9A
-	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:56:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BD6FC4167B
+	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:57:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8EBD922EBF
-	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:56:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 089A322EBF
+	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:57:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404423AbgLJTvz (ORCPT
+        id S2393573AbgLJT4f (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 10 Dec 2020 14:51:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
+        Thu, 10 Dec 2020 14:56:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404338AbgLJTnn (ORCPT
+        with ESMTP id S2404332AbgLJTnk (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:43:43 -0500
+        Thu, 10 Dec 2020 14:43:40 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F344C0611CC;
-        Thu, 10 Dec 2020 11:42:40 -0800 (PST)
-Message-Id: <20201210194044.473308721@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB36C061282;
+        Thu, 10 Dec 2020 11:42:28 -0800 (PST)
+Message-Id: <20201210194043.546326568@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607629358;
+        s=2020; t=1607629347;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=hb66G/YKxZssYUpIlaqnSR4ZW1k+vqs7JSWYZ8olni4=;
-        b=JDGcEIf6xGhVDkvwWeMQLx9FUu/IsKss78ihAlKadMjAIf3dHANCzucDD5C2rHnEBhKkDC
-        fs0LpWbG65iC+gn0dqp5B//hOUr0DzpNnSBFKb88Vue5ngozd1tGLn7CtzLKEI29imO25z
-        joiUdDjr1d2lfyigu/UfV0ehuoSmHFo9AhA/FqDn1vazpBLlgf2ND1DS3dxniHAdDnilk3
-        1qIkGuqztzebcid1bBRJTHx9CoWTI1/9XLZXX10DwpIeYbsmtua3l8q5FWiIGABqtq0mdG
-        +jGGNyapUz+w2HLUzMDsdOexP4c9y0H7CnIR6EVRiH9/1y/HRKjopWTfNI7hPQ==
+        bh=5nQTlSWs0aM1JwskkO++sgVx3e7r1A0iUoENDct9w0g=;
+        b=QPllCmzoid7R7QOyZWHCOYQKMI+juGJWW7IXPn4ldqvXap5zOWqeLwIujbfic04O+qhazO
+        0xgWWwKg3GbwssA1OWCHaW+e3v13fVknyR8JXjPDh7PwNE+Ckpns9v0fFT+ZM3yGQ/k3Vv
+        GCsqZz06V+zRI8tFVRs2T2IovMxYUYd8eD6JafQc5V2xJxNbrsWbTKI93mSM/Ta7w2MVgk
+        H0DCRjstAo+JEpF+kGbxIAfIodj4WQwAN11f4kvj+YdByF1NUUzPqO+eeo3F+Zo17kc0So
+        XSotZsWfd7b5nXWYK0Zyq3GvoLnhjvZlI0o0fsviKiEzV4hSu6MDcZkJycE3/A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607629358;
+        s=2020e; t=1607629347;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=hb66G/YKxZssYUpIlaqnSR4ZW1k+vqs7JSWYZ8olni4=;
-        b=Fyn3b5Uer8Bt9xBrcUD7/wbs4Zq09nDfu7V/W/qeQGG6ZMTLCbkszqx6GueqYSkgtweAWi
-        EEbLWcn1hOF4e1Aw==
-Date:   Thu, 10 Dec 2020 20:25:55 +0100
+        bh=5nQTlSWs0aM1JwskkO++sgVx3e7r1A0iUoENDct9w0g=;
+        b=vR1W3s1vgzWnaT5Q7BZrP5IMwXx2MgiIHJAS9ztGZt4iF+7Bkm46E7nJWgDdHbgllL9/0G
+        km2qINIgPXSFZ2CQ==
+Date:   Thu, 10 Dec 2020 20:25:46 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Marc Zyngier <maz@kernel.org>,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>,
         afzal mohammed <afzal.mohd.ma@gmail.com>,
         linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
         Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
         Jani Nikula <jani.nikula@linux.intel.com>,
@@ -79,7 +74,13 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Jon Mason <jdmason@kudzu.us>,
         Dave Jiang <dave.jiang@intel.com>,
         Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Michal Simek <michal.simek@xilinx.com>,
+        linux-pci@vger.kernel.org,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
         Tariq Toukan <tariqt@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
@@ -89,7 +90,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
         xen-devel@lists.xenproject.org
-Subject: [patch 19/30] PCI: mobiveil: Use irq_data_get_irq_chip_data()
+Subject: [patch 10/30] arm64/smp: Use irq_desc_kstat_cpu() in arch_show_interrupts()
 References: <20201210192536.118432146@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -98,56 +99,27 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Going through a full irq descriptor lookup instead of just using the proper
-helper function which provides direct access is suboptimal.
-
-In fact it _is_ wrong because the chip callback needs to get the chip data
-which is relevant for the chip while using the irq descriptor variant
-returns the irq chip data of the top level chip of a hierarchy. It does not
-matter in this case because the chip is the top level chip, but that
-doesn't make it more correct.
+The irq descriptor is already there, no need to look it up again.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>
-Cc: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: Rob Herring <robh@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
 ---
- drivers/pci/controller/mobiveil/pcie-mobiveil-host.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ arch/arm64/kernel/smp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pci/controller/mobiveil/pcie-mobiveil-host.c
-+++ b/drivers/pci/controller/mobiveil/pcie-mobiveil-host.c
-@@ -306,13 +306,11 @@ int mobiveil_host_init(struct mobiveil_p
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -809,7 +809,7 @@ int arch_show_interrupts(struct seq_file
+ 		seq_printf(p, "%*s%u:%s", prec - 1, "IPI", i,
+ 			   prec >= 4 ? " " : "");
+ 		for_each_online_cpu(cpu)
+-			seq_printf(p, "%10u ", kstat_irqs_cpu(irq, cpu));
++			seq_printf(p, "%10u ", irq_desc_kstat_cpu(ipi_desc[i], cpu));
+ 		seq_printf(p, "      %s\n", ipi_types[i]);
+ 	}
  
- static void mobiveil_mask_intx_irq(struct irq_data *data)
- {
--	struct irq_desc *desc = irq_to_desc(data->irq);
--	struct mobiveil_pcie *pcie;
-+	struct mobiveil_pcie *pcie = irq_data_get_irq_chip_data(data);
- 	struct mobiveil_root_port *rp;
- 	unsigned long flags;
- 	u32 mask, shifted_val;
- 
--	pcie = irq_desc_get_chip_data(desc);
- 	rp = &pcie->rp;
- 	mask = 1 << ((data->hwirq + PAB_INTX_START) - 1);
- 	raw_spin_lock_irqsave(&rp->intx_mask_lock, flags);
-@@ -324,13 +322,11 @@ static void mobiveil_mask_intx_irq(struc
- 
- static void mobiveil_unmask_intx_irq(struct irq_data *data)
- {
--	struct irq_desc *desc = irq_to_desc(data->irq);
--	struct mobiveil_pcie *pcie;
-+	struct mobiveil_pcie *pcie = irq_data_get_irq_chip_data(data);
- 	struct mobiveil_root_port *rp;
- 	unsigned long flags;
- 	u32 shifted_val, mask;
- 
--	pcie = irq_desc_get_chip_data(desc);
- 	rp = &pcie->rp;
- 	mask = 1 << ((data->hwirq + PAB_INTX_START) - 1);
- 	raw_spin_lock_irqsave(&rp->intx_mask_lock, flags);
 
