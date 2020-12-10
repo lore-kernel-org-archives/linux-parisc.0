@@ -7,48 +7,52 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E220C2BB9A
-	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:44:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 394A3C1B0E3
+	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:50:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 05D7E23D3C
-	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:44:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E437C22571
+	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:49:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404379AbgLJTn4 (ORCPT
+        id S2404390AbgLJTn5 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 10 Dec 2020 14:43:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
+        Thu, 10 Dec 2020 14:43:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404339AbgLJTnn (ORCPT
+        with ESMTP id S2404345AbgLJTnp (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:43:43 -0500
+        Thu, 10 Dec 2020 14:43:45 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF77BC0611CD;
-        Thu, 10 Dec 2020 11:42:43 -0800 (PST)
-Message-Id: <20201210194044.769458162@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC9EC061794;
+        Thu, 10 Dec 2020 11:42:51 -0800 (PST)
+Message-Id: <20201210194045.360198201@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607629362;
+        s=2020; t=1607629369;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=VOaf/d7D7QtaaC+WU1sXZf5eTJVDFk9LK/s7Au7CufU=;
-        b=ebvAKnU9U5xxsuTyZRRyBD/pSxlAzqV321cu/1PSB+S30uzHIXKjKJyuLWtBWcYVZXlybn
-        NBr9KiI1e9paQHPvIfvkgD6mJDZPhiGb5TN5PvcTekgbiahpQ8LQMlSJSX4xpUxk9f2Ol5
-        F8oNCSe1H+ais24JO9t2IwvShGuXdvh8ES7plOqYyAwLRKf0TojyhsFUMV5kjVjEtAGPaz
-        UOL8zFfw66+Fs8FOPny2ek7maFNW7ZTVUGseqbCjWR7MjO0q/MLzWc7S4CWwTTyNrDt17N
-        pAxkdJedoxJwP4qnw1l3YgNebMwtGsjkmDdMWwXGJEDNlPXObkHeBB1kSiRQpQ==
+        bh=ZlPg9sxtWavWNstOnduWAE0LJ88d0safrspZWU+Bxkw=;
+        b=K1DERQLLdTNr2zHRckKSlzdGpOu3K2YNmRf/Fd+Me9xL7e1+z/WEZj2/ktZthj5jq1hRc5
+        H3K05V2lxe1VMwzID4A3YLY85G8CYSpDrmB064IUNRFZIZdMGhdgfMMXJmC2dwy27hx5dv
+        +8AXgD/DGykOcBz1Xa8j76SRM06+jkTJXOvxx9wVIyXxp695f6gHDGbeeV9JlTl+CV+qJz
+        iigE2xdn6yZ1PRpeA5+aMqV0fQZ1NATjbH3H6LTr2G8vwxub7OglAIb7biMKHi/AyccluD
+        JT3nn4CWSg161dQ9jAMQEsqATs9zRWVAVD7sNovXx4fL9L9H47Prx2LPtWUjvw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607629362;
+        s=2020e; t=1607629369;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=VOaf/d7D7QtaaC+WU1sXZf5eTJVDFk9LK/s7Au7CufU=;
-        b=W/Zofh+C9ibp8KsiLJ6iyTc3jKq0LDlUAeV1W45RXNpyPicUPyvAT+QSfrk4IRw9rtLo2E
-        zAcfM77lXBTE8oDg==
-Date:   Thu, 10 Dec 2020 20:25:58 +0100
+        bh=ZlPg9sxtWavWNstOnduWAE0LJ88d0safrspZWU+Bxkw=;
+        b=5OkxueAP7qHY2hZdC3q6dEaDkreK0XDmJgigYgkjGtvPF1gC/y/J1hb+Pc7lUaZciQOAo7
+        alJrfrmEbNVTr+Cw==
+Date:   Thu, 10 Dec 2020 20:26:04 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Marc Zyngier <maz@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>,
         afzal mohammed <afzal.mohd.ma@gmail.com>,
@@ -85,12 +89,8 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: [patch 22/30] net/mlx5: Replace irq_to_desc() abuse
+        Leon Romanovsky <leon@kernel.org>
+Subject: [patch 28/30] xen/events: Reduce irq_info::spurious_cnt storage size
 References: <20201210192536.118432146@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -99,59 +99,43 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-No driver has any business with the internals of an interrupt
-descriptor. Storing a pointer to it just to use yet another helper at the
-actual usage site to retrieve the affinity mask is creative at best. Just
-because C does not allow encapsulation does not mean that the kernel has no
-limits.
+To prepare for interrupt spreading reduce the storage size of
+irq_info::spurious_cnt to u8 so the required flag for the spreading logic
+will not increase the storage size.
 
-Retrieve a pointer to the affinity mask itself and use that. It's still
-using an interface which is usually not for random drivers, but definitely
-less hideous than the previous hack.
+Protect the usage site against overruns.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Cc: xen-devel@lists.xenproject.org
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en.h      |    2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c |    2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c |    6 +-----
- 3 files changed, 3 insertions(+), 7 deletions(-)
+ drivers/xen/events/events_base.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -669,7 +669,7 @@ struct mlx5e_channel {
- 	spinlock_t                 async_icosq_lock;
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -95,7 +95,7 @@ struct irq_info {
+ 	struct list_head list;
+ 	struct list_head eoi_list;
+ 	short refcnt;
+-	short spurious_cnt;
++	u8 spurious_cnt;
+ 	enum xen_irq_type type; /* type */
+ 	unsigned irq;
+ 	evtchn_port_t evtchn;   /* event channel */
+@@ -528,8 +528,10 @@ static void xen_irq_lateeoi_locked(struc
+ 		return;
  
- 	/* data path - accessed per napi poll */
--	struct irq_desc *irq_desc;
-+	const struct cpumask	  *aff_mask;
- 	struct mlx5e_ch_stats     *stats;
- 
- 	/* control */
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -1998,7 +1998,7 @@ static int mlx5e_open_channel(struct mlx
- 	c->num_tc   = params->num_tc;
- 	c->xdp      = !!params->xdp_prog;
- 	c->stats    = &priv->channel_stats[ix].ch;
--	c->irq_desc = irq_to_desc(irq);
-+	c->aff_mask = irq_get_affinity_mask(irq);
- 	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
- 
- 	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll, 64);
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-@@ -40,12 +40,8 @@
- static inline bool mlx5e_channel_no_affinity_change(struct mlx5e_channel *c)
- {
- 	int current_cpu = smp_processor_id();
--	const struct cpumask *aff;
--	struct irq_data *idata;
- 
--	idata = irq_desc_get_irq_data(c->irq_desc);
--	aff = irq_data_get_affinity_mask(idata);
--	return cpumask_test_cpu(current_cpu, aff);
-+	return cpumask_test_cpu(current_cpu, c->aff_mask);
- }
- 
- static void mlx5e_handle_tx_dim(struct mlx5e_txqsq *sq)
+ 	if (spurious) {
+-		if ((1 << info->spurious_cnt) < (HZ << 2))
+-			info->spurious_cnt++;
++		if ((1 << info->spurious_cnt) < (HZ << 2)) {
++			if (info->spurious_cnt != 0xFF)
++				info->spurious_cnt++;
++		}
+ 		if (info->spurious_cnt > 1) {
+ 			delay = 1 << (info->spurious_cnt - 2);
+ 			if (delay > HZ)
 
