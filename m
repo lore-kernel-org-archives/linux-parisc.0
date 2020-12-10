@@ -5,46 +5,46 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 756B2C2BB40
-	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:43:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E220C2BB9A
+	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:44:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 362A023D23
-	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:43:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 05D7E23D3C
+	for <linux-parisc@archiver.kernel.org>; Thu, 10 Dec 2020 19:44:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393513AbgLJTnD (ORCPT
+        id S2404379AbgLJTn4 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 10 Dec 2020 14:43:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
+        Thu, 10 Dec 2020 14:43:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393473AbgLJTnB (ORCPT
+        with ESMTP id S2404339AbgLJTnn (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:43:01 -0500
+        Thu, 10 Dec 2020 14:43:43 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C7EC061793;
-        Thu, 10 Dec 2020 11:42:21 -0800 (PST)
-Message-Id: <20201210194042.967177918@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF77BC0611CD;
+        Thu, 10 Dec 2020 11:42:43 -0800 (PST)
+Message-Id: <20201210194044.769458162@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607629339;
+        s=2020; t=1607629362;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=gYsowh6i1mqGXNg6FrEIlf+Px9WkTuZjYPGZA4AoQf4=;
-        b=gQRR2ovC6G1wG0/hHfvHA26mBklNiMZtkvMBYZWjgQshlf7o+cIXoD11qJjLT48W0LHgJA
-        5Zvfg1News0uQs48erbM5kmDtHengxfmuqG2DKGnaIJ04vg1FJ7jnVpZXG8cNwMy19OeFP
-        iPFhPWqfd87RfMeVK3ZgF11+LhI8jQI6rRQAPId6pBGrjdbz5+dRwipziIghpyTp0+nYcu
-        /rMQolvJykCdajiQdhpg5/73/PAnO6jEv3XXq/Rv9w9yxTGzkAvSFeWdlWRlX1S05CmH1R
-        pxA14gUUPV2LrG7qMC56g75TqBVjQeX4kqlFmRI413CglTnFsrbWRi0PstpOew==
+        bh=VOaf/d7D7QtaaC+WU1sXZf5eTJVDFk9LK/s7Au7CufU=;
+        b=ebvAKnU9U5xxsuTyZRRyBD/pSxlAzqV321cu/1PSB+S30uzHIXKjKJyuLWtBWcYVZXlybn
+        NBr9KiI1e9paQHPvIfvkgD6mJDZPhiGb5TN5PvcTekgbiahpQ8LQMlSJSX4xpUxk9f2Ol5
+        F8oNCSe1H+ais24JO9t2IwvShGuXdvh8ES7plOqYyAwLRKf0TojyhsFUMV5kjVjEtAGPaz
+        UOL8zFfw66+Fs8FOPny2ek7maFNW7ZTVUGseqbCjWR7MjO0q/MLzWc7S4CWwTTyNrDt17N
+        pAxkdJedoxJwP4qnw1l3YgNebMwtGsjkmDdMWwXGJEDNlPXObkHeBB1kSiRQpQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607629339;
+        s=2020e; t=1607629362;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=gYsowh6i1mqGXNg6FrEIlf+Px9WkTuZjYPGZA4AoQf4=;
-        b=rxr0RqK5G71Mdyjh0pmNkfya7BLBal4i+pBNw5B4iIspa3uaIBOFXW7QFkpv0Ae/Yof/mz
-        NtSLBAk6jBeGNuDQ==
-Date:   Thu, 10 Dec 2020 20:25:40 +0100
+        bh=VOaf/d7D7QtaaC+WU1sXZf5eTJVDFk9LK/s7Au7CufU=;
+        b=W/Zofh+C9ibp8KsiLJ6iyTc3jKq0LDlUAeV1W45RXNpyPicUPyvAT+QSfrk4IRw9rtLo2E
+        zAcfM77lXBTE8oDg==
+Date:   Thu, 10 Dec 2020 20:25:58 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -90,7 +90,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
         xen-devel@lists.xenproject.org
-Subject: [patch 04/30] genirq: Provide irq_get_effective_affinity()
+Subject: [patch 22/30] net/mlx5: Replace irq_to_desc() abuse
 References: <20201210192536.118432146@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -99,28 +99,59 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Provide an accessor to the effective interrupt affinity mask. Going to be
-used to replace open coded fiddling with the irq descriptor.
+No driver has any business with the internals of an interrupt
+descriptor. Storing a pointer to it just to use yet another helper at the
+actual usage site to retrieve the affinity mask is creative at best. Just
+because C does not allow encapsulation does not mean that the kernel has no
+limits.
+
+Retrieve a pointer to the affinity mask itself and use that. It's still
+using an interface which is usually not for random drivers, but definitely
+less hideous than the previous hack.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/irq.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en.h      |    2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c |    2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c |    6 +-----
+ 3 files changed, 3 insertions(+), 7 deletions(-)
 
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -907,6 +907,13 @@ struct cpumask *irq_data_get_effective_a
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+@@ -669,7 +669,7 @@ struct mlx5e_channel {
+ 	spinlock_t                 async_icosq_lock;
+ 
+ 	/* data path - accessed per napi poll */
+-	struct irq_desc *irq_desc;
++	const struct cpumask	  *aff_mask;
+ 	struct mlx5e_ch_stats     *stats;
+ 
+ 	/* control */
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -1998,7 +1998,7 @@ static int mlx5e_open_channel(struct mlx
+ 	c->num_tc   = params->num_tc;
+ 	c->xdp      = !!params->xdp_prog;
+ 	c->stats    = &priv->channel_stats[ix].ch;
+-	c->irq_desc = irq_to_desc(irq);
++	c->aff_mask = irq_get_affinity_mask(irq);
+ 	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
+ 
+ 	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll, 64);
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
+@@ -40,12 +40,8 @@
+ static inline bool mlx5e_channel_no_affinity_change(struct mlx5e_channel *c)
+ {
+ 	int current_cpu = smp_processor_id();
+-	const struct cpumask *aff;
+-	struct irq_data *idata;
+ 
+-	idata = irq_desc_get_irq_data(c->irq_desc);
+-	aff = irq_data_get_affinity_mask(idata);
+-	return cpumask_test_cpu(current_cpu, aff);
++	return cpumask_test_cpu(current_cpu, c->aff_mask);
  }
- #endif
  
-+static inline struct cpumask *irq_get_effective_affinity_mask(unsigned int irq)
-+{
-+	struct irq_data *d = irq_get_irq_data(irq);
-+
-+	return d ? irq_data_get_effective_affinity_mask(d) : NULL;
-+}
-+
- unsigned int arch_dynirq_lower_bound(unsigned int from);
- 
- int __irq_alloc_descs(int irq, unsigned int from, unsigned int cnt, int node,
+ static void mlx5e_handle_tx_dim(struct mlx5e_txqsq *sq)
 
