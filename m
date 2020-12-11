@@ -2,55 +2,63 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77050C4167B
-	for <linux-parisc@archiver.kernel.org>; Fri, 11 Dec 2020 12:59:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EA79C433FE
+	for <linux-parisc@archiver.kernel.org>; Fri, 11 Dec 2020 15:01:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 171C123EAF
-	for <linux-parisc@archiver.kernel.org>; Fri, 11 Dec 2020 12:59:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 43E34206F8
+	for <linux-parisc@archiver.kernel.org>; Fri, 11 Dec 2020 15:01:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406028AbgLKM6p (ORCPT
+        id S2406274AbgLKOdN (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 11 Dec 2020 07:58:45 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34750 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406014AbgLKM6d (ORCPT
+        Fri, 11 Dec 2020 09:33:13 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:44700 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406261AbgLKOcd (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:58:33 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607691469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JI1elAtJ+5DtZ6K623jhzzi7pTI2yY5tK5xHv6JaNRg=;
-        b=IsUihC8x41gfVuZ56mJpZCBvWH6AGSSnlAtCqFu+Y6vHBUWXmKQx9YvU5B8lrG6utDrQMP
-        8canZDEEsNDVhNNdoKfnFOQzTFOpz9W+psXaARAvFsUFtyOebsqoT9kLX8kBnNz5EacFR5
-        rK53uTCJCAI+CQzV9BLaBuU/gNEQZy9UASonSM4NSF0ZsDg2qgrh9flw6frSO8WIrRyHsw
-        fF1cIAuhmb0wJbfH0peqshua47BZpnwfG0pDc4EWPJORiwGLQuagVjgVxqHnf+tQ9+0hUT
-        H0SNNDNOI9Tui6mw4dUpmVwGgPTgPo14TX1s4jNlbb7LIWdUurk9RmWQuaaNkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607691469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JI1elAtJ+5DtZ6K623jhzzi7pTI2yY5tK5xHv6JaNRg=;
-        b=9Ep94KYblAfQy2iSeDDH/NSIpD2gqoyh3N3s+6g4ZgyvdTP4pfDpIIp6ve3zDE8y9b1XGh
-        NoOqscBMvs3mS3Bw==
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Fri, 11 Dec 2020 09:32:33 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BBEK3q4153543;
+        Fri, 11 Dec 2020 14:29:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=XwmNJXsce0biO7XLe+zGaIsjtrmRfK/vTz0mYn6nQBU=;
+ b=bR7yH4+1kTFS/uaRb9qwsHTyFm2EoNVmWnQB/6uOrO708u+eqNtBobFpmn1ttrRdH1ys
+ eWZmcv+9rBDGS0S9dxVH7WJEjVIq3kan/8A2J+2JEfl4cmi6SdTHDxhFZ9FOjgghK0i/
+ gSlqjyBs3FtwP3+ZAOMx//Xrh2s4GGZVNmZZvw8Dg7A8ucgqyFuZ1jZz6HYR0R/QX3KB
+ jq1go8jZfLC3JdZILS9AqGFwicAYPALMmwsEwRd+5bZO9goG03a6o19lTH5pgGTEdXEs
+ I4ECgSmCCiTYqeMDSavCaEpGT9QkWsYwEp7lVPsTzWiLDfHkK38lg3Q5ATAnYCJ8Q3TZ zQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 3581mratkd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Dec 2020 14:29:21 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BBEPIII069767;
+        Fri, 11 Dec 2020 14:29:20 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 358kstfcjw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Dec 2020 14:29:20 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BBETD7i006093;
+        Fri, 11 Dec 2020 14:29:13 GMT
+Received: from [10.39.222.144] (/10.39.222.144)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 11 Dec 2020 06:29:13 -0800
+Subject: Re: [patch 27/30] xen/events: Only force affinity mask for percpu
+ interrupts
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
         LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Marc Zyngier <maz@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>,
         afzal mohammed <afzal.mohd.ma@gmail.com>,
@@ -61,9 +69,16 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Will Deacon <will@kernel.org>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
         Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
         Chris Wilson <chris@chris-wilson.co.uk>,
         Wambui Karuga <wambui.karugax@gmail.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
         Linus Walleij <linus.walleij@linaro.org>,
         linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Jon Mason <jdmason@kudzu.us>,
@@ -80,115 +95,81 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
-In-Reply-To: <ad05af1a-5463-2a80-0887-7629721d6863@linux.intel.com>
-References: <20201210192536.118432146@linutronix.de> <20201210194043.957046529@linutronix.de> <ad05af1a-5463-2a80-0887-7629721d6863@linux.intel.com>
-Date:   Fri, 11 Dec 2020 13:57:49 +0100
-Message-ID: <87y2i4h54i.fsf@nanos.tec.linutronix.de>
+        Leon Romanovsky <leon@kernel.org>
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194045.250321315@linutronix.de>
+ <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com>
+ <2164a0ce-0e0d-c7dc-ac97-87c8f384ad82@suse.com>
+ <871rfwiknd.fsf@nanos.tec.linutronix.de>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <9806692f-24a3-4b6f-ae55-86bd66481271@oracle.com>
+Date:   Fri, 11 Dec 2020 09:29:09 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <871rfwiknd.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110094
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110093
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, Dec 11 2020 at 10:13, Tvrtko Ursulin wrote:
-> On 10/12/2020 19:25, Thomas Gleixner wrote:
 
->> 
->> Aside of that the count is per interrupt line and therefore takes
->> interrupts from other devices into account which share the interrupt line
->> and are not handled by the graphics driver.
->> 
->> Replace it with a pmu private count which only counts interrupts which
->> originate from the graphics card.
->> 
->> To avoid atomics or heuristics of some sort make the counter field
->> 'unsigned long'. That limits the count to 4e9 on 32bit which is a lot and
->> postprocessing can easily deal with the occasional wraparound.
+On 12/11/20 7:37 AM, Thomas Gleixner wrote:
+> On Fri, Dec 11 2020 at 13:10, Jürgen Groß wrote:
+>> On 11.12.20 00:20, boris.ostrovsky@oracle.com wrote:
+>>> On 12/10/20 2:26 PM, Thomas Gleixner wrote:
+>>>> All event channel setups bind the interrupt on CPU0 or the target CPU for
+>>>> percpu interrupts and overwrite the affinity mask with the corresponding
+>>>> cpumask. That does not make sense.
+>>>>
+>>>> The XEN implementation of irqchip::irq_set_affinity() already picks a
+>>>> single target CPU out of the affinity mask and the actual target is stored
+>>>> in the effective CPU mask, so destroying the user chosen affinity mask
+>>>> which might contain more than one CPU is wrong.
+>>>>
+>>>> Change the implementation so that the channel is bound to CPU0 at the XEN
+>>>> level and leave the affinity mask alone. At startup of the interrupt
+>>>> affinity will be assigned out of the affinity mask and the XEN binding will
+>>>> be updated.
+>>>
+>>> If that's the case then I wonder whether we need this call at all and instead bind at startup time.
+>> After some discussion with Thomas on IRC and xen-devel archaeology the
+>> result is: this will be needed especially for systems running on a
+>> single vcpu (e.g. small guests), as the .irq_set_affinity() callback
+>> won't be called in this case when starting the irq.
+
+
+On UP are we not then going to end up with an empty affinity mask? Or are we guaranteed to have it set to 1 by interrupt generic code?
+
+
+This is actually why I brought this up in the first place --- a potential mismatch between the affinity mask and Xen-specific data (e.g. info->cpu and then protocol-specific data in event channel code). Even if they are re-synchronized later, at startup time (for SMP).
+
+
+I don't see anything that would cause a problem right now but I worry that this inconsistency may come up at some point.
+
+
+-boris
+
+
+> That's right, but not limited to ARM. The same problem exists on x86 UP.
+> So yes, the call makes sense, but the changelog is not really useful.
+> Let me add a comment to this.
 >
-> After my failed hasty sketch from last night I had a different one which 
-> was kind of heuristics based (re-reading the upper dword and retrying if 
-> it changed on 32-bit).
-
-The problem is that there will be two seperate modifications for the low
-and high word. Several ways how the compiler can translate this, but the
-problem is the same for all of them:
-
-CPU 0                           CPU 1
-        load low
-        load high
-        add  low, 1
-        addc high, 0            
-        store low               load high
---> NMI                         load low
-                                load high and compare
-        store high
-
-You can't catch that. If this really becomes an issue you need a
-sequence counter around it.
-      
-
-> But you are right - it is okay to at least start 
-> like this today and if later there is a need we can either do that or 
-> deal with wrap at PMU read time.
-
-Right.
-
->> +/*
->> + * Interrupt statistic for PMU. Increments the counter only if the
->> + * interrupt originated from the the GPU so interrupts from a device which
->> + * shares the interrupt line are not accounted.
->> + */
->> +static inline void pmu_irq_stats(struct drm_i915_private *priv,
+> Thanks,
 >
-> We never use priv as a local name, it should be either i915 or
-> dev_priv.
-
-Sure, will fix.
-
->> +	/*
->> +	 * A clever compiler translates that into INC. A not so clever one
->> +	 * should at least prevent store tearing.
->> +	 */
->> +	WRITE_ONCE(priv->pmu.irq_count, priv->pmu.irq_count + 1);
+>         tglx
 >
-> Curious, probably more educational for me - given x86_32 and x86_64, and 
-> the context of it getting called, what is the difference from just doing 
-> irq_count++?
-
-Several reasons:
-
-    1) The compiler can pretty much do what it wants with cnt++
-       including tearing and whatever. https://lwn.net/Articles/816850/
-       for the full set of insanities.
-
-       Not really a problem here, but
-
-    2) It's annotating the reader and the writer side and documenting
-       that this is subject to concurrency
-
-    3) It will prevent KCSAN to complain about the data race,
-       i.e. concurrent modification while reading.
-
-Thanks,
-
-        tglx
-
->> --- a/drivers/gpu/drm/i915/i915_pmu.c
->> +++ b/drivers/gpu/drm/i915/i915_pmu.c
->> @@ -423,22 +423,6 @@ static enum hrtimer_restart i915_sample(
->>   	return HRTIMER_RESTART;
->>   }
->
-> In this file you can also drop the #include <linux/irq.h> line.
-
-Indeed.
-
-Thanks,
-
-        tglx
