@@ -2,160 +2,102 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19AAAC49EBE
-	for <linux-parisc@archiver.kernel.org>; Sat, 12 Dec 2020 01:01:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 456A5C4361B
+	for <linux-parisc@archiver.kernel.org>; Sat, 12 Dec 2020 13:07:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E88BF2343E
-	for <linux-parisc@archiver.kernel.org>; Sat, 12 Dec 2020 01:01:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 13DB022C7D
+	for <linux-parisc@archiver.kernel.org>; Sat, 12 Dec 2020 13:07:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406084AbgLKOU6 convert rfc822-to-8bit (ORCPT
+        id S2438938AbgLLNAV (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 11 Dec 2020 09:20:58 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:48860 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406107AbgLKOUs (ORCPT
+        Sat, 12 Dec 2020 08:00:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438936AbgLLNAK (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:20:48 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-53-s0AncPC_O7qxZEyLU7X13A-1; Fri, 11 Dec 2020 14:19:07 +0000
-X-MC-Unique: s0AncPC_O7qxZEyLU7X13A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 11 Dec 2020 14:19:05 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 11 Dec 2020 14:19:05 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Thomas Gleixner' <tglx@linutronix.de>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Michal Simek" <michal.simek@xilinx.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "Leon Romanovsky" <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Subject: RE: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
-Thread-Topic: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
-Thread-Index: AQHWz72qwjNpP0n0UkWT70W8RrLS8qnx7xrw
-Date:   Fri, 11 Dec 2020 14:19:05 +0000
-Message-ID: <d6cbfa118490459bb0671394f00323fc@AcuMS.aculab.com>
-References: <20201210192536.118432146@linutronix.de>
- <20201210194043.957046529@linutronix.de>
- <ad05af1a-5463-2a80-0887-7629721d6863@linux.intel.com>
- <87y2i4h54i.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87y2i4h54i.fsf@nanos.tec.linutronix.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 12 Dec 2020 08:00:10 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCD9C061257;
+        Sat, 12 Dec 2020 04:58:44 -0800 (PST)
+Date:   Sat, 12 Dec 2020 12:58:39 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607777919;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Et3NKmrzxPKNKfeOUEkhsBPlOe8ZxpYmM2+MHsmM+w=;
+        b=HVgb+L9fpSLq/IScsoINSy4SjlzSTbcish4LAfx3ENrXuA3ScN0FEYfGtetHHDnXC5+0cm
+        Oqj5cSTIYI+2juvkpGWxzddg6R+8oUWXVu84znrByNYHMqWTkWtq89iQqJBQmhESBa35el
+        q+wofI/RFjUEBINpSU1yMjkFv9K26fURdYgqXOHmgkZ+G/3MqrYHc+6L5O9+8CFhRRltyI
+        3Y+3i3Gc0kt3+wq2i0mHwYOAyF+4uPtDrve1j26rwuawIwckoGmm/PdpUGl2AXC8pk1W+E
+        lJ2yU1jwfqT8EZirt4a2lohl2UwXMLCCdHCWTpERAQTW509BSjb/CS4TAi/1Kg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607777919;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Et3NKmrzxPKNKfeOUEkhsBPlOe8ZxpYmM2+MHsmM+w=;
+        b=ccLGfIp7v4DUK1hx/DM3WHoGrmr/XCWwRbcyep3yAIYzQAxekRN5an7myYC/Azit7GiXEN
+        Vidp4QqnSgIfyGAQ==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] parisc/irq: Use irq_desc_kstat_cpu() in show_interrupts()
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-parisc@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20201210194043.659522455@linutronix.de>
+References: <20201210194043.659522455@linutronix.de>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Message-ID: <160777791931.3364.17864432721014360849.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Thomas Gleixner
-> Sent: 11 December 2020 12:58
-..
-> > After my failed hasty sketch from last night I had a different one which
-> > was kind of heuristics based (re-reading the upper dword and retrying if
-> > it changed on 32-bit).
-> 
-> The problem is that there will be two seperate modifications for the low
-> and high word. Several ways how the compiler can translate this, but the
-> problem is the same for all of them:
-> 
-> CPU 0                           CPU 1
->         load low
->         load high
->         add  low, 1
->         addc high, 0
->         store low               load high
-> --> NMI                         load low
->                                 load high and compare
->         store high
-> 
-> You can't catch that. If this really becomes an issue you need a
-> sequence counter around it.
+The following commit has been merged into the irq/core branch of tip:
 
-Or just two copies of the high word.
-Provided the accesses are sequenced:
-writer:
-	load high:low
-	add small_value,high:low
-	store high
-	store low
-	store high_copy
-reader:
-	load high_copy
-	load low
-	load high
-	if (high != high_copy)
-		low = 0;
+Commit-ID:     27fb43cb32d016366d1d87986970d5be7d6607e1
+Gitweb:        https://git.kernel.org/tip/27fb43cb32d016366d1d87986970d5be7d6607e1
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Thu, 10 Dec 2020 20:25:47 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sat, 12 Dec 2020 12:59:04 +01:00
 
-The read value is always stale, so it probably doesn't
-matter that the value you have is one that is between the
-value when you started and that when you finished.
+parisc/irq: Use irq_desc_kstat_cpu() in show_interrupts()
 
-	David
+The irq descriptor is already there, no need to look it up again.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-parisc@vger.kernel.org
+Link: https://lore.kernel.org/r/20201210194043.659522455@linutronix.de
 
+---
+ arch/parisc/kernel/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index 15c6207..49cd6d2 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -218,7 +218,7 @@ int show_interrupts(struct seq_file *p, void *v)
+ 		seq_printf(p, "%3d: ", i);
+ 
+ 		for_each_online_cpu(j)
+-			seq_printf(p, "%10u ", kstat_irqs_cpu(i, j));
++			seq_printf(p, "%10u ", irq_desc_kstat_cpu(desc, j));
+ 
+ 		seq_printf(p, " %14s", irq_desc_get_chip(desc)->name);
+ #ifndef PARISC_IRQ_CR16_COUNTS
