@@ -2,94 +2,109 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1B48C433FE
-	for <linux-parisc@archiver.kernel.org>; Sun, 13 Dec 2020 14:11:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FCEDC2BB40
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Dec 2020 19:50:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7FFF522D57
-	for <linux-parisc@archiver.kernel.org>; Sun, 13 Dec 2020 14:11:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BCD722250F
+	for <linux-parisc@archiver.kernel.org>; Mon, 14 Dec 2020 19:50:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405978AbgLMOLr (ORCPT
+        id S2502735AbgLNTtd (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 13 Dec 2020 09:11:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37708 "EHLO mail.kernel.org"
+        Mon, 14 Dec 2020 14:49:33 -0500
+Received: from ozlabs.org ([203.11.71.1]:58217 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395199AbgLMOLL (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 13 Dec 2020 09:11:11 -0500
-Date:   Sun, 13 Dec 2020 09:10:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607868630;
-        bh=S0NZCKTHXO1/XgTBibTeHKY2NyaV+jWp9oZjgvuSOZg=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nFttyLKxDFdTzDqG+uV+ZMYwIDraCwmT1csa8RGjNQtB2KNQuC3CWvsr8XvQHFTkX
-         bOVfEZ3hZGq/q87besC+Bjzp/UHT9BZ6/avesb9g234GUTyQ6mz9ZdKVWLvvWayKcR
-         5IsZC3of1cWOok1XpWOR2jKmC5sWYP7UWQbjwfCJNcyT1mEousS3/8Iz7qmQngrF+E
-         UBfwNFX/Xim1w8qNAQxV89tayOf16Xozhta7DOpqMYNyp+n+eIU7Y985xkZoMGJ7UI
-         W/Q6SnFz+H4jXIWSjxGFg8FVH/fANHjQkaleEJRhOabM6QD83DoUX7CgAE554wRsQU
-         Zom91bCLKheaA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org
-Subject: Re: [PATCH AUTOSEL 5.9 27/39] sched/idle: Fix arch_cpu_idle() vs
- tracing
-Message-ID: <20201213141029.GQ643756@sasha-vm>
-References: <20201203132834.930999-1-sashal@kernel.org>
- <20201203132834.930999-27-sashal@kernel.org>
- <20201203145442.GC9994@osiris>
- <20201203171015.GN2414@hirez.programming.kicks-ass.net>
+        id S1731027AbgLNTtc (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 14 Dec 2020 14:49:32 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvsQV0N0Cz9sSC;
+        Tue, 15 Dec 2020 06:48:48 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607975330;
+        bh=/XUJ/f62xB+BtpCeFkBYMW89n9Z307JH8sKXLrbJbGM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DZfXFXs/55hetcedt1lkjHV92lrM+RYzpM0tWfARwjw8wuZP3zbSbYxdlaAf4WEvd
+         pjX3/3+DAOpKsmIxceke7zeVZXX2GvM5+tUsldGv9zeEef6tVcVBZuAVk9kj4pjrW2
+         IpW0tsWuwuVoEeL+QjiuDeVYEAagg+KU3gvN4QvyhOIWLlRtf6iuQl4pVw5C2yUaKS
+         HU3mOotY8WZo5oRx7op7OETgbXAfZEVcxas/jwaESZwVvS63R4aNSg9Z/FyCahffWQ
+         X8HR3J2YEg3c9QATSnJXtHa3TLn8Kds5Ok1HThJeKPFTCMvZGE8wXebUi9Vx8oCvbN
+         SCyjbsuRod5CA==
+Date:   Tue, 15 Dec 2020 06:48:47 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the parisc-hd tree with the
+ asm-generic tree
+Message-ID: <20201215064847.3676d9bf@canb.auug.org.au>
+In-Reply-To: <20201102123841.39eb4216@canb.auug.org.au>
+References: <20201102123841.39eb4216@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201203171015.GN2414@hirez.programming.kicks-ass.net>
+Content-Type: multipart/signed; boundary="Sig_/qtK.EFTpCXVkUm_tXdqZ3k7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 06:10:15PM +0100, Peter Zijlstra wrote:
->On Thu, Dec 03, 2020 at 03:54:42PM +0100, Heiko Carstens wrote:
->> On Thu, Dec 03, 2020 at 08:28:21AM -0500, Sasha Levin wrote:
->> > From: Peter Zijlstra <peterz@infradead.org>
->> >
->> > [ Upstream commit 58c644ba512cfbc2e39b758dd979edd1d6d00e27 ]
->> >
->> > We call arch_cpu_idle() with RCU disabled, but then use
->> > local_irq_{en,dis}able(), which invokes tracing, which relies on RCU.
->> >
->> > Switch all arch_cpu_idle() implementations to use
->> > raw_local_irq_{en,dis}able() and carefully manage the
->> > lockdep,rcu,tracing state like we do in entry.
->> >
->> > (XXX: we really should change arch_cpu_idle() to not return with
->> > interrupts enabled)
->> >
->> > Reported-by: Sven Schnelle <svens@linux.ibm.com>
->> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->> > Reviewed-by: Mark Rutland <mark.rutland@arm.com>
->> > Tested-by: Mark Rutland <mark.rutland@arm.com>
->> > Link: https://lkml.kernel.org/r/20201120114925.594122626@infradead.org
->> > Signed-off-by: Sasha Levin <sashal@kernel.org>
->>
->> This patch broke s390 irq state tracing. A patch to fix this is
->> scheduled to be merged upstream today (hopefully).
->> Therefore I think this patch should not yet go into 5.9 stable.
+--Sig_/qtK.EFTpCXVkUm_tXdqZ3k7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Mon, 2 Nov 2020 12:38:41 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
 >
->Agreed.
+> Today's linux-next merge of the parisc-hd tree got a conflict in:
+>=20
+>   arch/parisc/kernel/time.c
+>=20
+> between commit:
+>=20
+>   686092e7daaa ("parisc: use legacy_timer_tick")
+>=20
+> from the asm-generic tree and commit:
+>=20
+>   3b7ab4a74a2d ("parisc: Switch to clockevent based timers")
+>=20
+> from the parisc-hd tree.
+>=20
+> I fixed it up (I effectively reverted the former commit) and can carry the
+> fix as necessary. This is now fixed as far as linux-next is concerned,
+> but any non trivial conflicts should be mentioned to your upstream
+> maintainer when your tree is submitted for merging.  You may also want
+> to consider cooperating with the maintainer of the conflicting tree to
+> minimise any particularly complex conflicts.
 
-I'll also grab b1cae1f84a0f ("s390: fix irq state tracing"). Thanks!
+This is just a reminder that this conflict still exists.
 
--- 
-Thanks,
-Sasha
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/qtK.EFTpCXVkUm_tXdqZ3k7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/XwZ8ACgkQAVBC80lX
+0Gwz/wf+Nkz5FSqhuNAExXPlerbEhnCScJloRr+ULcBr+2AEhQMP8G4UQzbOwm1N
+Vdd4IGZYK98SoMMqXtsXSZqRPpeB1+kw5nfbIuoHnw9s0KFQRcIR+pAaBV6SL8b7
+ssP8NwAwYiMGMBI3KtdZhy/9/qt8hgM/1akOoBv72KRZmZ1qvW/FX/zJzRtYqGOg
+k4GNRCzRly+PUdtXn1XvhWaXQHj89v07Rmzlt5oAIA4YeBFiN42fd9/WtEb+zKID
+cgUZ25xxrm+4FCA+nFcv8qA1CxjBR2wIAJH2iwX1yYMudhWYB40/UTCyuP2i+vJP
+M0G8yU+a8ZNMPDX4sobJh1YfcYBGmQ==
+=wrK2
+-----END PGP SIGNATURE-----
+
+--Sig_/qtK.EFTpCXVkUm_tXdqZ3k7--
