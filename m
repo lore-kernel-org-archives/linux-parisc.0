@@ -2,89 +2,109 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3707C4361B
-	for <linux-parisc@archiver.kernel.org>; Sat, 19 Dec 2020 11:47:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97E04C4332B
+	for <linux-parisc@archiver.kernel.org>; Mon, 21 Dec 2020 05:45:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9C2DB23602
-	for <linux-parisc@archiver.kernel.org>; Sat, 19 Dec 2020 11:47:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 66A0222CB9
+	for <linux-parisc@archiver.kernel.org>; Mon, 21 Dec 2020 05:45:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbgLSLrO (ORCPT
+        id S1727850AbgLUFpJ (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 19 Dec 2020 06:47:14 -0500
-Received: from mout.gmx.net ([212.227.15.18]:47737 "EHLO mout.gmx.net"
+        Mon, 21 Dec 2020 00:45:09 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:55417 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726456AbgLSLrN (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 19 Dec 2020 06:47:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608378342;
-        bh=ZHOowcGJEh5XXq0EUSMNz5aqD7FxVtH4whK4BlR4Ync=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=LKy8xvS4NFHZvdqnWcQgDdF2fPd9bxeS/kaNM+oaGKjni+8hA993I8eNz6Htj2iD/
-         BhdvsoOq+stcqJUtrZ2A2dwH70NdR0YWrnLlB4ZBJ6Xsq/F+LQdtU2zOwg2u8a9553
-         M6JLjfOZdnmRmH5/OrCsS//Td4copFJstmlj3LKw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.fritz.box ([92.116.150.61]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MOiDd-1kRW5R16Q3-00QEyQ; Sat, 19
- Dec 2020 12:45:42 +0100
-Date:   Sat, 19 Dec 2020 12:45:40 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org
-Subject: [PATCH] parisc: Use the generic devmem_is_allowed()
-Message-ID: <20201219114540.GA11316@ls3530.fritz.box>
+        id S1727066AbgLUFpJ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 21 Dec 2020 00:45:09 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CzpLk1qPgz9sVk;
+        Mon, 21 Dec 2020 16:44:14 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1608529465;
+        bh=8q8pjXmt3fb3/FcKFZZhBpNNcXsp66j8Isw1H4VoFss=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ZnWF70NmUxyOGkj7ajnBegDo04rv8gH5Ux9NWJhGuiFgnNMVogs2qsK/JPPvTOxX3
+         hzwMtUhjiDSqvHc4ZZWFFrTwkUdkYXJq/1ML2X0U5qamtbWBfarkCtNAXDelPjKyYu
+         4R5GrwJUkFnZSYIfsBFzv3+C8RVv3a9uzsg9fDjFKnZkRtQDx75FnOmDIw99taeAnd
+         QCskX9h/ngj+6oMYoBPKKaJh3wx/SkbDouSAAbUuPyGD0ebzLrrNquc0B/69DXdzQf
+         fJmTp61f2fzdZls70bVcMCLTyxKnMkjf3NMjT+RK4eF560XOppbITSBixDl2QbJUdX
+         VnJ3dZzhE+mIA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "Enrico Weigelt\, metux IT consult" <info@metux.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, msalter@redhat.com,
+        jacquiot.aurelien@gmail.com, gerg@linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org,
+        linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org,
+        "open list\:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>, linux-s390@vger.kernel.org,
+        Linux-SH <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org,
+        "open list\:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH 01/23] kernel: irq: irqdescs: warn on spurious IRQ
+In-Reply-To: <CAHp75VfYz_K2BYOxqmSx0q+1F2F9Lp1eb70RrNYzJHs3FX+quQ@mail.gmail.com>
+References: <20201218143122.19459-1-info@metux.net> <20201218143122.19459-2-info@metux.net> <CAHp75VfYz_K2BYOxqmSx0q+1F2F9Lp1eb70RrNYzJHs3FX+quQ@mail.gmail.com>
+Date:   Mon, 21 Dec 2020 16:44:13 +1100
+Message-ID: <87ft3zyaqa.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:hX9JTA0v6+J/6gM/UqrkI4mCWJqwmsZVHYkxWNQ9xraE1wz7oDx
- 8bO95VPczy0IYTcqZNrjd+w6XWG2djnRSuhiijWgd31+ngSpTjkVSzjBUMAJqvvXMu3IrbE
- UCGkKMsO77bLQR2puOZqHnbsXSbZjYWJlCElyL8TMKokyrwLsVZiI/pthJwoYQN1+QK4YwB
- Bcv/QDTalPfgN5wxsXEgA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:76tSwVDDtaU=:WMoIg2I7GP9cD3K7qU/epg
- vjLVPVRpvvF8jXoGHJG29RkHgGiX/xP1EGFaQBQOcOChUziF1r271o1+7FahzjthQ1R+Xd5jv
- eXzyNTmGupuLIb54dHXTqk3oYQar5Dhu9QFZIYTKMtPPq1uMsdnEktjlUq5/KRnMe3p3xnlxz
- H1yZc0YR+8hvTq+a+Q9oM/9z/aZN0RDi9ROJeW4YNhc07puOmatclGvobdcsuOrtRh1UwDE6S
- 8tpaEgwl72zvmApFWye63KTM9lSjiA/frsZ71lhezryHwbDpJRMsJnLTNncScPeIv38PywLvG
- KR6R2jZVEP9Pay1p5DiluNPlf/2JmRG6faUU5KZ4Z5yk/LsIfAqhEAu6DcmNuGO+mS6J/6yhZ
- DKN/qVNpLd/LyvYgKbGK3J8lLvdWj79dbCsROZrW+OwH7KHlEysgZI06599Sl7kHu0C7mDULE
- vUuqu5hIN+fkjT5SYmp6zonWWMlNB/cDvuVF3kv4vbSoCTNry8LwnRWHEVZG2eUz5cQKX4VY4
- dWUVUesTmwM+Mmh8Mw0ZmkVKe5bm+qwKSLu54ak5osvM2zQ6I62YDv12g0fmYrli56VXRmW+O
- HzoSfq4dEaez4lJdafpkQKgrXyU/CBtTlXzO/MsP17bmO116VvdRzLBWePI5AjvWPo2Q7xJRT
- /diUpSBrRrM0q6DPwUnvSgIOd1z3ptn17GyB9jqicfGSmGdkt51iZ236jfCeeLAAEnGT+GCoG
- m83ILZm+HzF9kqF6VIhW3Uz9jQitGdvnAxorUiACp8bUdjIFuB725sOFI+S29b3lBRkwr9UIT
- h3CrSYb/uAccCrJCQCCM8DuZBztSeEVNzzh9ImKSneUwNeortlIN02HLZfE6uqli14QOFCEtn
- Loxp9wcOo1o6eJOW07Yw==
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+> On Fri, Dec 18, 2020 at 4:37 PM Enrico Weigelt, metux IT consult
+> <info@metux.net> wrote:
+>
+>> +               if (printk_ratelimit())
+>> +                       pr_warn("spurious IRQ: irq=%d hwirq=%d nr_irqs=%d\n",
+>> +                               irq, hwirq, nr_irqs);
+>
+> Perhaps you missed pr_warn_ratelimit() macro which is already in the
+> kernel for a long time.
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 78b17621ee4a..880a89835f39 100644
-=2D-- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -35,6 +35,7 @@ config PARISC
- 	select GENERIC_SMP_IDLE_THREAD
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_STRNCPY_FROM_USER
-+	select GENERIC_LIB_DEVMEM_IS_ALLOWED
- 	select SYSCTL_ARCH_UNALIGN_ALLOW
- 	select SYSCTL_EXCEPTION_TRACE
- 	select HAVE_MOD_ARCH_SPECIFIC
-diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
-index 45e20d38dc59..8a11b8cf4719 100644
-=2D-- a/arch/parisc/include/asm/io.h
-+++ b/arch/parisc/include/asm/io.h
-@@ -321,4 +321,6 @@ extern void iowrite64be(u64 val, void __iomem *addr);
-  */
- #define xlate_dev_kmem_ptr(p)	p
+pr_warn_ratelimited() which calls printk_ratelimited().
 
-+extern int devmem_is_allowed(unsigned long pfn);
-+
- #endif
+And see the comment above printk_ratelimit():
+
+/*
+ * Please don't use printk_ratelimit(), because it shares ratelimiting state
+ * with all other unrelated printk_ratelimit() callsites.  Instead use
+ * printk_ratelimited() or plain old __ratelimit().
+ */
+
+
+cheers
