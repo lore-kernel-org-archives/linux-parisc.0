@@ -2,196 +2,110 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EA41C433DB
-	for <linux-parisc@archiver.kernel.org>; Sun, 27 Dec 2020 19:21:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 920EDC433DB
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Dec 2020 17:47:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 20A6F20897
-	for <linux-parisc@archiver.kernel.org>; Sun, 27 Dec 2020 19:21:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5927E221F8
+	for <linux-parisc@archiver.kernel.org>; Tue, 29 Dec 2020 17:47:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgL0TVe (ORCPT
+        id S1726156AbgL2RrR (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 27 Dec 2020 14:21:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726188AbgL0TVd (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 27 Dec 2020 14:21:33 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E0AC061794;
-        Sun, 27 Dec 2020 11:20:53 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id j20so7597805otq.5;
-        Sun, 27 Dec 2020 11:20:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0sVC8j/qFLW+R/BiCcbxfbFuWt0QadRRyfbTVS1VwHY=;
-        b=snNRM2UJuxFlYbt0opdNq/Km+jTrugWz+XCv9dvNVL/debD4RiSNjJuvvfbPHP8li7
-         KIhX0/QgOmUeidxtdeZSEin831Gb4MPxK/Nsdy82P6kpVKu6N4Nc/2a1j/rhKSYYtPfM
-         OdujcskdH0zj17962B4EA6DAWt+WbPQDoOQkCV+q0RBuHOc2AwsMveKzxEy1LnZjcBm6
-         WwVaL7EiOv3pK+MmaGP2Q6W+EWp/A0H6XAJ9Sli5mcOq3SMT90MXTM6BUD6s+YNQPnp0
-         3oKuBMFCRu9MNXQfN7PDX/uDAX7jwXSxxMeoGH5bWQ0ZYiFJh6LgmVaIuZavb11TOu03
-         Stkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0sVC8j/qFLW+R/BiCcbxfbFuWt0QadRRyfbTVS1VwHY=;
-        b=baA1JgZfuXDUP0wIGaf/e/J2QAvhQ1W8cBsVUUJKgN3YSDDUVya7ZRWr42nn5BH4xI
-         56Zgb2WI310CDR2BHisVc244/JfSC0nrQ/NcE9enBxBMZOV/VmlcsF+bp/0GvWU7kIUT
-         C8sOUBx8iO+e8biI5IrNRe2Suto5ok3/OHP4MgjzYTny3K67EzCZembfXwtnV63dH+vo
-         f67r1w6MTMzwdPw0GQhgVwJaLPOGE3aZn25d8DlVQk4bxaMmvDIlq6N+7yMgYjn4CT0/
-         HL5lETj3wUdzaTmQUgwRiQKwq3CAhk0+GVXBprwznOZ3tNJ4wpnK4fSeOEw9ISCMwZP+
-         bc8w==
-X-Gm-Message-State: AOAM532RadgU6GulQv36XZyn62JXa+xh84zQcs14GK1DF5NwFkCDvv8V
-        iXYgSOZ/jATNZGcDser//GM=
-X-Google-Smtp-Source: ABdhPJy5MA8pTqBMHg7t7kC9SkPKcTOcLW8SMiIKlPFipG2wn4l5044FI2Bd1WiObQwt+tJVlAueHQ==
-X-Received: by 2002:a05:6830:cf:: with SMTP id x15mr30498943oto.55.1609096852047;
-        Sun, 27 Dec 2020 11:20:52 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v17sm8555011oou.41.2020.12.27.11.20.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 27 Dec 2020 11:20:50 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 27 Dec 2020 11:20:49 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        dri-devel@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-s390@vger.kernel.org,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        xen-devel@lists.xenproject.org, Leon Romanovsky <leon@kernel.org>,
-        linux-rdma@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-pci@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Juergen Gross <jgross@suse.com>,
-        David Airlie <airlied@linux.ie>, linux-gpio@vger.kernel.org,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        linux-parisc@vger.kernel.org,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>, Jon Mason <jdmason@kudzu.us>,
-        linux-ntb@googlegroups.com, intel-gfx@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [patch 02/30] genirq: Move status flag checks to core
-Message-ID: <20201227192049.GA195845@roeck-us.net>
-References: <20201210192536.118432146@linutronix.de>
- <20201210194042.703779349@linutronix.de>
+        Tue, 29 Dec 2020 12:47:17 -0500
+Received: from mout.gmx.net ([212.227.17.21]:36889 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726138AbgL2RrQ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 29 Dec 2020 12:47:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1609263933;
+        bh=SMvJUYLsYaFE8UbAU1ywRHM9rHku6Ga8cqoeePCgLjM=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+        b=ZV44uno3w8ibDGH2iYnugootpt73yt88Ox2UYvmyX6GkBZvx7P8SVcg6E4drtYSlv
+         rx9BfSdk3WjNk/ROb1ipDisoEX8ntzZOZHaBMYp6ps8/i5dm2lzVCE43k9yptWsYaL
+         tNyMR+ngznzzc/gFlr8Ri/HXLaTbI3ti470ESy3E=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.173.132]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MvsJ5-1k3r6A0Etz-00sv7N; Tue, 29
+ Dec 2020 18:45:33 +0100
+Date:   Tue, 29 Dec 2020 18:45:29 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     Kalesh Singh <kaleshsingh@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] mm: fix extend calculation for move_page_tables()
+Message-ID: <20201229174517.GA31435@ls3530.fritz.box>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201210194042.703779349@linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Provags-ID: V03:K1:mX03h7atanc4UE4P/M1gmVe202c5lrlo9ssG8IpDsB5+CVDMyIG
+ c2NqXlNwXc9BlCpMHkAhLiV52+p0C0zgcOHSQQbTx0drbZ6fiX3sByhLo38FCwuBeSNL0ai
+ keFJPWjFYtMeuZy88aQefYbHAnV62x0rHUUawDKqu3BnFiOPxcoWKr4E3sqp2T+LAlZg6wx
+ xy9Lboba7zIjEiOhsou8g==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8IX/T319RtI=:pQnNCcbTgjkLClJwM4dyJV
+ SxGpKWI/noO2/mtTZViOUS7B1auLdMU9gfpFcn8RW+CSV37h1pSra/c3jB+MeStuPHlndfHjp
+ klE59jbxhQLwKPBNq/movySFs9rBjL7VCOSH3KHHgTCkpFX0JtQXeSoOiKei1U4Xt9JNtSgxl
+ IxGodip1WKmsG/jGBdHtP69bfg10wW9QtVIl0hI4u4iZMiTe+5vJpNT8sIiGadVu4fF88Pt6V
+ ZDDwVZXzFFVyTkaFjpsZs80FLc04XGnb8gm8sXviA+yvK+p/MpyuFJy0znxReOfBZDetjNSAJ
+ ovtOZ6uzlKaMl2hPoVgwY3ejYMjpXT8XECfaQqz4FtHa1vTqv8KGsxnUkDPaCIAnPrIr8qXKG
+ wlqCGWSB1ME/zuJVLRTKKb+4wws2maXojJsSaPs1/u/IYZ/1SXzUqONuFN5hLpVvIUjmpOI/j
+ 1vcyC9zAc+8O16v5u7wsdAjxWk7EiIr45ix7DYRqLQ2FCje2lpVTrVj9qHuFQ7GZCQ7OqQ0Og
+ 6ZxfKrox7YRBx0GjvOfF/zxCT3Y0ZjUK76hDR/61VrAfpRGKtJtck5HzvdpHSEwAJmUCyeiE1
+ P15S5xnPSpH7E55dJF9QwhZL2B4Hwr6NhM72QNjtx6bo/4qZ/0JA7SLc0wSIIVm7C1OvCSfzI
+ NMMdPNxraC1NFzYzeNVVJqBX7lSNXpc0NVDpEJw9dZ0pLPUINnpN9LZIJCzuNi1cyxIZI/KPg
+ wWnBuhEqXlTMFj0XkAV99XIJyBOCYwFtdOrgD5YbrTJrffDbbzEKxYeX4gJ4qeDEERnjZKMoP
+ cZqvWDiaOjHN/CBSmALLyg5sPZE3D3WrnWp49FkDS2eNqgUy35bHLZx/WswKZHnLirOnBn++1
+ LkPZcPCy2c6MK3aZmfmw==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 08:25:38PM +0100, Thomas Gleixner wrote:
-> These checks are used by modules and prevent the removal of the export of
-> irq_to_desc(). Move the accessor into the core.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+On parisc the kernel fails to start the init process because in
+shift_arg_pages() in fs/exec.c, move_page_tables() is called to e.g.
+move pages from start addr 0xffeff000 to the new start addr 0xf9ccb000
+with a length of 0x1000 bytes, but move_page_tables() instead returns
+that it apparently moved 0x57000 bytes. Since the number of bytes is
+different than the number of bytes which should have been moved,
+shift_arg_pages() aborts with -ENOMEM.
 
-Yes, but that means that irq_check_status_bit() may be called from modules,
-but it is not exported, resulting in build errors such as the following.
+Debugging shows that commit c49dd34018026 ("mm: speedup mremap on
+1GB or larger regions") is the culprit.
+In this commit, the extent calculation was tried to be optimized, but
+got it wrong for this case.
+The patch below reverts to the previous way to calculate the extent and
+thus fixes the boot problem.
 
-arm64:allmodconfig:
+Fixes: c49dd34018026 ("mm: speedup mremap on 1GB or larger regions")
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: Kalesh Singh <kaleshsingh@google.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 
-ERROR: modpost: "irq_check_status_bit" [drivers/perf/arm_spe_pmu.ko] undefined!
+=2D--
 
-Guenter
+diff --git a/mm/mremap.c b/mm/mremap.c
+index c5590afe7165..f554320281cc 100644
+=2D-- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -358,7 +358,9 @@ static unsigned long get_extent(enum pgt_entry entry, =
+unsigned long old_addr,
 
-> ---
->  include/linux/irqdesc.h |   17 +++++------------
->  kernel/irq/manage.c     |   17 +++++++++++++++++
->  2 files changed, 22 insertions(+), 12 deletions(-)
-> 
-> --- a/include/linux/irqdesc.h
-> +++ b/include/linux/irqdesc.h
-> @@ -223,28 +223,21 @@ irq_set_chip_handler_name_locked(struct
->  	data->chip = chip;
->  }
->  
-> +bool irq_check_status_bit(unsigned int irq, unsigned int bitmask);
-> +
->  static inline bool irq_balancing_disabled(unsigned int irq)
->  {
-> -	struct irq_desc *desc;
-> -
-> -	desc = irq_to_desc(irq);
-> -	return desc->status_use_accessors & IRQ_NO_BALANCING_MASK;
-> +	return irq_check_status_bit(irq, IRQ_NO_BALANCING_MASK);
->  }
->  
->  static inline bool irq_is_percpu(unsigned int irq)
->  {
-> -	struct irq_desc *desc;
-> -
-> -	desc = irq_to_desc(irq);
-> -	return desc->status_use_accessors & IRQ_PER_CPU;
-> +	return irq_check_status_bit(irq, IRQ_PER_CPU);
->  }
->  
->  static inline bool irq_is_percpu_devid(unsigned int irq)
->  {
-> -	struct irq_desc *desc;
-> -
-> -	desc = irq_to_desc(irq);
-> -	return desc->status_use_accessors & IRQ_PER_CPU_DEVID;
-> +	return irq_check_status_bit(irq, IRQ_PER_CPU_DEVID);
->  }
->  
->  static inline void
-> --- a/kernel/irq/manage.c
-> +++ b/kernel/irq/manage.c
-> @@ -2769,3 +2769,23 @@ bool irq_has_action(unsigned int irq)
->  	return res;
->  }
->  EXPORT_SYMBOL_GPL(irq_has_action);
-> +
-> +/**
-> + * irq_check_status_bit - Check whether bits in the irq descriptor status are set
-> + * @irq:	The linux irq number
-> + * @bitmask:	The bitmask to evaluate
-> + *
-> + * Returns: True if one of the bits in @bitmask is set
-> + */
-> +bool irq_check_status_bit(unsigned int irq, unsigned int bitmask)
-> +{
-> +	struct irq_desc *desc;
-> +	bool res = false;
-> +
-> +	rcu_read_lock();
-> +	desc = irq_to_desc(irq);
-> +	if (desc)
-> +		res = !!(desc->status_use_accessors & bitmask);
-> +	rcu_read_unlock();
-> +	return res;
-> +}
+ 	next =3D (old_addr + size) & mask;
+ 	/* even if next overflowed, extent below will be ok */
+-	extent =3D (next > old_end) ? old_end - old_addr : next - old_addr;
++	extent =3D next - old_addr;
++	if (extent > old_end - old_addr)
++		extent =3D old_end - old_addr;
+ 	next =3D (new_addr + size) & mask;
+ 	if (extent > next - new_addr)
+ 		extent =3D next - new_addr;
