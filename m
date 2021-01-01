@@ -2,74 +2,123 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BB0CC433E0
-	for <linux-parisc@archiver.kernel.org>; Tue, 29 Dec 2020 19:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7286C433E0
+	for <linux-parisc@archiver.kernel.org>; Fri,  1 Jan 2021 14:28:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1ADDA207BD
-	for <linux-parisc@archiver.kernel.org>; Tue, 29 Dec 2020 19:05:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A898322203
+	for <linux-parisc@archiver.kernel.org>; Fri,  1 Jan 2021 14:28:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgL2TEw (ORCPT
+        id S1726974AbhAAO2z (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 29 Dec 2020 14:04:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726189AbgL2TEw (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 29 Dec 2020 14:04:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B095B207BD;
-        Tue, 29 Dec 2020 19:04:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1609268651;
-        bh=ffPMj1yl0t55UFvL8DR/1pnYLFgb/BU5SmeZ55STWzU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dKN+Offne8Iv6Yuk6MjQtKBW2MWzzJfObFQyaOxs/IpVii6LZ8T3+0QkVWRHkSJPF
-         YSKDF7wp/yFoUQ1QY70TseozUFwGqUUlnnazl8kavzNZ8xcsp37TTllBT+Fysxaek3
-         dQZyD7V6K0IxiTN9xS2TTEDEqXNMoAF9KVz0dFcw=
-Date:   Tue, 29 Dec 2020 11:04:10 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Helge Deller <deller@gmx.de>
-Cc:     Kalesh Singh <kaleshsingh@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH] mm: fix extend calculation for move_page_tables()
-Message-Id: <20201229110410.f2ad1655bacb2dd381be7a07@linux-foundation.org>
-In-Reply-To: <20201229174517.GA31435@ls3530.fritz.box>
-References: <20201229174517.GA31435@ls3530.fritz.box>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Fri, 1 Jan 2021 09:28:55 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:34285 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726747AbhAAO2z (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 1 Jan 2021 09:28:55 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1kvLPL-001lj7-Nx; Fri, 01 Jan 2021 15:27:59 +0100
+Received: from p5b13a2ad.dip0.t-ipconnect.de ([91.19.162.173] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1kvLPK-003G3u-Un; Fri, 01 Jan 2021 15:27:59 +0100
+Subject: Re: [patch 02/19] sh: Get rid of nmi_count()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <20201113140207.499353218@linutronix.de>
+ <20201113141732.844232404@linutronix.de>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <b9275f62-45c2-2472-2c1d-00706c757a30@physik.fu-berlin.de>
+Date:   Fri, 1 Jan 2021 15:27:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20201113141732.844232404@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.162.173
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, 29 Dec 2020 18:45:29 +0100 Helge Deller <deller@gmx.de> wrote:
+Hello Thomas!
 
-> On parisc the kernel fails to start the init process because in
-> shift_arg_pages() in fs/exec.c, move_page_tables() is called to e.g.
-> move pages from start addr 0xffeff000 to the new start addr 0xf9ccb000
-> with a length of 0x1000 bytes, but move_page_tables() instead returns
-> that it apparently moved 0x57000 bytes. Since the number of bytes is
-> different than the number of bytes which should have been moved,
-> shift_arg_pages() aborts with -ENOMEM.
+On 11/13/20 3:02 PM, Thomas Gleixner wrote:
+> nmi_count() is a historical leftover and SH is the only user. Replace it
+> with regular per cpu accessors.
 > 
-> Debugging shows that commit c49dd34018026 ("mm: speedup mremap on
-> 1GB or larger regions") is the culprit.
-> In this commit, the extent calculation was tried to be optimized, but
-> got it wrong for this case.
-> The patch below reverts to the previous way to calculate the extent and
-> thus fixes the boot problem.
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: linux-sh@vger.kernel.org
+> ---
+>  arch/sh/kernel/irq.c   |    2 +-
+>  arch/sh/kernel/traps.c |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> --- a/arch/sh/kernel/irq.c
+> +++ b/arch/sh/kernel/irq.c
+> @@ -44,7 +44,7 @@ int arch_show_interrupts(struct seq_file
+>  
+>  	seq_printf(p, "%*s: ", prec, "NMI");
+>  	for_each_online_cpu(j)
+> -		seq_printf(p, "%10u ", nmi_count(j));
+> +		seq_printf(p, "%10u ", per_cpu(irq_stat.__nmi_count, j);
+>  	seq_printf(p, "  Non-maskable interrupts\n");
+>  
+>  	seq_printf(p, "%*s: %10u\n", prec, "ERR", atomic_read(&irq_err_count));
+> --- a/arch/sh/kernel/traps.c
+> +++ b/arch/sh/kernel/traps.c
+> @@ -186,7 +186,7 @@ BUILD_TRAP_HANDLER(nmi)
+>  	arch_ftrace_nmi_enter();
+>  
+>  	nmi_enter();
+> -	nmi_count(cpu)++;
+> +	this_cpu_inc(irq_stat.__nmi_count);
+>  
+>  	switch (notify_die(DIE_NMI, "NMI", regs, 0, vec & 0xff, SIGINT)) {
+>  	case NOTIFY_OK:
 > 
 
-Thanks.  The same as
-https://lkml.kernel.org/r/20201219170433.2418867-1-kaleshsingh@google.com.
-I'll get that sent to Linus today.
+Just booted my SH7785LCR board with a kernel based on Linus' latest tree
+and can confirm that this change does not cause any regressions.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
