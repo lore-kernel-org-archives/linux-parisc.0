@@ -8,56 +8,56 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F54BC4332B
-	for <linux-parisc@archiver.kernel.org>; Tue,  5 Jan 2021 19:02:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12CB2C433E6
+	for <linux-parisc@archiver.kernel.org>; Tue,  5 Jan 2021 19:02:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1979B22D04
-	for <linux-parisc@archiver.kernel.org>; Tue,  5 Jan 2021 19:02:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C2B2222D57
+	for <linux-parisc@archiver.kernel.org>; Tue,  5 Jan 2021 19:02:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730684AbhAETCF (ORCPT
+        id S1730739AbhAETCH (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 5 Jan 2021 14:02:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
+        Tue, 5 Jan 2021 14:02:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729684AbhAETCE (ORCPT
+        with ESMTP id S1730736AbhAETCH (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:02:04 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5A2C0617A9;
-        Tue,  5 Jan 2021 11:01:06 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id ce23so1809873ejb.8;
-        Tue, 05 Jan 2021 11:01:06 -0800 (PST)
+        Tue, 5 Jan 2021 14:02:07 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB59C0617A6;
+        Tue,  5 Jan 2021 11:01:01 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id d17so1796358ejy.9;
+        Tue, 05 Jan 2021 11:01:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=p3W0msP6LpBk4ZpdXjQAKJdbudcVnQh09tjTTus++GQ=;
-        b=jV0hXJAm/NWx8lpC5hh5hI3o0LcFdDlN8v7ivD1ssuCNWUNXooDhrSGgcm3dY7V59m
-         JSJvFGr3N3XtX2/DDbAV0hMsng1svFYosOnFg2x7nvMeEyAUb47SuIF7lbdwVTJYEuel
-         yjXJMaAKQFeJawGDXtnnrz7fnfh7vtZ9hXhJ/osm2MIVUE/7reO1orvh+fnWFUL/eR2C
-         cXd7UJVn36QK8PZfwDuyY75yoWZZJ/b1gyMICeqJhOzAD1XmVXXFY21RUY1yemNy6XcR
-         tkQdDgXZlI4rvGVIfscY+N1xEynBMD0+bLLA6XGm6NArszOQ3rsy2PGpbFy0d96hpJ+w
-         TgXg==
+        bh=uxks8afnGIy+XLwQBohZxs/FQk9BCJLCOLrg4jkUy8E=;
+        b=i8DPvFOrG1nKe5X0EBwtR+0x752ZoanxoNdHHclzm55tWqRgkU8yDTHx/PhXGhLSue
+         dmco61hSzYgpEIHvMhO+Dh2TG4k5REzx+czbSkPIPrKLfY+bBxNhMBplAEPCezeYBM4b
+         HkL7CjxiOSLgmhlW40WWakOnhElVqDjRcit5fCWUURmtrwehQQmQCBugV/ZxXk/DtkYC
+         ksUgcdmM668ZHBHA1r+7rlaDkxUVtsqUB7cUyQv43fQcGb7kz+fz9hX+3U7WNHo4u+Yj
+         WnS86GfwTrOEEdvu2bEH0IQGTXcu/86/zrKdynkPLuDluRBHqan3GXDr+HH1MpPVzgMJ
+         kZmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=p3W0msP6LpBk4ZpdXjQAKJdbudcVnQh09tjTTus++GQ=;
-        b=jrBF3LOnBeR8BltbPP76zCUwOJ3MjX4DSUN9ikQHg7pjbzAK7uji0zYPqb3XU26CLQ
-         WodOWushzliFDQHaUQMQdj8/TO1SxJC5dG8XHJTpFfgTn/ryS9C6japNJqWmC1Z+fzQj
-         VAVEU29EJJHywZkim3Fxwh5VACwpLaYJx276MROCeWP7Wo8Z2uXz6/IbwEC1v9OeQSLV
-         y8quscalW2N+ZLWrk7uh8Zs1SZmG+WVwlYc67xaXzHidhEEegbMhGO55o9cAncxvid2F
-         7C0M1F97TULL83GYWOShARJuBkpznD+8t6yt0iGO63xkwydx6GqSMfL8e7dfsiG5VuNa
-         TMlw==
-X-Gm-Message-State: AOAM530xuFlMtrBZODGmAQABDfEvhGZjl+oW7fsx+Oxw5FFnoO7wZeaL
-        bvIWu7yhjMGTEZbZIgPp7yM=
-X-Google-Smtp-Source: ABdhPJzfSVckJ/Rv02marDEzZ2I/McFZfR0QiIgEyHC9Kq69EQgAfP5DX0kb3KckZoB4LfiobOMmYQ==
-X-Received: by 2002:a17:906:7a18:: with SMTP id d24mr501608ejo.324.1609873265094;
-        Tue, 05 Jan 2021 11:01:05 -0800 (PST)
+        bh=uxks8afnGIy+XLwQBohZxs/FQk9BCJLCOLrg4jkUy8E=;
+        b=WnIn61w3v7G+qQCF2yHlNFLdQDPDPeLBcXd2OXfZjNV6UzJkVsqzqWs35nZ+hNEXhs
+         F13Tv+jjb5b4kGfnysQnvkcsxLqAnIcGjzNtzsj0HHcwAUjZ6xKrKfJNMaCqppuNvdHD
+         iJxZLNbW2pSXqc/YqFARUV3fAOk+CWMGL4CeyC/cD7DCZDIDNyHiBYIaDSwL9l7pRCjo
+         o52raWj6DLlHt3dcCqZCaVH9XV7Xt5Q7gJ9gMjNg37RtBhzuUE4Bt3FZnRbc5pK67liX
+         zvzzE6iv/rVHnBbNE266In8B46WLoZPesDsn1MBxP7JvTGvzOSgNRMyn0gjB70Ym0Vc8
+         0L5A==
+X-Gm-Message-State: AOAM532a6Ru723hO8ft7uKU0qfOywyyK3s/5nwmrvtxvWG7AlrdjuYqN
+        Gt5Za6CrR01FS+cFOXk6FZQ=
+X-Google-Smtp-Source: ABdhPJwFtz5XVcYzVYblKBjNLhtUnRq4jTLh2Jlzf3emwvQQyyUgppL8GEBHy31ByrrRGhiTJijE7w==
+X-Received: by 2002:a17:906:3685:: with SMTP id a5mr472447ejc.544.1609873259843;
+        Tue, 05 Jan 2021 11:00:59 -0800 (PST)
 Received: from localhost.localdomain (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id z13sm205084edq.48.2021.01.05.11.01.03
+        by smtp.gmail.com with ESMTPSA id z13sm205084edq.48.2021.01.05.11.00.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 11:01:04 -0800 (PST)
+        Tue, 05 Jan 2021 11:00:59 -0800 (PST)
 From:   Vladimir Oltean <olteanv@gmail.com>
 To:     "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
@@ -88,9 +88,9 @@ Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
         intel-wired-lan@lists.osuosl.org, linux-parisc@vger.kernel.org,
         linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org,
         dev@openvswitch.org
-Subject: [RFC PATCH v2 net-next 10/12] net: bonding: ensure .ndo_get_stats64 can sleep
-Date:   Tue,  5 Jan 2021 20:59:00 +0200
-Message-Id: <20210105185902.3922928-11-olteanv@gmail.com>
+Subject: [RFC PATCH v2 net-next 08/12] net: make dev_get_stats return void
+Date:   Tue,  5 Jan 2021 20:58:58 +0200
+Message-Id: <20210105185902.3922928-9-olteanv@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210105185902.3922928-1-olteanv@gmail.com>
 References: <20210105185902.3922928-1-olteanv@gmail.com>
@@ -102,351 +102,636 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-There is an effort to convert .ndo_get_stats64 to sleepable context, and
-for that to work, we need to prevent callers of dev_get_stats from using
-atomic locking.
+After commit 28172739f0a2 ("net: fix 64 bit counters on 32 bit arches"),
+dev_get_stats got an additional argument for storage of statistics. At
+this point, dev_get_stats could return either the passed "storage"
+argument, or the output of .ndo_get_stats64.
 
-The bonding driver retrieves its statistics recursively from its lower
-interfaces, with additional care to only count packets sent/received
-while those lowers were actually enslaved to the bond - see commit
-5f0c5f73e5ef ("bonding: make global bonding stats more reliable").
+Then commit caf586e5f23c ("net: add a core netdev->rx_dropped counter")
+came, and the output of .ndo_get_stats64 (still returning a pointer to
+struct rtnl_link_stats64) started being ignored.
 
-Since commit 87163ef9cda7 ("bonding: remove last users of bond->lock and
-bond->lock itself"), the bonding driver uses the following protection
-for its array of slaves: RCU for readers and rtnl_mutex for updaters.
-This is not great because there is another movement [ somehow
-simultaneous with the one to make .ndo_get_stats64 sleepable ] to reduce
-driver usage of rtnl_mutex. This makes sense, because the rtnl_mutex has
-become a very contended resource.
+Then came commit bc1f44709cf2 ("net: make ndo_get_stats64 a void
+function") which made .ndo_get_stats64 stop returning anything.
 
-The aforementioned commit removed an interesting comment:
-
-	/* [...] we can't hold bond->lock [...] because we'll
-	 * deadlock. The only solution is to rely on the fact
-	 * that we're under rtnl_lock here, and the slaves
-	 * list won't change. This doesn't solve the problem
-	 * of setting the slave's MTU while it is
-	 * transmitting, but the assumption is that the base
-	 * driver can handle that.
-	 *
-	 * TODO: figure out a way to safely iterate the slaves
-	 * list, but without holding a lock around the actual
-	 * call to the base driver.
-	 */
-
-The above summarizes pretty well the challenges we have with nested
-bonding interfaces (bond over bond over bond over...), which need to be
-addressed by a better locking scheme that also not relies on the bloated
-rtnl_mutex.
-
-Instead of using something as broad as the rtnl_mutex to ensure
-serialization of updates to the slave array, we can reintroduce a
-private mutex in the bonding driver, called slaves_lock.
-This mutex circles the only updater, bond_update_slave_arr, and ensures
-that whatever other readers want to see a consistent slave array, they
-don't need to hold the rtnl_mutex for that.
-
-Now _of_course_ I did not convert the entire driver to use
-bond_for_each_slave protected by the bond->slaves_lock, and
-rtnl_dereference to bond_dereference. I just started that process by
-converting the one reader I needed: ndo_get_stats64. Not only is it nice
-to not hold rtnl_mutex in .ndo_get_stats64, but it is also in fact
-forbidden to do so (since top-level callers may hold netif_lists_lock,
-which is a sub-lock of the rtnl_mutex, and therefore this would cause a
-lock inversion and a deadlock).
-
-To solve the nesting problem, the simple way is to not hold any locks
-when recursing into the slave netdev operation, which is exactly the
-approach that we take. We can "cheat" and use dev_hold to take a
-reference on the slave net_device, which is enough to ensure that
-netdev_wait_allrefs() waits until we finish, and the kernel won't fault.
-However, the slave structure might no longer be valid, just its
-associated net_device. That isn't a biggie. We just need to do some more
-work to ensure that the slave exists after we took the statistics, and
-if it still does, reapply the logic from Andy's commit 5f0c5f73e5ef.
+So now, dev_get_stats always reports the "storage" pointer received as
+argument. This is useless. Some drivers are dealing with unnecessary
+complexity due to this, so refactor them to ignore the return value
+completely.
 
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 ---
- drivers/net/bonding/bond_main.c | 120 +++++++++++++++-----------------
- include/net/bonding.h           |  52 +++++++++++++-
- 2 files changed, 109 insertions(+), 63 deletions(-)
+ arch/s390/appldata/appldata_net_sum.c         | 25 +++++----
+ drivers/leds/trigger/ledtrig-netdev.c         |  9 ++--
+ drivers/net/bonding/bond_main.c               |  7 ++-
+ .../net/ethernet/hisilicon/hns/hns_ethtool.c  | 51 +++++++++----------
+ .../net/ethernet/intel/ixgbe/ixgbe_ethtool.c  |  7 ++-
+ drivers/net/ethernet/intel/ixgbevf/ethtool.c  |  7 ++-
+ drivers/net/net_failover.c                    | 13 +++--
+ drivers/parisc/led.c                          |  9 ++--
+ drivers/scsi/fcoe/fcoe_transport.c            |  6 +--
+ drivers/usb/gadget/function/rndis.c           | 45 ++++++----------
+ include/linux/netdevice.h                     |  3 +-
+ net/8021q/vlanproc.c                          | 15 +++---
+ net/core/dev.c                                |  6 +--
+ net/core/net-procfs.c                         | 35 ++++++-------
+ net/core/net-sysfs.c                          |  7 +--
+ net/openvswitch/vport.c                       | 25 +++++----
+ 16 files changed, 123 insertions(+), 147 deletions(-)
 
+diff --git a/arch/s390/appldata/appldata_net_sum.c b/arch/s390/appldata/appldata_net_sum.c
+index 4db886980cba..6146606ac9a3 100644
+--- a/arch/s390/appldata/appldata_net_sum.c
++++ b/arch/s390/appldata/appldata_net_sum.c
+@@ -81,19 +81,18 @@ static void appldata_get_net_sum_data(void *data)
+ 	netif_lists_lock(&init_net);
+ 
+ 	for_each_netdev(&init_net, dev) {
+-		const struct rtnl_link_stats64 *stats;
+-		struct rtnl_link_stats64 temp;
+-
+-		stats = dev_get_stats(dev, &temp);
+-		rx_packets += stats->rx_packets;
+-		tx_packets += stats->tx_packets;
+-		rx_bytes   += stats->rx_bytes;
+-		tx_bytes   += stats->tx_bytes;
+-		rx_errors  += stats->rx_errors;
+-		tx_errors  += stats->tx_errors;
+-		rx_dropped += stats->rx_dropped;
+-		tx_dropped += stats->tx_dropped;
+-		collisions += stats->collisions;
++		struct rtnl_link_stats64 stats;
++
++		dev_get_stats(dev, &stats);
++		rx_packets += stats.rx_packets;
++		tx_packets += stats.tx_packets;
++		rx_bytes   += stats.rx_bytes;
++		tx_bytes   += stats.tx_bytes;
++		rx_errors  += stats.rx_errors;
++		tx_errors  += stats.tx_errors;
++		rx_dropped += stats.rx_dropped;
++		tx_dropped += stats.tx_dropped;
++		collisions += stats.collisions;
+ 		i++;
+ 	}
+ 
+diff --git a/drivers/leds/trigger/ledtrig-netdev.c b/drivers/leds/trigger/ledtrig-netdev.c
+index d5e774d83021..4382ee278309 100644
+--- a/drivers/leds/trigger/ledtrig-netdev.c
++++ b/drivers/leds/trigger/ledtrig-netdev.c
+@@ -347,9 +347,8 @@ static void netdev_trig_work(struct work_struct *work)
+ {
+ 	struct led_netdev_data *trigger_data =
+ 		container_of(work, struct led_netdev_data, work.work);
+-	struct rtnl_link_stats64 *dev_stats;
++	struct rtnl_link_stats64 dev_stats;
+ 	unsigned int new_activity;
+-	struct rtnl_link_stats64 temp;
+ 	unsigned long interval;
+ 	int invert;
+ 
+@@ -364,12 +363,12 @@ static void netdev_trig_work(struct work_struct *work)
+ 	    !test_bit(NETDEV_LED_RX, &trigger_data->mode))
+ 		return;
+ 
+-	dev_stats = dev_get_stats(trigger_data->net_dev, &temp);
++	dev_get_stats(trigger_data->net_dev, &dev_stats);
+ 	new_activity =
+ 	    (test_bit(NETDEV_LED_TX, &trigger_data->mode) ?
+-		dev_stats->tx_packets : 0) +
++		dev_stats.tx_packets : 0) +
+ 	    (test_bit(NETDEV_LED_RX, &trigger_data->mode) ?
+-		dev_stats->rx_packets : 0);
++		dev_stats.rx_packets : 0);
+ 
+ 	if (trigger_data->last_activity != new_activity) {
+ 		led_stop_software_blink(trigger_data->led_cdev);
 diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 714aa0e5d041..fbae3b9746fc 100644
+index 5fe5232cc3f3..714aa0e5d041 100644
 --- a/drivers/net/bonding/bond_main.c
 +++ b/drivers/net/bonding/bond_main.c
-@@ -3693,77 +3693,65 @@ static void bond_fold_stats(struct rtnl_link_stats64 *_res,
- 	}
- }
- 
--#ifdef CONFIG_LOCKDEP
--static int bond_get_lowest_level_rcu(struct net_device *dev)
--{
--	struct net_device *ldev, *next, *now, *dev_stack[MAX_NEST_DEV + 1];
--	struct list_head *niter, *iter, *iter_stack[MAX_NEST_DEV + 1];
--	int cur = 0, max = 0;
--
--	now = dev;
--	iter = &dev->adj_list.lower;
--
--	while (1) {
--		next = NULL;
--		while (1) {
--			ldev = netdev_next_lower_dev_rcu(now, &iter);
--			if (!ldev)
--				break;
--
--			next = ldev;
--			niter = &ldev->adj_list.lower;
--			dev_stack[cur] = now;
--			iter_stack[cur++] = iter;
--			if (max <= cur)
--				max = cur;
--			break;
--		}
--
--		if (!next) {
--			if (!cur)
--				return max;
--			next = dev_stack[--cur];
--			niter = iter_stack[cur];
--		}
--
--		now = next;
--		iter = niter;
--	}
--
--	return max;
--}
--#endif
--
- static void bond_get_stats(struct net_device *bond_dev,
- 			   struct rtnl_link_stats64 *stats)
- {
- 	struct bonding *bond = netdev_priv(bond_dev);
--	struct rtnl_link_stats64 temp;
--	struct list_head *iter;
--	struct slave *slave;
--	int nest_level = 0;
-+	struct rtnl_link_stats64 *dev_stats;
-+	struct net_device **slaves;
-+	int i, res, num_slaves;
- 
-+	res = bond_get_slave_arr(bond, &slaves, &num_slaves);
-+	if (res) {
-+		netdev_err(bond->dev,
-+			   "failed to allocate memory for slave array\n");
-+		return;
-+	}
- 
--	rcu_read_lock();
--#ifdef CONFIG_LOCKDEP
--	nest_level = bond_get_lowest_level_rcu(bond_dev);
--#endif
-+	dev_stats = kcalloc(num_slaves, sizeof(*dev_stats), GFP_KERNEL);
-+	if (!dev_stats) {
-+		netdev_err(bond->dev,
-+			   "failed to allocate memory for slave stats\n");
-+		bond_put_slave_arr(slaves, num_slaves);
-+		return;
-+	}
-+
-+	/* Recurse with no locks taken */
-+	for (i = 0; i < num_slaves; i++)
-+		dev_get_stats(slaves[i], &dev_stats[i]);
-+
-+	/* When taking the slaves lock again, the new slave array might be
-+	 * different from the original one.
-+	 */
-+	mutex_lock(&bond->slaves_lock);
-+	mutex_lock(&bond->stats_lock);
- 
--	spin_lock_nested(&bond->stats_lock, nest_level);
+@@ -3753,13 +3753,12 @@ static void bond_get_stats(struct net_device *bond_dev,
  	memcpy(stats, &bond->bond_stats, sizeof(*stats));
  
--	bond_for_each_slave_rcu(bond, slave, iter) {
--		dev_get_stats(slave->dev, &temp);
-+	for (i = 0; i < num_slaves; i++) {
-+		struct list_head *iter;
-+		struct slave *slave;
+ 	bond_for_each_slave_rcu(bond, slave, iter) {
+-		const struct rtnl_link_stats64 *new =
+-			dev_get_stats(slave->dev, &temp);
++		dev_get_stats(slave->dev, &temp);
  
--		bond_fold_stats(stats, &temp, &slave->slave_stats);
-+		bond_for_each_slave(bond, slave, iter) {
-+			if (slave->dev != slaves[i])
-+				continue;
+-		bond_fold_stats(stats, new, &slave->slave_stats);
++		bond_fold_stats(stats, &temp, &slave->slave_stats);
  
--		/* save off the slave stats for the next run */
--		memcpy(&slave->slave_stats, &temp, sizeof(temp));
-+			bond_fold_stats(stats, &dev_stats[i],
-+					&slave->slave_stats);
-+
-+			/* save off the slave stats for the next run */
-+			memcpy(&slave->slave_stats, &dev_stats[i],
-+			       sizeof(dev_stats[i]));
-+			break;
-+		}
+ 		/* save off the slave stats for the next run */
+-		memcpy(&slave->slave_stats, new, sizeof(*new));
++		memcpy(&slave->slave_stats, &temp, sizeof(temp));
  	}
  
  	memcpy(&bond->bond_stats, stats, sizeof(*stats));
--	spin_unlock(&bond->stats_lock);
--	rcu_read_unlock();
-+
-+	mutex_unlock(&bond->stats_lock);
-+	mutex_unlock(&bond->slaves_lock);
-+
-+	bond_put_slave_arr(slaves, num_slaves);
- }
+diff --git a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
+index 7165da0ee9aa..57625e4d10da 100644
+--- a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
++++ b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
+@@ -835,8 +835,7 @@ static void hns_get_ethtool_stats(struct net_device *netdev,
+ 	u64 *p = data;
+ 	struct hns_nic_priv *priv = netdev_priv(netdev);
+ 	struct hnae_handle *h = priv->ae_handle;
+-	const struct rtnl_link_stats64 *net_stats;
+-	struct rtnl_link_stats64 temp;
++	struct rtnl_link_stats64 net_stats;
  
- static int bond_do_ioctl(struct net_device *bond_dev, struct ifreq *ifr, int cmd)
-@@ -4287,11 +4275,11 @@ static void bond_set_slave_arr(struct bonding *bond,
+ 	if (!h->dev->ops->get_stats || !h->dev->ops->update_stats) {
+ 		netdev_err(netdev, "get_stats or update_stats is null!\n");
+@@ -845,32 +844,32 @@ static void hns_get_ethtool_stats(struct net_device *netdev,
+ 
+ 	h->dev->ops->update_stats(h, &netdev->stats);
+ 
+-	net_stats = dev_get_stats(netdev, &temp);
++	dev_get_stats(netdev, &net_stats);
+ 
+ 	/* get netdev statistics */
+-	p[0] = net_stats->rx_packets;
+-	p[1] = net_stats->tx_packets;
+-	p[2] = net_stats->rx_bytes;
+-	p[3] = net_stats->tx_bytes;
+-	p[4] = net_stats->rx_errors;
+-	p[5] = net_stats->tx_errors;
+-	p[6] = net_stats->rx_dropped;
+-	p[7] = net_stats->tx_dropped;
+-	p[8] = net_stats->multicast;
+-	p[9] = net_stats->collisions;
+-	p[10] = net_stats->rx_over_errors;
+-	p[11] = net_stats->rx_crc_errors;
+-	p[12] = net_stats->rx_frame_errors;
+-	p[13] = net_stats->rx_fifo_errors;
+-	p[14] = net_stats->rx_missed_errors;
+-	p[15] = net_stats->tx_aborted_errors;
+-	p[16] = net_stats->tx_carrier_errors;
+-	p[17] = net_stats->tx_fifo_errors;
+-	p[18] = net_stats->tx_heartbeat_errors;
+-	p[19] = net_stats->rx_length_errors;
+-	p[20] = net_stats->tx_window_errors;
+-	p[21] = net_stats->rx_compressed;
+-	p[22] = net_stats->tx_compressed;
++	p[0] = net_stats.rx_packets;
++	p[1] = net_stats.tx_packets;
++	p[2] = net_stats.rx_bytes;
++	p[3] = net_stats.tx_bytes;
++	p[4] = net_stats.rx_errors;
++	p[5] = net_stats.tx_errors;
++	p[6] = net_stats.rx_dropped;
++	p[7] = net_stats.tx_dropped;
++	p[8] = net_stats.multicast;
++	p[9] = net_stats.collisions;
++	p[10] = net_stats.rx_over_errors;
++	p[11] = net_stats.rx_crc_errors;
++	p[12] = net_stats.rx_frame_errors;
++	p[13] = net_stats.rx_fifo_errors;
++	p[14] = net_stats.rx_missed_errors;
++	p[15] = net_stats.tx_aborted_errors;
++	p[16] = net_stats.tx_carrier_errors;
++	p[17] = net_stats.tx_fifo_errors;
++	p[18] = net_stats.tx_heartbeat_errors;
++	p[19] = net_stats.rx_length_errors;
++	p[20] = net_stats.tx_window_errors;
++	p[21] = net_stats.rx_compressed;
++	p[22] = net_stats.tx_compressed;
+ 
+ 	p[23] = netdev->rx_dropped.counter;
+ 	p[24] = netdev->tx_dropped.counter;
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+index a280aa34ca1d..2b8084664403 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+@@ -1295,19 +1295,18 @@ static void ixgbe_get_ethtool_stats(struct net_device *netdev,
+ 				    struct ethtool_stats *stats, u64 *data)
  {
- 	struct bond_up_slave *usable, *all;
+ 	struct ixgbe_adapter *adapter = netdev_priv(netdev);
+-	struct rtnl_link_stats64 temp;
+-	const struct rtnl_link_stats64 *net_stats;
++	struct rtnl_link_stats64 net_stats;
+ 	unsigned int start;
+ 	struct ixgbe_ring *ring;
+ 	int i, j;
+ 	char *p = NULL;
  
--	usable = rtnl_dereference(bond->usable_slaves);
-+	usable = bond_dereference(bond, bond->usable_slaves);
- 	rcu_assign_pointer(bond->usable_slaves, usable_slaves);
- 	kfree_rcu(usable, rcu);
+ 	ixgbe_update_stats(adapter);
+-	net_stats = dev_get_stats(netdev, &temp);
++	dev_get_stats(netdev, &net_stats);
+ 	for (i = 0; i < IXGBE_GLOBAL_STATS_LEN; i++) {
+ 		switch (ixgbe_gstrings_stats[i].type) {
+ 		case NETDEV_STATS:
+-			p = (char *) net_stats +
++			p = (char *) &net_stats +
+ 					ixgbe_gstrings_stats[i].stat_offset;
+ 			break;
+ 		case IXGBE_STATS:
+diff --git a/drivers/net/ethernet/intel/ixgbevf/ethtool.c b/drivers/net/ethernet/intel/ixgbevf/ethtool.c
+index e49fb1cd9a99..3b9b7e5c2998 100644
+--- a/drivers/net/ethernet/intel/ixgbevf/ethtool.c
++++ b/drivers/net/ethernet/intel/ixgbevf/ethtool.c
+@@ -420,19 +420,18 @@ static void ixgbevf_get_ethtool_stats(struct net_device *netdev,
+ 				      struct ethtool_stats *stats, u64 *data)
+ {
+ 	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+-	struct rtnl_link_stats64 temp;
+-	const struct rtnl_link_stats64 *net_stats;
++	struct rtnl_link_stats64 net_stats;
+ 	unsigned int start;
+ 	struct ixgbevf_ring *ring;
+ 	int i, j;
+ 	char *p;
  
--	all = rtnl_dereference(bond->all_slaves);
-+	all = bond_dereference(bond, bond->all_slaves);
- 	rcu_assign_pointer(bond->all_slaves, all_slaves);
- 	kfree_rcu(all, rcu);
- }
-@@ -4333,6 +4321,8 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
- 	WARN_ON(lockdep_is_held(&bond->mode_lock));
- #endif
+ 	ixgbevf_update_stats(adapter);
+-	net_stats = dev_get_stats(netdev, &temp);
++	dev_get_stats(netdev, &net_stats);
+ 	for (i = 0; i < IXGBEVF_GLOBAL_STATS_LEN; i++) {
+ 		switch (ixgbevf_gstrings_stats[i].type) {
+ 		case NETDEV_STATS:
+-			p = (char *)net_stats +
++			p = (char *)&net_stats +
+ 					ixgbevf_gstrings_stats[i].stat_offset;
+ 			break;
+ 		case IXGBEVF_STATS:
+diff --git a/drivers/net/net_failover.c b/drivers/net/net_failover.c
+index 2a4892402ed8..4f83165412bd 100644
+--- a/drivers/net/net_failover.c
++++ b/drivers/net/net_failover.c
+@@ -183,7 +183,6 @@ static void net_failover_get_stats(struct net_device *dev,
+ 				   struct rtnl_link_stats64 *stats)
+ {
+ 	struct net_failover_info *nfo_info = netdev_priv(dev);
+-	const struct rtnl_link_stats64 *new;
+ 	struct rtnl_link_stats64 temp;
+ 	struct net_device *slave_dev;
  
-+	mutex_lock(&bond->slaves_lock);
-+
- 	usable_slaves = kzalloc(struct_size(usable_slaves, arr,
- 					    bond->slave_cnt), GFP_KERNEL);
- 	all_slaves = kzalloc(struct_size(all_slaves, arr,
-@@ -4376,17 +4366,22 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
+@@ -194,16 +193,16 @@ static void net_failover_get_stats(struct net_device *dev,
+ 
+ 	slave_dev = rcu_dereference(nfo_info->primary_dev);
+ 	if (slave_dev) {
+-		new = dev_get_stats(slave_dev, &temp);
+-		net_failover_fold_stats(stats, new, &nfo_info->primary_stats);
+-		memcpy(&nfo_info->primary_stats, new, sizeof(*new));
++		dev_get_stats(slave_dev, &temp);
++		net_failover_fold_stats(stats, &temp, &nfo_info->primary_stats);
++		memcpy(&nfo_info->primary_stats, &temp, sizeof(temp));
  	}
  
- 	bond_set_slave_arr(bond, usable_slaves, all_slaves);
-+
-+	mutex_unlock(&bond->slaves_lock);
-+
- 	return ret;
- out:
- 	if (ret != 0 && skipslave) {
--		bond_skip_slave(rtnl_dereference(bond->all_slaves),
-+		bond_skip_slave(bond_dereference(bond, bond->all_slaves),
- 				skipslave);
--		bond_skip_slave(rtnl_dereference(bond->usable_slaves),
-+		bond_skip_slave(bond_dereference(bond, bond->usable_slaves),
- 				skipslave);
+ 	slave_dev = rcu_dereference(nfo_info->standby_dev);
+ 	if (slave_dev) {
+-		new = dev_get_stats(slave_dev, &temp);
+-		net_failover_fold_stats(stats, new, &nfo_info->standby_stats);
+-		memcpy(&nfo_info->standby_stats, new, sizeof(*new));
++		dev_get_stats(slave_dev, &temp);
++		net_failover_fold_stats(stats, &temp, &nfo_info->standby_stats);
++		memcpy(&nfo_info->standby_stats, &temp, sizeof(temp));
  	}
- 	kfree_rcu(all_slaves, rcu);
- 	kfree_rcu(usable_slaves, rcu);
  
-+	mutex_unlock(&bond->slaves_lock);
-+
- 	return ret;
- }
+ 	rcu_read_unlock();
+diff --git a/drivers/parisc/led.c b/drivers/parisc/led.c
+index c8c6b2301dc9..cc6108785323 100644
+--- a/drivers/parisc/led.c
++++ b/drivers/parisc/led.c
+@@ -360,8 +360,7 @@ static __inline__ int led_get_net_activity(void)
  
-@@ -4699,6 +4694,8 @@ void bond_setup(struct net_device *bond_dev)
+ 	for_each_netdev(&init_net, dev) {
+ 		struct in_device *in_dev = in_dev_get(dev);
+-		const struct rtnl_link_stats64 *stats;
+-		struct rtnl_link_stats64 temp;
++		struct rtnl_link_stats64 stats;
+ 
+ 		if (!in_dev || !in_dev->ifa_list ||
+ 		    ipv4_is_loopback(in_dev->ifa_list->ifa_local)) {
+@@ -371,9 +370,9 @@ static __inline__ int led_get_net_activity(void)
+ 
+ 		in_dev_put(in_dev);
+ 
+-		stats = dev_get_stats(dev, &temp);
+-		rx_total += stats->rx_packets;
+-		tx_total += stats->tx_packets;
++		dev_get_stats(dev, &stats);
++		rx_total += stats.rx_packets;
++		tx_total += stats.tx_packets;
+ 	}
+ 
+ 	netif_lists_unlock(&init_net);
+diff --git a/drivers/scsi/fcoe/fcoe_transport.c b/drivers/scsi/fcoe/fcoe_transport.c
+index b927b3d84523..f8ba6495e745 100644
+--- a/drivers/scsi/fcoe/fcoe_transport.c
++++ b/drivers/scsi/fcoe/fcoe_transport.c
+@@ -170,11 +170,11 @@ void __fcoe_get_lesb(struct fc_lport *lport,
+ 		     struct fc_els_lesb *fc_lesb,
+ 		     struct net_device *netdev)
  {
- 	struct bonding *bond = netdev_priv(bond_dev);
++	struct rtnl_link_stats64 stats;
+ 	unsigned int cpu;
+ 	u32 lfc, vlfc, mdac;
+ 	struct fc_stats *stats;
+ 	struct fcoe_fc_els_lesb *lesb;
+-	struct rtnl_link_stats64 temp;
  
-+	mutex_init(&bond->slaves_lock);
-+	mutex_init(&bond->stats_lock);
- 	spin_lock_init(&bond->mode_lock);
- 	bond->params = bonding_defaults;
+ 	lfc = 0;
+ 	vlfc = 0;
+@@ -190,8 +190,8 @@ void __fcoe_get_lesb(struct fc_lport *lport,
+ 	lesb->lesb_link_fail = htonl(lfc);
+ 	lesb->lesb_vlink_fail = htonl(vlfc);
+ 	lesb->lesb_miss_fka = htonl(mdac);
+-	lesb->lesb_fcs_error =
+-			htonl(dev_get_stats(netdev, &temp)->rx_crc_errors);
++	dev_get_stats(netdev, &stats);
++	lesb->lesb_fcs_error = htonl(stats.rx_crc_errors);
+ }
+ EXPORT_SYMBOL_GPL(__fcoe_get_lesb);
  
-@@ -5189,7 +5186,6 @@ static int bond_init(struct net_device *bond_dev)
- 	if (!bond->wq)
- 		return -ENOMEM;
+diff --git a/drivers/usb/gadget/function/rndis.c b/drivers/usb/gadget/function/rndis.c
+index 64de9f1b874c..7ec29e007ae9 100644
+--- a/drivers/usb/gadget/function/rndis.c
++++ b/drivers/usb/gadget/function/rndis.c
+@@ -169,14 +169,13 @@ static const u32 oid_supported_list[] = {
+ static int gen_ndis_query_resp(struct rndis_params *params, u32 OID, u8 *buf,
+ 			       unsigned buf_len, rndis_resp_t *r)
+ {
++	struct rtnl_link_stats64 stats;
+ 	int retval = -ENOTSUPP;
+ 	u32 length = 4;	/* usually */
+ 	__le32 *outbuf;
+ 	int i, count;
+ 	rndis_query_cmplt_type *resp;
+ 	struct net_device *net;
+-	struct rtnl_link_stats64 temp;
+-	const struct rtnl_link_stats64 *stats;
  
--	spin_lock_init(&bond->stats_lock);
- 	netdev_lockdep_set_classes(bond_dev);
+ 	if (!r) return -ENOMEM;
+ 	resp = (rndis_query_cmplt_type *)r->buf;
+@@ -199,7 +198,7 @@ static int gen_ndis_query_resp(struct rndis_params *params, u32 OID, u8 *buf,
+ 	resp->InformationBufferOffset = cpu_to_le32(16);
  
- 	list_add_tail(&bond->bond_list, &bn->dev_list);
-diff --git a/include/net/bonding.h b/include/net/bonding.h
-index adc3da776970..3fd2443e7800 100644
---- a/include/net/bonding.h
-+++ b/include/net/bonding.h
-@@ -222,7 +222,6 @@ struct bonding {
- 	 * ALB mode (6) - to sync the use and modifications of its hash table
- 	 */
- 	spinlock_t mode_lock;
--	spinlock_t stats_lock;
- 	u8	 send_peer_notif;
- 	u8       igmp_retrans;
- #ifdef CONFIG_PROC_FS
-@@ -249,6 +248,14 @@ struct bonding {
- #ifdef CONFIG_XFRM_OFFLOAD
- 	struct xfrm_state *xs;
- #endif /* CONFIG_XFRM_OFFLOAD */
+ 	net = params->dev;
+-	stats = dev_get_stats(net, &temp);
++	dev_get_stats(net, &stats);
+ 
+ 	switch (OID) {
+ 
+@@ -353,51 +352,41 @@ static int gen_ndis_query_resp(struct rndis_params *params, u32 OID, u8 *buf,
+ 	case RNDIS_OID_GEN_XMIT_OK:
+ 		if (rndis_debug > 1)
+ 			pr_debug("%s: RNDIS_OID_GEN_XMIT_OK\n", __func__);
+-		if (stats) {
+-			*outbuf = cpu_to_le32(stats->tx_packets
+-				- stats->tx_errors - stats->tx_dropped);
+-			retval = 0;
+-		}
++		*outbuf = cpu_to_le32(stats.tx_packets - stats.tx_errors -
++				      stats.tx_dropped);
++		retval = 0;
+ 		break;
+ 
+ 	/* mandatory */
+ 	case RNDIS_OID_GEN_RCV_OK:
+ 		if (rndis_debug > 1)
+ 			pr_debug("%s: RNDIS_OID_GEN_RCV_OK\n", __func__);
+-		if (stats) {
+-			*outbuf = cpu_to_le32(stats->rx_packets
+-				- stats->rx_errors - stats->rx_dropped);
+-			retval = 0;
+-		}
++		*outbuf = cpu_to_le32(stats.rx_packets - stats.rx_errors -
++				      stats.rx_dropped);
++		retval = 0;
+ 		break;
+ 
+ 	/* mandatory */
+ 	case RNDIS_OID_GEN_XMIT_ERROR:
+ 		if (rndis_debug > 1)
+ 			pr_debug("%s: RNDIS_OID_GEN_XMIT_ERROR\n", __func__);
+-		if (stats) {
+-			*outbuf = cpu_to_le32(stats->tx_errors);
+-			retval = 0;
+-		}
++		*outbuf = cpu_to_le32(stats.tx_errors);
++		retval = 0;
+ 		break;
+ 
+ 	/* mandatory */
+ 	case RNDIS_OID_GEN_RCV_ERROR:
+ 		if (rndis_debug > 1)
+ 			pr_debug("%s: RNDIS_OID_GEN_RCV_ERROR\n", __func__);
+-		if (stats) {
+-			*outbuf = cpu_to_le32(stats->rx_errors);
+-			retval = 0;
+-		}
++		*outbuf = cpu_to_le32(stats.rx_errors);
++		retval = 0;
+ 		break;
+ 
+ 	/* mandatory */
+ 	case RNDIS_OID_GEN_RCV_NO_BUFFER:
+ 		pr_debug("%s: RNDIS_OID_GEN_RCV_NO_BUFFER\n", __func__);
+-		if (stats) {
+-			*outbuf = cpu_to_le32(stats->rx_dropped);
+-			retval = 0;
+-		}
++		*outbuf = cpu_to_le32(stats.rx_dropped);
++		retval = 0;
+ 		break;
+ 
+ 	/* ieee802.3 OIDs (table 4-3) */
+@@ -449,10 +438,8 @@ static int gen_ndis_query_resp(struct rndis_params *params, u32 OID, u8 *buf,
+ 	/* mandatory */
+ 	case RNDIS_OID_802_3_RCV_ERROR_ALIGNMENT:
+ 		pr_debug("%s: RNDIS_OID_802_3_RCV_ERROR_ALIGNMENT\n", __func__);
+-		if (stats) {
+-			*outbuf = cpu_to_le32(stats->rx_frame_errors);
+-			retval = 0;
+-		}
++		*outbuf = cpu_to_le32(stats.rx_frame_errors);
++		retval = 0;
+ 		break;
+ 
+ 	/* mandatory */
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 199b3be2cce4..9bd23455d952 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -4561,8 +4561,7 @@ void netdev_notify_peers(struct net_device *dev);
+ void netdev_features_change(struct net_device *dev);
+ /* Load a device via the kmod */
+ void dev_load(struct net *net, const char *name);
+-struct rtnl_link_stats64 *dev_get_stats(struct net_device *dev,
+-					struct rtnl_link_stats64 *storage);
++void dev_get_stats(struct net_device *dev, struct rtnl_link_stats64 *storage);
+ void netdev_stats_to_stats64(struct rtnl_link_stats64 *stats64,
+ 			     const struct net_device_stats *netdev_stats);
+ void dev_fetch_sw_netstats(struct rtnl_link_stats64 *s,
+diff --git a/net/8021q/vlanproc.c b/net/8021q/vlanproc.c
+index ec87dea23719..3a6682d79630 100644
+--- a/net/8021q/vlanproc.c
++++ b/net/8021q/vlanproc.c
+@@ -242,26 +242,25 @@ static int vlandev_seq_show(struct seq_file *seq, void *offset)
+ {
+ 	struct net_device *vlandev = (struct net_device *) seq->private;
+ 	const struct vlan_dev_priv *vlan = vlan_dev_priv(vlandev);
+-	struct rtnl_link_stats64 temp;
+-	const struct rtnl_link_stats64 *stats;
+ 	static const char fmt64[] = "%30s %12llu\n";
++	struct rtnl_link_stats64 stats;
+ 	int i;
+ 
+ 	if (!is_vlan_dev(vlandev))
+ 		return 0;
+ 
+-	stats = dev_get_stats(vlandev, &temp);
++	dev_get_stats(vlandev, &stats);
+ 	seq_printf(seq,
+ 		   "%s  VID: %d	 REORDER_HDR: %i  dev->priv_flags: %hx\n",
+ 		   vlandev->name, vlan->vlan_id,
+ 		   (int)(vlan->flags & 1), vlandev->priv_flags);
+ 
+-	seq_printf(seq, fmt64, "total frames received", stats->rx_packets);
+-	seq_printf(seq, fmt64, "total bytes received", stats->rx_bytes);
+-	seq_printf(seq, fmt64, "Broadcast/Multicast Rcvd", stats->multicast);
++	seq_printf(seq, fmt64, "total frames received", stats.rx_packets);
++	seq_printf(seq, fmt64, "total bytes received", stats.rx_bytes);
++	seq_printf(seq, fmt64, "Broadcast/Multicast Rcvd", stats.multicast);
+ 	seq_puts(seq, "\n");
+-	seq_printf(seq, fmt64, "total frames transmitted", stats->tx_packets);
+-	seq_printf(seq, fmt64, "total bytes transmitted", stats->tx_bytes);
++	seq_printf(seq, fmt64, "total frames transmitted", stats.tx_packets);
++	seq_printf(seq, fmt64, "total bytes transmitted", stats.tx_bytes);
+ 	seq_printf(seq, "Device: %s", vlan->real_dev->name);
+ 	/* now show all PRIORITY mappings relating to this VLAN */
+ 	seq_printf(seq, "\nINGRESS priority mappings: "
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 1bd41cc91f71..d48b75479b3e 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10380,13 +10380,12 @@ EXPORT_SYMBOL(netdev_stats_to_stats64);
+  *	@dev: device to get statistics from
+  *	@storage: place to store stats
+  *
+- *	Get network statistics from device. Return @storage.
++ *	Get network statistics from device.
+  *	The device driver may provide its own method by setting
+  *	dev->netdev_ops->get_stats64 or dev->netdev_ops->get_stats;
+  *	otherwise the internal statistics structure is used.
+  */
+-struct rtnl_link_stats64 *dev_get_stats(struct net_device *dev,
+-					struct rtnl_link_stats64 *storage)
++void dev_get_stats(struct net_device *dev, struct rtnl_link_stats64 *storage)
+ {
+ 	const struct net_device_ops *ops = dev->netdev_ops;
+ 
+@@ -10401,7 +10400,6 @@ struct rtnl_link_stats64 *dev_get_stats(struct net_device *dev,
+ 	storage->rx_dropped += (unsigned long)atomic_long_read(&dev->rx_dropped);
+ 	storage->tx_dropped += (unsigned long)atomic_long_read(&dev->tx_dropped);
+ 	storage->rx_nohandler += (unsigned long)atomic_long_read(&dev->rx_nohandler);
+-	return storage;
+ }
+ EXPORT_SYMBOL(dev_get_stats);
+ 
+diff --git a/net/core/net-procfs.c b/net/core/net-procfs.c
+index 4784703c1e39..64666ba7ccab 100644
+--- a/net/core/net-procfs.c
++++ b/net/core/net-procfs.c
+@@ -80,26 +80,27 @@ static void dev_seq_stop(struct seq_file *seq, void *v)
+ 
+ static void dev_seq_printf_stats(struct seq_file *seq, struct net_device *dev)
+ {
+-	struct rtnl_link_stats64 temp;
+-	const struct rtnl_link_stats64 *stats = dev_get_stats(dev, &temp);
++	struct rtnl_link_stats64 stats;
 +
-+	/* Protects the slave array. TODO: convert all instances of
-+	 * rtnl_dereference to bond_dereference
-+	 */
-+	struct mutex slaves_lock;
-+
-+	/* Serializes access to bond_stats */
-+	struct mutex stats_lock;
- };
++	dev_get_stats(dev, &stats);
  
- #define bond_slave_get_rcu(dev) \
-@@ -257,6 +264,9 @@ struct bonding {
- #define bond_slave_get_rtnl(dev) \
- 	((struct slave *) rtnl_dereference(dev->rx_handler_data))
- 
-+#define bond_dereference(bond, p) \
-+	rcu_dereference_protected(p, lockdep_is_held(&(bond)->slaves_lock))
-+
- void bond_queue_slave_event(struct slave *slave);
- void bond_lower_state_changed(struct slave *slave);
- 
-@@ -449,6 +459,46 @@ static inline void bond_hw_addr_copy(u8 *dst, const u8 *src, unsigned int len)
- 	memcpy(dst, src, len);
+ 	seq_printf(seq, "%6s: %7llu %7llu %4llu %4llu %4llu %5llu %10llu %9llu "
+ 		   "%8llu %7llu %4llu %4llu %4llu %5llu %7llu %10llu\n",
+-		   dev->name, stats->rx_bytes, stats->rx_packets,
+-		   stats->rx_errors,
+-		   stats->rx_dropped + stats->rx_missed_errors,
+-		   stats->rx_fifo_errors,
+-		   stats->rx_length_errors + stats->rx_over_errors +
+-		    stats->rx_crc_errors + stats->rx_frame_errors,
+-		   stats->rx_compressed, stats->multicast,
+-		   stats->tx_bytes, stats->tx_packets,
+-		   stats->tx_errors, stats->tx_dropped,
+-		   stats->tx_fifo_errors, stats->collisions,
+-		   stats->tx_carrier_errors +
+-		    stats->tx_aborted_errors +
+-		    stats->tx_window_errors +
+-		    stats->tx_heartbeat_errors,
+-		   stats->tx_compressed);
++		   dev->name, stats.rx_bytes, stats.rx_packets,
++		   stats.rx_errors,
++		   stats.rx_dropped + stats.rx_missed_errors,
++		   stats.rx_fifo_errors,
++		   stats.rx_length_errors + stats.rx_over_errors +
++		    stats.rx_crc_errors + stats.rx_frame_errors,
++		   stats.rx_compressed, stats.multicast,
++		   stats.tx_bytes, stats.tx_packets,
++		   stats.tx_errors, stats.tx_dropped,
++		   stats.tx_fifo_errors, stats.collisions,
++		   stats.tx_carrier_errors +
++		    stats.tx_aborted_errors +
++		    stats.tx_window_errors +
++		    stats.tx_heartbeat_errors,
++		   stats.tx_compressed);
  }
  
-+static inline int bond_get_slave_arr(struct bonding *bond,
-+				     struct net_device ***slaves,
-+				     int *num_slaves)
-+{
-+	struct net *net = dev_net(bond->dev);
-+	struct list_head *iter;
-+	struct slave *slave;
-+	int i = 0;
+ /*
+diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
+index 0782a476b424..d22f010e8e5a 100644
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -586,10 +586,11 @@ static ssize_t netstat_show(const struct device *d,
+ 		offset % sizeof(u64) != 0);
+ 
+ 	if (dev_isalive(dev)) {
+-		struct rtnl_link_stats64 temp;
+-		const struct rtnl_link_stats64 *stats = dev_get_stats(dev, &temp);
++		struct rtnl_link_stats64 stats;
+ 
+-		ret = sprintf(buf, fmt_u64, *(u64 *)(((u8 *)stats) + offset));
++		dev_get_stats(dev, &stats);
 +
-+	mutex_lock(&bond->slaves_lock);
++		ret = sprintf(buf, fmt_u64, *(u64 *)(((u8 *)&stats) + offset));
+ 	}
+ 
+ 	return ret;
+diff --git a/net/openvswitch/vport.c b/net/openvswitch/vport.c
+index 4ed7e52c7012..215a818bf9ce 100644
+--- a/net/openvswitch/vport.c
++++ b/net/openvswitch/vport.c
+@@ -269,19 +269,18 @@ void ovs_vport_del(struct vport *vport)
+  */
+ void ovs_vport_get_stats(struct vport *vport, struct ovs_vport_stats *stats)
+ {
+-	const struct rtnl_link_stats64 *dev_stats;
+-	struct rtnl_link_stats64 temp;
+-
+-	dev_stats = dev_get_stats(vport->dev, &temp);
+-	stats->rx_errors  = dev_stats->rx_errors;
+-	stats->tx_errors  = dev_stats->tx_errors;
+-	stats->tx_dropped = dev_stats->tx_dropped;
+-	stats->rx_dropped = dev_stats->rx_dropped;
+-
+-	stats->rx_bytes	  = dev_stats->rx_bytes;
+-	stats->rx_packets = dev_stats->rx_packets;
+-	stats->tx_bytes	  = dev_stats->tx_bytes;
+-	stats->tx_packets = dev_stats->tx_packets;
++	struct rtnl_link_stats64 dev_stats;
 +
-+	*slaves = kcalloc(bond->slave_cnt, sizeof(*slaves), GFP_KERNEL);
-+	if (!(*slaves)) {
-+		netif_lists_unlock(net);
-+		return -ENOMEM;
-+	}
++	dev_get_stats(vport->dev, &dev_stats);
++	stats->rx_errors  = dev_stats.rx_errors;
++	stats->tx_errors  = dev_stats.tx_errors;
++	stats->tx_dropped = dev_stats.tx_dropped;
++	stats->rx_dropped = dev_stats.rx_dropped;
 +
-+	bond_for_each_slave(bond, slave, iter) {
-+		dev_hold(slave->dev);
-+		*slaves[i++] = slave->dev;
-+	}
-+
-+	*num_slaves = bond->slave_cnt;
-+
-+	mutex_unlock(&bond->slaves_lock);
-+
-+	return 0;
-+}
-+
-+static inline void bond_put_slave_arr(struct net_device **slaves,
-+				      int num_slaves)
-+{
-+	int i;
-+
-+	for (i = 0; i < num_slaves; i++)
-+		dev_put(slaves[i]);
-+
-+	kfree(slaves);
-+}
-+
- #define BOND_PRI_RESELECT_ALWAYS	0
- #define BOND_PRI_RESELECT_BETTER	1
- #define BOND_PRI_RESELECT_FAILURE	2
++	stats->rx_bytes	  = dev_stats.rx_bytes;
++	stats->rx_packets = dev_stats.rx_packets;
++	stats->tx_bytes	  = dev_stats.tx_bytes;
++	stats->tx_packets = dev_stats.tx_packets;
+ }
+ 
+ /**
 -- 
 2.25.1
 
