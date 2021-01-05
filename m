@@ -8,56 +8,56 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A23E4C433DB
-	for <linux-parisc@archiver.kernel.org>; Tue,  5 Jan 2021 19:02:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F54BC4332B
+	for <linux-parisc@archiver.kernel.org>; Tue,  5 Jan 2021 19:02:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6446D22D04
-	for <linux-parisc@archiver.kernel.org>; Tue,  5 Jan 2021 19:02:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1979B22D04
+	for <linux-parisc@archiver.kernel.org>; Tue,  5 Jan 2021 19:02:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730554AbhAETBu (ORCPT
+        id S1730684AbhAETCF (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 5 Jan 2021 14:01:50 -0500
+        Tue, 5 Jan 2021 14:02:05 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729925AbhAETBt (ORCPT
+        with ESMTP id S1729684AbhAETCE (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:01:49 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60176C06179E;
-        Tue,  5 Jan 2021 11:00:47 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id y24so1833305edt.10;
-        Tue, 05 Jan 2021 11:00:47 -0800 (PST)
+        Tue, 5 Jan 2021 14:02:04 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5A2C0617A9;
+        Tue,  5 Jan 2021 11:01:06 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id ce23so1809873ejb.8;
+        Tue, 05 Jan 2021 11:01:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mNfzPBhLMMZWAzE97w1+ZZWCiryTh9dlLPyVpfooGOM=;
-        b=htjenFF8D1wjRCV3Ivb7XsHIeCHimPGwGS2vuqUQM1szLxo7iNRaUPr0j5UQSyh838
-         M9lHVFoIKQisFHKPJEYMX0TPnYxmdiycPagXmEL5LnARRCIep2pYeuiVZCfz7sv9k+iy
-         u8L6iEtVRj1jiyR22zkYxi24d5xHEgRbvGJM1p3ZqXPnXIaNZuO9Fk5UA+A69hClpIup
-         RpS6hCqZhtFo3SvTeU1SSoqOHA+cy5BcR9d/deiGTtNdOXL1mfJemeHwtgYvcl66JlTI
-         zSu3YJJ/PEMtTfAUPW0I0K2mw37nolU4LqM6g68W/BVIxz82ESI2k66h2BM6h5c0DvL6
-         uAnA==
+        bh=p3W0msP6LpBk4ZpdXjQAKJdbudcVnQh09tjTTus++GQ=;
+        b=jV0hXJAm/NWx8lpC5hh5hI3o0LcFdDlN8v7ivD1ssuCNWUNXooDhrSGgcm3dY7V59m
+         JSJvFGr3N3XtX2/DDbAV0hMsng1svFYosOnFg2x7nvMeEyAUb47SuIF7lbdwVTJYEuel
+         yjXJMaAKQFeJawGDXtnnrz7fnfh7vtZ9hXhJ/osm2MIVUE/7reO1orvh+fnWFUL/eR2C
+         cXd7UJVn36QK8PZfwDuyY75yoWZZJ/b1gyMICeqJhOzAD1XmVXXFY21RUY1yemNy6XcR
+         tkQdDgXZlI4rvGVIfscY+N1xEynBMD0+bLLA6XGm6NArszOQ3rsy2PGpbFy0d96hpJ+w
+         TgXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mNfzPBhLMMZWAzE97w1+ZZWCiryTh9dlLPyVpfooGOM=;
-        b=ohL7RT28V2IpzJCZaGllNiPK1H7SZTOtPmV4Ko+5GAiBtEd1LShUU8Qh22MvBM0YM6
-         GKpyvVlZZ10hH8ftE1zRIh2+Ic/25oJvUqDJpC06+gwL+h1uNWW/W1b3TG8oba51ae4f
-         DR0Dbf7LSYya/C4UJ4NRHJ+rJEKzuYc0S/OBN5MzPBcx6ilDJQjXBm/UiEo/TUytKlic
-         3ZWzsxOPmFBNBTGjNORCxQWs2ieWeFPMem5cscqS42uu8Y1YLFcm0Z2AxzxWoIoEY+p+
-         zDK/OUs1Gx0KHUIO3YF2qIqQEtWMhW5zJn8Km9ULxw1HZFF0BF7lZfl2/FjmU1WR/pg4
-         HZlQ==
-X-Gm-Message-State: AOAM530QfN09NfIE6zMrGWv1uX+OTARffmgPNTYgwPvUZTOpv9Q0Cx8A
-        lOsl+MQr5OsANP3obyo8WZY=
-X-Google-Smtp-Source: ABdhPJx4rUUBv+jkf79k31dTgo8if/HFn3r0jcnyalTjeVo11EAzybHYg2Gskk4tCRAHxNA1SnVCyA==
-X-Received: by 2002:a50:ec18:: with SMTP id g24mr1236916edr.6.1609873246100;
-        Tue, 05 Jan 2021 11:00:46 -0800 (PST)
+        bh=p3W0msP6LpBk4ZpdXjQAKJdbudcVnQh09tjTTus++GQ=;
+        b=jrBF3LOnBeR8BltbPP76zCUwOJ3MjX4DSUN9ikQHg7pjbzAK7uji0zYPqb3XU26CLQ
+         WodOWushzliFDQHaUQMQdj8/TO1SxJC5dG8XHJTpFfgTn/ryS9C6japNJqWmC1Z+fzQj
+         VAVEU29EJJHywZkim3Fxwh5VACwpLaYJx276MROCeWP7Wo8Z2uXz6/IbwEC1v9OeQSLV
+         y8quscalW2N+ZLWrk7uh8Zs1SZmG+WVwlYc67xaXzHidhEEegbMhGO55o9cAncxvid2F
+         7C0M1F97TULL83GYWOShARJuBkpznD+8t6yt0iGO63xkwydx6GqSMfL8e7dfsiG5VuNa
+         TMlw==
+X-Gm-Message-State: AOAM530xuFlMtrBZODGmAQABDfEvhGZjl+oW7fsx+Oxw5FFnoO7wZeaL
+        bvIWu7yhjMGTEZbZIgPp7yM=
+X-Google-Smtp-Source: ABdhPJzfSVckJ/Rv02marDEzZ2I/McFZfR0QiIgEyHC9Kq69EQgAfP5DX0kb3KckZoB4LfiobOMmYQ==
+X-Received: by 2002:a17:906:7a18:: with SMTP id d24mr501608ejo.324.1609873265094;
+        Tue, 05 Jan 2021 11:01:05 -0800 (PST)
 Received: from localhost.localdomain (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id z13sm205084edq.48.2021.01.05.11.00.44
+        by smtp.gmail.com with ESMTPSA id z13sm205084edq.48.2021.01.05.11.01.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 11:00:45 -0800 (PST)
+        Tue, 05 Jan 2021 11:01:04 -0800 (PST)
 From:   Vladimir Oltean <olteanv@gmail.com>
 To:     "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
@@ -88,9 +88,9 @@ Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
         intel-wired-lan@lists.osuosl.org, linux-parisc@vger.kernel.org,
         linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org,
         dev@openvswitch.org
-Subject: [RFC PATCH v2 net-next 01/12] net: mark dev_base_lock for deprecation
-Date:   Tue,  5 Jan 2021 20:58:51 +0200
-Message-Id: <20210105185902.3922928-2-olteanv@gmail.com>
+Subject: [RFC PATCH v2 net-next 10/12] net: bonding: ensure .ndo_get_stats64 can sleep
+Date:   Tue,  5 Jan 2021 20:59:00 +0200
+Message-Id: <20210105185902.3922928-11-olteanv@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210105185902.3922928-1-olteanv@gmail.com>
 References: <20210105185902.3922928-1-olteanv@gmail.com>
@@ -102,93 +102,351 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-There is a movement to eliminate the usage of dev_base_lock, which
-exists since as far as I could track the kernel history down (the
-"7a2deb329241 Import changeset" commit from the bitkeeper branch).
+There is an effort to convert .ndo_get_stats64 to sleepable context, and
+for that to work, we need to prevent callers of dev_get_stats from using
+atomic locking.
 
-The dev_base_lock approach has multiple issues:
-- It is global and not per netns.
-- Its meaning has mutated over the years and the vast majority of
-  current users is using it to protect against changes of network device
-  state, as opposed to changes of the interface list.
-- It is overlapping with other protection mechanisms introduced in the
-  meantime, which have higher performance for readers, like RCU
-  introduced in 2009 by Eric Dumazet for kernel 2.6.
+The bonding driver retrieves its statistics recursively from its lower
+interfaces, with additional care to only count packets sent/received
+while those lowers were actually enslaved to the bond - see commit
+5f0c5f73e5ef ("bonding: make global bonding stats more reliable").
 
-The old comment that I just deleted made this distinction: writers
-protect only against readers by holding dev_base_lock, whereas they need
-to protect against other writers by holding the RTNL mutex. This is
-slightly confusing/incorrect, since a rwlock_t cannot have more than one
-concurrently running writer, so that explanation does not justify why
-the RTNL mutex would be necessary.
+Since commit 87163ef9cda7 ("bonding: remove last users of bond->lock and
+bond->lock itself"), the bonding driver uses the following protection
+for its array of slaves: RCU for readers and rtnl_mutex for updaters.
+This is not great because there is another movement [ somehow
+simultaneous with the one to make .ndo_get_stats64 sleepable ] to reduce
+driver usage of rtnl_mutex. This makes sense, because the rtnl_mutex has
+become a very contended resource.
 
-Instead, Stephen Hemminger makes this clarification here:
-https://lore.kernel.org/netdev/20201129211230.4d704931@hermes.local/T/#u
+The aforementioned commit removed an interesting comment:
 
-| There are really two different domains being covered by locks here.
-|
-| The first area is change of state of network devices. This has traditionally
-| been covered by RTNL because there are places that depend on coordinating
-| state between multiple devices. RTNL is too big and held too long but getting
-| rid of it is hard because there are corner cases (like state changes from userspace
-| for VPN devices).
-|
-| The other area is code that wants to do read access to look at list of devices.
-| These pure readers can/should be converted to RCU by now. Writers should hold RTNL.
+	/* [...] we can't hold bond->lock [...] because we'll
+	 * deadlock. The only solution is to rely on the fact
+	 * that we're under rtnl_lock here, and the slaves
+	 * list won't change. This doesn't solve the problem
+	 * of setting the slave's MTU while it is
+	 * transmitting, but the assumption is that the base
+	 * driver can handle that.
+	 *
+	 * TODO: figure out a way to safely iterate the slaves
+	 * list, but without holding a lock around the actual
+	 * call to the base driver.
+	 */
 
-This patch edits the comment for dev_base_lock, minimizing its role in
-the protection of network interface lists, and clarifies that it is has
-other purposes as well.
+The above summarizes pretty well the challenges we have with nested
+bonding interfaces (bond over bond over bond over...), which need to be
+addressed by a better locking scheme that also not relies on the bloated
+rtnl_mutex.
+
+Instead of using something as broad as the rtnl_mutex to ensure
+serialization of updates to the slave array, we can reintroduce a
+private mutex in the bonding driver, called slaves_lock.
+This mutex circles the only updater, bond_update_slave_arr, and ensures
+that whatever other readers want to see a consistent slave array, they
+don't need to hold the rtnl_mutex for that.
+
+Now _of_course_ I did not convert the entire driver to use
+bond_for_each_slave protected by the bond->slaves_lock, and
+rtnl_dereference to bond_dereference. I just started that process by
+converting the one reader I needed: ndo_get_stats64. Not only is it nice
+to not hold rtnl_mutex in .ndo_get_stats64, but it is also in fact
+forbidden to do so (since top-level callers may hold netif_lists_lock,
+which is a sub-lock of the rtnl_mutex, and therefore this would cause a
+lock inversion and a deadlock).
+
+To solve the nesting problem, the simple way is to not hold any locks
+when recursing into the slave netdev operation, which is exactly the
+approach that we take. We can "cheat" and use dev_hold to take a
+reference on the slave net_device, which is enough to ensure that
+netdev_wait_allrefs() waits until we finish, and the kernel won't fault.
+However, the slave structure might no longer be valid, just its
+associated net_device. That isn't a biggie. We just need to do some more
+work to ensure that the slave exists after we took the statistics, and
+if it still does, reapply the logic from Andy's commit 5f0c5f73e5ef.
 
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 ---
- net/core/dev.c | 33 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
+ drivers/net/bonding/bond_main.c | 120 +++++++++++++++-----------------
+ include/net/bonding.h           |  52 +++++++++++++-
+ 2 files changed, 109 insertions(+), 63 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index a46334906c94..2aa613d22318 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -169,23 +169,22 @@ static int call_netdevice_notifiers_extack(unsigned long val,
- static struct napi_struct *napi_by_id(unsigned int napi_id);
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index 714aa0e5d041..fbae3b9746fc 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -3693,77 +3693,65 @@ static void bond_fold_stats(struct rtnl_link_stats64 *_res,
+ 	}
+ }
  
- /*
-- * The @dev_base_head list is protected by @dev_base_lock and the rtnl
-- * semaphore.
-- *
-- * Pure readers hold dev_base_lock for reading, or rcu_read_lock()
-- *
-- * Writers must hold the rtnl semaphore while they loop through the
-- * dev_base_head list, and hold dev_base_lock for writing when they do the
-- * actual updates.  This allows pure readers to access the list even
-- * while a writer is preparing to update it.
-- *
-- * To put it another way, dev_base_lock is held for writing only to
-- * protect against pure readers; the rtnl semaphore provides the
-- * protection against other writers.
-- *
-- * See, for example usages, register_netdevice() and
-- * unregister_netdevice(), which must be called with the rtnl
-- * semaphore held.
-+ * The network interface list of a netns (@net->dev_base_head) and the hash
-+ * tables per ifindex (@net->dev_index_head) and per name (@net->dev_name_head)
-+ * are protected using the following rules:
-+ *
-+ * Pure readers should hold rcu_read_lock() which should protect them against
-+ * concurrent changes to the interface lists made by the writers. Pure writers
-+ * must serialize by holding the RTNL mutex while they loop through the list
-+ * and make changes to it.
-+ *
-+ * It is also possible to hold the global rwlock_t @dev_base_lock for
-+ * protection (holding its read side as an alternative to rcu_read_lock, and
-+ * its write side as an alternative to the RTNL mutex), however this should not
-+ * be done in new code, since it is deprecated and pending removal.
-+ *
-+ * One other role of @dev_base_lock is to protect against changes in the
-+ * operational state of a network interface.
-  */
- DEFINE_RWLOCK(dev_base_lock);
- EXPORT_SYMBOL(dev_base_lock);
+-#ifdef CONFIG_LOCKDEP
+-static int bond_get_lowest_level_rcu(struct net_device *dev)
+-{
+-	struct net_device *ldev, *next, *now, *dev_stack[MAX_NEST_DEV + 1];
+-	struct list_head *niter, *iter, *iter_stack[MAX_NEST_DEV + 1];
+-	int cur = 0, max = 0;
+-
+-	now = dev;
+-	iter = &dev->adj_list.lower;
+-
+-	while (1) {
+-		next = NULL;
+-		while (1) {
+-			ldev = netdev_next_lower_dev_rcu(now, &iter);
+-			if (!ldev)
+-				break;
+-
+-			next = ldev;
+-			niter = &ldev->adj_list.lower;
+-			dev_stack[cur] = now;
+-			iter_stack[cur++] = iter;
+-			if (max <= cur)
+-				max = cur;
+-			break;
+-		}
+-
+-		if (!next) {
+-			if (!cur)
+-				return max;
+-			next = dev_stack[--cur];
+-			niter = iter_stack[cur];
+-		}
+-
+-		now = next;
+-		iter = niter;
+-	}
+-
+-	return max;
+-}
+-#endif
+-
+ static void bond_get_stats(struct net_device *bond_dev,
+ 			   struct rtnl_link_stats64 *stats)
+ {
+ 	struct bonding *bond = netdev_priv(bond_dev);
+-	struct rtnl_link_stats64 temp;
+-	struct list_head *iter;
+-	struct slave *slave;
+-	int nest_level = 0;
++	struct rtnl_link_stats64 *dev_stats;
++	struct net_device **slaves;
++	int i, res, num_slaves;
+ 
++	res = bond_get_slave_arr(bond, &slaves, &num_slaves);
++	if (res) {
++		netdev_err(bond->dev,
++			   "failed to allocate memory for slave array\n");
++		return;
++	}
+ 
+-	rcu_read_lock();
+-#ifdef CONFIG_LOCKDEP
+-	nest_level = bond_get_lowest_level_rcu(bond_dev);
+-#endif
++	dev_stats = kcalloc(num_slaves, sizeof(*dev_stats), GFP_KERNEL);
++	if (!dev_stats) {
++		netdev_err(bond->dev,
++			   "failed to allocate memory for slave stats\n");
++		bond_put_slave_arr(slaves, num_slaves);
++		return;
++	}
++
++	/* Recurse with no locks taken */
++	for (i = 0; i < num_slaves; i++)
++		dev_get_stats(slaves[i], &dev_stats[i]);
++
++	/* When taking the slaves lock again, the new slave array might be
++	 * different from the original one.
++	 */
++	mutex_lock(&bond->slaves_lock);
++	mutex_lock(&bond->stats_lock);
+ 
+-	spin_lock_nested(&bond->stats_lock, nest_level);
+ 	memcpy(stats, &bond->bond_stats, sizeof(*stats));
+ 
+-	bond_for_each_slave_rcu(bond, slave, iter) {
+-		dev_get_stats(slave->dev, &temp);
++	for (i = 0; i < num_slaves; i++) {
++		struct list_head *iter;
++		struct slave *slave;
+ 
+-		bond_fold_stats(stats, &temp, &slave->slave_stats);
++		bond_for_each_slave(bond, slave, iter) {
++			if (slave->dev != slaves[i])
++				continue;
+ 
+-		/* save off the slave stats for the next run */
+-		memcpy(&slave->slave_stats, &temp, sizeof(temp));
++			bond_fold_stats(stats, &dev_stats[i],
++					&slave->slave_stats);
++
++			/* save off the slave stats for the next run */
++			memcpy(&slave->slave_stats, &dev_stats[i],
++			       sizeof(dev_stats[i]));
++			break;
++		}
+ 	}
+ 
+ 	memcpy(&bond->bond_stats, stats, sizeof(*stats));
+-	spin_unlock(&bond->stats_lock);
+-	rcu_read_unlock();
++
++	mutex_unlock(&bond->stats_lock);
++	mutex_unlock(&bond->slaves_lock);
++
++	bond_put_slave_arr(slaves, num_slaves);
+ }
+ 
+ static int bond_do_ioctl(struct net_device *bond_dev, struct ifreq *ifr, int cmd)
+@@ -4287,11 +4275,11 @@ static void bond_set_slave_arr(struct bonding *bond,
+ {
+ 	struct bond_up_slave *usable, *all;
+ 
+-	usable = rtnl_dereference(bond->usable_slaves);
++	usable = bond_dereference(bond, bond->usable_slaves);
+ 	rcu_assign_pointer(bond->usable_slaves, usable_slaves);
+ 	kfree_rcu(usable, rcu);
+ 
+-	all = rtnl_dereference(bond->all_slaves);
++	all = bond_dereference(bond, bond->all_slaves);
+ 	rcu_assign_pointer(bond->all_slaves, all_slaves);
+ 	kfree_rcu(all, rcu);
+ }
+@@ -4333,6 +4321,8 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
+ 	WARN_ON(lockdep_is_held(&bond->mode_lock));
+ #endif
+ 
++	mutex_lock(&bond->slaves_lock);
++
+ 	usable_slaves = kzalloc(struct_size(usable_slaves, arr,
+ 					    bond->slave_cnt), GFP_KERNEL);
+ 	all_slaves = kzalloc(struct_size(all_slaves, arr,
+@@ -4376,17 +4366,22 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
+ 	}
+ 
+ 	bond_set_slave_arr(bond, usable_slaves, all_slaves);
++
++	mutex_unlock(&bond->slaves_lock);
++
+ 	return ret;
+ out:
+ 	if (ret != 0 && skipslave) {
+-		bond_skip_slave(rtnl_dereference(bond->all_slaves),
++		bond_skip_slave(bond_dereference(bond, bond->all_slaves),
+ 				skipslave);
+-		bond_skip_slave(rtnl_dereference(bond->usable_slaves),
++		bond_skip_slave(bond_dereference(bond, bond->usable_slaves),
+ 				skipslave);
+ 	}
+ 	kfree_rcu(all_slaves, rcu);
+ 	kfree_rcu(usable_slaves, rcu);
+ 
++	mutex_unlock(&bond->slaves_lock);
++
+ 	return ret;
+ }
+ 
+@@ -4699,6 +4694,8 @@ void bond_setup(struct net_device *bond_dev)
+ {
+ 	struct bonding *bond = netdev_priv(bond_dev);
+ 
++	mutex_init(&bond->slaves_lock);
++	mutex_init(&bond->stats_lock);
+ 	spin_lock_init(&bond->mode_lock);
+ 	bond->params = bonding_defaults;
+ 
+@@ -5189,7 +5186,6 @@ static int bond_init(struct net_device *bond_dev)
+ 	if (!bond->wq)
+ 		return -ENOMEM;
+ 
+-	spin_lock_init(&bond->stats_lock);
+ 	netdev_lockdep_set_classes(bond_dev);
+ 
+ 	list_add_tail(&bond->bond_list, &bn->dev_list);
+diff --git a/include/net/bonding.h b/include/net/bonding.h
+index adc3da776970..3fd2443e7800 100644
+--- a/include/net/bonding.h
++++ b/include/net/bonding.h
+@@ -222,7 +222,6 @@ struct bonding {
+ 	 * ALB mode (6) - to sync the use and modifications of its hash table
+ 	 */
+ 	spinlock_t mode_lock;
+-	spinlock_t stats_lock;
+ 	u8	 send_peer_notif;
+ 	u8       igmp_retrans;
+ #ifdef CONFIG_PROC_FS
+@@ -249,6 +248,14 @@ struct bonding {
+ #ifdef CONFIG_XFRM_OFFLOAD
+ 	struct xfrm_state *xs;
+ #endif /* CONFIG_XFRM_OFFLOAD */
++
++	/* Protects the slave array. TODO: convert all instances of
++	 * rtnl_dereference to bond_dereference
++	 */
++	struct mutex slaves_lock;
++
++	/* Serializes access to bond_stats */
++	struct mutex stats_lock;
+ };
+ 
+ #define bond_slave_get_rcu(dev) \
+@@ -257,6 +264,9 @@ struct bonding {
+ #define bond_slave_get_rtnl(dev) \
+ 	((struct slave *) rtnl_dereference(dev->rx_handler_data))
+ 
++#define bond_dereference(bond, p) \
++	rcu_dereference_protected(p, lockdep_is_held(&(bond)->slaves_lock))
++
+ void bond_queue_slave_event(struct slave *slave);
+ void bond_lower_state_changed(struct slave *slave);
+ 
+@@ -449,6 +459,46 @@ static inline void bond_hw_addr_copy(u8 *dst, const u8 *src, unsigned int len)
+ 	memcpy(dst, src, len);
+ }
+ 
++static inline int bond_get_slave_arr(struct bonding *bond,
++				     struct net_device ***slaves,
++				     int *num_slaves)
++{
++	struct net *net = dev_net(bond->dev);
++	struct list_head *iter;
++	struct slave *slave;
++	int i = 0;
++
++	mutex_lock(&bond->slaves_lock);
++
++	*slaves = kcalloc(bond->slave_cnt, sizeof(*slaves), GFP_KERNEL);
++	if (!(*slaves)) {
++		netif_lists_unlock(net);
++		return -ENOMEM;
++	}
++
++	bond_for_each_slave(bond, slave, iter) {
++		dev_hold(slave->dev);
++		*slaves[i++] = slave->dev;
++	}
++
++	*num_slaves = bond->slave_cnt;
++
++	mutex_unlock(&bond->slaves_lock);
++
++	return 0;
++}
++
++static inline void bond_put_slave_arr(struct net_device **slaves,
++				      int num_slaves)
++{
++	int i;
++
++	for (i = 0; i < num_slaves; i++)
++		dev_put(slaves[i]);
++
++	kfree(slaves);
++}
++
+ #define BOND_PRI_RESELECT_ALWAYS	0
+ #define BOND_PRI_RESELECT_BETTER	1
+ #define BOND_PRI_RESELECT_FAILURE	2
 -- 
 2.25.1
 
