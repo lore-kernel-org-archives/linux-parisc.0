@@ -2,62 +2,62 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F334AC433E0
-	for <linux-parisc@archiver.kernel.org>; Tue,  5 Jan 2021 19:03:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04CFCC43217
+	for <linux-parisc@archiver.kernel.org>; Wed,  6 Jan 2021 13:46:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C709022D04
-	for <linux-parisc@archiver.kernel.org>; Tue,  5 Jan 2021 19:03:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC0312311E
+	for <linux-parisc@archiver.kernel.org>; Wed,  6 Jan 2021 13:46:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730703AbhAETCF (ORCPT
+        id S1727552AbhAFNqB (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 5 Jan 2021 14:02:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
+        Wed, 6 Jan 2021 08:46:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbhAETCF (ORCPT
+        with ESMTP id S1727270AbhAFNqA (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:02:05 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 865D6C0617AA;
-        Tue,  5 Jan 2021 11:01:08 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id c7so1881250edv.6;
-        Tue, 05 Jan 2021 11:01:08 -0800 (PST)
+        Wed, 6 Jan 2021 08:46:00 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A57C06134C;
+        Wed,  6 Jan 2021 05:45:20 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id g20so5167292ejb.1;
+        Wed, 06 Jan 2021 05:45:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=o9S5VetFLcZ6A9nQu4WMhm39cSlo6GMb/Zh6iH2PAWo=;
-        b=YWokJ4VPJ94sBnkT+J4C7IXLt2kDzNBiTghXcM82L4KlMYRDSQqifLNZOGQ5Ut9y9y
-         ZYiZ82rB9AIHdypa4FsXAC26qJoxHElT0kBMRGUjrsc29JcTFDlY94P4nE2dlq8lkW5p
-         RObbbo/amQfqkKgkEHtgtEG6GmOiOS8vXyggValuLbpZUJLcOgUnstTIgSnT4Cl+PF0r
-         M7LICV5lt5TZgUn1E3t7REd9NPVkyHWhDTfuYNvSIgwZAWGeCko00gqk4ZhFi44rujaV
-         0754bHfrxdO5Y9swDHvq9Ejhryrsc5R+dyJJGPIwMT7udP2PqylpCYgrjVtcl5BRYJ9I
-         0TPQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FeJdQ/c5c3Yk5ETXkZRfgUT36HQYoNuNNY5hhZyt1Zw=;
+        b=hSC55QP6a+jYHRxCa+TgeWcHTDjcrHo0Y56fHl+KSs4kIqESl4MXCSckZ+YoDGe1N0
+         /ucn8xl1M5eSFXXgKAf04Kdczt/jlyFXX6QL+vDWgU0YMY88lU7ODUlncMy+A0k7Wb6V
+         gVY7Bc4nzPmw/XGlLPm0coTTox5ZeDmqtbdHN8b860ei4H2rqMTSuhrdd0rcInFouw/R
+         cyZPXO5ttKNNn14k60uqEsiwL/JKgt0wSxikJkAXAQY6yzhVxNF5Qz43HSCti7/04Ll0
+         m7cWPj+mnCMh+dijqzjx0K0KRLo/a9/g5MhNQaIIRCFDWqsLT1u/5cNwY0E+1g59Xx54
+         Nf5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=o9S5VetFLcZ6A9nQu4WMhm39cSlo6GMb/Zh6iH2PAWo=;
-        b=liobCGwy7ffWz3HfrUCansUyENiSZvAfkoNT4AxB/b/f55cKdgXp7/yPA6YzIYGckP
-         MAVcYLAOWkCv+of2sWHvowTDDI7IWIe0srsb9klMnMumdsDdvNJVoTdXPgEN8fZMJ7jh
-         KRizWR5YVr8nkop7Upo/OXv+dKaFuqc3O1TdiSHpuvOHN8f4eNORqBNwvzlLpRDmjegT
-         3bqNid7XNmxv4YMmsHw7P8loHurRP/MGo7q9kxY1kYwdaLB+/X1OrRYAsNCo/CWbZK32
-         fe4S1H6QSgt1s1mxvzNrd/90zbQyIcV20H9XvqFGyvZTdSjxOIULI/cmn8EGirwTpN/Y
-         CEFw==
-X-Gm-Message-State: AOAM532LEp7KHnf4/R3iU8ZE8dGC5wM5EvLFZmkIsG+HseV1lM9pFyeh
-        PVvHLfPtNaAbAT4Wo1DFHQw=
-X-Google-Smtp-Source: ABdhPJxjE2k61m92yxHS+AwU9WB9vDDtGHYZ1kuHbwT7yr8ORT7g6VgNhr8Kz8oPy6UDV4hKTq121A==
-X-Received: by 2002:a05:6402:310f:: with SMTP id dc15mr1186577edb.225.1609873267285;
-        Tue, 05 Jan 2021 11:01:07 -0800 (PST)
-Received: from localhost.localdomain (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id z13sm205084edq.48.2021.01.05.11.01.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FeJdQ/c5c3Yk5ETXkZRfgUT36HQYoNuNNY5hhZyt1Zw=;
+        b=BnV2oVCrMlTC89OoErCOxl0yjy4UjswSXm285rp9ZZJp0tUu3RtSL/kX1xX3RYBj3O
+         fUeh/7i8zVNsRxc/6CwSGKxZvMUWmN3+hdxnmh80t7xXUtjwWb015TH+jgAtbDYUzN1h
+         4exVuYeOXbtc3YByCL9w3fVHNxyAqPeTllrOlR8DYymbyEEfsX2US+J6MIKAj95f9JRw
+         uaw/DJ5uy5nQf/ZZ9Hovy4LqPTapmPcP3mDCuoFiBHuNtvaOcwKC+2JaEjqGUE94Vw9A
+         dHXUv5DYjZwRKqXOMw6bOT8ATczRtVmldUu8JVqFdqxRnPWlEfWNMaVQGoKiBdvUWmJj
+         YUZg==
+X-Gm-Message-State: AOAM533YEtyqcBjYWWV7yemnnHvukJcw5NLRk2uw4W+68qivpOG2p7Vs
+        15tyVy1v5z5u/ezyV7FjqGQ=
+X-Google-Smtp-Source: ABdhPJy+1yovqw8J45ec7rwvhTOy5Zsk9UBBbrIpibmzvsCCOp1GbbwivAw4eZio5ckmV8dO4hgrRQ==
+X-Received: by 2002:a17:906:2984:: with SMTP id x4mr2962425eje.239.1609940718823;
+        Wed, 06 Jan 2021 05:45:18 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id z26sm1470222edl.71.2021.01.06.05.45.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 11:01:06 -0800 (PST)
+        Wed, 06 Jan 2021 05:45:18 -0800 (PST)
+Date:   Wed, 6 Jan 2021 15:45:16 +0200
 From:   Vladimir Oltean <olteanv@gmail.com>
 To:     "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
@@ -81,90 +81,27 @@ Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Taehee Yoo <ap420073@gmail.com>,
         Jiri Pirko <jiri@mellanox.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Paolo Abeni <pabeni@redhat.com>,
         Christian Brauner <christian.brauner@ubuntu.com>,
         Florian Westphal <fw@strlen.de>, linux-s390@vger.kernel.org,
         intel-wired-lan@lists.osuosl.org, linux-parisc@vger.kernel.org,
         linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org,
         dev@openvswitch.org
-Subject: [RFC PATCH v2 net-next 11/12] net: mark ndo_get_stats64 as being able to sleep
-Date:   Tue,  5 Jan 2021 20:59:01 +0200
-Message-Id: <20210105185902.3922928-12-olteanv@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210105185902.3922928-1-olteanv@gmail.com>
+Subject: Re: [RFC PATCH v2 net-next 00/12] Make .ndo_get_stats64 sleepable
+Message-ID: <20210106134516.jnh2b5p5oww4cghz@skbuf>
 References: <20210105185902.3922928-1-olteanv@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105185902.3922928-1-olteanv@gmail.com>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Tue, Jan 05, 2021 at 08:58:50PM +0200, Vladimir Oltean wrote:
+> This is marked as Request For Comments for a reason.
 
-Now that all callers have been converted to not use atomic context when
-calling dev_get_stats, it is time to update the documentation and put a
-notice in the function that it expects process context.
-
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
----
- Documentation/networking/netdevices.rst | 8 ++++++--
- Documentation/networking/statistics.rst | 9 ++++-----
- net/core/dev.c                          | 2 ++
- 3 files changed, 12 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/networking/netdevices.rst b/Documentation/networking/netdevices.rst
-index 5a85fcc80c76..944599722c76 100644
---- a/Documentation/networking/netdevices.rst
-+++ b/Documentation/networking/netdevices.rst
-@@ -64,8 +64,12 @@ ndo_do_ioctl:
- 	Context: process
- 
- ndo_get_stats:
--	Synchronization: dev_base_lock rwlock.
--	Context: nominally process, but don't sleep inside an rwlock
-+	Synchronization:
-+		none. netif_lists_lock(net) might be held, but not guaranteed.
-+		It is illegal to hold rtnl_lock() in this method, since it will
-+		cause a lock inversion with netif_lists_lock and a deadlock.
-+	Context:
-+		process
- 
- ndo_start_xmit:
- 	Synchronization: __netif_tx_lock spinlock.
-diff --git a/Documentation/networking/statistics.rst b/Documentation/networking/statistics.rst
-index 234abedc29b2..ad3e353df0dd 100644
---- a/Documentation/networking/statistics.rst
-+++ b/Documentation/networking/statistics.rst
-@@ -155,11 +155,10 @@ Drivers must ensure best possible compliance with
- Please note for example that detailed error statistics must be
- added into the general `rx_error` / `tx_error` counters.
- 
--The `.ndo_get_stats64` callback can not sleep because of accesses
--via `/proc/net/dev`. If driver may sleep when retrieving the statistics
--from the device it should do so periodically asynchronously and only return
--a recent copy from `.ndo_get_stats64`. Ethtool interrupt coalescing interface
--allows setting the frequency of refreshing statistics, if needed.
-+Drivers may sleep when retrieving the statistics from the device, or they might
-+read the counters periodically and only return in `.ndo_get_stats64` a recent
-+copy collected asynchronously. In the latter case, the ethtool interrupt
-+coalescing interface allows setting the frequency of refreshing statistics.
- 
- Retrieving ethtool statistics is a multi-syscall process, drivers are advised
- to keep the number of statistics constant to avoid race conditions with
-diff --git a/net/core/dev.c b/net/core/dev.c
-index d48b75479b3e..6b7cdf8ab875 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -10389,6 +10389,8 @@ void dev_get_stats(struct net_device *dev, struct rtnl_link_stats64 *storage)
- {
- 	const struct net_device_ops *ops = dev->netdev_ops;
- 
-+	might_sleep();
-+
- 	if (ops->ndo_get_stats64) {
- 		memset(storage, 0, sizeof(*storage));
- 		ops->ndo_get_stats64(dev, storage);
--- 
-2.25.1
-
+If nobody has any objections, I will remove the memory leaks I
+introduced to check if anybody is paying attention, and I will resubmit
+this as a non-RFC series.
