@@ -2,173 +2,64 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 733D8C4332E
-	for <linux-parisc@archiver.kernel.org>; Thu, 14 Jan 2021 11:38:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92822C433E0
+	for <linux-parisc@archiver.kernel.org>; Fri, 15 Jan 2021 00:15:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4163623A50
-	for <linux-parisc@archiver.kernel.org>; Thu, 14 Jan 2021 11:38:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6263123A5A
+	for <linux-parisc@archiver.kernel.org>; Fri, 15 Jan 2021 00:15:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728996AbhANLhS (ORCPT
+        id S1727721AbhAOAPj (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 14 Jan 2021 06:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728972AbhANLhO (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 14 Jan 2021 06:37:14 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0801AC06179A
-        for <linux-parisc@vger.kernel.org>; Thu, 14 Jan 2021 03:36:08 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id b5so3045798pjl.0
-        for <linux-parisc@vger.kernel.org>; Thu, 14 Jan 2021 03:36:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4KknPcU14oAn6dzl/c3Edg+OCaB8DryL02Uf90ePZlw=;
-        b=kp5Ji1BSU4CgZgWD0QPhxWTsgcExYWvSvuaNABPB5hTr95W239seYxDXr3uXnFVoOL
-         8mZeeWU3ZXk1n2ycUYcx+4wZGiP/z+kqQ/PGPzzg03uKdzPxnRmBH3YvKl3/IrLvIdW4
-         E+TwaqLtTDQlFbaPj2V2CyIhJDWliADcWLX2CSZadvsgHHsX8CftPHChV1IX7AANXssc
-         zItUWa/HHLCo+pKCIN3vkfvjFKc7Rak3ZOs9C7lSYJDIJNo3zGNUrApY++FTwyKFy13a
-         kXoIqkIWg4kYqMMXVUzoW/mGrgZU25lrxH4VPv6RKn/Zpfh6oqnI2kiveI4/TtKjnaUe
-         tftg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4KknPcU14oAn6dzl/c3Edg+OCaB8DryL02Uf90ePZlw=;
-        b=DYr3TLEfFxW8LQZQKNeZnW3xJMDyHktemKr2r+/o2Nigcd8VfTt2erT40kBxIt4mrK
-         XCWD4sDdDMj16RksbhD/p10i8YLToLBoqH3L70rnJsiNKrK+jnm7ms+V936DgkpBtA3Z
-         q1XpDKyeAdGpAmVXYOCdMgyp36Vs2jXUxWgaJguJAdugkdHd2BszkYX3zSx4BHLIGAVh
-         Y96Q4b8huBj/PdE3A0UAJh73vuXWk3HM4k3qsTws1S262nHmMboeKub8TSjK0gGiPYOT
-         ao4bq5piYneanLB7zeUkS/6pirHoobJvoNwYhKmqAUdB5G0ZQVsIqwTSg+P+1gsn3qHC
-         gj2w==
-X-Gm-Message-State: AOAM530yaNPfHDdiWWHR2MPfE8MDl8UQFS67sFmI4lheDMHfNT8/pOtM
-        P+IsmNd6B2tJctPO/e/qCwzSSg==
-X-Google-Smtp-Source: ABdhPJxIpjnVGrrszX3TsqasLIGta7qEXa/ZKTRnt0ZaKdqKO3e1trQ7Ndh8UU02B1GL0UZ7ZP7Zpw==
-X-Received: by 2002:a17:902:bf44:b029:da:d140:6f91 with SMTP id u4-20020a170902bf44b02900dad1406f91mr7254131pls.51.1610624167614;
-        Thu, 14 Jan 2021 03:36:07 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id a18sm5150737pfg.107.2021.01.14.03.36.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Jan 2021 03:36:07 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Robert Richter <rric@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@kernel.org>, oprofile-list@lists.sf.net,
-        William Cohen <wcohen@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        anmar.oueja@linaro.org, Christoph Hellwig <hch@infradead.org>,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 09/18] arch: parisc: Remove CONFIG_OPROFILE support
-Date:   Thu, 14 Jan 2021 17:05:22 +0530
-Message-Id: <1b3e210d98d419eba4d0d648a3a181fe2190dc67.1610622251.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1610622251.git.viresh.kumar@linaro.org>
-References: <cover.1610622251.git.viresh.kumar@linaro.org>
+        Thu, 14 Jan 2021 19:15:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46320 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727047AbhAOAPi (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 14 Jan 2021 19:15:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 31EF3B27D;
+        Fri, 15 Jan 2021 00:14:57 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     James.Bottomley@HansenPartnership.com
+Cc:     deller@gmx.de, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dave@stgolabs.net,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH] parisc: Remove leftover reference to the power_tasklet
+Date:   Thu, 14 Jan 2021 16:14:48 -0800
+Message-Id: <20210115001448.117247-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The "oprofile" user-space tools don't use the kernel OPROFILE support
-any more, and haven't in a long time. User-space has been converted to
-the perf interfaces.
+This was removed long ago, back in:
 
-Remove the old oprofile's architecture specific support.
+     6e16d9409e1 ([PARISC] Convert soft power switch driver to kthread)
 
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
 ---
- arch/parisc/Kconfig           |  1 -
- arch/parisc/Makefile          |  2 --
- arch/parisc/oprofile/Makefile | 10 ----------
- arch/parisc/oprofile/init.c   | 23 -----------------------
- 4 files changed, 36 deletions(-)
- delete mode 100644 arch/parisc/oprofile/Makefile
- delete mode 100644 arch/parisc/oprofile/init.c
+ arch/parisc/include/asm/irq.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 78b17621ee4a..c2216e53fa81 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -4,7 +4,6 @@ config PARISC
- 	select ARCH_32BIT_OFF_T if !64BIT
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select HAVE_IDE
--	select HAVE_OPROFILE
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_SYSCALL_TRACEPOINTS
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index 5140c602207f..7d9f71aa829a 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -116,8 +116,6 @@ kernel-y			:= mm/ kernel/ math-emu/
- core-y	+= $(addprefix arch/parisc/, $(kernel-y))
- libs-y	+= arch/parisc/lib/ $(LIBGCC)
+diff --git a/arch/parisc/include/asm/irq.h b/arch/parisc/include/asm/irq.h
+index 959e79cd2c14..378f63c4015b 100644
+--- a/arch/parisc/include/asm/irq.h
++++ b/arch/parisc/include/asm/irq.h
+@@ -47,7 +47,4 @@ extern unsigned long txn_affinity_addr(unsigned int irq, int cpu);
+ extern int cpu_claim_irq(unsigned int irq, struct irq_chip *, void *);
+ extern int cpu_check_affinity(struct irq_data *d, const struct cpumask *dest);
  
--drivers-$(CONFIG_OPROFILE)		+= arch/parisc/oprofile/
+-/* soft power switch support (power.c) */
+-extern struct tasklet_struct power_tasklet;
 -
- boot	:= arch/parisc/boot
- 
- PALO := $(shell if (which palo 2>&1); then : ; \
-diff --git a/arch/parisc/oprofile/Makefile b/arch/parisc/oprofile/Makefile
-deleted file mode 100644
-index 86a1ccc328eb..000000000000
---- a/arch/parisc/oprofile/Makefile
-+++ /dev/null
-@@ -1,10 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--obj-$(CONFIG_OPROFILE) += oprofile.o
--
--DRIVER_OBJS = $(addprefix ../../../drivers/oprofile/, \
--		oprof.o cpu_buffer.o buffer_sync.o \
--		event_buffer.o oprofile_files.o \
--		oprofilefs.o oprofile_stats.o \
--		timer_int.o )
--
--oprofile-y				:= $(DRIVER_OBJS) init.o
-diff --git a/arch/parisc/oprofile/init.c b/arch/parisc/oprofile/init.c
-deleted file mode 100644
-index 026cba2af07a..000000000000
---- a/arch/parisc/oprofile/init.c
-+++ /dev/null
-@@ -1,23 +0,0 @@
--/**
-- * @file init.c
-- *
-- * @remark Copyright 2002 OProfile authors
-- * @remark Read the file COPYING
-- *
-- * @author John Levon <levon@movementarian.org>
-- */
--
--#include <linux/errno.h>
--#include <linux/init.h>
--#include <linux/kernel.h>
--#include <linux/oprofile.h>
--
--int __init oprofile_arch_init(struct oprofile_operations *ops)
--{
--	return -ENODEV;
--}
--
--
--void oprofile_arch_exit(void)
--{
--}
+ #endif	/* _ASM_PARISC_IRQ_H */
 -- 
-2.25.0.rc1.19.g042ed3e048af
+2.26.2
 
