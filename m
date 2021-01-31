@@ -2,73 +2,87 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B16A6C433DB
-	for <linux-parisc@archiver.kernel.org>; Thu, 28 Jan 2021 23:13:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE33FC433E0
+	for <linux-parisc@archiver.kernel.org>; Sun, 31 Jan 2021 04:31:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6E61964DD6
-	for <linux-parisc@archiver.kernel.org>; Thu, 28 Jan 2021 23:13:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B798F64E13
+	for <linux-parisc@archiver.kernel.org>; Sun, 31 Jan 2021 04:31:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhA1XNS (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 28 Jan 2021 18:13:18 -0500
-Received: from belmont80srvr.owm.bell.net ([184.150.200.80]:35510 "EHLO
-        mtlfep02.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231421AbhA1XNL (ORCPT
+        id S229594AbhAaEbP (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sat, 30 Jan 2021 23:31:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhAaEbO (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 28 Jan 2021 18:13:11 -0500
-Received: from bell.net mtlfep02 184.150.200.30 by mtlfep02.bell.net
-          with ESMTP
-          id <20210128231229.JUOI52743.mtlfep02.bell.net@mtlspm02.bell.net>
-          for <linux-parisc@vger.kernel.org>;
-          Thu, 28 Jan 2021 18:12:29 -0500
-Received: from [192.168.2.49] (really [70.50.109.22]) by mtlspm02.bell.net
-          with ESMTP
-          id <20210128231229.CSGE3672.mtlspm02.bell.net@[192.168.2.49]>;
-          Thu, 28 Jan 2021 18:12:29 -0500
-To:     linux-parisc <linux-parisc@vger.kernel.org>
-Cc:     Helge Deller <deller@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-From:   John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Bump 64-bit IRQ stack size to 64 KB
-Message-ID: <929ac002-615f-97b7-7a2b-bd1d0f89dd40@bell.net>
-Date:   Thu, 28 Jan 2021 18:12:30 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sat, 30 Jan 2021 23:31:14 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20557C061573;
+        Sat, 30 Jan 2021 20:30:33 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DSymg1Xwdz9sXk;
+        Sun, 31 Jan 2021 15:30:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612067428;
+        bh=GU1L0Y5mBTCvPlNltpWJPLGQSUEyYGCgDEE9xYRszhs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fiuKrnWLayDt7+xwyWCaRi55yhFL0wTeapGIlQiSuJhPeVSrgbPAMomSmojvLDO5v
+         5UT8/xQBV32GTxyYUQllIJlH1/u+kouBZN+ZlNreE6Krc4+/t+AMOonCdfqnHjb7kW
+         Qnb7VK6YmqRXmQBhVn43Q+Y1SSf9sUllWweeI4GOFMgYeuPcABmsPaCZwBqj9wJnoK
+         hrkGwbVzdYfJaBOmkNetXE5PWQGSzbZ7mg/HJWW5sEGqUYd1GJ6HOh8StDtd+bU+hF
+         E0QL1sPDp/2kGXZkg+Gv8Id0MEsNJ4hGQy9peVKIh4ZXVag9aNXtTevylvJMPQupXR
+         7j9tIyPPN11nA==
+Date:   Sun, 31 Jan 2021 15:30:21 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the parisc-hd tree
+Message-ID: <20210131153021.5febfe17@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-Analysis: v=2.4 cv=KPWfsHJo c=1 sm=1 tr=0 ts=601344de a=S6gQgrXzeH76ECG4GouVuA==:117 a=S6gQgrXzeH76ECG4GouVuA==:17 a=IkcTkHD0fZMA:10 a=EmqxpYm9HcoA:10 a=FBHGMhGWAAAA:8 a=vp238gT70ZhOhP3UgpEA:9 a=QEXdDO2ut3YA:10 a=9gvnlMMaQFpL9xblJ6ne:22
-X-CM-Envelope: MS4xfGJWJY1YZgj1nYS+NKKN6JuZk3LvfMK5LNAe7eRwLy7rxQWmDkx6ZwVEuigY1XbE0xw0R0QJtIyH0YlTdioUbdBYU4i2Ws3hNQWwjQ9mX3tSgh29M7lu zWRdvZ2kdP42scjSlbOD1gow4AVFhzBQjwLnN8uV/EJP5++FWxQ+wCIZdzZEluJRia5wfxaRODrjU2SPRPXI5Dbg1mI5/RE+XjE=
+Content-Type: multipart/signed; boundary="Sig_/WMdH4nh0.8TUt6Kxc4DGrIO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Bump 64-bit IRQ stack size to 64 KB.
+--Sig_/WMdH4nh0.8TUt6Kxc4DGrIO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I had a kernel IRQ stack overflow on the mx3210 debian buildd machine.  This patch increases the
-64-bit IRQ stack size to 64 KB.  The 64-bit stack size needs to be larger than the 32-bit stack
-size since registers are twice as big.
+Hi all,
 
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
+Commit
 
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index e76c86619949..60f5829d476f 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -376,7 +376,11 @@ static inline int eirr_to_irq(unsigned long eirr)
- /*
-  * IRQ STACK - used for irq handler
-  */
-+#ifdef CONFIG_64BIT
-+#define IRQ_STACK_SIZE      (4096 << 4) /* 64k irq stack size */
-+#else
- #define IRQ_STACK_SIZE      (4096 << 3) /* 32k irq stack size */
-+#endif
+  ca7222dcfff4 ("parisc: Bump 64-bit IRQ stack size to 64 KB")
 
- union irq_stack_union {
- 	unsigned long stack[IRQ_STACK_SIZE/sizeof(unsigned long)];
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/WMdH4nh0.8TUt6Kxc4DGrIO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAWMl4ACgkQAVBC80lX
+0GybWwf/U6WKgWyO+x5tIvpcPYearSYVwZJiLW1XwKcti4Pdc12TH+bscCVgk8ID
+A22IM8rfx4LLHghXpQl/oFSY0ixXXLYMwY5ant/EN3SrMuRig4qlO3V13y3icWIl
+h4BwEVUg0uS+O4jacCjo8Niiqj6ghuPRjJXtahoYoUcwrCJE2Lc/+YGpG35pc04x
+LIu4JGkhH+8Q396bHvTxsZxzL0EUtahkJzKqci4sTTx3+QBBeBUGztHqfKPtXf9n
+4LMxHe0rv9jHpZL4XiqGHz5me2hFTPi4QiRsFZRUsMemcSUaXG8IkCqoM6mGfT15
+RpfbdJq5bp/XU1fKvvQQf0tEOy5V2g==
+=z/6P
+-----END PGP SIGNATURE-----
+
+--Sig_/WMdH4nh0.8TUt6Kxc4DGrIO--
