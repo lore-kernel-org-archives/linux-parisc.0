@@ -2,87 +2,77 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE33FC433E0
-	for <linux-parisc@archiver.kernel.org>; Sun, 31 Jan 2021 04:31:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0C2EC433E0
+	for <linux-parisc@archiver.kernel.org>; Wed,  3 Feb 2021 05:28:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B798F64E13
-	for <linux-parisc@archiver.kernel.org>; Sun, 31 Jan 2021 04:31:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7AE3764F67
+	for <linux-parisc@archiver.kernel.org>; Wed,  3 Feb 2021 05:28:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbhAaEbP (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 30 Jan 2021 23:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhAaEbO (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 30 Jan 2021 23:31:14 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20557C061573;
-        Sat, 30 Jan 2021 20:30:33 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DSymg1Xwdz9sXk;
-        Sun, 31 Jan 2021 15:30:25 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612067428;
-        bh=GU1L0Y5mBTCvPlNltpWJPLGQSUEyYGCgDEE9xYRszhs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fiuKrnWLayDt7+xwyWCaRi55yhFL0wTeapGIlQiSuJhPeVSrgbPAMomSmojvLDO5v
-         5UT8/xQBV32GTxyYUQllIJlH1/u+kouBZN+ZlNreE6Krc4+/t+AMOonCdfqnHjb7kW
-         Qnb7VK6YmqRXmQBhVn43Q+Y1SSf9sUllWweeI4GOFMgYeuPcABmsPaCZwBqj9wJnoK
-         hrkGwbVzdYfJaBOmkNetXE5PWQGSzbZ7mg/HJWW5sEGqUYd1GJ6HOh8StDtd+bU+hF
-         E0QL1sPDp/2kGXZkg+Gv8Id0MEsNJ4hGQy9peVKIh4ZXVag9aNXtTevylvJMPQupXR
-         7j9tIyPPN11nA==
-Date:   Sun, 31 Jan 2021 15:30:21 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Helge Deller <deller@gmx.de>,
-        Parisc List <linux-parisc@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the parisc-hd tree
-Message-ID: <20210131153021.5febfe17@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WMdH4nh0.8TUt6Kxc4DGrIO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S231410AbhBCF2D (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 3 Feb 2021 00:28:03 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:54836 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231270AbhBCF16 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 3 Feb 2021 00:27:58 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz_MwNBpgenUCAA--.3008S2;
+        Wed, 03 Feb 2021 13:27:12 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     James.Bottomley@HansenPartnership.com, Helge Deller <deller@gmx.de>
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] parisc: Replace test_ti_thread_flag() with test_tsk_thread_flag()
+Date:   Wed,  3 Feb 2021 13:27:12 +0800
+Message-Id: <1612330032-6034-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxz_MwNBpgenUCAA--.3008S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruw1ftryUGrWxXr4xZry3XFb_yoWfKFcE93
+        WxXanrWrWfZr4fJrn8Wa93XF1Dt393ury5XrWvqwnrArykAr1UJayvvrnrZ34fur4DGF42
+        ka4kJryFkw1qkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7AYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GrWl42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8trcDUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
---Sig_/WMdH4nh0.8TUt6Kxc4DGrIO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Use test_tsk_thread_flag() directly instead of test_ti_thread_flag() to
+improve readability when the argument type is struct task_struct, it is
+similar with commit 5afc78551bf5 ("arm64: Use test_tsk_thread_flag() for
+checking TIF_SINGLESTEP").
 
-Hi all,
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/parisc/include/asm/compat.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Commit
+diff --git a/arch/parisc/include/asm/compat.h b/arch/parisc/include/asm/compat.h
+index 8f33085..1a609d3 100644
+--- a/arch/parisc/include/asm/compat.h
++++ b/arch/parisc/include/asm/compat.h
+@@ -179,7 +179,7 @@ static __inline__ void __user *arch_compat_alloc_user_space(long len)
+ 
+ static inline int __is_compat_task(struct task_struct *t)
+ {
+-	return test_ti_thread_flag(task_thread_info(t), TIF_32BIT);
++	return test_tsk_thread_flag(t, TIF_32BIT);
+ }
+ 
+ static inline int is_compat_task(void)
+-- 
+2.1.0
 
-  ca7222dcfff4 ("parisc: Bump 64-bit IRQ stack size to 64 KB")
-
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/WMdH4nh0.8TUt6Kxc4DGrIO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAWMl4ACgkQAVBC80lX
-0GybWwf/U6WKgWyO+x5tIvpcPYearSYVwZJiLW1XwKcti4Pdc12TH+bscCVgk8ID
-A22IM8rfx4LLHghXpQl/oFSY0ixXXLYMwY5ant/EN3SrMuRig4qlO3V13y3icWIl
-h4BwEVUg0uS+O4jacCjo8Niiqj6ghuPRjJXtahoYoUcwrCJE2Lc/+YGpG35pc04x
-LIu4JGkhH+8Q396bHvTxsZxzL0EUtahkJzKqci4sTTx3+QBBeBUGztHqfKPtXf9n
-4LMxHe0rv9jHpZL4XiqGHz5me2hFTPi4QiRsFZRUsMemcSUaXG8IkCqoM6mGfT15
-RpfbdJq5bp/XU1fKvvQQf0tEOy5V2g==
-=z/6P
------END PGP SIGNATURE-----
-
---Sig_/WMdH4nh0.8TUt6Kxc4DGrIO--
