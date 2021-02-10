@@ -2,147 +2,148 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-9.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AA9FC433E0
-	for <linux-parisc@archiver.kernel.org>; Wed, 10 Feb 2021 12:13:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 471A7C4332D
+	for <linux-parisc@archiver.kernel.org>; Wed, 10 Feb 2021 14:52:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AC65E64E31
-	for <linux-parisc@archiver.kernel.org>; Wed, 10 Feb 2021 12:13:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1030C64E70
+	for <linux-parisc@archiver.kernel.org>; Wed, 10 Feb 2021 14:52:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbhBJMMZ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 10 Feb 2021 07:12:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
+        id S231596AbhBJOwV (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 10 Feb 2021 09:52:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbhBJMKP (ORCPT
+        with ESMTP id S229888AbhBJOwS (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:10:15 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0141C061226
-        for <linux-parisc@vger.kernel.org>; Wed, 10 Feb 2021 04:04:37 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id f16so1607109wmq.5
-        for <linux-parisc@vger.kernel.org>; Wed, 10 Feb 2021 04:04:37 -0800 (PST)
+        Wed, 10 Feb 2021 09:52:18 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FEEDC06174A;
+        Wed, 10 Feb 2021 06:51:36 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id m1so2069215wml.2;
+        Wed, 10 Feb 2021 06:51:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+9PeUG6v1r8aFGi6ORK3pCJUjeurz7TuWVSE9CMni0c=;
-        b=vefKpoHHE9JY7wsXqdCVcvzKivbYRTXzF+0dgJaRh4tzwGHJlFAPcT6iyCPjtVk/QO
-         2nbSc5689PqMRWiH0mYBu5uUXuBmmxhvZbfVsxAu4AYbT9KkUXLQ8GUARAWnmp4QnaYC
-         qrzOL4EoDzuwTZWyGC0rpjwwcObKmnDgs1a7A=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zjhXKo3lnsUCaAO03EAAKy7XedvCevX8vo7EKjAoj3Q=;
+        b=jJ8LF025NOB5tTRRmh45iSwVNW9BiH2jesDquvAlwBgGfOycUUj9SneIWmt0+ZsKNg
+         G4jfNkdmBdVwNrf6KziMjZyDhDfsh0VTabiZ88CqjMSEyWAAB9KcF0LqWF574ojQJWfB
+         uEcBjTGL5J1sN7VltBi5masq/ykxXWJ71FekRuG1mMOVHDXcYAaB69OZ0pm/EZyGUojM
+         E8ghijNjy9n51CKDhciWDBttcc7mGU9VLnekLrNRsHhHEJw6eo3kNbDjNnFbJryP9S1m
+         HqCjtV55tT0SgA+5jTrOqavLEvYCCRxhlE/v9SL/9kkxp+24Qjc3js9+kLYBwSORR2i+
+         /jyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=+9PeUG6v1r8aFGi6ORK3pCJUjeurz7TuWVSE9CMni0c=;
-        b=rHpZG8PxBr4WBRrTdi9B/OlrCNYKcKmjkxA0G+/6hFNF3m0NqPn0ZhQGB88ll2nHcw
-         p1/gvj3iG9QmoyG/sBIij8hXihpC7MDwGoMiouQsTc9QrBDSjNjVbnOsvPQiH1r/c3B8
-         px74WjXaxL2SFk0OucLrZpaq/WGVoEC0UuY+GeMplQ2FwgqHf4Pb2ZySWrtBFWO42/Tn
-         LMjg9A8xSkbNhth5HjGCt/V4ffnKwdfI4xoMiy0KLtNyCR/Th/AzpytXfwTBZrsMEYad
-         kR9OditsEj/rriIVjZNJFHZENl8zQgUDHQpheOhF+ZI6Q2nJ/Qom8lilVJ/A9Zorcl4k
-         Acaw==
-X-Gm-Message-State: AOAM532Xtv95f7OP68y2sHJMN17qVMxJAvM8zxQjBLgvkxsKznmascSy
-        5cPMcJuX6f6uqPuEjtnd3SqKDw==
-X-Google-Smtp-Source: ABdhPJwpmZw+y59+QzJHB79z4KhJzeSBdFZ5h0S1sHnxAqBTLAPp1GIONJS8JzIW2wEz2gPnFzl8PA==
-X-Received: by 2002:a1c:9851:: with SMTP id a78mr2600203wme.66.1612958676276;
-        Wed, 10 Feb 2021 04:04:36 -0800 (PST)
-Received: from antares.lan (c.3.c.9.d.d.c.e.0.a.6.8.a.9.e.c.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:ce9a:86a0:ecdd:9c3c])
-        by smtp.gmail.com with ESMTPSA id j7sm2837854wrp.72.2021.02.10.04.04.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 04:04:35 -0800 (PST)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        bh=zjhXKo3lnsUCaAO03EAAKy7XedvCevX8vo7EKjAoj3Q=;
+        b=N0NSqR7UJcDgyWO/9pfk5rjy2qj1WSru0YnBPESxmPdaloVurwSjVrzHn/driXgDQM
+         X8PTlMUwGV+XNd5qs0dXNxnTsJb5M30fE0w1ArsgkhiUCZyzeLEKkWGsNvSNAeZDsDnX
+         ilsW5+XVTDaY3mNDCphDp2uNFHELY4tVL2cXhPNbbLhOnEWaB+BRJQcbq3KNieNy//VO
+         8JjWI6bEwRS/C7W1WLSfxk9xnAtS4qYzAK3/pvxkpZYWoqoGbDSbwTsGVMnr/77IJIis
+         sjUfvH2B6MKjv03KQhYOiSCqc7V+f63nn4HtGvWg4cBZ8VZngZoV4983t1EGrM7v8cd9
+         R7gA==
+X-Gm-Message-State: AOAM531BYnuYLAHIBaTrzjxGkPbQjsCpPNQkflsWWmmPHZW69fhi1GwZ
+        2VZSz06yZmbgh2SjqBfr8yxc40ffyFE=
+X-Google-Smtp-Source: ABdhPJzD1UwIOcK8QlbA/opY/7S8Oipu5m0gukv+y2QgFJwbqk6JJMIT/ifLddt6Wbwu5S+4rtPxqA==
+X-Received: by 2002:a1c:67c3:: with SMTP id b186mr3336454wmc.24.1612968695135;
+        Wed, 10 Feb 2021 06:51:35 -0800 (PST)
+Received: from [192.168.1.101] ([37.170.168.78])
+        by smtp.gmail.com with ESMTPSA id v15sm4054700wra.61.2021.02.10.06.51.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 06:51:34 -0800 (PST)
+Subject: Re: [PATCH bpf 1/4] net: add SO_NETNS_COOKIE socket option
+To:     Lorenz Bauer <lmb@cloudflare.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
-        sparclinux@vger.kernel.org
-Subject: [PATCH bpf 0/4] Expose network namespace cookies to user space
-Date:   Wed, 10 Feb 2021 12:04:21 +0000
-Message-Id: <20210210120425.53438-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.27.0
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     kernel-team@cloudflare.com, linux-api@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20210210120425.53438-1-lmb@cloudflare.com>
+ <20210210120425.53438-2-lmb@cloudflare.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <a922e31d-efce-35c3-c584-cf1bdcf93c5d@gmail.com>
+Date:   Wed, 10 Feb 2021 15:51:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210210120425.53438-2-lmb@cloudflare.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-We're working on a user space control plane for the BPF sk_lookup
-hook [1]. The hook attaches to a network namespace and allows
-control over which socket receives a new connection / packet.
 
-Roughly, applications can give a socket to our user space component
-to participate in custom bind semantics. This creates an edge case
-where  an application can provide us with a socket that lives in
-a different network namespace than our BPF sk_lookup program.
-We'd like to return an error in this case.
 
-Additionally, we have some user space state that is tied to the
-network namespace. We currently use the inode of the nsfs entry
-in a directory name, but this is suffers from inode reuse.
+On 2/10/21 1:04 PM, Lorenz Bauer wrote:
+> We need to distinguish which network namespace a socket belongs to.
+> BPF has the useful bpf_get_netns_cookie helper for this, but accessing
+> it from user space isn't possible. Add a read-only socket option that
+> returns the netns cookie, similar to SO_COOKIE. If network namespaces
+> are disabled, SO_NETNS_COOKIE returns the cookie of init_net.
+> 
+> The BPF helpers change slightly: instead of returning 0 when network
+> namespaces are disabled we return the init_net cookie as for the
+> socket option.
+> 
+> Cc: linux-api@vger.kernel.org
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
 
-I'm proposing to fix both of these issues by adding a new
-SO_NETNS_COOKIE socket option as well as a NS_GET_COOKIE ioctl.
-Using these we get a stable, unique identifier for a network
-namespace and check whether a socket belongs to the "correct"
-namespace.
+...
 
-NS_GET_COOKIE could be renamed to NS_GET_NET_COOKIE. I kept the
-name generic because it seems like other namespace types could
-benefit from a cookie as well.
+>  
+> +static inline u64 __sock_gen_netns_cookie(struct sock *sk)
+> +{
+> +#ifdef CONFIG_NET_NS
+> +	return __net_gen_cookie(sk->sk_net.net);
+> +#else
+> +	return __net_gen_cookie(&init_net);
+> +#endif
+> +}
+> +
+> +static inline u64 sock_gen_netns_cookie(struct sock *sk)
+> +{
+> +	u64 cookie;
+> +
+> +	preempt_disable();
+> +	cookie = __sock_gen_netns_cookie(sk);
+> +	preempt_enable();
+> +
+> +	return cookie;
+> +}
+> +
+> 
 
-I'm trying to land this via the bpf tree since this is where the
-netns cookie originated, please let me know if this isn't
-appropriate.
+I suggest we make net->net_cookie a mere u64 initialized in setup_net(),
+instead of having to preempt_disable() around reading it.
 
-1: https://www.kernel.org/doc/html/latest/bpf/prog_sk_lookup.html
+(Here and in your patch 2/4)
 
-Cc: bpf@vger.kernel.org
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-api@vger.kernel.org
-Cc: linux-arch@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
+Your patches would be much simpler.
 
-Lorenz Bauer (4):
-  net: add SO_NETNS_COOKIE socket option
-  nsfs: add an ioctl to discover the network namespace cookie
-  tools/testing: add test for NS_GET_COOKIE
-  tools/testing: add a selftest for SO_NETNS_COOKIE
+Cleanup patch :
 
- arch/alpha/include/uapi/asm/socket.h          |  2 +
- arch/mips/include/uapi/asm/socket.h           |  2 +
- arch/parisc/include/uapi/asm/socket.h         |  2 +
- arch/sparc/include/uapi/asm/socket.h          |  2 +
- fs/nsfs.c                                     |  9 +++
- include/linux/sock_diag.h                     | 20 ++++++
- include/net/net_namespace.h                   | 11 ++++
- include/uapi/asm-generic/socket.h             |  2 +
- include/uapi/linux/nsfs.h                     |  2 +
- net/core/filter.c                             |  9 ++-
- net/core/sock.c                               |  7 +++
- tools/testing/selftests/net/.gitignore        |  1 +
- tools/testing/selftests/net/Makefile          |  2 +-
- tools/testing/selftests/net/so_netns_cookie.c | 61 +++++++++++++++++++
- tools/testing/selftests/nsfs/.gitignore       |  1 +
- tools/testing/selftests/nsfs/Makefile         |  2 +-
- tools/testing/selftests/nsfs/netns.c          | 57 +++++++++++++++++
- 17 files changed, 185 insertions(+), 7 deletions(-)
- create mode 100644 tools/testing/selftests/net/so_netns_cookie.c
- create mode 100644 tools/testing/selftests/nsfs/netns.c
+https://patchwork.kernel.org/project/netdevbpf/patch/20210210144144.24284-1-eric.dumazet@gmail.com/
 
--- 
-2.27.0
 
