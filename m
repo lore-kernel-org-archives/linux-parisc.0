@@ -7,41 +7,41 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DC7CC433E9
-	for <linux-parisc@archiver.kernel.org>; Wed, 24 Feb 2021 13:38:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C2DBC4332B
+	for <linux-parisc@archiver.kernel.org>; Wed, 24 Feb 2021 13:38:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5C96264EBA
-	for <linux-parisc@archiver.kernel.org>; Wed, 24 Feb 2021 13:38:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 28B3C64ED4
+	for <linux-parisc@archiver.kernel.org>; Wed, 24 Feb 2021 13:38:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhBXNfs (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 24 Feb 2021 08:35:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50210 "EHLO mail.kernel.org"
+        id S234107AbhBXNhe (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 24 Feb 2021 08:37:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235420AbhBXMzq (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 24 Feb 2021 07:55:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8B1564F36;
-        Wed, 24 Feb 2021 12:51:47 +0000 (UTC)
+        id S234150AbhBXNIx (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 24 Feb 2021 08:08:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E43964F14;
+        Wed, 24 Feb 2021 12:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614171108;
-        bh=0yegYpsZG9GaKTZcXqT7YupMuvs+SaXzGC220Pjnm1s=;
+        s=k20201202; t=1614171305;
+        bh=1YK8oSAN7rQInznGmAOuKCx15FokfzKFU8CdTji2RAI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JBncq2l3ZBWmOvxGKJCu7YRbWPsffcQjkgCjFPJLF3KtfCxbBKAWFSC3ZT7LGEDeh
-         OAUsF8uHmms8XW0ZF/P6ua/hS7yQBYfE6a9okhFBkLQlMCiJbp+oaBExENEVON+rmC
-         Kdke7Jum1pbig3Fwk6MS77O/7ZU366Mw0CAaLeH9WoXhwvSRUP4TRADRrGUum6rZb+
-         3Ue41wpK/Ws/qtLzdRqexZk7UNVSjBV0TRKNYAJO/3HFepNs+dPc8S7aZv034cyODZ
-         tN9mCkugwWBUM7XXU3YlUmA/oQZndjXgBXvdGWSm3kcHark9uHdz0E6MtdH23z5d4M
-         +yzb8HPTaEFJA==
+        b=fReEpa4kIta+8XZk2FBo645tG9yRa7B7bRdjU28Y0y54efYR+VDhc2HLHpGwWbTQS
+         D0y3QZpLNTmkEUaHcyOPJCZOlXnclKQ/oo2C12CXQC6DzqYZcpyHayNZRUbh/enP46
+         mKBRBZ6ww5Vu03gJoX8V5ziedWJd2RXahTfBsXBv6jUGpfY4q2sM64Aml3Faqxoq5o
+         XxFjOFFhqg7zgzgLT022liGrvDEtnsWkyDehT6QbTLWnYq1VrkHY1ekSoO18PwB/I7
+         8JpVhSsm/C6S6Y944ZvbWdn6koH24ryPoSFN2/eqkWKvlJeqzZAv7t0H3/y2uoO1Fm
+         xj8SRYEV5/8KQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     John David Anglin <dave.anglin@bell.net>,
         Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
         linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 61/67] parisc: Bump 64-bit IRQ stack size to 64 KB
-Date:   Wed, 24 Feb 2021 07:50:19 -0500
-Message-Id: <20210224125026.481804-61-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 23/26] parisc: Bump 64-bit IRQ stack size to 64 KB
+Date:   Wed, 24 Feb 2021 07:54:31 -0500
+Message-Id: <20210224125435.483539-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210224125026.481804-1-sashal@kernel.org>
-References: <20210224125026.481804-1-sashal@kernel.org>
+In-Reply-To: <20210224125435.483539-1-sashal@kernel.org>
+References: <20210224125435.483539-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -68,10 +68,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index 49cd6d2caefb7..1dfb439b06928 100644
+index 0ca254085a662..c152c30c2d06d 100644
 --- a/arch/parisc/kernel/irq.c
 +++ b/arch/parisc/kernel/irq.c
-@@ -373,7 +373,11 @@ static inline int eirr_to_irq(unsigned long eirr)
+@@ -380,7 +380,11 @@ static inline int eirr_to_irq(unsigned long eirr)
  /*
   * IRQ STACK - used for irq handler
   */
