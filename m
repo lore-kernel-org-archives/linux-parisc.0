@@ -2,125 +2,89 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36641C433E0
-	for <linux-parisc@archiver.kernel.org>; Wed,  3 Mar 2021 05:56:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 534E6C001C7
+	for <linux-parisc@archiver.kernel.org>; Thu,  4 Mar 2021 00:24:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E542D64E67
-	for <linux-parisc@archiver.kernel.org>; Wed,  3 Mar 2021 05:56:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1F5DB64EA4
+	for <linux-parisc@archiver.kernel.org>; Thu,  4 Mar 2021 00:24:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237324AbhCCFsf (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 3 Mar 2021 00:48:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350878AbhCBUhD (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 2 Mar 2021 15:37:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACC7164F21;
-        Tue,  2 Mar 2021 20:36:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614717373;
-        bh=uZjEZpIetpV+hFdhoSnIL5zsoadYNrSIn5ew9suqCwI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AvLC87MaFvnJJDMhXcu0HWBmEd+/EjSjuP7/iApEZOtvzgkYh5Ht+NkWw1ntLbVyk
-         5OHTfW793+crp8lXIeVsIuBb1fod6FO7QEAE/7O/+NXMtObx87O4DCQ2ZH+uvqDeMF
-         K8y5I02VMJpIU75YTlWE25/QEtKIXKQp7agShLTOjCygu9boEpUCJ+eeCUbtKozUfm
-         IRVa7dlArx0xpa/7LSi2mmuL727JLdjxJN3K7wj3RtBgtgDVQHD1jtwACDKiYOP3cf
-         MI+YaSyJL8dOQkRdguYsgoKyBc6B7bOYD85DAYCwb3Fw4dJQ6pIouNRDIE4sI1EabU
-         2RNNC+Q7O4VOQ==
-Received: by mail-ot1-f47.google.com with SMTP id h10so10683376otm.1;
-        Tue, 02 Mar 2021 12:36:13 -0800 (PST)
-X-Gm-Message-State: AOAM532Mabag59bNpUCSYYY7k3uqaHxi7ZHAWfwiSV2onQvWlx+l1cBM
-        wLjznI5ZEcAnVunFU7hd//ewjYoNlIRiF6nX4zc=
-X-Google-Smtp-Source: ABdhPJy5LqwmQdNUTI4GHNVDze0j03fJULS/7XS7Zx7Hn47gzXxK/MeQKRSPDbvcFEEnUcJcg/H/Zhv1RizwMDzcFog=
-X-Received: by 2002:a9d:7f11:: with SMTP id j17mr20154541otq.251.1614717372783;
- Tue, 02 Mar 2021 12:36:12 -0800 (PST)
+        id S231831AbhCDAYZ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:24:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238195AbhCCOxX (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:53:23 -0500
+Received: from mail.sf-mail.de (mail.sf-mail.de [IPv6:2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830F2C06178C
+        for <linux-parisc@vger.kernel.org>; Wed,  3 Mar 2021 06:43:27 -0800 (PST)
+Received: (qmail 12710 invoked from network); 3 Mar 2021 14:43:18 -0000
+Received: from p548d4a84.dip0.t-ipconnect.de ([::ffff:84.141.74.132]:36130 HELO eto.sf-tec.de) (auth=eike@sf-mail.de)
+        by mail.sf-mail.de (Qsmtpd 0.37dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
+        for <linux-parisc@vger.kernel.org>; Wed, 03 Mar 2021 15:43:18 +0100
+From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
+To:     linux-parisc <linux-parisc@vger.kernel.org>
+Subject: Re: Cycle offset is larger than allowed by the 'jiffies' clock's max_cycles value
+Date:   Wed, 03 Mar 2021 15:43:15 +0100
+Message-ID: <2573053.mvXUDI8C0e@eto.sf-tec.de>
+In-Reply-To: <69833c49-2eb4-5f6c-fdb6-a1e01d105a8c@gmx.de>
+References: <11708426.O9o76ZdvQC@eto.sf-tec.de> <2570738.mvXUDI8C0e@daneel.sf-tec.de> <69833c49-2eb4-5f6c-fdb6-a1e01d105a8c@gmx.de>
 MIME-Version: 1.0
-References: <202103021826.7KKJWxQ2-lkp@intel.com> <CAKwvOdnCq7S68chEwSjFBPv5vsKDuzumOX19peOFDCSBCUm0jg@mail.gmail.com>
- <2e40a84f-15c6-2764-dcfd-9f5aa368b400@gmx.de> <CAKwvOdkXUAfYv415U9aE+ycLKT1rzujrBFfFHmvX47V5xHz1sA@mail.gmail.com>
- <fc099004-dbb4-b9b3-b377-ad459219c7c5@gmx.de> <YD6f2WqmYdJiNyQX@ls3530>
-In-Reply-To: <YD6f2WqmYdJiNyQX@ls3530>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 2 Mar 2021 21:35:56 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3H2c5-LE_TPkW4s8sHteKSM8FYtVUMCv9qCc20tVrniw@mail.gmail.com>
-Message-ID: <CAK8P3a3H2c5-LE_TPkW4s8sHteKSM8FYtVUMCv9qCc20tVrniw@mail.gmail.com>
-Subject: Re: hppa64-linux-ld: kernel/sched/core.o(.init.text+0x90): cannot
- reach printk
-To:     Helge Deller <deller@gmx.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        kernel test robot <lkp@intel.com>,
-        John David Anglin <dave.anglin@bell.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="nextPart11707155.O9o76ZdvQC"; micalg="pgp-sha1"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 9:28 PM Helge Deller <deller@gmx.de> wrote:
-> * Helge Deller <deller@gmx.de>:
-> > On 3/2/21 7:07 PM, Nick Desaulniers wrote:
-> > > + Arnd
-> > >
-> > > On Tue, Mar 2, 2021 at 10:03 AM Helge Deller <deller@gmx.de> wrote:
-> > > >
-> > > >
-> From: Helge Deller <deller@gmx.de>
-> Date: Tue, 2 Mar 2021 21:07:07 +0100
-> Subject: [PATCH] parisc: Enable -mlong-calls gcc option with
->  CONFIG_COMPILE_TEST
->
-> The kernel test robot reported multiple linkage problems like this:
->
->     hppa64-linux-ld: init/main.o(.init.text+0x56c): cannot reach printk
->     init/main.o: in function `unknown_bootoption':
->     (.init.text+0x56c): relocation truncated to fit: R_PARISC_PCREL22F against
->         symbol `printk' defined in .text.unlikely section in kernel/printk/printk.o
->
-> There are two ways to solve it:
-> a) Enable the -mlong-call compiler option (CONFIG_MLONGCALLS),
-> b) Add long branch stub support in 64-bit linker.
->
-> While b) is the long-term solution, this patch works around the issue by
-> automatically enabling the CONFIG_MLONGCALLS option when
-> CONFIG_COMPILE_TEST is set, which indicates that a non-production kernel
-> (e.g. 0-day kernel) is built.
->
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 00e35f2b0e8a ("parisc: Enable -mlong-calls gcc option by default when !CONFIG_MODULES")
-> Cc: stable@vger.kernel.org # v5.6+
->
-> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-> index 4e53ac46e857..afc3b8d03572 100644
-> --- a/arch/parisc/Kconfig
-> +++ b/arch/parisc/Kconfig
-> @@ -203,9 +203,12 @@ config PREFETCH
->         def_bool y
->         depends on PA8X00 || PA7200
->
-> +config PARISC_HUGE_KERNEL
-> +       def_bool y if !MODULES || UBSAN || FTRACE || COMPILE_TEST
-> +
->  config MLONGCALLS
-> -       def_bool y if !MODULES || UBSAN || FTRACE
-> -       bool "Enable the -mlong-calls compiler option for big kernels" if MODULES && !UBSAN && !FTRACE
-> +       def_bool y if PARISC_HUGE_KERNEL
-> +       bool "Enable the -mlong-calls compiler option for big kernels" if !PARISC_HUGE_KERNEL
->         depends on PA8X00
->         help
->           If you configure the kernel to include many drivers built-in instead
+--nextPart11707155.O9o76ZdvQC
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+
+Am Mittwoch, 3. M=E4rz 2021, 15:29:42 CET schrieb Helge Deller:
+> On 3/1/21 7:44 PM, Rolf Eike Beer wrote:
+> > Am Montag, 1. M=E4rz 2021, 17:49:42 CET schrieb Rolf Eike Beer:
+> >> Am Montag, 1. M=E4rz 2021, 17:25:18 CET schrieb Rolf Eike Beer:
+> >>> After upgrade to 5.11 get this multiple times per second on my C8000:
+> >>>=20
+> >>> [   36.998702] WARNING: timekeeping: Cycle offset (29) is larger than
+> >>> allowed by the 'jiffies' clock's max_cycles value (10): time overflow
+> >>> danger [   36.998705]          timekeeping: Your kernel is sick, but
+> >>> tries
+> >>> to cope by capping time updates
+>=20
+> I know I have seen this at least once with a 32-bit kernel in qemu as
+> well....
+> >> Not 5.11, but 5.10.11. 5.10.4 is fine. It could be a bad upgrade attem=
+pt,
+> >> I'll retry once I have built a proper 5.11 kernel.
+> >=20
+> > Ok, it's there also in 5.11.2:
+> You don't see it in 5.11, but in 5.11.2.
+> Sadly none of the changes between those versions seem related
+> to this problem.
+>=20
+> Do you still see this?
+> I'd like to get it anaylzed/fixed.
+
+I don't see it in 5.10.4, but in 5.11.2. I have not tried 5.11.0.
+
+Eike
+--nextPart11707155.O9o76ZdvQC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCYD+ggwAKCRBcpIk+abn8
+Ti9NAJ9Ex/FY7tiAM4Jkk4+dIQmddFMNLgCfTKiJv/4MirHCdC6xyoJLssqTLx8=
+=Kfel
+-----END PGP SIGNATURE-----
+
+--nextPart11707155.O9o76ZdvQC--
 
 
-Looks good to me, we should probably do something similar on arm with
-CONFIG_{ARM,ARM64}_MODULE_PLTS, though that only affects loadable
-modules, as the linker would insert its own trampolines during the final
-link when branch relocations are out of range.
 
-      Arnd
