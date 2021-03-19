@@ -2,333 +2,391 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-22.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25DF9C43381
-	for <linux-parisc@archiver.kernel.org>; Thu, 18 Mar 2021 12:09:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37555C4332E
+	for <linux-parisc@archiver.kernel.org>; Fri, 19 Mar 2021 14:36:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EFB1464F59
-	for <linux-parisc@archiver.kernel.org>; Thu, 18 Mar 2021 12:09:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1AF5864F4D
+	for <linux-parisc@archiver.kernel.org>; Fri, 19 Mar 2021 14:36:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbhCRMIq (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 18 Mar 2021 08:08:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57633 "EHLO
+        id S230284AbhCSOga (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 19 Mar 2021 10:36:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43100 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230400AbhCRMIV (ORCPT
+        by vger.kernel.org with ESMTP id S230229AbhCSOgQ (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:08:21 -0400
+        Fri, 19 Mar 2021 10:36:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616069301;
+        s=mimecast20190719; t=1616164575;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JlDcllrQr7DBrDcUVIaiNqS6XDXXMP0YtmA9o1iIxrY=;
-        b=BlcrYPYJACzBE8+j1S6ihTHc+MasvRZO9W2trJOlXBC1IzaigsWA9s00HpQQ4hOamhNzM2
-        6O3+ovyRHyBsZi3IzgMp8dtlysU3igKIHYDSmG5cVCOvHmWhYklLy72GkPbCdWnQmUJuO/
-        6S1AxlLsZvOruFH/HPoDRps+kTHfRvw=
+        bh=FXYl9hPij054vFEEXKLgQXfdpg6LLSdzf8h+kRhT++U=;
+        b=KmAyY3VlOUBaBExpOv2DpAzLFZaCb9/WUgtUC5IhpeXcRWobgoS6jr5uVLxyqFrvZlt3zD
+        u7Z2xQpNSHzzGHOrLIqc4Vw11ZUNSyMLLkf7zslnv5iX10+rOxyxahWRbsOOAtQWa1bZ/w
+        JELPMGTq6G785uk96XpfO7Yc+9AdkkM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-109-LtMXlIIPOV6X0T5SHt7tIw-1; Thu, 18 Mar 2021 08:08:17 -0400
-X-MC-Unique: LtMXlIIPOV6X0T5SHt7tIw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-142-5pJmeDzBN1Gy0hLj-NyWUw-1; Fri, 19 Mar 2021 10:36:12 -0400
+X-MC-Unique: 5pJmeDzBN1Gy0hLj-NyWUw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC2B9107B7C9;
-        Thu, 18 Mar 2021 12:08:14 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 456A31002388;
-        Thu, 18 Mar 2021 12:08:04 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 08:08:01 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>, x86@kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Paris <eparis@redhat.com>, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Aleksa Sarai <cyphar@cyphar.com>
-Subject: Re: [PATCH 1/2] audit: add support for the openat2 syscall
-Message-ID: <20210318120801.GK3141668@madcap2.tricolour.ca>
-References: <cover.1616031035.git.rgb@redhat.com>
- <49510cacfb5fbbaa312a4a389f3a6619675007ab.1616031035.git.rgb@redhat.com>
- <20210318104843.uiga6tmmhn5wfhbs@wittgenstein>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0C0A84BA42;
+        Fri, 19 Mar 2021 14:36:06 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-112-11.ams2.redhat.com [10.36.112.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B096F610F5;
+        Fri, 19 Mar 2021 14:35:46 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: [PATCH RFC 2/3] mm: remove xlate_dev_kmem_ptr()
+Date:   Fri, 19 Mar 2021 15:34:51 +0100
+Message-Id: <20210319143452.25948-3-david@redhat.com>
+In-Reply-To: <20210319143452.25948-1-david@redhat.com>
+References: <20210319143452.25948-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318104843.uiga6tmmhn5wfhbs@wittgenstein>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 2021-03-18 11:48, Christian Brauner wrote:
-> [+Cc Aleksa, the author of openat2()]
+Since /dev/kmem has been removed, let's remove the xlate_dev_kmem_ptr()
+leftovers.
 
-Ah!  Thanks for pulling in Aleksa.  I thought I caught everyone...
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Brian Cain <bcain@codeaurora.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Mikulas Patocka <mpatocka@redhat.com>
+Cc: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+Cc: Pierre Morel <pmorel@linux.ibm.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ arch/alpha/include/asm/io.h     |  5 -----
+ arch/arm/include/asm/io.h       |  5 -----
+ arch/hexagon/include/asm/io.h   |  1 -
+ arch/ia64/include/asm/io.h      |  1 -
+ arch/ia64/include/asm/uaccess.h | 18 ------------------
+ arch/m68k/include/asm/io_mm.h   |  5 -----
+ arch/mips/include/asm/io.h      |  5 -----
+ arch/parisc/include/asm/io.h    |  5 -----
+ arch/powerpc/include/asm/io.h   |  5 -----
+ arch/s390/include/asm/io.h      |  5 -----
+ arch/sh/include/asm/io.h        |  5 -----
+ arch/sparc/include/asm/io_64.h  |  5 -----
+ include/asm-generic/io.h        | 11 -----------
+ 13 files changed, 76 deletions(-)
 
-> and a comment below. :)
-
-Same...
-
-> On Wed, Mar 17, 2021 at 09:47:17PM -0400, Richard Guy Briggs wrote:
-> > The openat2(2) syscall was added in kernel v5.6 with commit fddb5d430ad9
-> > ("open: introduce openat2(2) syscall")
-> > 
-> > Add the openat2(2) syscall to the audit syscall classifier.
-> > 
-> > See the github issue
-> > https://github.com/linux-audit/audit-kernel/issues/67
-> > 
-> > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> > ---
-> >  arch/alpha/kernel/audit.c          | 2 ++
-> >  arch/ia64/kernel/audit.c           | 2 ++
-> >  arch/parisc/kernel/audit.c         | 2 ++
-> >  arch/parisc/kernel/compat_audit.c  | 2 ++
-> >  arch/powerpc/kernel/audit.c        | 2 ++
-> >  arch/powerpc/kernel/compat_audit.c | 2 ++
-> >  arch/s390/kernel/audit.c           | 2 ++
-> >  arch/s390/kernel/compat_audit.c    | 2 ++
-> >  arch/sparc/kernel/audit.c          | 2 ++
-> >  arch/sparc/kernel/compat_audit.c   | 2 ++
-> >  arch/x86/ia32/audit.c              | 2 ++
-> >  arch/x86/kernel/audit_64.c         | 2 ++
-> >  kernel/auditsc.c                   | 3 +++
-> >  lib/audit.c                        | 4 ++++
-> >  lib/compat_audit.c                 | 4 ++++
-> >  15 files changed, 35 insertions(+)
-> > 
-> > diff --git a/arch/alpha/kernel/audit.c b/arch/alpha/kernel/audit.c
-> > index 96a9d18ff4c4..06a911b685d1 100644
-> > --- a/arch/alpha/kernel/audit.c
-> > +++ b/arch/alpha/kernel/audit.c
-> > @@ -42,6 +42,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  		return 3;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/ia64/kernel/audit.c b/arch/ia64/kernel/audit.c
-> > index 5192ca899fe6..5eaa888c8fd3 100644
-> > --- a/arch/ia64/kernel/audit.c
-> > +++ b/arch/ia64/kernel/audit.c
-> > @@ -43,6 +43,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  		return 3;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/parisc/kernel/audit.c b/arch/parisc/kernel/audit.c
-> > index 9eb47b2225d2..fc721a7727ba 100644
-> > --- a/arch/parisc/kernel/audit.c
-> > +++ b/arch/parisc/kernel/audit.c
-> > @@ -52,6 +52,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  		return 3;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/parisc/kernel/compat_audit.c b/arch/parisc/kernel/compat_audit.c
-> > index 20c39c9d86a9..fc6d35918c44 100644
-> > --- a/arch/parisc/kernel/compat_audit.c
-> > +++ b/arch/parisc/kernel/compat_audit.c
-> > @@ -35,6 +35,8 @@ int parisc32_classify_syscall(unsigned syscall)
-> >  		return 3;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 1;
-> >  	}
-> > diff --git a/arch/powerpc/kernel/audit.c b/arch/powerpc/kernel/audit.c
-> > index a2dddd7f3d09..8f32700b0baa 100644
-> > --- a/arch/powerpc/kernel/audit.c
-> > +++ b/arch/powerpc/kernel/audit.c
-> > @@ -54,6 +54,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/powerpc/kernel/compat_audit.c b/arch/powerpc/kernel/compat_audit.c
-> > index 55c6ccda0a85..ebe45534b1c9 100644
-> > --- a/arch/powerpc/kernel/compat_audit.c
-> > +++ b/arch/powerpc/kernel/compat_audit.c
-> > @@ -38,6 +38,8 @@ int ppc32_classify_syscall(unsigned syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 1;
-> >  	}
-> > diff --git a/arch/s390/kernel/audit.c b/arch/s390/kernel/audit.c
-> > index d395c6c9944c..d964cb94cfaf 100644
-> > --- a/arch/s390/kernel/audit.c
-> > +++ b/arch/s390/kernel/audit.c
-> > @@ -54,6 +54,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/s390/kernel/compat_audit.c b/arch/s390/kernel/compat_audit.c
-> > index 444fb1f66944..f7b32933ce0e 100644
-> > --- a/arch/s390/kernel/compat_audit.c
-> > +++ b/arch/s390/kernel/compat_audit.c
-> > @@ -39,6 +39,8 @@ int s390_classify_syscall(unsigned syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 1;
-> >  	}
-> > diff --git a/arch/sparc/kernel/audit.c b/arch/sparc/kernel/audit.c
-> > index a6e91bf34d48..b6dcca9c6520 100644
-> > --- a/arch/sparc/kernel/audit.c
-> > +++ b/arch/sparc/kernel/audit.c
-> > @@ -55,6 +55,8 @@ int audit_classify_syscall(int abi, unsigned int syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/arch/sparc/kernel/compat_audit.c b/arch/sparc/kernel/compat_audit.c
-> > index 10eeb4f15b20..d2652a1083ad 100644
-> > --- a/arch/sparc/kernel/compat_audit.c
-> > +++ b/arch/sparc/kernel/compat_audit.c
-> > @@ -39,6 +39,8 @@ int sparc32_classify_syscall(unsigned int syscall)
-> >  		return 4;
-> >  	case __NR_execve:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 1;
-> >  	}
-> > diff --git a/arch/x86/ia32/audit.c b/arch/x86/ia32/audit.c
-> > index 6efe6cb3768a..57a02ade5503 100644
-> > --- a/arch/x86/ia32/audit.c
-> > +++ b/arch/x86/ia32/audit.c
-> > @@ -39,6 +39,8 @@ int ia32_classify_syscall(unsigned syscall)
-> >  	case __NR_execve:
-> >  	case __NR_execveat:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 1;
-> >  	}
-> > diff --git a/arch/x86/kernel/audit_64.c b/arch/x86/kernel/audit_64.c
-> > index 83d9cad4e68b..39de1e021258 100644
-> > --- a/arch/x86/kernel/audit_64.c
-> > +++ b/arch/x86/kernel/audit_64.c
-> > @@ -53,6 +53,8 @@ int audit_classify_syscall(int abi, unsigned syscall)
-> >  	case __NR_execve:
-> >  	case __NR_execveat:
-> >  		return 5;
-> > +	case __NR_openat2:
-> > +		return 6;
-> >  	default:
-> >  		return 0;
-> >  	}
-> > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> > index 8bb9ac84d2fb..f5616e70d129 100644
-> > --- a/kernel/auditsc.c
-> > +++ b/kernel/auditsc.c
-> > @@ -76,6 +76,7 @@
-> >  #include <linux/fsnotify_backend.h>
-> >  #include <uapi/linux/limits.h>
-> >  #include <uapi/linux/netfilter/nf_tables.h>
-> > +#include <uapi/linux/openat2.h>
-> >  
-> >  #include "audit.h"
-> >  
-> > @@ -195,6 +196,8 @@ static int audit_match_perm(struct audit_context *ctx, int mask)
-> >  		return ((mask & AUDIT_PERM_WRITE) && ctx->argv[0] == SYS_BIND);
-> >  	case 5: /* execve */
-> >  		return mask & AUDIT_PERM_EXEC;
-> > +	case 6: /* openat2 */
-> > +		return mask & ACC_MODE((u32)((struct open_how *)ctx->argv[2])->flags);
-> 
-> That looks a bit dodgy. Maybe sm like the below would be a bit better?
-
-Ah, ok, fair enough, since original flags use a u32 and this was picked
-as u64 for alignment.  It was just occurring to me last night that I
-might have the dubious honour of being the first usage of 0%llo format
-specifier in the kernel...  ;-)
-
-> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> index 47fb48f42c93..531e882a5096 100644
-> --- a/kernel/auditsc.c
-> +++ b/kernel/auditsc.c
-> @@ -159,6 +159,7 @@ static const struct audit_nfcfgop_tab audit_nfcfgs[] = {
-> 
->  static int audit_match_perm(struct audit_context *ctx, int mask)
->  {
-> +       struct open_how *openat2;
->         unsigned n;
->         if (unlikely(!ctx))
->                 return 0;
-> @@ -195,6 +196,12 @@ static int audit_match_perm(struct audit_context *ctx, int mask)
->                 return ((mask & AUDIT_PERM_WRITE) && ctx->argv[0] == SYS_BIND);
->         case 5: /* execve */
->                 return mask & AUDIT_PERM_EXEC;
-> +       case 6: /* openat2 */
-> +               openat2 = ctx->argv[2];
-> +               if (upper_32_bits(openat2->flags))
-> +                       pr_warn("Some sensible warning about unknown flags");
-> +
-> +               return mask & ACC_MODE(lower_32_bits(openat2->flags));
->         default:
->                 return 0;
->         }
-> 
-> (Ideally we'd probably notice at build-time that we've got flags
-> exceeding 32bits. Could probably easily been done by exposing an all
-> flags macro somewhere and then we can place a BUILD_BUG_ON() or sm into
-> such places.)
-> 
-> Christian
-
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+index 1f6a909d1fa5..0fab5ac90775 100644
+--- a/arch/alpha/include/asm/io.h
++++ b/arch/alpha/include/asm/io.h
+@@ -602,11 +602,6 @@ extern void outsl (unsigned long port, const void *src, unsigned long count);
+  */
+ #define xlate_dev_mem_ptr(p)	__va(p)
+ 
+-/*
+- * Convert a virtual cached pointer to an uncached pointer
+- */
+-#define xlate_dev_kmem_ptr(p)	p
+-
+ #endif /* __KERNEL__ */
+ 
+ #endif /* __ALPHA_IO_H */
+diff --git a/arch/arm/include/asm/io.h b/arch/arm/include/asm/io.h
+index fc748122f1e0..f74944c6fe8d 100644
+--- a/arch/arm/include/asm/io.h
++++ b/arch/arm/include/asm/io.h
+@@ -430,11 +430,6 @@ extern void pci_iounmap(struct pci_dev *dev, void __iomem *addr);
+  */
+ #define xlate_dev_mem_ptr(p)	__va(p)
+ 
+-/*
+- * Convert a virtual cached pointer to an uncached pointer
+- */
+-#define xlate_dev_kmem_ptr(p)	p
+-
+ #include <asm-generic/io.h>
+ 
+ #ifdef CONFIG_MMU
+diff --git a/arch/hexagon/include/asm/io.h b/arch/hexagon/include/asm/io.h
+index bda2a9c2df78..c33241425a5c 100644
+--- a/arch/hexagon/include/asm/io.h
++++ b/arch/hexagon/include/asm/io.h
+@@ -64,7 +64,6 @@ static inline void *phys_to_virt(unsigned long address)
+  * convert a physical pointer to a virtual kernel pointer for
+  * /dev/mem access.
+  */
+-#define xlate_dev_kmem_ptr(p)    __va(p)
+ #define xlate_dev_mem_ptr(p)    __va(p)
+ 
+ /*
+diff --git a/arch/ia64/include/asm/io.h b/arch/ia64/include/asm/io.h
+index 3d666a11a2de..6d93b923b379 100644
+--- a/arch/ia64/include/asm/io.h
++++ b/arch/ia64/include/asm/io.h
+@@ -277,7 +277,6 @@ extern void memset_io(volatile void __iomem *s, int c, long n);
+ #define memcpy_fromio memcpy_fromio
+ #define memcpy_toio memcpy_toio
+ #define memset_io memset_io
+-#define xlate_dev_kmem_ptr xlate_dev_kmem_ptr
+ #define xlate_dev_mem_ptr xlate_dev_mem_ptr
+ #include <asm-generic/io.h>
+ #undef PCI_IOBASE
+diff --git a/arch/ia64/include/asm/uaccess.h b/arch/ia64/include/asm/uaccess.h
+index 179243c3dfc7..e19d2dcc0ced 100644
+--- a/arch/ia64/include/asm/uaccess.h
++++ b/arch/ia64/include/asm/uaccess.h
+@@ -272,22 +272,4 @@ xlate_dev_mem_ptr(phys_addr_t p)
+ 	return ptr;
+ }
+ 
+-/*
+- * Convert a virtual cached kernel memory pointer to an uncached pointer
+- */
+-static __inline__ void *
+-xlate_dev_kmem_ptr(void *p)
+-{
+-	struct page *page;
+-	void *ptr;
+-
+-	page = virt_to_page((unsigned long)p);
+-	if (PageUncached(page))
+-		ptr = (void *)__pa(p) + __IA64_UNCACHED_OFFSET;
+-	else
+-		ptr = p;
+-
+-	return ptr;
+-}
+-
+ #endif /* _ASM_IA64_UACCESS_H */
+diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io_mm.h
+index 819f611dccf2..d41fa488453b 100644
+--- a/arch/m68k/include/asm/io_mm.h
++++ b/arch/m68k/include/asm/io_mm.h
+@@ -397,11 +397,6 @@ static inline void isa_delay(void)
+  */
+ #define xlate_dev_mem_ptr(p)	__va(p)
+ 
+-/*
+- * Convert a virtual cached pointer to an uncached pointer
+- */
+-#define xlate_dev_kmem_ptr(p)	p
+-
+ #define readb_relaxed(addr)	readb(addr)
+ #define readw_relaxed(addr)	readw(addr)
+ #define readl_relaxed(addr)	readl(addr)
+diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+index 78537aa23500..e6373e7ac892 100644
+--- a/arch/mips/include/asm/io.h
++++ b/arch/mips/include/asm/io.h
+@@ -552,11 +552,6 @@ extern void (*_dma_cache_inv)(unsigned long start, unsigned long size);
+  */
+ #define xlate_dev_mem_ptr(p)	__va(p)
+ 
+-/*
+- * Convert a virtual cached pointer to an uncached pointer
+- */
+-#define xlate_dev_kmem_ptr(p)	p
+-
+ void __ioread64_copy(void *to, const void __iomem *from, size_t count);
+ 
+ #endif /* _ASM_IO_H */
+diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
+index 8a11b8cf4719..0b5259102319 100644
+--- a/arch/parisc/include/asm/io.h
++++ b/arch/parisc/include/asm/io.h
+@@ -316,11 +316,6 @@ extern void iowrite64be(u64 val, void __iomem *addr);
+  */
+ #define xlate_dev_mem_ptr(p)	__va(p)
+ 
+-/*
+- * Convert a virtual cached pointer to an uncached pointer
+- */
+-#define xlate_dev_kmem_ptr(p)	p
+-
+ extern int devmem_is_allowed(unsigned long pfn);
+ 
+ #endif
+diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
+index 273edd208ec5..f130783c8301 100644
+--- a/arch/powerpc/include/asm/io.h
++++ b/arch/powerpc/include/asm/io.h
+@@ -662,11 +662,6 @@ static inline void name at					\
+  */
+ #define xlate_dev_mem_ptr(p)	__va(p)
+ 
+-/*
+- * Convert a virtual cached pointer to an uncached pointer
+- */
+-#define xlate_dev_kmem_ptr(p)	p
+-
+ /*
+  * We don't do relaxed operations yet, at least not with this semantic
+  */
+diff --git a/arch/s390/include/asm/io.h b/arch/s390/include/asm/io.h
+index 28664ee0abc1..e3882b012bfa 100644
+--- a/arch/s390/include/asm/io.h
++++ b/arch/s390/include/asm/io.h
+@@ -20,11 +20,6 @@ void *xlate_dev_mem_ptr(phys_addr_t phys);
+ #define unxlate_dev_mem_ptr unxlate_dev_mem_ptr
+ void unxlate_dev_mem_ptr(phys_addr_t phys, void *addr);
+ 
+-/*
+- * Convert a virtual cached pointer to an uncached pointer
+- */
+-#define xlate_dev_kmem_ptr(p)	p
+-
+ #define IO_SPACE_LIMIT 0
+ 
+ void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot);
+diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
+index 6d5c6463bc07..cf9a3ec32406 100644
+--- a/arch/sh/include/asm/io.h
++++ b/arch/sh/include/asm/io.h
+@@ -283,11 +283,6 @@ static inline void __iomem *ioremap_prot(phys_addr_t offset, unsigned long size,
+  */
+ #define xlate_dev_mem_ptr(p)	__va(p)
+ 
+-/*
+- * Convert a virtual cached pointer to an uncached pointer
+- */
+-#define xlate_dev_kmem_ptr(p)	p
+-
+ #define ARCH_HAS_VALID_PHYS_ADDR_RANGE
+ int valid_phys_addr_range(phys_addr_t addr, size_t size);
+ int valid_mmap_phys_addr_range(unsigned long pfn, size_t size);
+diff --git a/arch/sparc/include/asm/io_64.h b/arch/sparc/include/asm/io_64.h
+index 9bb27e5c22f1..ff6fe387d78c 100644
+--- a/arch/sparc/include/asm/io_64.h
++++ b/arch/sparc/include/asm/io_64.h
+@@ -450,11 +450,6 @@ void sbus_set_sbus64(struct device *, int);
+  */
+ #define xlate_dev_mem_ptr(p)	__va(p)
+ 
+-/*
+- * Convert a virtual cached pointer to an uncached pointer
+- */
+-#define xlate_dev_kmem_ptr(p)	p
+-
+ #endif
+ 
+ #endif /* !(__SPARC64_IO_H) */
+diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+index c6af40ce03be..33d4746b086f 100644
+--- a/include/asm-generic/io.h
++++ b/include/asm-generic/io.h
+@@ -1045,17 +1045,6 @@ static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
+ #endif
+ #endif /* CONFIG_GENERIC_IOMAP */
+ 
+-/*
+- * Convert a virtual cached pointer to an uncached pointer
+- */
+-#ifndef xlate_dev_kmem_ptr
+-#define xlate_dev_kmem_ptr xlate_dev_kmem_ptr
+-static inline void *xlate_dev_kmem_ptr(void *addr)
+-{
+-	return addr;
+-}
+-#endif
+-
+ #ifndef xlate_dev_mem_ptr
+ #define xlate_dev_mem_ptr xlate_dev_mem_ptr
+ static inline void *xlate_dev_mem_ptr(phys_addr_t addr)
+-- 
+2.29.2
 
