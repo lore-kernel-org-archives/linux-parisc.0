@@ -2,117 +2,136 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3668FC433E4
-	for <linux-parisc@archiver.kernel.org>; Fri, 26 Mar 2021 16:45:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E1D1C433E1
+	for <linux-parisc@archiver.kernel.org>; Fri, 26 Mar 2021 21:24:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F22FB61A36
-	for <linux-parisc@archiver.kernel.org>; Fri, 26 Mar 2021 16:45:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 25C1361A28
+	for <linux-parisc@archiver.kernel.org>; Fri, 26 Mar 2021 21:24:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhCZQpO convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 26 Mar 2021 12:45:14 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53579 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230304AbhCZQox (ORCPT
+        id S229986AbhCZVXy (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 26 Mar 2021 17:23:54 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:35548 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230026AbhCZVXj (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 26 Mar 2021 12:44:53 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-213-YTy4IFWENUi9fJgzzqBpKg-2; Fri, 26 Mar 2021 16:44:49 +0000
-X-MC-Unique: YTy4IFWENUi9fJgzzqBpKg-2
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Fri, 26 Mar 2021 16:44:48 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Fri, 26 Mar 2021 16:44:48 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Al Viro' <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>
-CC:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "Luis Chamberlain" <mcgrof@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH 3/4] exec: simplify the compat syscall handling
-Thread-Topic: [PATCH 3/4] exec: simplify the compat syscall handling
-Thread-Index: AQHXIlr1GfPxLRNSxkCVNQRYzf6AcKqWeGLg
-Date:   Fri, 26 Mar 2021 16:44:48 +0000
-Message-ID: <da94e124fad244459fe3431077c7ffa8@AcuMS.aculab.com>
+        Fri, 26 Mar 2021 17:23:39 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lPtvb-000SOd-No; Fri, 26 Mar 2021 15:23:35 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lPtva-00074S-1a; Fri, 26 Mar 2021 15:23:35 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20210326143831.1550030-1-hch@lst.de>
- <20210326143831.1550030-4-hch@lst.de>
- <YF4H58gozyNkoCeO@zeniv-ca.linux.org.uk>
-In-Reply-To: <YF4H58gozyNkoCeO@zeniv-ca.linux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        <20210326143831.1550030-4-hch@lst.de>
+Date:   Fri, 26 Mar 2021 16:22:33 -0500
+In-Reply-To: <20210326143831.1550030-4-hch@lst.de> (Christoph Hellwig's
+        message of "Fri, 26 Mar 2021 15:38:30 +0100")
+Message-ID: <m1y2e9vcdi.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-XM-SPF: eid=1lPtva-00074S-1a;;;mid=<m1y2e9vcdi.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18JI1x3OTuGSmP1SAxwgJUKnILVVDmHpGw=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: [PATCH 3/4] exec: simplify the compat syscall handling
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Al Viro
-> Sent: 26 March 2021 16:12
-> 
-> On Fri, Mar 26, 2021 at 03:38:30PM +0100, Christoph Hellwig wrote:
-> 
-> > +static const char __user *
-> > +get_user_arg_ptr(const char __user *const __user *argv, int nr)
-> >  {
-> > +	if (in_compat_syscall()) {
-> > +		const compat_uptr_t __user *compat_argv =
-> > +			compat_ptr((unsigned long)argv);
-> >  		compat_uptr_t compat;
-> >
-> > +		if (get_user(compat, compat_argv + nr))
-> >  			return ERR_PTR(-EFAULT);
-> >  		return compat_ptr(compat);
-> > +	} else {
-> > +		const char __user *native;
-> >
-> > +		if (get_user(native, argv + nr))
-> > +			return ERR_PTR(-EFAULT);
-> > +		return native;
-> > +	}
-> >  }
-> 
-> Yecchhh....  So you have in_compat_syscall() called again and again, for
-> each argument in the list?  I agree that current version is fucking ugly,
-> but I really hate that approach ;-/
+Christoph Hellwig <hch@lst.de> writes:
 
-Especially since in_compat_syscall() isn't entirely trivial on x86-64.
-Probably all in the noise for 'exec', but all the bits do add up.
 
-You may not want separate get_user() on some architectures either.
-The user_access_begin/end aren't cheap.
+> diff --git a/fs/exec.c b/fs/exec.c
+> index 06e07278b456fa..b34c1eb9e7ad8e 100644
+> --- a/fs/exec.c
+> +++ b/fs/exec.c
+> @@ -391,47 +391,34 @@ static int bprm_mm_init(struct linux_binprm *bprm)
+>  	return err;
+>  }
+>  
+> -struct user_arg_ptr {
+> -#ifdef CONFIG_COMPAT
+> -	bool is_compat;
+> -#endif
+> -	union {
+> -		const char __user *const __user *native;
+> -#ifdef CONFIG_COMPAT
+> -		const compat_uptr_t __user *compat;
+> -#endif
+> -	} ptr;
+> -};
+> -
+> -static const char __user *get_user_arg_ptr(struct user_arg_ptr argv, int nr)
+> +static const char __user *
+> +get_user_arg_ptr(const char __user *const __user *argv, int nr)
+>  {
+> -	const char __user *native;
+> -
+> -#ifdef CONFIG_COMPAT
+> -	if (unlikely(argv.is_compat)) {
+> +	if (in_compat_syscall()) {
+> +		const compat_uptr_t __user *compat_argv =
+> +			compat_ptr((unsigned long)argv);
 
-OTOH if you call copy_from_user() you get hit by the stupid
-additional costs of 'user copy hardening'.
+Ouch!  Passing a pointer around as the wrong type through the kernel!
 
-	David
+Perhaps we should reduce everything to do_execveat and
+do_execveat_compat.  Then there would be no need for anything
+to do anything odd with the pointer types.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+I think the big change would be to factor out a copy_string out
+of copy_strings, that performs all of the work once we know the proper
+pointer value.
 
+Casting pointers from one type to another scares me as one mistake means
+we are doing something wrong and probably exploitable.
+
+
+Eric
+
+
+
+
+>  		compat_uptr_t compat;
+>  
+> -		if (get_user(compat, argv.ptr.compat + nr))
+> +		if (get_user(compat, compat_argv + nr))
+>  			return ERR_PTR(-EFAULT);
+> -
+>  		return compat_ptr(compat);
+> -	}
+> -#endif
+> -
+> -	if (get_user(native, argv.ptr.native + nr))
+> -		return ERR_PTR(-EFAULT);
+> +	} else {
+> +		const char __user *native;
+>  
+> -	return native;
+> +		if (get_user(native, argv + nr))
+> +			return ERR_PTR(-EFAULT);
+> +		return native;
+> +	}
+>  }
+>  
