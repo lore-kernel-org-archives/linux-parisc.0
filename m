@@ -2,244 +2,263 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C0FBC433ED
-	for <linux-parisc@archiver.kernel.org>; Thu, 15 Apr 2021 04:39:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F52CC433ED
+	for <linux-parisc@archiver.kernel.org>; Thu, 15 Apr 2021 10:27:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2B0CC60E0B
-	for <linux-parisc@archiver.kernel.org>; Thu, 15 Apr 2021 04:39:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DE80F610CB
+	for <linux-parisc@archiver.kernel.org>; Thu, 15 Apr 2021 10:26:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbhDOEkU (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 15 Apr 2021 00:40:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:37228 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229450AbhDOEkT (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 15 Apr 2021 00:40:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0098113E;
-        Wed, 14 Apr 2021 21:39:55 -0700 (PDT)
-Received: from [10.163.73.114] (unknown [10.163.73.114])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A6073F73B;
-        Wed, 14 Apr 2021 21:39:49 -0700 (PDT)
-Subject: Re: [PATCH] mm: Define ARCH_HAS_FIRST_USER_ADDRESS
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     linux-s390@vger.kernel.org, x86@kernel.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-mips@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        openrisc@lists.librecores.org, linux-alpha@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org
-References: <1618368899-20311-1-git-send-email-anshuman.khandual@arm.com>
- <f29ba8e2-3071-c963-1e9f-e8c88526ed8d@csgroup.eu>
- <6d24d3cc-b2df-f0d7-f4bf-f505f679c77e@arm.com>
- <ec7bbb30-dbbd-197b-4d65-eb3600fe6413@csgroup.eu>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <e9d1a342-b444-efd5-d11f-79aa4d11fabc@arm.com>
-Date:   Thu, 15 Apr 2021 10:10:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232134AbhDOK1V (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 15 Apr 2021 06:27:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22534 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230474AbhDOK1V (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 15 Apr 2021 06:27:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618482417;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8cpKb0ASp+K7zcTMzICSE9fwIk8Icc72x4Rwh+Gm6ZU=;
+        b=QFMf5oW4xIJyS2VawWwWOVkd8oe0+qhYOVNmfBlqNoKWLxoPmAEFyFfPT+rrm34a23Wdfl
+        2CSv75XJ848BPGxZlOH4zW6ahiKlH+cwcBICMhlOWEXEaureLRzZQnJfKky1sY5To+bGXw
+        ayCmGCC8HFiERNZDCosNiICfklTSauo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-402-L9iFuyN8NeWhlJsvWDfwLQ-1; Thu, 15 Apr 2021 06:26:56 -0400
+X-MC-Unique: L9iFuyN8NeWhlJsvWDfwLQ-1
+Received: by mail-wr1-f70.google.com with SMTP id t18-20020adfdc120000b02900ffe4432d8bso2539326wri.6
+        for <linux-parisc@vger.kernel.org>; Thu, 15 Apr 2021 03:26:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=8cpKb0ASp+K7zcTMzICSE9fwIk8Icc72x4Rwh+Gm6ZU=;
+        b=qu9FL7v4R29EBmIBiGuaPJWAqF3v/JYr8VG51V4WW6I6IFekkAERC4u0CdgHLE5XyK
+         nHmeZt/C/uLBlgS3HZPa6X6RBa/c7mQCHjPxxbDfaxn8YKAtigjMeX6LlLvhigpsPNbq
+         +PiP+FzvNVSHL5BVjzGVqLyaoK2ZHnX0FJfAYzXmXAqkiFunidoiT+/70kM26rhF9TEi
+         1YJTQHznjIRttxel0iivhxr9omdzTu9KnVd1aFZtfF6+YMsU8pN3ipK0yXFODKup4ekA
+         5pBThlimXjr3QKNA2tn6x7RA9r9s/0ZHUL89eb4Xv/V9W8Dw27tKYNd776Ki+7ZpxHqh
+         ryaA==
+X-Gm-Message-State: AOAM53089LoKyue5+CAVhsd6xtBtZKWZIOwF8L5jBj8yf3SLw5AKkTg8
+        zR/L3smT/aNwDZHfa9l9t2C+ozzR0LKDqVK3OfZAhQTmQWPsOQOjSi27BLPr8c0bWgF2OjhAv5D
+        5lfeZ+o6RIyi63clBlJt1gDlU
+X-Received: by 2002:adf:f186:: with SMTP id h6mr2569760wro.89.1618482415084;
+        Thu, 15 Apr 2021 03:26:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwv7Q012I0Vz8MHqIPLa4Xkx+hS8m+nH/TPxEyn3JS7V7NiE9yOuvehr7qVZbxLbS4BFGfVVQ==
+X-Received: by 2002:adf:f186:: with SMTP id h6mr2569712wro.89.1618482414741;
+        Thu, 15 Apr 2021 03:26:54 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6392.dip0.t-ipconnect.de. [91.12.99.146])
+        by smtp.gmail.com with ESMTPSA id z17sm2386902wro.1.2021.04.15.03.26.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 03:26:54 -0700 (PDT)
+From:   David Hildenbrand <david@redhat.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+References: <20210317110644.25343-1-david@redhat.com>
+ <20210317110644.25343-3-david@redhat.com>
+ <CAG48ez0BQ3Vd3nDLEvyiSU0XALgUQ=c-fAwcFVScUkgo_9qVuQ@mail.gmail.com>
+ <2bab28c7-08c0-7ff0-c70e-9bf94da05ce1@redhat.com>
+ <CAG48ez20rLRNPZj6hLHQ_PLT8H60kTac-uXRiLByD70Q7+qsdQ@mail.gmail.com>
+ <26227fc6-3e7b-4e69-f69d-4dc2a67ecfe8@redhat.com>
+ <54165ffe-dbf7-377a-a710-d15be4701f20@redhat.com>
+ <5f49b60c-957d-8cb4-de7a-7c855dc72942@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 2/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
+ to prefault/prealloc memory
+Message-ID: <273f9c4b-2a1a-23e7-53b9-0da5441895b3@redhat.com>
+Date:   Thu, 15 Apr 2021 12:26:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <ec7bbb30-dbbd-197b-4d65-eb3600fe6413@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <5f49b60c-957d-8cb4-de7a-7c855dc72942@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 4/14/21 11:40 AM, Christophe Leroy wrote:
-> 
-> 
-> Le 14/04/2021 à 07:59, Anshuman Khandual a écrit :
->>
->>
->> On 4/14/21 10:52 AM, Christophe Leroy wrote:
->>>
->>>
->>> Le 14/04/2021 à 04:54, Anshuman Khandual a écrit :
->>>> Currently most platforms define FIRST_USER_ADDRESS as 0UL duplicating the
->>>> same code all over. Instead define a new option ARCH_HAS_FIRST_USER_ADDRESS
->>>> for those platforms which would override generic default FIRST_USER_ADDRESS
->>>> value 0UL. This makes it much cleaner with reduced code.
+On 07.04.21 12:31, David Hildenbrand wrote:
+> On 30.03.21 18:31, David Hildenbrand wrote:
+>> On 30.03.21 18:30, David Hildenbrand wrote:
+>>> On 30.03.21 18:21, Jann Horn wrote:
+>>>> On Tue, Mar 30, 2021 at 5:01 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>> +long faultin_vma_page_range(struct vm_area_struct *vma, unsigned long start,
+>>>>>>> +                           unsigned long end, bool write, int *locked)
+>>>>>>> +{
+>>>>>>> +       struct mm_struct *mm = vma->vm_mm;
+>>>>>>> +       unsigned long nr_pages = (end - start) / PAGE_SIZE;
+>>>>>>> +       int gup_flags;
+>>>>>>> +
+>>>>>>> +       VM_BUG_ON(!PAGE_ALIGNED(start));
+>>>>>>> +       VM_BUG_ON(!PAGE_ALIGNED(end));
+>>>>>>> +       VM_BUG_ON_VMA(start < vma->vm_start, vma);
+>>>>>>> +       VM_BUG_ON_VMA(end > vma->vm_end, vma);
+>>>>>>> +       mmap_assert_locked(mm);
+>>>>>>> +
+>>>>>>> +       /*
+>>>>>>> +        * FOLL_HWPOISON: Return -EHWPOISON instead of -EFAULT when we hit
+>>>>>>> +        *                a poisoned page.
+>>>>>>> +        * FOLL_POPULATE: Always populate memory with VM_LOCKONFAULT.
+>>>>>>> +        * !FOLL_FORCE: Require proper access permissions.
+>>>>>>> +        */
+>>>>>>> +       gup_flags = FOLL_TOUCH | FOLL_POPULATE | FOLL_MLOCK | FOLL_HWPOISON;
+>>>>>>> +       if (write)
+>>>>>>> +               gup_flags |= FOLL_WRITE;
+>>>>>>> +
+>>>>>>> +       /*
+>>>>>>> +        * See check_vma_flags(): Will return -EFAULT on incompatible mappings
+>>>>>>> +        * or with insufficient permissions.
+>>>>>>> +        */
+>>>>>>> +       return __get_user_pages(mm, start, nr_pages, gup_flags,
+>>>>>>> +                               NULL, NULL, locked);
+>>>>>>
+>>>>>> You mentioned in the commit message that you don't want to actually
+>>>>>> dirty all the file pages and force writeback; but doesn't
+>>>>>> POPULATE_WRITE still do exactly that? In follow_page_pte(), if
+>>>>>> FOLL_TOUCH and FOLL_WRITE are set, we mark the page as dirty:
+>>>>>
+>>>>> Well, I mention that POPULATE_READ explicitly doesn't do that. I
+>>>>> primarily set it because populate_vma_page_range() also sets it.
+>>>>>
+>>>>> Is it safe to *not* set it? IOW, fault something writable into a page
+>>>>> table (where the CPU could dirty it without additional page faults)
+>>>>> without marking it accessed? For me, this made logically sense. Thus I
+>>>>> also understood why populate_vma_page_range() set it.
 >>>>
->>>> Cc: linux-alpha@vger.kernel.org
->>>> Cc: linux-snps-arc@lists.infradead.org
->>>> Cc: linux-arm-kernel@lists.infradead.org
->>>> Cc: linux-csky@vger.kernel.org
->>>> Cc: linux-hexagon@vger.kernel.org
->>>> Cc: linux-ia64@vger.kernel.org
->>>> Cc: linux-m68k@lists.linux-m68k.org
->>>> Cc: linux-mips@vger.kernel.org
->>>> Cc: openrisc@lists.librecores.org
->>>> Cc: linux-parisc@vger.kernel.org
->>>> Cc: linuxppc-dev@lists.ozlabs.org
->>>> Cc: linux-riscv@lists.infradead.org
->>>> Cc: linux-s390@vger.kernel.org
->>>> Cc: linux-sh@vger.kernel.org
->>>> Cc: sparclinux@vger.kernel.org
->>>> Cc: linux-um@lists.infradead.org
->>>> Cc: linux-xtensa@linux-xtensa.org
->>>> Cc: x86@kernel.org
->>>> Cc: linux-mm@kvack.org
->>>> Cc: linux-kernel@vger.kernel.org
->>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>> ---
->>>>    arch/alpha/include/asm/pgtable.h             | 1 -
->>>>    arch/arc/include/asm/pgtable.h               | 6 ------
->>>>    arch/arm/Kconfig                             | 1 +
->>>>    arch/arm64/include/asm/pgtable.h             | 2 --
->>>>    arch/csky/include/asm/pgtable.h              | 1 -
->>>>    arch/hexagon/include/asm/pgtable.h           | 3 ---
->>>>    arch/ia64/include/asm/pgtable.h              | 1 -
->>>>    arch/m68k/include/asm/pgtable_mm.h           | 1 -
->>>>    arch/microblaze/include/asm/pgtable.h        | 2 --
->>>>    arch/mips/include/asm/pgtable-32.h           | 1 -
->>>>    arch/mips/include/asm/pgtable-64.h           | 1 -
->>>>    arch/nds32/Kconfig                           | 1 +
->>>>    arch/nios2/include/asm/pgtable.h             | 2 --
->>>>    arch/openrisc/include/asm/pgtable.h          | 1 -
->>>>    arch/parisc/include/asm/pgtable.h            | 2 --
->>>>    arch/powerpc/include/asm/book3s/pgtable.h    | 1 -
->>>>    arch/powerpc/include/asm/nohash/32/pgtable.h | 1 -
->>>>    arch/powerpc/include/asm/nohash/64/pgtable.h | 2 --
->>>>    arch/riscv/include/asm/pgtable.h             | 2 --
->>>>    arch/s390/include/asm/pgtable.h              | 2 --
->>>>    arch/sh/include/asm/pgtable.h                | 2 --
->>>>    arch/sparc/include/asm/pgtable_32.h          | 1 -
->>>>    arch/sparc/include/asm/pgtable_64.h          | 3 ---
->>>>    arch/um/include/asm/pgtable-2level.h         | 1 -
->>>>    arch/um/include/asm/pgtable-3level.h         | 1 -
->>>>    arch/x86/include/asm/pgtable_types.h         | 2 --
->>>>    arch/xtensa/include/asm/pgtable.h            | 1 -
->>>>    include/linux/mm.h                           | 4 ++++
->>>>    mm/Kconfig                                   | 4 ++++
->>>>    29 files changed, 10 insertions(+), 43 deletions(-)
+>>>> FOLL_TOUCH doesn't have anything to do with installing the PTE - it
+>>>> essentially means "the caller of get_user_pages wants to read/write
+>>>> the contents of the returned page, so please do the same things you
+>>>> would do if userspace was accessing the page". So in particular, if
+>>>> you look up a page via get_user_pages() with FOLL_WRITE|FOLL_TOUCH,
+>>>> that tells the MM subsystem "I will be writing into this page directly
+>>>> from the kernel, bypassing the userspace page tables, so please mark
+>>>> it as dirty now so that it will be properly written back later". Part
+>>>> of that is that it marks the page as recently used, which has an
+>>>> effect on LRU pageout behavior, I think - as far as I understand, that
+>>>> is why populate_vma_page_range() uses FOLL_TOUCH.
 >>>>
->>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
->>>> index 8ba434287387..47098ccd715e 100644
->>>> --- a/include/linux/mm.h
->>>> +++ b/include/linux/mm.h
->>>> @@ -46,6 +46,10 @@ extern int sysctl_page_lock_unfairness;
->>>>      void init_mm_internals(void);
->>>>    +#ifndef ARCH_HAS_FIRST_USER_ADDRESS
+>>>> If you look at __get_user_pages(), you can see that it is split up
+>>>> into two major parts: faultin_page() for creating PTEs, and
+>>>> follow_page_mask() for grabbing pages from PTEs. faultin_page()
+>>>> ignores FOLL_TOUCH completely; only follow_page_mask() uses it.
+>>>>
+>>>> In a way I guess maybe you do want the "mark as recently accessed"
+>>>> part that FOLL_TOUCH would give you without FOLL_WRITE? But I think
+>>>> you very much don't want the dirtying that FOLL_TOUCH|FOLL_WRITE leads
+>>>> to. Maybe the ideal approach would be to add a new FOLL flag to say "I
+>>>> only want to mark as recently used, I don't want to dirty". Or maybe
+>>>> it's enough to just leave out the FOLL_TOUCH entirely, I don't know.
 >>>
->>> I guess you didn't test it ..... :)
+>>> Any thoughts why populate_vma_page_range() does it?
 >>
->> In fact I did :) Though just booted it on arm64 and cross compiled on
->> multiple others platforms.
-
-I guess for all platforms, ARCH_HAS_FIRST_USER_ADDRESS would have just
-evaluated to be false hence falling back on the generic definition. So
-this never complained during build any where or during boot on arm64.
-
->>
->>>
->>> should be #ifndef CONFIG_ARCH_HAS_FIRST_USER_ADDRESS
->>
->> Right, meant that instead.
->>
->>>
->>>> +#define FIRST_USER_ADDRESS    0UL
->>>> +#endif
->>>
->>> But why do we need a config option at all for that ?
->>>
->>> Why not just:
->>>
->>> #ifndef FIRST_USER_ADDRESS
->>> #define FIRST_USER_ADDRESS    0UL
->>> #endif
->>
->> This sounds simpler. But just wondering, would not there be any possibility
->> of build problems due to compilation sequence between arch and generic code ?
->>
+>> Sorry, I missed the explanation above - thanks!
 > 
-> For sure it has to be addresses carefully, but there are already a lot of stuff like that around pgtables.h
+> Looking into the details, adjusting the FOLL_TOUCH logic won't make too
+> much of a difference for MADV_POPULATE_WRITE I guess. AFAIKs, the
+> biggest impact of FOLL_TOUCH is actually with FOLL_FORCE - which we are
+> not using, but populate_vma_page_range() is.
 > 
-> For instance, pte_offset_kernel() has a generic definition in linux/pgtables.h based on whether it is already defined or not.
 > 
-> Taking into account that FIRST_USER_ADDRESS is today in the architectures's asm/pgtables.h, I think putting the fallback definition in linux/pgtable.h would do the trick.
+> If a page was not faulted in yet,
+> faultin_page(FOLL_WRITE)->handle_mm_fault(FAULT_FLAG_WRITE) will already
+> mark the PTE/PMD/... dirty and accessed. One example is
+> handle_pte_fault(). We will mark the page accessed again via FOLL_TOUCH,
+> which doesn't seem to be strictly required.
+> 
+> 
+> If the page was already faulted in, we have three cases:
+> 
+> 1. Page faulted in writable. The page should already be dirty (otherwise
+> we would be in trouble I guess). We will mark it accessed.
+> 
+> 2. Page faulted in readable. handle_mm_fault() will fault it in writable
+> and set the page dirty.
+> 
+> 3. Page faulted in readable and we have FOLL_FORCE. We mark the page
+> dirty and accessed.
+> 
+> 
+> So doing a MADV_POPULATE_WRITE, whereby we prefault page tables
+> writable, doesn't seem to fly without marking the pages dirty. That's
+> one reason why I included MADV_POPULATE_READ.
+> 
+> We could
+> 
+> a) Drop FOLL_TOUCH. We are not marking the page accessed, which would
+> mean it gets evicted rather earlier than later.
+> 
+> b) Introduce FOLL_ACCESSED which won't do the dirtying. But then, the
+> pages are already dirty as explained above, so there isn't a real
+> observable change.
+> 
+> c) Keep it as is: Mark the page accessed and dirty. As it's already
+> dirty, that does not seem to be a real issue.
+> 
+> Am I missing something obvious? Thanks!
+> 
 
-Agreed, <linux/pgtable.h> includes <asm/pgtable.h> at the beginning and
-if the arch defines FIRST_USER_ADDRESS, the generic one afterwards would
-be skipped. The following change builds on multiple platforms.
+I did some more digging. I think there are cases for shared mappings 
+where we can have pte_write() but not pte_dirty().
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index ad086e6d7155..5da96f5df48f 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -7,7 +7,6 @@ config ARM
- 	select ARCH_HAS_DEBUG_VIRTUAL if MMU
- 	select ARCH_HAS_DMA_WRITE_COMBINE if !ARM_DMA_MEM_BUFFERABLE
- 	select ARCH_HAS_ELF_RANDOMIZE
--	select ARCH_HAS_FIRST_USER_ADDRESS
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_KEEPINITRD
- 	select ARCH_HAS_KCOV
-diff --git a/arch/nds32/Kconfig b/arch/nds32/Kconfig
-index 23ec4fcc0d0f..62313902d75d 100644
---- a/arch/nds32/Kconfig
-+++ b/arch/nds32/Kconfig
-@@ -8,7 +8,6 @@ config NDS32
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
- 	select ARCH_HAS_DMA_PREP_COHERENT
--	select ARCH_HAS_FIRST_USER_ADDRESS
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
- 	select ARCH_WANT_FRAME_POINTERS if FTRACE
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 47098ccd715e..8ba434287387 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -46,10 +46,6 @@ extern int sysctl_page_lock_unfairness;
- 
- void init_mm_internals(void);
- 
--#ifndef ARCH_HAS_FIRST_USER_ADDRESS
--#define FIRST_USER_ADDRESS	0UL
--#endif
--
- #ifndef CONFIG_NEED_MULTIPLE_NODES	/* Don't use mapnrs, do it properly */
- extern unsigned long max_mapnr;
- 
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 5e772392a379..f3da6a5cc35a 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -28,6 +28,10 @@
- #define USER_PGTABLES_CEILING	0UL
- #endif
- 
-+#ifndef FIRST_USER_ADDRESS
-+#define FIRST_USER_ADDRESS	0UL
-+#endif
-+
- /*
-  * A page table page can be thought of an array like this: pXd_t[PTRS_PER_PxD]
-  *
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 373fbe377075..4494501aa403 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -807,9 +807,6 @@ config VMAP_PFN
- config ARCH_USES_HIGH_VMA_FLAGS
- 	bool
- 
--config ARCH_HAS_FIRST_USER_ADDRESS
--	bool
--
- config ARCH_HAS_PKEYS
- 	bool
- 
+One example seems to be mm/memory.c:copy_present_pte() , used during fork.
+
+IIUC, this means that the child process can write to these pages, but 
+won't mark the PTEs dirty -- as there won't be a write fault. I'd assume 
+we'd need pte_mkclean(pte_wrprotect(pte)), but I'm fairly new to that code.
+
+(Similarly, we do an pte_mkold() without revoking any protection, 
+meaning we won't catch read accesses.)
+
+
+Maybe the logic here is that if the PTE was writable in some parent, it 
+was also dirty in some parent (at least in the one originally mapping it 
+writable). When evicting/writeback'ing file pages, we'll have go over 
+the rmap and zap all entries of any page tables either way; it's 
+sufficient if one PTE entry is dirty. I can spot that even 
+zap_pte_range() will sync the dirty flag back to the page.
+
+Am I right or is there some other magic going on? :)
+
 -- 
-2.20.1
+Thanks,
+
+David / dhildenb
+
