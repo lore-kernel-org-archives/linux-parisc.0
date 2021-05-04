@@ -2,113 +2,82 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	FROM_LOCAL_NOVOWEL,HEADER_FROM_DIFFERENT_DOMAINS,HK_RANDOM_FROM,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15B4DC43460
-	for <linux-parisc@archiver.kernel.org>; Tue,  4 May 2021 09:46:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB4CDC433B4
+	for <linux-parisc@archiver.kernel.org>; Tue,  4 May 2021 19:35:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D27D4613C3
-	for <linux-parisc@archiver.kernel.org>; Tue,  4 May 2021 09:46:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A27AC613CB
+	for <linux-parisc@archiver.kernel.org>; Tue,  4 May 2021 19:35:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhEDJrA (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 4 May 2021 05:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhEDJrA (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 4 May 2021 05:47:00 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67112C061574;
-        Tue,  4 May 2021 02:46:04 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id e7so9652923edu.10;
-        Tue, 04 May 2021 02:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FMMoB0knpTuesmL7S80gUZGP0uEA+wOrx5OG5Ck4KtQ=;
-        b=scnrBqC8w7CnFcQ5v3N0jKjMhFpIsia5XbpW2lEbIwi9mDBavP7Qr1J/E5dbLPwGGi
-         kfxu44i6CBIUFoJmRGqPshBv9v9r95jElB52yp+1cfiKLnhwlzLLBvJ24shBXg1NIf4I
-         TW09zi2ApCi7K0O8RmTHqDzya6qCTJBn9OBhagrT5amzbHwhXeTtHylqRPQlXujIQ5m7
-         d7POAwGN1dXtD187vi4ncI1maUhyl/odexxCfUhec2AoIuVpeXNTAfA4gIk5BvFakFcx
-         K989Jnpv0H72ayBFIwrONvUd3iG98IGx2L0MC4CUYyRTmUHvtvr5lFP+sLNjYy67+/go
-         hsgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FMMoB0knpTuesmL7S80gUZGP0uEA+wOrx5OG5Ck4KtQ=;
-        b=rdIz5J9eIHIXcNf2Yv207HhwLM1MNO/fjZdiZEopc+zsRSqL9CM8x5v1Yd5uz2eU3E
-         wVrzoBIGnEAGOj2qUy2mXjF/1W6TL8dptNxdmBXTKfYM9m0390aatd1PlMsibcuCCGPv
-         NDXnSr9Q3lxW8jmHOfZFc4kW5iUqtxE7xdC5ADXCX+WiM3egnKZcKH7rzKHfl9dB3UVV
-         Uh3EV35IJxur18JSRLyRAZEorI1P4zkhX+dL/85Tgssk0AiLXulgz61aClK/BHrEijNG
-         ml/dEjHuPqD2vapNsP77YHoVdGsZ97AqiUg8r0tQ7IaSybT8BHqOMz1FvtmmI1gNsk9A
-         xRIg==
-X-Gm-Message-State: AOAM531I09aLv9obgceBE7pXaQ8Rg33KSXJKAEo2OS5WTjc+uKfDa6zp
-        D0+E1pxLXhBU2KA8G/fftlilMSSa4fXYfKE+Yzg/5wrQ
-X-Google-Smtp-Source: ABdhPJytIlqBg1GSjAvtrTGNIBv6aKqTmnMnu2e5kZW0EfBKg8Xh0c84yVVu4/JqV9YTkecrWRL3P/XHYROlWQerQAk=
-X-Received: by 2002:a05:6402:34c5:: with SMTP id w5mr3386137edc.237.1620121563132;
- Tue, 04 May 2021 02:46:03 -0700 (PDT)
+        id S232537AbhEDTgZ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 4 May 2021 15:36:25 -0400
+Received: from mout.gmx.net ([212.227.17.22]:38531 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232153AbhEDTgX (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 4 May 2021 15:36:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1620156912;
+        bh=MhF99iUbOVHs7xfjC0V5C02iXA7xw2GgNnWLAdTqJL0=;
+        h=X-UI-Sender-Class:To:From:Subject:Date;
+        b=eIsDoKp4ZyQ4bxwTr/yGBocpZxgn4++CQz23AnXiB6MDWGDUQA1ANQ/3eZGxHHp8P
+         XtVxzMLkMoJ8leITuyG+l4Gyc1JixYWCCdZlAoKZibIDJaesFNIEyV02O9BkXnU1sc
+         SsN82Bt6EoSqWLDVRj/GHW7wk2AkK3HvwkqesyhM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.151.6]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MxDkm-1lKAaO2LN2-00xa3Q; Tue, 04
+ May 2021 21:35:12 +0200
+To:     linux-parisc <linux-parisc@vger.kernel.org>,
+        gentoo-hppa@lists.gentoo.org,
+        HPPA porters <debian-hppa@lists.debian.org>
+From:   Helge Deller <deller@gmx.de>
+Subject: Donation of a HP PARISC machine?
+Message-ID: <dc034df5-04f8-a9a2-80a9-297545355753@gmx.de>
+Date:   Tue, 4 May 2021 21:34:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210501172437.156926-1-masahiroy@kernel.org> <20210501172437.156926-2-masahiroy@kernel.org>
-In-Reply-To: <20210501172437.156926-2-masahiroy@kernel.org>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Tue, 4 May 2021 02:45:51 -0700
-Message-ID: <CAMo8BfJgNgNKRi9XsPUFKPzH0GvtFcRxx75+swXaofcMN7kg8Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arch: use cross_compiling to check whether it is a
- cross build or not
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
-        linux-mips@vger.kernel.org,
-        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:IbyZl7DwB5do5th3RmXisNIgpS4Gh35OcowTCYbUprrcNxUfCMQ
+ iv2NRYGar7wEeoe2pExKJWr8QYH0y8AVV0832PTnHsYVjGj1jNnu4ecmbqdG6+lqs9KXg73
+ fo4CwPaPVcFbUHZD375RYLgAVxP2nFJX+uIt/JpMwPoUx+AI0Qo+7z45Sji6RnJrpLYIlft
+ +iZnKGB5F6JszItajiXzg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QVGctdbTAX8=:XfJayBt/CEzkeryVoDGU4+
+ GFEE+rW0g0bG+y0Fm066uZTxdtWgr71URjRpvvvtklee+dxXHqufjGaAHCwLQtwEf7DbmMn10
+ 0vZ//q+IG9LrKeDY6wAwSR98A5LrcqYZNMbAui64CFVXW56xPrK7BrRVJENkoKCWq5rsh34a0
+ Hve7cCOgOchVT3+tTRK8jj22lX6smDEgB7OhOLfVMNnbSEku972TntCtl5lU2l4A4kgdfhHFw
+ N7F3/gbCR8bKDEH9yisZpOHWctf32fUlJZzZq4iMTn4f/KMWFKKx+9Co1Xcu0ItFZfyTd0qQw
+ kfuHO81nlqGJOWmJj2h32YSwYpDfxfequ89LVn0mw8Hs0wTCRBRYHjKnxQK5SEwUbzk56rydC
+ /icxo4d/3At0mX73SKsdwNikagnNtBZBCEnVoHLvdDSIwPqa21L9lrOR78goB+jJH979v3Vg4
+ K2wdkSeakjlqFObgQzyVqipbLqTS1J4PfuWFcoyYiJLg6qpj2J1TQ+u8Zbsu+ZHWM53yW0xoy
+ zLaqpDkenHLUZiID/mJ57ZYr7CqxHFpEsC8jHPKqavxPI7xJ4WsjS368a34uLIXRqOW+SP94y
+ re22PRdYG9fLHPrUq58A3ZQpcyJGUiLseGTa3xEILN9AEtZmQQ/HWZarV6hzjwp2FugJg8C8e
+ ISRkbSuK2X0r3v8hRCNJ/uqR4qrSItKOGizK67Ib/wGjpqV0q1Kh9nC0yY5DqlJVFN4bsk+EH
+ j8I/Ixkms78mY2gNS4auLOx8mvoI/NEKxYIhi9RJw5anzvEgf51Fm8kkYBJmo5yVhx7qmQS4X
+ q1jbs6GSSTIib48IizJaIysYMPYkUjOYB1X4tdJrGFZYLQCWAUHrwHjQSiG08bEcV4jhbo0Os
+ mYS91YO0oHVq2N8cZDA1wCtuzQ1XwRG5grtdA0LGvyEv2WjYjuTXUeRmMvWDtkuv3MF6FICSg
+ Rqm8WFllr6adNmNuwoI5HFyM7PtxZHoEEHsyz5GcYop9P6jaQ5emGmnTJJUmCD3SVK73C5IQ0
+ a/Le7mxMK6EF5swYTMXNDJIHXmdYFIkp5UjSP1MAXjLw+yvWvAlY8YQ14wmnbM2KrRYMGSVLu
+ mWhNdnw6Mh8XFQwrUyZQ4tCrZz7tFsSY9H6CsyhLbYuAVffLqL8ekHuNN1Sz/flpMTwCs8dAg
+ qAxl6YIyRoAPOZQTPCz0GpKJ8iL2KEdhYVibdfKwmzUD5Q7n3smDqzewGUaJOaKogDRLM=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Sat, May 1, 2021 at 10:25 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> 'cross_compiling' is defined by the top Makefile and available for
-> arch Makefiles to check whether it is a cross build or not. A good
-> thing is the variable name 'cross_compiling' is self-documenting.
->
-> This is a simple replacement for m68k, mips, sh, for which $(ARCH)
-> and $(SRCARCH) always match.
->
-> No functional change is intended for xtensa, either.
->
-> This is rather a fix for parisc because arch/parisc/Makefile defines
-> UTS_MATCHINE depending on CONFIG_64BIT, therefore cc-cross-prefix
-> is not working in Kconfig time.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  arch/m68k/Makefile   | 2 +-
->  arch/mips/Makefile   | 2 +-
->  arch/parisc/Makefile | 2 +-
->  arch/sh/Makefile     | 2 +-
->  arch/xtensa/Makefile | 6 +-----
->  5 files changed, 5 insertions(+), 9 deletions(-)
+Dear PARISC Linux fans,
 
-Acked-by: Max Filippov <jcmvbkbc@gmail.com> # xtensa
+Sadly the power supply unit of our main PARISC machine (http://a500.parisc-linux.org) died.
+It hosted old mailing lists, the parisc FTP website and was building debian packages.
 
--- 
-Thanks.
--- Max
+It was an old HP A500-44 machine (rp24xx) which was sponsored by HP around year 2000
+to the PA-RISC Linux project, and hosted since 2014 at OSUOSL in the US.
+
+If you own a PA-RISC server in the US which you would like to offer for free to the parisc project,
+now is the time to stand up and get your name mentioned on the PA-RISC sponsor list!
+
+Helge
