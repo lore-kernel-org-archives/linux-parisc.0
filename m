@@ -2,82 +2,124 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36496C07E95
-	for <linux-parisc@archiver.kernel.org>; Wed,  7 Jul 2021 15:31:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A8D3C11F66
+	for <linux-parisc@archiver.kernel.org>; Wed,  7 Jul 2021 20:40:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1E7F0619C0
-	for <linux-parisc@archiver.kernel.org>; Wed,  7 Jul 2021 15:31:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1477661CEA
+	for <linux-parisc@archiver.kernel.org>; Wed,  7 Jul 2021 20:40:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbhGGPeb (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 7 Jul 2021 11:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbhGGPeb (ORCPT
+        id S232684AbhGGUmy (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 7 Jul 2021 16:42:54 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:43209 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232893AbhGGUmx (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 7 Jul 2021 11:34:31 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7DFC061574;
-        Wed,  7 Jul 2021 08:31:50 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id w13so2125610wmc.3;
-        Wed, 07 Jul 2021 08:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BQn9a4zjHHkcyd8nWBIk09uRnMx2xEYAXpXVNFTpdbA=;
-        b=FywxYZ0w7PhbZPy1z43/Z/FLPkbHVBVsZu/4+U+T+ZpeEOaC5cJnIIczucsqHHX+dV
-         jTu8LDX7kJdN5fiqEId9ExAklTEFb1GUGKifRGmvaP2vwhfp7yM1Snv8dqU2fAzEsp9m
-         t3mNgD2ksPAVYw0aT6Oc1gLHoukmAhBf4vui5DBFMd0ujxN2+yNEYERUKMJaC+i3rSO0
-         q4X7wbJel6JA1YSkeSzSHAOLjI5fHhIYEL+xfmrQ5XvlcRyQ60TWZ5TLNcYt5LAFkxac
-         IYAqzbk2fsCz/15pW/eaIhAobTpAqj10f2iJ8C085iyou6Gn3Of5yRu2l/eHbnbh+DAv
-         Z0JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BQn9a4zjHHkcyd8nWBIk09uRnMx2xEYAXpXVNFTpdbA=;
-        b=HtULEtMGLJ9tFaqgvcxzUDGn1FNvpB0jpu6lv2ZhqDlBuFhvFB4OW+bo6h+Xy+8Uwh
-         /YbvQ3k8+qs6FitLFDAQ3wW+QtidRStcYNx0l4EThUhcUQggN1234jYTxMH7Tnjl4xa3
-         UwO1ow1uzjY0L6LH1LMA1X5o+5L8NAj/P0Ii4N8C9nvZ5bpk6dx/S9MK2HHcD0bGwI4k
-         tT1ZzsUvyrHeAsYcnGRik74oIptYcXJ2qR6Ws+tOS1+ugo3d/5+4vo7OLb5Sddl1DlNN
-         ZaDqoqBb351w8M248Mx6GNEIhKB/lGcgHlKJKM2LZTW+dCAeqCKYM5h4TgVeua9UjoXE
-         8/7w==
-X-Gm-Message-State: AOAM5329eeKz8Xd8e0sp+cXIMvDqikANoGEnSbUYeZJ9GJHQiTN6arWr
-        lj/ju+cS2DSodItnIOLoLkA=
-X-Google-Smtp-Source: ABdhPJw1Vcl8Qu3j3vcqh7x0hGEs+y8bp1eskE1vLjJ0m2ypT/PAEsFSOOECDxtDNjAMNRedjrZTbA==
-X-Received: by 2002:a05:600c:206:: with SMTP id 6mr185653wmi.139.1625671909447;
-        Wed, 07 Jul 2021 08:31:49 -0700 (PDT)
-Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
-        by smtp.gmail.com with ESMTPSA id o3sm20847579wrw.56.2021.07.07.08.31.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 08:31:48 -0700 (PDT)
-From:   Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-To:     arnd@arndb.de
-Cc:     hch@infradead.org, deller@gmx.de, dave.anglin@bell.net,
-        axboe@kernel.dk, bernie@develer.com, linux-parisc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: div_u64/do_div stack size usage, was Re: [v3] block: Removed a warning while compiling with a cross compiler for parisc
-Date:   Wed,  7 Jul 2021 17:30:53 +0200
-Message-Id: <20210707153053.62237-1-abd.masalkhi@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc1.dirty
-In-Reply-To: <CAK8P3a23=tcWx8iWNAKXcT9TRgPrZbEVVy9a_ad29hSde_jkKg@mail.gmail.com>
-References: <CAK8P3a23=tcWx8iWNAKXcT9TRgPrZbEVVy9a_ad29hSde_jkKg@mail.gmail.com>
+        Wed, 7 Jul 2021 16:42:53 -0400
+Received: from mail-wm1-f50.google.com ([209.85.128.50]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N5FxN-1l13Og0AFR-0118yd; Wed, 07 Jul 2021 22:40:11 +0200
+Received: by mail-wm1-f50.google.com with SMTP id u8-20020a7bcb080000b02901e44e9caa2aso2527548wmj.4;
+        Wed, 07 Jul 2021 13:40:10 -0700 (PDT)
+X-Gm-Message-State: AOAM530U7WKuuH7jtqH1QT94meDJldyPPnBEuko0ZP796ICuFNSCPCZV
+        MWO+9nXvtZgkPnsweyMOb+KrY16wkPYtnZj0X20=
+X-Google-Smtp-Source: ABdhPJxVhxtjWfZENqb3qvXdchtUZVs1vrewX7U1cQSc9Fj2KhtkQ4WGJ9YiQMCY07djksJd1iz9gKY3FqcUV7dSneo=
+X-Received: by 2002:a1c:c90f:: with SMTP id f15mr1030507wmb.142.1625690410658;
+ Wed, 07 Jul 2021 13:40:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAK8P3a2mAQOnTxBhVzVA8q8O-uVrdidCN5h5-T2dc0=Wet2uPQ@mail.gmail.com>
+ <20210706205927.4407-1-abd.masalkhi@gmail.com> <CAK8P3a23=tcWx8iWNAKXcT9TRgPrZbEVVy9a_ad29hSde_jkKg@mail.gmail.com>
+ <YOWt2swxONAvhesH@ls3530>
+In-Reply-To: <YOWt2swxONAvhesH@ls3530>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 7 Jul 2021 22:39:54 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1EFuqgZGdpWzib3RxFf6TXCy_CUTZx2ekd0wTbdNdoxg@mail.gmail.com>
+Message-ID: <CAK8P3a1EFuqgZGdpWzib3RxFf6TXCy_CUTZx2ekd0wTbdNdoxg@mail.gmail.com>
+Subject: Re: div_u64/do_div stack size usage, was Re: [v3] block: Removed a
+ warning while compiling with a cross compiler for parisc
+To:     Helge Deller <deller@gmx.de>
+Cc:     Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Bernardo Innocenti <bernie@develer.com>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:YjQw2VVw6gmdv/M8o6CCNhN/4FZCpRizx+SBpO+cI4W9e51x779
+ j1Uz3KIdiVzD2/tMF+POr8Le36PzJijuOp+YlZx5X0Pci5LqDDubQu2hsX+Hmq4b0eNs1RU
+ KpnWNzsF+isGDaV8ux7vNb3IgIU3OFWmEYI5UaBk99xLf0JyPUA+4onytNqm6C99R+E+Z97
+ 8mLWPqcfXJLdQL2/O2H9Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pYDxCV0MjDg=:aPOinCfYTKz16Qxj89APz1
+ 2k/Ag0pfhxWd8/klk/zD3jTzJtvutll7rohtWwmVLvl9vc2ecLKORjo4MWKph/ntF/DGeiTKl
+ /1+wGPjRNA7t+EBN/J5W8PWXunMkTIvtCna8KglfBYVb9yKQUeQWFCLoagK5sSD8FgsEO5H9h
+ NMu3Zkhe4Mesyr/NksCikiSK9Ro1Xp99CQtaPcgEeFGbGl07hBoduuvF6Yofodi9wCiKuTqHg
+ J1qHNWd0Q+HzudrXWBZfWr+8rUTVWHQwVtw69ddlEOMdC60ZZFrnLOtiIswYTIvkkYSpZp9l3
+ 468lMFVooEn8DrQpIYDkuLDRQsUhcADhhmTduXfMkYGv2AuH2WQ8TNqtj4HtcvwVmTy0zQE2+
+ GqrUqkQpej+Zq09Q/CuHQrW/YsuuAjkAgrckYYkb/icjya8X1MPBdBkeUXtqyVe55mqXdji2k
+ IYocjwFJzC88xN+a8SJW8JJ8tdlZzQhlQGroPsR8x5D5uiAIUgbBtbu6yGA192Zoa0Q0CEyHc
+ +dieaIhOo15a4GFZRSWi2Y/fJI8QNRofdZyofhUY+wLrz10XdZf64UudX96r/b1qVbDJXwGci
+ njZouAYfWDjTcBwXJxGq6BTr9lcI/vUZs8vrHeVc098Zxfw4RBOUTnvNnY6P2qEGyXD6b3KSL
+ 8AdPlAoqIke9ChnobmAQMGErHq9qwKm+POYMiUe4OumgV+s4l+MgC9EJW8YzcF/NKJYuRSWUR
+ qLsCpUCOHVwUm5O7q84P2rQ1MqTiDzWmMODxiODqduZUL0kqWtbdtlo2NWkigZOnWEhZ23Qzr
+ S6VkHaNCHvCV3EKSFX6OQ1PY1r+ULJdUPhuw18KK8f/OKTuJOFveMWLLANOR1xIded/3f0/LB
+ b/a+tK85FYEH+xYQ4X2vicBo5wjRIXOR7wIaAH7ZSqOy8Br3kxt/Ri9Dyv81qd2tTH/e95gr7
+ xnGKB4yoxb2piw+i3VRbKBO27k4M/xNSALkbMHxS64aDKum+AIjnb
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Sorry for late respond, I was at work. The problem was solved for me too,
-after setting the CONFIG_CC_OPTIMIZE_FOR_SIZE, and I have went through the
-gcc 9.4 manual to look for the -f option for -O2, it seems that all -f option
-that we would not specify is already excluded with -Os. changing defconfig, it
-seems for me a good idea.
+On Wed, Jul 7, 2021 at 3:36 PM Helge Deller <deller@gmx.de> wrote:
+> * Arnd Bergmann <arnd@arndb.de>:
+> > My first thought was this was a result of -finline-functions getting
+> > enabled by default in gcc-10, but enabling it on gcc-9 did not
+> > help here. It's likely that the gcc behavior was fixed in the process
+> > of enabling the more aggressive inliner by default though.
+> >
+> > I also tried building genhd.o for every architecture that has
+> > gcc-9.4 support and did not find the problem anywhere except
+> > on parisc.
+> >
+> > Using CONFIG_CC_OPTIMIZE_FOR_SIZE did solve the
+> > problem for me (frame size down to 164 bytes), but I could not
+> > pinpoint a specific -f option that fixes it for -O2. Maybe we can
+> > simply change the defconfig here? 32-bit parisc systems are
+> > probably memory limited enough that building a -Os kernel
+> > is a good idea anyway. 64-bit parisc already builds with -Os
+> > but does not see the warning with -O2 either.
+>
+> I agree that the simplest solution is to increase the default value for
+> parisc here.
+> On parisc we have a 32k stack (either 1x32k or 2x16k when using IRQ
+> stacks). I increased the default value to 1280 in 2017, but as can be
+> seen here this isn't sufficient. Either way, we have an active runtime
+> check for stack overflows which has never triggered yet, so let's just
+> remove the compiler warning by increasing the value to 2048. Patch is
+> below.
+>
+> [PATCH] parisc: Increase gcc stack frame check to 2048 for 32- and 64-bit
+>
+> parisc uses much bigger frames than other architectures, so increase the
+> stack frame check value to 2048 to avoid compiler warnings.
 
-Abd-Alrhman
+I think setting it to 2048 is rather excessive, and it would make you miss
+other real bugs. What I suggested was to change the defconfig to use
+CONFIG_CC_OPTIMIZE_FOR_SIZE instead.
+
+The reasoning for the 1280 byte limit on parisc is that it needs a few extra
+bytes for its larger stack frames, and 1024 for the other 32-bit architectures
+is only there because anything smaller warns for a handful of functions
+that are fine-tuned to need slightly less than that, when the call chain
+is predictable and using less would impact performance.
+
+I actually think we should reduce the warning limit for 64-bit architectures
+to 1280 bytes as well, but that triggers a couple of warnings that still
+need to be resolved first. In almost all cases, a kernel function needing
+more than 512 bytes is an indication of either a bug in the kernel, or
+(rarely) in the compiler.
+
+        Arnd
