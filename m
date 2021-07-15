@@ -2,93 +2,269 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83799C07E96
-	for <linux-parisc@archiver.kernel.org>; Thu, 15 Jul 2021 16:47:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F7D5C07E96
+	for <linux-parisc@archiver.kernel.org>; Thu, 15 Jul 2021 16:47:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6844761285
-	for <linux-parisc@archiver.kernel.org>; Thu, 15 Jul 2021 16:47:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3224161285
+	for <linux-parisc@archiver.kernel.org>; Thu, 15 Jul 2021 16:47:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhGOQul (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 15 Jul 2021 12:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhGOQuk (ORCPT
+        id S234018AbhGOQtE (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 15 Jul 2021 12:49:04 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:49878 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232312AbhGOQtD (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:50:40 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B48DC06175F;
-        Thu, 15 Jul 2021 09:47:47 -0700 (PDT)
+        Thu, 15 Jul 2021 12:49:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=r4iZBSBArnzjTS6KLDRlSR7w7S6swyImdOsNDPS7Sis=; b=hXyaSz1urrT6N85UjIGFUt7af
-        PiwXb128VN8Nd6dy5SRYwLWwy0SU/ypNmQ5JkYOh1JS2knojDgYLwXthStegnsrmI09YsBKkM5MPT
-        OFWdJtkr7MnIGIFr7Eu7JUWtgArfiSNHXwRV9gQpKR7ScC2Ix9rrzYF2dvjCFdX/L00fOFO76Of4w
-        hfdI4vD/xWj3aJ5FF/avwPxEPbK5jVDDQhEdaOQcff3CqVbPu67/A/baLdEvLiryu7GoHqX4uA6Jq
-        sI/hDfVhZXyZM218k0a5xjDhDyNTv0Fs4cTLfiUQQBY6IBzO7IExkNkK9UfN7Fkbsk7TGJ83IM+Fn
-        E9B14gOZQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46186)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        d=deltatee.com; s=20200525; h=Subject:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Cc:To:From:content-disposition;
+        bh=/ZjAKpP+xtoLSt0xIUNWk06GZCmP1KYNzn5sdNvjMLc=; b=RvAQi9Be5RoUt+b+womRZvqR2/
+        zPvtxnnvKbr2GfA6Y1S19lttjjb0+uXmyfr1GZv0QURmadEezyXV/yCfISkuDivKMcMvxfnjRKqWJ
+        TWTGeEOsZG2VQJ2CgUk6gjAb5T0Wf3tIYM0CK2spWqT6a6y5Pjcf50YSSCBD25Gtea8xZMwkkFrPs
+        omRM7+zAnzWrOykfqCb9Zqerp9GY224r23nr8rD6354qzDaXT67t2AD2Z4WoKhhq2fwquMJ0TyJ4+
+        ZzFc0S2GozZb5bdlQ3bP1qXzqY0Gpuxzq1qkKar09J0/k+jdx+qqQj48MyHWczZ4uRn2ehZj3rADJ
+        l3rgUqJQ==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1m44WV-000147-6i; Thu, 15 Jul 2021 17:47:43 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1m44WT-0002L1-Ek; Thu, 15 Jul 2021 17:47:41 +0100
-Date:   Thu, 15 Jul 2021 17:47:41 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] arm: Rename PMD_ORDER to PMD_TABLE_ORDER
-Message-ID: <20210715164740.GN22278@shell.armlinux.org.uk>
-References: <20210715134612.809280-1-willy@infradead.org>
- <20210715134612.809280-2-willy@infradead.org>
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m44Ur-0001yc-1a; Thu, 15 Jul 2021 10:46:02 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m44Un-0001n8-N3; Thu, 15 Jul 2021 10:45:57 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Date:   Thu, 15 Jul 2021 10:45:29 -0600
+Message-Id: <20210715164544.6827-2-logang@deltatee.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210715164544.6827-1-logang@deltatee.com>
+References: <20210715164544.6827-1-logang@deltatee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715134612.809280-2-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org, hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com, sbates@raithlin.com, martin.oliveira@eideticom.com, logang@deltatee.com
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+Subject: [PATCH v1 01/16] dma-mapping: Allow map_sg() ops to return negative error codes
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 02:46:10PM +0100, Matthew Wilcox (Oracle) wrote:
-> This is the order of the page table allocation, not the order of a PMD.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  arch/arm/kernel/head.S | 34 +++++++++++++++++-----------------
->  1 file changed, 17 insertions(+), 17 deletions(-)
-> 
-> diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
-> index 9eb0b4dbcc12..6da39a1d70ba 100644
-> --- a/arch/arm/kernel/head.S
-> +++ b/arch/arm/kernel/head.S
-> @@ -38,10 +38,10 @@
->  #ifdef CONFIG_ARM_LPAE
->  	/* LPAE requires an additional page for the PGD */
->  #define PG_DIR_SIZE	0x5000
-> -#define PMD_ORDER	3
-> +#define PMD_TABLE_ORDER	3
->  #else
->  #define PG_DIR_SIZE	0x4000
-> -#define PMD_ORDER	2
-> +#define PMD_TABLE_ORDER	2
+Allow dma_map_sgtable() to pass errors from the map_sg() ops. This
+will be required for returning appropriate error codes when mapping
+P2PDMA memory.
 
-I think PMD_ENTRY_ORDER would make more sense here - this is the
-power-of-2 of an individual PMD entry, not of the entire table.
+Introduce __dma_map_sg_attrs() which will return the raw error code
+from the map_sg operation (whether it be negative or zero). Then add a
+dma_map_sg_attrs() wrapper to convert any negative errors to zero to
+satisfy the existing calling convention.
 
+dma_map_sgtable() will convert a zero error return for old map_sg() ops
+into a -EINVAL return and return any negative errors as reported.
+
+This allows map_sg implementations to start returning multiple
+negative error codes. Legacy map_sg implementations can continue
+to return zero until they are all converted.
+
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+---
+ include/linux/dma-map-ops.h |  8 +++-
+ include/linux/dma-mapping.h | 35 ++++--------------
+ kernel/dma/mapping.c        | 73 +++++++++++++++++++++++++++++++++----
+ 3 files changed, 78 insertions(+), 38 deletions(-)
+
+diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+index 0d53a96a3d64..eaa969be8284 100644
+--- a/include/linux/dma-map-ops.h
++++ b/include/linux/dma-map-ops.h
+@@ -41,8 +41,12 @@ struct dma_map_ops {
+ 			size_t size, enum dma_data_direction dir,
+ 			unsigned long attrs);
+ 	/*
+-	 * map_sg returns 0 on error and a value > 0 on success.
+-	 * It should never return a value < 0.
++	 * map_sg should return a negative error code on error.
++	 * dma_map_sgtable() will return the error code returned and convert
++	 * a zero return (for legacy implementations) into -EINVAL.
++	 *
++	 * dma_map_sg() will always return zero on any negative or zero
++	 * return to satisfy its own calling convention.
+ 	 */
+ 	int (*map_sg)(struct device *dev, struct scatterlist *sg, int nents,
+ 			enum dma_data_direction dir, unsigned long attrs);
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index 183e7103a66d..daa1e360f0ee 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -110,6 +110,8 @@ int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int nents,
+ void dma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
+ 				      int nents, enum dma_data_direction dir,
+ 				      unsigned long attrs);
++int dma_map_sgtable(struct device *dev, struct sg_table *sgt,
++		enum dma_data_direction dir, unsigned long attrs);
+ dma_addr_t dma_map_resource(struct device *dev, phys_addr_t phys_addr,
+ 		size_t size, enum dma_data_direction dir, unsigned long attrs);
+ void dma_unmap_resource(struct device *dev, dma_addr_t addr, size_t size,
+@@ -174,6 +176,11 @@ static inline void dma_unmap_sg_attrs(struct device *dev,
+ 		unsigned long attrs)
+ {
+ }
++static inline int dma_map_sgtable(struct device *dev, struct sg_table *sgt,
++		enum dma_data_direction dir, unsigned long attrs)
++{
++	return -EOPNOTSUPP;
++}
+ static inline dma_addr_t dma_map_resource(struct device *dev,
+ 		phys_addr_t phys_addr, size_t size, enum dma_data_direction dir,
+ 		unsigned long attrs)
+@@ -343,34 +350,6 @@ static inline void dma_sync_single_range_for_device(struct device *dev,
+ 	return dma_sync_single_for_device(dev, addr + offset, size, dir);
+ }
+ 
+-/**
+- * dma_map_sgtable - Map the given buffer for DMA
+- * @dev:	The device for which to perform the DMA operation
+- * @sgt:	The sg_table object describing the buffer
+- * @dir:	DMA direction
+- * @attrs:	Optional DMA attributes for the map operation
+- *
+- * Maps a buffer described by a scatterlist stored in the given sg_table
+- * object for the @dir DMA operation by the @dev device. After success the
+- * ownership for the buffer is transferred to the DMA domain.  One has to
+- * call dma_sync_sgtable_for_cpu() or dma_unmap_sgtable() to move the
+- * ownership of the buffer back to the CPU domain before touching the
+- * buffer by the CPU.
+- *
+- * Returns 0 on success or -EINVAL on error during mapping the buffer.
+- */
+-static inline int dma_map_sgtable(struct device *dev, struct sg_table *sgt,
+-		enum dma_data_direction dir, unsigned long attrs)
+-{
+-	int nents;
+-
+-	nents = dma_map_sg_attrs(dev, sgt->sgl, sgt->orig_nents, dir, attrs);
+-	if (nents <= 0)
+-		return -EINVAL;
+-	sgt->nents = nents;
+-	return 0;
+-}
+-
+ /**
+  * dma_unmap_sgtable - Unmap the given buffer for DMA
+  * @dev:	The device for which to perform the DMA operation
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index 2b06a809d0b9..30f89d244566 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -177,12 +177,8 @@ void dma_unmap_page_attrs(struct device *dev, dma_addr_t addr, size_t size,
+ }
+ EXPORT_SYMBOL(dma_unmap_page_attrs);
+ 
+-/*
+- * dma_maps_sg_attrs returns 0 on error and > 0 on success.
+- * It should never return a value < 0.
+- */
+-int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int nents,
+-		enum dma_data_direction dir, unsigned long attrs)
++static int __dma_map_sg_attrs(struct device *dev, struct scatterlist *sg,
++	 int nents, enum dma_data_direction dir, unsigned long attrs)
+ {
+ 	const struct dma_map_ops *ops = get_dma_ops(dev);
+ 	int ents;
+@@ -197,13 +193,74 @@ int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int nents,
+ 		ents = dma_direct_map_sg(dev, sg, nents, dir, attrs);
+ 	else
+ 		ents = ops->map_sg(dev, sg, nents, dir, attrs);
+-	BUG_ON(ents < 0);
+-	debug_dma_map_sg(dev, sg, nents, ents, dir);
++
++	if (ents > 0)
++		debug_dma_map_sg(dev, sg, nents, ents, dir);
+ 
+ 	return ents;
+ }
++
++/**
++ * dma_map_sg_attrs - Map the given buffer for DMA
++ * @dev:	The device for which to perform the DMA operation
++ * @sg:	The sg_table object describing the buffer
++ * @dir:	DMA direction
++ * @attrs:	Optional DMA attributes for the map operation
++ *
++ * Maps a buffer described by a scatterlist passed in the sg argument with
++ * nents segments for the @dir DMA operation by the @dev device.
++ *
++ * Returns the number of mapped entries (which can be less than nents)
++ * on success. Zero is returned for any error.
++ *
++ * dma_unmap_sg_attrs() should be used to unmap the buffer with the
++ * original sg and original nents (not the value returned by this funciton).
++ */
++int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg,
++		    int nents, enum dma_data_direction dir, unsigned long attrs)
++{
++	int ret;
++
++	ret = __dma_map_sg_attrs(dev, sg, nents, dir, attrs);
++	if (ret < 0)
++		ret = 0;
++
++	return ret;
++}
+ EXPORT_SYMBOL(dma_map_sg_attrs);
+ 
++/**
++ * dma_map_sgtable - Map the given buffer for DMA
++ * @dev:	The device for which to perform the DMA operation
++ * @sgt:	The sg_table object describing the buffer
++ * @dir:	DMA direction
++ * @attrs:	Optional DMA attributes for the map operation
++ *
++ * Maps a buffer described by a scatterlist stored in the given sg_table
++ * object for the @dir DMA operation by the @dev device. After success, the
++ * ownership for the buffer is transferred to the DMA domain.  One has to
++ * call dma_sync_sgtable_for_cpu() or dma_unmap_sgtable() to move the
++ * ownership of the buffer back to the CPU domain before touching the
++ * buffer by the CPU.
++ *
++ * Returns 0 on success or a negative error code on error
++ */
++int dma_map_sgtable(struct device *dev, struct sg_table *sgt,
++		    enum dma_data_direction dir, unsigned long attrs)
++{
++	int nents;
++
++	nents = __dma_map_sg_attrs(dev, sgt->sgl, sgt->orig_nents, dir, attrs);
++	if (nents == 0)
++		return -EINVAL;
++	else if (nents < 0)
++		return nents;
++
++	sgt->nents = nents;
++	return 0;
++}
++EXPORT_SYMBOL(dma_map_sgtable);
++
+ void dma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
+ 				      int nents, enum dma_data_direction dir,
+ 				      unsigned long attrs)
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.20.1
+
