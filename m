@@ -5,43 +5,65 @@ X-Spam-Level:
 X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA6A7C432BE
-	for <linux-parisc@archiver.kernel.org>; Tue, 27 Jul 2021 13:46:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DDACC43214
+	for <linux-parisc@archiver.kernel.org>; Tue, 27 Jul 2021 14:50:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B704A61ACE
-	for <linux-parisc@archiver.kernel.org>; Tue, 27 Jul 2021 13:46:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5BAAD61A7F
+	for <linux-parisc@archiver.kernel.org>; Tue, 27 Jul 2021 14:50:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236819AbhG0Nq3 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 27 Jul 2021 09:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46306 "EHLO mail.kernel.org"
+        id S237163AbhG0Ouz (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 27 Jul 2021 10:50:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236721AbhG0NqL (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:46:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A9D1619F5;
-        Tue, 27 Jul 2021 13:46:10 +0000 (UTC)
+        id S236909AbhG0Ott (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 27 Jul 2021 10:49:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F238F61B05;
+        Tue, 27 Jul 2021 14:49:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627393571;
-        bh=+t9fgxzXlhR6aMB1NCCu4ndbySWH7P+Oqdf5Vmqkihs=;
+        s=k20201202; t=1627397371;
+        bh=uEwQ9C0cLg3IwMIORY/37dlh5O4fu4jNkU/FjsRvIrE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s5hvaYII0JI/yTMojcAbHnRFPE3DsxQrcdUu6WAdNMCZ0AhHv08oHIVYp2knEXQZ8
-         0KpnHD1dKUc0T88Eeb2IE5yQe2Met5WI4kuSnsArK6T0o1IgKjETUaa9TTzun9jQQ2
-         dBZAhdfTwHko51YlM5kOH24yfRcpwa2/3FgEH36amqzfVmrhWgx2rJbbAtR1AKyNyn
-         4oFb00PJwN3m0fL0klGd00jFyab5kvRU8cmUawzIqlGG4yzu3rPa3eiKTSv9YKoRDl
-         fEKsSfWsXaBbnLJiF3MLNDR7m+P/vyC5ql5TAM3hxP9uUdTTx6K99PT/p5CQRMxK1L
-         1dHI/7+jH9fdA==
+        b=kj/IVvXy3JHWkqM0XFNYDPQdxSxj8JggLNuER9Hto8/iywRcIWO4ntU+1XOU+vznN
+         nwEKRsA+VKIKup4+NtVyRDYRpls5U2TXGCwqj3BJNmiv5sKmAucefRYvBWnZGg/gWZ
+         c82xtneZYpDFHr8DZcbROOlVG3lPysp9nfW3etc11bBGulX+P5auZXokAklC34LE09
+         zwwS/wKlWBr3BJYnxmJQmo/nNvm9893oVZ0YfCEUg2WJgjbqKzN5nBIr50IymV9mHv
+         xGRSVKAvWuWMXXuS4LWxtdDEitvbuLrJU8AGGYaPMslKu0GUWYCUOcXlo8lTk6GhMM
+         d1I9fnI2UDWGQ==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>, linux-parisc@vger.kernel.org
-Subject: [PATCH net-next v3 07/31] tulip: use ndo_siocdevprivate
-Date:   Tue, 27 Jul 2021 15:44:53 +0200
-Message-Id: <20210727134517.1384504-8-arnd@kernel.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Feng Tang <feng.tang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH v5 2/6] kexec: avoid compat_alloc_user_space
+Date:   Tue, 27 Jul 2021 16:48:55 +0200
+Message-Id: <20210727144859.4150043-3-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210727134517.1384504-1-arnd@kernel.org>
-References: <20210727134517.1384504-1-arnd@kernel.org>
+In-Reply-To: <20210727144859.4150043-1-arnd@kernel.org>
+References: <20210727144859.4150043-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,74 +72,147 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The tulip driver has a debugging method over ioctl built-in, but it
-does not actually check the command type, which may end up leading
-to random behavior when trying to run other ioctls on it.
+kimage_alloc_init() expects a __user pointer, so compat_sys_kexec_load()
+uses compat_alloc_user_space() to convert the layout and put it back
+onto the user space caller stack.
 
-Change the driver to use ndo_siocdevprivate and limit the execution
-further to the first private command code. If anyone still has tools
-to run these debugging commands, they might have to be patched for
-it if they pass different ioctl command.
+Moving the user space access into the syscall handler directly actually
+makes the code simpler, as the conversion for compat mode can now be
+done on kernel memory.
 
-The function has existed in this form since the driver was merged in
-Linux-1.1.86.
-
-Cc: linux-parisc@vger.kernel.org
+Co-developed-by: Eric Biederman <ebiederm@xmission.com>
+Co-developed-by: Christoph Hellwig <hch@infradead.org>
+Link: https://lore.kernel.org/lkml/YPbtsU4GX6PL7%2F42@infradead.org/
+Link: https://lore.kernel.org/lkml/m1y2cbzmnw.fsf@fess.ebiederm.org/
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/ethernet/dec/tulip/de4x5.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ kernel/kexec.c | 61 +++++++++++++++++++++-----------------------------
+ 1 file changed, 25 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index b125d7faefdf..36ab4cbf2ad0 100644
---- a/drivers/net/ethernet/dec/tulip/de4x5.c
-+++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -443,6 +443,7 @@
-     =========================================================================
- */
+diff --git a/kernel/kexec.c b/kernel/kexec.c
+index 9c7aef8f4bb6..b5e40f069768 100644
+--- a/kernel/kexec.c
++++ b/kernel/kexec.c
+@@ -19,26 +19,9 @@
  
-+#include <linux/compat.h>
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/string.h>
-@@ -902,7 +903,8 @@ static int     de4x5_close(struct net_device *dev);
- static struct  net_device_stats *de4x5_get_stats(struct net_device *dev);
- static void    de4x5_local_stats(struct net_device *dev, char *buf, int pkt_len);
- static void    set_multicast_list(struct net_device *dev);
--static int     de4x5_ioctl(struct net_device *dev, struct ifreq *rq, int cmd);
-+static int     de4x5_siocdevprivate(struct net_device *dev, struct ifreq *rq,
-+				    void __user *data, int cmd);
+ #include "kexec_internal.h"
  
- /*
- ** Private functions
-@@ -1084,7 +1086,7 @@ static const struct net_device_ops de4x5_netdev_ops = {
-     .ndo_start_xmit	= de4x5_queue_pkt,
-     .ndo_get_stats	= de4x5_get_stats,
-     .ndo_set_rx_mode	= set_multicast_list,
--    .ndo_do_ioctl	= de4x5_ioctl,
-+    .ndo_siocdevprivate	= de4x5_siocdevprivate,
-     .ndo_set_mac_address= eth_mac_addr,
-     .ndo_validate_addr	= eth_validate_addr,
- };
-@@ -5357,7 +5359,7 @@ de4x5_dbg_rx(struct sk_buff *skb, int len)
- ** this function is only used for my testing.
- */
- static int
--de4x5_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
-+de4x5_siocdevprivate(struct net_device *dev, struct ifreq *rq, void __user *data, int cmd)
+-static int copy_user_segment_list(struct kimage *image,
+-				  unsigned long nr_segments,
+-				  struct kexec_segment __user *segments)
+-{
+-	int ret;
+-	size_t segment_bytes;
+-
+-	/* Read in the segments */
+-	image->nr_segments = nr_segments;
+-	segment_bytes = nr_segments * sizeof(*segments);
+-	ret = copy_from_user(image->segment, segments, segment_bytes);
+-	if (ret)
+-		ret = -EFAULT;
+-
+-	return ret;
+-}
+-
+ static int kimage_alloc_init(struct kimage **rimage, unsigned long entry,
+ 			     unsigned long nr_segments,
+-			     struct kexec_segment __user *segments,
++			     struct kexec_segment *segments,
+ 			     unsigned long flags)
  {
-     struct de4x5_private *lp = netdev_priv(dev);
-     struct de4x5_ioctl *ioc = (struct de4x5_ioctl *) &rq->ifr_ifru;
-@@ -5371,6 +5373,9 @@ de4x5_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
-     } tmp;
-     u_long flags = 0;
+ 	int ret;
+@@ -58,10 +41,8 @@ static int kimage_alloc_init(struct kimage **rimage, unsigned long entry,
+ 		return -ENOMEM;
  
-+    if (cmd != SIOCDEVPRIVATE || in_compat_syscall())
-+	return -EOPNOTSUPP;
+ 	image->start = entry;
+-
+-	ret = copy_user_segment_list(image, nr_segments, segments);
+-	if (ret)
+-		goto out_free_image;
++	image->nr_segments = nr_segments;
++	memcpy(image->segment, segments, nr_segments * sizeof(*segments));
+ 
+ 	if (kexec_on_panic) {
+ 		/* Enable special crash kernel control page alloc policy. */
+@@ -104,7 +85,7 @@ static int kimage_alloc_init(struct kimage **rimage, unsigned long entry,
+ }
+ 
+ static int do_kexec_load(unsigned long entry, unsigned long nr_segments,
+-		struct kexec_segment __user *segments, unsigned long flags)
++		struct kexec_segment *segments, unsigned long flags)
+ {
+ 	struct kimage **dest_image, *image;
+ 	unsigned long i;
+@@ -250,7 +231,8 @@ static inline int kexec_load_check(unsigned long nr_segments,
+ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+ 		struct kexec_segment __user *, segments, unsigned long, flags)
+ {
+-	int result;
++	struct kexec_segment *ksegments;
++	unsigned long result;
+ 
+ 	result = kexec_load_check(nr_segments, flags);
+ 	if (result)
+@@ -261,7 +243,12 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+ 		((flags & KEXEC_ARCH_MASK) != KEXEC_ARCH_DEFAULT))
+ 		return -EINVAL;
+ 
+-	result = do_kexec_load(entry, nr_segments, segments, flags);
++	ksegments = memdup_user(segments, nr_segments * sizeof(ksegments[0]));
++	if (IS_ERR(ksegments))
++		return PTR_ERR(ksegments);
 +
-     switch(ioc->cmd) {
-     case DE4X5_GET_HWADDR:           /* Get the hardware address */
- 	ioc->len = ETH_ALEN;
++	result = do_kexec_load(entry, nr_segments, ksegments, flags);
++	kfree(ksegments);
+ 
+ 	return result;
+ }
+@@ -273,7 +260,7 @@ COMPAT_SYSCALL_DEFINE4(kexec_load, compat_ulong_t, entry,
+ 		       compat_ulong_t, flags)
+ {
+ 	struct compat_kexec_segment in;
+-	struct kexec_segment out, __user *ksegments;
++	struct kexec_segment *ksegments;
+ 	unsigned long i, result;
+ 
+ 	result = kexec_load_check(nr_segments, flags);
+@@ -286,24 +273,26 @@ COMPAT_SYSCALL_DEFINE4(kexec_load, compat_ulong_t, entry,
+ 	if ((flags & KEXEC_ARCH_MASK) == KEXEC_ARCH_DEFAULT)
+ 		return -EINVAL;
+ 
+-	ksegments = compat_alloc_user_space(nr_segments * sizeof(out));
++	ksegments = kmalloc_array(nr_segments, sizeof(ksegments[0]),
++			GFP_KERNEL);
++	if (!ksegments)
++		return -ENOMEM;
++
+ 	for (i = 0; i < nr_segments; i++) {
+ 		result = copy_from_user(&in, &segments[i], sizeof(in));
+ 		if (result)
+-			return -EFAULT;
++			goto fail;
+ 
+-		out.buf   = compat_ptr(in.buf);
+-		out.bufsz = in.bufsz;
+-		out.mem   = in.mem;
+-		out.memsz = in.memsz;
+-
+-		result = copy_to_user(&ksegments[i], &out, sizeof(out));
+-		if (result)
+-			return -EFAULT;
++		ksegments[i].buf   = compat_ptr(in.buf);
++		ksegments[i].bufsz = in.bufsz;
++		ksegments[i].mem   = in.mem;
++		ksegments[i].memsz = in.memsz;
+ 	}
+ 
+ 	result = do_kexec_load(entry, nr_segments, ksegments, flags);
+ 
++fail:
++	kfree(ksegments);
+ 	return result;
+ }
+ #endif
 -- 
 2.29.2
 
