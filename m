@@ -7,36 +7,36 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09FF2C19F40
-	for <linux-parisc@archiver.kernel.org>; Thu, 29 Jul 2021 20:16:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FCFAC19F33
+	for <linux-parisc@archiver.kernel.org>; Thu, 29 Jul 2021 20:16:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DA7D560F46
-	for <linux-parisc@archiver.kernel.org>; Thu, 29 Jul 2021 20:16:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 563D660F23
+	for <linux-parisc@archiver.kernel.org>; Thu, 29 Jul 2021 20:16:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbhG2UQI (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 29 Jul 2021 16:16:08 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:59116 "EHLO
+        id S233311AbhG2UQL (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 29 Jul 2021 16:16:11 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:59188 "EHLO
         ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232487AbhG2UP6 (ORCPT
+        with ESMTP id S232774AbhG2UQA (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 29 Jul 2021 16:15:58 -0400
+        Thu, 29 Jul 2021 16:16:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=deltatee.com; s=20200525; h=Subject:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Cc:To:From:content-disposition;
-        bh=/xaVvtLmcUu039UJFO4qpFCPm3zd9EnehJHJPiaD5YM=; b=FeUD6Lr0B6ovEC33GCpqn+9LEy
-        0hk8FWsPd/l2LIXUGdAH+LpdZ1H1Uf2aUgGx9XsMHZa9Yn4r89BdnEVdXEa7mILvrPwhQ7b70ydcR
-        4PXusPTxVwHjfJZ4qwE9S00tg6SPbtx5oz8UolyzAhMvZM/carIYgtIRp0K4hMNRVZl0sZTONoLLM
-        9iNF0fjknv7t7G8k94xYwrNxZed9o0X+CROHPwOAEUiCIqfMNwaZlzvDPSsvigGp8tuUWqV6pveMT
-        +yf7ok1iTiaPDnBjAgYjZEPHdH/ggUmkQbk4h2HG05J3IdOZhTxJTJyNc5Sqo6OMZcSwK/9vOc7Cd
-        5mbjp9iw==;
+        bh=bxYuYkexdgjCkkzv9UnzPxUCVLmS0/r9pZcrAxTBVsI=; b=p8I0Sh1Y6RwWuABiHugDXJd+kN
+        cWlqaR/BUTFE0MB1DS2yUsH1INinREg4peJmDrg87ULtFRKas6g9pS7jR1OKGlxWBQYV2ScPP94nY
+        VtXQF5ZpcKaFxV6gmZ/tf31O8qMh81eIQy9s3ltHVlxl5gEjnJiqO+gq2xtFeXFMn0GfBHiQ75VfL
+        Ec1BI2s1lemmPO/OULu7nfwVpq+Eq1RTap84im5BI9SE7ur1zO8c19Z5R5IZ0XWVYfMdg2RXTqe24
+        lXCml95jU2ntgTAzj+IhrMDdiNshAsGJmja7bUonZ6FjBpBLiWRX22zH8mU+9i9a59ML3VrNhExQf
+        SqHQgVXw==;
 Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
         by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <gunthorp@deltatee.com>)
-        id 1m9CRX-0008VN-5W; Thu, 29 Jul 2021 14:15:48 -0600
+        id 1m9CRc-0008VO-Sm; Thu, 29 Jul 2021 14:15:53 -0600
 Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
         (envelope-from <gunthorp@deltatee.com>)
-        id 1m9CRT-0001TY-TD; Thu, 29 Jul 2021 14:15:43 -0600
+        id 1m9CRW-0001UH-58; Thu, 29 Jul 2021 14:15:46 -0600
 From:   Logan Gunthorpe <logang@deltatee.com>
 To:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
@@ -50,122 +50,111 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         Stephen Bates <sbates@raithlin.com>,
         Martin Oliveira <martin.oliveira@eideticom.com>,
         Logan Gunthorpe <logang@deltatee.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Date:   Thu, 29 Jul 2021 14:15:21 -0600
-Message-Id: <20210729201539.5602-4-logang@deltatee.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Date:   Thu, 29 Jul 2021 14:15:36 -0600
+Message-Id: <20210729201539.5602-19-logang@deltatee.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210729201539.5602-1-logang@deltatee.com>
 References: <20210729201539.5602-1-logang@deltatee.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org, hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com, sbates@raithlin.com, martin.oliveira@eideticom.com, logang@deltatee.com, joro@8bytes.org, will@kernel.org
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org, hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com, sbates@raithlin.com, martin.oliveira@eideticom.com, logang@deltatee.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com, schnelle@linux.ibm.com, tsbogend@alpha.franken.de, mpe@ellerman.id.au
 X-SA-Exim-Mail-From: gunthorp@deltatee.com
-Subject: [PATCH v3 03/21] iommu: Return full error code from iommu_map_sg[_atomic]()
+Subject: [PATCH v3 18/21] x86/amd_gart: return error code from gart_map_sg()
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Convert to ssize_t return code so the return code from __iommu_map()
-can be returned all the way down through dma_iommu_map_sg().
+From: Martin Oliveira <martin.oliveira@eideticom.com>
 
+The .map_sg() op now expects an error code instead of zero on failure.
+
+So make __dma_map_cont() return a valid errno (which is then propagated
+to gart_map_sg() via dma_map_cont()) and return it in case of failure.
+
+Also, return -EINVAL in case of invalid nents.
+
+Signed-off-by: Martin Oliveira <martin.oliveira@eideticom.com>
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Will Deacon <will@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
 ---
- drivers/iommu/iommu.c | 15 +++++++--------
- include/linux/iommu.h | 22 +++++++++++-----------
- 2 files changed, 18 insertions(+), 19 deletions(-)
+ arch/x86/kernel/amd_gart_64.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 5419c4b9f27a..bf971b4e34aa 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -2567,9 +2567,9 @@ size_t iommu_unmap_fast(struct iommu_domain *domain,
- }
- EXPORT_SYMBOL_GPL(iommu_unmap_fast);
+diff --git a/arch/x86/kernel/amd_gart_64.c b/arch/x86/kernel/amd_gart_64.c
+index 9ac696487b13..46aea9a4f26b 100644
+--- a/arch/x86/kernel/amd_gart_64.c
++++ b/arch/x86/kernel/amd_gart_64.c
+@@ -331,7 +331,7 @@ static int __dma_map_cont(struct device *dev, struct scatterlist *start,
+ 	int i;
  
--static size_t __iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
--			     struct scatterlist *sg, unsigned int nents, int prot,
--			     gfp_t gfp)
-+static ssize_t __iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
-+		struct scatterlist *sg, unsigned int nents, int prot,
-+		gfp_t gfp)
+ 	if (iommu_start == -1)
+-		return -1;
++		return -ENOMEM;
+ 
+ 	for_each_sg(start, s, nelems, i) {
+ 		unsigned long pages, addr;
+@@ -380,13 +380,13 @@ static int gart_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ 		       enum dma_data_direction dir, unsigned long attrs)
  {
- 	const struct iommu_ops *ops = domain->ops;
- 	size_t len = 0, mapped = 0;
-@@ -2610,19 +2610,18 @@ static size_t __iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
- 	/* undo mappings already done */
- 	iommu_unmap(domain, iova, mapped);
+ 	struct scatterlist *s, *ps, *start_sg, *sgmap;
+-	int need = 0, nextneed, i, out, start;
++	int need = 0, nextneed, i, out, start, ret;
+ 	unsigned long pages = 0;
+ 	unsigned int seg_size;
+ 	unsigned int max_seg_size;
  
+ 	if (nents == 0)
+-		return 0;
++		return -EINVAL;
+ 
+ 	out		= 0;
+ 	start		= 0;
+@@ -414,8 +414,9 @@ static int gart_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ 			if (!iommu_merge || !nextneed || !need || s->offset ||
+ 			    (s->length + seg_size > max_seg_size) ||
+ 			    (ps->offset + ps->length) % PAGE_SIZE) {
+-				if (dma_map_cont(dev, start_sg, i - start,
+-						 sgmap, pages, need) < 0)
++				ret = dma_map_cont(dev, start_sg, i - start,
++						   sgmap, pages, need);
++				if (ret < 0)
+ 					goto error;
+ 				out++;
+ 
+@@ -432,7 +433,8 @@ static int gart_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ 		pages += iommu_num_pages(s->offset, s->length, PAGE_SIZE);
+ 		ps = s;
+ 	}
+-	if (dma_map_cont(dev, start_sg, i - start, sgmap, pages, need) < 0)
++	ret = dma_map_cont(dev, start_sg, i - start, sgmap, pages, need);
++	if (ret < 0)
+ 		goto error;
+ 	out++;
+ 	flush_gart();
+@@ -458,7 +460,7 @@ static int gart_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ 	iommu_full(dev, pages << PAGE_SHIFT, dir);
+ 	for_each_sg(sg, s, nents, i)
+ 		s->dma_address = DMA_MAPPING_ERROR;
 -	return 0;
--
 +	return ret;
  }
  
--size_t iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
--		    struct scatterlist *sg, unsigned int nents, int prot)
-+ssize_t iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
-+		     struct scatterlist *sg, unsigned int nents, int prot)
- {
- 	might_sleep();
- 	return __iommu_map_sg(domain, iova, sg, nents, prot, GFP_KERNEL);
- }
- EXPORT_SYMBOL_GPL(iommu_map_sg);
- 
--size_t iommu_map_sg_atomic(struct iommu_domain *domain, unsigned long iova,
-+ssize_t iommu_map_sg_atomic(struct iommu_domain *domain, unsigned long iova,
- 		    struct scatterlist *sg, unsigned int nents, int prot)
- {
- 	return __iommu_map_sg(domain, iova, sg, nents, prot, GFP_ATOMIC);
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 32d448050bf7..9369458ba1bd 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -414,11 +414,11 @@ extern size_t iommu_unmap(struct iommu_domain *domain, unsigned long iova,
- extern size_t iommu_unmap_fast(struct iommu_domain *domain,
- 			       unsigned long iova, size_t size,
- 			       struct iommu_iotlb_gather *iotlb_gather);
--extern size_t iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
--			   struct scatterlist *sg,unsigned int nents, int prot);
--extern size_t iommu_map_sg_atomic(struct iommu_domain *domain,
--				  unsigned long iova, struct scatterlist *sg,
--				  unsigned int nents, int prot);
-+extern ssize_t iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
-+		struct scatterlist *sg, unsigned int nents, int prot);
-+extern ssize_t iommu_map_sg_atomic(struct iommu_domain *domain,
-+				   unsigned long iova, struct scatterlist *sg,
-+				   unsigned int nents, int prot);
- extern phys_addr_t iommu_iova_to_phys(struct iommu_domain *domain, dma_addr_t iova);
- extern void iommu_set_fault_handler(struct iommu_domain *domain,
- 			iommu_fault_handler_t handler, void *token);
-@@ -679,18 +679,18 @@ static inline size_t iommu_unmap_fast(struct iommu_domain *domain,
- 	return 0;
- }
- 
--static inline size_t iommu_map_sg(struct iommu_domain *domain,
--				  unsigned long iova, struct scatterlist *sg,
--				  unsigned int nents, int prot)
-+static inline ssize_t iommu_map_sg(struct iommu_domain *domain,
-+				   unsigned long iova, struct scatterlist *sg,
-+				   unsigned int nents, int prot)
- {
--	return 0;
-+	return -ENODEV;
- }
- 
--static inline size_t iommu_map_sg_atomic(struct iommu_domain *domain,
-+static inline ssize_t iommu_map_sg_atomic(struct iommu_domain *domain,
- 				  unsigned long iova, struct scatterlist *sg,
- 				  unsigned int nents, int prot)
- {
--	return 0;
-+	return -ENODEV;
- }
- 
- static inline void iommu_flush_iotlb_all(struct iommu_domain *domain)
+ /* allocate and map a coherent mapping */
 -- 
 2.20.1
 
