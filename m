@@ -2,50 +2,84 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9302EC4338F
-	for <linux-parisc@archiver.kernel.org>; Mon,  9 Aug 2021 15:16:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03645C4338F
+	for <linux-parisc@archiver.kernel.org>; Wed, 11 Aug 2021 16:42:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 771DA60F35
-	for <linux-parisc@archiver.kernel.org>; Mon,  9 Aug 2021 15:16:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D8A6A61058
+	for <linux-parisc@archiver.kernel.org>; Wed, 11 Aug 2021 16:42:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbhHIPQs (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 9 Aug 2021 11:16:48 -0400
-Received: from verein.lst.de ([213.95.11.211]:60961 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233058AbhHIPQr (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:16:47 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6D60467357; Mon,  9 Aug 2021 17:16:22 +0200 (CEST)
-Date:   Mon, 9 Aug 2021 17:16:22 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
-        xen-devel@lists.xenproject.org, Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>
-Subject: Re: [PATCH v3 00/21] .map_sg() error cleanup
-Message-ID: <20210809151622.GB22445@lst.de>
-References: <20210729201539.5602-1-logang@deltatee.com>
+        id S229819AbhHKQm2 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 11 Aug 2021 12:42:28 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:29574 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229484AbhHKQmY (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 11 Aug 2021 12:42:24 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 17BGfJMe000861;
+        Thu, 12 Aug 2021 01:41:19 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 17BGfJMe000861
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1628700079;
+        bh=Rbj4LRb3BCdM0qtfZP8nAj3m5NMYkLYyA0Fn1DSu1qs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JSjLsq6vTZ2Ep+n4dFIsMUW/5qW6jwH9HzUPLs7pTfofVJAgLud1OtyFiPndf/qOg
+         i0N/ApsF96BSvU+CJPZoUr+yqfhxkKGIJEM6wbicq33+JhHlmjmcJOs1ZiNdaaS9Gd
+         6K+fqwrymStYFezQ43qHTma2PpCvSY68Lj49m/ec6yKys5vzUWkGv51soDuqx6aQ6s
+         uuVxXnY3vyqxUzJji2P7F2dnDRqoBV6dYhPHlsIB5CZ78RmJ/GzRMBzgFOZ31kpvzG
+         DzLuw442JLR0xAgPsExgXmmdu6ruTlUJfcIBZRUuymgvC0O3t6nAPPFoWRVAFSE3cn
+         D5/VTW2o5sSZA==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] parisc: move core-y in arch/parisc/Makefile to arch/parisc/Kbuild
+Date:   Thu, 12 Aug 2021 01:41:16 +0900
+Message-Id: <20210811164116.186844-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729201539.5602-1-logang@deltatee.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Thanks,
+Use obj-y to clean up Makefile.
 
-I've applied this to the dma-mapping tree with a few minor cosmetic
-tweaks.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/parisc/Kbuild   | 1 +
+ arch/parisc/Makefile | 3 ---
+ 2 files changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/parisc/Kbuild b/arch/parisc/Kbuild
+index a4e40e534e6a..3c068b700a81 100644
+--- a/arch/parisc/Kbuild
++++ b/arch/parisc/Kbuild
+@@ -1 +1,2 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++obj-y	+= mm/ kernel/ math-emu/
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index aed8ea29268b..6c27940eff03 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -111,9 +111,6 @@ KBUILD_CFLAGS	+= $(cflags-y)
+ LIBGCC		:= $(shell $(CC) -print-libgcc-file-name)
+ export LIBGCC
+ 
+-kernel-y			:= mm/ kernel/ math-emu/
+-
+-core-y	+= $(addprefix arch/parisc/, $(kernel-y))
+ libs-y	+= arch/parisc/lib/ $(LIBGCC)
+ 
+ boot	:= arch/parisc/boot
+-- 
+2.30.2
+
