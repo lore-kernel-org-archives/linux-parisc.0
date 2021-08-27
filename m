@@ -2,92 +2,118 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34142C432BE
-	for <linux-parisc@archiver.kernel.org>; Thu, 26 Aug 2021 14:31:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08449C19F35
+	for <linux-parisc@archiver.kernel.org>; Fri, 27 Aug 2021 09:30:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 11E0C60EBC
-	for <linux-parisc@archiver.kernel.org>; Thu, 26 Aug 2021 14:31:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E010160F6C
+	for <linux-parisc@archiver.kernel.org>; Fri, 27 Aug 2021 09:30:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhHZOb7 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 26 Aug 2021 10:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbhHZOb6 (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:31:58 -0400
-Received: from mail.sf-mail.de (mail.sf-mail.de [IPv6:2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94287C061757
-        for <linux-parisc@vger.kernel.org>; Thu, 26 Aug 2021 07:31:10 -0700 (PDT)
-Received: (qmail 7755 invoked from network); 26 Aug 2021 14:30:33 -0000
-Received: from mail.sf-mail.de ([2a01:4f8:1c17:6fae:616d:6c69:616d:6c69]:43188 HELO webmail.sf-mail.de) (auth=eike@sf-mail.de)
-        by mail.sf-mail.de (Qsmtpd 0.38dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
-        for <linux-parisc@vger.kernel.org>; Thu, 26 Aug 2021 16:30:33 +0200
+        id S244768AbhH0Ja6 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 27 Aug 2021 05:30:58 -0400
+Received: from mout.gmx.net ([212.227.17.20]:53485 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244668AbhH0Jap (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 27 Aug 2021 05:30:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630056586;
+        bh=LqTyT87+0e6RUnBr2YRqilZ5WZkM0FGfXzBRJc9wq9c=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+        b=OWk+GHoB0TG+aWJjTddL2kYdBvbf9YPfU+Ow/xcFsrc2x558WcnCkP74Kx/MbNVm7
+         DJlSk8P5WhoFM0gfU6pIf86HQQwXt3E73K/xQa3hEs8kr8FrlT0FALpkQv7DNYiRCe
+         3WEV90K9ThrUwiMffWKT1gTa3pJ5ey3jnWEaThes=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530 ([92.116.133.192]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MPXhK-1mg9Xc20Yc-00MeFe; Fri, 27
+ Aug 2021 11:29:46 +0200
+Date:   Fri, 27 Aug 2021 11:28:14 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] Fix prctl(PR_GET_NAME) to not leak random trailing bytes
+Message-ID: <YSiwLuE17BwRlI/d@ls3530>
 MIME-Version: 1.0
-Date:   Thu, 26 Aug 2021 16:30:33 +0200
-From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
-To:     linux-parisc <linux-parisc@vger.kernel.org>
-Subject: Re: Cycle offset is larger than allowed by the 'jiffies' clock's
- max_cycles value
-In-Reply-To: <2191464.ElGaqSPkdT@daneel.sf-tec.de>
-References: <11708426.O9o76ZdvQC@eto.sf-tec.de>
- <2573804.mvXUDI8C0e@daneel.sf-tec.de>
- <dc93df38-d2c4-362e-0e22-b8885509c2ea@gmx.de>
- <2191464.ElGaqSPkdT@daneel.sf-tec.de>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <edac32ae14afeaf416e002f1f366534a@sf-tec.de>
-X-Sender: eike-kernel@sf-tec.de
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:wnZzoBHhBThI+lg6ZoIrqspFEQq545CfQnIQUngduGkrbBFjB0n
+ 2knJ3X8+cgozHnRu9KiS6kwzkneEHbpht1MlCUF465bDVgIN1aXGtR+rx6WbRjY76DWDGmH
+ T9cV40j+SNFdOdkX6D1i3rfiXt/NfCje/AMB6P4XpAGsLhVMpYdKrca03r3hFtvEXYtS0Gn
+ OiObU+jP/1H2wsmZyiB9Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9OdC9BD450Y=:Gjql85bK/7dBvf5UVqY2Hr
+ zZnZ5x8XXlW1tmiOe0uQn8iMsU3OWeqZBcSs51t45AORzzYiQEckTYromCYmHE8NDreEoEG/C
+ WOv3LtPrDt2R3SSNz+Xx14iSCQe57ZhO/7//wmV/o3XKYCFZ3NuJi1mX43K/EfIvhE7s8AlXE
+ fJFO4AKBy5h8jzbe08ZMlW5SAO9xoNMOc3pVN7rFi2e7izWiyGK74uHsiNgRqnOY8D8baU8EN
+ PSnpvdWO3qvz8nPAPWVrcTdYYsE+TyC6gsQOcybgF6gNH3NTA7scmz9MDUXhJY5BRdgMp4c57
+ RgKmjZ27VjlRceeZXfUjKJktU2L8ozLj120AuVKID5f/rAmuZ2aNlyYmilOueuJUivAZdlv+t
+ Wsris3NUt5OHWGL+VtsdnSNjTBEvF9n9yP1/zNr9h9K19h+L+d8hddtca3/uJ0WoRRwXpeXPA
+ Ks/mPaCaiNi2qXgunOZYD62lW1pdyeP5Ltj+YlzdVyKerT1IADziQfd3ipsaR4LZeHMdkCT2G
+ A15+T+Sp75maO3y2XeEtb/2Bkp8K84ebgdkK0Y2htdHgEZcsevUyvjj7AH+jRmxXbTc8d/d8A
+ pVzmWsXMjKZDH6rWCP5kfmKz9HhfcScggW/GjNT9uTyX4Pj88wRLiivva2XwTDtvmFf0U+RqB
+ t7xL2VKKjXRxRcAj0wKL0BKVjAlIzMEHcdWcXfKOZTbc7dypLIMp/NU+hUpigph06JmLNTNmc
+ FjtpmFMRg9x4NK9pRm8k/+dnvM4XWwFB99cFc/OFbw6hT+gZTSjHKgjldV5lWIJwc3WhmfpHh
+ R3ZClMy0+u8D8PWSRQFDnloRrB8Uvf8eU6sTx/1BvzRP44DeB6+GndB5tGfsUKcbrgD0Khprc
+ jX0mY8Y3IRN29Fyb8EpS9zBJhqy19oQ+36CfVlgwZcZNsqxAuU1nKAQ4rYBmyI1Kghi7mTX6/
+ luwfR73BFAAjmM7Bngwjw8x0lnN4nY2/2XuhRZ/2/niBKtd+wMLA51PRuVgo0GHwstP89HkC/
+ JkPSCs09BKGgxZB/Oingr0gfx4VkllISIR8qp4hryL5/DE++R+YpPojlFTjNwsfA3mL70Qbb+
+ gtBfG6tGDzuDFvdLqAyxuPl2gDXu136bv+o
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Am 2021-03-14 13:08, schrieb Rolf Eike Beer:
-> Am Sonntag, 14. März 2021, 12:16:11 CET schrieben Sie:
->> On 3/14/21 10:47 AM, Rolf Eike Beer wrote:
->> > Am Mittwoch, 3. März 2021, 15:29:42 CET schrieb Helge Deller:
->> >> On 3/1/21 7:44 PM, Rolf Eike Beer wrote:
->> >>> Am Montag, 1. März 2021, 17:49:42 CET schrieb Rolf Eike Beer:
->> >>>> Am Montag, 1. März 2021, 17:25:18 CET schrieb Rolf Eike Beer:
->> >>>>> After upgrade to 5.11 get this multiple times per second on my C8000:
->> >>>>>
->> >>>>> [   36.998702] WARNING: timekeeping: Cycle offset (29) is larger than
->> >>>>> allowed by the 'jiffies' clock's max_cycles value (10): time overflow
->> >>>>> danger [   36.998705]          timekeeping: Your kernel is sick, but
->> >>>>> tries
->> >>>>> to cope by capping time updates
->> >>
->> >> I know I have seen this at least once with a 32-bit kernel in qemu as
->> >> well....
->> >>
->> >>>> Not 5.11, but 5.10.11. 5.10.4 is fine. It could be a bad upgrade
->> >>>> attempt,
->> >>>> I'll retry once I have built a proper 5.11 kernel.
->> >>>
->> >>> Ok, it's there also in 5.11.2:
->> >> You don't see it in 5.11, but in 5.11.2.
->> >> Sadly none of the changes between those versions seem related
->> >> to this problem.
->> >>
->> >> Do you still see this?
->> >> I'd like to get it anaylzed/fixed.
->> >
->> > Me too. What do you need?
->> 
->> I actually don't know.
->> First of all it would be great if we could reproduce it.
->> Right now I don't see this issue any longer, so I have nowhere to 
->> start
->> from.
-> 
-> I get it every time if I boot that kernel.
+The prctl(PR_GET_NAME) and prctl(PR_SET_NAME) syscalls are used to set and
+retrieve the process name. Those kernel functions are currently implemented to
+always copy the full array of 16-bytes back and forth between kernel and
+userspace instead of just copying the relevant bytes of the string.
 
-I still see it in 5.13.12, so I'm in the bad situation now that I don't 
-have a working kernel on that machine anymore and need to think about 
-how to restore it. While the latter is exactly my problem I would still 
-love to see the kernel problem solved.
+This patch changes the prctl(PR_GET_NAME) to only copy back the null-terminated
+string (with max. up to 16 chars including the trailing zero) to userspace and
+thus avoids copying and leaking random trailing chars behind the process name.
+
+Background:
+The newest glibc testsuite includes a test which is implemented similiar to
+this:
+   prctl(PR_SET_NAME, "thread name", 0, 0, 0);
+   char buffer[16] = { 0, };
+   prctl(PR_GET_NAME, buffer, 0, 0, 0);
+   char expected[16] = "thread name";
+   fail if memcmp(buffer, expected, 16) != 0;
+
+The compiler may put the "thread name" string given in the PR_SET_NAME call
+somewhere into memory and it's not guaranteed that trailing (up to a total of
+16) chars behind that string has zeroes.
+As such on the parisc architecture I've seen that the buffer[] array gets
+filled on return of prctl(PR_GET_NAME) with such additional random bytes, e.g.:
+       "thread name\000@\032i\000"
+       74 68 72 65 61 64 20 6E 61 6D 65 00 40 1A 69 00
+
+Unfortunatly the glibc testuite tests the full memory block of 16 bytes
+and fails because it expects zeroed characters behind the process name.
+
+In addition to fix the glibc testsuite, I suggest to fix the kernel function of
+prctl(PR_GET_NAME) to just return the null-terminated process name.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: stable@vger.kernel.org
+
+diff --git a/kernel/sys.c b/kernel/sys.c
+index ef1a78f5d71c..af71412760be 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -2367,7 +2367,7 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+ 		break;
+ 	case PR_GET_NAME:
+ 		get_task_comm(comm, me);
+-		if (copy_to_user((char __user *)arg2, comm, sizeof(comm)))
++		if (copy_to_user((char __user *)arg2, comm, strlen(comm) + 1))
+ 			return -EFAULT;
+ 		break;
+ 	case PR_GET_ENDIAN:
