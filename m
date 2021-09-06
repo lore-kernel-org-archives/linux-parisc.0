@@ -2,153 +2,145 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EFBFC433F5
-	for <linux-parisc@archiver.kernel.org>; Mon,  6 Sep 2021 14:58:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB0A0C433F5
+	for <linux-parisc@archiver.kernel.org>; Mon,  6 Sep 2021 20:17:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5C5A260F45
-	for <linux-parisc@archiver.kernel.org>; Mon,  6 Sep 2021 14:58:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8E17D6105A
+	for <linux-parisc@archiver.kernel.org>; Mon,  6 Sep 2021 20:17:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243640AbhIFO7Q (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 6 Sep 2021 10:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243684AbhIFO7H (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 6 Sep 2021 10:59:07 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04246C061575;
-        Mon,  6 Sep 2021 07:58:03 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so4447409pjr.1;
-        Mon, 06 Sep 2021 07:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=e7Lxz1rTUMVMiOxDU3ihYWK5WPfaNeZ9K8ew2EFVN6M=;
-        b=LXgp52W5k+6e+E1lD/+fnmwROVu0im0ZTbRaTGFRUHoee98niPkmedBSPuoaU+C901
-         xA0zVCRtm3ZstMaY0r+bfrLwX0h4lJRwjHZSrSd7VMiiQmuNR4VJb4KIkfYgNr45+6R/
-         Ytm3SgdnIw+8vdyNM7Qrbyc2ZfHYtokHyF9mvUbjZBpqaG9aV9hVDtVpCH7AesyMXvxe
-         UqoY/NFf7dqJ+B2r0NE5QZJnHLwexfdT+iciJQG7/AjInHtDs1ZoecQ7oAJRB4rOv/f9
-         sTenECUfv5Z+O8xZpmI3XfSxkSvYjZ+DMUZOgmuBqGpnmkHpr4lFbj1WgmAnvQDDLG1o
-         HBzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=e7Lxz1rTUMVMiOxDU3ihYWK5WPfaNeZ9K8ew2EFVN6M=;
-        b=iA89nih+C3XC4TBfbpSu9gKv5NHVSmzdRFP0BLVNNkz18vfDPvVjyCvnlH6h6vQu3H
-         pqU0PohkolvcapHtnjs0kfhmVt3sUOy09O4pnxENd4wiWxG4xVoeCsaDb+uLiWVDoD/l
-         CNR53Hsj2+5Bae5qe88JoLQYQSeyQJuEbk+lxwkCcna86ghSeZSzgkPrHxGenWzkAPRs
-         OkCrMpzNxhII0AhaubXod+KvY/jPgX59+lqI0rQ048f0DtxruFjwOFRa0d1Ph2F6z4sc
-         KpXXnnsiwqkFLmjw3kb44Vtpp+lBtZ3//JBVvAwioSrchw+eja5mTkHeWloNxWu1IGLN
-         6AYw==
-X-Gm-Message-State: AOAM530K/Gc3aHBcoueBxmIbajNs5c4hKAsVX2uBCno5/ZZdfALz3LFd
-        /4NzsXPIRq1DmVC/CvHBQNbphEXQ9ZcAySCJqUM=
-X-Google-Smtp-Source: ABdhPJx4U2UXdqmjv3wFeCTa6pX3ETSedWET7Gxlb8aTpJkm1WYcBE+shFcj4K1cKKYWsG7A6RIebw==
-X-Received: by 2002:a17:902:8648:b029:129:dda4:ddc2 with SMTP id y8-20020a1709028648b0290129dda4ddc2mr11168934plt.4.1630940282178;
-        Mon, 06 Sep 2021 07:58:02 -0700 (PDT)
-Received: from owniadeMacBook-Pro.local ([8.21.11.90])
-        by smtp.gmail.com with ESMTPSA id p3sm7607183pfw.71.2021.09.06.07.57.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 07:58:01 -0700 (PDT)
-Subject: Re: [PATCH v2] ftrace: Cleanup ftrace_dyn_arch_init()
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org
-References: <20210906111626.1259867-1-o451686892@gmail.com>
- <87v93dn5qh.fsf@mpe.ellerman.id.au>
-From:   Weizhao Ouyang <o451686892@gmail.com>
-Message-ID: <87b80cd6-f20f-a673-f438-faff5d7d4334@gmail.com>
-Date:   Mon, 6 Sep 2021 22:57:53 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S236274AbhIFUSP (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 6 Sep 2021 16:18:15 -0400
+Received: from mout.gmx.net ([212.227.17.22]:36817 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229717AbhIFUSP (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 6 Sep 2021 16:18:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630959419;
+        bh=rc1JPdJzjP3+7O+ipFiK9Jt5bmTFQmAxWikqy24t040=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=Dv7TvVCNAyYB7CeQi8PEDZW/r11grwXhXGGG9TA7RPhAnW1M+sw0Aot3WUROykcja
+         XjUuoL7gr8cgkknYzMUFXC4KV4iE+KBioVWEr10F0JoF1iUG63PxI4gWfikZXi1IVm
+         naJhUxChoSEw9nyNBvldUU/5foBooj9YWZ9XbjZg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.85.61] ([80.187.112.14]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mw9UK-1nD6I3213M-00s4uV; Mon, 06
+ Sep 2021 22:16:59 +0200
+Subject: Re: [PATCH v2] parisc: Fix boot with kernel v5.14
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Parisc List <linux-parisc@vger.kernel.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+References: <YS6VGsZ7fZtZeu/i@ls3530> <YTDaZAMvAipdvkaB@ls3530>
+ <CAK8P3a0zwnEUK_ztPRBx0H9VGBoPVY-+aASFV97zSKrL=diXUA@mail.gmail.com>
+ <51d6b8cb-a64f-0cf7-1545-4c2fee89799e@gmx.de>
+ <CAK8P3a3oJo496dXpAWHQKG=Sdr+RSfScYbWKyGrk8HNfH5G1CQ@mail.gmail.com>
+ <41e38a49-5a11-4f93-6771-b67d8184a673@gmx.de>
+ <CAK8P3a0Tzi8L3+7YypPMukjDM+D8a_dxK1q7fOK357LATsouoA@mail.gmail.com>
+From:   Helge Deller <deller@gmx.de>
+Message-ID: <97c68f9c-b646-042d-a865-1be9b28ed24e@gmx.de>
+Date:   Mon, 6 Sep 2021 22:15:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <87v93dn5qh.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAK8P3a0Tzi8L3+7YypPMukjDM+D8a_dxK1q7fOK357LATsouoA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Ya1SMfNYPTMpRAsZmCi7kR+vXVUP5wDF0uuWO1KdSZhVANaDgCr
+ 8wl+QdL3fMr9UMLsngxLLQSSUqNXrz3AHwOKKF9dJGM2fvaBPz7QyLOmwp1Fq1leeyM2iId
+ coYTL24Ko3I+gF17AubnMPLOUajjW8CzSU8OIXUUneBdJKlc1KbqIyC6ERUGRyw3+pdzkKZ
+ QvLEMNi+WOfVOH/Frbe3Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DkQshkg6P8w=:hqLlPgzAFI42BvqaMzPBSK
+ 2D7anDfDgbk4AAz1rF3AtSZybLXnHTgkPlZmf3MSnTgc7QWyn1dcDP7noHzOGNyhm81f1fMf2
+ 2aCluF92ePtXC+VX6CDrxJSGg5Vfd97oX4MBxSvY04QClnlZ1d3ONQc2Iv8oqj0WZ3saSF62S
+ SR81j/dldc1L++T3ypLah+9SsHmblp11X4XsZiJJLJxd9Ir3PV0hhSFSMU3QmA294xPvsPuvp
+ mDWim1I+MKM7tSE9e1COEJ/92zuo9264hheUY/0MIvCvPGWVV+DDZjVuWqUBFESSgnnDAOrqC
+ cce74XVkwk+Ih4r8HMpc3ZQ1Lm7G8I027xWXvTMIXOvLzVi4OU05+Qkoa83O/WA9RchzK51uL
+ crWqKR6XXA1MTIVddUjVll8y0pNFV+Ekod83j3Phf+GmQ56CI1mE84RQHR0zpohj6atDDv4YA
+ ddT0HrZpq1Emo/7MDIzIN/M9Fk3QLzvzU/AgT7d46qfzzQSPbqcUgF2xA1U6TO+TbZ3q45LQG
+ vFApq1rLCOLcLQfc/j2pXZpC5t0Vvr9OGmMFCj1o4vB8yWR/zpHAHPnaNZjADHcyTfbd4ByrO
+ HEvnmLRQeytddQ53XPm1MJCWl90DwCjSxesTmgEHKXRiYXfBVt3PNMt3e5r8102GqgsCJ5Hwq
+ hT6XZt22AGt/FRtfHAkI1ypX0FTX9pRCKAzy+Z3Bf+7O5lpC9KWffjoG32LKHL0MeOheFjaK0
+ PXhtAmDko2V7BpAhT6sGs5U3IQm9t63iKlc21PsB2KuPomLRN94sL9sLFE7+NHYBRQaHVSZt/
+ y3nUQ3cUKHMg5UCplo1aGjGR5REKnhBDTkVdzkfgD5xNjMmoma8xna+eG1G74vb0TSZjiT+u7
+ n/g2ex6U+JCm/thvO7awO8Vxl7Uy8uhsR8k5faMvTgWvj5BPdsNVjyzwq+I1NCmrezgOF4PpE
+ U5++BqrGLB0cO55vWm6epc9lPHDOoFIGQQwoGU03St0A6RW0tpBMWaUSWA1NVu2AqBtMqdlvb
+ lOKR2BhQ2QEulBtitQJH5xnsfaDnIbClHubbz8AHDRhLi+zuMwP/DEabuAFw48TQvWp3Fz2fD
+ itVQCDg5Swan2MU3MYD2YOv17MjvHiG/eR33MpLAPjuzwbDZqHiTbMKrw==
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+On 9/6/21 12:54 PM, Arnd Bergmann wrote:
+> On Sun, Sep 5, 2021 at 11:40 PM Helge Deller <deller@gmx.de> wrote:
+>> On 9/2/21 10:41 PM, Arnd Bergmann wrote:
+>>>
+>>> The reason that the "output_len" access breaks is that gcc explicitly =
+optimizes
+>>> the bytewise access  into word accesses because it assumes that global=
+ variables
+>>> are correctly declared, and that they are aligned according to the req=
+uirements
+>>> of the ABI.
+>>> This may be surprising and even unfortunate, but I can see why they di=
+d
+>>> this optimization, and that it helps in other cases as well.
+>>
+>> Arnd, you were absolutely correct and I was wrong.
+>>
+>> It seems to work nicely now after I changed the output_len variable to
+>> become an "extern char".
+>
+> Ok, that's a relief, at least my patch wasn't the main cause then.
 
-On 2021/9/6 22:22, Michael Ellerman wrote:
-> Weizhao Ouyang <o451686892@gmail.com> writes:
->> Most of ARCHs use empty ftrace_dyn_arch_init(), introduce a weak common
->> ftrace_dyn_arch_init() to cleanup them.
->>
->> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
->> Acked-by: Heiko Carstens <hca@linux.ibm.com> (s390)
->>
->> ---
->>
->> Changes in v2:
->> -- correct CONFIG_DYNAMIC_FTRACE on PowerPC
->> -- add Acked-by tag
->> diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
->> index debe8c4f7062..d59f67c0225f 100644
->> --- a/arch/powerpc/include/asm/ftrace.h
->> +++ b/arch/powerpc/include/asm/ftrace.h
->> @@ -61,6 +61,10 @@ struct dyn_arch_ftrace {
->>  };
->>  #endif /* __ASSEMBLY__ */
->>  
->> +#ifdef CONFIG_DYNAMIC_FTRACE
->> +int __init ftrace_dyn_arch_init(void);
->> +#endif /* CONFIG_DYNAMIC_FTRACE */
->> +
->>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
->>  #define ARCH_SUPPORTS_FTRACE_OPS 1
->>  #endif
-> That breaks the build for powerpc:
->
->   /linux/arch/powerpc/include/asm/ftrace.h: Assembler messages:
->   /linux/arch/powerpc/include/asm/ftrace.h:65: Error: unrecognized opcode: `int'
->   make[4]: *** [/linux/scripts/Makefile.build:352: arch/powerpc/kernel/trace/ftrace_64.o] Error 1
->   make[3]: *** [/linux/scripts/Makefile.build:514: arch/powerpc/kernel/trace] Error 2
->   make[2]: *** [/linux/scripts/Makefile.build:514: arch/powerpc/kernel] Error 2
->   make[1]: *** [/linux/Makefile:1861: arch/powerpc] Error 2
->   make[1]: *** Waiting for unfinished jobs....
->
-> It needs to be inside an #ifndef __ASSEMBLY__ section.
->
-> cheers
+Yes, that's good!
 
-Thanks for reply, I'll fix it up.
+> Changing the declaration to 'extern char' of course is still incorrect, =
+so
+> this might cause other problems in the future, the same way that the
+> old declaration caused the problem by decaring the wrong alignment.
+
+Possibly. For the current use case it's enough.
+
+> I think declaring it as an array of four characters, or a struct with re=
+duced
+> alignment would be the safer choice here.
+
+Sure, I'll change that if it becomes necessary.
+
+> Ideally however you would
+> change the linker script to insert a
+>
+>      . =3D ALIGN(4);
+>
+> before the output to make the variable properly aligned according to
+> the ABI. See 'git log arch/arm/kernel/vmlinux.lds.S' for a long history
+> of alignment changes we did there.
+
+This here is a special case and it's not just parisc.
+This happens when the linux kernel gets compressed, and at the end of
+the compressed file bzip/gzip/lz4 and such gets added the size of the
+compressed file.
+See in generic Makefile scripts/Makefile.lib, line 392ff.
+During make then this happens (for lz4 compression):
+  { cat arch/parisc/boot/compressed/vmlinux.bin | lz4c -l -c1 stdin stdout=
+; printf \\350\\044\\232\\000; } > arch/parisc/boot/compressed/vmlinux.bin=
+.lz4
+which is then later added as binary input to the linker to generate final =
+file.
+
+The printf() is the one which is then read afterwards.
+Changing this isn't IMHO simply possible or useful, because gzip already d=
+oes it that way
+and it should be compatible independend which compression algorithm is use=
+d.
+And if I'd change it I would need to change it for x86, sh and um arches t=
+oo.
+So, for now I don't think it's worth messing around here.
+
+Helge
