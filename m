@@ -2,134 +2,143 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 068C3C433FE
-	for <linux-parisc@archiver.kernel.org>; Wed,  8 Sep 2021 18:13:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 918CDC433F5
+	for <linux-parisc@archiver.kernel.org>; Wed,  8 Sep 2021 20:45:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E7E8661100
-	for <linux-parisc@archiver.kernel.org>; Wed,  8 Sep 2021 18:13:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 72C056115B
+	for <linux-parisc@archiver.kernel.org>; Wed,  8 Sep 2021 20:45:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349183AbhIHSPD (ORCPT
+        id S1350500AbhIHUq6 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 8 Sep 2021 14:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349202AbhIHSPC (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 8 Sep 2021 14:15:02 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11681C06175F;
-        Wed,  8 Sep 2021 11:13:54 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id 6so4190854oiy.8;
-        Wed, 08 Sep 2021 11:13:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=wsmP6J8DZZnWADy+5dtS5HLS6CANu/6Oi+vux+shT7c=;
-        b=KnoRzCnTfLlpKXPbScowwr+IvLNjDN3+GvyC5RWSsjna4CFXQ7Q8MZZW5CeKmizPw7
-         EOWkB7Brj/+p2P6sepk/5BR3Deqfim0gRGKE/whSxTuyVP1VZrfL1hZc3UZ5JgH3u1w3
-         tAHQvh/J3rp182PxfdQLpcW80gQdOOtWz2umrT7gUzh0utIVtK1aMYtK3dF5dpHAF1XC
-         cbP7Z799XpRDkCnlnFjRz2JT9I1dDBH4LiZqBxcO6ADUWeiofv96T5HhJmcsqG5PpjWh
-         AAdMMMGmqGblQtXdiUnZu8hnchi/+BjLOG8xeaQAS690uJghTZdSRVul2azxFLsyaAE9
-         DLmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=wsmP6J8DZZnWADy+5dtS5HLS6CANu/6Oi+vux+shT7c=;
-        b=xLvvGi6lNwzCyrzGFP3wK2AIMgS8OMCS0ZZMopNFvtEdabC6/mAFPZ8h7hPInAu5Aw
-         p3iXD/JfHDlgwCgF2Y/e/BxOmIv0qvlyyhG7auR6nz9qPVF0WRNkcnkZlNUSy6pLrwNu
-         AbEAVOnlp3j6uS6eAj7UvQC/2WaigFstu8S9efrRmRhFJQdwpgfsBtaGDEmKyKWIuM9/
-         lmBZDT4ZZjIDPa5+EO2a4Vgm41rLWpTUhLqKbZAvEd8BNV9tasAqFr36vhcxlU9jZFCa
-         gT6q/vEZnw4Af7LUQo5juqKs9DRyvqgqyg5duo/bT5X8qtPo9Ihdb9gsjc1CqEI+RzLW
-         1L6A==
-X-Gm-Message-State: AOAM532nP05hRstgrF160i5SGZOnUmqlLS3aZvxKlEIq9rywYjPdBTR7
-        QZZo+v+boaEB2NL6JQhBW4E=
-X-Google-Smtp-Source: ABdhPJwjooSA30lQLF4upBlQxdLzBeKZ0F4iImvgwV0fJRM2P8DX9ou9kF1zOZm0oElASAYj4sFgXA==
-X-Received: by 2002:aca:2216:: with SMTP id b22mr3316630oic.163.1631124833369;
-        Wed, 08 Sep 2021 11:13:53 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i19sm599763ooe.44.2021.09.08.11.13.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 11:13:52 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 8 Sep 2021 11:13:51 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Helge Deller <deller@gmx.de>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hannes Reinecke <hare@suse.com>, linux-parisc@vger.kernel.org
-Subject: Re: [PATCH] scsi: ncr53c8xx: Remove unused
- retrieve_from_waiting_list() function
-Message-ID: <20210908181351.GA1209328@roeck-us.net>
-References: <YTfS/LH5vCN6afDW@ls3530>
+        Wed, 8 Sep 2021 16:46:58 -0400
+Received: from mout.gmx.net ([212.227.15.18]:33869 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350509AbhIHUq5 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 8 Sep 2021 16:46:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631133944;
+        bh=kd7gPk+eIrr2D3SXV0PRWz8e7NH4O/pJiuNTbD7HvHU=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=CPasY0R97HiU4lcrAsdYtHQjZOHCWrVwMQFohSFbbnOnz7rdAVAz8MdoSu0/lQkm7
+         KNOecmw5jSSFTTMOBu8x1u/40Qox/9lb0b/DTnUV43ZsLExCxEd+qJ5b7YVW9kCBxz
+         N1Gxi5yLsP+7LY89kzZ9ayr/4vXEHCZYAWI/r6M8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([80.187.121.129]) by mail.gmx.net
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MvbFs-1nGjGw0cTe-00scD7; Wed, 08 Sep 2021 22:45:44 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH 4/4] parisc: Reduce sigreturn trampoline to 3 instructions
+Date:   Wed,  8 Sep 2021 22:44:05 +0200
+Message-Id: <20210908204405.127665-4-deller@gmx.de>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210908204405.127665-1-deller@gmx.de>
+References: <20210908204405.127665-1-deller@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YTfS/LH5vCN6afDW@ls3530>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:2nffwEEyUtkR3Vvd6T2HVqBWamT8+fqkYiApU6/m7UK5OotzAxS
+ SA+q+L95vfn5MiWInDhDvmy04xOYBhCxYjsu7EwfD6bzAKe01emLRV/mAKmsBYwwUYeU9Ex
+ WTldxNP5kHRCDIvTecVa5NsH8ZT/oC0g9N47Mkiv06ndN2zLFp5izQsb50TKBAq97cDPTIP
+ 9ZYdxTtkH3CQofICVn4sA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:aWihpC8IgTU=:ByHsQ7VF8PkhO7yw9UOYRA
+ bCzRmKEca8oKfSxd94wfu74y9iyot18TPTRO0ZWGELirELC/6tZCwlsvDNvMfBJ0XW4U7dYoC
+ tQllV4+Umfcr7s8JcwaR89tE/Kz67/5ICyvtbZ8E4tj4EMbMMMOXa1tP7KPVo0mavAZ6KYxUh
+ +/tUfMAfGhqDRvef/7JQ6fWtEXw3T//l5V1sV08Rzs2oVo3iqTdun8/m+Zd/XzmffnUkvHOM9
+ 5degLr9sTvOCj/UbEaiWK19xqZe6xfjD4z4DgGShfREL7urx4BORZxQCKP9knG0ITC9lQW+51
+ dZ63ABTEJZ2x3IEyTu8X9zpSXbmIKKkkxTw7NcJsf+EAw5MEBTlGu9/OO83RPLumxSE6kzcWX
+ Ao9Cd8cLvcQvBA6AesXpRvwqNFoIcClxUK7ooY0B2HplNlH5ayRD8w5afl6Hx0k+tqq39mh+P
+ b8tttK2Tyxq0nCDJisvbsdbsQGbhMUtODsUw+WKbudkGM52WhrUD++dgQbMNXwGMd6yM62tSj
+ b4DWnrj5+6ywSS4UWmf6oj6rloEmSrDjge/j3t9en8jmigbMjbfib1IzfB31cX4uwcxrNxzzJ
+ w4mxJCBrXLqGtfSJ5dOkhb+K9MxDYmw09D2EAFUSW5FARlgI+MO/AO5ASb6X42/1ssG7orVvL
+ /lsz0IbCYinXVZ0Ng4CM/XcRHLHV0uZWu5/zxhQijCgiQEZYe2ZbvsnRnmG5UFdLE56EqH4Cy
+ pL9dWQOWEJTOtJEtTf1CpE+eiw3eOSu5i+2e1hWGU+jA9RxrzTxOJq1mgM73iXu2FTjvZ33Jc
+ wb3uvHjZgC2X5JI3q8SCCfyy+zYtZiZz1uQjcorkBRajhLC2QRnp+ncIZytBaHgo40Gnd6WYC
+ HiJkgV9iWwRaKe1F6kWzxRE717lbcJyuMeW4f3sHKtAXvq0BUQb7JtqB+GfefLjLl5owOsbSX
+ z8SWCtJ6K/jTcfdKQj2TWSlA5A9PJRASXKAvsoh6E3OLOPpy6O1dupzT62BTippALf4TLBD3z
+ 4kr4fEFDji62mS+j3bzbnetgS1Aif8E4sGBNVHxcQNpMh/pccSQfu6Np09LHK5Y4vink1KaIt
+ ADO4s4Eg6YzuI0=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 11:00:44PM +0200, Helge Deller wrote:
-> Drop retrieve_from_waiting_list() to avoid this warning:
-> drivers/scsi/ncr53c8xx.c:8000:26: warning: ‘retrieve_from_waiting_list’ defined but not used [-Wunused-function]
-> 
-> Fixes: 1c22e327545c ("scsi: ncr53c8xx: Remove unused code")
-> Signed-off-by: Helge Deller <deller@gmx.de>
+We can move the INSN_LDI_R20 instruction into the branch delay slot.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Helge Deller <deller@gmx.de>
+=2D--
+ arch/parisc/include/asm/rt_sigframe.h |  2 +-
+ arch/parisc/kernel/signal.c           | 13 ++++++-------
+ arch/parisc/kernel/signal32.h         |  2 +-
+ 3 files changed, 8 insertions(+), 9 deletions(-)
 
-> 
-> diff --git a/drivers/scsi/ncr53c8xx.c b/drivers/scsi/ncr53c8xx.c
-> index 7a4f5d4dd670..2b8c6fa5e775 100644
-> --- a/drivers/scsi/ncr53c8xx.c
-> +++ b/drivers/scsi/ncr53c8xx.c
-> @@ -1939,11 +1939,8 @@ static	void	ncr_start_next_ccb (struct ncb *np, struct lcb * lp, int maxn);
->  static	void	ncr_put_start_queue(struct ncb *np, struct ccb *cp);
-> 
->  static void insert_into_waiting_list(struct ncb *np, struct scsi_cmnd *cmd);
-> -static struct scsi_cmnd *retrieve_from_waiting_list(int to_remove, struct ncb *np, struct scsi_cmnd *cmd);
->  static void process_waiting_list(struct ncb *np, int sts);
-> 
-> -#define remove_from_waiting_list(np, cmd) \
-> -		retrieve_from_waiting_list(1, (np), (cmd))
->  #define requeue_waiting_list(np) process_waiting_list((np), DID_OK)
->  #define reset_waiting_list(np) process_waiting_list((np), DID_RESET)
-> 
-> @@ -7997,26 +7994,6 @@ static void insert_into_waiting_list(struct ncb *np, struct scsi_cmnd *cmd)
->  	}
->  }
-> 
-> -static struct scsi_cmnd *retrieve_from_waiting_list(int to_remove, struct ncb *np, struct scsi_cmnd *cmd)
-> -{
-> -	struct scsi_cmnd **pcmd = &np->waiting_list;
-> -
-> -	while (*pcmd) {
-> -		if (cmd == *pcmd) {
-> -			if (to_remove) {
-> -				*pcmd = (struct scsi_cmnd *) cmd->next_wcmd;
-> -				cmd->next_wcmd = NULL;
-> -			}
-> -#ifdef DEBUG_WAITING_LIST
-> -	printk("%s: cmd %lx retrieved from waiting list\n", ncr_name(np), (u_long) cmd);
-> -#endif
-> -			return cmd;
-> -		}
-> -		pcmd = (struct scsi_cmnd **) &(*pcmd)->next_wcmd;
-> -	}
-> -	return NULL;
-> -}
-> -
->  static void process_waiting_list(struct ncb *np, int sts)
->  {
->  	struct scsi_cmnd *waiting_list, *wcmd;
+diff --git a/arch/parisc/include/asm/rt_sigframe.h b/arch/parisc/include/a=
+sm/rt_sigframe.h
+index 2b3010ade00e..4b9e3d707571 100644
+=2D-- a/arch/parisc/include/asm/rt_sigframe.h
++++ b/arch/parisc/include/asm/rt_sigframe.h
+@@ -2,7 +2,7 @@
+ #ifndef _ASM_PARISC_RT_SIGFRAME_H
+ #define _ASM_PARISC_RT_SIGFRAME_H
+
+-#define SIGRETURN_TRAMP 4
++#define SIGRETURN_TRAMP 3
+ #define SIGRESTARTBLOCK_TRAMP 5
+ #define TRAMP_SIZE (SIGRETURN_TRAMP + SIGRESTARTBLOCK_TRAMP)
+
+diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
+index 46b1050640b8..bbfe23c40c01 100644
+=2D-- a/arch/parisc/kernel/signal.c
++++ b/arch/parisc/kernel/signal.c
+@@ -288,22 +288,21 @@ setup_rt_frame(struct ksignal *ksig, sigset_t *set, =
+struct pt_regs *regs,
+ 	   already in userspace. The first words of tramp are used to
+ 	   save the previous sigrestartblock trampoline that might be
+ 	   on the stack. We start the sigreturn trampoline at
+-	   SIGRESTARTBLOCK_TRAMP+X. */
++	   SIGRESTARTBLOCK_TRAMP. */
+ 	err |=3D __put_user(in_syscall ? INSN_LDI_R25_1 : INSN_LDI_R25_0,
+ 			&frame->tramp[SIGRESTARTBLOCK_TRAMP+0]);
+-	err |=3D __put_user(INSN_LDI_R20,
+-			&frame->tramp[SIGRESTARTBLOCK_TRAMP+1]);
+ 	err |=3D __put_user(INSN_BLE_SR2_R0,
++			&frame->tramp[SIGRESTARTBLOCK_TRAMP+1]);
++	err |=3D __put_user(INSN_LDI_R20,
+ 			&frame->tramp[SIGRESTARTBLOCK_TRAMP+2]);
+-	err |=3D __put_user(INSN_NOP, &frame->tramp[SIGRESTARTBLOCK_TRAMP+3]);
+
+-	start =3D (unsigned long) &frame->tramp[0];
+-	end =3D (unsigned long) &frame->tramp[TRAMP_SIZE];
++	start =3D (unsigned long) &frame->tramp[SIGRESTARTBLOCK_TRAMP+0];
++	end =3D (unsigned long) &frame->tramp[SIGRESTARTBLOCK_TRAMP+3];
+ 	flush_user_dcache_range_asm(start, end);
+ 	flush_user_icache_range_asm(start, end);
+
+ 	/* TRAMP Words 0-4, Length 5 =3D SIGRESTARTBLOCK_TRAMP
+-	 * TRAMP Words 5-9, Length 4 =3D SIGRETURN_TRAMP
++	 * TRAMP Words 5-7, Length 3 =3D SIGRETURN_TRAMP
+ 	 * So the SIGRETURN_TRAMP is at the end of SIGRESTARTBLOCK_TRAMP
+ 	 */
+ 	rp =3D (unsigned long) &frame->tramp[SIGRESTARTBLOCK_TRAMP];
+diff --git a/arch/parisc/kernel/signal32.h b/arch/parisc/kernel/signal32.h
+index f166250f2d06..a5bdbb5678b7 100644
+=2D-- a/arch/parisc/kernel/signal32.h
++++ b/arch/parisc/kernel/signal32.h
+@@ -36,7 +36,7 @@ struct compat_regfile {
+         compat_int_t rf_sar;
+ };
+
+-#define COMPAT_SIGRETURN_TRAMP 4
++#define COMPAT_SIGRETURN_TRAMP 3
+ #define COMPAT_SIGRESTARTBLOCK_TRAMP 5
+ #define COMPAT_TRAMP_SIZE (COMPAT_SIGRETURN_TRAMP + \
+ 				COMPAT_SIGRESTARTBLOCK_TRAMP)
+=2D-
+2.31.1
+
