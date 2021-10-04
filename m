@@ -2,127 +2,85 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC05C433F5
-	for <linux-parisc@archiver.kernel.org>; Fri,  1 Oct 2021 19:13:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7708FC433F5
+	for <linux-parisc@archiver.kernel.org>; Mon,  4 Oct 2021 22:50:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9F3E761ABD
-	for <linux-parisc@archiver.kernel.org>; Fri,  1 Oct 2021 19:13:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5185A61507
+	for <linux-parisc@archiver.kernel.org>; Mon,  4 Oct 2021 22:50:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352957AbhJATOq (ORCPT
-        <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 1 Oct 2021 15:14:46 -0400
-Received: from mout.gmx.net ([212.227.15.19]:48913 "EHLO mout.gmx.net"
+        id S236902AbhJDWvu (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 4 Oct 2021 18:51:50 -0400
+Received: from mout.gmx.net ([212.227.15.18]:58485 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhJATOp (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 1 Oct 2021 15:14:45 -0400
+        id S233501AbhJDWvt (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 4 Oct 2021 18:51:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1633115573;
-        bh=1/tD9+i6K79wJvk6mIUgFY5BXkVQQ7kg9CSnpwZJmy4=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=FXt3MCG81EhlBPWLYL2tltIxPJPCK3WXrbF7cNtj9+pInkpHo7bejF1wwI4pO2hbA
-         nkB4wZ4ilE4jLfGuSg50D+eudNNMCKAdjLMOwHXg97C5YngEhLKDMubfxBM10vLOtA
-         nmaw2eZQM1qODJco+oJNV7lgCYXffC2ASxM0UJ7s=
+        s=badeba3b8450; t=1633387798;
+        bh=dGNccr1yjvRidYSXXhFJbz4gHTfWT+FVCZ5xqFFW23k=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=LEPjsqlhGDY0MdP0Itx45Ktp6niXPuZZCUHHVLZh/403ALijt1YQhfbMCaJORyLDO
+         VSbtITIYayo5knTFUIPvq78Fb+q2IC0RGT6cTngQfX/jmh7/qKiEQ94MJL+r13YQCr
+         bama55ukvGfnGvzoSF6gPUizzLHH5FTgFXEoxNeo=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.147.253]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MtOKi-1moalu3HJ8-00uoGT; Fri, 01
- Oct 2021 21:12:52 +0200
-Message-ID: <2ef5185a-9a0f-5ee0-23fc-37e0b1dd1099@gmx.de>
-Date:   Fri, 1 Oct 2021 21:12:43 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: parisc/unwind: call callback with toplevel address
-Content-Language: en-US
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-parisc@vger.kernel.org
-Cc:     Sven Schnelle <svens@stackframe.org>,
-        James.Bottomley@hansenpartnership.com,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        lkft-triage@lists.linaro.org
-References: <CA+G9fYtsteSfwTQKV8o6VtBQDoz-+nwOf0s0X8BCkQHgAc6sdw@mail.gmail.com>
+Received: from ls3530 ([92.116.151.97]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MLR1V-1mFAqk3QSh-00IVxc; Tue, 05
+ Oct 2021 00:49:57 +0200
+Date:   Tue, 5 Oct 2021 00:49:48 +0200
 From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <CA+G9fYtsteSfwTQKV8o6VtBQDoz-+nwOf0s0X8BCkQHgAc6sdw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To:     linux-parisc@vger.kernel.org,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH] parisc: Fix ptrace check on syscall return
+Message-ID: <YVuFDDWlPnzOKSsB@ls3530>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:9JLzNYGQWPeuqT+n7ZCc3Lzomcn6+HW7fXFGmkxcXlKMTWm5pg4
+ fhEUyFkJuPlcPeWsE6TbSutr29I99A9PHwH0sRp8sTt8oTCZId5KEyteDJ3MkWr6Aty71jV
+ 9naHy6uoRa43PIlHn1AtzIQx/eFujg/Ze3e/EhPWhDs52uzDRKRlv0pIWQCbc6dNS724hf9
+ QY1DkpbtoCflwbst9/lZQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Mzx0RODuKoU=:TRlJimfZncn74lTlRelCb6
+ coYP70aqfVH140id/v7JJHET51dEhGlRfEq3YfC5lb5M95+OFv5jBhTrdq6aybjQCOng6UKd0
+ KkeWS5hTDM5gNZ/3VppV7QmMs+MBOzHw9zCZ9zY6VcLMxCdxvqz5cDolp0fsRLlPycX+jYsZj
+ YvlUykB3Vj+qDpirYlosxGYfYE5PGb3ElWlTOzB8mKrRACebzR464hGtpzn3qaPBa0NxEoGaU
+ 5PRnwem3rflz2WnQnoU/m+H0OHfDC2a+f6lzy15Ng9ep6DYAVX0/emwIzhxhtqSrkmDC5jLt7
+ dSYgV3qKHuDeei7CFvIVTn3zNXvc4RKtLEmg/4hIcxFlmDj4TgORFhceVDFuTWCZV24pVvzhg
+ x2Nuj8ch1JLtlxJsgK+IXkFnlRaOQdimC2itzPitxBgdr6Q+fzySjCd2hUxLOVV5LebIcMSUe
+ owxCXEaSFqFi9K3ZTDzbVTOYg4J9UIdCJ5yw+evd1jGt87CU4jIsx/RvPsi+LlVUOXqlxVayj
+ vusXOf4KNJ6y+WtBHtRiq6xVPvBAOjBKkkdJkKHn/SG7WXj2cDOKXu5FM7bbyMgljC/pAYZmu
+ Tndhtfu7DP6LczzJJwFFyy+gDrQC4YOSJPj5uAJtYPZ/fy6KpzFWEIrb4av4NdcejQX9gj2f5
+ lnHXXFbUocxeDy3+xErFk0KzSs84ZPU7uysyE28ISwNwZf9vlOhgG6JYlZcmOMnWrBaJsiaAq
+ TY/DO3fBBboTAv9F1Y2FMEeRHeh6vyrmV5zH2obycn4dkriYSCcq6QptUA0LK4P1Ea8oh6ZE2
+ SAf4dANcZ0QZPjN4MRMrM26MAM2pSLUZk1xELWS1LrGaFCb1UfnYL4g1TFsiOH+37hKo7Z65x
+ d5u+ltrXPoGL8xfyvjg7a3l7vWnD1HZTjkZWR7J8hYLK2grRUlMmpFIXEnKQk4htKuOtDP9xH
+ z1Q086aeL/W7xKk3ebxboUF58H4CI95FDYTvpFRD68c9iTlvdnS3727XssLwNg5EnDSUeKGSa
+ koDhNrTpbRgs+7aA8xFdsWYrXalVlc9M7pkxVeW1Y3JasJMNwXFWRM/GCFXl1OoMnQ==
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:m4bcQkSWj0lpLhyoxxSrxte4MHqoI3/QJ8CtZN1qb4ts3rsZxhw
- fSGMRLTYdCWL/xEY+sp2T6P1Fy9VKcJ1M9E5trpBZXTEaWzn+LE74awyOEqrbnYml/bFMw6
- BgIbLbMb/hNGs3lIA37JktxozVnDqFzjRj4qrWc0Jpyd7Km4I86pzCF+PFZz8TJIuqmvqMT
- DG7j4d/ShOWhMe5BF7Z5w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vZJTgfu7RVY=:iI7xQry8ZZODMpie1mGAC4
- XL3Bh8CR9G5vNYd/8UlHHsw8W6HRUD3kL5Bl4JceR8KoNmCT8HoObzOH0+Wq7uGFRd4cdxVK1
- NfAlKQzhYJcLSc+fWzF5t3POV3MyWPwVDxKq2pVt8bDrOvQb+oupFBsghKxRa/3KhF5koknLG
- mi+/IKyU41UJA6tS6Cfsq1U5qHO0Zlwv0duPPBbO+QV3YIz98JDiHNYX6Gpt+Tl4VwknSjCc/
- 6ISLNbqBWQtGXAw5M3SWzGIT9h2vhGcOaNNLnY2fmLRxmj3b97Z41nDdTQ6Vq1c8Aj50QDh39
- Uyf+9dVvmxA5pHGg9dVBJ/EXrhZ9aNd9tCMEDSptYUsnlURejf3DIMFnyN2ayYr/oxuWbC5Xw
- l9mspghsO5qio2S6anPQS0UFnhQn6Dei68Hrspc1qLKnQ5kkAmyw6QFwwuGRoLU7sAuOJRAwx
- Iu3rBmF6+g22JC6G4e6O0fWpwLhg4lrqUb2M6yHzyncDAUOTVrHFMTQ+BJUiMNNoGt9IrHqqR
- g7TgVk+Fy/q1qvmYWd7LBKZbMSLDiuDcvvqevsgq62PrckyhUBDUWbm/k3tihQhGbewl7W9c2
- 8ObKLAUYsZD8oDJ8bzeNrUzALphLu3RpJznoVojhdjLrmyas/Zif7Nhi2FgtRfqrlsBcbLUe2
- x39eAZ1jKkiiD9qjV51+RxImlV/C/nNUr2zktAbd5EjJWCl5GCnrGoUuRiteyfkxAoXzL+Lvy
- qW6V9IyOCyjG7FhOxF8qmLMi43GXUSu0ZAV69Bi8nwww1KfVK5ISAId7PaExnjmjuIZ2QVHVw
- jCkh8wd6Ej0++tXJFYaEX6OTbxXUGRVivQtz3sq4NxkkN1SlLCab46akRBIb49iEynZPu55nw
- G0aenmRMOEeoQ8dvJo7+n4PRgxmHiDC8mREkdo6wUohm097qaMj3BnvvF37ogCUIZSwlpLTyX
- rzZgzB6btgLu85pG4OGe1FpxIFVKJ4AXRqJsGMgqNSOWZWe6+hXzR1pez9AHXfA4Hc7WrV8gL
- EXoZ5L1idGmGJHfFLQgJWq91SdOqpPXpl71uDuUed3zMexa7O9u64fGApUvYHNeMpJ2HIGtiu
- pNbm87LxSy6cmY=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 10/1/21 12:30, Naresh Kamboju wrote:
-> Following build errors noticed while building Linux next 20211001
-> with gcc-11 for parisc architecture.
->
-> arch/parisc/kernel/stacktrace.c: In function 'dump_trace':
-> arch/parisc/kernel/stacktrace.c:20:13: error: 'regs' undeclared (first
-> use in this function)
->    20 |         if (regs)
->       |             ^~~~
-> arch/parisc/kernel/stacktrace.c:20:13: note: each undeclared
-> identifier is reported only once for each function it appears in
-> arch/parisc/kernel/stacktrace.c:21:22: error: implicit declaration of
-> function 'fn' [-Werror=3Dimplicit-function-declaration]
->    21 |                 if (!fn(cookie, regs->iaoq[0]))
->       |                      ^~
-> arch/parisc/kernel/stacktrace.c:21:25: error: 'cookie' undeclared
-> (first use in this function)
->    21 |                 if (!fn(cookie, regs->iaoq[0]))
->       |                         ^~~~~~
-> cc1: some warnings being treated as errors
-> make[3]: *** [scripts/Makefile.build:288:
-> arch/parisc/kernel/stacktrace.o] Error 1
->
-> Build config:
-> https://builds.tuxbuild.com/1ytbtyEg5SDSQgS2Oj9RsCM4ZmS/config
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+**untested**
 
-I've dropped that patch.
+The TIF_XXX flags are stored in the flags field in the thread_info
+struct (TI_FLAGS), not in the flags field of the task_struct structure
+(TASK_FLAGS).
 
-Thanks!
-Helge
+It seems this bug has been in the kernel for 12 years (since v2.6.32).
 
+Signed-off-by: Helge Deller <deller@gmx.de>
+Fixes: ecd3d4bc06e48 ("parisc: stop using task->ptrace for {single,block}s=
+tep flags")
 
+diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
+index f75d7d7efd25..c312aef175df 100644
+=2D-- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -1834,7 +1834,7 @@ syscall_restore:
+ 	LDREG	TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r1
 
-> meta data:
-> -----------
->     git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->     git_sha: a25006a77348ba06c7bc96520d331cd9dd370715
->     git_short_log: a25006a77348 (\"Add linux-next specific files for 202=
-11001\")
->     kconfig:  defconfig
->     kernel_version: 5.15.0-rc3
->     target_arch: parisc
->     toolchain: gcc-11
->
-> steps to reproduce:
-> https://builds.tuxbuild.com/1ytbtyEg5SDSQgS2Oj9RsCM4ZmS/tuxmake_reproduc=
-er.sh
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
->
-
+ 	/* Are we being ptraced? */
+-	ldw	TASK_FLAGS(%r1),%r19
++	LDREG	TI_FLAGS-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r19
+ 	ldi	_TIF_SYSCALL_TRACE_MASK,%r2
+ 	and,COND(=3D)	%r19,%r2,%r0
+ 	b,n	syscall_restore_rfi
