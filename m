@@ -2,134 +2,80 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC65EC433F5
-	for <linux-parisc@archiver.kernel.org>; Fri,  8 Oct 2021 15:22:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE2E5C433FE
+	for <linux-parisc@archiver.kernel.org>; Fri,  8 Oct 2021 20:48:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B9C566101A
-	for <linux-parisc@archiver.kernel.org>; Fri,  8 Oct 2021 15:22:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D53D460EFF
+	for <linux-parisc@archiver.kernel.org>; Fri,  8 Oct 2021 20:48:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242910AbhJHPYe (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 8 Oct 2021 11:24:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:58598 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242780AbhJHPYd (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:24:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF3811063;
-        Fri,  8 Oct 2021 08:22:37 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9B44F3F66F;
-        Fri,  8 Oct 2021 08:22:29 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86 <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        David Hildenbrand <david@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Vipin Sharma <vipinsh@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH 2/2] sched: Centralize SCHED_{SMT, MC, CLUSTER} definitions
-In-Reply-To: <CAGsJ_4wqtcOdsFDzR98PFbjxRyTqzf7P3p3erup84SXESYonYw@mail.gmail.com>
-References: <20211008115347.425234-1-valentin.schneider@arm.com> <20211008115347.425234-3-valentin.schneider@arm.com> <CAGsJ_4wqtcOdsFDzR98PFbjxRyTqzf7P3p3erup84SXESYonYw@mail.gmail.com>
-Date:   Fri, 08 Oct 2021 16:22:27 +0100
-Message-ID: <87bl3zlex8.mognet@arm.com>
+        id S242932AbhJHUuh (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 8 Oct 2021 16:50:37 -0400
+Received: from smtp.duncanthrax.net ([178.63.180.169]:43320 "EHLO
+        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243266AbhJHUuf (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 8 Oct 2021 16:50:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=duncanthrax.net; s=dkim; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=QbiWZaIEFL/r5D4YIsa9tNdWo0DCFE/2tu4bKS0BZe8=; b=ZdYgPXn7EfclBuLnocDtmIPB/J
+        Ayodd1j1e+0XowmaHzPNwesPR78i8sH3SCWkdFmDdzuNY9KI5aedB6/5u1RYCQCmnXR7hAfI/d2qF
+        uZ2OzJwEmqWuS8c82dPi4y8LZD7UOsBpSMYyeCxs59EOQPlMXysHJNBAV8pH2nNBgBxA=;
+Received: from hsi-kbw-109-193-149-228.hsi7.kabel-badenwuerttemberg.de ([109.193.149.228] helo=x1.stackframe.org)
+        by smtp.duncanthrax.net with esmtpa (Exim 4.93)
+        (envelope-from <svens@stackframe.org>)
+        id 1mYwnG-0006vO-Cj; Fri, 08 Oct 2021 22:48:38 +0200
+From:   Sven Schnelle <svens@stackframe.org>
+To:     deller@gmx.de
+Cc:     linux-parisc@vger.kernel.org
+Subject: [PATCH 1/4] parisc: disable preemption during local tlb flush
+Date:   Fri,  8 Oct 2021 22:48:23 +0200
+Message-Id: <20211008204825.6229-2-svens@stackframe.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211008204825.6229-1-svens@stackframe.org>
+References: <20211008204825.6229-1-svens@stackframe.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 09/10/21 01:37, Barry Song wrote:
-> On Sat, Oct 9, 2021 at 12:54 AM Valentin Schneider
-> <valentin.schneider@arm.com> wrote:
->>
->> Barry recently introduced a new CONFIG_SCHED_CLUSTER, and discussions
->> around that highlighted that every architecture redefines its own help text
->> and dependencies for CONFIG_SCHED_SMT and CONFIG_SCHED_MC.
->>
->> Move the definition of those to scheduler's Kconfig to centralize help text
->> and generic dependencies (i.e. SMP). Make them depend on a matching
->> ARCH_SUPPORTS_SCHED_* which the architectures can select with the relevant
->> architecture-specific dependency.
->>
->> s390 uses its own topology table (set_sched_topology()) and doesn't seem to
->> cope without SCHED_MC or SCHED_SMT, so those remain untogglable.
->>
->
-> Hi Valentin,
-> Thanks!
-> I believe this is a cleaner way for Kconfig itself. But I am not quite sure this
-> is always beneficial of all platforms. It would be perfect if the patch has no
-> side effects and doesn't change the existing behaviour. But it has side effects
-> by changing the default N to Y on a couple of platforms.
->
+flush_cache_mm() fetches %sr3 via mtsp(3). If it matches mm->context,
+it flushes caches and the TLB. However, the TLB is cpu-local, so if the
+code gets preempted shortly after the mtsp(), and later resumed on another
+CPU, the wrong TLB is flushed.
 
-So x86 has it default yes, and a lot of others (e.g. arm64) have it default
-no.
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+---
+ arch/parisc/kernel/cache.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-IMO you don't gain much by disabling them. SCHED_MC and SCHED_CLUSTER only
-control the presence of a sched_domain_topology_level - if it's useless it
-gets degenerated at domain build time. Some valid reasons for not using
-them is if the architecture defines its own topology table (e.g. powerpc
-has CACHE and MC levels which are not gated behind any CONFIG).
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index 39e02227e231..90656c49bc07 100644
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -558,6 +558,7 @@ void flush_cache_mm(struct mm_struct *mm)
+ 		return;
+ 	}
+ 
++	preempt_disable();
+ 	if (mm->context == mfsp(3)) {
+ 		for (vma = mm->mmap; vma; vma = vma->vm_next) {
+ 			flush_user_dcache_range_asm(vma->vm_start, vma->vm_end);
+@@ -565,8 +566,10 @@ void flush_cache_mm(struct mm_struct *mm)
+ 				flush_user_icache_range_asm(vma->vm_start, vma->vm_end);
+ 			flush_tlb_range(vma, vma->vm_start, vma->vm_end);
+ 		}
++		preempt_enable();
+ 		return;
+ 	}
++	preempt_enable();
+ 
+ 	pgd = mm->pgd;
+ 	for (vma = mm->mmap; vma; vma = vma->vm_next) {
+-- 
+2.33.0
 
-SCHED_SMT has an impact on code generated in sched/core.c, but that is also
-gated by a static key.
-
-So I'd say having them default yes is sensible. I'd even say we should
-change the "If unsure say N here." to "Y".
