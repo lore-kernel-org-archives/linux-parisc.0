@@ -2,27 +2,27 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC99AC4321E
-	for <linux-parisc@archiver.kernel.org>; Sat,  9 Oct 2021 00:37:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A632C433EF
+	for <linux-parisc@archiver.kernel.org>; Sat,  9 Oct 2021 00:37:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9881160F90
-	for <linux-parisc@archiver.kernel.org>; Sat,  9 Oct 2021 00:37:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 55FA861038
+	for <linux-parisc@archiver.kernel.org>; Sat,  9 Oct 2021 00:37:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244103AbhJIAjh (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 8 Oct 2021 20:39:37 -0400
-Received: from mga02.intel.com ([134.134.136.20]:5242 "EHLO mga02.intel.com"
+        id S244131AbhJIAjk (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 8 Oct 2021 20:39:40 -0400
+Received: from mga02.intel.com ([134.134.136.20]:5254 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244042AbhJIAja (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 8 Oct 2021 20:39:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="213756487"
+        id S244059AbhJIAjd (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 8 Oct 2021 20:39:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="213756497"
 X-IronPort-AV: E=Sophos;i="5.85,358,1624345200"; 
-   d="scan'208";a="213756487"
+   d="scan'208";a="213756497"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 17:37:34 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 17:37:36 -0700
 X-IronPort-AV: E=Sophos;i="5.85,358,1624345200"; 
-   d="scan'208";a="624905344"
+   d="scan'208";a="624905351"
 Received: from dmsojoza-mobl3.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.135.62])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 17:37:32 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 17:37:35 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -56,9 +56,9 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH v5 02/16] x86/tdx: Get TD execution environment information via TDINFO
-Date:   Fri,  8 Oct 2021 17:36:57 -0700
-Message-Id: <20211009003711.1390019-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v5 04/16] x86/tdx: Make pages shared in ioremap()
+Date:   Fri,  8 Oct 2021 17:36:59 -0700
+Message-Id: <20211009003711.1390019-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -70,93 +70,118 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-Per Guest-Host-Communication Interface (GHCI) for Intel Trust Domain
-Extensions (Intel TDX) specification, sec 2.4.2, TDCALL[TDINFO]
-provides basic TD execution environment information, not provided by
-CPUID.
+All ioremap()ed pages that are not backed by normal memory (NONE or
+RESERVED) have to be mapped as shared.
 
-Call TDINFO during early boot to be used for following system
-initialization.
+Reuse the infrastructure from AMD SEV code.
 
-The call provides info on which bit in PFN is used to indicate that the
-page is shared with the host and attributes of the TD, such as debug.
-
-Information about the number of CPUs need not be saved because there are
-no users so far for it.
+Note that DMA code doesn't use ioremap() to convert memory to shared as
+DMA buffers backed by normal memory. DMA code make buffer shared with
+set_memory_decrypted().
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- arch/x86/kernel/tdx.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
 
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 79af9e78b300..bb237cf291e6 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -14,6 +14,7 @@
- #include <linux/sched/signal.h> /* force_sig_fault() */
+Changes since v4:
+ * Renamed "protected_guest" to "cc_guest".
+ * Replaced use of prot_guest_has() with cc_guest_has()
+ * Modified the patch to adapt to latest version cc_guest_has()
+   changes.
+
+Changes since v3:
+ * Rebased on top of Tom Lendacky's protected guest
+   changes (https://lore.kernel.org/patchwork/cover/1468760/)
+
+Changes since v1:
+ * Fixed format issues in commit log.
+
+ arch/x86/include/asm/pgtable.h |  4 ++++
+ arch/x86/mm/ioremap.c          |  8 ++++++--
+ include/linux/cc_platform.h    | 13 +++++++++++++
+ 3 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 448cd01eb3ec..ecefccbdf2e3 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -21,6 +21,10 @@
+ #define pgprot_encrypted(prot)	__pgprot(__sme_set(pgprot_val(prot)))
+ #define pgprot_decrypted(prot)	__pgprot(__sme_clr(pgprot_val(prot)))
  
- /* TDX Module call Leaf IDs */
-+#define TDX_GET_INFO			1
- #define TDX_GET_VEINFO			3
- 
- #define VE_IS_IO_OUT(exit_qual)		(((exit_qual) & 8) ? 0 : 1)
-@@ -21,6 +22,11 @@
- #define VE_GET_PORT_NUM(exit_qual)	((exit_qual) >> 16)
- #define VE_IS_IO_STRING(exit_qual)	((exit_qual) & 16 ? 1 : 0)
- 
-+static struct {
-+	unsigned int gpa_width;
-+	unsigned long attributes;
-+} td_info __ro_after_init;
++/* Make the page accesable by VMM for confidential guests */
++#define pgprot_cc_guest(prot) __pgprot(pgprot_val(prot) |	\
++					      tdx_shared_mask())
 +
- bool is_tdx_guest(void)
- {
- 	static int tdx_guest = -1;
-@@ -65,6 +71,31 @@ static inline u64 _tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14,
- 	return out->r10;
+ #ifndef __ASSEMBLY__
+ #include <asm/x86_init.h>
+ #include <asm/pkru.h>
+diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+index 026031b3b782..83daa3f8f39c 100644
+--- a/arch/x86/mm/ioremap.c
++++ b/arch/x86/mm/ioremap.c
+@@ -17,6 +17,7 @@
+ #include <linux/cc_platform.h>
+ #include <linux/efi.h>
+ #include <linux/pgtable.h>
++#include <linux/cc_platform.h>
+ 
+ #include <asm/set_memory.h>
+ #include <asm/e820/api.h>
+@@ -26,6 +27,7 @@
+ #include <asm/pgalloc.h>
+ #include <asm/memtype.h>
+ #include <asm/setup.h>
++#include <asm/tdx.h>
+ 
+ #include "physaddr.h"
+ 
+@@ -87,8 +89,8 @@ static unsigned int __ioremap_check_ram(struct resource *res)
  }
  
-+static void tdx_get_info(void)
-+{
-+	struct tdx_module_output out;
-+	u64 ret;
-+
-+	/*
-+	 * TDINFO TDX Module call is used to get the TD
-+	 * execution environment information like GPA
-+	 * width, number of available vcpus, debug mode
-+	 * information, etc. More details about the ABI
-+	 * can be found in TDX Guest-Host-Communication
-+	 * Interface (GHCI), sec 2.4.2 TDCALL [TDG.VP.INFO].
-+	 */
-+	ret = __tdx_module_call(TDX_GET_INFO, 0, 0, 0, 0, &out);
-+
-+	/*
-+	 * Non zero return means buggy TDX module (which is
-+	 * fatal). So raise a BUG().
-+	 */
-+	BUG_ON(ret);
-+
-+	td_info.gpa_width = out.rcx & GENMASK(5, 0);
-+	td_info.attributes = out.rdx;
-+}
-+
- static __cpuidle void _tdx_halt(const bool irq_disabled, const bool do_sti)
+ /*
+- * In a SEV guest, NONE and RESERVED should not be mapped encrypted because
+- * there the whole memory is already encrypted.
++ * In a SEV or TDX guest, NONE and RESERVED should not be mapped encrypted (or
++ * private in TDX case) because there the whole memory is already encrypted.
+  */
+ static unsigned int __ioremap_check_encrypted(struct resource *res)
  {
- 	u64 ret;
-@@ -466,6 +497,8 @@ void __init tdx_early_init(void)
+@@ -246,6 +248,8 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
+ 	prot = PAGE_KERNEL_IO;
+ 	if ((io_desc.flags & IORES_MAP_ENCRYPTED) || encrypted)
+ 		prot = pgprot_encrypted(prot);
++	else if (cc_platform_has(CC_ATTR_GUEST_SHARED_MAPPING_INIT))
++		prot = pgprot_cc_guest(prot);
  
- 	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
- 
-+	tdx_get_info();
+ 	switch (pcm) {
+ 	case _PAGE_CACHE_MODE_UC:
+diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
+index 7728574d7783..edb1d7a2f6af 100644
+--- a/include/linux/cc_platform.h
++++ b/include/linux/cc_platform.h
+@@ -81,6 +81,19 @@ enum cc_attr {
+ 	 * Examples include TDX Guest.
+ 	 */
+ 	CC_ATTR_GUEST_UNROLL_STRING_IO,
 +
- 	pv_ops.irq.safe_halt = tdx_safe_halt;
- 	pv_ops.irq.halt = tdx_halt;
++	/**
++	 * @CC_ATTR_GUEST_SHARED_MAPPING_INIT: IO Remapped memory is marked
++	 *				       as shared.
++	 *
++	 * The platform/OS is running as a guest/virtual machine and
++	 * initializes all IO remapped memory as shared.
++	 *
++	 * Examples include TDX Guest (SEV marks all pages as shared by default
++	 * so this feature cannot be enabled for it).
++	 */
++	CC_ATTR_GUEST_SHARED_MAPPING_INIT,
++
+ };
  
+ #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
 -- 
 2.25.1
 
