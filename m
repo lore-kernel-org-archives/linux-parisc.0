@@ -2,203 +2,105 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DB50C433F5
-	for <linux-parisc@archiver.kernel.org>; Mon, 11 Oct 2021 15:06:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3DF1C433F5
+	for <linux-parisc@archiver.kernel.org>; Mon, 11 Oct 2021 15:26:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 06BEE60F24
-	for <linux-parisc@archiver.kernel.org>; Mon, 11 Oct 2021 15:06:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8BAF060FD7
+	for <linux-parisc@archiver.kernel.org>; Mon, 11 Oct 2021 15:26:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbhJKPI6 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 11 Oct 2021 11:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233678AbhJKPIz (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:08:55 -0400
-Received: from mail.sf-mail.de (mail.sf-mail.de [IPv6:2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EDAC06161C
-        for <linux-parisc@vger.kernel.org>; Mon, 11 Oct 2021 08:06:54 -0700 (PDT)
-Received: (qmail 17817 invoked from network); 11 Oct 2021 15:06:52 -0000
-Received: from p200300cf07110c00f032864a1b601834.dip0.t-ipconnect.de ([2003:cf:711:c00:f032:864a:1b60:1834]:36570 HELO daneel.sf-tec.de) (auth=eike@sf-mail.de)
-        by mail.sf-mail.de (Qsmtpd 0.38dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
-        for <deller@gmx.de>; Mon, 11 Oct 2021 17:06:52 +0200
-From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
-To:     Helge Deller <deller@gmx.de>, Sven Schnelle <svens@stackframe.org>
-Cc:     linux-parisc@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] parisc: deduplicate code in flush_cache_mm() and flush_cache_range()
-Date:   Mon, 11 Oct 2021 17:06:52 +0200
-Message-ID: <4685603.31r3eYUQgx@daneel.sf-tec.de>
-In-Reply-To: <20211009182439.30016-3-svens@stackframe.org>
-References: <20211009182439.30016-1-svens@stackframe.org> <20211009182439.30016-3-svens@stackframe.org>
+        id S234088AbhJKP2l (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 11 Oct 2021 11:28:41 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:48591 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233441AbhJKP2l (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 11 Oct 2021 11:28:41 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HSjM30nYCz9sV0;
+        Mon, 11 Oct 2021 17:26:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id kfJrJzoe33Ot; Mon, 11 Oct 2021 17:26:39 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HSjM26P7jz9sTq;
+        Mon, 11 Oct 2021 17:26:38 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C3CE48B77C;
+        Mon, 11 Oct 2021 17:26:38 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id o_-xmTCGhVEE; Mon, 11 Oct 2021 17:26:38 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3802B8B773;
+        Mon, 11 Oct 2021 17:26:38 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19BFQWmS1585039
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 17:26:32 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19BFQW0I1585038;
+        Mon, 11 Oct 2021 17:26:32 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH v1 09/10] lkdtm: Fix lkdtm_EXEC_RODATA()
+Date:   Mon, 11 Oct 2021 17:25:36 +0200
+Message-Id: <7da92e59e148bd23564d63bdd8bcfaba0ba6d1f1.1633964380.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1633964380.git.christophe.leroy@csgroup.eu>
+References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4349407.LvFx2qVVIh"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1633965929; l=1062; s=20211009; h=from:subject:message-id; bh=+g9YP744c7bsVBNv8JSbJAOACSKefkN6gEMRtuguhFQ=; b=OJtsbOKhvP8yiMMxjyj+ls1H3JCLJJR5fyCB0L0ZNnRKeroYkZDzqkgCo7jAmoGfibEgEw6Fwm9g 3d3D8A/kCjW5VuVqCFU0NuPC6oJTXF5EWDJbG9dFbb3ba4uK2nRq
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
---nextPart4349407.LvFx2qVVIh
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Behind a location, lkdtm_EXEC_RODATA() executes a real function,
+not a copy of do_nothing().
 
-Am Samstag, 9. Oktober 2021, 20:24:36 CEST schrieb Sven Schnelle:
-> Parts of both functions are the same, so deduplicate them. No functional
-> change.
-> 
-> Signed-off-by: Sven Schnelle <svens@stackframe.org>
-> ---
->  arch/parisc/kernel/cache.c | 81 ++++++++++++++------------------------
->  1 file changed, 30 insertions(+), 51 deletions(-)
-> 
-> diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-> index a1a7e2b0812f..c61827e4928a 100644
-> --- a/arch/parisc/kernel/cache.c
-> +++ b/arch/parisc/kernel/cache.c
-> @@ -543,10 +543,33 @@ static inline pte_t *get_ptep(pgd_t *pgd, unsigned
-> long addr) return ptep;
->  }
-> 
-> +static void flush_cache_pages(struct vm_area_struct *vma, struct mm_struct
-> *mm, +			      unsigned long start, unsigned long end)
-> +{
-> +	unsigned long addr, pfn;
-> +	pte_t *ptep;
-> +
-> +	for (addr = start; addr < end; addr += PAGE_SIZE) {
-> +		ptep = get_ptep(mm->pgd, addr);
-> +		if (ptep) {
-> +			pfn = pte_pfn(*ptep);
-> +			flush_cache_page(vma, addr, pfn);
-> +		}
-> +	}
-> +}
-> +
-> +static void flush_user_cache_tlb(struct vm_area_struct *vma,
-> +				 unsigned long start, unsigned 
-long end)
-> +{
-> +	flush_user_dcache_range_asm(start, end);
-> +	if (vma->vm_flags & VM_EXEC)
-> +		flush_user_icache_range_asm(start, end);
-> +	flush_tlb_range(vma, start, end);
-> +}
+So do it directly instead of using execute_location().
 
-What you add here is less than what you removed below. If that is intentional 
-I would welcome a description on why it is correct in the commit message.
+And fix displayed addresses by dereferencing the function descriptors.
 
->  void flush_cache_mm(struct mm_struct *mm)
->  {
->  	struct vm_area_struct *vma;
-> -	pgd_t *pgd;
-> 
->  	/* Flushing the whole cache on each cpu takes forever on
->  	   rp3440, etc.  So, avoid it if the mm isn't too big.  */
-> @@ -560,46 +583,20 @@ void flush_cache_mm(struct mm_struct *mm)
-> 
->  	preempt_disable();
->  	if (mm->context == mfsp(3)) {
-> -		for (vma = mm->mmap; vma; vma = vma->vm_next) {
-> -			flush_user_dcache_range_asm(vma->vm_start, 
-vma->vm_end);
-> -			if (vma->vm_flags & VM_EXEC)
-> -				flush_user_icache_range_asm(vma-
->vm_start, vma->vm_end);
-> -			flush_tlb_range(vma, vma->vm_start, vma-
->vm_end);
-> -		}
-> +		for (vma = mm->mmap; vma; vma = vma->vm_next)
-> +			flush_user_cache_tlb(vma, vma->vm_start, vma-
->vm_end);
->  		preempt_enable();
->  		return;
->  	}
-> 
-> -	pgd = mm->pgd;
-> -	for (vma = mm->mmap; vma; vma = vma->vm_next) {
-> -		unsigned long addr;
-> -
-> -		for (addr = vma->vm_start; addr < vma->vm_end;
-> -		     addr += PAGE_SIZE) {
-> -			unsigned long pfn;
-> -			pte_t *ptep = get_ptep(pgd, addr);
-> -			if (!ptep)
-> -				continue;
-> -			pfn = pte_pfn(*ptep);
-> -			if (!pfn_valid(pfn))
-> -				continue;
-> -			if (unlikely(mm->context)) {
-> -				flush_tlb_page(vma, addr);
-> -				__flush_cache_page(vma, addr, 
-PFN_PHYS(pfn));
-> -			} else {
-> -				__purge_cache_page(vma, addr, 
-PFN_PHYS(pfn));
-> -			}
-> -		}
-> -	}
-> +	for (vma = mm->mmap; vma; vma = vma->vm_next)
-> +		flush_cache_pages(vma, mm, vma->vm_start, vma->vm_end);
->  	preempt_enable();
->  }
-> 
->  void flush_cache_range(struct vm_area_struct *vma,
->  		unsigned long start, unsigned long end)
->  {
-> -	pgd_t *pgd;
-> -	unsigned long addr;
-> -
->  	if ((!IS_ENABLED(CONFIG_SMP) || !arch_irqs_disabled()) &&
->  	    end - start >= parisc_cache_flush_threshold) {
->  		if (vma->vm_mm->context)
-> @@ -610,30 +607,12 @@ void flush_cache_range(struct vm_area_struct *vma,
-> 
->  	preempt_disable();
->  	if (vma->vm_mm->context == mfsp(3)) {
-> -		flush_user_dcache_range_asm(start, end);
-> -		if (vma->vm_flags & VM_EXEC)
-> -			flush_user_icache_range_asm(start, end);
-> -		flush_tlb_range(vma, start, end);
-> +		flush_user_cache_tlb(vma, start, end);
->  		preempt_enable();
->  		return;
->  	}
-> 
-> -	pgd = vma->vm_mm->pgd;
-> -	for (addr = vma->vm_start; addr < vma->vm_end; addr += PAGE_SIZE) 
-{
-> -		unsigned long pfn;
-> -		pte_t *ptep = get_ptep(pgd, addr);
-> -		if (!ptep)
-> -			continue;
-> -		pfn = pte_pfn(*ptep);
-> -		if (pfn_valid(pfn)) {
-> -			if (unlikely(vma->vm_mm->context)) {
-> -				flush_tlb_page(vma, addr);
-> -				__flush_cache_page(vma, addr, 
-PFN_PHYS(pfn));
-> -			} else {
-> -				__purge_cache_page(vma, addr, 
-PFN_PHYS(pfn));
-> -			}
-> -		}
-> -	}
-> +	flush_cache_pages(vma, vma->vm_mm, vma->vm_start, vma->vm_end);
->  	preempt_enable();
->  }
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/misc/lkdtm/perms.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-
---nextPart4349407.LvFx2qVVIh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCYWRTDAAKCRBcpIk+abn8
-TvpRAKCfdn5iJ3pAFU32e907eMsxxEW0ogCeMbk4m/6rKgS3W1bHjJD8GCKsLA0=
-=ANl6
------END PGP SIGNATURE-----
-
---nextPart4349407.LvFx2qVVIh--
-
-
+diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
+index 442d60ed25ef..da16564e1ecd 100644
+--- a/drivers/misc/lkdtm/perms.c
++++ b/drivers/misc/lkdtm/perms.c
+@@ -153,7 +153,14 @@ void lkdtm_EXEC_VMALLOC(void)
+ 
+ void lkdtm_EXEC_RODATA(void)
+ {
+-	execute_location(lkdtm_rodata_do_nothing, CODE_AS_IS);
++	pr_info("attempting ok execution at %px\n",
++		dereference_symbol_descriptor(do_nothing));
++	do_nothing();
++
++	pr_info("attempting bad execution at %px\n",
++		dereference_symbol_descriptor(lkdtm_rodata_do_nothing));
++	lkdtm_rodata_do_nothing();
++	pr_err("FAIL: func returned\n");
+ }
+ 
+ void lkdtm_EXEC_USERSPACE(void)
+-- 
+2.31.1
 
