@@ -2,220 +2,88 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38651C433FE
-	for <linux-parisc@archiver.kernel.org>; Thu, 14 Oct 2021 15:14:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9603AC433F5
+	for <linux-parisc@archiver.kernel.org>; Thu, 14 Oct 2021 19:49:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1D80161184
-	for <linux-parisc@archiver.kernel.org>; Thu, 14 Oct 2021 15:14:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7529F6109E
+	for <linux-parisc@archiver.kernel.org>; Thu, 14 Oct 2021 19:49:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhJNPQT (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 14 Oct 2021 11:16:19 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49674 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbhJNPQS (ORCPT
+        id S233126AbhJNTva (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 14 Oct 2021 15:51:30 -0400
+Received: from smtp.duncanthrax.net ([178.63.180.169]:52112 "EHLO
+        smtp.duncanthrax.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233321AbhJNTv3 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:16:18 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4603621A89;
-        Thu, 14 Oct 2021 15:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634224452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ALOTVNu/egcVlHKjItYFDOMwJxp+I4TFEjpwx0g4g5E=;
-        b=ZLILYHxOIMb36+D1zMkaQ7f9QhJIGj0VMe3lw2B87bi8pmp+oPWT8j/AlZo7s/YaiBBYxo
-        DHO8JYR1TwD9iHLQmgJ9hvQf6dkOXdKyF8BeukJuevUxhdRMHZkVyqaM7jUcpNafEgM9Js
-        6KtMXgfm/vEGo6eBDp86QFxhn6m8tdk=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4CE08A3B88;
-        Thu, 14 Oct 2021 15:14:10 +0000 (UTC)
-Date:   Thu, 14 Oct 2021 17:14:07 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] ftrace: disable preemption between
- ftrace_test_recursion_trylock/unlock()
-Message-ID: <YWhJP41cNwDphYsv@alley>
-References: <609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com>
- <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
+        Thu, 14 Oct 2021 15:51:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=duncanthrax.net; s=dkim; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Z/UXtRTZ3htH/Rs4948+fdY1CufZPACIm+u6vgh0HDc=; b=E2vRbZykkd+G8C1YuLgEXm34ON
+        IgulBeQpZeynX3LzGQDBlEeveyXicLRVkidQvFCGgdHNUy2/vvTrmS8roWBU2dbIJsIPTDed2/Gsv
+        0hZ31yuUixuvL/P6QuWV0/egj3xjBm+ntp8psTZN+0jp1WHOurB31FcYFKiENpAxtFfY=;
+Received: from hsi-kbw-109-193-149-228.hsi7.kabel-badenwuerttemberg.de ([109.193.149.228] helo=x1.stackframe.org)
+        by smtp.duncanthrax.net with esmtpa (Exim 4.93)
+        (envelope-from <svens@stackframe.org>)
+        id 1mb6jC-0006Sn-0u; Thu, 14 Oct 2021 21:49:22 +0200
+From:   Sven Schnelle <svens@stackframe.org>
+To:     Helge Deller <deller@gmx.de>
+Cc:     linux-parisc@vger.kernel.org
+Subject: [PATCH v3 2/4] parisc: add PIM TOC data structures
+Date:   Thu, 14 Oct 2021 21:49:14 +0200
+Message-Id: <20211014194916.13901-3-svens@stackframe.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211014194916.13901-1-svens@stackframe.org>
+References: <20211014194916.13901-1-svens@stackframe.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Wed 2021-10-13 16:51:46, 王贇 wrote:
-> As the documentation explained, ftrace_test_recursion_trylock()
-> and ftrace_test_recursion_unlock() were supposed to disable and
-> enable preemption properly, however currently this work is done
-> outside of the function, which could be missing by mistake.
-> 
-> This path will make sure the preemption was disabled when trylock()
-> succeed, and the unlock() will enable the preemption if previously
-> enabled.
-> 
-> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-> index a9f9c57..58e474c 100644
-> --- a/include/linux/trace_recursion.h
-> +++ b/include/linux/trace_recursion.h
-> @@ -214,7 +214,18 @@ static __always_inline void trace_clear_recursion(int bit)
+These data structures describe the TOC data we get from firmware
+when issuing a PDC_PIM_TOC request.
 
-We should also update the description above the function, for example:
-
-  /**
-   * ftrace_test_recursion_trylock - tests for recursion in same context
-   *
-   * Use this for ftrace callbacks. This will detect if the function
-   * tracing recursed in the same context (normal vs interrupt),
-   *
-   * Returns: -1 if a recursion happened.
--  *           >= 0 if no recursion
-+  *           >= 0 if no recursion (success)
-+  *
-+  * Disables the preemption on success. It is just for a convenience.
-+  * Current users needed to disable the preemtion for some reasons.
-   */
-
-
->  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
->  							 unsigned long parent_ip)
->  {
-> -	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
-> +	int bit;
-> +
-> +	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
-> +	/*
-> +	 * The zero bit indicate we are nested
-> +	 * in another trylock(), which means the
-> +	 * preemption already disabled.
-> +	 */
-> +	if (bit > 0)
-> +		preempt_disable_notrace();
-
-Is this safe? The preemption is disabled only when
-trace_test_and_set_recursion() was called by ftrace_test_recursion_trylock().
-
-We must either always disable the preemtion when bit >= 0.
-Or we have to disable the preemtion already in
-trace_test_and_set_recursion().
-
-
-Finally, the comment confused me a lot. The difference between nesting and
-recursion is far from clear. And the code is tricky liky like hell :-)
-I propose to add some comments, see below for a proposal.
-
-> +
-> +	return bit;
->  }
->  /**
-> @@ -222,9 +233,13 @@ static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
->   * @bit: The return of a successful ftrace_test_recursion_trylock()
->   *
->   * This is used at the end of a ftrace callback.
-> + *
-> + * Preemption will be enabled (if it was previously enabled).
->   */
->  static __always_inline void ftrace_test_recursion_unlock(int bit)
->  {
-> +	if (bit)
-
-This is not symetric with trylock(). It should be:
-
-	if (bit > 0)
-
-Anyway, trace_clear_recursion() quiently ignores bit != 0
-
-
-> +		preempt_enable_notrace();
->  	trace_clear_recursion(bit);
->  }
-
-
-Below is my proposed patch that tries to better explain the recursion
-check:
-
-From 20d69f11e2683262fa0043b803999061cbac543f Mon Sep 17 00:00:00 2001
-From: Petr Mladek <pmladek@suse.com>
-Date: Thu, 14 Oct 2021 16:57:39 +0200
-Subject: [PATCH] trace: Better describe the recursion check return values
-
-The trace recursion check might be called recursively by different
-layers of the tracing code. It is safe recursion and the check
-is even optimized for this case.
-
-The problematic recursion is when the traced function is called
-by the tracing code. This is properly detected.
-
-Try to explain this difference a better way.
-
-Signed-off-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
 ---
- include/linux/trace_recursion.h | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ arch/parisc/include/uapi/asm/pdc.h | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-index a9f9c5714e65..b5efb804efdf 100644
---- a/include/linux/trace_recursion.h
-+++ b/include/linux/trace_recursion.h
-@@ -159,13 +159,27 @@ extern void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip);
- # define do_ftrace_record_recursion(ip, pip)	do { } while (0)
- #endif
+diff --git a/arch/parisc/include/uapi/asm/pdc.h b/arch/parisc/include/uapi/asm/pdc.h
+index 15211723ebf5..ad51df8ba952 100644
+--- a/arch/parisc/include/uapi/asm/pdc.h
++++ b/arch/parisc/include/uapi/asm/pdc.h
+@@ -689,6 +689,28 @@ struct pdc_hpmc_pim_20 { /* PDC_PIM */
+ 	unsigned long long fr[32];
+ };
  
-+/*
-+ * trace_test_and_set_recursion() is called on several layers
-+ * of the ftrace code when handling the same ftrace entry.
-+ * These calls might be nested/recursive.
-+ *
-+ * It uses TRACE_LIST_*BITs to distinguish between this
-+ * internal recursion and recursion caused by calling
-+ * the traced function by the ftrace code.
-+ *
-+ * Returns: > 0 when no recursion
-+ *          0 when called recursively internally (safe)
-+ *	    -1 when the traced function was called recursively from
-+ *             the ftrace handler (unsafe)
-+ */
- static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
- 							int start, int max)
- {
- 	unsigned int val = READ_ONCE(current->trace_recursion);
- 	int bit;
++struct pdc_toc_pim_11 {
++	unsigned int gr[32];
++	unsigned int cr[32];
++	unsigned int sr[8];
++	unsigned int iasq_back;
++	unsigned int iaoq_back;
++	unsigned int check_type;
++	unsigned int hversion;
++	unsigned int cpu_state;
++};
++
++struct pdc_toc_pim_20 {
++	unsigned long long gr[32];
++	unsigned long long cr[32];
++	unsigned long long sr[8];
++	unsigned long long iasq_back;
++	unsigned long long iaoq_back;
++	unsigned int check_type;
++	unsigned int hversion;
++	unsigned int cpu_state;
++};
++
+ #endif /* !defined(__ASSEMBLY__) */
  
--	/* A previous recursion check was made */
-+	/* Called recursively internally by different ftrace code layers? */
- 	if ((val & TRACE_CONTEXT_MASK) > max)
- 		return 0;
- 
+ #endif /* _UAPI_PARISC_PDC_H */
 -- 
-2.26.2
+2.33.0
 
