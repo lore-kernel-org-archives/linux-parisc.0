@@ -2,86 +2,108 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C470C433EF
-	for <linux-parisc@archiver.kernel.org>; Thu, 14 Oct 2021 05:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 611A7C433F5
+	for <linux-parisc@archiver.kernel.org>; Thu, 14 Oct 2021 06:24:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3FE6361108
-	for <linux-parisc@archiver.kernel.org>; Thu, 14 Oct 2021 05:06:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 47F3F61152
+	for <linux-parisc@archiver.kernel.org>; Thu, 14 Oct 2021 06:24:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbhJNFIM (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 14 Oct 2021 01:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhJNFIM (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 14 Oct 2021 01:08:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C09CC061570;
-        Wed, 13 Oct 2021 22:06:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=Rr5zZ6rN525EfM/CGmlkNwg2FaH9Hx3btifOz7Ng8DU=; b=GHCy1KWtBfu5MaFJDZ+uSLIaZV
-        xoYBtQnqNIRvx9Dt5uWY3NRZpv1Re8mir3hNRvA/RmdWtrOfSgM/DGjro3Ob+K4zWWflcTXwwiGu8
-        Pcisq0IuwJAEt1qhygm989YnkH+FNEpYdfiPRcmoZLDmwC65KpPGGcKxMogTn7h8ZOHtDma+742+n
-        U13ampz8d7roFL/rkOxlnKT0/3RhXOyan6P+WhF0vPp/77r2KOaE7AYrAqv8B9ckO9CAWAidUBRX4
-        NtWHWWmynP61aI4ZoNwjizQA5LMQ7rI5ivQppyp4Ndw67fdshFglLkdkTaKUbITLRiyG08J5PAsmx
-        gW4X9SJQ==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maswR-001b4E-KS; Thu, 14 Oct 2021 05:06:07 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     netdev@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-parisc@vger.kernel.org
-Subject: [PATCH net-next] net: tulip: winbond-840: fix build for UML
-Date:   Wed, 13 Oct 2021 22:06:06 -0700
-Message-Id: <20211014050606.7288-1-rdunlap@infradead.org>
+        id S229551AbhJNG0E (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 14 Oct 2021 02:26:04 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:40411 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229530AbhJNG0E (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 14 Oct 2021 02:26:04 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HVK9T6nbXz9sSL;
+        Thu, 14 Oct 2021 08:23:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id CvtZxXja-epj; Thu, 14 Oct 2021 08:23:57 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HVK9T5vlfz9sSK;
+        Thu, 14 Oct 2021 08:23:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B25FB8B788;
+        Thu, 14 Oct 2021 08:23:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 9CecoLzJnjFF; Thu, 14 Oct 2021 08:23:57 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.231])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 670478B763;
+        Thu, 14 Oct 2021 08:23:57 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19E5oQQr2266030
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 07:50:26 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19E5oQCx2266029;
+        Thu, 14 Oct 2021 07:50:26 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH v2 09/13] lkdtm: Force do_nothing() out of line
+Date:   Thu, 14 Oct 2021 07:49:58 +0200
+Message-Id: <44c2261293843b71cd0a7f485f889dd51deb5fe7.1634190022.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1634190022.git.christophe.leroy@csgroup.eu>
+References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1634190596; l=1269; s=20211009; h=from:subject:message-id; bh=nSN/ioO339qfxQaSJCJwz7QKogrcJ3f1Q+xuI0OSdUc=; b=SZl099RfUAV+FVdlnVISlQznXLCQsoqksayWb2M+8ULE2HhrQME0NQADNu3fs/gMPsgAnsTZ9Esk Np5U4MTuD2D1rOZ7sGCel7PdwzwFG+ENEKVrBlWY5U/OCStZGBJg
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On i386, when builtin (not a loadable module), the winbond-840 driver
-inspects boot_cpu_data to see what CPU family it is running on, and
-then acts on that data. The "family" struct member (x86) does not exist
-when running on UML, so prevent that test and do the default action.
+LKDTM tests display that the run do_nothing() at a given
+address, but in reality do_nothing() is inlined into the
+caller.
 
-Prevents this build error on UML + i386:
+Force it out of line so that it really runs text at the
+displayed address.
 
-../drivers/net/ethernet/dec/tulip/winbond-840.c: In function ‘init_registers’:
-../drivers/net/ethernet/dec/tulip/winbond-840.c:882:19: error: ‘struct cpuinfo_um’ has no member named ‘x86’
-  if (boot_cpu_data.x86 <= 4) {
-
-Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-um@lists.infradead.org
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-parisc@vger.kernel.org
+Acked-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/net/ethernet/dec/tulip/winbond-840.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/lkdtm/perms.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- linux-next-20211013.orig/drivers/net/ethernet/dec/tulip/winbond-840.c
-+++ linux-next-20211013/drivers/net/ethernet/dec/tulip/winbond-840.c
-@@ -877,7 +877,7 @@ static void init_registers(struct net_de
- 		8000	16 longwords		0200 2 longwords	2000 32 longwords
- 		C000	32  longwords		0400 4 longwords */
+diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
+index 2dede2ef658f..60b3b2fe929d 100644
+--- a/drivers/misc/lkdtm/perms.c
++++ b/drivers/misc/lkdtm/perms.c
+@@ -21,7 +21,7 @@
+ /* This is non-const, so it will end up in the .data section. */
+ static u8 data_area[EXEC_SIZE];
  
--#if defined (__i386__) && !defined(MODULE)
-+#if defined (__i386__) && !defined(MODULE) && !defined(CONFIG_UML)
- 	/* When not a module we can work around broken '486 PCI boards. */
- 	if (boot_cpu_data.x86 <= 4) {
- 		i |= 0x4800;
+-/* This is cost, so it will end up in the .rodata section. */
++/* This is const, so it will end up in the .rodata section. */
+ static const unsigned long rodata = 0xAA55AA55;
+ 
+ /* This is marked __ro_after_init, so it should ultimately be .rodata. */
+@@ -31,7 +31,7 @@ static unsigned long ro_after_init __ro_after_init = 0x55AA5500;
+  * This just returns to the caller. It is designed to be copied into
+  * non-executable memory regions.
+  */
+-static void do_nothing(void)
++static noinline void do_nothing(void)
+ {
+ 	return;
+ }
+-- 
+2.31.1
+
