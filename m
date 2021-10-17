@@ -2,125 +2,160 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65DD5C433FE
-	for <linux-parisc@archiver.kernel.org>; Sun, 17 Oct 2021 07:50:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D594C433EF
+	for <linux-parisc@archiver.kernel.org>; Sun, 17 Oct 2021 12:39:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4F6046103B
-	for <linux-parisc@archiver.kernel.org>; Sun, 17 Oct 2021 07:50:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 229F660F36
+	for <linux-parisc@archiver.kernel.org>; Sun, 17 Oct 2021 12:39:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241371AbhJQHwY (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 17 Oct 2021 03:52:24 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:60437 "EHLO pegase2.c-s.fr"
+        id S242286AbhJQMlT (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 17 Oct 2021 08:41:19 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:44611 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233966AbhJQHwY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 17 Oct 2021 03:52:24 -0400
+        id S242224AbhJQMlT (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 17 Oct 2021 08:41:19 -0400
 Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HXBxd0Dp6z9sSg;
-        Sun, 17 Oct 2021 09:50:13 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4HXKLz65LSz9sSg;
+        Sun, 17 Oct 2021 14:39:07 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase2.c-s.fr ([172.26.127.65])
         by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id qE16lVPGMQXg; Sun, 17 Oct 2021 09:50:12 +0200 (CEST)
+        with ESMTP id EbA8YqN-jvBR; Sun, 17 Oct 2021 14:39:07 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HXBxb1HWmz9sSf;
-        Sun, 17 Oct 2021 09:50:11 +0200 (CEST)
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HXKLz4pX9z9sSf;
+        Sun, 17 Oct 2021 14:39:07 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1361A8B76C;
-        Sun, 17 Oct 2021 09:50:11 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 854AB8B78D;
+        Sun, 17 Oct 2021 14:39:07 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id y2-boJOlu1zA; Sun, 17 Oct 2021 09:50:11 +0200 (CEST)
+        with ESMTP id XtFHPBQpFY2i; Sun, 17 Oct 2021 14:39:07 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.38])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E55898B763;
-        Sun, 17 Oct 2021 09:50:09 +0200 (CEST)
-Subject: Re: [PATCH v2 11/13] lkdtm: Fix lkdtm_EXEC_RODATA()
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BB1F28B76D;
+        Sun, 17 Oct 2021 14:39:06 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19HCcs4b2946733
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Sun, 17 Oct 2021 14:38:54 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19HCcs482946732;
+        Sun, 17 Oct 2021 14:38:54 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-mm@kvack.org
-References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
- <44946ed0340013a52f8acdee7d6d0781f145cd6b.1634190022.git.christophe.leroy@csgroup.eu>
- <202110151432.D8203C19@keescook>
- <61a3d2c4-4997-c221-3eef-d74aef5ba584@csgroup.eu>
-Message-ID: <87927aa3-6414-adaa-44f7-b3bf1f664317@csgroup.eu>
-Date:   Sun, 17 Oct 2021 09:50:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Subject: [PATCH v3 01/12] powerpc: Move and rename func_descr_t
+Date:   Sun, 17 Oct 2021 14:38:14 +0200
+Message-Id: <637a9a11263afa216fdfa7fb470a54479c67c61c.1634457599.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1634457599.git.christophe.leroy@csgroup.eu>
+References: <cover.1634457599.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <61a3d2c4-4997-c221-3eef-d74aef5ba584@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1634474303; l=3146; s=20211009; h=from:subject:message-id; bh=a0Q+xdYXiSP4LrN4lMHmEjGmSjjPkxSMDjn8QXoOJlY=; b=wDTXU2e5FpGf5cgXKi5/CTwBZYSUXCyzAoLRFbKeMSFt+ghhlhZS8IMOQ84oq6ZocB23vrP3RDXd ca6qmRVxAzyBcO+cDAYl+wyGoCC/0FuyAaUiASVJ0J3hWs/WZ0XU
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+There are three architectures with function descriptors, try to
+have common names for the address they contain in order to
+refactor some functions into generic functions later.
 
+powerpc has 'entry'
+ia64 has 'ip'
+parisc has 'addr'
 
-Le 16/10/2021 à 08:41, Christophe Leroy a écrit :
-> 
-> 
-> Le 15/10/2021 à 23:32, Kees Cook a écrit :
->> On Thu, Oct 14, 2021 at 07:50:00AM +0200, Christophe Leroy wrote:
->>> Behind its location, lkdtm_EXEC_RODATA() executes
->>> lkdtm_rodata_do_nothing() which is a real function,
->>> not a copy of do_nothing().
->>>
->>> So executes it directly instead of using execute_location().
->>>
->>> This is necessary because following patch will fix execute_location()
->>> to use a copy of the function descriptor of do_nothing() and
->>> function descriptor of lkdtm_rodata_do_nothing() might be different.
->>>
->>> And fix displayed addresses by dereferencing the function descriptors.
->>>
->>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>
->> I still don't understand this -- it doesn't look needed at all given the
->> changes in patch 12. (i.e. everything is using
->> dereference_function_descriptor() now)
-> 
-> dereference_function_descriptor() only deals with the function address, 
-> not the function TOC.
-> 
-> do_nothing() is a function. It has a function descriptor with a given 
-> address (address of .do_nothing) and a given TOC, say TOC1.
-> 
-> lkdtm_rodata_do_nothing() is another function. It has its own function 
-> descriptor with a given address (address of .lkdtm_rodata_do_nothing) 
-> and a given TOC, say TOC2.
-> 
-> If we use execute_location(), it will copy do_nothing() function 
-> descriptor and change the function address to the address of 
-> lkdtm_rodata_do_nothing(). So it will call lkdtm_rodata_do_nothing() 
-> with TOC1 instead of calling it with TOC2.
-> 
->>
->> Can't this patch be dropped?
-> 
-> It is likely that the TOC will be the same for both functions, and 
-> anyway those functions are so simple that they don't use the TOC at all, 
-> so yes it would likely work without this patch but from my point of view 
-> it is incorrect to call one function with the TOC from the descriptor of 
-> another function.
-> 
-> If you thing we can take the risk, then I'm happy to drop the patch and 
-> replace it by
-> 
->      execute_location(dereference_function_descriptor(lkdtm_rodata_do_nothing), CODE_AS_IS)
-> 
+Vote for 'addr' and update 'func_descr_t' accordingly.
 
-Once we have patch 12 EXEC_RODATA works well on powerpc without this 
-patch so I will drop this patch for now and will propose something else 
-as a follow-up to my series.
+Move it in asm/elf.h to have it at the same place on all
+three architectures, remove the typedef which hides its real
+type, and change it to a smoother name 'struct func_desc'.
 
-Christophe
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/code-patching.h | 2 +-
+ arch/powerpc/include/asm/elf.h           | 6 ++++++
+ arch/powerpc/include/asm/types.h         | 6 ------
+ arch/powerpc/kernel/signal_64.c          | 8 ++++----
+ 4 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/code-patching.h b/arch/powerpc/include/asm/code-patching.h
+index 4ba834599c4d..c6e805976e6f 100644
+--- a/arch/powerpc/include/asm/code-patching.h
++++ b/arch/powerpc/include/asm/code-patching.h
+@@ -110,7 +110,7 @@ static inline unsigned long ppc_function_entry(void *func)
+ 	 * function's descriptor. The first entry in the descriptor is the
+ 	 * address of the function text.
+ 	 */
+-	return ((func_descr_t *)func)->entry;
++	return ((struct func_desc *)func)->addr;
+ #else
+ 	return (unsigned long)func;
+ #endif
+diff --git a/arch/powerpc/include/asm/elf.h b/arch/powerpc/include/asm/elf.h
+index b8425e3cfd81..971589a21bc0 100644
+--- a/arch/powerpc/include/asm/elf.h
++++ b/arch/powerpc/include/asm/elf.h
+@@ -176,4 +176,10 @@ do {									\
+ /* Relocate the kernel image to @final_address */
+ void relocate(unsigned long final_address);
+ 
++struct func_desc {
++	unsigned long addr;
++	unsigned long toc;
++	unsigned long env;
++};
++
+ #endif /* _ASM_POWERPC_ELF_H */
+diff --git a/arch/powerpc/include/asm/types.h b/arch/powerpc/include/asm/types.h
+index f1630c553efe..97da77bc48c9 100644
+--- a/arch/powerpc/include/asm/types.h
++++ b/arch/powerpc/include/asm/types.h
+@@ -23,12 +23,6 @@
+ 
+ typedef __vector128 vector128;
+ 
+-typedef struct {
+-	unsigned long entry;
+-	unsigned long toc;
+-	unsigned long env;
+-} func_descr_t;
+-
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* _ASM_POWERPC_TYPES_H */
+diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
+index 1831bba0582e..36537d7d5191 100644
+--- a/arch/powerpc/kernel/signal_64.c
++++ b/arch/powerpc/kernel/signal_64.c
+@@ -933,11 +933,11 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
+ 		 * descriptor is the entry address of signal and the second
+ 		 * entry is the TOC value we need to use.
+ 		 */
+-		func_descr_t __user *funct_desc_ptr =
+-			(func_descr_t __user *) ksig->ka.sa.sa_handler;
++		struct func_desc __user *ptr =
++			(struct func_desc __user *)ksig->ka.sa.sa_handler;
+ 
+-		err |= get_user(regs->ctr, &funct_desc_ptr->entry);
+-		err |= get_user(regs->gpr[2], &funct_desc_ptr->toc);
++		err |= get_user(regs->ctr, &ptr->addr);
++		err |= get_user(regs->gpr[2], &ptr->toc);
+ 	}
+ 
+ 	/* enter the signal handler in native-endian mode */
+-- 
+2.31.1
+
