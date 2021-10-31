@@ -2,57 +2,90 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 152DDC433EF
-	for <linux-parisc@archiver.kernel.org>; Sat, 30 Oct 2021 18:55:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 268C2C433F5
+	for <linux-parisc@archiver.kernel.org>; Sun, 31 Oct 2021 20:58:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 00E3B60F0F
-	for <linux-parisc@archiver.kernel.org>; Sat, 30 Oct 2021 18:55:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EA9CB608FE
+	for <linux-parisc@archiver.kernel.org>; Sun, 31 Oct 2021 20:58:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhJ3S6I (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 30 Oct 2021 14:58:08 -0400
-Received: from mta-tor-003.bell.net ([209.71.212.30]:12354 "EHLO
-        cmx-torrgo001.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229694AbhJ3S6H (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 30 Oct 2021 14:58:07 -0400
-X-RG-CM-BuS: 0
-X-RG-CM-SC: 0
-X-RG-CM: Clean
-X-Originating-IP: [67.71.8.137]
-X-RG-Env-Sender: dave.anglin@bell.net
-X-RG-Rigid: 60C8868809CE7662
-X-CM-Envelope: MS4xfOYfvJjJ2YI7gTgWnWD5SS4sjyVUot93+dh9uB+V9Vfj9uNqFFn1NmB0JAdNQEDU22DAF/lFDWmuLWHBgDCgWC9HSanDxqn16fn1LXgHD0oMY/9+uElv
- SdcSqstdjwyVcciTSFFhYOTHFa1dV2Wu92Stlj9QzxKYtXD/jP+pPHdcH5psTFubY25P0uxfrMfWcM2qDyKbNujyWEfCSruG/tPF/NDs2NAHsqReOySs7f49
- uNfb51MRhp27YV464gPxWz+LiRvMhsvQk731su1Kmgo=
-X-CM-Analysis: v=2.4 cv=Udwy9IeN c=1 sm=1 tr=0 ts=617d9527
- a=jrdA9tB8yuRqUzQ1EpSZjA==:117 a=jrdA9tB8yuRqUzQ1EpSZjA==:17
- a=IkcTkHD0fZMA:10 a=FBHGMhGWAAAA:8 a=RzyzHI6AHNeEmNw67-8A:9 a=QEXdDO2ut3YA:10
- a=ATlVsGG5QSsA:10 a=9gvnlMMaQFpL9xblJ6ne:22
-Received: from [192.168.2.49] (67.71.8.137) by cmx-torrgo001.bell.net (5.8.716.03) (authenticated as dave.anglin@bell.net)
-        id 60C8868809CE7662; Sat, 30 Oct 2021 14:55:35 -0400
-Message-ID: <417d4b9c-1520-c80b-0c86-fa8fb11ed57f@bell.net>
-Date:   Sat, 30 Oct 2021 14:55:34 -0400
+        id S229982AbhJaVBS (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 31 Oct 2021 17:01:18 -0400
+Received: from mout.gmx.net ([212.227.17.21]:56017 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229974AbhJaVBR (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 31 Oct 2021 17:01:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635713918;
+        bh=2ZaMzFCyoJiqJVCWfovUlcxxsEFg4UCitJyHxWEpuCo=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+        b=aQwpczHRa9exa3LYtuBnQ8Ztg5qpUSBuNybM/Zl9149uSP9hxawuMIzzZ54wP/ujS
+         CU/r4QJFfc+0ZkRCEJh1AwFL2iQ3/CJVUXdgVpnpj+knwzcOvzvCWWV4GZDdpxsBup
+         5AMxqrFCM05i8TEeIbT0/4FMFFwN1x4Ja44JNX8A=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530 ([92.116.174.201]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N1Obb-1mnJCA3LqN-012n0X; Sun, 31
+ Oct 2021 21:58:37 +0100
+Date:   Sun, 31 Oct 2021 21:58:12 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Cc:     Sven Schnelle <svens@stackframe.org>
+Subject: [PATCH] parisc: Fix set_fixmap() on PA1.x CPUs
+Message-ID: <YX8DZChVfaD8QjRp@ls3530>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Helge Deller <deller@gmx.de>
-Cc:     linux-parisc <linux-parisc@vger.kernel.org>
-From:   John David Anglin <dave.anglin@bell.net>
-Subject: Email
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:xhgJ0JmkgRhQzBs3ZZIDFWBYBgHINJlIh3WTccYCKbkP0M/PE+c
+ LgubAq9ODlywOpqA7C1GIcTxew2mVsE7vt116Cc1xTUrSZ1bzw9yAbPwIeWRwetJ5ybkhd+
+ Wrzj5B7sJISUv3sxGqqLEWCnEG8fG/tgVDTJovMYJrBz5coFaUp2y54taIhhLCmeivU9QJZ
+ wvh90UPCTjZTP+ywasN+w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tO1V1/IIh54=:3sLWF+qa4ytNx8Iv2qOBLh
+ 8qoK9zIuw0BwV2dmoMHGwjXa++krsXJkfdVMooYQ8zh2R+ZFuh+Q50TG4UkCcxhY9WLjjUoNw
+ GMYt817iU0vKR4ilQe7pTM+jRHWIV2NSNfxStzeF2zD9aT9OvNrvUewxfyxrVIx/PZ5//jiwT
+ lTtIHCQKThxgNOMud73m7WpQJwsOdXAAV+MwWbavc8fhuUISd7A3HeFku4lKyJVjKGt3TJ4g2
+ rR4sHKaMWDzGXAXaPUQ62CqnTKjjjl6GkQ6lQDDMgUrhMkg5lFAKMxDQq19XwHCStauCqvg3T
+ kxn/NOtk7T+fjQHt8Tvivldl3fQqJuIxLeYzs2uLiJj2sZMuMNC+gbHIP79AV1YV1TP8ZzAb1
+ mnXvewQzNXqI69PUBVkQQtlnlz11aRBk7f6IANWhy8fKC9JJ7/V7/mP+L7AwYItH552HatEaO
+ zgWRhxQUNKhTMErXvjXXS5Tr6s2bdKdMxVQpaZT6pirC1ym6rG66D9sXG0n17MLNDYfN1SMr6
+ g0JgF1pkNbEAjuFEfNbzufkaH8GWcab1GvEcDe1KnA/0pA/b+Ru+h2UcCnA0Svz4KLb55D6/N
+ bb8kM4YZDbOoBLK6fC9R6TuT0jkSOdScBgB+q9LUgkpKueg4wYlyucF/u0dlB9K1TFsYw3jrV
+ GDp/i7cv3sfeQdUMCsBvozgZVEF4M+AM30vpPe+e+ZVBB15bWf8zPasB9DNUhmsHt1C6gtuXQ
+ Q0yRFaFu4F3t+/o1GU3TJwP/oNk/wUayqaabGRfTtibCSAIxfhQn+uzf88LxHVo7eSJqLMksU
+ XjOXj/m26TgwPtlkGdYwtFNugRRAJPKETBXQ/UVu7kaGUAeKi6uVpFOuWKlBF9xbUenMZ5dbD
+ xzuCspgI9+CJz/7l3lxVC8UiRZqChkpBlgA+kgEuxKx7XW6+qtCS3sFEVyf998pMOU4RjPRiO
+ q7rT3zMLPa+0+Xugjq3A/cExuee4c17myF8dVbRzX58HThS6CxEKLG33bWjlimoWW5MFBK7Pp
+ Ib8LScC3eB0KjLmDgEjNF3+IEf45gx8iHfJAwSjiw/2JWKK0azpmHjAQxnfl9DEAR4opAq2vn
+ 4QqbrbLG9aYtjI=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Helge,
+Fix a kernel crash which happens on PA1.x CPUs while initializing the
+FTRACE/KPROBE breakpoints.  The PTE table entries for the fixmap area
+were not created correctly.
 
-As far as I can tell, email to you from me is completely blocked by gmx.de.  This occurs for
-two different ISPs.
+Signed-off-by: Helge Deller <deller@gmx.de>
+Fixes: ccfbc68d41c2 ("parisc: add set_fixmap()/clear_fixmap()")
+Cc: stable@vger.kernel.org # v5.2+
 
-Regards,
-Dave
+diff --git a/arch/parisc/mm/fixmap.c b/arch/parisc/mm/fixmap.c
+index 24426a7e1a5e..cc15d737fda6 100644
+=2D-- a/arch/parisc/mm/fixmap.c
++++ b/arch/parisc/mm/fixmap.c
+@@ -20,12 +20,9 @@ void notrace set_fixmap(enum fixed_addresses idx, phys_=
+addr_t phys)
+ 	pte_t *pte;
 
--- 
-John David Anglin  dave.anglin@bell.net
+ 	if (pmd_none(*pmd))
+-		pmd =3D pmd_alloc(NULL, pud, vaddr);
+-
+-	pte =3D pte_offset_kernel(pmd, vaddr);
+-	if (pte_none(*pte))
+ 		pte =3D pte_alloc_kernel(pmd, vaddr);
+
++	pte =3D pte_offset_kernel(pmd, vaddr);
+ 	set_pte_at(&init_mm, vaddr, pte, __mk_pte(phys, PAGE_KERNEL_RWX));
+ 	flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
+ }
