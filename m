@@ -2,121 +2,116 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFF4FC433F5
-	for <linux-parisc@archiver.kernel.org>; Mon,  1 Nov 2021 18:17:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E19CC433EF
+	for <linux-parisc@archiver.kernel.org>; Sun, 31 Oct 2021 21:36:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ADE5460F24
-	for <linux-parisc@archiver.kernel.org>; Mon,  1 Nov 2021 18:17:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7606A60FC4
+	for <linux-parisc@archiver.kernel.org>; Sun, 31 Oct 2021 21:36:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhKASUN (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 1 Nov 2021 14:20:13 -0400
-Received: from mout.gmx.net ([212.227.17.22]:43847 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232124AbhKASUM (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 1 Nov 2021 14:20:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635790636;
-        bh=yzodJQ6uSUGdI95UyrC0iT9cG3ecC4GW+LawXvyLwbo=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=jML9UyxUA0NtRtVll+MRmiGrB7iTIcH5yrANP+kthynjvU/Sn0vHL/tZ2922nIecl
-         hm4Bi1lLdUf8NMFpm2Ka53ggXK5HRws+BVSsh4WtWZgfQveqrR2M0H4+B8BE311TFQ
-         v32RnDmn64AHAC9qkiVsPc3BZiYrsZr7Y6M5iB3Q=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.177.231]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N17UQ-1mbivh32So-012Vfq; Mon, 01
- Nov 2021 19:10:19 +0100
-Message-ID: <0cdbabc1-4aa1-1908-51a3-a195ea9a37f5@gmx.de>
-Date:   Mon, 1 Nov 2021 19:09:55 +0100
+        id S230049AbhJaVil (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 31 Oct 2021 17:38:41 -0400
+Received: from outbound5a.eu.mailhop.org ([3.124.88.253]:60603 "EHLO
+        outbound5a.eu.mailhop.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229982AbhJaVik (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 31 Oct 2021 17:38:40 -0400
+X-Greylist: delayed 2763 seconds by postgrey-1.27 at vger.kernel.org; Sun, 31 Oct 2021 17:38:40 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1635713403; cv=none;
+        d=outbound.mailhop.org; s=arc-outbound20181012;
+        b=B+nTsdhpJ3fBsviOhaQFS9u/J1W/TH3oRveQgSOiiSx8qoyWvJh7FQv7kN/0vnCy0k2r6R7RydkTy
+         BqA9a7pyKiQBJpyqD+AwPc1TsiiGeyEKxFd8UCgqRsAPt1maIIszlENd3f+LtzvSkamPUN2L+Gm5jm
+         97+Dth9nXtUX7l4RfnycWQNwQ1lSPEC58uQp936FH86cQTqKHeTn8iBzXLoySQbCB5/be45uWdzPfl
+         WjBKBL1K2dLXfGUP9EZfBJJtjPU/VLnZC/hJmpoOIcBtRdhDoc1zkt4QpNTsyoSm3/uxolZBoqOiTi
+         7vjGU9+Oov3Ik0vLGhlaDpD+YJTFQ2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=outbound.mailhop.org; s=arc-outbound20181012;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+         dkim-signature:dkim-signature:from;
+        bh=cQubjF0EXvBYecW2Artnyksm60phdJubB+Np+jtGM9g=;
+        b=MqkbQNlXu/fBysmlmOF7XiFGW8kVEMSy/MDKD+pu1sLnmTWb/T/qIdnjS0vIApZdrN6dQ6Wfc7mKm
+         i1B4kKpZbj4W/WEIlS7ooiMWAasPc+RgEvj6byg4qHgjHUjbt3xbZFmGHn7iHEPnL74aebamwXyVRg
+         nHnVNV6EXhSEIq9yNeTYLpiU+t0uOiWnWfsvwxBQRYNQ/sPLSwhn2nVCswp/DWo3zK83U+3xTMYRJ4
+         dJBpDJLHn54ijeXKynaTk2NVhcC58kRdz94eQPGedNOmD8nmJ3kYlrL00D+E9wb0i78M3rlqLozPxf
+         Ji35VMSC89bf7mPTuN6y1tKNlWsz1fw==
+ARC-Authentication-Results: i=1; outbound3.eu.mailhop.org;
+        spf=pass smtp.mailfrom=stackframe.org smtp.remote-ip=91.207.61.48;
+        dmarc=none header.from=stackframe.org;
+        arc=none header.oldest-pass=0;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=stackframe.org; s=duo-1634547266507-560c42ae;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+         from;
+        bh=cQubjF0EXvBYecW2Artnyksm60phdJubB+Np+jtGM9g=;
+        b=B2p+cwH7dlEyf9JsSXKxQ4cIElh2cczytZViWdn4xQtrYmxn9RI8sie+zRAvq/AW6JJCLD56yCZj3
+         JiYlox+wneJQOQq/1Z8Bu0tMOWPC8i1DCB9Y93Q7achIDrjKi/XZygLOwBfvbvBR+fEe1pp5aDQKSq
+         rl52IvwjGNQmYo4A=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=outbound.mailhop.org; s=dkim-high;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+         from;
+        bh=cQubjF0EXvBYecW2Artnyksm60phdJubB+Np+jtGM9g=;
+        b=PPyXPNmQtBzYwb1IpeHPD4DRNPBMyNRYRB8qjqgBtiesLTc6UeGUHpmW1UttTp+8Ym+2KhVbc1CrD
+         9uLrglrFDKuYuSiJfs8/iW6vuAULXg33hPIxp8wWkV41umOTRza3r3r50aFmiUPh8dDY6lZEoYzVkO
+         goq8iP9k+wHySbJiee2BwBG9Mm51hhjvNmpuCZtrfC+UE83fSl3unVkqmBHS5sFbIqFbeZRmO1Deuq
+         gV+axAvmlDkrAg2C49CB0cZmU+7NpGbJC5jlb60/JtzK27w8Vn6a74HxKO3tgI8YKRGnyo8FcM7iwe
+         g6anjucEN8c5SL6Bl6dpMfFTQWJrWjA==
+X-Originating-IP: 91.207.61.48
+X-MHO-RoutePath: dG9ta2lzdG5lcm51
+X-MHO-User: 1db5e0a1-3a8c-11ec-843c-95b64d6800c5
+X-Report-Abuse-To: https://support.duocircle.com/support/solutions/articles/5000540958-duocircle-standard-smtp-abuse-information
+X-Mail-Handler: DuoCircle Outbound SMTP
+Received: from mail.duncanthrax.net (propper.duncanthrax.net [91.207.61.48])
+        by outbound3.eu.mailhop.org (Halon) with ESMTPSA
+        id 1db5e0a1-3a8c-11ec-843c-95b64d6800c5;
+        Sun, 31 Oct 2021 20:50:01 +0000 (UTC)
+Received: from hsi-kbw-109-193-149-228.hsi7.kabel-badenwuerttemberg.de ([109.193.149.228] helo=x1.stackframe.org)
+        by mail.duncanthrax.net with esmtpa (Exim 4.93)
+        (envelope-from <svens@stackframe.org>)
+        id 1mhHmC-00DEq0-FB; Sun, 31 Oct 2021 22:50:00 +0200
+From:   Sven Schnelle <svens@stackframe.org>
+To:     linux-parisc@vger.kernel.org
+Cc:     Helge Deller <deller@gmx.de>
+Subject: 
+Date:   Sun, 31 Oct 2021 21:49:51 +0100
+Message-Id: <20211031204952.25678-1-svens@stackframe.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     John David Anglin <dave.anglin@bell.net>,
-        linux-parisc <linux-parisc@vger.kernel.org>
-Cc:     deller@kernel.org
-References: <3b8410fd-f688-862f-3c3c-7ccf5d523075@gmx.de>
- <a10ff403-3869-9eb1-8213-b51e6ca8d219@bell.net>
- <0a068f90-84bb-dbe1-b8b3-6fd7709b814a@gmx.de>
- <dba5227c-0616-f51e-b716-9569304804bd@bell.net>
- <c25d8ffb-be2b-fb56-f0c9-11323d256a15@gmx.de>
- <86ce35e1-7ef0-1f5c-5cbe-a498a280be29@bell.net>
- <5650aab0-5cfd-a114-6a69-e8dc86123b93@bell.net>
- <93de32e2-9922-99cf-17ce-95409d6c0813@bell.net>
-From:   Helge Deller <deller@gmx.de>
-Subject: Re: fixmap problem on PA11 hardware
-In-Reply-To: <93de32e2-9922-99cf-17ce-95409d6c0813@bell.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vJs++VaEzTpiQpmtftgxcueBZg/36JUG0VcjUdOmC6UclhvtQUs
- 5M3E4ZfcIB6X40yIxfsbr44G12lbbGtH/5oLvivtS/becagt1yiW/a1YGiigCLcQEZGnuu4
- dJVVCl4T6Upv3z3vXK8GF5bcXHOol6JooKDPBQKqnefqax90XDiIIbheirYEsJtaxS34yeT
- ojEtA4dyXE9rYeZmXXGSA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YFxAQKuP2iQ=:w9Ow+t7OPp4x4vBCs6uDrh
- QDnQpNGEUIMrQrrV3cGJWqMJ+TmswT6bp58VsftKzkKK3lpfFltEJCn78PFyR6sR2ny0Uf4eK
- rP75cNwbO8wQbxLq064zV0EAUZhfJqzqjF6R69Ruh7t+CWWJM6F1Sq7CupQqlqMFGassdP1I2
- xreJxQbyJ1VSx2Qy8yoHJMEMdX+VQ74XnbMHsrJac+VzKKTmsHTrzyUp/E97tMQIN7vTd6LGb
- qFJDVwPU84gvnfUd3D3X1N4mXEkG17UJGOOtUkGjcSfNCL17I0rlpwa5vLvkY4c//VLOXkXem
- QosMhaSTrJMdF0J6b2pMA5JzEFfiOA1mb3M++qGLdZXkO5DPoSelhv8viTjfv61CDfausw3we
- sQIuSATK5M/0SckDM4MzVE1nIof9gvFStk88zYejo5aGtds/y0UYw+eACxH2Z2+5gfu/R+/Br
- GfRzm0mACw/4ucdI+f2wj9MzqGKkiMRzbIWNR25TAybXISMcmukphgVxyuKf3fP64oACfJJWS
- sUh1q+W1wApjrwB3sRScX0MzIg/kitThQIcoQLFVK1z30GkFyOyp5FyFu5Nzd03EGkradTs6D
- NMRS1Nnndy3sJiqTtsBvTxmm+Kr+r0ONnEzr5TPn0ZVoUSjwPeFro0oxElMqPztPaGWPynzru
- uSUCook/P8F51f9AAgmYRen7pPzZXn7jJGE1WB7eYWxu/x3gSfRzcV83hCJo4c47LpZsf1h1m
- Jz6QJ2GC+omvhUpGmyMvgXTulOrrUM2qBr+tOaa6S5dYjqYO0NSNIsN9TO2H87yEyr4O8+Vof
- +8FZVQIk/b6EJbuHBVMW/37IfhVQA3dgV/nXo7OX4eB6Biq4xV+Ar6Q1uqMYW4efc0IBAx5wV
- S19g/XmgTYbPdVAWc3WHBBWbXxrAZjT3vLry025igFCbi0KIS0PxlEpI2R+hV5WXWRHQQD0Ay
- 6gmyRumWeMtSBTL+vmjtdq9d26xBQWO0G7RySJkPhmY4NO/NmmD1YKhmh/RYB+aZVgFg8hThc
- seNMKiXcVK2CMA/T1YtrAH3ggbyCi+7TG9gMxErL3Fpt94PwhjbKvve1VE5BNvrQ4loMiktlj
- Juz+kH2e7sw/e4=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 11/1/21 01:06, John David Anglin wrote:
-> On 2021-10-31 8:01 p.m., John David Anglin wrote:
->> On 2021-10-31 7:56 p.m., John David Anglin wrote:
->>> n=C2=A02021-10-31=C2=A07:07=C2=A0p.m.,=C2=A0Helge=C2=A0Deller=C2=A0wro=
-te:
->>>> On=C2=A010/31/21=C2=A023:47,=C2=A0John=C2=A0David=C2=A0Anglin=C2=A0wr=
-ote:
->>>>> My=C2=A0sense=C2=A0is=C2=A0the=C2=A0invalidate=C2=A0patch=C2=A0isn't=
-=C2=A0correct.=C2=A0=C2=A0The=C2=A0main=C2=A0difference=C2=A0between=C2=A0=
-pdc=C2=A0and=C2=A0fdc=C2=A0is=C2=A0that
->>>>> it=C2=A0is=C2=A0optional=C2=A0whether=C2=A0pdc=C2=A0writes=C2=A0the=
-=C2=A0cache=C2=A0line=C2=A0back=C2=A0to=C2=A0memory=C2=A0when=C2=A0it's=C2=
-=A0dirty=C2=A0at=C2=A0priority=C2=A00.
->>>> That's=C2=A0true,=C2=A0nevertheless=C2=A0I've=C2=A0seen=C2=A0differen=
-t=C2=A0behaviour=C2=A0on=C2=A0real=C2=A0hardware.
->>>>
->>>> It=C2=A0might=C2=A0be,=C2=A0that:
->>>>
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0flush_kernel_vmap_range((void=C2=A0*)fixmap,=
-=C2=A0(p-fixmap)=C2=A0*=C2=A0sizeof(*p));
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0invalidate_kernel_vmap_range((void=C2=A0*)fi=
-xmap,=C2=A0(p-fixmap)=C2=A0*=C2=A0sizeof(*p));
->>>> (here=C2=A0the=C2=A0flush=C2=A0might=C2=A0be=C2=A0sufficient)
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if=C2=A0(mapped)
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0patch_unm=
-ap(FIX_TEXT_POKE0,=C2=A0&flags);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0invalidate_kernel_vmap_range((void=C2=A0*)st=
-art,=C2=A0end=C2=A0-=C2=A0start);
->>>> (but=C2=A0here=C2=A0the=C2=A0pdc=C2=A0is=C2=A0necessary=C2=A0to=C2=A0=
-actually=C2=A0drop=C2=A0data=C2=A0from=C2=A0I-cache)
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0flush_icache_range(start,=C2=A0en=
-d);
->>>>
->>>> I=C2=A0can=C2=A0test=C2=A0tomorrow...
->>> Maybe=C2=A0sync=C2=A0is=C2=A0needed=C2=A0before=C2=A0releasing=C2=A0lo=
-ck.=C2=A0=C2=A0pdc/fdc=C2=A0are=C2=A0weakly=C2=A0ordered.
->> Forget that.=C2=A0 There already is a sync.
-> Could it be we incorrectly change the flush/purge operations to nops?
-> 89:=C2=A0=C2=A0=C2=A0=C2=A0 ALTERNATIVE(88b, 89b, ALT_COND_NO_DCACHE, IN=
-SN_NOP)
+Hi List,
 
-No, can't be.
-The alternative patching hasn't run yet when the kprobe testcases run.
+i wrote a fbdev driver for the HP Visualize FX cards used some of the
+PA-RISC workstations. It utilizes some of the 2D acceleration features
+present in the card.
 
-Nevertheless, I don't fully understand it yet.
-The same code works differently depending on the machine.
+What is working right now:
 
-Helge
+- modesetting (tested all VESA modes between 640x480 - 1600x1200).
+- hardware cursor
+- 2D acceleration like imageblit and fillrect.
+
+What is not (fully) working:
+
+- X11 with fbdev. xinit + mwm looks almost ok, except some corruption
+where the text cursor was drawn when it is moved.
+- more advanced X11 programs. xfce4-session doesn't really show much.
+
+I would be most interested if people could test this driver with their FX
+cards and report. I know that Visualize FXe doesn't work because it uses
+completely different register addresses. For FX10 i would hope that they
+share the same register set as they are based on the same architecture.
+Note that you have to disable the sticon driver, otherwhise that one would
+hog the PCI card and visualizefx would never be probed.
+
+Not sure about FX2/4/6. Might be different, might be not.
+
+I obtained all the knowledge about the registers by watching what STI and the HP-UX
+X Server writes into the card. So the register names might be called different
+compared to what HP has written in their data books.
+
+Sven.
+
+
