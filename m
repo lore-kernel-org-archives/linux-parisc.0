@@ -2,90 +2,100 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 268C2C433F5
-	for <linux-parisc@archiver.kernel.org>; Sun, 31 Oct 2021 20:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92AF0C433EF
+	for <linux-parisc@archiver.kernel.org>; Sun, 31 Oct 2021 21:14:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EA9CB608FE
-	for <linux-parisc@archiver.kernel.org>; Sun, 31 Oct 2021 20:58:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C9A860FC4
+	for <linux-parisc@archiver.kernel.org>; Sun, 31 Oct 2021 21:14:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhJaVBS (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 31 Oct 2021 17:01:18 -0400
-Received: from mout.gmx.net ([212.227.17.21]:56017 "EHLO mout.gmx.net"
+        id S230025AbhJaVRZ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 31 Oct 2021 17:17:25 -0400
+Received: from mout.gmx.net ([212.227.15.15]:52671 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229974AbhJaVBR (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 31 Oct 2021 17:01:17 -0400
+        id S229982AbhJaVRZ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 31 Oct 2021 17:17:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635713918;
-        bh=2ZaMzFCyoJiqJVCWfovUlcxxsEFg4UCitJyHxWEpuCo=;
+        s=badeba3b8450; t=1635714885;
+        bh=HfSY97Ok1t5Tnbb6uML+oUkmXtCZHHa+FraGyCsV5Oo=;
         h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-        b=aQwpczHRa9exa3LYtuBnQ8Ztg5qpUSBuNybM/Zl9149uSP9hxawuMIzzZ54wP/ujS
-         CU/r4QJFfc+0ZkRCEJh1AwFL2iQ3/CJVUXdgVpnpj+knwzcOvzvCWWV4GZDdpxsBup
-         5AMxqrFCM05i8TEeIbT0/4FMFFwN1x4Ja44JNX8A=
+        b=LOqcmNiWk5d/p6Z2pLDHxFVJh/cHHcIrTJrfCe/nfkMliWzaMTiWJ6WsZJfNe2V+l
+         6TV+ovvWkbXLcGfr1Nx09djac42w2yomuWTATl5SMHusrhL/RAcn+A1vFf9E9iVF7q
+         g8bm7CJHHfXs/Zvc6l8I64VSMgwY2cWN5yFPax8Y=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530 ([92.116.174.201]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N1Obb-1mnJCA3LqN-012n0X; Sun, 31
- Oct 2021 21:58:37 +0100
-Date:   Sun, 31 Oct 2021 21:58:12 +0100
+Received: from ls3530 ([92.116.174.201]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MQv8n-1mJRkw31MN-00NvVH; Sun, 31
+ Oct 2021 22:14:45 +0100
+Date:   Sun, 31 Oct 2021 22:14:19 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@hansenpartnership.com>,
         John David Anglin <dave.anglin@bell.net>
 Cc:     Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH] parisc: Fix set_fixmap() on PA1.x CPUs
-Message-ID: <YX8DZChVfaD8QjRp@ls3530>
+Subject: [PATCH] parisc: Fix code/instruction patching on PA1.x machines
+Message-ID: <YX8HK7ZZZhjRQzcr@ls3530>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Provags-ID: V03:K1:xhgJ0JmkgRhQzBs3ZZIDFWBYBgHINJlIh3WTccYCKbkP0M/PE+c
- LgubAq9ODlywOpqA7C1GIcTxew2mVsE7vt116Cc1xTUrSZ1bzw9yAbPwIeWRwetJ5ybkhd+
- Wrzj5B7sJISUv3sxGqqLEWCnEG8fG/tgVDTJovMYJrBz5coFaUp2y54taIhhLCmeivU9QJZ
- wvh90UPCTjZTP+ywasN+w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tO1V1/IIh54=:3sLWF+qa4ytNx8Iv2qOBLh
- 8qoK9zIuw0BwV2dmoMHGwjXa++krsXJkfdVMooYQ8zh2R+ZFuh+Q50TG4UkCcxhY9WLjjUoNw
- GMYt817iU0vKR4ilQe7pTM+jRHWIV2NSNfxStzeF2zD9aT9OvNrvUewxfyxrVIx/PZ5//jiwT
- lTtIHCQKThxgNOMud73m7WpQJwsOdXAAV+MwWbavc8fhuUISd7A3HeFku4lKyJVjKGt3TJ4g2
- rR4sHKaMWDzGXAXaPUQ62CqnTKjjjl6GkQ6lQDDMgUrhMkg5lFAKMxDQq19XwHCStauCqvg3T
- kxn/NOtk7T+fjQHt8Tvivldl3fQqJuIxLeYzs2uLiJj2sZMuMNC+gbHIP79AV1YV1TP8ZzAb1
- mnXvewQzNXqI69PUBVkQQtlnlz11aRBk7f6IANWhy8fKC9JJ7/V7/mP+L7AwYItH552HatEaO
- zgWRhxQUNKhTMErXvjXXS5Tr6s2bdKdMxVQpaZT6pirC1ym6rG66D9sXG0n17MLNDYfN1SMr6
- g0JgF1pkNbEAjuFEfNbzufkaH8GWcab1GvEcDe1KnA/0pA/b+Ru+h2UcCnA0Svz4KLb55D6/N
- bb8kM4YZDbOoBLK6fC9R6TuT0jkSOdScBgB+q9LUgkpKueg4wYlyucF/u0dlB9K1TFsYw3jrV
- GDp/i7cv3sfeQdUMCsBvozgZVEF4M+AM30vpPe+e+ZVBB15bWf8zPasB9DNUhmsHt1C6gtuXQ
- Q0yRFaFu4F3t+/o1GU3TJwP/oNk/wUayqaabGRfTtibCSAIxfhQn+uzf88LxHVo7eSJqLMksU
- XjOXj/m26TgwPtlkGdYwtFNugRRAJPKETBXQ/UVu7kaGUAeKi6uVpFOuWKlBF9xbUenMZ5dbD
- xzuCspgI9+CJz/7l3lxVC8UiRZqChkpBlgA+kgEuxKx7XW6+qtCS3sFEVyf998pMOU4RjPRiO
- q7rT3zMLPa+0+Xugjq3A/cExuee4c17myF8dVbRzX58HThS6CxEKLG33bWjlimoWW5MFBK7Pp
- Ib8LScC3eB0KjLmDgEjNF3+IEf45gx8iHfJAwSjiw/2JWKK0azpmHjAQxnfl9DEAR4opAq2vn
- 4QqbrbLG9aYtjI=
+X-Provags-ID: V03:K1:UVxpwENy1KXY3az2ykTi9H4f5FcAhY9+Tnbjyv8zy91OUrUy5gT
+ nByxExzDNrfEjvy8rTi9dtxXYUOMUVbod00H69ynq5yoWZMxQPPmHKhKphPlfv9ETVRyjhp
+ 9AHkeyjXbksF/cqAc9vCc64+EmWqgzL67rcyKRQNZV6eCSNRWjQfV8IqqW6YRUvWUTd425t
+ uTXK1E+y4kI7wVLsShgoQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/BhteET13Jk=:gqPLmCkH+PSn96Z4GceHnm
+ zynbjdgB5R5sIndCqD4sgzeRXHry9nIQ6EqlFOP1tKb4hfA9Xx6nLRoNCjRhSVwCyFvKLG3FW
+ EYrYec61i07glp3CK1yohEg4XOCmnBxHe5NpA+twrtweDdMbSdzIU7s43MYLArzA4NZRBnRJe
+ qLQOsR+yQkG/N4jXb0Euj9sCBPGcoEKw/PLDx/M6OgPGjdiDPatsKUZr3tGGrieyBOqTE0jRi
+ PN9jIJKAC79zRVIozvxr3XdI4BoESAaOke88Gwgjt2M1J7W+4RtfUoroHa5gMUNqnWZxqCV4M
+ TEpa9KOjB5bTAxpk0a4HX6iNuGkpwCUHK5tP9vR8dyRGvAOFXOJe2I11LYZxaRZMWPfcIUBW7
+ oE8/7f5xjbDn2Eq5NGbMNO6UxVS8rTtoJqiu3+uAWp8Sq9oxTkXHBr7SRj9O2LmqTbMpBuo7/
+ 6WqD2P9MdV2yr36XVZ4gvSL5Z9PziAL3J0NHPxiqK2TFs3Lxg0smWWWS8/Qbo4b7tOC8cQIgC
+ WnWquocbtTWCTTyri6H0XqAXzbYoV8FZSEcX6pdr7KEskKWBece9hIjNQtv/uiZimci+C53Eo
+ oS9G8CO4TpE83+J24CbCHsFvIQD+LQpWaMy9I6e+rvd2LflRYPlsCN5a71KSQDCiAD6UoA0Z2
+ 39F32UhwVim+/SXyO4lNS40YaIZS64Llkyw3J8bWFeIP7WItMCYnuaCnTA+ilYT7V9d8E4C69
+ fRCkE/VXXswqOCJBvdZHdLoyE7ZSX6eFfv5zqDEHWN665lDx/gSBVpGn3MdWja1rVUGKCjktC
+ tg82l1NU7At9/uKJcgRGlSggxblDIp/TPdfPhoiO0aPLghAEeAuVUc/MbnQwXAjTySrbwpZAo
+ JfBJ7eypowCjRS+BmPn00dflO1OPLzzHqRe2Vhsy0zIEQU4R7MuDj4rUnEFN/MO9WcEXRMsd6
+ JShohoYkTcmc8B7ZM/sxWMglIRH6tIWS/YTyRW74+L0gSnlAqvpRWxn8Gfbi6I2P9bqxfYZRr
+ 4FByxd3yv+iDpKi1/ApQGuCQZ98sJblkpKtKMjDFvBgeYIKMjoMhDsexx3PAxZrZLex6xNMbO
+ nTX6/yOWtSrAVg=
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Fix a kernel crash which happens on PA1.x CPUs while initializing the
-FTRACE/KPROBE breakpoints.  The PTE table entries for the fixmap area
-were not created correctly.
+On PA1.x machines it's not sufficient to just flush the data and
+instruction caches when we have written new instruction codes into the
+parallel mapped memory segment, but we really need to invalidate (purge)
+the cache too. Otherwise the processor will still execute the old
+instructions which are still in the data/instruction cache.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
-Fixes: ccfbc68d41c2 ("parisc: add set_fixmap()/clear_fixmap()")
-Cc: stable@vger.kernel.org # v5.2+
+Fixes: 4e87ace902cf ("parisc: add support for patching multiple words")
+Cc: stable@vger.kernel.org # v5.3+
 
-diff --git a/arch/parisc/mm/fixmap.c b/arch/parisc/mm/fixmap.c
-index 24426a7e1a5e..cc15d737fda6 100644
-=2D-- a/arch/parisc/mm/fixmap.c
-+++ b/arch/parisc/mm/fixmap.c
-@@ -20,12 +20,9 @@ void notrace set_fixmap(enum fixed_addresses idx, phys_=
-addr_t phys)
- 	pte_t *pte;
+diff --git a/arch/parisc/kernel/patch.c b/arch/parisc/kernel/patch.c
+index 80a0ab372802..8cbb7e1d5a2b 100644
+=2D-- a/arch/parisc/kernel/patch.c
++++ b/arch/parisc/kernel/patch.c
+@@ -81,7 +81,7 @@ void __kprobes __patch_text_multiple(void *addr, u32 *in=
+sn, unsigned int len)
+ 			 * We're crossing a page boundary, so
+ 			 * need to remap
+ 			 */
+-			flush_kernel_vmap_range((void *)fixmap,
++			invalidate_kernel_vmap_range((void *)fixmap,
+ 						(p-fixmap) * sizeof(*p));
+ 			if (mapped)
+ 				patch_unmap(FIX_TEXT_POKE0, &flags);
+@@ -90,9 +90,10 @@ void __kprobes __patch_text_multiple(void *addr, u32 *i=
+nsn, unsigned int len)
+ 		}
+ 	}
 
- 	if (pmd_none(*pmd))
--		pmd =3D pmd_alloc(NULL, pud, vaddr);
--
--	pte =3D pte_offset_kernel(pmd, vaddr);
--	if (pte_none(*pte))
- 		pte =3D pte_alloc_kernel(pmd, vaddr);
-
-+	pte =3D pte_offset_kernel(pmd, vaddr);
- 	set_pte_at(&init_mm, vaddr, pte, __mk_pte(phys, PAGE_KERNEL_RWX));
- 	flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
+-	flush_kernel_vmap_range((void *)fixmap, (p-fixmap) * sizeof(*p));
++	invalidate_kernel_vmap_range((void *)fixmap, (p-fixmap) * sizeof(*p));
+ 	if (mapped)
+ 		patch_unmap(FIX_TEXT_POKE0, &flags);
++	invalidate_kernel_vmap_range((void *)start, end - start);
+ 	flush_icache_range(start, end);
  }
+
