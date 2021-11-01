@@ -2,257 +2,121 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E901BC433EF
-	for <linux-parisc@archiver.kernel.org>; Mon,  1 Nov 2021 16:10:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFF4FC433F5
+	for <linux-parisc@archiver.kernel.org>; Mon,  1 Nov 2021 18:17:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C26B360F42
-	for <linux-parisc@archiver.kernel.org>; Mon,  1 Nov 2021 16:10:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ADE5460F24
+	for <linux-parisc@archiver.kernel.org>; Mon,  1 Nov 2021 18:17:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhKAQMy (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 1 Nov 2021 12:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhKAQMx (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 1 Nov 2021 12:12:53 -0400
-Received: from mail.sf-mail.de (mail.sf-mail.de [IPv6:2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8D3C061714
-        for <linux-parisc@vger.kernel.org>; Mon,  1 Nov 2021 09:10:20 -0700 (PDT)
-Received: (qmail 26742 invoked from network); 1 Nov 2021 16:10:17 -0000
-Received: from p200300cf070a020010bf80fffe6f49ef.dip0.t-ipconnect.de ([2003:cf:70a:200:10bf:80ff:fe6f:49ef]:43404 HELO eto.sf-tec.de) (auth=eike@sf-mail.de)
-        by mail.sf-mail.de (Qsmtpd 0.38dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
-        for <linux-parisc@vger.kernel.org>; Mon, 01 Nov 2021 17:10:17 +0100
-From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
-To:     linux-parisc@vger.kernel.org, Sven Schnelle <svens@stackframe.org>
-Cc:     Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH] video: fbdev: add HP Visualize FX driver
-Date:   Mon, 01 Nov 2021 17:10:09 +0100
-Message-ID: <2799287.e9J7NaK4W3@eto.sf-tec.de>
-In-Reply-To: <20211031204952.25678-2-svens@stackframe.org>
-References: <20211031204952.25678-1-svens@stackframe.org> <20211031204952.25678-2-svens@stackframe.org>
+        id S229692AbhKASUN (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 1 Nov 2021 14:20:13 -0400
+Received: from mout.gmx.net ([212.227.17.22]:43847 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232124AbhKASUM (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 1 Nov 2021 14:20:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635790636;
+        bh=yzodJQ6uSUGdI95UyrC0iT9cG3ecC4GW+LawXvyLwbo=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=jML9UyxUA0NtRtVll+MRmiGrB7iTIcH5yrANP+kthynjvU/Sn0vHL/tZ2922nIecl
+         hm4Bi1lLdUf8NMFpm2Ka53ggXK5HRws+BVSsh4WtWZgfQveqrR2M0H4+B8BE311TFQ
+         v32RnDmn64AHAC9qkiVsPc3BZiYrsZr7Y6M5iB3Q=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.177.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N17UQ-1mbivh32So-012Vfq; Mon, 01
+ Nov 2021 19:10:19 +0100
+Message-ID: <0cdbabc1-4aa1-1908-51a3-a195ea9a37f5@gmx.de>
+Date:   Mon, 1 Nov 2021 19:09:55 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3136760.aeNJFYEL58"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     John David Anglin <dave.anglin@bell.net>,
+        linux-parisc <linux-parisc@vger.kernel.org>
+Cc:     deller@kernel.org
+References: <3b8410fd-f688-862f-3c3c-7ccf5d523075@gmx.de>
+ <a10ff403-3869-9eb1-8213-b51e6ca8d219@bell.net>
+ <0a068f90-84bb-dbe1-b8b3-6fd7709b814a@gmx.de>
+ <dba5227c-0616-f51e-b716-9569304804bd@bell.net>
+ <c25d8ffb-be2b-fb56-f0c9-11323d256a15@gmx.de>
+ <86ce35e1-7ef0-1f5c-5cbe-a498a280be29@bell.net>
+ <5650aab0-5cfd-a114-6a69-e8dc86123b93@bell.net>
+ <93de32e2-9922-99cf-17ce-95409d6c0813@bell.net>
+From:   Helge Deller <deller@gmx.de>
+Subject: Re: fixmap problem on PA11 hardware
+In-Reply-To: <93de32e2-9922-99cf-17ce-95409d6c0813@bell.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vJs++VaEzTpiQpmtftgxcueBZg/36JUG0VcjUdOmC6UclhvtQUs
+ 5M3E4ZfcIB6X40yIxfsbr44G12lbbGtH/5oLvivtS/becagt1yiW/a1YGiigCLcQEZGnuu4
+ dJVVCl4T6Upv3z3vXK8GF5bcXHOol6JooKDPBQKqnefqax90XDiIIbheirYEsJtaxS34yeT
+ ojEtA4dyXE9rYeZmXXGSA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YFxAQKuP2iQ=:w9Ow+t7OPp4x4vBCs6uDrh
+ QDnQpNGEUIMrQrrV3cGJWqMJ+TmswT6bp58VsftKzkKK3lpfFltEJCn78PFyR6sR2ny0Uf4eK
+ rP75cNwbO8wQbxLq064zV0EAUZhfJqzqjF6R69Ruh7t+CWWJM6F1Sq7CupQqlqMFGassdP1I2
+ xreJxQbyJ1VSx2Qy8yoHJMEMdX+VQ74XnbMHsrJac+VzKKTmsHTrzyUp/E97tMQIN7vTd6LGb
+ qFJDVwPU84gvnfUd3D3X1N4mXEkG17UJGOOtUkGjcSfNCL17I0rlpwa5vLvkY4c//VLOXkXem
+ QosMhaSTrJMdF0J6b2pMA5JzEFfiOA1mb3M++qGLdZXkO5DPoSelhv8viTjfv61CDfausw3we
+ sQIuSATK5M/0SckDM4MzVE1nIof9gvFStk88zYejo5aGtds/y0UYw+eACxH2Z2+5gfu/R+/Br
+ GfRzm0mACw/4ucdI+f2wj9MzqGKkiMRzbIWNR25TAybXISMcmukphgVxyuKf3fP64oACfJJWS
+ sUh1q+W1wApjrwB3sRScX0MzIg/kitThQIcoQLFVK1z30GkFyOyp5FyFu5Nzd03EGkradTs6D
+ NMRS1Nnndy3sJiqTtsBvTxmm+Kr+r0ONnEzr5TPn0ZVoUSjwPeFro0oxElMqPztPaGWPynzru
+ uSUCook/P8F51f9AAgmYRen7pPzZXn7jJGE1WB7eYWxu/x3gSfRzcV83hCJo4c47LpZsf1h1m
+ Jz6QJ2GC+omvhUpGmyMvgXTulOrrUM2qBr+tOaa6S5dYjqYO0NSNIsN9TO2H87yEyr4O8+Vof
+ +8FZVQIk/b6EJbuHBVMW/37IfhVQA3dgV/nXo7OX4eB6Biq4xV+Ar6Q1uqMYW4efc0IBAx5wV
+ S19g/XmgTYbPdVAWc3WHBBWbXxrAZjT3vLry025igFCbi0KIS0PxlEpI2R+hV5WXWRHQQD0Ay
+ 6gmyRumWeMtSBTL+vmjtdq9d26xBQWO0G7RySJkPhmY4NO/NmmD1YKhmh/RYB+aZVgFg8hThc
+ seNMKiXcVK2CMA/T1YtrAH3ggbyCi+7TG9gMxErL3Fpt94PwhjbKvve1VE5BNvrQ4loMiktlj
+ Juz+kH2e7sw/e4=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
---nextPart3136760.aeNJFYEL58
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+On 11/1/21 01:06, John David Anglin wrote:
+> On 2021-10-31 8:01 p.m., John David Anglin wrote:
+>> On 2021-10-31 7:56 p.m., John David Anglin wrote:
+>>> n=C2=A02021-10-31=C2=A07:07=C2=A0p.m.,=C2=A0Helge=C2=A0Deller=C2=A0wro=
+te:
+>>>> On=C2=A010/31/21=C2=A023:47,=C2=A0John=C2=A0David=C2=A0Anglin=C2=A0wr=
+ote:
+>>>>> My=C2=A0sense=C2=A0is=C2=A0the=C2=A0invalidate=C2=A0patch=C2=A0isn't=
+=C2=A0correct.=C2=A0=C2=A0The=C2=A0main=C2=A0difference=C2=A0between=C2=A0=
+pdc=C2=A0and=C2=A0fdc=C2=A0is=C2=A0that
+>>>>> it=C2=A0is=C2=A0optional=C2=A0whether=C2=A0pdc=C2=A0writes=C2=A0the=
+=C2=A0cache=C2=A0line=C2=A0back=C2=A0to=C2=A0memory=C2=A0when=C2=A0it's=C2=
+=A0dirty=C2=A0at=C2=A0priority=C2=A00.
+>>>> That's=C2=A0true,=C2=A0nevertheless=C2=A0I've=C2=A0seen=C2=A0differen=
+t=C2=A0behaviour=C2=A0on=C2=A0real=C2=A0hardware.
+>>>>
+>>>> It=C2=A0might=C2=A0be,=C2=A0that:
+>>>>
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0flush_kernel_vmap_range((void=C2=A0*)fixmap,=
+=C2=A0(p-fixmap)=C2=A0*=C2=A0sizeof(*p));
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0invalidate_kernel_vmap_range((void=C2=A0*)fi=
+xmap,=C2=A0(p-fixmap)=C2=A0*=C2=A0sizeof(*p));
+>>>> (here=C2=A0the=C2=A0flush=C2=A0might=C2=A0be=C2=A0sufficient)
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if=C2=A0(mapped)
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0patch_unm=
+ap(FIX_TEXT_POKE0,=C2=A0&flags);
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0invalidate_kernel_vmap_range((void=C2=A0*)st=
+art,=C2=A0end=C2=A0-=C2=A0start);
+>>>> (but=C2=A0here=C2=A0the=C2=A0pdc=C2=A0is=C2=A0necessary=C2=A0to=C2=A0=
+actually=C2=A0drop=C2=A0data=C2=A0from=C2=A0I-cache)
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0flush_icache_range(start,=C2=A0en=
+d);
+>>>>
+>>>> I=C2=A0can=C2=A0test=C2=A0tomorrow...
+>>> Maybe=C2=A0sync=C2=A0is=C2=A0needed=C2=A0before=C2=A0releasing=C2=A0lo=
+ck.=C2=A0=C2=A0pdc/fdc=C2=A0are=C2=A0weakly=C2=A0ordered.
+>> Forget that.=C2=A0 There already is a sync.
+> Could it be we incorrectly change the flush/purge operations to nops?
+> 89:=C2=A0=C2=A0=C2=A0=C2=A0 ALTERNATIVE(88b, 89b, ALT_COND_NO_DCACHE, IN=
+SN_NOP)
 
-Am Sonntag, 31. Oktober 2021, 21:49:52 CET schrieb Sven Schnelle:
-> This adds a framebuffer driver for HP's visualize series of
-> cards. The aim is to support all FX2 - FX10 types but currently only
-> FX5 is tested as i don't have any other card.
-> 
-> Currently no mmap of video memory is supported as i haven't figured
-> out how to access VRAM directly.
+No, can't be.
+The alternative patching hasn't run yet when the kprobe testcases run.
 
-Besides the DRM things here are a few more things I spotted.
+Nevertheless, I don't fully understand it yet.
+The same code works differently depending on the machine.
 
-> +struct visfx_par {
-
-What is "par"? Maybe a little more descriptive name would help, _param or 
-something?
-
-> +	u32 pseudo_palette[256];
-> +	unsigned long debug_reg;
-> +	void __iomem *reg_base;
-> +	unsigned long reg_size;
-> +	int open_count;
-> +};
-
-I would move the more often used members to the top, that should make accesses 
-of the often used members slightly more efficient as there is no offset 
-needed.
-
-> +static ssize_t visfx_sysfs_show_reg(struct device *dev,
-> +				    struct device_attribute *attr,
-> +				    char *buf)
-> +{
-> +	struct fb_info *info = pci_get_drvdata(container_of(dev, struct 
-pci_dev,
-> dev)); +	struct visfx_par *par = info->par;
-> +
-> +	return sprintf(buf, "%08x\n", visfx_readl(info, par->debug_reg));
-> +}
-> +
-> +static ssize_t visfx_sysfs_store_reg(struct device *dev,
-> +				     struct device_attribute 
-*attr,
-> +				     const char *buf, size_t 
-count)
-> +{
-> +	struct fb_info *info = pci_get_drvdata(container_of(dev, struct 
-pci_dev,
-> dev)); +	struct visfx_par *par = info->par;
-> +	unsigned long data;
-> +	char *p;
-> +
-> +	p = strchr(buf, '=');
-> +	if (p)
-> +		*p = '\0';
-
-No -EINVAL without '='?
-
-> +	if (kstrtoul(buf, 16, &par->debug_reg))
-> +		return -EINVAL;
-> +
-> +	if (par->debug_reg > par->reg_size)
-> +		return -EINVAL;
-> +
-> +	if (p) {
-> +		if (kstrtoul(p+1, 16, &data))
-
-Spaces around +
-
-> +			return -EINVAL;
-> +		visfx_writel(info, par->debug_reg, data);
-> +	}
-> +	return count;
-> +}
-> +
-> +static DEVICE_ATTR(reg, 0600, visfx_sysfs_show_reg, visfx_sysfs_store_reg);
-
-Sysfs API is public API, so it needs to be documented and such. Also I bet 
-there are helpers to do this better. But I think this should be debugfs 
-attributes, not sysfs ones.
-
-> +static void visfx_imageblit_mono(struct fb_info *info, const char *data,
-> int dx, int dy, +				 int width, int 
-height, int fg_color, int bg_color)
-> +{
-> +	int _width, x, y;
-
-Having variables named width and _width is just asking for future trouble 
-IMHO. Maybe just call the local one "w" or something.
-
-> +	u32 tmp;
-
-You can move that into a more local scope to make it more obvious it doesn't 
-carry and state between loop iterations.
-
-> +	visfx_set_bmove_color(info, fg_color, bg_color);
-> +	visfx_writel(info, VISFX_VRAM_WRITE_MODE, 
-VISFX_VRAM_WRITE_MODE_COLOR);
-> +	visfx_writel(info, VISFX_VRAM_MASK, 0xffffffff);
-> +
-> +	for (x = 0, _width = width; _width > 0; _width -= 32, x += 4) {
-> +		visfx_set_vram_addr(info, dx + x * 8, dy);
-> +		if (_width >= 32) {
-> +			for (y = 0; y < height; y++) {
-> +				memcpy(&tmp, &data[y * (width / 8) 
-+ x], 4);
-> +				visfx_write_vram(info, 
-VISFX_VRAM_WRITE_DATA_INCRY, tmp);
-> +			}
-> +		} else {
-> +			visfx_writel(info, VISFX_VRAM_MASK, 
-GENMASK(31, 31 - _width + 1));
-> +			for (y = 0; y < height; y++) {
-> +				tmp = 0;
-> +				memcpy(&tmp, &data[y * (width / 8) 
-+ x], ((_width-1)/8)+1);
-> +				visfx_write_vram(info, 
-VISFX_VRAM_WRITE_DATA_INCRY, tmp);
-> +			}
-> +		}
-> +	}
-> +}
-> +
-> +static void visfx_setup_unknown(struct fb_info *info)
-> +{
-> +	visfx_writel(info, 0xb08044, 0x1b);
-> +	visfx_writel(info, 0xb08048, 0x1b);
-> +	visfx_writel(info, 0x920860, 0xe4);
-> +	visfx_writel(info, 0xa00818, 0);
-> +	visfx_writel(info, 0xa00404, 0);
-> +	visfx_writel(info, 0x921110, 0);
-> +	visfx_writel(info, 0x9211d8, 0);
-> +	visfx_writel(info, 0xa0086c, 0);
-> +	visfx_writel(info, 0x921114, 0);
-> +	visfx_writel(info, 0xac1050, 0);
-> +	visfx_writel(info, 0xa00858, 0xb0);
-
-A little comment about these numbers would be good, even if it is just 
-"recorded from HP-UX driver, no idea what it does".
-
-> +static int visfx_check_var(struct fb_var_screeninfo *var, struct fb_info
-> *info) +{
-> +	if (var->pixclock > VISFX_SYNC_PLL_BASE ||
-> +	    var->left_margin > 512 ||
-> +	    var->right_margin > 512 ||
-> +	    var->hsync_len > 512 ||
-> +	    var->lower_margin > 256 ||
-> +	    var->upper_margin > 256 ||
-> +	    var->vsync_len > 256 ||
-> +		var->xres > 2048 ||
-> +		var->yres > 2048)
-> +		return -EINVAL;
-
-Something went wrong with the indentation here.
-
-> +static int visfx_release(struct fb_info *info, int user)
-> +{
-> +	struct visfx_par *par = info->par;
-> +
-> +	if (user)
-> +		par->open_count--;
-
-Check for underflow, just out of paranoia?
-
-> +static int visfx_probe(struct pci_dev *pdev,
-> +		       const struct pci_device_id *ent)
-> +{
-> +	struct visfx_par *par;
-> +	struct fb_info *info;
-> +	int ret;
-> +
-> +	info = framebuffer_alloc(sizeof(struct visfx_par), &pdev->dev);
-
-sizeof(*par)
-
-> +	if (!info)
-> +		return -ENOMEM;
-> +
-> +	par = info->par;
-> +
-> +	ret = pci_enable_device(pdev);
-
-If you don't have a really good reason to do so you should used 
-pcim_enable_device(), which will do half of the following error cleanups and 
-the remove handling for you.
-
-> +static int __init visfx_init(void)
-> +{
-> +	return pci_register_driver(&visfx_driver);
-> +}
-> +module_init(visfx_init);
-> +
-> +static void __exit visfx_exit(void)
-> +{
-> +	pci_unregister_driver(&visfx_driver);
-> +}
-> +module_exit(visfx_exit);
-
-module_pci_driver(&visfx_driver);
-
-Greetings,
-
-Eike
---nextPart3136760.aeNJFYEL58
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCYYARYQAKCRBcpIk+abn8
-TtXpAJ9BMYf5HJmpVqPej6JyXjRui3EBGACbBpzTjXBB4oaNd9UM2lgwsEFc6Gs=
-=dQaR
------END PGP SIGNATURE-----
-
---nextPart3136760.aeNJFYEL58--
-
-
-
+Helge
