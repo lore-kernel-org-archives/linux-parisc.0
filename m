@@ -2,140 +2,142 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C8B4C433EF
-	for <linux-parisc@archiver.kernel.org>; Mon,  8 Nov 2021 21:48:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6082FC433EF
+	for <linux-parisc@archiver.kernel.org>; Tue,  9 Nov 2021 01:17:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E88AC61359
-	for <linux-parisc@archiver.kernel.org>; Mon,  8 Nov 2021 21:48:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4929D610A0
+	for <linux-parisc@archiver.kernel.org>; Tue,  9 Nov 2021 01:17:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240602AbhKHVvF (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 8 Nov 2021 16:51:05 -0500
-Received: from mta-mtl-004.bell.net ([209.71.208.14]:59888 "EHLO
-        cmx-mtlrgo002.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240591AbhKHVvE (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 8 Nov 2021 16:51:04 -0500
-X-RG-CM-BuS: 0
-X-RG-CM-SC: 0
-X-RG-CM: Clean
-X-Originating-IP: [67.71.8.137]
-X-RG-Env-Sender: dave.anglin@bell.net
-X-RG-Rigid: 60C894590B4B7718
-X-CM-Envelope: MS4xfDHKotfRS2n1Ex9bLXrd+iVL8okI498G+O3umGOsOnSVQ1Ila60uVEcUqIDfqyI4th+wZl6Euxa3aMpY1ByHOcfJW+TwUt9MtSXFdOCaww47h89uKB2x
- 3unlPvMuRSK7zNxE7KODn20C1VaBq1bmYFRuww260BkMITOFNsPjs4bkP4JxISWHmEjFFd7VrDbQmLAiGUYDXumsGCaejNZJEW+03wNcyELJItqV8KZEB+jg
- UWHL7K9Qo7FPim80w2hIGV8vDQGyU4f9mP1d+f8z1ttIwL+fk7Oobk73yoJ7TLlNnfG+Sy/iQc3z/uEc7K2TiVY1r9AwAo0StSjqEYiGjW8=
-X-CM-Analysis: v=2.4 cv=ENdlb3VC c=1 sm=1 tr=0 ts=61899b20
- a=jrdA9tB8yuRqUzQ1EpSZjA==:117 a=jrdA9tB8yuRqUzQ1EpSZjA==:17
- a=IkcTkHD0fZMA:10 a=FBHGMhGWAAAA:8 a=Ig3HJIhBWjIyQfak5WcA:9 a=QEXdDO2ut3YA:10
- a=9gvnlMMaQFpL9xblJ6ne:22
-Received: from [192.168.2.49] (67.71.8.137) by cmx-mtlrgo002.bell.net (5.8.716.03) (authenticated as dave.anglin@bell.net)
-        id 60C894590B4B7718; Mon, 8 Nov 2021 16:48:16 -0500
-Message-ID: <d659e011-274b-33de-96f4-4ccb6f81296c@bell.net>
-Date:   Mon, 8 Nov 2021 16:48:16 -0500
+        id S239667AbhKIBUM (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 8 Nov 2021 20:20:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242160AbhKIBRD (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:17:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CFA9619EE;
+        Tue,  9 Nov 2021 01:06:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636420005;
+        bh=BxmmrVIRePr4MucsBozMFpB1XoznpnJ8Nc9ewJH28Nc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=eUsyV0RhWXoP/2glEqa+ZP6p19xB6JAvy1UjOZn6/j5zNDjH5MqxS6ZYEChZmAjOi
+         8uedLg1VMSg89rvLAl5gUs09mZGczJH0F8fFf5756EpKhxB/h8BL61+8C1iWlUN7mi
+         XjAsV8uCkUK+RQWPSFr15LJQTHAmN+4/4DPVyrTdhkk0La7eoLrwDpcLc+WVBqxc68
+         ikQNT6X386RSqvmTm+lXasJDAa4PYKRVtzoqXlxM2cUj4w9z0wwSfzw2HkZDq/avee
+         gDRpdowHGXWBYjKRfwWaHZD6q6JPjG727vLpqIQiF+4z8X67+dcuCVySbCnWRJX77J
+         vrN4H/9xejtPg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sven Schnelle <svens@stackframe.org>, Helge Deller <deller@gmx.de>,
+        Sasha Levin <sashal@kernel.org>,
+        James.Bottomley@HansenPartnership.com, linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 46/47] parisc/unwind: fix unwinder when CONFIG_64BIT is enabled
+Date:   Mon,  8 Nov 2021 12:50:30 -0500
+Message-Id: <20211108175031.1190422-46-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211108175031.1190422-1-sashal@kernel.org>
+References: <20211108175031.1190422-1-sashal@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Content-Language: en-US
-To:     linux-parisc <linux-parisc@vger.kernel.org>
-Cc:     Helge Deller <deller@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-From:   John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH/RFC] parisc: Flush kernel data mapping in set_pte_at() when
- installing pte for user page
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-For years, there have been random segmentation faults in userspace on SMP PA-RISC machines.  It
-occurred to me that this might be a problem in set_pte_at().  MIPS and some other architectures
-do cache flushes when installing PTEs with the present bit set.
+From: Sven Schnelle <svens@stackframe.org>
 
-Here I have adapted the code in update_mmu_cache() to flush the kernel mapping when the kernel
-flush is deferred, or when the kernel mapping may alias with the user mapping.  This simplifies
-calls to update_mmu_cache().
+[ Upstream commit 8e0ba125c2bf1030af3267058019ba86da96863f ]
 
-I also changed the barrier in set_pte() from a compiler barrier to a full memory barrier.  I know
-this change is not sufficient to fix the problem.  It might not be needed.
+With 64 bit kernels unwind_special() is not working because
+it compares the pc to the address of the function descriptor.
+Add a helper function that compares pc with the dereferenced
+address. This fixes all of the backtraces on my c8000. Without
+this changes, a lot of backtraces are missing in kdb or the
+show-all-tasks command from /proc/sysrq-trigger.
 
-I have had a few days of operation with 5.14.16 to 5.15.1 and haven't seen any random segmentation
-faults on rp3440 or c8000 so far.
-
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
+ arch/parisc/kernel/unwind.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
-index 43937af127b1..9ea9872212cb 100644
---- a/arch/parisc/include/asm/pgtable.h
-+++ b/arch/parisc/include/asm/pgtable.h
-@@ -65,6 +65,8 @@ extern int pa_serialize_tlb_flushes;
-   * are slow on SMP machines since the purge must be broadcast to all CPUs.
-   */
-
-+extern void __update_cache(pte_t pte);
+diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
+index 2d14f17838d23..fa52c939e8a3b 100644
+--- a/arch/parisc/kernel/unwind.c
++++ b/arch/parisc/kernel/unwind.c
+@@ -21,6 +21,8 @@
+ #include <asm/ptrace.h>
+ 
+ #include <asm/unwind.h>
++#include <asm/switch_to.h>
++#include <asm/sections.h>
+ 
+ /* #define DEBUG 1 */
+ #ifdef DEBUG
+@@ -203,6 +205,11 @@ int __init unwind_init(void)
+ 	return 0;
+ }
+ 
++static bool pc_is_kernel_fn(unsigned long pc, void *fn)
++{
++	return (unsigned long)dereference_kernel_function_descriptor(fn) == pc;
++}
 +
-  static inline void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
-  {
-  	unsigned long flags;
-@@ -80,16 +82,19 @@ static inline void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
-   * within a page table are directly modified.  Thus, the following
-   * hook is made available.
-   */
--#define set_pte(pteptr, pteval)			\
--	do {					\
--		*(pteptr) = (pteval);		\
--		barrier();			\
-+#define set_pte(pteptr, pteval)				\
-+	do {						\
-+		*(pteptr) = (pteval);			\
-+		mb();					\
-  	} while(0)
+ static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int frame_size)
+ {
+ 	/*
+@@ -221,7 +228,7 @@ static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int
+ 	extern void * const _call_on_stack;
+ #endif /* CONFIG_IRQSTACKS */
+ 
+-	if (pc == (unsigned long) &handle_interruption) {
++	if (pc_is_kernel_fn(pc, handle_interruption)) {
+ 		struct pt_regs *regs = (struct pt_regs *)(info->sp - frame_size - PT_SZ_ALGN);
+ 		dbg("Unwinding through handle_interruption()\n");
+ 		info->prev_sp = regs->gr[30];
+@@ -229,13 +236,13 @@ static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int
+ 		return 1;
+ 	}
+ 
+-	if (pc == (unsigned long) &ret_from_kernel_thread ||
+-	    pc == (unsigned long) &syscall_exit) {
++	if (pc_is_kernel_fn(pc, ret_from_kernel_thread) ||
++	    pc_is_kernel_fn(pc, syscall_exit)) {
+ 		info->prev_sp = info->prev_ip = 0;
+ 		return 1;
+ 	}
+ 
+-	if (pc == (unsigned long) &intr_return) {
++	if (pc_is_kernel_fn(pc, intr_return)) {
+ 		struct pt_regs *regs;
+ 
+ 		dbg("Found intr_return()\n");
+@@ -246,20 +253,20 @@ static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int
+ 		return 1;
+ 	}
+ 
+-	if (pc == (unsigned long) &_switch_to_ret) {
++	if (pc_is_kernel_fn(pc, _switch_to) ||
++	    pc_is_kernel_fn(pc, _switch_to_ret)) {
+ 		info->prev_sp = info->sp - CALLEE_SAVE_FRAME_SIZE;
+ 		info->prev_ip = *(unsigned long *)(info->prev_sp - RP_OFFSET);
+ 		return 1;
+ 	}
+ 
+ #ifdef CONFIG_IRQSTACKS
+-	if (pc == (unsigned long) &_call_on_stack) {
++	if (pc_is_kernel_fn(pc, _call_on_stack)) {
+ 		info->prev_sp = *(unsigned long *)(info->sp - FRAME_SIZE - REG_SZ);
+ 		info->prev_ip = *(unsigned long *)(info->sp - FRAME_SIZE - RP_OFFSET);
+ 		return 1;
+ 	}
+ #endif
+-
+ 	return 0;
+ }
+ 
+-- 
+2.33.0
 
--#define set_pte_at(mm, addr, pteptr, pteval)	\
--	do {					\
--		*(pteptr) = (pteval);		\
--		purge_tlb_entries(mm, addr);	\
-+#define set_pte_at(mm, addr, pteptr, pteval)		\
-+	do {						\
-+		if (pte_present(pteval) &&		\
-+		    pte_user(pteval))			\
-+			__update_cache(pteval);		\
-+		*(pteptr) = (pteval);			\
-+		purge_tlb_entries(mm, addr);		\
-  	} while (0)
-
-  #endif /* !__ASSEMBLY__ */
-@@ -303,6 +308,7 @@ extern unsigned long *empty_zero_page;
-
-  #define pte_none(x)     (pte_val(x) == 0)
-  #define pte_present(x)	(pte_val(x) & _PAGE_PRESENT)
-+#define pte_user(x)	(pte_val(x) & _PAGE_USER)
-  #define pte_clear(mm, addr, xp)  set_pte_at(mm, addr, xp, __pte(0))
-
-  #define pmd_flag(x)	(pmd_val(x) & PxD_FLAG_MASK)
-@@ -410,7 +416,7 @@ extern void paging_init (void);
-
-  #define PG_dcache_dirty         PG_arch_1
-
--extern void update_mmu_cache(struct vm_area_struct *, unsigned long, pte_t *);
-+#define update_mmu_cache(vms,addr,ptep) __update_cache(*ptep)
-
-  /* Encode and de-code a swap entry */
-
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index 86a1a63563fd..c9f09d2a4461 100644
---- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -83,9 +83,9 @@ EXPORT_SYMBOL(flush_cache_all_local);
-  #define pfn_va(pfn)	__va(PFN_PHYS(pfn))
-
-  void
--update_mmu_cache(struct vm_area_struct *vma, unsigned long address, pte_t *ptep)
-+__update_cache(pte_t pte)
-  {
--	unsigned long pfn = pte_pfn(*ptep);
-+	unsigned long pfn = pte_pfn(pte);
-  	struct page *page;
-
-  	/* We don't have pte special.  As a result, we can be called with
