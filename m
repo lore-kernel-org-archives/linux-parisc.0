@@ -2,43 +2,43 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69299C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E95BC433FE
 	for <linux-parisc@archiver.kernel.org>; Tue,  9 Nov 2021 01:24:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 57590610A3
-	for <linux-parisc@archiver.kernel.org>; Tue,  9 Nov 2021 01:24:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E79EB610A3
+	for <linux-parisc@archiver.kernel.org>; Tue,  9 Nov 2021 01:24:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242268AbhKIB1X (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 8 Nov 2021 20:27:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49932 "EHLO mail.kernel.org"
+        id S241826AbhKIB1W (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 8 Nov 2021 20:27:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243296AbhKIBVF (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:21:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86A7061361;
-        Tue,  9 Nov 2021 01:08:05 +0000 (UTC)
+        id S243379AbhKIBPr (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:15:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A29376134F;
+        Tue,  9 Nov 2021 01:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636420086;
-        bh=mYGN1jchXqhP2XlrV8PgHBb3nJFQbw9yzoF3deh2WXc=;
+        s=k20201202; t=1636420000;
+        bh=0dlSy1l9ZmvEzgN8+wRVkVgBw3bcQQaIJQTdKQHEHqA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bhXd0NwwD9Hb00aX5ierlLz0n9zIE0MFSNsAWGTHzlznZAt06aLdmxRGWMhw9EbNH
-         8OxOCvzFZ/cgiAJn2oO7KZwgCqNZxClpqzu9MZqW3SLMX90fwj9tLPLpUxKbBuRoET
-         vZxa54bbs1LVZRCxDl+DXiGwImMBBv8LTeC4AJCgx7MFDIYVpDan9SMswqVkGTtdob
-         8Q3KobiwcljvQLpwwfkQexBPKwLsKRB0fZDGnnND6McnBCi8DIrkQECzDsZoNmeBWe
-         vSt6/gVkLk+hIp/UjrX1DUYodMpu8lgSxzsVk7umoUMj8LdNZXDtIfWlmyTFwdi9w9
-         L9Vwi+pT28bdQ==
+        b=DshPujdwV5gLIspYBqvTmjFYuBO/ymQvNGXhCtYjj/U85vIfUU8OwFmdqxrN6h7g9
+         e6H8/PF6N641rWjHNCrenQF7+aXuF4zsMKRkr+yiMUr6WMP4aNZGH9pRjAF2olqmK0
+         LkBg1o96CAtD75ZiqAiynuvkHRRzZVvfMvHUYL/9NqwI/ipKAMYdVjI7V7Hgaa9yk0
+         2UdRV7nn09vXLGYN4ZGMz2qDKBhpZV5yVROzfztbjDbsp9JEDuyqFisnv+WZV16W9N
+         HPQjTPv4nlm+Agcg6C57s+yxZngqKFoVdiuFm89OW0BIKvfARbTN+tOqGutz0CiUFM
+         N20sCxt1Qxgvg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Sven Schnelle <svens@stackframe.org>, Helge Deller <deller@gmx.de>,
         Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, mingo@kernel.org,
-        peterz@infradead.org, valentin.schneider@arm.com, ardb@kernel.org,
-        linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 39/39] parisc/kgdb: add kgdb_roundup() to make kgdb work with idle polling
-Date:   Mon,  8 Nov 2021 20:06:49 -0500
-Message-Id: <20211109010649.1191041-39-sashal@kernel.org>
+        James.Bottomley@HansenPartnership.com, wangkefeng.wang@huawei.com,
+        rmk+kernel@armlinux.org.uk, hanyihao@vivo.com, david@redhat.com,
+        willy@infradead.org, linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 44/47] parisc: fix warning in flush_tlb_all
+Date:   Mon,  8 Nov 2021 12:50:28 -0500
+Message-Id: <20211108175031.1190422-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109010649.1191041-1-sashal@kernel.org>
-References: <20211109010649.1191041-1-sashal@kernel.org>
+In-Reply-To: <20211108175031.1190422-1-sashal@kernel.org>
+References: <20211108175031.1190422-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -49,74 +49,64 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Sven Schnelle <svens@stackframe.org>
 
-[ Upstream commit 66e29fcda1824f0427966fbee2bd2c85bf362c82 ]
+[ Upstream commit 1030d681319b43869e0d5b568b9d0226652d1a6f ]
 
-With idle polling, IPIs are not sent when a CPU idle, but queued
-and run later from do_idle(). The default kgdb_call_nmi_hook()
-implementation gets the pointer to struct pt_regs from get_irq_reqs(),
-which doesn't work in that case because it was not called from the
-IPI interrupt handler. Fix it by defining our own kgdb_roundup()
-function which sents an IPI_ENTER_KGDB. When that IPI is received
-on the target CPU kgdb_nmicallback() is called.
+I've got the following splat after enabling preemption:
+
+[    3.724721] BUG: using __this_cpu_add() in preemptible [00000000] code: swapper/0/1
+[    3.734630] caller is __this_cpu_preempt_check+0x38/0x50
+[    3.740635] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc4-64bit+ #324
+[    3.744605] Hardware name: 9000/785/C8000
+[    3.744605] Backtrace:
+[    3.744605]  [<00000000401d9d58>] show_stack+0x74/0xb0
+[    3.744605]  [<0000000040c27bd4>] dump_stack_lvl+0x10c/0x188
+[    3.744605]  [<0000000040c27c84>] dump_stack+0x34/0x48
+[    3.744605]  [<0000000040c33438>] check_preemption_disabled+0x178/0x1b0
+[    3.744605]  [<0000000040c334f8>] __this_cpu_preempt_check+0x38/0x50
+[    3.744605]  [<00000000401d632c>] flush_tlb_all+0x58/0x2e0
+[    3.744605]  [<00000000401075c0>] 0x401075c0
+[    3.744605]  [<000000004010b8fc>] 0x4010b8fc
+[    3.744605]  [<00000000401080fc>] 0x401080fc
+[    3.744605]  [<00000000401d5224>] do_one_initcall+0x128/0x378
+[    3.744605]  [<0000000040102de8>] 0x40102de8
+[    3.744605]  [<0000000040c33864>] kernel_init+0x60/0x3a8
+[    3.744605]  [<00000000401d1020>] ret_from_kernel_thread+0x20/0x28
+[    3.744605]
+
+Fix this by moving the __inc_irq_stat() into the locked section.
 
 Signed-off-by: Sven Schnelle <svens@stackframe.org>
 Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/kernel/smp.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ arch/parisc/mm/init.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
-index ab4d5580bb02b..45e3aadcecd2f 100644
---- a/arch/parisc/kernel/smp.c
-+++ b/arch/parisc/kernel/smp.c
-@@ -32,6 +32,7 @@
- #include <linux/bitops.h>
- #include <linux/ftrace.h>
- #include <linux/cpu.h>
-+#include <linux/kgdb.h>
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 10a52664e29f0..038fcb6c76dc1 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -895,9 +895,9 @@ void flush_tlb_all(void)
+ {
+ 	int do_recycle;
  
- #include <linux/atomic.h>
- #include <asm/current.h>
-@@ -74,7 +75,10 @@ enum ipi_message_type {
- 	IPI_CALL_FUNC,
- 	IPI_CPU_START,
- 	IPI_CPU_STOP,
--	IPI_CPU_TEST
-+	IPI_CPU_TEST,
-+#ifdef CONFIG_KGDB
-+	IPI_ENTER_KGDB,
-+#endif
- };
- 
- 
-@@ -170,7 +174,12 @@ ipi_interrupt(int irq, void *dev_id)
- 			case IPI_CPU_TEST:
- 				smp_debug(100, KERN_DEBUG "CPU%d is alive!\n", this_cpu);
- 				break;
--
-+#ifdef CONFIG_KGDB
-+			case IPI_ENTER_KGDB:
-+				smp_debug(100, KERN_DEBUG "CPU%d ENTER_KGDB\n", this_cpu);
-+				kgdb_nmicallback(raw_smp_processor_id(), get_irq_regs());
-+				break;
-+#endif
- 			default:
- 				printk(KERN_CRIT "Unknown IPI num on CPU%d: %lu\n",
- 					this_cpu, which);
-@@ -226,6 +235,12 @@ send_IPI_allbutself(enum ipi_message_type op)
- 	}
- }
- 
-+#ifdef CONFIG_KGDB
-+void kgdb_roundup_cpus(void)
-+{
-+	send_IPI_allbutself(IPI_ENTER_KGDB);
-+}
-+#endif
- 
- inline void 
- smp_send_stop(void)	{ send_IPI_allbutself(IPI_CPU_STOP); }
+-	__inc_irq_stat(irq_tlb_count);
+ 	do_recycle = 0;
+ 	spin_lock(&sid_lock);
++	__inc_irq_stat(irq_tlb_count);
+ 	if (dirty_space_ids > RECYCLE_THRESHOLD) {
+ 	    BUG_ON(recycle_inuse);  /* FIXME: Use a semaphore/wait queue here */
+ 	    get_dirty_sids(&recycle_ndirty,recycle_dirty_array);
+@@ -916,8 +916,8 @@ void flush_tlb_all(void)
+ #else
+ void flush_tlb_all(void)
+ {
+-	__inc_irq_stat(irq_tlb_count);
+ 	spin_lock(&sid_lock);
++	__inc_irq_stat(irq_tlb_count);
+ 	flush_tlb_all_local(NULL);
+ 	recycle_sids();
+ 	spin_unlock(&sid_lock);
 -- 
 2.33.0
 
