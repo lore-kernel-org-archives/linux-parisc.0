@@ -2,43 +2,44 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E95BC433FE
-	for <linux-parisc@archiver.kernel.org>; Tue,  9 Nov 2021 01:24:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ED57C433F5
+	for <linux-parisc@archiver.kernel.org>; Tue,  9 Nov 2021 01:24:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E79EB610A3
-	for <linux-parisc@archiver.kernel.org>; Tue,  9 Nov 2021 01:24:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2C1E2610A3
+	for <linux-parisc@archiver.kernel.org>; Tue,  9 Nov 2021 01:24:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241826AbhKIB1W (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 8 Nov 2021 20:27:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40982 "EHLO mail.kernel.org"
+        id S243346AbhKIB1X (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 8 Nov 2021 20:27:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243379AbhKIBPr (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:15:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A29376134F;
-        Tue,  9 Nov 2021 01:06:39 +0000 (UTC)
+        id S243676AbhKIBXd (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 8 Nov 2021 20:23:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C91D461A6F;
+        Tue,  9 Nov 2021 01:09:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636420000;
-        bh=0dlSy1l9ZmvEzgN8+wRVkVgBw3bcQQaIJQTdKQHEHqA=;
+        s=k20201202; t=1636420154;
+        bh=QLo7X4veSQzcnt+X4EWgkfW/JZAOSB5JIo9fCs7GtxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DshPujdwV5gLIspYBqvTmjFYuBO/ymQvNGXhCtYjj/U85vIfUU8OwFmdqxrN6h7g9
-         e6H8/PF6N641rWjHNCrenQF7+aXuF4zsMKRkr+yiMUr6WMP4aNZGH9pRjAF2olqmK0
-         LkBg1o96CAtD75ZiqAiynuvkHRRzZVvfMvHUYL/9NqwI/ipKAMYdVjI7V7Hgaa9yk0
-         2UdRV7nn09vXLGYN4ZGMz2qDKBhpZV5yVROzfztbjDbsp9JEDuyqFisnv+WZV16W9N
-         HPQjTPv4nlm+Agcg6C57s+yxZngqKFoVdiuFm89OW0BIKvfARbTN+tOqGutz0CiUFM
-         N20sCxt1Qxgvg==
+        b=oV/uULXESomQgoi8fCV2tdErQ1Gc2eNvt1oHjoXOXS5Mk3hAR0adOw2dbhaOqwc8e
+         DBe6ANQGfVjqwN1pdwkH79+WFHmlVQGcJGNy6RUxNBnzctvaxanf/p1tXucv5zS0fq
+         3njNHxb5COl2GSwRM/+Fa//tgX/sS/f87FqXW85LZRfeBzbnU8/9TDegNgi6a7iBb6
+         1552XoowtXEn5vhZMmvcnxsg7R4tcAJtGFy03rz1JupGHAfJWDEvbtRdMxK0gouRJr
+         DLEjPDfPpfUxoNk3EJiHUoSkwyZ7aUseFa83rV9CDj29dP3egqXkUoULPVu9k5MJig
+         O4oKpctx6NAaA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Sven Schnelle <svens@stackframe.org>, Helge Deller <deller@gmx.de>,
         Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, wangkefeng.wang@huawei.com,
-        rmk+kernel@armlinux.org.uk, hanyihao@vivo.com, david@redhat.com,
-        willy@infradead.org, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 44/47] parisc: fix warning in flush_tlb_all
-Date:   Mon,  8 Nov 2021 12:50:28 -0500
-Message-Id: <20211108175031.1190422-44-sashal@kernel.org>
+        James.Bottomley@HansenPartnership.com, dave.hansen@linux.intel.com,
+        wangkefeng.wang@huawei.com, christophe.leroy@c-s.fr,
+        akpm@linux-foundation.org, hanyihao@vivo.com, willy@infradead.org,
+        linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 32/33] parisc: fix warning in flush_tlb_all
+Date:   Mon,  8 Nov 2021 20:08:06 -0500
+Message-Id: <20211109010807.1191567-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211108175031.1190422-1-sashal@kernel.org>
-References: <20211108175031.1190422-1-sashal@kernel.org>
+In-Reply-To: <20211109010807.1191567-1-sashal@kernel.org>
+References: <20211109010807.1191567-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -83,10 +84,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 10a52664e29f0..038fcb6c76dc1 100644
+index dbbe3932f833c..7bdc449615e85 100644
 --- a/arch/parisc/mm/init.c
 +++ b/arch/parisc/mm/init.c
-@@ -895,9 +895,9 @@ void flush_tlb_all(void)
+@@ -940,9 +940,9 @@ void flush_tlb_all(void)
  {
  	int do_recycle;
  
@@ -97,7 +98,7 @@ index 10a52664e29f0..038fcb6c76dc1 100644
  	if (dirty_space_ids > RECYCLE_THRESHOLD) {
  	    BUG_ON(recycle_inuse);  /* FIXME: Use a semaphore/wait queue here */
  	    get_dirty_sids(&recycle_ndirty,recycle_dirty_array);
-@@ -916,8 +916,8 @@ void flush_tlb_all(void)
+@@ -961,8 +961,8 @@ void flush_tlb_all(void)
  #else
  void flush_tlb_all(void)
  {
