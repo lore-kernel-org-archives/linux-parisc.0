@@ -2,88 +2,81 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65376C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9240CC433F5
 	for <linux-parisc@archiver.kernel.org>; Tue, 16 Nov 2021 12:40:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 34D6461B95
+	by mail.kernel.org (Postfix) with ESMTP id 6E7BF61B95
 	for <linux-parisc@archiver.kernel.org>; Tue, 16 Nov 2021 12:40:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236307AbhKPMnV (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        id S236242AbhKPMnV (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
         Tue, 16 Nov 2021 07:43:21 -0500
-Received: from mout.gmx.net ([212.227.15.19]:52189 "EHLO mout.gmx.net"
+Received: from mout.gmx.net ([212.227.15.18]:36753 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236242AbhKPMnS (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 16 Nov 2021 07:43:18 -0500
+        id S232312AbhKPMnR (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Tue, 16 Nov 2021 07:43:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
         s=badeba3b8450; t=1637066415;
-        bh=hGdjKiBG1Tx+R13mUJHlJY98twTbk5+FDTzZ2Ia0htw=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=XgESevNNqbStlqV0dTsoqbCicnzcLCeu4xxK1wI5w7auKfVnZWyPq49hYKydKPpGy
-         Zgf55nmW1h+oq+M2rhn3bf6FWMREc7E/QM7fWHj1q1rfD23Gc9nP1upuponzwZ/OD2
-         s2GrBxntkhVeV9XI5P+qgfK5qha/RWJACSMoNBkE=
+        bh=3yw44KaO9TaQT7zkUl+rpNqvGyWruQ+PZyaJRxQlB3I=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=EgybbxoWYNS+4sQL1hGThdWYCUEEJkhv8iMvQ0tN52ELF0jiaiem523vm95NYcfr9
+         /W+5qSudOcbew6IfaXUKOCNmAgzoSqNTI7dmLAo9vCjy9/tRdT56iERMSmLV2aVMjS
+         skuvjP+C/mUZD4uRVzsppTXPavjn+WUoDD204J8U=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from ls3530.fritz.box ([92.116.177.193]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfHEP-1mAcw14BdT-00gsys; Tue, 16
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MVNAr-1nDfJ21SX1-00SKkc; Tue, 16
  Nov 2021 13:40:15 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org
 Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH 1/4] parisc: Include stringify.h to avoid build error in crypto/api.c
-Date:   Tue, 16 Nov 2021 13:40:09 +0100
-Message-Id: <20211116124012.1380455-1-deller@gmx.de>
+Subject: [PATCH 3/4] parisc: Wire up futex_waitv
+Date:   Tue, 16 Nov 2021 13:40:11 +0100
+Message-Id: <20211116124012.1380455-3-deller@gmx.de>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211116124012.1380455-1-deller@gmx.de>
+References: <20211116124012.1380455-1-deller@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Rxg5V/e4zP3NVKMa7YpNzXtv1w6gqNZ0v+gExNeSMe9ZssFMeKx
- GapH9H3es0oVZnENoS31MNfgygwxbCth+jNJx+wSdorxp6+p63CgX8vbQqS4mcfMgvrklBl
- OpKzlX7oFACsuO0hW+8HYzaNM0zlT4PQFLmeAklkRB2evhizITblj26gXKvbsq934A43e2y
- l78kNbvjbrHGXO/LtIguA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Plv1lTVEfHw=:whHHsWHnF9APOZ8L+JKJTJ
- aEUjPFU6hfT+yKZi9HLKzhef8P8lOxyYaPblT3kY/vGbGR0r0IUjflAxFga7/ClGaPxK2iaNT
- FujC0NKX/8akHDS0w0lhmB6RU4WEFLehJpbQaAFOev4aMkncNBcbmzz02yOooZa0wkYd/r4QL
- /+xGR/o5Dwf1/Vw8kohp2srTLcnv3JXtn+UEOYMj4pPo2AyYuPFp3CFzF6h9dUFJimZgoa+Ic
- AjgBskNQwheZqbMjSSDjrr6EZMs2ViN7Q77vlMDGolYDysDBiVgKxO9pqf8/BdXbfd3f86msj
- 1uoLr03yLpdbDUX40r6/rh44YvalwShOfRB/M5nJqF3bpNdpFklhHunp4vclVoo+k3vkE1GCN
- diQMlgnrvr1xjYpIkcC8st23rg9AGEHC0vVWdBz5zzcMga9f6iSVar/4AHqRa/W+CgZgarHx0
- 5wR8D9kHhn5D9O2Q9K/D5zsAilXTq4htRxZxhF8p+tFZJ96Z2LCMB6jYcCi7cppIeHIaQT5un
- cQvEfwc6+9GpuHGA+CVtVrIHkkyKpL5jLPV6MpGT3j2OGZhgERJkdgQm/xCGuCCTpn4EqO6mS
- Qkcc5jCarm6pNYcy4Xic4me0GZ/VfTLp6wwNGF0DMq4OzBGS6Oi972t+gvmReZBcQH75SVVE9
- cNaBF6HkvP80titCRGlXjzIGvaD4lb9qZwpjrsa5ANVLTFRyF02fjE4CoaeBh+FOfH5C6xmYB
- suwKsxvqPgTwWgzaFOwD7S7YSbsvFCSGSORXL4mTDo3xcKZLNqYWIcEVHMoY8NBwp+1qEkRiK
- okqEH1pMzc+C0E7/dMOH9UhNuPLkJtyetDJ3ohLShjH8OhFE/qlb6tvqKHKoQ4onrVspX3OAg
- +Grqp8KCkmsdQ4gV0LJ/lKVo82S2MpEo4mT6Fh/jwCNzWcZ/2i8dm4NEszJ279ym+VOD82exA
- NeOxoNZH8tUAmZXQz2MxFp01QrisTxVbGqvQQ5tQR0i453XwNw60uoij0GAYqYbUHK3hgy1B0
- i4pzCcyXwn+FflwaxvzucYetcnXkIIFVpttIW9y8sSM1lv43gwC6SoUuM7JJjeXlYcVBuJR7m
- w3whCLVf/w0tNg=
+X-Provags-ID: V03:K1:M28Hxq1Ypu9qRTVVcF2TNiCnz3w2cnwvlah37zAUkOAkJOgiCR3
+ RLphMj0cuSqjrKL6edk2k6ztnbmHODYuMw0YdALnmgTQDK7dSeylxWhtRvXspYX27VkoGo7
+ iP3V+PMJFNN+6CGEZX877J1nVvyev4yoc0V9GMaeTmQx5VxnU7L6rVGdw0qJlzfEh0OefcX
+ s7IG2SXjvYpyZN+2+kbaA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Qs2ajeaahNA=:8jENSmbNfnJyYdeNEMg/Cu
+ lvia7aSZ8kfMhEsT2uWF7LNYNzsoEUG5g+Bh50IuBUl9nFWKlmB0vzUe9J6DNJF1TQKoP3Csw
+ aRm9Bns5p8jE2/2SSNMsiGD4SQQl/DOFAJ8LHkEDFGg4Mu7EwIPMHMAViyfxO+kll+Z3gC5v2
+ 6uQXBbbzfL3wUNbdn5NkzesVIQIJqJQiAv8cMy73IpkqdQTnnBbYmGkL8Ow61Elw7B7ESh2gn
+ Vd0YXn3mXrOEM8yLj6WpdRmt2ds1Vwy30wAUVOHswUQq17lB/jZG2L1b4RT2mP4JRCBgtnPPQ
+ GLM5+7vSPeY02vRb34DSz8n88G43nYQyshxHLTGtJL5HZ1JeY20SdjGUTFmVaV1dS+pQzqcuP
+ sM5V2bimdO+DRwLQ75K3VWN6hApbXTvFxB+JRXC27VKdAFcBGPu1cPjvZvGcZm8TpjCvQCxWm
+ 6BnIRLGyuPKZlAT7BPsyFMqY36kA8TZWPe+7/LYeWJUKN2l6z8O9jjdlzOeU0n1OZT5JpTyr8
+ Nb0y4P26y7k6X/SIrwfz0fzgnic4Wbgp/PyEHaK0hA9b2/9gLVfZT679vCwqdGEAqdGVUrpwJ
+ 0xn9ljlApVpdlEFBkAC889hBqu+ozH3aSIlDW9PSCbI0/RwE9AzsuXMADCqPbP12i0xNSQw6K
+ zVzQPl7tkJ7Tu/lI78/5DDIdgH3/xQmU4X5Wrl8UTOiUbXG25QduAvMTz4sfXlFD06cF3f3X2
+ kUQuibtrdvMhenHFIfJFVEhmFVhPZXCK+dE3bSb6ppqJQO1TDS9mxDR7GyingXbH/gtPOJhcG
+ 6karJ0tA9mjha1XwcxO2MvsfeEQtNig/eb/d41wX4sO7wOIbb81QWTvTTugj1fTcAIEdbuy7T
+ /hvS8zsuFyguUuu1hs9dC5CSK6HDtzG2DQu090Vd+tIRPoHFJj9XbMJ2cksgHL7G/DQ5JTwxE
+ +ac2+3EvivOK7kORqb3TL05w/xDEM+7tnREAJx/2N+90DULQyKSNAa1BAslUlO6KGnRMp4oRK
+ TucM7c93T/D7jw0O3ypC8+ahXy5qFahSLtS0jX1t2RgiIZRrbT7K9Qg6mH3dZHaIJj5U/bq85
+ 5H9aJOX+bPh33s=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Include <linux/stringify.h> to avoid this build error:
- arch/parisc/include/asm/jump_label.h: error: expected ':' before '__strin=
-gify'
- arch/parisc/include/asm/jump_label.h: error: label 'l_yes' defined but no=
-t used [-Werror=3Dunused-label]
-
 Signed-off-by: Helge Deller <deller@gmx.de>
 =2D--
- arch/parisc/include/asm/jump_label.h | 1 +
+ arch/parisc/kernel/syscalls/syscall.tbl | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/parisc/include/asm/jump_label.h b/arch/parisc/include/as=
-m/jump_label.h
-index 7efb1aa2f7f8..af2a598bc0f8 100644
-=2D-- a/arch/parisc/include/asm/jump_label.h
-+++ b/arch/parisc/include/asm/jump_label.h
-@@ -5,6 +5,7 @@
- #ifndef __ASSEMBLY__
-
- #include <linux/types.h>
-+#include <linux/stringify.h>
- #include <asm/assembly.h>
-
- #define JUMP_LABEL_NOP_SIZE 4
+diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/=
+syscalls/syscall.tbl
+index bf751e0732b7..358c00000755 100644
+=2D-- a/arch/parisc/kernel/syscalls/syscall.tbl
++++ b/arch/parisc/kernel/syscalls/syscall.tbl
+@@ -446,3 +446,4 @@
+ 446	common	landlock_restrict_self		sys_landlock_restrict_self
+ # 447 reserved for memfd_secret
+ 448	common	process_mrelease		sys_process_mrelease
++449	common	futex_waitv			sys_futex_waitv
 =2D-
 2.31.1
 
