@@ -2,164 +2,90 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F18CFC433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B02CCC4332F
 	for <linux-parisc@archiver.kernel.org>; Tue, 16 Nov 2021 12:40:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D990061B95
+	by mail.kernel.org (Postfix) with ESMTP id 9653161B95
 	for <linux-parisc@archiver.kernel.org>; Tue, 16 Nov 2021 12:40:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236153AbhKPMnW (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        id S232312AbhKPMnW (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
         Tue, 16 Nov 2021 07:43:22 -0500
-Received: from mout.gmx.net ([212.227.15.18]:41427 "EHLO mout.gmx.net"
+Received: from mout.gmx.net ([212.227.15.18]:60881 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236289AbhKPMnS (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        id S236153AbhKPMnS (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
         Tue, 16 Nov 2021 07:43:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
         s=badeba3b8450; t=1637066415;
-        bh=d9YgylWXktj6SbejvOJARECK5eu7WxLIAJIywJrpFt4=;
+        bh=C0bvVbS2Xyh0plvFiLgE7Tk7LbSkB+yti1MqhIioNQU=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=KRYR2NeHLVJdMN2fVcegpexgKfjt6X8LNHdAGQ7RP4AYqS5cwUvJTLFgD2ccKdjw0
-         KGEZhdPQD4QBZlQpuZ1/Ey33K/v8AYbjmCyUAAERRVxMY2jkIxebYwvDU8Tt8lJMbV
-         4A30CzqTpbudKIZxoW6RkJY3xCaOMTtdUPHXdAsQ=
+        b=Jdejy6E85gZn/quPVEgLWeCa6EzxXJY33X+budqqDqf1S/mF/CxQIkP81XfLpRaia
+         l5+OyEaxAppWgDaN0KftFLKE+ho7nReXiiozbyIwfDLdkoCEjbi7szIgl+pIZiHym6
+         0faiKBm3Cmgex2CG3d3LWptQrqcI1oIsBk89RGFg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from ls3530.fritz.box ([92.116.177.193]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MxUs7-1mSqZi2Bqb-00xrbI; Tue, 16
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MnJhO-1mNUIF0xNc-00jJRB; Tue, 16
  Nov 2021 13:40:15 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org
 Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH 4/4] parisc: Move assembler related defines below the __ASSEMBLY__ umbrella
-Date:   Tue, 16 Nov 2021 13:40:12 +0100
-Message-Id: <20211116124012.1380455-4-deller@gmx.de>
+Subject: [PATCH 2/4] parisc: Increase FRAME_WARN to 4096 on parisc
+Date:   Tue, 16 Nov 2021 13:40:10 +0100
+Message-Id: <20211116124012.1380455-2-deller@gmx.de>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211116124012.1380455-1-deller@gmx.de>
 References: <20211116124012.1380455-1-deller@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fYoDejxwgx+lmVcdAjNN929/dY622EIjhkNnEsCucBjE2XLvHON
- MgK9y3HjO0TCek+MuIR5S+ycZsJWy3Kv9tI6q0RpVm4pbZ1Doqudp2bV9fVTrbtAJwagf9o
- mPo+KEfREhx9LwPc5XHoBTaluw0V8TfdOarYFlXKV2hG7eAIiCPu4Klw4kFkenM+XoB6C8s
- bSufIvTQLbvPNAMkdfw2w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/dIlHfGS1Yc=:jZxEZOt4LqBbSLZKR3M8UA
- d2dkc4DpPe+N7serRB4RFeuxznKG7K6c3GPqHgKHsB8RsKKro/J5BLJmpqFxaUw766wWMtEZQ
- u+SeHzCSozHBRiVy2CxjIWZ1vCcxMegNYMzj8DhzILMqukZ7zt2KWLeAulqcvRWiAHLTNYfyv
- 4SNRRJjZp6Vg0ZTN9uIOZuWQ5QAn+bXcGWP6g4mvgemk7tQF4InwrITTJebg5FwvMVDIxgr7Q
- CB2/n8r7GCwIVIPBHEyULU0FQRL41NVeg/ARsvhfJdAaFV44GEVHyN2l2n+M+6rXv+z+VjNnC
- 3KMDUgJy0WPcpdEIEKf1Ja1eG4FhdHV0XbQn2N5Qoo8jcj+yCMQjtzJjwzLxrO8HLbxfzPPsE
- uYKQ1u51uiIbfvTbfbhwhIOrgP3/olWpDovvvRJrU573UyW9zrHVU+h9klknaaVOgvnXfSnpy
- LUucdL9i4hge8d+C2Wb8wyJd2SSskdjZY/xx93QlzkV2EU68Jtq3jakUflgN7W6D8QCejWlCu
- UitNnKZ3A/rAZXJGHj4OM5CR7BDtv6z2eGK8iSPtN1Q1zqg1tV6xwDuEB8yFhTnNTOTrIE4Sz
- sYeDkqpgpIOyMB0LQ8qE5/wqgZ+2FRfwaFfv30EbccXJzodxKjvj8OHgGAPfbe2Cx5tQVJvSu
- x5xWiFT28nKi+cR2g2XPOqPssRQOsXskNV4iyjrRoK43/Olu52x/xsLCaO/QuH41THPodhuld
- n1IUR9QDq1AFiWpFzeivu5tQv/qfs/yO4QQ/CbSeD3pBBpopPtzl45GuRX5EQoUx2Zc/yedez
- T4vd99uBKMJkbMpvqAo8MrFRkRT999BVZ6OwmxcJo7NqlvChgUe7Si7c0FTZTwaJp1LwpPlS7
- v9kLZyjhdXBcV0GyAkQCN5j0lkbEmSxqxcuE67OWImfuOLJSPIE/QJBMAjo6/0YvRRGqVux4m
- XADaqxIaEnWazUEvAKb8A2k9qdeGK4JsMvoWIoqg/cHrViUmWujsRd9+UQaZquodDe69vmPtc
- vyubEei0y3G+ShspMF5x2/gcy+VJaWcJ1QGICpyaUVBuMwB2NmvkuAblCQejKJOhsf5oorG8/
- h3ai07deTm12+U=
+X-Provags-ID: V03:K1:0VjQNE83kuTlkmshLhltHCttTR4C7j8L3y0wWdzQpAjo408X4Lw
+ htY2W37jbje86PAcWvCMaQx164XirmKcsYZOdVK0BFtpVKipH66yIRC5zBGQppJAW5HFds4
+ Fl8B+H98zwh2IAQW3b/TBIWCCAlxxFDPNEBBJcwtdQsjYphyZAnIESq6HFL6LPWK+eOUPSt
+ HUggjZjmaeuY/hVMZnyTA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RO3yDsNVZAU=:4RTcXVSCGnMremZnZVMlWs
+ hugxVxfNPM5gAG9SQQf5GyxGHlkG40Q6tT9nY2URHRuohQXb7WYejmCVTVdPrDXlSHYW80SLB
+ nSGfNNujFYyOGZyWHzaTGdj78mmSHBzEFC9s2P/Wu6GeE35fFH9ZVdZHFkzfCRlYlxwkVAmBU
+ 55H5svg6M/njjFYCjrLyMMCIm8PmS54HTuh7rn6Jpr3pKCx1oMaXbr8PixttKL4i2t88uB13S
+ jpRrk0S4S0UZ955QyAVfGkX4lbfavy3BNL/pGG31/9KNETFnY0TX/v2mv/hsvt8kvJPYq1l2r
+ XfQw16F0IkTkPVS2WfJoT/WXFgnEtjcxJ5mAMoVOEO8KWgz7o29aaB6Gm9wwrPtXcnLmXZJs+
+ i4QPKEyGsPLNRq9VWpsw7PGQ2kMeWhPYq9wvdPzVtmLOvnAfPa7y8L5Tz7FekNYTuGE8oRtv+
+ +09Uc8uOUSAVROCHc0R1sUYQXRPtlGBIjCE3hqA32d1KBr6XWVLgTjzJuaFaICDCg+YHo0amV
+ BGU55W1/hD92xrE/0W5hV4r7Vv6lPP19FvewOqR53kKECx7zKxE34+NPAw+LthoyahoPv0EyD
+ +ETi8AjsV5h3jM51Y7hpcRa949D2HFmYgYRoEMfOCiWkxOP72VPyb33ZcTXU+2xTAOAIYK290
+ GrPqGwX0B82IjOYYsaSG48ltJpqGCSLBPFA6qEQ+i5Gxn73ycVvvE7HXeKY5wMZjfqe2qJn5i
+ jNCxYPoPxTeTb2Oqi/1aox+yZ24kmCXTFJosfWAYwBDQZFRGZc69/SfDOd99Ie6/oe2Jges5p
+ 3+b63eOs7nrMMRv4Yb3YBTBKW37j16XmkBMYwzunsf3PrgYp/mhFOvaM8sdi7TwhzrhxauK2F
+ oe7HA1TZBHWJYa6Ozeo2hsJE7k/5SSduyGI0UDxdvlaf6fiSgq9SvBKF9PomM5WFwOUlLsiZ9
+ /bQtrJQO1iF4kjZiVeJ/09/ExEUduBLEXcNfVuoOK6tDLXuJWN15uqwvpdmZRY5xizu0gcnnT
+ XhnYNxmMKvL5LGo+Y39NtcAc38gCNbk33H/QpLzOXsPDwvI0CAVrHa/QQHcJiMBNVcf3UvDOP
+ hBqjnAtpDPf/GU=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Building allmodconfig generates some errors in the gpu/drm/msm
-(MSM/snapdragon) drivers, because there a conflicting COND() define is
-used as well. Although those drivers aren't relevant for parisc, they
-are nevertheless compiled when CONFIG_COMPILE_TEST is defined.
-
-The parisc COND() define is only used for assembly statements. So we can
-simply move it including the other mnemonics inside the #ifdef
-__ASSEMBLY__ part to avoid this conflict.
+PA-RISC uses a much bigger frame size for functions than other
+architectures. So increase it to 4096 to silence lots of warnings.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 =2D--
- arch/parisc/include/asm/assembly.h | 44 ++++++++++++++++--------------
- 1 file changed, 24 insertions(+), 20 deletions(-)
+ lib/Kconfig.debug | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/parisc/include/asm/assembly.h b/arch/parisc/include/asm/=
-assembly.h
-index 7085df079702..39e7985086f9 100644
-=2D-- a/arch/parisc/include/asm/assembly.h
-+++ b/arch/parisc/include/asm/assembly.h
-@@ -3,38 +3,19 @@
-  * Copyright (C) 1999 Hewlett-Packard (Frank Rowand)
-  * Copyright (C) 1999 Philipp Rumpf <prumpf@tux.org>
-  * Copyright (C) 1999 SuSE GmbH
-+ * Copyright (C) 2021 Helge Deller <deller@gmx.de>
-  */
-
- #ifndef _PARISC_ASSEMBLY_H
- #define _PARISC_ASSEMBLY_H
-
--#define CALLEE_FLOAT_FRAME_SIZE	80
--
- #ifdef CONFIG_64BIT
--#define LDREG	ldd
--#define STREG	std
--#define LDREGX  ldd,s
--#define LDREGM	ldd,mb
--#define STREGM	std,ma
--#define SHRREG	shrd
--#define SHLREG	shld
--#define ANDCM   andcm,*
--#define	COND(x)	* ## x
- #define RP_OFFSET	16
- #define FRAME_SIZE	128
- #define CALLEE_REG_FRAME_SIZE	144
- #define REG_SZ		8
- #define ASM_ULONG_INSN	.dword
- #else	/* CONFIG_64BIT */
--#define LDREG	ldw
--#define STREG	stw
--#define LDREGX  ldwx,s
--#define LDREGM	ldwm
--#define STREGM	stwm
--#define SHRREG	shr
--#define SHLREG	shlw
--#define ANDCM   andcm
--#define COND(x)	x
- #define RP_OFFSET	20
- #define FRAME_SIZE	64
- #define CALLEE_REG_FRAME_SIZE	128
-@@ -45,6 +26,7 @@
- /* Frame alignment for 32- and 64-bit */
- #define FRAME_ALIGN     64
-
-+#define CALLEE_FLOAT_FRAME_SIZE	80
- #define CALLEE_SAVE_FRAME_SIZE (CALLEE_REG_FRAME_SIZE + CALLEE_FLOAT_FRAM=
-E_SIZE)
-
- #ifdef CONFIG_PA20
-@@ -67,6 +49,28 @@
-
- #ifdef __ASSEMBLY__
-
-+#ifdef CONFIG_64BIT
-+#define LDREG	ldd
-+#define STREG	std
-+#define LDREGX  ldd,s
-+#define LDREGM	ldd,mb
-+#define STREGM	std,ma
-+#define SHRREG	shrd
-+#define SHLREG	shld
-+#define ANDCM   andcm,*
-+#define	COND(x)	* ## x
-+#else	/* CONFIG_64BIT */
-+#define LDREG	ldw
-+#define STREG	stw
-+#define LDREGX  ldwx,s
-+#define LDREGM	ldwm
-+#define STREGM	stwm
-+#define SHRREG	shr
-+#define SHLREG	shlw
-+#define ANDCM   andcm
-+#define COND(x)	x
-+#endif
-+
- #ifdef CONFIG_64BIT
- /* the 64-bit pa gnu assembler unfortunately defaults to .level 1.1 or 2.=
-0 so
-  * work around that for now... */
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 9ef7ce18b4f5..4fd34095c369 100644
+=2D-- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -346,8 +346,9 @@ config FRAME_WARN
+ 	int "Warn for stack frames larger than"
+ 	range 0 8192
+ 	default 2048 if GCC_PLUGIN_LATENT_ENTROPY
+-	default 1536 if (!64BIT && (PARISC || XTENSA))
+-	default 1024 if (!64BIT && !PARISC)
++	default 4096 if PARISC
++	default 1536 if (!64BIT && XTENSA)
++	default 1024 if !64BIT
+ 	default 2048 if 64BIT
+ 	help
+ 	  Tell gcc to warn at build time for stack frames larger than this.
 =2D-
 2.31.1
 
