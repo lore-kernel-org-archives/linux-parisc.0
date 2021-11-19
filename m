@@ -2,100 +2,89 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B779C4332F
-	for <linux-parisc@archiver.kernel.org>; Fri, 19 Nov 2021 22:21:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3431BC433F5
+	for <linux-parisc@archiver.kernel.org>; Fri, 19 Nov 2021 22:21:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235417AbhKSWY1 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 19 Nov 2021 17:24:27 -0500
-Received: from mout.gmx.net ([212.227.15.18]:51763 "EHLO mout.gmx.net"
+        id S235436AbhKSWYa (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 19 Nov 2021 17:24:30 -0500
+Received: from mout.gmx.net ([212.227.15.19]:60291 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235428AbhKSWY0 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:24:26 -0500
+        id S235428AbhKSWY3 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 19 Nov 2021 17:24:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
         s=badeba3b8450; t=1637360478;
-        bh=z4vCpjE4uf7m8UTDC8XDUV/zO0UaFbGiapgwKYsaC+g=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=cRcpT2VwFTp3Feqj0UfTlSNrKaWaqc/HHRKSU0sOJMkdJG7ofmrbqei/LovFV/nSY
-         1NihN/7GPOEo0dg2GpfDYMndRarRAYacBQ72DZkyNComtZy3QJ0+psH3RZFN4aawIX
-         oAi4B9IfEEKG33pjuRkYX2Tqfc4Nx1bJTz6e0tA4=
+        bh=llAtR64OETgb0vamulGtcDWWg5v/pvXovRyFNUkwX9o=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=Zhj95S4vfLgj/+ORjUTinRaFfdd2nOKc9Ya5uQymFlxsgPlSDgMpi7qv3gUKA5cf1
+         6ugM1r7b5QNSjkwWW9lMnoRKFRMR7aVcfI4cGi2ipcoJs3JzGOsZqmFb0JEITu8dsp
+         vskR27nMlumWZ//4UWNsjFNIc4w8qc3iRwyu1vRg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from ls3530.fritz.box ([92.116.164.19]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MGhuK-1mt7wS0ql0-00DqJA; Fri, 19
- Nov 2021 23:21:18 +0100
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MbAcs-1mCwh33WwK-00bdkU; Fri, 19
+ Nov 2021 23:21:17 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org
 Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>,
-        Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH 3/4] parisc: Fix extraction of hash lock bits in syscall.S
-Date:   Fri, 19 Nov 2021 23:20:41 +0100
-Message-Id: <20211119222042.361671-3-deller@gmx.de>
+        Sven Schnelle <svens@stackframe.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 1/4] parisc: Increase FRAME_WARN to 4096 bytes on parisc
+Date:   Fri, 19 Nov 2021 23:20:39 +0100
+Message-Id: <20211119222042.361671-1-deller@gmx.de>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211119222042.361671-1-deller@gmx.de>
-References: <20211119222042.361671-1-deller@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sQ1aQHh/oGf1gn2Vb4Qew5TJU7tRlb9w+o94BROmQpTqeSujowD
- ZhhgtOoqN4uxJ0HD+vKJ+MGt1t/JPJJQjF3y9HJIws/TD2gbY1O7uByuRHwSbmaynx0cNeC
- +4hK5b2VsV6ONPYhEYn8S6PPQlxDMSoSIZIoE+PnH+aqavrCViFLEWQg4Nb7ldK1JudZnoC
- 3koWTd4V7f3vT8IotsDow==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1GQ3Vfk6Qiw=:oA0rhGozVjnt6cV0UNEbpN
- OvXJbfgbQREf/Zj6u3gcgIjdvGV15pSRHT0mo4az/Vuv/kiUgIdyRP/kg2wOnkHTUfLadVr/K
- tzzAcu/72EjopKosF6KZZNvGM/nrdV/ej3dIHrNIpfx1iv8cyh1yPVtDW+20iv4HtYO/Dddum
- 2XgLa0S1T/ZnpbP5VRxvfO4FOASUpnw8M7R+jyjsYmMnunbJeobkT0gfZSHjsQxbh8/vwRtAJ
- 8M6D1pgNMhABvKZXh1nwfs9ccYpIh6f4Zmrb7YkLUeViZg+8q45r7YwRgUDhJaYkYDA6xcyN3
- 217KClbwFQi/lgqoYtultt/PWliV2VlOddZZ7CAtjJoP8l2LgKRgNidKZgpDOoC+uSHBUsbDB
- vbFyn2UT4axFQUy3/xGSIBjY9lty0uRoH7InN0K8toPflX8abhBSBW98p027r2mNHVSURanGe
- UliaM5YbJ914u3CaZMchEVFXP8RYskrAIKBI6MUJQinXC0vJy2oUBePWeJTm1kRQzj0NicLRP
- ADq+vxVFlism7huWlLo8xkUjsyvLl7J2grscqWh00yZZLWFuWBgyRAcCf9uOlHg5C4JnehB4r
- KzGzpceHt4MOpW8gFzWfxegKM1UUttBrQdUBiube5yW41T1qIUu7qzbKtjbZEGhPPpkf0HqYX
- un0MdqMgCq+mOLusgyNSlh9DVesZ4S22+Sqy1GLok5nM0ryI+fosIQdpJbPHNIXfNIbOqoncd
- 2qbq2pJbDonEACA0D2x26M7aTT1yMZEE7MEx0N50F0tPM+USfXSxfBsKWcNOrmV0nABaaaCCS
- oVvl7J6YRAhC0yO+ecSCvBuutqwQ0mJBPZ19SzV9x0lA6/DH5IVOYYjbPlEyFUsg9NT8LRwi9
- KBrPWI6RdvHFAfZhIOTcTQTmAQ59hlgM/EGclfXcTGfIMa4wYOh0MpFEE0YH3GAjW8kaAMwTi
- 5ZVMfTFAWnMKor8bEP8xVl1GF4D97DuMens7ooR7HwIJAzGlosKlXOgkS+C6EIRczSengIdXq
- btI8c83BmIJOcEjd4W6aUplb9PqfZOT2lAMfO+d0CGgcM+AxMvhP+J3eMWealFiYfaTpPgKU6
- KcKwD1XrZAOMvA=
+X-Provags-ID: V03:K1:mw5bWapNjToicdK7khij0D7EIGLYU5bHnIhM38X/8L5w1c6j6Xf
+ 5M5B3wNLfF4c+JR8QRYS0wcbkwKQCvDW+70Q/OSs2g2dr+9a2JtIXRDyqTijuW40J8p4QrF
+ L+j3GSC/XzpIoRY1o3kPp+R+i3WS+ACbnrGRCz/9HvfVusNzSqk7bOjotfNouEZcyfeKSxx
+ qy1qLnfI0jzpzNz8mNQ/w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8aiID7a2Tlg=:EOw7QFAAGx5DzD/y2GXfyp
+ 4V6pvggUHNRPCvOeOZWHvAS55Z5mt5dirNebSzcRImYlWOVsnlYNbJFyX00qG2CENNTYDCIj+
+ dOpAdrNUA9+jTpjc0lqI1pU6EuV2v/Gb9onqsK4Rvf1Ops/t+KnzYG6sPPz+96CayQwhS0RpG
+ tAylwNGJ2vEbW/kxWOyX9qMRgEMwuOCKnyI2gsRD7wWQCOfobc1IdVk8ldRMOWD2f3cxtx0gh
+ 1wr/oBj1nhL0pgB9/Nga5iLiUdPRz6QeuYmLO2T/wpeyV2oa7zpv/Olvf1x/ZLCUaRzOsHJpU
+ 4ocUmUZYfELn/4/SH6wfPCluS5bDw8vxPoXda3hJ5FL8gZNNh3WwpDI8X29XRhB4mvHJQ8DmZ
+ tdwkMA7HWz5jg/PvgtpSjLwwVLAVcbLI6kMkp0DrDAtUlbzDk5wVmQX4LP7ZK9yT9QJ+eJnRe
+ 7rlLFyE537kyD3Hdj9RgV/jXyM51wm62Exj5rPxieRJsuq5W7+QdBnJ5X9Gxc6weBZIkPOMiX
+ E3ZC/mnZA6drLXcGt252fQ9WoXr4DiBkahWAM7D4NvGwgSD0XfiXAOrr6ghf4NyYdQ+EOOZZE
+ SGRdAwEBUbVx9c9T5yy/x/dvFuUbOazOxtVIApq5U0RXqjZcXIkkQ6vu5Lc+9/v6zhHSfeD+5
+ pNNVtdu3+e8uU6vMGeKHS7HtCESyfkQFTV7PCTUCWH3cfUXziFypO/lbZ2Ja2vNiZGqtw2YXC
+ r8moUAjzJtZznvj9kYI8zOQQ6ANcAvPO1cQolvuHdJI+M+Q/BJo/OozER/k8ppzo1EkW+iBcr
+ 6pQxlZQoExcDtbYHIQUy0XYMMzySyaYnCtGBxkyB8okLzp2f2SPvGPAlw4/dMSZQw3snbeknJ
+ pod93jX17F0SrxgvRPqOkMR/AInOD08eFGD3xZ4yFTm1VQ2KthAXBRuMK1yNesmH6BrtKE9Hk
+ 0fidz+8UeY8pIW6x2nWKKh742HIo89BwgiviPWrKpFveA79STvS4I3KeP7PskuKoA+bp1P55P
+ 7TJUpTOiSSD35itX77DlJgBIHwKChqkVbjo25doWAV9TMGPsQgsbXrLIlEy+CfAtex0S12uXU
+ cuMCj5YgcjHle0=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: John David Anglin <dave.anglin@bell.net>
+PA-RISC uses a much bigger frame size for functions than other
+architectures. So increase it to 2048 for 32- and 64-bit kernels.
+This fixes e.g. a warning in lib/xxhash.c.
 
-The extru instruction leaves the most significant 32 bits of the target
-register in an undefined state on PA 2.0 systems. If any of these bits
-are nonzero, this will break the calculation of the lock pointer.
-
-Fix by using extrd,u instruction via extru_safe macro on 64-bit kernels.
-
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Helge Deller <deller@gmx.de>
 =2D--
- arch/parisc/kernel/syscall.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ lib/Kconfig.debug | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
-index 4fb3b6a993bf..d2497b339d13 100644
-=2D-- a/arch/parisc/kernel/syscall.S
-+++ b/arch/parisc/kernel/syscall.S
-@@ -566,7 +566,7 @@ lws_compare_and_swap:
- 	ldo	R%lws_lock_start(%r20), %r28
-
- 	/* Extract eight bits from r26 and hash lock (Bits 3-11) */
--	extru  %r26, 28, 8, %r20
-+	extru_safe  %r26, 28, 8, %r20
-
- 	/* Find lock to use, the hash is either one of 0 to
- 	   15, multiplied by 16 (keep it 16-byte aligned)
-@@ -751,7 +751,7 @@ cas2_lock_start:
- 	ldo	R%lws_lock_start(%r20), %r28
-
- 	/* Extract eight bits from r26 and hash lock (Bits 3-11) */
--	extru  %r26, 28, 8, %r20
-+	extru_safe  %r26, 28, 8, %r20
-
- 	/* Find lock to use, the hash is either one of 0 to
- 	   15, multiplied by 16 (keep it 16-byte aligned)
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 9ef7ce18b4f5..5c12bde10996 100644
+=2D-- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -346,8 +346,9 @@ config FRAME_WARN
+ 	int "Warn for stack frames larger than"
+ 	range 0 8192
+ 	default 2048 if GCC_PLUGIN_LATENT_ENTROPY
+-	default 1536 if (!64BIT && (PARISC || XTENSA))
+-	default 1024 if (!64BIT && !PARISC)
++	default 2048 if PARISC
++	default 1536 if (!64BIT && XTENSA)
++	default 1024 if !64BIT
+ 	default 2048 if 64BIT
+ 	help
+ 	  Tell gcc to warn at build time for stack frames larger than this.
 =2D-
 2.31.1
 
