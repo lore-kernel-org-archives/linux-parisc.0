@@ -2,89 +2,59 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3431BC433F5
-	for <linux-parisc@archiver.kernel.org>; Fri, 19 Nov 2021 22:21:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C9B3C433EF
+	for <linux-parisc@archiver.kernel.org>; Fri, 19 Nov 2021 22:29:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235436AbhKSWYa (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 19 Nov 2021 17:24:30 -0500
-Received: from mout.gmx.net ([212.227.15.19]:60291 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235428AbhKSWY3 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:24:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637360478;
-        bh=llAtR64OETgb0vamulGtcDWWg5v/pvXovRyFNUkwX9o=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=Zhj95S4vfLgj/+ORjUTinRaFfdd2nOKc9Ya5uQymFlxsgPlSDgMpi7qv3gUKA5cf1
-         6ugM1r7b5QNSjkwWW9lMnoRKFRMR7aVcfI4cGi2ipcoJs3JzGOsZqmFb0JEITu8dsp
-         vskR27nMlumWZ//4UWNsjFNIc4w8qc3iRwyu1vRg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.fritz.box ([92.116.164.19]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MbAcs-1mCwh33WwK-00bdkU; Fri, 19
- Nov 2021 23:21:17 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org
+        id S231799AbhKSWcS (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 19 Nov 2021 17:32:18 -0500
+Received: from mta-tor-002.bell.net ([209.71.212.29]:39504 "EHLO
+        cmx-torrgo002.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230392AbhKSWcR (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 19 Nov 2021 17:32:17 -0500
+X-RG-CM-BuS: 0
+X-RG-CM-SC: 0
+X-RG-CM: Clean
+X-Originating-IP: [67.71.8.137]
+X-RG-Env-Sender: dave.anglin@bell.net
+X-RG-Rigid: 61976487000BFB62
+X-CM-Envelope: MS4xfNMfBse6HPxRsw7wJyiS7be17ptV+WdKiu8PrNz4lZWkeKKBeSJR6aC15MeOF47Ln8Nm+cdxuTXdoTNo/LPUFgY0O4hkbT9nodcgurZXw+LqUQ5ocPZz
+ IPZqM1qpp8xvpLcWouCCH9OSGL3s3SSNpZNih66JxweZPfZMURoYp7IVWLHMwIDPqO54N2F64bqYfCt1jj2xBrVNjpKm+rQfEmNQ/2Qe/T+AdIyvdMeGhGjz
+ n/CbxVnUDpVWNU+x5zu/NMFlF7+QzDhINLJIgBEVSDJKES9Y9yDkpwuAcbvnAwpmQ8LXKnnKRFkv92LNoPh3Jtv90osOjMV3kv7qAWwpCS+oFpWg6GV5FayB
+ 7AdUCI+/p3BTkngK+g/XKpjIdmolgg==
+X-CM-Analysis: v=2.4 cv=W7Vb6Tak c=1 sm=1 tr=0 ts=6198253a
+ a=jrdA9tB8yuRqUzQ1EpSZjA==:117 a=jrdA9tB8yuRqUzQ1EpSZjA==:17
+ a=IkcTkHD0fZMA:10 a=FBHGMhGWAAAA:8 a=jaAiz0gFaRuETUzI4n8A:9 a=QEXdDO2ut3YA:10
+ a=ATlVsGG5QSsA:10 a=9gvnlMMaQFpL9xblJ6ne:22
+Received: from [192.168.2.49] (67.71.8.137) by cmx-torrgo002.bell.net (5.8.716.03) (authenticated as dave.anglin@bell.net)
+        id 61976487000BFB62; Fri, 19 Nov 2021 17:29:14 -0500
+Message-ID: <093e8bd8-73ab-b33f-8488-00080e3a040c@bell.net>
+Date:   Fri, 19 Nov 2021 17:29:15 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH 1/4] parisc: Increase FRAME_WARN to 4096 bytes on parisc
+Content-Language: en-US
+To:     Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
 Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
         Sven Schnelle <svens@stackframe.org>,
         kernel test robot <lkp@intel.com>
-Subject: [PATCH 1/4] parisc: Increase FRAME_WARN to 4096 bytes on parisc
-Date:   Fri, 19 Nov 2021 23:20:39 +0100
-Message-Id: <20211119222042.361671-1-deller@gmx.de>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mw5bWapNjToicdK7khij0D7EIGLYU5bHnIhM38X/8L5w1c6j6Xf
- 5M5B3wNLfF4c+JR8QRYS0wcbkwKQCvDW+70Q/OSs2g2dr+9a2JtIXRDyqTijuW40J8p4QrF
- L+j3GSC/XzpIoRY1o3kPp+R+i3WS+ACbnrGRCz/9HvfVusNzSqk7bOjotfNouEZcyfeKSxx
- qy1qLnfI0jzpzNz8mNQ/w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8aiID7a2Tlg=:EOw7QFAAGx5DzD/y2GXfyp
- 4V6pvggUHNRPCvOeOZWHvAS55Z5mt5dirNebSzcRImYlWOVsnlYNbJFyX00qG2CENNTYDCIj+
- dOpAdrNUA9+jTpjc0lqI1pU6EuV2v/Gb9onqsK4Rvf1Ops/t+KnzYG6sPPz+96CayQwhS0RpG
- tAylwNGJ2vEbW/kxWOyX9qMRgEMwuOCKnyI2gsRD7wWQCOfobc1IdVk8ldRMOWD2f3cxtx0gh
- 1wr/oBj1nhL0pgB9/Nga5iLiUdPRz6QeuYmLO2T/wpeyV2oa7zpv/Olvf1x/ZLCUaRzOsHJpU
- 4ocUmUZYfELn/4/SH6wfPCluS5bDw8vxPoXda3hJ5FL8gZNNh3WwpDI8X29XRhB4mvHJQ8DmZ
- tdwkMA7HWz5jg/PvgtpSjLwwVLAVcbLI6kMkp0DrDAtUlbzDk5wVmQX4LP7ZK9yT9QJ+eJnRe
- 7rlLFyE537kyD3Hdj9RgV/jXyM51wm62Exj5rPxieRJsuq5W7+QdBnJ5X9Gxc6weBZIkPOMiX
- E3ZC/mnZA6drLXcGt252fQ9WoXr4DiBkahWAM7D4NvGwgSD0XfiXAOrr6ghf4NyYdQ+EOOZZE
- SGRdAwEBUbVx9c9T5yy/x/dvFuUbOazOxtVIApq5U0RXqjZcXIkkQ6vu5Lc+9/v6zhHSfeD+5
- pNNVtdu3+e8uU6vMGeKHS7HtCESyfkQFTV7PCTUCWH3cfUXziFypO/lbZ2Ja2vNiZGqtw2YXC
- r8moUAjzJtZznvj9kYI8zOQQ6ANcAvPO1cQolvuHdJI+M+Q/BJo/OozER/k8ppzo1EkW+iBcr
- 6pQxlZQoExcDtbYHIQUy0XYMMzySyaYnCtGBxkyB8okLzp2f2SPvGPAlw4/dMSZQw3snbeknJ
- pod93jX17F0SrxgvRPqOkMR/AInOD08eFGD3xZ4yFTm1VQ2KthAXBRuMK1yNesmH6BrtKE9Hk
- 0fidz+8UeY8pIW6x2nWKKh742HIo89BwgiviPWrKpFveA79STvS4I3KeP7PskuKoA+bp1P55P
- 7TJUpTOiSSD35itX77DlJgBIHwKChqkVbjo25doWAV9TMGPsQgsbXrLIlEy+CfAtex0S12uXU
- cuMCj5YgcjHle0=
+References: <20211119222042.361671-1-deller@gmx.de>
+From:   John David Anglin <dave.anglin@bell.net>
+In-Reply-To: <20211119222042.361671-1-deller@gmx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-PA-RISC uses a much bigger frame size for functions than other
-architectures. So increase it to 2048 for 32- and 64-bit kernels.
-This fixes e.g. a warning in lib/xxhash.c.
+On 2021-11-19 5:20 p.m., Helge Deller wrote:
+> PA-RISC uses a much bigger frame size for functions than other
+> architectures. So increase it to 2048 for 32- and 64-bit kernels.
+The title says 4096.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Helge Deller <deller@gmx.de>
-=2D--
- lib/Kconfig.debug | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Dave
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 9ef7ce18b4f5..5c12bde10996 100644
-=2D-- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -346,8 +346,9 @@ config FRAME_WARN
- 	int "Warn for stack frames larger than"
- 	range 0 8192
- 	default 2048 if GCC_PLUGIN_LATENT_ENTROPY
--	default 1536 if (!64BIT && (PARISC || XTENSA))
--	default 1024 if (!64BIT && !PARISC)
-+	default 2048 if PARISC
-+	default 1536 if (!64BIT && XTENSA)
-+	default 1024 if !64BIT
- 	default 2048 if 64BIT
- 	help
- 	  Tell gcc to warn at build time for stack frames larger than this.
-=2D-
-2.31.1
+-- 
+John David Anglin  dave.anglin@bell.net
 
