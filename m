@@ -2,76 +2,111 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63EE8C433EF
-	for <linux-parisc@archiver.kernel.org>; Fri, 19 Nov 2021 22:47:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6B62C433EF
+	for <linux-parisc@archiver.kernel.org>; Sun, 21 Nov 2021 11:04:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbhKSWuR (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 19 Nov 2021 17:50:17 -0500
-Received: from mout.gmx.net ([212.227.15.19]:48909 "EHLO mout.gmx.net"
+        id S237885AbhKULHv (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 21 Nov 2021 06:07:51 -0500
+Received: from mout.gmx.net ([212.227.17.21]:55443 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231313AbhKSWuR (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:50:17 -0500
+        id S237210AbhKULHv (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Sun, 21 Nov 2021 06:07:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637362022;
-        bh=tE9wlTHC9y2sFeyCyCen3hjuq2uZCJ5nNpbGwJ0EMMw=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=UAc/rf3JrPeJZrGAZGxcaoSoZjGDFMscycXBKS84sBg71gDXdGTJtubDMBZx+KGgP
-         bRVpKoj+TJ4ykAsBNHZUO/irKyQJ3HvBUAx6PByjZlspEqBIZi2+c506x6rbOvouZq
-         hcZCJpDi1RKauHN/1ZkJHT9WoeN4OdxoY4jFPpk8=
+        s=badeba3b8450; t=1637492678;
+        bh=4TSKH+lg8DQNCBGo/nEZ80OS7/aoL+DWtSY9x50H1rY=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=OGQz6rKtRfiuKnJDjrAyJVCIgWNV6KfJAVVzGTtQZqTGyk4FEUqajf+IzLVjNjud6
+         qMMa8aL+P4EMPujSc43sCGcoqvL7lxxFs3d2JMyirBMkOneNZmnxYv+EfXQcpuFQ2e
+         7+oM8TSlQOhHUzFE5dDTeeBQPGQCP+RPcQgse7s4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.164.19]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mof5H-1mHajH1jfV-00p7sD; Fri, 19
- Nov 2021 23:47:02 +0100
-Message-ID: <d06de3f9-ddc8-43f4-01c8-b1a75961cde4@gmx.de>
-Date:   Fri, 19 Nov 2021 23:46:27 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 1/4] parisc: Increase FRAME_WARN to 4096 bytes on parisc
-Content-Language: en-US
-To:     John David Anglin <dave.anglin@bell.net>,
-        linux-parisc@vger.kernel.org
-Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Sven Schnelle <svens@stackframe.org>,
-        kernel test robot <lkp@intel.com>
-References: <20211119222042.361671-1-deller@gmx.de>
- <093e8bd8-73ab-b33f-8488-00080e3a040c@bell.net>
+Received: from ls3530 ([92.116.182.23]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MHXBp-1mtPMN2Oiv-00Dbca; Sun, 21
+ Nov 2021 12:04:38 +0100
+Date:   Sun, 21 Nov 2021 12:04:01 +0100
 From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <093e8bd8-73ab-b33f-8488-00080e3a040c@bell.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:bqI4KR7H/PISHyWyIbo9UURqsuec5PdI9A96NgUKYE3cvRr17+J
- pUBcSdUFxxuZcUNF1YBDyYexG9zCJOGrMvvh/rz66T+HzeB38fUlH+fyxLIZx++4r/tk8gq
- uE4xPVTHVDLrVe+QjS+gLhr8QLVGDa1toSaFq0hGoZfZaXKPTdoi4in5NH2A8hjsoCogZ5e
- V72Fh9xby+jZ7xI2KBXvQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qCGF0wlDfeY=:H4v9eHpwdwTRBq11bWd5p5
- Mq+4mZbJCFpxsFx9zNn1kCaoTDqbTFvAABQ5eod6oJHF2xXgnkXamGgbxmeBkyGN3a38syE2B
- 5mmJV9M+Cs1FP+bObf6RYi+O02YnQn0XKdoIpVJSkRgl5BBnxGtVrkXu5gtgFC4x02O8ZC6GZ
- SqqgQEKZJKMCPi1qa/CjTyoPBIU982OE71XP0Jp4Wik9H4+FJzRpvh7u9oTLEE0du8l6ho7/X
- OMssVPiVla3flBKkwvJt65zm4pgB+gEvq7BAEGT2HjNBaLQIFZ/b3JqzysNCLKemXBDMifxPp
- sYC7iaNmV5DsZn/+XWcpAPldXqDu4OYxgcRys4+dCZ/X02TDaUTKlKWChaqcmqJUVfkT9I9G8
- bk3SWwCquOwZE6F9lpujokLhqeQuf96DvhvnrgzdAg16i3mG5M/bhqPxkhEXUX3TQ2azqUKIB
- LlSsp0vzuyC68sTtkB8P+qGwHr00TORvfG1atfjOXZDpRp38+pHGv6wBPuQH7398SgAp/ohKg
- o7YDs6fzcsKc9J44H6eg5GgdyL19oQGFEoksv9BI3HZ/wKrWxqG5mzc6Y0Jiubsz9iyXBjACI
- x2u7XwpEHb4odSYrzy1HauB+WOkWSZobxMdzvT6UtDNb64pMrSyK7gQZYWSqEaCj1TplSB9WE
- Fira33h0Ao2PEwDrMfI3VXPNm+19mX+SVmRJej/oJY/folTDNvd1gSPG3TkTDDQbjsyIMXynI
- arn3ilUeYexebh12A4aKAzZBkwPIJRhDobMPy77TBDP+mFSAkb2EeAnlhlixVUsTdy7yabIdG
- aT4q24j90AuGdUiXAdBonJNwjKqMPQ4Bjua+irEfuiRyN2+UHEA0KEibf6J/BUmvpN2+zptX4
- rjc0JG+7NEUHTKvNezFVSaa6UL3JKyJjqWBOGBxDBoDoQoMI2Wcfd5YL2skd1hl1/Lohp+nbw
- A7gCfpe2IHfbE4fjm38BM928QgGMgpS5jBs5OyZbeMRS4+eH51z1AuxNgrISA5Bpf4dhBq18c
- gzEQYmCykMESjvwNAZOaILNiU9i4zxdY7YpxLCvHkKTWv1neKQmWNBtgV6hprgkz2pqBvySCp
- Zz/vfZ8EjbmN94=
+To:     linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>,
+        Sven Schnelle <svens@stackframe.org>
+Subject: [PATCH] Revert "parisc: Fix backtrace to always include init funtion
+ names"
+Message-ID: <YZonoYxcqIY3NLc/@ls3530>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:OteDFIwBzxwv2F8eedX7GMQ8i2EU3bLwE/PP61kO5L1QcT5wZnQ
+ Wun3xLcXFDNds8Vh6KvVGcu6l4vYePWVT1rVrgykc6HhGuP3iwLehcMhK4PO9NEnG/n0dcy
+ +qvOT6meChhAzg148TtnBM7KoAoBx6hhttK0RXMzfA9hGdilS9duAo93HLOZ0pr5Rm/hf2O
+ rTvpM+7Ye6sKrRNiyqW9g==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WruUy6tkgH4=:/aXVHrLnvy5fcj1CEmcO4W
+ 8/evciIehepPxWzCNXxnsS9lgtaJcD23H/c3DByvngpzK3J3HiFfem8iYOjUygjwz/L2OISA9
+ 8sYy6F8cOG6AnBp/jB8eTu/OfWNmeTFFGnTtLPJzSdMxjGs4XorJq1ENAkCwRsC2jQO4ghYBw
+ Hes8W4kLNbJ28TgzVBGV1tBbY3VJfvCsQtJ/uE4Key14U3QgnRAW33rjFp7NDNcTiWr43Xmaf
+ h0BK9RJFiyRsrPQpEzwXCr0d/d3SoQm51+oOOzcFqAR6silz6XakVE7O+Quf/82cfeZGseHFL
+ bVQc/taFFLhJ3L4QgDyR7AoGn3FobMieKmeSx2isvlc0YdKcXaSUqj5nltDQb/EHguQ3JmhlK
+ t7gNM2qo5cBtOaeuQPQZnwtcpyunscFsDaB8OkFiqazT9bJkRVboEfywuyW/cM6b5RggYKZJh
+ JNDa2UQeKbKJFRLlSdY+baLZcYuFy24uIh7LGqJL8zHZuKhcnYZ9k70lqCDnpOtgIxhP48DEG
+ 3lMTHL/C+zICLjqKWi4XnC+WGObXMWN3SvNFnn60CuVd7yLkT+3krVWAIIXyKrZ8J+zFHkQAS
+ w233Iks3BrzQdGveWblF6uhbc8QBaJTLxJk1z7gSoirAHl2rp1Q4lM2I/jlPjDJDGrR4saBMM
+ vnCfyvW9jOYmIXmCbwJUgQhxMcV72/qXc/y5xgeUFngHq1qEX+LLyfjiJ9Xhge5O5l2hwsStx
+ PQUdSg7k2cwbLHEagjtMzSI2mHf3lHTDbhLxWK02GtX5XnFrZvW86CFJyeOCZz6wVm95gih1C
+ s0H6IblsvDUt13hUdZEuZBtJzyKewjMQhGt3AoQFI85rO+ENhkiy/1i+8cpeobDlrU9lBktH5
+ hCRLpwMOOD104IZUD6sigW1otNZ1DulIHmkTHUvJrlpIaQZOL+uXNjIUvZKFERle0ei/0ihtm
+ bTytEXTjVC4tunVgbnbnSEoK8xR/VmLnUKP2dkFsc7D+xvFx8E3Ji9guDcI+igVDJjYSDUjYa
+ KWonTYiIPrLkUtOF1jZ1s/hE0l+cNCCkg9A2l2a3H43qQEugQycTG9ZiJi03NPfqn9V1kh1XS
+ fVUiPhPsHXTyxc=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 11/19/21 23:29, John David Anglin wrote:
-> On 2021-11-19 5:20 p.m., Helge Deller wrote:
->> PA-RISC uses a much bigger frame size for functions than other
->> architectures. So increase it to 2048 for 32- and 64-bit kernels.
-> The title says 4096.
+This reverts commit 279917e27edc293eb645a25428c6ab3f3bca3f86.
 
-Thanks!
-Will fix.
+With the CONFIG_HARDENED_USERCOPY option enabled, this patch triggers
+kernel bugs at runtime:
 
-Helge
+  usercopy: Kernel memory overwrite attempt detected to kernel text (offse=
+t 2084839, size 6)!
+  kernel BUG at mm/usercopy.c:99!
+ Backtrace:
+  IAOQ[0]: usercopy_abort+0xc4/0xe8
+  [<00000000406ed1c8>] __check_object_size+0x174/0x238
+  [<00000000407086d4>] copy_strings.isra.0+0x3e8/0x708
+  [<0000000040709a20>] do_execveat_common.isra.0+0x1bc/0x328
+  [<000000004070b760>] compat_sys_execve+0x7c/0xb8
+  [<0000000040303eb8>] syscall_exit+0x0/0x14
+
+The problem is, that we have an init section of at least 2MB size which
+starts at _stext and is freed after bootup.
+
+If then later some kernel data is (temporarily) stored in this free
+memory, check_kernel_text_object() will trigger a bug since the data
+appears to be inside the kernel text (>=3D_stext) area:
+        if (overlaps(ptr, len, _stext, _etext))
+                usercopy_abort("kernel text");
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: stable@kernel.org # 5.4+
+
+diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux=
+.lds.S
+index 3d208afd15bc..2769eb991f58 100644
+=2D-- a/arch/parisc/kernel/vmlinux.lds.S
++++ b/arch/parisc/kernel/vmlinux.lds.S
+@@ -57,8 +57,6 @@ SECTIONS
+ {
+ 	. =3D KERNEL_BINARY_TEXT_START;
+
+-	_stext =3D .;	/* start of kernel text, includes init code & data */
+-
+ 	__init_begin =3D .;
+ 	HEAD_TEXT_SECTION
+ 	MLONGCALL_DISCARD(INIT_TEXT_SECTION(8))
+@@ -82,6 +80,7 @@ SECTIONS
+ 	/* freed after init ends here */
+
+ 	_text =3D .;		/* Text and read-only data */
++	_stext =3D .;
+ 	MLONGCALL_KEEP(INIT_TEXT_SECTION(8))
+ 	.text ALIGN(PAGE_SIZE) : {
+ 		TEXT_TEXT
