@@ -2,111 +2,100 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6B62C433EF
-	for <linux-parisc@archiver.kernel.org>; Sun, 21 Nov 2021 11:04:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7FD9C433EF
+	for <linux-parisc@archiver.kernel.org>; Wed, 24 Nov 2021 17:08:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237885AbhKULHv (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 21 Nov 2021 06:07:51 -0500
-Received: from mout.gmx.net ([212.227.17.21]:55443 "EHLO mout.gmx.net"
+        id S1349657AbhKXRL0 (ORCPT
+        <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 24 Nov 2021 12:11:26 -0500
+Received: from mout.gmx.net ([212.227.17.20]:44827 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237210AbhKULHv (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 21 Nov 2021 06:07:51 -0500
+        id S1349713AbhKXRLO (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 24 Nov 2021 12:11:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637492678;
-        bh=4TSKH+lg8DQNCBGo/nEZ80OS7/aoL+DWtSY9x50H1rY=;
+        s=badeba3b8450; t=1637773675;
+        bh=7TVFcTacTxW5YFJ5v8gtGJD8pvfmUxAQrKnPBRXpaGU=;
         h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=OGQz6rKtRfiuKnJDjrAyJVCIgWNV6KfJAVVzGTtQZqTGyk4FEUqajf+IzLVjNjud6
-         qMMa8aL+P4EMPujSc43sCGcoqvL7lxxFs3d2JMyirBMkOneNZmnxYv+EfXQcpuFQ2e
-         7+oM8TSlQOhHUzFE5dDTeeBQPGQCP+RPcQgse7s4=
+        b=Dp0GlyIXxzZeXdOdt46dnequc63SF99BvtP+lBQAg3C8toePolf92ODHvJ+dQGjfP
+         M9CUcp1dl+JMUZWe3ZveTYj26NKLRHor2Glmexzsxg/3Dxpk9U0HsLZ1z/AxMcTETS
+         Bi0QL+PEA4NBOvuctkV2S+gvU7QhMfRicVWEinJ0=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530 ([92.116.182.23]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MHXBp-1mtPMN2Oiv-00Dbca; Sun, 21
- Nov 2021 12:04:38 +0100
-Date:   Sun, 21 Nov 2021 12:04:01 +0100
+Received: from ls3530 ([92.116.189.116]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MfHAB-1m9zMG1Swd-00grFM; Wed, 24
+ Nov 2021 18:07:55 +0100
+Date:   Wed, 24 Nov 2021 18:07:50 +0100
 From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org,
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@hansenpartnership.com>,
         John David Anglin <dave.anglin@bell.net>,
         Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH] Revert "parisc: Fix backtrace to always include init funtion
- names"
-Message-ID: <YZonoYxcqIY3NLc/@ls3530>
+Subject: [GIT PULL] parisc architecture bug and warning fixes for kernel
+ v5.16-rc3
+Message-ID: <YZ5xZijH8L7IIpJh@ls3530>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Provags-ID: V03:K1:OteDFIwBzxwv2F8eedX7GMQ8i2EU3bLwE/PP61kO5L1QcT5wZnQ
- Wun3xLcXFDNds8Vh6KvVGcu6l4vYePWVT1rVrgykc6HhGuP3iwLehcMhK4PO9NEnG/n0dcy
- +qvOT6meChhAzg148TtnBM7KoAoBx6hhttK0RXMzfA9hGdilS9duAo93HLOZ0pr5Rm/hf2O
- rTvpM+7Ye6sKrRNiyqW9g==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WruUy6tkgH4=:/aXVHrLnvy5fcj1CEmcO4W
- 8/evciIehepPxWzCNXxnsS9lgtaJcD23H/c3DByvngpzK3J3HiFfem8iYOjUygjwz/L2OISA9
- 8sYy6F8cOG6AnBp/jB8eTu/OfWNmeTFFGnTtLPJzSdMxjGs4XorJq1ENAkCwRsC2jQO4ghYBw
- Hes8W4kLNbJ28TgzVBGV1tBbY3VJfvCsQtJ/uE4Key14U3QgnRAW33rjFp7NDNcTiWr43Xmaf
- h0BK9RJFiyRsrPQpEzwXCr0d/d3SoQm51+oOOzcFqAR6silz6XakVE7O+Quf/82cfeZGseHFL
- bVQc/taFFLhJ3L4QgDyR7AoGn3FobMieKmeSx2isvlc0YdKcXaSUqj5nltDQb/EHguQ3JmhlK
- t7gNM2qo5cBtOaeuQPQZnwtcpyunscFsDaB8OkFiqazT9bJkRVboEfywuyW/cM6b5RggYKZJh
- JNDa2UQeKbKJFRLlSdY+baLZcYuFy24uIh7LGqJL8zHZuKhcnYZ9k70lqCDnpOtgIxhP48DEG
- 3lMTHL/C+zICLjqKWi4XnC+WGObXMWN3SvNFnn60CuVd7yLkT+3krVWAIIXyKrZ8J+zFHkQAS
- w233Iks3BrzQdGveWblF6uhbc8QBaJTLxJk1z7gSoirAHl2rp1Q4lM2I/jlPjDJDGrR4saBMM
- vnCfyvW9jOYmIXmCbwJUgQhxMcV72/qXc/y5xgeUFngHq1qEX+LLyfjiJ9Xhge5O5l2hwsStx
- PQUdSg7k2cwbLHEagjtMzSI2mHf3lHTDbhLxWK02GtX5XnFrZvW86CFJyeOCZz6wVm95gih1C
- s0H6IblsvDUt13hUdZEuZBtJzyKewjMQhGt3AoQFI85rO+ENhkiy/1i+8cpeobDlrU9lBktH5
- hCRLpwMOOD104IZUD6sigW1otNZ1DulIHmkTHUvJrlpIaQZOL+uXNjIUvZKFERle0ei/0ihtm
- bTytEXTjVC4tunVgbnbnSEoK8xR/VmLnUKP2dkFsc7D+xvFx8E3Ji9guDcI+igVDJjYSDUjYa
- KWonTYiIPrLkUtOF1jZ1s/hE0l+cNCCkg9A2l2a3H43qQEugQycTG9ZiJi03NPfqn9V1kh1XS
- fVUiPhPsHXTyxc=
-Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Dcqi2TkaI6KnmuX/cr4yz7xXOB0ytqfxsyJhQ42e6F9lBcy4Mlt
+ kBM0E7tIOFkZhiIGhJMQl2fEZnCqTyxExrbU/pYzMgDyV0FCKYGr6t5xDU0EscTEEJ6nYid
+ HbpROUVYhcXnWfGctgJdAuINICwEa2cC5cUeCOD75ln/hCXaoDkrYck2ZPwQIaOJNGEINJ3
+ v2Ph1TfIX3a8cNkDQA0OA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XTxhxYKdHcM=:1/rkOZiub4D+fkTl3x4cjJ
+ wZsk35jdPoBFT+Oa4k0+brFrJtmZjjE5+dY80ZTR/BS5SkB7awsdk9cVkUPa3smUFM/LKJCDW
+ exl8IAek4u1i++cRJTyhbKVZY4OJK8u2MP1Nn9h6oiSRftiPOxSYYGN4afd3R48535I5BT6Go
+ DVj1k0LLpKbIzyZXUDNSvdTWxzAokwuLvpbMvKnMOdlueWYmNXxZPgh/voQ22pUoOEu2+vc7G
+ 3MHGDmCi4istfSCRnzGFrdA/iLys4s42AY7cup45zxam9ObKiMA0+6klL3PYW5qYxC/uVjEE2
+ wpdtnVPEKSeScyCuCx6/i3QqbKI/lxh/lCuAq9mxaLw1fcZvL7ZahbUzz83MYKjaJgaGQaOGE
+ UfOPaBQ6c/Ptqw49T4JkIVIEO1ZiL/eYpVnEQnEIGEXKAcNdOYbu8tY9s/dfHSEGhfmID4s8h
+ EQlvkZnFfmXUmC+XEuipfx8FPIN+TFC0zKurcf4/QLVpoQUOE4tEHd8FR3txT8Vwy3bafArkV
+ bN1ZkyjtJOr1kuU5JnJI0uoUNHafXo3BCeNB+yTAlxEx/7c2JO9nL9SdaWvRYgxPs16hVQplg
+ n6KCXNZNuQDU7gq+NvVSWHPhzt000atp7oAAMUaw5pMawO5OrJcUCoFR5F+PN5FAJ3Vo+F2ui
+ cbY7I5Xt3vI67d4Ph5mZGVWSsDbT9pX3IfeJiYVnp/P6Upxgt8Y9ygjfiyRZ/e2+6O14zi7Fg
+ evsz6dr20jJaKyQHH8AAsQdOC7QRbnN/MicmfU3XsQ9zhlVyBesSmMNyvaDuQ4SOgAF7E+BnU
+ IV6eWUa1zXaIe7pirgttTH/xD6iU9jbiIJVQQw/Blxa3AnNdunKt0Di/6j9I38FnwcJB67c/d
+ mKxnmf3NX7w4Io0wymhP2G7mBvUSWGDJbjqajJ2D5qClFNQzUMjb9n7WTtJP1Y8UExo+GzscC
+ Es7FPOA/G+pFQysJvPCqCFXR3ppNIpQAA8UpikKzGi09hdtKOpFks1Gg09KCUL3Sf/vVAxBuq
+ smHhGGTPT6NSEcTXJFsASdvFH6Lnh8tg85fuGGzuxrg4xtA0G4qbaz4eE57VqCMLUQtgmwfxc
+ zqUiM3I1jtEzqo=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This reverts commit 279917e27edc293eb645a25428c6ab3f3bca3f86.
+The following changes since commit 136057256686de39cc3a07c2e39ef6bc43003ff6:
 
-With the CONFIG_HARDENED_USERCOPY option enabled, this patch triggers
-kernel bugs at runtime:
+  Linux 5.16-rc2 (2021-11-21 13:47:39 -0800)
 
-  usercopy: Kernel memory overwrite attempt detected to kernel text (offse=
-t 2084839, size 6)!
-  kernel BUG at mm/usercopy.c:99!
- Backtrace:
-  IAOQ[0]: usercopy_abort+0xc4/0xe8
-  [<00000000406ed1c8>] __check_object_size+0x174/0x238
-  [<00000000407086d4>] copy_strings.isra.0+0x3e8/0x708
-  [<0000000040709a20>] do_execveat_common.isra.0+0x1bc/0x328
-  [<000000004070b760>] compat_sys_execve+0x7c/0xb8
-  [<0000000040303eb8>] syscall_exit+0x0/0x14
+are available in the Git repository at:
 
-The problem is, that we have an init section of at least 2MB size which
-starts at _stext and is freed after bootup.
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.16/parisc-5
 
-If then later some kernel data is (temporarily) stored in this free
-memory, check_kernel_text_object() will trigger a bug since the data
-appears to be inside the kernel text (>=3D_stext) area:
-        if (overlaps(ptr, len, _stext, _etext))
-                usercopy_abort("kernel text");
+for you to fetch changes up to 98400ad75e95860e9a10ec78b0b90ab66184a2ce:
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: stable@kernel.org # 5.4+
+  Revert "parisc: Fix backtrace to always include init funtion names" (2021-11-22 07:37:31 +0100)
 
-diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux=
-.lds.S
-index 3d208afd15bc..2769eb991f58 100644
-=2D-- a/arch/parisc/kernel/vmlinux.lds.S
-+++ b/arch/parisc/kernel/vmlinux.lds.S
-@@ -57,8 +57,6 @@ SECTIONS
- {
- 	. =3D KERNEL_BINARY_TEXT_START;
+----------------------------------------------------------------
+parisc bug and warning fixes for kernel v5.16-rc3
 
--	_stext =3D .;	/* start of kernel text, includes init code & data */
--
- 	__init_begin =3D .;
- 	HEAD_TEXT_SECTION
- 	MLONGCALL_DISCARD(INIT_TEXT_SECTION(8))
-@@ -82,6 +80,7 @@ SECTIONS
- 	/* freed after init ends here */
+Increase the FRAME_WARN value to avoid some new warnings which showed up
+in the Linux kernel test project, revert a patch which moved the _stext
+symbol and thus tiggered errors in the hardened usercopy checks, and
+introduce an extru_safe() assembler macro to overcome possible unsafe
+usage of the extru asm statement on 64-bit PA2.0 machines.
 
- 	_text =3D .;		/* Text and read-only data */
-+	_stext =3D .;
- 	MLONGCALL_KEEP(INIT_TEXT_SECTION(8))
- 	.text ALIGN(PAGE_SIZE) : {
- 		TEXT_TEXT
+----------------------------------------------------------------
+Helge Deller (4):
+      parisc: Increase FRAME_WARN to 2048 bytes on parisc
+      parisc: Provide an extru_safe() macro to extract unsigned bits
+      parisc: Convert PTE lookup to use extru_safe() macro
+      Revert "parisc: Fix backtrace to always include init funtion names"
+
+John David Anglin (1):
+      parisc: Fix extraction of hash lock bits in syscall.S
+
+ arch/parisc/include/asm/assembly.h | 11 +++++++++++
+ arch/parisc/kernel/entry.S         | 14 +++-----------
+ arch/parisc/kernel/syscall.S       |  4 ++--
+ arch/parisc/kernel/vmlinux.lds.S   |  3 +--
+ lib/Kconfig.debug                  |  5 +++--
+ 5 files changed, 20 insertions(+), 17 deletions(-)
+
