@@ -2,105 +2,102 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6920C433F5
-	for <linux-parisc@archiver.kernel.org>; Fri, 26 Nov 2021 02:46:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDD01C433EF
+	for <linux-parisc@archiver.kernel.org>; Fri, 26 Nov 2021 15:52:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245527AbhKZCt5 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 25 Nov 2021 21:49:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50958 "EHLO mail.kernel.org"
+        id S1350759AbhKZPzP (ORCPT
+        <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 26 Nov 2021 10:55:15 -0500
+Received: from mout.gmx.net ([212.227.17.21]:37587 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1359043AbhKZCpq (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 25 Nov 2021 21:45:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 760CE61356;
-        Fri, 26 Nov 2021 02:36:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637894191;
-        bh=rLs9+i102tfl+rMpfib+Hclr2z2BuKojHu4qAKcEj/0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h1wcSpYcyY/KDMA5Ehvnoc7LutQieL0pGnZ65cH07cN7//D+xtTh4fiFi8Jmb+yDa
-         drG2qSWVCVXonlyjaP2QPdPibjAF2VDG9/qnFAWm+J6hR0k1m3k/GzaGFFUwxVN2nC
-         H72LtSexlsxbbq5Yd7vNbPu+S1RVYQgJqv95pe+kAmKyTd0X/EtRFntpbaMUbDQHvO
-         92naIhIcNWgknF+bmJ9HwU65srD9x1KLt+uTyEzjo9V2Br8l1xHiLj4kgZoF5BM8Sj
-         BH2QWcAdeOlquab91NF6RzsdGOAIXJPzv0r6BVttnz8U2Ph4T7CFkzlNJcTs4nx1kU
-         dB8223NW4SLZA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     zhangyue <zhangyue1@kylinos.cn>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
-        arnd@arndb.de, tanghui20@huawei.com, starmiku1207184332@gmail.com,
-        netdev@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 10/12] net: tulip: de4x5: fix the problem that the array 'lp->phy[8]' may be out of bound
-Date:   Thu, 25 Nov 2021 21:36:06 -0500
-Message-Id: <20211126023611.443098-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211126023611.443098-1-sashal@kernel.org>
-References: <20211126023611.443098-1-sashal@kernel.org>
+        id S1378304AbhKZPvY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 26 Nov 2021 10:51:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637941678;
+        bh=1F+85ST5X+Wl10SqBhKPZC0uz2QWcQZBBL1+GoTcjRs=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=NVxrTcoIwPeC4B8rYFmdIzy6sKB+vjk6G5o14nDZx6s6tHpRN1FrUXb4xwlqH5Xnz
+         XT51KjN3c6Y7Mok3ct1VKo8IjXNhFevXf+RXCZxLLM+tFp2TW9MINhcnFARy2XW1ks
+         FeBm3S1360OvAWva+uiDmVuuWCJBf9R5i8In+3Gg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.133.198]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MpUUm-1mGXTe1O5k-00pulR; Fri, 26
+ Nov 2021 16:47:58 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>,
+        Sven Schnelle <svens@stackframe.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] parisc/agp: Annotate parisc agp init functions with __init
+Date:   Fri, 26 Nov 2021 16:47:54 +0100
+Message-Id: <20211126154754.263487-1-deller@gmx.de>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:lIAMW6Ta2Tykv0hadPQ2X2ru8ThtUQQaRITGrWIjtZg9mMBRALw
+ H7Z/9xy0w4UlfGbJxy8TPnH3Zl1uSt4jVdVybljFA/XhJ+zE1BHMvRR3laaV4NyAe7U5quf
+ mKopmoMymwHnepPFa+4JzHGH4Fa9l7YUNrvEJgnA+7CF2wpN8kCfNfS1WbZON+HoPOTD2rH
+ CrF+Qgt6QidTtTb1daUbg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:m9eLKWx96Ck=:jyWUH4KgbdeGd+ZIPcfqku
+ VcGmzI8UOcyukZPGicuszB8aMfnPDG7lKxM+xw+1KzuoFe4v/8A54Bppl1ycb++JKY68T5KMT
+ EaZ8IjJJM/R1R6ltXjnI4SV3rlT1eXhUxfcy0M3Ls3J8E7r6q+iJAwVTw4DXJQsto3dUNrWMC
+ J/azSQow/5Qf2ZGAorXjsZxQcEPnxpPMOqfW6c1X8i2a1ifIgkpILXrbzx+NljyCc8o8BDh52
+ o0rwJ0u5oWdyERn5SQZiHc/qfqK0mYwbRLhQ8b0y7+qKo/DT532Gs0KqAolWcGKXaCqezwr/f
+ xW/zr8op/tkP8tgMXDNNxEacSyiUmv5KskExyJKc8+jGAfTgUjNTVN6+AWRc8i5o8BU93aeJ8
+ N/T7Q8SAEysEalYZyBufiTpfPye17Cl4rLUm9eADTyfyZogvkki8OLJWSWsJqI+bRxuonxx9H
+ vv0jSWS4m4c3wLPmfYBJv5KT0Y30xzHuAzxry+ZwEZw7R5NbYWhERFVISQi7GDQZQe6TeZ4Ob
+ tDIG2bpJ1TjFtCaBe9zeRQowJWsmPU7SNkp4yj87pYPklUCuTheeDER176L21bOjJcK8ML40o
+ 0nvviiMYoZZ+EQvIkwLg0zfKaYqw17KcCiyKTAGIkc53JJXNMHzc81n0c2nm/EncEYfTkiQpJ
+ qwjjd0sFuNt3R3hWLRYLNjfkm8Xlh9RKM9or+w4QUFuvfOr63F2+Z/qCMcHyd5GaPfqUAdcug
+ L1LI4DSfzMGLkaPJBYVXoI06BQbKypisu+yjFsxhlbqxtDJwypuWtjFE2FJdP/84fCsnHBrJQ
+ aY2YSxGyYd0N+qD8qNwGApHKQDY+chEzzCGs9H8eTQ5D/9H0oaakJLzSSuHKTPohgkwi+RSZh
+ TDSdEBJz5FNiVuy7+4klaW3adaB50gcDG2uDNvj9fIkOPSXnCor9lHByrjbNkh1vJHlTwyGeF
+ 9qS/505QreZxgGztfX5LgkTJvQmCU3QfZcHWkpOJE987BgYhoTF+I7UHOkEPHXqzwDzNnMDvw
+ KL++aSaIS0KJu38l+nRGlL+7EHlm8gUq9D4di2Dxx/n+Wz4Fw16DmZMtkRGWq3oHmVTUjImFo
+ Vw5eRjynL2d/GY=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: zhangyue <zhangyue1@kylinos.cn>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Reported-by: kernel test robot <lkp@intel.com>
+=2D--
+ drivers/char/agp/parisc-agp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-[ Upstream commit 61217be886b5f7402843677e4be7e7e83de9cb41 ]
+diff --git a/drivers/char/agp/parisc-agp.c b/drivers/char/agp/parisc-agp.c
+index ed3c4c42fc23..d68d05d5d383 100644
+=2D-- a/drivers/char/agp/parisc-agp.c
++++ b/drivers/char/agp/parisc-agp.c
+@@ -281,7 +281,7 @@ agp_ioc_init(void __iomem *ioc_regs)
+         return 0;
+ }
 
-In line 5001, if all id in the array 'lp->phy[8]' is not 0, when the
-'for' end, the 'k' is 8.
+-static int
++static int __init
+ lba_find_capability(int cap)
+ {
+ 	struct _parisc_agp_info *info =3D &parisc_agp_info;
+@@ -366,7 +366,7 @@ parisc_agp_setup(void __iomem *ioc_hpa, void __iomem *=
+lba_hpa)
+ 	return error;
+ }
 
-At this time, the array 'lp->phy[8]' may be out of bound.
+-static int
++static int __init
+ find_quicksilver(struct device *dev, void *data)
+ {
+ 	struct parisc_device **lba =3D data;
+@@ -378,7 +378,7 @@ find_quicksilver(struct device *dev, void *data)
+ 	return 0;
+ }
 
-Signed-off-by: zhangyue <zhangyue1@kylinos.cn>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/dec/tulip/de4x5.c | 30 +++++++++++++++-----------
- 1 file changed, 17 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index 8f108a30cba66..84cf7b4582f3e 100644
---- a/drivers/net/ethernet/dec/tulip/de4x5.c
-+++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -4994,19 +4994,23 @@ mii_get_phy(struct net_device *dev)
- 	}
- 	if ((j == limit) && (i < DE4X5_MAX_MII)) {
- 	    for (k=0; k < DE4X5_MAX_PHY && lp->phy[k].id; k++);
--	    lp->phy[k].addr = i;
--	    lp->phy[k].id = id;
--	    lp->phy[k].spd.reg = GENERIC_REG;      /* ANLPA register         */
--	    lp->phy[k].spd.mask = GENERIC_MASK;    /* 100Mb/s technologies   */
--	    lp->phy[k].spd.value = GENERIC_VALUE;  /* TX & T4, H/F Duplex    */
--	    lp->mii_cnt++;
--	    lp->active++;
--	    printk("%s: Using generic MII device control. If the board doesn't operate,\nplease mail the following dump to the author:\n", dev->name);
--	    j = de4x5_debug;
--	    de4x5_debug |= DEBUG_MII;
--	    de4x5_dbg_mii(dev, k);
--	    de4x5_debug = j;
--	    printk("\n");
-+	    if (k < DE4X5_MAX_PHY) {
-+		lp->phy[k].addr = i;
-+		lp->phy[k].id = id;
-+		lp->phy[k].spd.reg = GENERIC_REG;      /* ANLPA register         */
-+		lp->phy[k].spd.mask = GENERIC_MASK;    /* 100Mb/s technologies   */
-+		lp->phy[k].spd.value = GENERIC_VALUE;  /* TX & T4, H/F Duplex    */
-+		lp->mii_cnt++;
-+		lp->active++;
-+		printk("%s: Using generic MII device control. If the board doesn't operate,\nplease mail the following dump to the author:\n", dev->name);
-+		j = de4x5_debug;
-+		de4x5_debug |= DEBUG_MII;
-+		de4x5_dbg_mii(dev, k);
-+		de4x5_debug = j;
-+		printk("\n");
-+	    } else {
-+		goto purgatory;
-+	    }
- 	}
-     }
-   purgatory:
--- 
-2.33.0
+-static int
++static int __init
+ parisc_agp_init(void)
+ {
+ 	extern struct sba_device *sba_list;
+=2D-
+2.31.1
 
