@@ -2,28 +2,27 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5A23C433EF
-	for <linux-parisc@archiver.kernel.org>; Fri, 26 Nov 2021 02:46:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F736C43217
+	for <linux-parisc@archiver.kernel.org>; Fri, 26 Nov 2021 02:46:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359637AbhKZCtw (ORCPT
-        <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 25 Nov 2021 21:49:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51546 "EHLO mail.kernel.org"
+        id S245046AbhKZCt4 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 25 Nov 2021 21:49:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358612AbhKZCrZ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 25 Nov 2021 21:47:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC13361371;
-        Fri, 26 Nov 2021 02:37:16 +0000 (UTC)
+        id S1359044AbhKZCpq (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 25 Nov 2021 21:45:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDFB161163;
+        Fri, 26 Nov 2021 02:36:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637894238;
-        bh=RBX6W4w3jScpLmp10EJSozwbbpPAsKTdowIUKbcjGiA=;
+        s=k20201202; t=1637894194;
+        bh=sREuQYDPJAcan/qAtpq4AHrNTlLTy3LtWzVoyEKR9vA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UgpebikjVKnC+nvgReVfdWgriluJ/BOQ2JRrE81e6LCvgWY+xUVLtnTCwErot5ClC
-         tZAKD1wLHggkI0/+gul5bAJiNAedVvCQc980VrS6ETUtjFtnrusslqxMrzN88ZeXME
-         oNAfTTc98gSQS2I7Q8jFm+bnMokvSb2RMJXM6w0Gkw4LXxMJT405rxZWcgg92V1MC9
-         4GG4ktG8nhEBSWzPUss1mDO+fMD2US07YVSIHSed914k0mrCX3NhCNEyRcmjTJ+5Qe
-         SNYJKQZVEhs27JFvWD4WNjPe+H4CyAMIrW0NBhXpsB5JQZlWVMf8NY38axzipiSlnn
-         8Hd+AAPYZIBCQ==
+        b=BdVqBiaOidoDoh/tQCz5KIYIGMvTwn2njacLKEqGg0pVrC7AreubmHbn5DpxNg5NB
+         AYLXOBMEpMLXgNoQ85Mx+yqWb3uqIz0d0td0l1qXLsyzkemLQ8doCiDL0yHToKT+QQ
+         bs+Z/C7O075fqEXlLTjASLyWy0wd0Yl1XCJQCEwqGhKHsfc5o40O8FSgdedYogA6cJ
+         8VkenDPfVcrlH9cJyie5cpUtokO5Ev8+SQU0bvHrodZiD93g0o6REnOcVxRoEyC9PA
+         m0z4SA5t6uPjnU5NU/OQpY1nG/XdmtfKMLOWq0OgDt1pVPNootB+qbD5o0AtWcfo/X
+         qRs5HbhCchffw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Teng Qi <starmiku1207184332@gmail.com>,
@@ -33,12 +32,12 @@ Cc:     Teng Qi <starmiku1207184332@gmail.com>,
         Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
         tanghui20@huawei.com, zhangyue1@kylinos.cn, netdev@vger.kernel.org,
         linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 6/6] net: ethernet: dec: tulip: de4x5: fix possible array overflows in type3_infoblock()
-Date:   Thu, 25 Nov 2021 21:37:01 -0500
-Message-Id: <20211126023701.443472-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 11/12] net: ethernet: dec: tulip: de4x5: fix possible array overflows in type3_infoblock()
+Date:   Thu, 25 Nov 2021 21:36:07 -0500
+Message-Id: <20211126023611.443098-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211126023701.443472-1-sashal@kernel.org>
-References: <20211126023701.443472-1-sashal@kernel.org>
+In-Reply-To: <20211126023611.443098-1-sashal@kernel.org>
+References: <20211126023611.443098-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -82,10 +81,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index 7c4150a83a082..ffc9c7947b93f 100644
+index 84cf7b4582f3e..09a65f8f62038 100644
 --- a/drivers/net/ethernet/dec/tulip/de4x5.c
 +++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -4701,6 +4701,10 @@ type3_infoblock(struct net_device *dev, u_char count, u_char *p)
+@@ -4703,6 +4703,10 @@ type3_infoblock(struct net_device *dev, u_char count, u_char *p)
          lp->ibn = 3;
          lp->active = *p++;
  	if (MOTO_SROM_BUG) lp->active = 0;
