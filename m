@@ -2,90 +2,100 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31CBDC433F5
-	for <linux-parisc@archiver.kernel.org>; Wed, 24 Nov 2021 18:40:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63242C43219
+	for <linux-parisc@archiver.kernel.org>; Fri, 26 Nov 2021 02:36:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350828AbhKXSn3 (ORCPT
+        id S1358142AbhKZCjy (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 24 Nov 2021 13:43:29 -0500
-Received: from outbound5h.eu.mailhop.org ([18.156.94.234]:33831 "EHLO
-        outbound5h.eu.mailhop.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350906AbhKXSnY (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:43:24 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637779214; cv=none;
-        d=outbound.mailhop.org; s=arc-outbound20181012;
-        b=abPTzITWqOzatKuUBFUCfmGlxMdfNhMNInfqWxjlnMv1zxQd1TpxpfMckdw8HWQZsQx7p528KENVk
-         ppCujtSJzr2ePFzvlmWwUiLOjcgqx/SOiDFSs6QvvD/gEbI31DoeEe10/mWqP1nNYtcx/lvni0p1xK
-         AXqLNHzDQPkHqdAWhmvpSuNMQvILs3ItDVa2ZPIBvQ7N8o6heoJf5t3TL+MnVOJH5Vrm0tnVB/Ic7S
-         zPklbCYucZU84Wcrdf6eRUL8GpZevarHdmN/sP5PucBlHlA+QD70OtHNfBWGgJ1cYtl50dFDL4hMRp
-         Y16JLUHdMndlXw6NmHmayxfTua/OF8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=outbound.mailhop.org; s=arc-outbound20181012;
-        h=content-type:mime-version:message-id:date:subject:to:from:dkim-signature:
-         dkim-signature:from;
-        bh=qCAqzTXmhf9ZGKj8dwJrzKH1jzYLtNez/+yPXoLBMgw=;
-        b=hjco+YAZgIausRLKuF3m5NpwAzWz2zHXEoIfvs50Xrj4puwUnOa7PGLC0G3CeqAcoSaBtvOX/dJ41
-         aSJoDiO1Ndo5aJ/AhmoshGbQYSDixIgp70ZJGTtY1UQ4sx71bk5aIcCxw2CGZRmDXqP5kqwnwB3isZ
-         cvehbo/Up1VA+FrGZWPX+IjfZPbAlUGElrUy4hPLhImCyeDUBiefAw01rjCkIHh8Xwy8YYt41dGDsx
-         soJEzhn0JvuE1Bqrj0IXBj4FaGagjIYvvMoB697/jCad3TSxl3xDMiHNjTju/fx3UgTUDgPyaavZJq
-         7kbNZkNt4/98SU/CFtOwdbrtgIM+hkw==
-ARC-Authentication-Results: i=1; outbound2.eu.mailhop.org;
-        spf=pass smtp.mailfrom=stackframe.org smtp.remote-ip=91.207.61.48;
-        dmarc=none header.from=stackframe.org;
-        arc=none header.oldest-pass=0;
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=stackframe.org; s=duo-1634547266507-560c42ae;
-        h=content-type:mime-version:message-id:date:subject:to:from:from;
-        bh=qCAqzTXmhf9ZGKj8dwJrzKH1jzYLtNez/+yPXoLBMgw=;
-        b=kW+Ck4s0qJX52st9fsFnjdVEJzMBy5NnPeBb2T+xXRK4cwTSijrPVtRw76sid4iKVAS3WFSYQA/Xb
-         i63Haf5juc2TU9nDCgXmk5+jADH2zhCayKkongdM+YETPR05KLYe/fXFiLb3bzm6w/0/z0mP1gxPah
-         mDSfo43CAa0t2e8o=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=outbound.mailhop.org; s=dkim-high;
-        h=content-type:mime-version:message-id:date:subject:to:from:from;
-        bh=qCAqzTXmhf9ZGKj8dwJrzKH1jzYLtNez/+yPXoLBMgw=;
-        b=gnGIUQn9XHtu3eSErRpLDsReC5VW6KXDXhW9AK3+xFkFrG66cUqJiymrLcstFLWGrQhVeV/BG2UM1
-         4A4O5gmu6SZQyoKVKJ/FvNonAUjogwvKtI3j32ZLPKHWgWNajwdkpUs0l+r/mHrPm/OTYK6ZhbPhMZ
-         2XT9WHeK/+Z9W8kkJMQE0tbh/mt00k7pTiAwu75b+4O8g18h0qu/4fRScN1WXjQczZ3RkHHjC3CwTa
-         UiYQiEa97iQif2U1tPZom8rOegU/7haLeEqFGVP7urN0aKnqJOL5OAPNOJlQBsvWCF5IWRockeUUBf
-         6zENuHFayswmCu2jikTgO5XGmREFZZw==
-X-Originating-IP: 91.207.61.48
-X-MHO-RoutePath: dG9ta2lzdG5lcm51
-X-MHO-User: f4b9b7d0-4d55-11ec-a072-973b52397bcb
-X-Report-Abuse-To: https://support.duocircle.com/support/solutions/articles/5000540958-duocircle-standard-smtp-abuse-information
-X-Mail-Handler: DuoCircle Outbound SMTP
-Received: from mail.duncanthrax.net (propper.duncanthrax.net [91.207.61.48])
-        by outbound2.eu.mailhop.org (Halon) with ESMTPSA
-        id f4b9b7d0-4d55-11ec-a072-973b52397bcb;
-        Wed, 24 Nov 2021 18:40:12 +0000 (UTC)
-Received: from hsi-kbw-109-193-149-228.hsi7.kabel-badenwuerttemberg.de ([109.193.149.228] helo=x1.stackframe.org.stackframe.org)
-        by mail.duncanthrax.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <svens@stackframe.org>)
-        id 1mpxBi-00FtDM-Tl
-        for linux-parisc@vger.kernel.org; Wed, 24 Nov 2021 20:40:11 +0200
-From:   Sven Schnelle <svens@stackframe.org>
-To:     linux-parisc@vger.kernel.org
-Subject: hpgraphics RPM for visualize FX cards
-Date:   Wed, 24 Nov 2021 19:40:09 +0100
-Message-ID: <87wnkx5ree.fsf@x1.stackframe.org>
+        Thu, 25 Nov 2021 21:39:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1358107AbhKZChn (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 25 Nov 2021 21:37:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E303611CC;
+        Fri, 26 Nov 2021 02:33:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637893990;
+        bh=8K/IMu8w2POBs5mV05Tn0tBb3m8P7QDfwGC/glV7Ufs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GKu9H9EbQneezENDn0h0nnsUcG8+09bCWPWILnoro5zg8BabyvDwFH5hm4gJ8fMla
+         xuJh9lTOyVasw0PA1GbuqKVUtbGF2d3x+55aws3ua6UXyCSXPteaCLX8oScTSxFM93
+         E+osQYuv72XDRqD3gaj9ldzsaWSxvL8Bd0SZ/zWoKPOKtzBIxi5NB6lGcsTVk11iRj
+         FNiPmk0ZfkCZPhWVYxnbJjvXnxy0pSlJd1e3F/U6HrIp7Qj+S9aYoKfS55DrySGax/
+         Hg75ZJZlSssREuKkSvXnk54VCTV1eMvv1jLbBbSPZX3xGbvc7XVTHjK1k4LzOtxnlJ
+         mKbmaVmEgJYWg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Teng Qi <starmiku1207184332@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
+        tanghui20@huawei.com, zhangyue1@kylinos.cn, netdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 32/39] net: ethernet: dec: tulip: de4x5: fix possible array overflows in type3_infoblock()
+Date:   Thu, 25 Nov 2021 21:31:49 -0500
+Message-Id: <20211126023156.441292-32-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211126023156.441292-1-sashal@kernel.org>
+References: <20211126023156.441292-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi List,
+From: Teng Qi <starmiku1207184332@gmail.com>
 
-https://parisc.wiki.kernel.org/index.php/VisualizeFX mentions
-a hpgraphics rpm that contains a few header files for the FX
-cards. Does anyone still has a copy of that RPM?
+[ Upstream commit 0fa68da72c3be09e06dd833258ee89c33374195f ]
 
-I've figured most of the 2D stuff out, i.e. i can boot the card
-even without STI initialization by the Firmware (aka BCH). The only
-thing i haven't figured out is how to configure true color mode. I hope
-i can get some idea from the header files.
+The definition of macro MOTO_SROM_BUG is:
+  #define MOTO_SROM_BUG    (lp->active == 8 && (get_unaligned_le32(
+  dev->dev_addr) & 0x00ffffff) == 0x3e0008)
 
-Regards
-Sven
+and the if statement
+  if (MOTO_SROM_BUG) lp->active = 0;
+
+using this macro indicates lp->active could be 8. If lp->active is 8 and
+the second comparison of this macro is false. lp->active will remain 8 in:
+  lp->phy[lp->active].gep = (*p ? p : NULL); p += (2 * (*p) + 1);
+  lp->phy[lp->active].rst = (*p ? p : NULL); p += (2 * (*p) + 1);
+  lp->phy[lp->active].mc  = get_unaligned_le16(p); p += 2;
+  lp->phy[lp->active].ana = get_unaligned_le16(p); p += 2;
+  lp->phy[lp->active].fdx = get_unaligned_le16(p); p += 2;
+  lp->phy[lp->active].ttm = get_unaligned_le16(p); p += 2;
+  lp->phy[lp->active].mci = *p;
+
+However, the length of array lp->phy is 8, so array overflows can occur.
+To fix these possible array overflows, we first check lp->active and then
+return -EINVAL if it is greater or equal to ARRAY_SIZE(lp->phy) (i.e. 8).
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/dec/tulip/de4x5.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
+index 0ebc0bc83c73a..b9d967e419387 100644
+--- a/drivers/net/ethernet/dec/tulip/de4x5.c
++++ b/drivers/net/ethernet/dec/tulip/de4x5.c
+@@ -4708,6 +4708,10 @@ type3_infoblock(struct net_device *dev, u_char count, u_char *p)
+         lp->ibn = 3;
+         lp->active = *p++;
+ 	if (MOTO_SROM_BUG) lp->active = 0;
++	/* if (MOTO_SROM_BUG) statement indicates lp->active could
++	 * be 8 (i.e. the size of array lp->phy) */
++	if (WARN_ON(lp->active >= ARRAY_SIZE(lp->phy)))
++		return -EINVAL;
+ 	lp->phy[lp->active].gep = (*p ? p : NULL); p += (2 * (*p) + 1);
+ 	lp->phy[lp->active].rst = (*p ? p : NULL); p += (2 * (*p) + 1);
+ 	lp->phy[lp->active].mc  = get_unaligned_le16(p); p += 2;
+-- 
+2.33.0
+
