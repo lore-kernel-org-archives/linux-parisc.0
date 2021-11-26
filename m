@@ -2,41 +2,41 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E63FC433FE
-	for <linux-parisc@archiver.kernel.org>; Fri, 26 Nov 2021 02:36:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BCDEC43217
+	for <linux-parisc@archiver.kernel.org>; Fri, 26 Nov 2021 02:40:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357704AbhKZCjz (ORCPT
+        id S1358437AbhKZCnf (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 25 Nov 2021 21:39:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47828 "EHLO mail.kernel.org"
+        Thu, 25 Nov 2021 21:43:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358103AbhKZChm (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 25 Nov 2021 21:37:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C142961163;
-        Fri, 26 Nov 2021 02:33:05 +0000 (UTC)
+        id S1358443AbhKZClP (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Thu, 25 Nov 2021 21:41:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74B0C611C2;
+        Fri, 26 Nov 2021 02:34:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637893986;
-        bh=v07t+pC+0w7XhjDkgjBPo/N61+N7sKfB5xSRhs5nOxs=;
+        s=k20201202; t=1637894068;
+        bh=N5jyAPPSENCc3X8IBtnI6ADAaSHPdu4IhGl6DZkMTKE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qlz33R6G3D2udwGg1T//4HTcEE/M++wwlyP6d2DJqDOMl9YP7iPFgwukRY9tj+LWQ
-         Te3H/KhjKX8H1P4Vg2xd1ajyCZnTfmVjsL+Sy4d6Yla5HqYWxGeG+yvtrXreZmgQCw
-         QWT6GVDZ1PGj14zkYm8YYWwILvOfj+wfoSn4VhPyHWIVswLd/GwUfc71XcyZSJU7Zb
-         bd6oWELSrNb3nRmWtDR9cxgh19SBtd2tKOsdhhjd3jeN42ALgTPugHJIAHd/K2dGNw
-         rhBQAq/odoCqUaD71M/KZFQjl77sHlPFHv2MXnRuX6MOZIZoutFTnNszVRStJxLd40
-         AoaiX0tIOEx6w==
+        b=WPIGiLZEKxFW1WR0TNmtNSz3K9GXxbqsk8QOcqkTbrHPILIkmhvym3vQF7HkY8Olf
+         FGqgiHnj51l4YjQJ3yb8CF2ToCjgstbYsuuY0MOzTlbaN+GpyX8j7vC9ZrZZWMOQIP
+         6iKKOnt76QhS5qorTG8+k61r8e2REl0dJLmYfsqdYJn0xxbwWmyLNnHN6S3m36C9DC
+         BZpbyQJb+b7xp/DMgROQLumbKGV1xskVGOfHpo2QQMQjfBRblE7r+J7qKQP9PalnOY
+         XDbTUxunCWFkcW+Jp8V4heUgJm92ZCaLgu+C5xWytd5Gqrwe1hFOvLBuoXQuU+e7lb
+         mXQhHy7gS5Z2Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     zhangyue <zhangyue1@kylinos.cn>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
-        arnd@arndb.de, starmiku1207184332@gmail.com, tanghui20@huawei.com,
+        arnd@arndb.de, tanghui20@huawei.com, starmiku1207184332@gmail.com,
         netdev@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 31/39] net: tulip: de4x5: fix the problem that the array 'lp->phy[8]' may be out of bound
-Date:   Thu, 25 Nov 2021 21:31:48 -0500
-Message-Id: <20211126023156.441292-31-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 24/28] net: tulip: de4x5: fix the problem that the array 'lp->phy[8]' may be out of bound
+Date:   Thu, 25 Nov 2021 21:33:39 -0500
+Message-Id: <20211126023343.442045-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211126023156.441292-1-sashal@kernel.org>
-References: <20211126023156.441292-1-sashal@kernel.org>
+In-Reply-To: <20211126023343.442045-1-sashal@kernel.org>
+References: <20211126023343.442045-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -62,10 +62,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 17 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index 36ab4cbf2ad08..0ebc0bc83c73a 100644
+index 683e328b5461d..ffc25ecfa8d6a 100644
 --- a/drivers/net/ethernet/dec/tulip/de4x5.c
 +++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -4999,19 +4999,23 @@ mii_get_phy(struct net_device *dev)
+@@ -4997,19 +4997,23 @@ mii_get_phy(struct net_device *dev)
  	}
  	if ((j == limit) && (i < DE4X5_MAX_MII)) {
  	    for (k=0; k < DE4X5_MAX_PHY && lp->phy[k].id; k++);
