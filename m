@@ -2,87 +2,78 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41942C433EF
-	for <linux-parisc@archiver.kernel.org>; Fri, 26 Nov 2021 21:41:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12AA5C433F5
+	for <linux-parisc@archiver.kernel.org>; Sat, 27 Nov 2021 05:00:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241851AbhKZVpM (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 26 Nov 2021 16:45:12 -0500
-Received: from mout.gmx.net ([212.227.15.15]:60915 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243142AbhKZVnL (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 26 Nov 2021 16:43:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637962790;
-        bh=zofstjjuY5bb5SU+8cjlvVWMzAKuIE7KGOJYUUd2mfA=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=k1NBd2dHGxSpsj0F6EUusTd75gojS9t01NzJk2HmNMEwSLcnoDjzZdceIpgDRA2Dz
-         Avaw0QLzHfd7VLSVVsGu7dEHOiCyvUPLUA2RcSSGfW4Jg4yJ9GX/S0mDSPlYmn7c/9
-         1u6zm2T/yQsdUYzaBXOGjQV79FvVv4lnfoCy8W14=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.fritz.box ([92.116.133.198]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MdefD-1mHOGF0361-00ZjG6; Fri, 26
- Nov 2021 22:39:50 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org
-Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
-        Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH] parisc: Set correct KBUILD_IMAGE value for self-extracting kernel
-Date:   Fri, 26 Nov 2021 22:39:45 +0100
-Message-Id: <20211126213945.286053-1-deller@gmx.de>
+        id S229506AbhK0FDS (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sat, 27 Nov 2021 00:03:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231744AbhK0FBR (ORCPT
+        <rfc822;linux-parisc@vger.kernel.org>);
+        Sat, 27 Nov 2021 00:01:17 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40247C061574
+        for <linux-parisc@vger.kernel.org>; Fri, 26 Nov 2021 20:58:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=JpoOMJMYMW9tcxE94X859etox3VfwYCZQ0qurO9ustY=; b=OZhmPpKbgrBkifLt3TmctHJAkT
+        MYxfgYb4vh0t6xBSidvR1uRJ/aHJfKctwweU/JE3b7Njoiq1ELqJASzSgk7ySc8tqFsQOtzUv0LBR
+        ktkGOrXxWvkSJz/dUzUhmV87VZNz45IQascPNqOQxz+ZCgopKBlsZI2UtH6LVWhBUdMQ/BVi6J+Is
+        Gq9oAmSb2AdjANfBingZIfp0OdZsEsVUI8uyA08pimu5OqxgXP3STwnTJMVeAttyAo2WswyFDimZr
+        Vc3txUIU1Gi4cYnF2PF4zDwxTmKMGokKGi3NG6igPkFdjsz+IlIyHpni4MqkJY2Y+xFCtWSq6e91h
+        JVVOG+1w==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mqpmg-00CwhV-AM; Sat, 27 Nov 2021 04:57:58 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Kyle McMartin <kyle@mcmartin.ca>,
+        David Airlie <airlied@linux.ie>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
+Subject: [PATCH] agp: parisc-agp: fix section mismatch warning
+Date:   Fri, 26 Nov 2021 20:57:57 -0800
+Message-Id: <20211127045757.27908-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nszDtH/nBGZYCnMLmKFQa3BQTWYkX4x9oN0WmMKqVbhZLynnFjZ
- ahChjYOiJzi/lXZ1nC15VItjn3mUb9ILAqievNFZIWWPezL+6VJNlQmADYkZA8ojHPewT4g
- 5Km/eooBaTUX+3IGFI2wQsRCmJJiGkH8FX++cQ2NS5TVPnombtJHBPgAwAv6CsMr5NhdBzl
- +Taf1zQrhaL0IVNmqOgSg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8McaBZ9y6Q4=:PX69VIgUEbljE3KtnQaqHl
- 2cbC8CctRmYlFFeJJSrf0O9PpF4ZR0J6DVjiZXS+TqtPvmdq0gdcGBOcC/0PiUKK/MRTZ61Lg
- UtN47nXPjzRQhe/k8pUV10JKvfckecIHcmV6VULZ4FjS/yEf3n9KPzmcAguafZjbj6PgDpdqJ
- A2U9gDUn3RLzIjzGx7gNBMvdEdbL8XbV+bVe36rgV5NTHU9gvidDLvQkE9JUvgdzTAVMEgzbN
- rHYugv8GgD42GmdI6PphD41LRYLzU4BhFHgBUZw6+dl5PQmYHf4TmBRZIL9Dr9MLqTDV+2lmK
- uCuHWy6NjWfDsj58znU8Kyurc85pL/fV/ZwAZ9YRkhbtCukBF/39l69kSOhwaUQHuxbsoh6Lw
- dqqxgNvdYxZf86ueZIy4JQZmwxAIoDsosT3lSwIjZVZ4HFcLIXs74iSnjTheOnjyySpOXXJ6d
- A5TdHK7jSZd8W5Td9oFPOncZIrJolvNYQ0+XZAMbPaiLKOHlOQqNRHcvgJtTdBqvxoy2aXyvh
- 1ttR7HYhwkfwNKDj+ePJS3qOZ4g/5PYgNCqHfYbY3nXq5zr7Ly0Cv+6Wt/Y0CihqrKreMt6RA
- LlSIAEV4Cj0KlHtixKhPr4ZvuVILGARUd/Di8X7E7+AHg9bngHZzQNPhQUfsVsSMz8CAmnD64
- yLbadY8wwS69kr1p1kQ3hTRGBlZYZTXA5sc00RRrvF4U43QEiFAa4+HJSyw9ULffaJw5TqavN
- qYZKKeLWRCNZX0Xvt4uD7DkmeXI4nEMud2QLxaWJlnfP2TmCETyt9mIdB2KV4gO4bq8ceA+t4
- Q2ITFLZpfPu7Ls6VNsTHvYf6jpcblnGleYRjDQezzL2N+ug4XZkKbbAJ+7zzG+ytFXtzqxqeF
- 9C6nCNzVcmE6phvhXU2o56XB6FVHTBAsoOHgxnRi9UL1mL+S1IUi4LV/JvbuhT5+sZ2YCGP7t
- PTB3ZKkdavrQxn/QYDsPysaQX0Zm2C+Ss8bmsOsAbCtdp2QL/82F9fnsXm5J+M9J/AvVsU4Tp
- tmYUOZKbR7nxOZ6sH2TbODyeD9lhHb6I4nVZks56P6/5+Oe1Jq7htj18i+JRStW0NLoFGVzvc
- uCbS9W4QkGL5+s=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Default KBUILD_IMAGE to $(boot)/bzImage if a self-extracting
-(CONFIG_PARISC_SELF_EXTRACT=3Dy) kernel will be built.
-This fixes the bindeb-pkg make target.
+Fix section mismatch warning in parisc-agp:
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-=2D--
- arch/parisc/Makefile | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+WARNING: modpost: drivers/char/agp/parisc-agp.o(.text+0x7a0): Section mismatch in reference from the function init_module() to the function .init.text:parisc_agp_setup.isra.0()
+The function init_module() references
+the function __init parisc_agp_setup.isra.0().
+This is often because init_module lacks a __init 
+annotation or the annotation of parisc_agp_setup.isra.0 is wrong.
 
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index 8db4af4879d0..0b34f58d6fab 100644
-=2D-- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -15,7 +15,10 @@
- # Mike Shaver, Helge Deller and Martin K. Petersen
- #
+Fixes: 08a6436816f7 ("[PARISC] Add support for Quicksilver AGPGART")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: David Airlie <airlied@linux.ie>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org
+---
+ drivers/char/agp/parisc-agp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--KBUILD_IMAGE :=3D vmlinuz
-+ifdef CONFIG_PARISC_SELF_EXTRACT
-+boot :=3D arch/parisc/boot
-+KBUILD_IMAGE :=3D $(boot)/bzImage
-+endif
-
- NM		=3D sh $(srctree)/arch/parisc/nm
- CHECKFLAGS	+=3D -D__hppa__=3D1
-=2D-
-2.31.1
-
+--- linux-next-20211126.orig/drivers/char/agp/parisc-agp.c
++++ linux-next-20211126/drivers/char/agp/parisc-agp.c
+@@ -378,7 +378,7 @@ find_quicksilver(struct device *dev, voi
+ 	return 0;
+ }
+ 
+-static int
++static int __init
+ parisc_agp_init(void)
+ {
+ 	extern struct sba_device *sba_list;
