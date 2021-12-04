@@ -2,94 +2,76 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDE29C4167B
-	for <linux-parisc@archiver.kernel.org>; Tue, 30 Nov 2021 15:02:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D7A1C433EF
+	for <linux-parisc@archiver.kernel.org>; Sat,  4 Dec 2021 12:15:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244740AbhK3PGN (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 30 Nov 2021 10:06:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244691AbhK3PCl (ORCPT
+        id S1384894AbhLDMTV (ORCPT
+        <rfc822;linux-parisc@archiver.kernel.org>);
+        Sat, 4 Dec 2021 07:19:21 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59078 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236691AbhLDMTV (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 30 Nov 2021 10:02:41 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29202C08EA41;
-        Tue, 30 Nov 2021 06:53:54 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 76166CE1A84;
-        Tue, 30 Nov 2021 14:53:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE798C53FCD;
-        Tue, 30 Nov 2021 14:53:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638284030;
-        bh=EGDJvL6BOLQxfNAUYSF7urXaPeK+GMK9kP0lBV4i+94=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aoHrm0wc2Gw4huw/0eJNyuh32YIlw7TTyloWZtbH9YaiuD4VGq0/5yEz6BMCQ0tdY
-         wdu4Gw9HZERU2Pmc7/wqXvwmphGz/0+CxJTPVRkDsrbgETmARvWy7jZjyaEurt+/Jm
-         R4yZzP78Aa4hQBlHEEqQpW2z1puaYlrpKVBGbiySe76SeQzHSAmQ57Kea1hgQxaySl
-         CdGOpKegu4rK/JjokVbvHyN+fscJUVK4C7lAKdNWO1SmE4IMPrtY8ENGcP+E2Sb+2c
-         wuA6mP7AQZ7E9kOSnESH4ksmfANFQothVhWFu6WJQscdOJLW0zpZulixr7ERYSqNlf
-         HzBFSA3B5IOKA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Helge Deller <deller@gmx.de>,
+        Sat, 4 Dec 2021 07:19:21 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7E8E11C0BA4; Sat,  4 Dec 2021 13:15:54 +0100 (CET)
+Date:   Sat, 4 Dec 2021 13:15:53 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Helge Deller <deller@gmx.de>,
         John David Anglin <dave.anglin@bell.net>,
-        Sasha Levin <sashal@kernel.org>,
         James.Bottomley@HansenPartnership.com, svens@stackframe.org,
         linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 05/12] parisc: Provide an extru_safe() macro to extract unsigned bits
-Date:   Tue, 30 Nov 2021 09:53:33 -0500
-Message-Id: <20211130145341.946891-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211130145341.946891-1-sashal@kernel.org>
-References: <20211130145341.946891-1-sashal@kernel.org>
+Subject: Re: [PATCH AUTOSEL 4.4 4/9] parisc: Provide an extru_safe() macro to
+ extract unsigned bits
+Message-ID: <20211204121553.GA14855@duo.ucw.cz>
+References: <20211130145402.947049-1-sashal@kernel.org>
+ <20211130145402.947049-4-sashal@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
+Content-Disposition: inline
+In-Reply-To: <20211130145402.947049-4-sashal@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Helge Deller <deller@gmx.de>
 
-[ Upstream commit 169d1a4a2adb2c246396c56aa2f9eec3868546f1 ]
+--SLDf9lqlvOQaIe6s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The extru instruction leaves the most significant 32 bits of the
-target register in an undefined state on PA 2.0 systems.
-Provide a macro to safely use extru on 32- and 64-bit machines.
+Hi!
 
-Suggested-by: John David Anglin <dave.anglin@bell.net>
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/parisc/include/asm/assembly.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+> From: Helge Deller <deller@gmx.de>
+>=20
+> [ Upstream commit 169d1a4a2adb2c246396c56aa2f9eec3868546f1 ]
+>=20
+> The extru instruction leaves the most significant 32 bits of the
+> target register in an undefined state on PA 2.0 systems.
+> Provide a macro to safely use extru on 32- and 64-bit machines.
 
-diff --git a/arch/parisc/include/asm/assembly.h b/arch/parisc/include/asm/assembly.h
-index eb83d65153b83..2272cbeb65f22 100644
---- a/arch/parisc/include/asm/assembly.h
-+++ b/arch/parisc/include/asm/assembly.h
-@@ -153,6 +153,17 @@
- 	extrd,u \r, 63-(\sa), 64-(\sa), \t
- 	.endm
- 
-+	/* Extract unsigned for 32- and 64-bit
-+	 * The extru instruction leaves the most significant 32 bits of the
-+	 * target register in an undefined state on PA 2.0 systems. */
-+	.macro extru_safe r, p, len, t
-+#ifdef CONFIG_64BIT
-+	extrd,u	\r, 32+(\p), \len, \t
-+#else
-+	extru	\r, \p, \len, \t
-+#endif
-+	.endm
-+
- 	/* load 32-bit 'value' into 'reg' compensating for the ldil
- 	 * sign-extension when running in wide mode.
- 	 * WARNING!! neither 'value' nor 'reg' can be expressions
--- 
-2.33.0
+As the macro is not used by subsequent 4.4 patches, I don't believe
+this is suitable for -stable.
 
+Best regards,
+								Pavel
+--=20
+ 'DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk'
+ 'HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany'
+
+
+--SLDf9lqlvOQaIe6s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYatb+QAKCRAw5/Bqldv6
+8vZgAJwNJfS0alYMDuhThPe/0GSNC3mCqQCfekVNPzFj9sq4DMHvmkIQFmBgrsI=
+=2sbg
+-----END PGP SIGNATURE-----
+
+--SLDf9lqlvOQaIe6s--
