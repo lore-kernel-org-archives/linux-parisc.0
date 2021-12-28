@@ -2,93 +2,153 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10577C4332F
-	for <linux-parisc@archiver.kernel.org>; Mon, 27 Dec 2021 19:06:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF04CC4332F
+	for <linux-parisc@archiver.kernel.org>; Tue, 28 Dec 2021 10:08:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbhL0TGL (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 27 Dec 2021 14:06:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232361AbhL0TFf (ORCPT
+        id S233467AbhL1KIa (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 28 Dec 2021 05:08:30 -0500
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:46909 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231577AbhL1KI3 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 27 Dec 2021 14:05:35 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57796C06175A;
-        Mon, 27 Dec 2021 11:05:35 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 171B7B8113A;
-        Mon, 27 Dec 2021 19:05:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0E5BC36AEC;
-        Mon, 27 Dec 2021 19:05:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1640631932;
-        bh=KN/rfn8uLbLW12jyH3PUZ8URqNdpwFCpFYUNeRo93vw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qcoOYOi/CDBwm9xZ0KkK+/ZMJsLbmzYW/MzSlVVmDwBV4+z6m4H2lBI+hZpl1VwBP
-         egf/RhTZ4n7FzPqDnUXN7+yOIancFRz5Z5u8GFlRdF0hGBgzC7p0flyX7kTU7vvHCc
-         pdr/2PZmvC9Gf1I3z2uprPLewBgwdpmDy/7Js7n3qRUzGMh40zonshCJjdJR2L4Z9K
-         IempMakeb9VN8h2ufmG7livfqUa/Gb4xwX0g349gxVs/KMKZI3o7bcz2U84VKnk/Un
-         ly6Zd74rBkBe3QeFvDq4jZSclr1Ungqt4sg0y5hZJ02jcV7Ku/2hVQ0HyrxKi/oqPs
-         e7mxpuelwfqNQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Helge Deller <deller@gmx.de>,
-        John David Anglin <dave.anglin@bell.net>,
-        Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, svens@stackframe.org,
-        wangkefeng.wang@huawei.com, rmk+kernel@armlinux.org.uk,
-        akpm@linux-foundation.org, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 12/14] parisc: Clear stale IIR value on instruction access rights trap
-Date:   Mon, 27 Dec 2021 14:04:50 -0500
-Message-Id: <20211227190452.1042714-12-sashal@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20211227190452.1042714-1-sashal@kernel.org>
-References: <20211227190452.1042714-1-sashal@kernel.org>
+        Tue, 28 Dec 2021 05:08:29 -0500
+Received: by mail-pj1-f50.google.com with SMTP id rj2-20020a17090b3e8200b001b1944bad25so16624366pjb.5;
+        Tue, 28 Dec 2021 02:08:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1LdjVJCupkO66VZRPSdtPXWlxTkxQlblL8anKkt6w1Y=;
+        b=ZxAXFS8epFPw09ZN0+5hygHuHtiZD15wSaBV6dxyVVAvNOnLiTLcLSpVzMBp3GRSKs
+         lHONSdKRFsYbvSS2nNdc9qIlUsl6URjcppunLPl7poQwyhsAq54aQFG1T5efkgB0WTpj
+         jszpoUuVcDSpiNtyCF/Iuv+E019pAkaqLrKm408xBzxLPCiT59hf7wA+OVGSqW1PuNBS
+         IqNSrixAy/47uuKqQSMp71+oq4JVQ+fqDdr+cgWwUC+3FyMTTUmoEZUTFjwdwPeTFdkk
+         2G9f/TmP0nFeemKqPiUCLCJcTYa9EtgokgorLJG3SqwEPSIAJjU+qr//95aOIB9Wm4dU
+         Qcww==
+X-Gm-Message-State: AOAM531kJlRu9ZXA2MVpfjDqV+WLIS9VCO+uQj4cWaFiXbaxO/6LYPJK
+        cz0WDB9ZfFOUiA17tbzDs4KXNIakGRV9DA==
+X-Google-Smtp-Source: ABdhPJwtJyt0BgB9nbPsBRAQG20xhRS7PITFUS4MEI44HL4ksxJALw2U9DOV/Yv9U25TYDqf80Z5gg==
+X-Received: by 2002:a17:90b:1e07:: with SMTP id pg7mr25529252pjb.228.1640686108603;
+        Tue, 28 Dec 2021 02:08:28 -0800 (PST)
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com. [209.85.216.52])
+        by smtp.gmail.com with ESMTPSA id rm3sm15580381pjb.8.2021.12.28.02.08.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Dec 2021 02:08:28 -0800 (PST)
+Received: by mail-pj1-f52.google.com with SMTP id rj2-20020a17090b3e8200b001b1944bad25so16624295pjb.5;
+        Tue, 28 Dec 2021 02:08:27 -0800 (PST)
+X-Received: by 2002:a05:6122:21a6:: with SMTP id j38mr6293010vkd.39.1640686096258;
+ Tue, 28 Dec 2021 02:08:16 -0800 (PST)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20211227164317.4146918-1-schnelle@linux.ibm.com> <20211227164317.4146918-3-schnelle@linux.ibm.com>
+In-Reply-To: <20211227164317.4146918-3-schnelle@linux.ibm.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 28 Dec 2021 11:08:05 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXk6VcDryekkMJ3aGFnw4LLWOWMi8M2PwjT81PsOsOBMQ@mail.gmail.com>
+Message-ID: <CAMuHMdXk6VcDryekkMJ3aGFnw4LLWOWMi8M2PwjT81PsOsOBMQ@mail.gmail.com>
+Subject: Re: [RFC 02/32] Kconfig: introduce HAS_IOPORT option and select it as necessary
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Chris Zankel <chris@zankel.net>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org,
+        linux-s390@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Greg Ungerer <gerg@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Helge Deller <deller@gmx.de>
+Hi Niklas,
 
-[ Upstream commit 484730e5862f6b872dca13840bed40fd7c60fa26 ]
+On Mon, Dec 27, 2021 at 5:44 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
+> We introduce a new HAS_IOPORT Kconfig option to gate support for
+> I/O port access. In a future patch HAS_IOPORT=n will disable compilation
+> of the I/O accessor functions inb()/outb() and friends on architectures
+> which can not meaningfully support legacy I/O spaces. On these platforms
+> inb()/outb() etc are currently just stubs in asm-generic/io.h which when
+> called will cause a NULL pointer access which some compilers actually
+> detect and warn about.
+>
+> The dependencies on HAS_IOPORT in drivers as well as ifdefs for
+> HAS_IOPORT specific sections will be added in subsequent patches on
+> a per subsystem basis. Then a final patch will ifdef the I/O access
+> functions on HAS_IOPORT thus turning any use not gated by HAS_IOPORT
+> into a compile-time warning.
+>
+> Link: https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
+> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
 
-When a trap 7 (Instruction access rights) occurs, this means the CPU
-couldn't execute an instruction due to missing execute permissions on
-the memory region.  In this case it seems the CPU didn't even fetched
-the instruction from memory and thus did not store it in the cr19 (IIR)
-register before calling the trap handler. So, the trap handler will find
-some random old stale value in cr19.
+Thanks for your patch!
 
-This patch simply overwrites the stale IIR value with a constant magic
-"bad food" value (0xbaadf00d), in the hope people don't start to try to
-understand the various random IIR values in trap 7 dumps.
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -16,6 +16,7 @@ config M68K
+>         select GENERIC_CPU_DEVICES
+>         select GENERIC_IOMAP
+>         select GENERIC_IRQ_SHOW
+> +       select HAS_IOPORT
+>         select HAVE_AOUT if MMU
+>         select HAVE_ASM_MODVERSIONS
+>         select HAVE_DEBUG_BUGVERBOSE
 
-Noticed-by: John David Anglin <dave.anglin@bell.net>
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/parisc/kernel/traps.c | 2 ++
- 1 file changed, 2 insertions(+)
+This looks way too broad to me: most m68k platform do not have I/O
+port access support.
 
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index a52c7abf2ca49..43f56335759a4 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -729,6 +729,8 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
- 			}
- 			mmap_read_unlock(current->mm);
- 		}
-+		/* CPU could not fetch instruction, so clear stale IIR value. */
-+		regs->iir = 0xbaadf00d;
- 		fallthrough;
- 	case 27: 
- 		/* Data memory protection ID trap */
--- 
-2.34.1
+My gut feeling says:
 
+    select HAS_IOPORT if PCI || ISA
+
+but that might miss some intricate details...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
