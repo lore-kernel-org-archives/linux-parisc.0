@@ -2,194 +2,272 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB62CC433FE
-	for <linux-parisc@archiver.kernel.org>; Wed, 29 Dec 2021 04:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8635C433EF
+	for <linux-parisc@archiver.kernel.org>; Wed, 29 Dec 2021 23:07:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238703AbhL2EPw (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 28 Dec 2021 23:15:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234127AbhL2EPv (ORCPT
-        <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 28 Dec 2021 23:15:51 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C94C061574;
-        Tue, 28 Dec 2021 20:15:50 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id y16-20020a17090a6c9000b001b13ffaa625so23422714pjj.2;
-        Tue, 28 Dec 2021 20:15:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=oo7gGMOkpKZtsifyQrF9uAkP4p/YBx2m/GIQa4Tq0YE=;
-        b=SgUGGN6VhsGuSJ4+x7BV8WmUFGnq6AU/S3MGIbRuvgcmK5iemLDPInHX4HtGqsDBOP
-         X+ShdKiY6WGvZxZzGll6Lp9gXc9Iofh3zmxzNCmw3Dn3KgxWg++og+5/hcFLsP9lz2Xr
-         2GF2kpRya+BTKsokuDFYluzgdLN+9R6oDmfEeq5seHlKkuDQoWmHZpB5lsfFQJLsHHhA
-         J+6fOy7KSqTSf4RHl5+/z/3kvG8PPaQjjUrbxIO/1twWStmOPd1O5hfeFSFRI+7/1KDQ
-         V6duyLcOszOYryU8sc+sZAK9TuMnZyNEumxgE9K0xpEM2ht/1sy9t9bhV6U0QsHIl9qG
-         4r0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=oo7gGMOkpKZtsifyQrF9uAkP4p/YBx2m/GIQa4Tq0YE=;
-        b=KBzGL3s6jpYh+zXFhoNlooew1/s2GIKYj5wfouCPH52rXnr7OLq4aIlM9+vyDkDQCd
-         IpiAzfROzeAL+RaHmxRt4fQg0ufpGoqkoc+B7E1ztllRb0oZRIn0Fuqwikmg5sTDz7UX
-         auuBwKPJy1Zw7LwGNj/yBVs1wB0NX7XhKCpQ/+3PZjfpx1qjNThDu6bb9jBB17m+E4OD
-         J+IX+YHJSHEZ3odqwLIYkjOr1a9rduBLYr2MDq9pv/a8dboDTFxQo0tYvmlWi56MKCLB
-         r84H/bcbmM29qT19TbQ1N72096xP2NTeXQbo3fWS48Zk44qUqT7Ar/nYZsdw97ZbOd9g
-         aKEA==
-X-Gm-Message-State: AOAM531I4wokCnYgtKI2zEtEXZOhBV7RmIehnSoVPQ5d3n7itvOZeaVa
-        X8yVj//7LWOtrWR33DZPFyg=
-X-Google-Smtp-Source: ABdhPJyjCqGNhQip5lk1bKe/Q9ifrO91rL0XFrD4WiMDGXXaVLZjRe+Yr2Tq1lIfNgSSQkzYLSFwkQ==
-X-Received: by 2002:a17:902:d48a:b0:148:a8ae:7ab7 with SMTP id c10-20020a170902d48a00b00148a8ae7ab7mr24900237plg.171.1640751350387;
-        Tue, 28 Dec 2021 20:15:50 -0800 (PST)
-Received: from [10.1.1.24] (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
-        by smtp.gmail.com with ESMTPSA id k9sm13406563pgr.47.2021.12.28.20.15.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Dec 2021 20:15:49 -0800 (PST)
-Subject: Re: [RFC 02/32] Kconfig: introduce HAS_IOPORT option and select it as
- necessary
-To:     Arnd Bergmann <arnd@kernel.org>
-References: <20211227164317.4146918-1-schnelle@linux.ibm.com>
- <20211227164317.4146918-3-schnelle@linux.ibm.com>
- <CAMuHMdXk6VcDryekkMJ3aGFnw4LLWOWMi8M2PwjT81PsOsOBMQ@mail.gmail.com>
- <d406b93a-0f76-d056-3380-65d459d05ea9@gmail.com>
- <CAK8P3a2j-OFUUp+haHoV4PyL-On4EASZ9+59SDqNqmL8Gv_k7Q@mail.gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, openrisc@lists.librecores.org,
-        linux-s390@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        Greg Ungerer <gerg@linux-m68k.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <1f90f145-219e-1cad-6162-9959d43a27ad@gmail.com>
-Date:   Wed, 29 Dec 2021 17:15:23 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        id S232785AbhL2XHG (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 29 Dec 2021 18:07:06 -0500
+Received: from mout.gmx.net ([212.227.17.21]:51555 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232769AbhL2XHG (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Wed, 29 Dec 2021 18:07:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1640819213;
+        bh=SYmeoFKn79TdyxyJU+F/9tgIYGkCh8LielbsvSIywVc=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=X7Lx9WzDspAj+LiVfn5JgEL8cg5WpGqQwtlYQNyQOV80qyinvGvlMbrSJCwBHISo+
+         AtA6w5sjbTtM9tfKF4kgYbI1HYg2uFqjdHV/KEYgZiD8ZDHxdesG8fFg+s1TF/aoYj
+         9FDuHbXPWVQhEmXYZUprqD5c82wo6nY660NJuuWs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.186.210]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MzQkK-1mG7kz2oTI-00vS1H; Thu, 30
+ Dec 2021 00:06:53 +0100
+Message-ID: <fe133e70-a766-5789-0cbe-8dac7df59258@gmx.de>
+Date:   Thu, 30 Dec 2021 00:05:57 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2j-OFUUp+haHoV4PyL-On4EASZ9+59SDqNqmL8Gv_k7Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] target/hppa: Fix atomic_store_3 for STBY
+Content-Language: en-US
+To:     Richard Henderson <richard.henderson@linaro.org>,
+        qemu-devel@nongnu.org
+Cc:     dave.anglin@bell.net, linux-parisc <linux-parisc@vger.kernel.org>
+References: <20211229222926.152109-1-richard.henderson@linaro.org>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <20211229222926.152109-1-richard.henderson@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mtyDH5DwQPnBoaoQsVMewy+OJvID/orhX3lJrtl345Mj37WzcTx
+ vUQ9tYHugZZYiNO+gLOtpfy6EOKbTXgG4wrqcXyiuiIhHjzBtF+DTlgEZQUxz4x9mWWU0Y7
+ /Ovx+vOl8i49lmXj0Te+JzFR138PMDPx6VXSX5SqgmaolaRUrMSkcGfZE0kLnzh4W3Ei2oh
+ gWz/Xvxa2iBI91CaicKTQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ELh/ghjJFfI=:O4I+7nWn4T8kctLUD8+3+1
+ Evhe0KW4O0dPpWi7HqdVkImeJl87CnCpgwyKe4YDgCO8P3mvNhsWzyv+MMX6UGJmoQKXBGLrJ
+ h0NHgOtsC9FfuaHHyhtZeNa8RgmJn140CeFkvw+0iAP0i6+cVXKVq5E3APPr8JvSbjBCcEXG7
+ 5dqT9CYDYPNkdEDAgS8m3zORpprKAXYxY8VukYf1rfcEt/kgohpTvneL8D01hNHSmB6hVsBCT
+ utuP4OFg73KTDMMcwMIk9JQKgo1/TfF/p26YJ53QHgqJ8ZSLQBMj/l2EFxpuEL+ZWVaPs/3rO
+ fbOHoQxA1sS4gRuBlc3gzdj0+azbm022hqVaia0ocN2kSjZxE8v5A7k0O4/1VsNL8CeEGFcGN
+ lMqlQQKF5owti1ScQpftvYGSyEOLhqBeBjQts5wwBTY3etsNs0SVdBKttI2HUsQxhwTH3PJUR
+ SUdAFw0Mn2f9eAhTTE7LLHlQklJgRis6BWXg1I623cIkG7GP3DgjYE52/AP1iw1qmqc6WYrF+
+ ThSQgqMzuVko+89uUw51tkhOVH3exUR55uoVOQZLGc2DLMyP/6/opycJp3R2sAztMJcc1jC9x
+ FyFNAdHd3+Jl7y2SRf+G5vY1GBOT2mCzZ13t7BmggW9wjm6v3NKgYGzXsqZOOdC4O8HtA8h2A
+ n27aVIfnmqKVxZGlHpy5a4BNF6OpYBDyjyzhansp7LS35UNbbWExWv90ih3evo+tnPzEWjrad
+ PWxgIZGUhqnS7hztNUFNiDGtakVEEgupe7Lh3Ab16xbIjbwpvJbMyk/8H+Imv31pyP56diyFX
+ rn8Ln+hkZfmdYVFfLYi7jtDNkiKOnTd0fiBNcnhDZZbZ4undm+CNzi3kwx3Ii4UkivZ2sRnMy
+ D3xEhSlECAzF/+UaV8MrLwVKT3vSYeXltgwxSqOxO07CyuE3YBVwjBgVTWAexl278MmNSqwxp
+ wTeCssc+b+CV39lwTPdNB0RomGJ8C+zQ0dWB7qX24d6UUkPv1KCT8SGw8OxgiCNN0KUh41QO6
+ M9XeeCYUIsu6nH0jULZPU2DkS7Uk2RIEezHrvM4y13BBLBcbsHMDyc3f+/7kIMMdAxKfuFZan
+ 5r+Gh6H39WjjY0=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Arnd,
-
-Am 29.12.2021 um 16:41 schrieb Arnd Bergmann:
-> On Tue, Dec 28, 2021 at 8:20 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> Am 28.12.2021 um 23:08 schrieb Geert Uytterhoeven:
->>> On Mon, Dec 27, 2021 at 5:44 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
->>>> We introduce a new HAS_IOPORT Kconfig option to gate support for
->>>> I/O port access. In a future patch HAS_IOPORT=n will disable compilation
->>>> of the I/O accessor functions inb()/outb() and friends on architectures
->>>> which can not meaningfully support legacy I/O spaces. On these platforms
->>>> inb()/outb() etc are currently just stubs in asm-generic/io.h which when
->>>> called will cause a NULL pointer access which some compilers actually
->>>> detect and warn about.
->>>>
->>>> The dependencies on HAS_IOPORT in drivers as well as ifdefs for
->>>> HAS_IOPORT specific sections will be added in subsequent patches on
->>>> a per subsystem basis. Then a final patch will ifdef the I/O access
->>>> functions on HAS_IOPORT thus turning any use not gated by HAS_IOPORT
->>>> into a compile-time warning.
->>>>
->>>> Link: https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
->>>> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
->>>> Signed-off-by: Arnd Bergmann <arnd@kernel.org>
->>>> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
->>>
->>> Thanks for your patch!
->>>
->>>> --- a/arch/m68k/Kconfig
->>>> +++ b/arch/m68k/Kconfig
->>>> @@ -16,6 +16,7 @@ config M68K
->>>>         select GENERIC_CPU_DEVICES
->>>>         select GENERIC_IOMAP
->>>>         select GENERIC_IRQ_SHOW
->>>> +       select HAS_IOPORT
->>>>         select HAVE_AOUT if MMU
->>>>         select HAVE_ASM_MODVERSIONS
->>>>         select HAVE_DEBUG_BUGVERBOSE
->>>
->>> This looks way too broad to me: most m68k platform do not have I/O
->>> port access support.
->>>
->>> My gut feeling says:
->>>
->>>     select HAS_IOPORT if PCI || ISA
->>>
->>> but that might miss some intricate details...
->>
->> In particular, this misses the Atari ROM port ISA adapter case -
->>
->>         select HAS_IOPORT if PCI || ISA || ATARI_ROM_ISA
->>
->> might do instead.
+On 12/29/21 23:29, Richard Henderson wrote:
+> The parallel version of STBY did not take host endianness into
+> account, and also computed the incorrect address for STBY_E.
 >
-> Right, makes sense. I had suggested to go the easy way and assume that
-> each architecture would select HAS_IOPORT if any configuration supports
-> it, but it looks like for m68k there is a clearly defined set of platforms that
-> do.
+> Bswap twice to handle the merge and store.  Compute mask inside
+> the function rather than as a parameter.  Force align the address,
+> rather than subtracting one.
 >
-> Note that for the platforms that don't set any of the three symbols, the
-> fallback makes inb() an alias for readb() with a different argument type,
-> so there may be m68k specific drivers that rely on this, but those would
-> already be broken if ATARI_ROM_ISA is set.
-
-I'd hope not - we spent some effort to make sure setting ATARI_ROM_ISA 
-does not affect other m68k platforms when e.g. building multiplatform 
-kernels.
-
-Replacing inb() by readb() without any address translation won't do much 
-good for m68k though - addresses in the traditional ISA I/O port range 
-would hit the (unmapped) zero page.
-
-Cheers,
-
-	Michael
-
+> Generalize the function to system mode by using probe_access().
 >
->           Arnd
+> Reported-by: Helge Deller <deller@gmx.de>
+> Signed-off-by: Richard Henderson <richard.henderson@linaro.org>
+
+Please add:
+Tested-by: Helge Deller <deller@gmx.de>
+
+I successfully tested the included stby test case on physical hardware and=
+ in qemu (on x86).
+My original problem where gcc (on hppa) produces wrong assembly output is =
+fixed too.
+Please backport this patch to qemu v6.1.x and v6.0.x.
+
+Thank you!
+Helge
+
+
+> ---
+>  target/hppa/op_helper.c        | 27 ++++++-----
+>  tests/tcg/hppa/stby.c          | 87 ++++++++++++++++++++++++++++++++++
+>  tests/tcg/hppa/Makefile.target |  5 ++
+>  3 files changed, 107 insertions(+), 12 deletions(-)
+>  create mode 100644 tests/tcg/hppa/stby.c
 >
+> diff --git a/target/hppa/op_helper.c b/target/hppa/op_helper.c
+> index 96d9391c39..1b86557d5d 100644
+> --- a/target/hppa/op_helper.c
+> +++ b/target/hppa/op_helper.c
+> @@ -57,26 +57,29 @@ void HELPER(tcond)(CPUHPPAState *env, target_ureg co=
+nd)
+>      }
+>  }
+>
+> -static void atomic_store_3(CPUHPPAState *env, target_ulong addr, uint32=
+_t val,
+> -                           uint32_t mask, uintptr_t ra)
+> +static void atomic_store_3(CPUHPPAState *env, target_ulong addr,
+> +                           uint32_t val, uintptr_t ra)
+>  {
+> -#ifdef CONFIG_USER_ONLY
+> -    uint32_t old, new, cmp;
+> +    int mmu_idx =3D cpu_mmu_index(env, 0);
+> +    uint32_t old, new, cmp, mask, *haddr;
+> +    void *vaddr;
+> +
+> +    vaddr =3D probe_access(env, addr, 3, MMU_DATA_STORE, mmu_idx, ra);
+> +    if (vaddr =3D=3D NULL) {
+> +        cpu_loop_exit_atomic(env_cpu(env), ra);
+> +    }
+> +    haddr =3D (uint32_t *)((uintptr_t)vaddr & -4);
+> +    mask =3D addr & 1 ? 0x00ffffffu : 0xffffff00u;
+>
+> -    uint32_t *haddr =3D g2h(env_cpu(env), addr - 1);
+>      old =3D *haddr;
+>      while (1) {
+> -        new =3D (old & ~mask) | (val & mask);
+> +        new =3D be32_to_cpu((cpu_to_be32(old) & ~mask) | (val & mask));
+>          cmp =3D qatomic_cmpxchg(haddr, old, new);
+>          if (cmp =3D=3D old) {
+>              return;
+>          }
+>          old =3D cmp;
+>      }
+> -#else
+> -    /* FIXME -- we can do better.  */
+> -    cpu_loop_exit_atomic(env_cpu(env), ra);
+> -#endif
+>  }
+>
+>  static void do_stby_b(CPUHPPAState *env, target_ulong addr, target_ureg=
+ val,
+> @@ -92,7 +95,7 @@ static void do_stby_b(CPUHPPAState *env, target_ulong =
+addr, target_ureg val,
+>      case 1:
+>          /* The 3 byte store must appear atomic.  */
+>          if (parallel) {
+> -            atomic_store_3(env, addr, val, 0x00ffffffu, ra);
+> +            atomic_store_3(env, addr, val, ra);
+>          } else {
+>              cpu_stb_data_ra(env, addr, val >> 16, ra);
+>              cpu_stw_data_ra(env, addr + 1, val, ra);
+> @@ -122,7 +125,7 @@ static void do_stby_e(CPUHPPAState *env, target_ulon=
+g addr, target_ureg val,
+>      case 3:
+>          /* The 3 byte store must appear atomic.  */
+>          if (parallel) {
+> -            atomic_store_3(env, addr - 3, val, 0xffffff00u, ra);
+> +            atomic_store_3(env, addr - 3, val, ra);
+>          } else {
+>              cpu_stw_data_ra(env, addr - 3, val >> 16, ra);
+>              cpu_stb_data_ra(env, addr - 1, val >> 8, ra);
+> diff --git a/tests/tcg/hppa/stby.c b/tests/tcg/hppa/stby.c
+> new file mode 100644
+> index 0000000000..36bd5f723c
+> --- /dev/null
+> +++ b/tests/tcg/hppa/stby.c
+> @@ -0,0 +1,87 @@
+> +/* Test STBY */
+> +
+> +#include <pthread.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +
+> +
+> +struct S {
+> +    unsigned a;
+> +    unsigned b;
+> +    unsigned c;
+> +};
+> +
+> +static void check(const struct S *s, unsigned e,
+> +                  const char *which, const char *insn, int ofs)
+> +{
+> +    int err =3D 0;
+> +
+> +    if (s->a !=3D 0) {
+> +        fprintf(stderr, "%s %s %d: garbage before word 0x%08x\n",
+> +                which, insn, ofs, s->a);
+> +        err =3D 1;
+> +    }
+> +    if (s->c !=3D 0) {
+> +        fprintf(stderr, "%s %s %d: garbage after word 0x%08x\n",
+> +                which, insn, ofs, s->c);
+> +        err =3D 1;
+> +    }
+> +    if (s->b !=3D e) {
+> +        fprintf(stderr, "%s %s %d: 0x%08x !=3D 0x%08x\n",
+> +                which, insn, ofs, s->b, e);
+> +        err =3D 1;
+> +    }
+> +
+> +    if (err) {
+> +        exit(1);
+> +    }
+> +}
+> +
+> +#define TEST(INSN, OFS, E)                                         \
+> +    do {                                                           \
+> +        s.b =3D 0;                                                   \
+> +        asm volatile(INSN " %1, " #OFS "(%0)"                      \
+> +                     : : "r"(&s.b), "r" (0x11223344) : "memory");  \
+> +        check(&s, E, which, INSN, OFS);                            \
+> +    } while (0)
+> +
+> +static void test(const char *which)
+> +{
+> +    struct S s =3D { };
+> +
+> +    TEST("stby,b", 0, 0x11223344);
+> +    TEST("stby,b", 1, 0x00223344);
+> +    TEST("stby,b", 2, 0x00003344);
+> +    TEST("stby,b", 3, 0x00000044);
+> +
+> +    TEST("stby,e", 0, 0x00000000);
+> +    TEST("stby,e", 1, 0x11000000);
+> +    TEST("stby,e", 2, 0x11220000);
+> +    TEST("stby,e", 3, 0x11223300);
+> +}
+> +
+> +static void *child(void *x)
+> +{
+> +    return NULL;
+> +}
+> +
+> +int main()
+> +{
+> +    int err;
+> +    pthread_t thr;
+> +
+> +    /* Run test in serial mode */
+> +    test("serial");
+> +
+> +    /* Create a dummy thread to start parallel mode. */
+> +    err =3D pthread_create(&thr, NULL, child, NULL);
+> +    if (err !=3D 0) {
+> +        fprintf(stderr, "pthread_create: %s\n", strerror(err));
+> +        return 2;
+> +    }
+> +
+> +    /* Run test in parallel mode */
+> +    test("parallel");
+> +    return 0;
+> +}
+> diff --git a/tests/tcg/hppa/Makefile.target b/tests/tcg/hppa/Makefile.ta=
+rget
+> index d0d5e0e257..b78e6b4849 100644
+> --- a/tests/tcg/hppa/Makefile.target
+> +++ b/tests/tcg/hppa/Makefile.target
+> @@ -12,3 +12,8 @@ run-signals: signals
+>  	$(call skip-test, $<, "BROKEN awaiting vdso support")
+>  run-plugin-signals-with-%:
+>  	$(call skip-test, $<, "BROKEN awaiting vdso support")
+> +
+> +VPATH +=3D $(SRC_PATH)/tests/tcg/hppa
+> +TESTS +=3D stby
+> +
+> +stby: CFLAGS +=3D -pthread
+>
+
