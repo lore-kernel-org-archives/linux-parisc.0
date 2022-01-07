@@ -2,74 +2,91 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58FFDC433F5
-	for <linux-parisc@archiver.kernel.org>; Fri,  7 Jan 2022 00:45:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 172F9C433EF
+	for <linux-parisc@archiver.kernel.org>; Fri,  7 Jan 2022 13:19:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344011AbiAGApZ (ORCPT
+        id S1347521AbiAGNT5 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 6 Jan 2022 19:45:25 -0500
-Received: from mout.gmx.net ([212.227.15.15]:58255 "EHLO mout.gmx.net"
+        Fri, 7 Jan 2022 08:19:57 -0500
+Received: from mout.gmx.net ([212.227.15.19]:38565 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343865AbiAGApY (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 6 Jan 2022 19:45:24 -0500
+        id S238787AbiAGNT5 (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Fri, 7 Jan 2022 08:19:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1641516323;
-        bh=mi9Hx1hKcNAvUHRCowjJSH43FnbgZnlWG3ag3B+81sk=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=MJgE6ueANT9vCqqlrOfYHOTT0QGw/0CpiAr0/4MKJeB8+3uqDXWJjXv+fC/4tGZgM
-         vTPigp21ivsY6LpmaeAL5upVMYlxY6p1orcYk9wx5wbPfDQZFNCocgnGoDBloONWum
-         1OHuB30REOoDRos71YoKywSKT2uOPO2MZ7FCLVtY=
+        s=badeba3b8450; t=1641561590;
+        bh=AWGzjCMh91ivRwknZ1BunN4mGb98yDXa7jE8NGqD0/Y=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=ko5nosqpXvYZntToDaGDooHiIdFWnbx/BSfvwRLDkjTz+ob2SjLeP0PzrALmPcw0c
+         WPANREF8Nxc5ThrGFI7KkWVXBcPby1h4+ZdKyJGMB1zsL6fizH/kRRtgCg3axY4Bok
+         71Rx5I9vbwOygx/4uH5mELN9WO04/AV76TMJILjA=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530 ([92.116.152.191]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MIdeR-1n8hmQ0p5p-00EbBA; Fri, 07
- Jan 2022 01:45:23 +0100
-Date:   Fri, 7 Jan 2022 01:44:23 +0100
+Received: from ls3530.fritz.box ([92.116.182.203]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M9Wys-1n2VEX3Te8-005Yc8; Fri, 07
+ Jan 2022 14:19:49 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org
-Subject: [PATCH] parisc: Include Intel E1000 driver in 32-bit defconfig
-Message-ID: <YdeM5172NZkBA1EU@ls3530>
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>,
+        Sven Schnelle <svens@stackframe.org>
+Subject: [PATCH 2/2] parisc: Re-use toc_stack as hpmc_stack
+Date:   Fri,  7 Jan 2022 14:18:50 +0100
+Message-Id: <20220107131850.737880-2-deller@gmx.de>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20220107131850.737880-1-deller@gmx.de>
+References: <20220107131850.737880-1-deller@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:QOYGGN0l9p5jy+4j/BFEd68MM48hHxPzr1a3De0TS0sVbmz5OK+
- 9didBGxqfZmTQpgMKDU5msSqp+QltgdRUzfCZ/jakXAyvxQsW7RsgSmvwHvGpiqnGSGyUw2
- YOb/SovYOhoJcm1HsMPiQV9/gyQJEGG3avCZ62ZKYfI1i+x4+m050MoXvPZnZH53qvBNT9Y
- bt/PUFTk21Uu0fWg+x8Pw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bgSPlqfRQAg=:GcimzK5sBUo/aEfjUpx0kC
- Rq3NS872/hKsOlamQcwDSxpld3NsBlY95e3gjBQ3XVWThyHNyejZ75iXmBid4Evy79YqOfTCM
- FND8w2Ik7k+otJdnYSnAYZeedWBW0TtX7LrLqKYIoLS76wPGnDSDOOFrfn5yvnCW0GIum0HQE
- pksYlglVDf17rU38OB1yiFpUgCS3KoMBayNSB755c+ev4TcG1vTdHvuT8CmU2yiibyIkJjy5A
- 6lzvrlCPDDbzGng3pxPl963YxY6HJd5XZIGvRnukR1rPz1/D61y8Haz0MfOtBaZhoE7PMEbcF
- u5aX0gN+8XTuVoR1GCW8RrhyCjyfkNEi27nqD41Xemp6OAj4fkSAj/RthlSz4ewzeeeu8cA/1
- zjXLU48l5L3lLDuH+Dz5kttcfMZ+88JQKU9Wh9IBWxNV74x4xmWO4qLXKZxr1fKnwNTS+uDX0
- vWi7wVfahFbwt+5PZ1xldwn28YBW5288bb4G6czDFtVfLgeV2ygRATZxNMItJxxUV4BzXscbM
- /5KdejBQNeryT98g35mh2RvLmO/4FValbsoFcUENq2XwEQOkqadEW9KWKGmfkMTGm1htlf/JV
- 53QB1q4U+pxo8ENM5c6xLNioj9x0Tx32T2hy7n+z2uja6UigXg541zQOglgt5VHBC7o2ccQg9
- zm8Y2OUxilHY8bFLLUtyrdi6SyNR0IP6LU54hUBuMqn+3yHDOws1kwxH/7xgO662gJ06gAu2F
- lq3vQ+XGgN6tx9mOVyNCPTdfTIgSZNR4CCzeUnZ9q4zYYC1A7nQtRMZsYGufQ7RBc3KSFAz0V
- IxFKJWfZC/cCn651D+cuGnEi6gKOkOXFa2MuKebZMpkywvWKCW+Aq7lzleKaxF4dxQIrPdTUW
- 1NBdU1u9Ca97kIgm4WmXZKMh1ESXAkCbjne3dtHdFiOPRzrarPQdRvAMZGZM78yqDY6K3ApZ+
- hSm/2bLwxDD9E97pFKlmF/3WFBSkAi2JwnpGQE4ROObNuANETJvC2niNv1LaXk/mg4NNtRYKk
- RBCFJY4/FaUOh0OvxmaT26YUwE9AnfQsvh6cXGRB6WBH/HpvjWBlV8V7a7sqkC0RbNJYxQ90c
- 2Dxco3zOtmqHng=
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:LYaxmNknkwYofCpGFHjw1vBhnE2qphYsZIZY6n/ArQNRpe3cY7x
+ t21845+0Z16VV6hJAcDEqXsI0Dupr4tPBocCiF1Qb0ua2ahzJfdUg5XlYGgX2sNfqbzDeIj
+ I7NYwBpMqb3DjTm3DPNxvGsJ0RedD+56lBIXUmmJxCo3jGG6y37/bTRT0au3HEKNL3xPaeI
+ KpZ+uhBwjqo3A8W6hNSlg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:D9caliYJenw=:tvO6sT1eKoYIF5CKmSd4CI
+ rKoqjs3Mo2hOrVbIksPNM2wapJZQTrLO7mON4Wlvr5Pkz929YPlUUZ4kh8/yFtCMlR8mmeNet
+ sgQ6+98RinNP74nV4QaC0tx0fnXYbfspmiEpk9NTHBKN6mJ9J3RDJFNbe12+nab19Yq0XQCLa
+ 4UawmE+iIGx/DiPDNkUrFBxbR3tHM9eHGdBALiJbQnD+mWKj3QaBBSZSMt9Jt/QKRSJ5rDQAq
+ NV7xdJMq3gzb4VQh8Tw4X1+xnVISwD6MQrDtobX2a+WO53VIWQ/bKnbCA23xgDaLjxZRoj4oi
+ TL9pJkWxfiAt14zdaE0U1ghnZ/T3G5UX6Phe5nyiuKcTb9kJ4jtg5rCMf+CVwQinG9VDTXvpM
+ Ij43dNEhiXRaf2ykjYAEkTDZv7nzpQ8J7km4MsSPgiol9xLGKkrSQjluANyPHlWbKjpojZOr6
+ mN/IkgBnqi8+vuXwsi4W4XFMmzCzPJaWdnGArW2qhlwExeQZvj8cYDRBKDR8V77C9SHVio5bk
+ cenZ3Fl271bMzGE+kBtmWv5IXHv01Qeq7j5soA28BwzA2cxAhalxqQrUAANS2oG5fUN6Tbfde
+ 33TV9V2oJ7KIMNzwrGNvB/mnzdSYo8dRQwTF8tuO+HKNbydluE2HYSW2xnG9HHVcgc+8QiYh/
+ 9891vHVFc+B6LVtTI5clTVeD7pvS9wjC91mQ2m8ut/AnrnUxYdTrolu1+5cwyLW9LYcoGQ82I
+ 4IYZF4mA9dYEP5KocoiqN8dqnTht7bNrnThm7mC6aT8glfZqFsGSkmyguRXpJiPPMUfPopBk8
+ cDv8HBtAtWRnZP5SFPFT37kJYB4BhYhRMwf29bTnTR9F64LsKCyvswOhp8btLqBlasxw5C6qq
+ LAXBpaWomqHIloJ0zVWNhKASFHeiX6ztI9YdvH9V8DqNQSAhFH0AWq4nxlccES9d10om4GNez
+ qQutjDJG3IY/iidvKmsSWLexdvJuhJvbtAiJMBHMEbAT2LlySYuClI8SfanOH0c24anDtyzRG
+ swkr+EZWz1q90WOZ0+uY+WgbLgj5kmlpPUWTs8qxbiH3N8OgOA0ELZlVuJC3lUD0U03p1PKX0
+ QWB/IaAdXXFrlA=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This is currently the only emulated network card in qemu for parisc
-linux, so better include it in the default config.
+No need to have an own hpmc_stack. Just re-use the toc_stack of the
+monarch CPU as either a TOC or a HPMC will happen at the same time.
+This reduces the kernel memory footprint by 16k.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
+=2D--
+ arch/parisc/kernel/hpmc.S | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/parisc/configs/generic-32bit_defconfig b/arch/parisc/configs/generic-32bit_defconfig
-index 53061cb2cf7f..5945555a45d7 100644
---- a/arch/parisc/configs/generic-32bit_defconfig
-+++ b/arch/parisc/configs/generic-32bit_defconfig
-@@ -89,6 +88,7 @@ CONFIG_TULIP=y
- # CONFIG_NET_VENDOR_DLINK is not set
- # CONFIG_NET_VENDOR_EMULEX is not set
- CONFIG_LASI_82596=y
-+CONFIG_E1000=y
- # CONFIG_NET_VENDOR_MELLANOX is not set
- # CONFIG_NET_VENDOR_MICREL is not set
- # CONFIG_NET_VENDOR_MYRI is not set
+diff --git a/arch/parisc/kernel/hpmc.S b/arch/parisc/kernel/hpmc.S
+index c2981401775c..eb2e4bd67035 100644
+=2D-- a/arch/parisc/kernel/hpmc.S
++++ b/arch/parisc/kernel/hpmc.S
+@@ -43,10 +43,8 @@
+ 	 * IODC requires 7K byte stack.  That leaves 1K byte for os_hpmc.
+ 	 */
+
+-	__PAGE_ALIGNED_BSS
+-	.align 4096
+-hpmc_stack:
+-	.block 16384
++	.import toc_stack,data
++#define hpmc_stack	toc_stack	/* re-use the TOC stack */
+
+ #define HPMC_IODC_BUF_SIZE 0x8000
+
+=2D-
+2.31.1
+
