@@ -2,111 +2,97 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D075C433FE
-	for <linux-parisc@archiver.kernel.org>; Fri, 14 Jan 2022 07:08:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DDFEC433EF
+	for <linux-parisc@archiver.kernel.org>; Mon, 17 Jan 2022 09:13:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235841AbiANHIc (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 14 Jan 2022 02:08:32 -0500
-Received: from mout.gmx.net ([212.227.15.15]:44561 "EHLO mout.gmx.net"
+        id S233745AbiAQJNQ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 17 Jan 2022 04:13:16 -0500
+Received: from mout.gmx.net ([212.227.15.19]:54649 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbiANHIc (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 14 Jan 2022 02:08:32 -0500
+        id S233409AbiAQJNQ (ORCPT <rfc822;linux-parisc@vger.kernel.org>);
+        Mon, 17 Jan 2022 04:13:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1642144104;
-        bh=vwpivY4/f4ozJflRHmvOGAYJRU+qOl38ffk5zc0Sx+s=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=QdO2tPz/Ll0Ia2UiaIs42Ye6Xh4XFA1Y7lbBEpJT8H7k2T0yWc3NQSHM74go2fy84
-         mctx5RToseSZOfLueHx7XQ3TZZZ6HxbNwabMdEm1m+wC4He/FBAQO1Pe0uV7iiBzP7
-         1ILpkKraRYtr/3MitKYEriD6TyT94mDeLsHDwu20=
+        s=badeba3b8450; t=1642410782;
+        bh=+7RMDRRpcrTgcH8milkA2TWCerBcSFg3j42FCrSXP9k=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=j6G/hfVMK55/lRrI4w+m52wOOuAd9k0eT4ABYEIVTr7U6LoKWvP6An+O9G0rgcnqq
+         ywsyoy1ZuwpKD8hQ7cLWCdHr0ZtzdIvIs1+D5c/JeFGuNsdmok9ijkq1LgSVSqBhVx
+         Hz93liPbeSK2ILVVIeuvj2BhjAm+CvdmbLxg5o38=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.fritz.box ([92.116.186.160]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MCsPy-1mzQzY1dIm-008ohE; Fri, 14
- Jan 2022 08:08:24 +0100
+Received: from ls3530.fritz.box ([92.116.167.237]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MxDp4-1mPO9V41Oa-00xf9z; Mon, 17
+ Jan 2022 10:13:02 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org
 Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>,
-        Sven Schnelle <svens@stackframe.org>
-Subject: [PATCH 2/2] parisc: Autodetect default output device and set console= kernel parameter
-Date:   Fri, 14 Jan 2022 08:07:20 +0100
-Message-Id: <20220114070720.73353-2-deller@gmx.de>
+        Sven Schnelle <svens@stackframe.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] parisc: Fix no previous prototype for 'toc_intr' warning in toc.c
+Date:   Mon, 17 Jan 2022 10:11:56 +0100
+Message-Id: <20220117091156.183427-1-deller@gmx.de>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220114070720.73353-1-deller@gmx.de>
-References: <20220114070720.73353-1-deller@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:b7oVt5C7chTXpAKawmj2A5hrw/tvOy5ZT4CO+QYaceLe8splewU
- q3UBVlUI6S5BeaJ1P8fKictLTqwri0JXt3crsM8S/kVsF4fGSIpLiAUGRhGV/LVrYCf46ro
- VXHg+NtCc381mgbfzJip9EjbmqF3lnKy3hy364P1PwH8NP6VmyzqDSWhju4KxUeyz+4MF7P
- F62WMwIwMHczwqs2GKAIg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9kAolr/DwcA=:6a0kSw7v9a243865n7vmCG
- SJbautBlI+FeFl+pat952u5X2Nun4k69n7s6APwSX+YibGoa0Pzt1mXTAj72BArCW9vk6YdZ9
- 5UiDSSDXFmZ6pWk9kYqETwf4N91cu2KJojlu+qW2mFO1Mw9pE31WgqeFcM08TtRp9Kyh5cuD5
- Lbc23ZeCaTTEr85pg1SaP0e3ARAVmduqqnnlxVjZmNQlZi7z6AXJjkcBVOmw8gOqA++PMrsBd
- EBIj9sTEqGvGoEQPzTLZgQecTAiX4E/NdBq9u5jdIMDFfNB7G1+q18RuDu61oOJPia4EeV4Bg
- lieWsUbDxcdVorcvDucxNFK54I5hmNIvyyryHeVleFgaQ8qf9ZYzNDHq+viZ3RBtNtGPbAH9P
- qMOLTiJAPJXdEyFnlCIkUZGYQ8QGbRSama6hQgLrEGcdwtNCBua0msn4Icg+AJTQpurWZakj6
- +53fZMxsk+HiyRbuRg9AZNUOlgaDrgXBewVrig/M3r2zBsZMDkG/n6WK4z51BdPYUUjEtwgPt
- 89IY/sVSqsNE7tJO3xQ+DezI+2LL17Sae8sB+gnHaJVZcSWA9kXSSV6xsuJknOcTOzTi5c4Oo
- x6S8fZBWMrTNPI/nZuCSQ3Xo9hVOxRGZZrSQkHP/0IQMk/4NVgDdvDdzMEodbQf3FNqaSQJ/O
- ubhlcO/tcLPPKxuHA0qJ3QW3zYhkTAsmnJ6VD82Nmio7tyvhzgycaJMg51SZ66U3M+9N7WlhP
- nB1JC7uSK4IhMWibXIwomNlT2wTH1TBoMl/S3yLtYn3KeLHbUaEH55BiXJ61V9I2Yr5WMWm1U
- Ic75PyW4rW0ofU+qs16VWjVRLlIvycSupF6PAlwwcW/B5BCFderCXrMJsq6rzEhpLslEitft0
- UCa5S+umXAoJtgr5cWMgYQ0/HaTu4c6ehscuR0Z1/igWqJ2sMQEYlpjdH23VKx85putHHjzOo
- Gl8BfZ10aGPKSrbBCXoID0LLXhPqzuzrJ0z6GAhyW5nrf+p9uAl4jqIxQj8IEAhogZaCZr5Vn
- 6PNR4mM8TlNLyjnCjlSh2avX4nl324ZFdABPBVfCjAeRDI4uoVoBCxaqVupF7q5x6A==
+X-Provags-ID: V03:K1:BOhUW8sisTCoC2E6LbfgbHIprkE6Dv1wMkxkIzHrDYCea8Bd5PJ
+ nn1ObVAYtIh+jIa3NCukBI0qxZ+dkTrq+pfTv8mcgvCeMF5MRDc0wIY4uamX6i7kR+WYnLs
+ rDSnHdBOlV0flWDJQQbjEAK8UmPY51U3OZhkqjO7RpFCvQpxiYbw0vxAKTc1r+KFFIrldJx
+ 5k99Rq0r+OG3qvr1/WpgQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rLZ8WCO9Gds=:CxGByW5mMV2RH6D6uSNcf7
+ 8fddvF7EUifx4DPq5+DHZD4m9nrw2eF32977g6k9/rvT7jgFJwuJha8vv8s6pSREC4NiAqBa0
+ MHe5DMKEAUTJpJymOLrFyL3i51ETzrorzxy43WmIZzj3R/tolLftHtIRVhBchIEf42F3adQwn
+ cby7akUJv+5bJjTpYYariRR4uL1rI2UdkbOQHH75E66mCoNg2M7ojG5FArY/FnhDE/AwUL2FJ
+ HPQbRPU11wyOKcj5JakDb7ks/v2o/tEqYLiz7KedyDnf71qXkAoJBLR+Y80VAVjxrQUPcTupE
+ p0zNJBpy5smCfgY23Hpi/CQXnYfLtX9/17iBSGfJ6lMkqV6aTfyfQAQm9JbnwPt+ELz8QnZXd
+ Vp9Pw2UsL8oSjupyddpR1hXON1U4yvjevdHs/cNckDztgyPt+QaNih+BkolsLtwNyE72ggrAD
+ XCzWvbVpSMKwRiIU/nFjdo9u0GiLNqQGLQMWpG1J1oxeMMWEW+O4eRh3lriHL4NPKWXlEIDv7
+ KpF8L5zDhoY1R23zInbQZMuw5v13PBYNJ/GALz/oq4LnSKN2W41lDB0uJYXWaMrQolqxC5ihN
+ M5ZGFGZuFlkUwti/1TXxHKzeofJhdSpItCOQLDo2mm84ER71onDM9K7akY1wPwBYZoyrXKJzW
+ sZPC4nWrtkPl0O9JiVxoAIgQtORQdeKGGXpyTXiBR/Dn4NQdAJUDWEltmYfXZGUSOc1ghWRd/
+ l+qhg9Yxfa0HXs1lRObPRl0yJytMtYT7nOnv4O0Lq8gwfL28Y1a+vxm/3Dx4nfJDMMcKt83E7
+ H1ytxefz7LQgyRaq3BxDlpoGzH6IPb/gN8ZO0PBDytWFSOYkXuqGH62CGmsimouZMkztvoixP
+ l1qL+ZU9I7Va2KKSpWQMBmPrqUZcQna2xW8tCiaVutHtX716Iel4g8ODuyHlSm1/ynQbbbZz5
+ 8xI4BtLxKFrpXktpehoNUxA4lwFzOKhsggmeZG0fEeezAKXYEj352Qfxx/wBmHJgkR5o1bQg6
+ Yb/nMeugzGaeKj8NkhcQD9wYsMi+spSu7FDoguBjrjV7BqlOYDqgngGZl7XtzOhIG2PAfH0xW
+ 7WgHeTJyFMbf1I=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Usually palo (the PA-RISC boot loader) will check at boot time if the
-machine/firmware was configured to use the serial line (ttyS0, SERIAL_x)
-or the graphical display (tty0, graph) as default output device and add
-the correct "console=3DttyS0" or "console=3Dtty0" Linux kernel parameter t=
-o
-the kernel command line when starting the Linux kernel.
+Fix a missing prototype warning noticed by the kernel test robot.
 
-But the kernel could also have been started via the HP-UX boot loader
-or directly in qemu, in which cases the console parameter is missing.
-
-This patch fixes this problem by adding the correct console=3D parameter
-if it's missing in the current kernel command line.
-
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Helge Deller <deller@gmx.de>
 =2D--
- arch/parisc/kernel/setup.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/parisc/include/asm/processor.h | 1 +
+ arch/parisc/kernel/toc.c            | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index 456087a2350c..b91cb45ffd4e 100644
-=2D-- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -48,6 +48,7 @@ struct proc_dir_entry * proc_mckinley_root __read_mostly=
- =3D NULL;
- void __init setup_cmdline(char **cmdline_p)
- {
- 	extern unsigned int boot_args[];
-+	char *p;
+diff --git a/arch/parisc/include/asm/processor.h b/arch/parisc/include/asm=
+/processor.h
+index b669f4b9040b..8793137deac5 100644
+=2D-- a/arch/parisc/include/asm/processor.h
++++ b/arch/parisc/include/asm/processor.h
+@@ -289,6 +289,7 @@ extern int _parisc_requires_coherency;
 
- 	/* Collect stuff passed in from the boot loader */
+ extern int running_on_qemu;
 
-@@ -59,6 +60,16 @@ void __init setup_cmdline(char **cmdline_p)
- 		strscpy(boot_command_line, (char *)__va(boot_args[1]),
- 			COMMAND_LINE_SIZE);
++extern void toc_intr(struct pt_regs *regs);
+ extern void toc_handler(void);
+ extern unsigned int toc_handler_size;
+ extern unsigned int toc_handler_csum;
+diff --git a/arch/parisc/kernel/toc.c b/arch/parisc/kernel/toc.c
+index fa5a10eaf0aa..e4b48d07afbd 100644
+=2D-- a/arch/parisc/kernel/toc.c
++++ b/arch/parisc/kernel/toc.c
+@@ -10,6 +10,7 @@
+ #include <asm/pdc.h>
+ #include <asm/pdc_chassis.h>
+ #include <asm/ldcw.h>
++#include <asm/processor.h>
 
-+	/* autodetect console type (if not done by palo yet) */
-+	p =3D boot_command_line;
-+	if (!str_has_prefix(p, "console=3D") && !strstr(p, " console=3D")) {
-+		strlcat(p, " console=3D", COMMAND_LINE_SIZE);
-+		if (PAGE0->mem_cons.cl_class =3D=3D CL_DUPLEX)
-+			strlcat(p, "ttyS0", COMMAND_LINE_SIZE);
-+		else
-+			strlcat(p, "tty0", COMMAND_LINE_SIZE);
-+	}
-+
- #ifdef CONFIG_BLK_DEV_INITRD
- 		if (boot_args[2] !=3D 0) /* did palo pass us a ramdisk? */
- 		{
+ static unsigned int __aligned(16) toc_lock =3D 1;
+ DEFINE_PER_CPU_PAGE_ALIGNED(char [16384], toc_stack) __visible;
 =2D-
 2.31.1
 
