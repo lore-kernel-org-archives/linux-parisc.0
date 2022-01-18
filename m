@@ -2,50 +2,48 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B2DEC433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3B63C43217
 	for <linux-parisc@archiver.kernel.org>; Tue, 18 Jan 2022 02:55:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346489AbiARCyY (ORCPT
+        id S1351426AbiARCy0 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 17 Jan 2022 21:54:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345657AbiARCs5 (ORCPT
+        Mon, 17 Jan 2022 21:54:26 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:57852 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350130AbiARCvR (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 17 Jan 2022 21:48:57 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78ABC06175B;
-        Mon, 17 Jan 2022 18:39:54 -0800 (PST)
+        Mon, 17 Jan 2022 21:51:17 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9D2CCB81255;
-        Tue, 18 Jan 2022 02:39:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39AC0C36AEB;
-        Tue, 18 Jan 2022 02:39:51 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EC91DB811D6;
+        Tue, 18 Jan 2022 02:51:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9387FC36AEB;
+        Tue, 18 Jan 2022 02:51:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642473592;
-        bh=3nv0rTAvSjmrK3ODMmnkVpkb/3ZV6bPUkz/GTjh9ROM=;
+        s=k20201202; t=1642474274;
+        bh=qbuJzMLstbf2L54xjwrmp0834IdyaWQYNr1ugUCfyB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hQU9m/JVgqk8lee2AVat5YX/ME4IZlybOHDJuC/zv6C0uS70YkBAoN7lVb64+qBCC
-         2Uj4Ra1dg1Y7NRD+F1R68/x+NJDOVC0jezpfKzNyIPC8MX3Dv581rQ7UPLLoE/Exbw
-         IcJp+8V1+z+gCiTzqMcoHGNsBqI5djJuHmLLyOtPuUsepsr5PuPj/5/2CdhguteDto
-         5x3vFBx5Mn5yp3hXrLxBlgph1ZayG0kMo53CqKIHSqBbWA/clvdDx0fJMwfnAZbHa1
-         AUJcwlzb+JKLyGJ9H3hazgZKS5J5TObuZ7FbQI1JCNW87SdFjRVhxbETAei6dRa6Ia
-         mnWhHVkqbDY2w==
+        b=pvORHCm/K7I5NC8DhO35LSXDiBRskp71Vmgx7tHM5i8SxCyTXy81KFlVy0JeCPVVa
+         71eS3bKglknTyzgOAYx4iU9e3qoh5Y8mFyDo+bUaPMtUO7Gg8cIzj4LcWEVqPlyMEi
+         0+186b2YcDbB0M5cFIUC5ftnEvekZbfpW89GfjNFFWf5MX/4dFZOODBgMJFHpJd29A
+         gXi2/BCho1yciPFdfDOLt5izzDaM7jG51NvmWwu7Ni1NMrsOQ1A3Sat9jE/F8c/QiX
+         rMvqcvFaX5Y85ID/WkHZkpZfw495Un46gZa8peF+gRT83E4/bJSNtzwiEWrSCHkIyx
+         Opala18dNYShg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     John David Anglin <dave.anglin@bell.net>,
         Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
         James.Bottomley@HansenPartnership.com, svens@stackframe.org,
-        ebiederm@xmission.com, wangkefeng.wang@huawei.com,
-        rmk+kernel@armlinux.org.uk, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 182/188] parisc: Avoid calling faulthandler_disabled() twice
-Date:   Mon, 17 Jan 2022 21:31:46 -0500
-Message-Id: <20220118023152.1948105-182-sashal@kernel.org>
+        wangkefeng.wang@huawei.com, rmk+kernel@armlinux.org.uk,
+        akpm@linux-foundation.org, ebiederm@xmission.com,
+        linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 56/56] parisc: Avoid calling faulthandler_disabled() twice
+Date:   Mon, 17 Jan 2022 21:49:08 -0500
+Message-Id: <20220118024908.1953673-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220118023152.1948105-1-sashal@kernel.org>
-References: <20220118023152.1948105-1-sashal@kernel.org>
+In-Reply-To: <20220118024908.1953673-1-sashal@kernel.org>
+References: <20220118024908.1953673-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -87,10 +85,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 197cb8480350c..afe8b902a8fc4 100644
+index 9a898d68f4a0d..346456c43aa0b 100644
 --- a/arch/parisc/kernel/traps.c
 +++ b/arch/parisc/kernel/traps.c
-@@ -784,7 +784,7 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
+@@ -795,7 +795,7 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
  	     * unless pagefault_disable() was called before.
  	     */
  
