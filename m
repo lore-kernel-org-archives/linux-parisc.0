@@ -2,119 +2,105 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 161F7C433F5
-	for <linux-parisc@archiver.kernel.org>; Thu, 27 Jan 2022 19:19:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FC94C433F5
+	for <linux-parisc@archiver.kernel.org>; Thu, 27 Jan 2022 22:34:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234797AbiA0TTx (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 27 Jan 2022 14:19:53 -0500
-Received: from outbound5e.eu.mailhop.org ([52.28.168.19]:51203 "EHLO
-        outbound5e.eu.mailhop.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232986AbiA0TTx (ORCPT
+        id S241008AbiA0WeE (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 27 Jan 2022 17:34:04 -0500
+Received: from mta-mtl-003.bell.net ([209.71.208.13]:26806 "EHLO
+        cmx-mtlrgo001.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239018AbiA0WeE (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 27 Jan 2022 14:19:53 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1643310227; cv=none;
-        d=outbound.mailhop.org; s=arc-outbound20181012;
-        b=XmOIhG/kusqQZhOZHvgclA5Y035wrWyxN3vk6rSaA0Nw7MFvfaZ39haGAfvA0u00hsc8e4R1Mcmyl
-         BdA7uaxey4ZT/2ub2Gujpf/d+mCfxGFd0vmbySG7VcOp835Pty/ik46nkQqSTftLMpbc6keYuZUc1f
-         51WNTn/35QncShJHi+4kseprmzOvno5R+sbBTNBKdvXYMITt1+CamPwrwwbPdUCNPCpIM+z4Kw6K5o
-         e8Ibz/EHyMeRMwP0geSLdROPKx3E9+NV3FyYt8tw1KHY4tyFNHMA/05PNl/BEwBSvhXFL/Qq/XhQEx
-         M+wl4sdYEA68tAFQD/Qz1Y1S2bCPVHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=outbound.mailhop.org; s=arc-outbound20181012;
-        h=content-type:mime-version:message-id:in-reply-to:date:references:subject:cc:
-         to:from:dkim-signature:dkim-signature:from;
-        bh=ZPOoAh9ilR0mDf2sGLTWKIgj5O+vg7Y8DEFiCpa40cI=;
-        b=PynOkqGLTt/cBF4XyvaikcntXYxmLkK6g/FkDi80kEVYY5ZoKmZLy1YS7adUA9quoDrFCY/KCXHu5
-         fzVkBh7/pNjT5/SVfdN9Polz6W3aSEJGZIkioH+XNmHGEaizTTFD96qS10cqOhhgozXJb6qnxQkM4i
-         ZkONICbPvOYdU30d4duUGOtAxUm3SxrCj+ldIVi+GEb+PFvUpFFVJ5qXXZtTfkT0JUAlcXhMzAivnF
-         ZZ6bmQ+Bxdu5RfroZ9LraCeTbVvwiWiDif2ILAuhg7zIJRd3EJV6DV2vTpZ3+ZtJvNS0iDpaqIoe1H
-         1ER1VewTpvUf3+U/AcVx8UKUeOIq0ew==
-ARC-Authentication-Results: i=1; outbound2.eu.mailhop.org;
-        spf=pass smtp.mailfrom=stackframe.org smtp.remote-ip=91.207.61.48;
-        dmarc=none header.from=stackframe.org;
-        arc=none header.oldest-pass=0;
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=stackframe.org; s=duo-1634547266507-560c42ae;
-        h=content-type:mime-version:message-id:in-reply-to:date:references:subject:cc:
-         to:from:from;
-        bh=ZPOoAh9ilR0mDf2sGLTWKIgj5O+vg7Y8DEFiCpa40cI=;
-        b=sf+CSgcB2S8FS7i8w5gOYZ399ZV3KikJV/JWhAzf1mfhipkqdEd9YVATpBOUWJlgyOlqDdefwjBau
-         6p061PYZzMeceDBH7PGmgIFf7IdfFK/xogyYHD7mPRzlTOBDTK/WwG89eKHAx39qEHZlKDo4zVopq2
-         IYIxpTu/lRY4U8Do=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=outbound.mailhop.org; s=dkim-high;
-        h=content-type:mime-version:message-id:in-reply-to:date:references:subject:cc:
-         to:from:from;
-        bh=ZPOoAh9ilR0mDf2sGLTWKIgj5O+vg7Y8DEFiCpa40cI=;
-        b=NtFjJ/cqVCyljlDqPGqg5Z6BbPDsUamusZVkWPLeLkZ37IHSlMVQvIEBHpR+uVk7sgKAEOtZ1WwiZ
-         NNhUnZWwlD7AmZEN1nsQ/cJNK7z1SM80CVkIqVC1rUwS0uzDvinDJw+WFkJZRd3EF+x7BekNSDKuCg
-         TsB5fKWI/Tldw+i7R/Z0j2CrudhSNFKeyXOly0c2ZJ/bfgX3l4i3RlUa8AhO5klovyNmNQL3lFNTWf
-         SNI6DMIGxbDnAdznOlM57NwMtTTiBZ5rn3gSg8w3Dm9MlxHex2llQcvJey51DavIDxpFW81JAGprgr
-         bO41FwzxvdCE/Qdk9hks6X7Gp0NAl8g==
-X-Originating-IP: 91.207.61.48
-X-MHO-RoutePath: dG9ta2lzdG5lcm51
-X-MHO-User: d7a1b121-7fa3-11ec-a079-973b52397bcb
-X-Report-Abuse-To: https://support.duocircle.com/support/solutions/articles/5000540958-duocircle-standard-smtp-abuse-information
-X-Mail-Handler: DuoCircle Outbound SMTP
-Received: from mail.duncanthrax.net (propper.duncanthrax.net [91.207.61.48])
-        by outbound2.eu.mailhop.org (Halon) with ESMTPSA
-        id d7a1b121-7fa3-11ec-a079-973b52397bcb;
-        Thu, 27 Jan 2022 19:03:42 +0000 (UTC)
-Received: from hsi-kbw-109-193-149-228.hsi7.kabel-badenwuerttemberg.de ([109.193.149.228] helo=x1.stackframe.org.stackframe.org)
-        by mail.duncanthrax.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <svens@stackframe.org>)
-        id 1nDA3Y-00767l-Pz; Thu, 27 Jan 2022 21:03:40 +0200
-From:   Sven Schnelle <svens@stackframe.org>
-To:     Helge Deller <deller@gmx.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-csky@vger.kernel.org, linux-mm@kvack.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@kernel.org>, linux-parisc@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Subject: Re: [PATCH v2] usercopy/csky: Do not fail on memory from former
- init sections
-References: <YfLpNkmlvoR8iPcq@ls3530>
-Date:   Thu, 27 Jan 2022 20:03:38 +0100
-In-Reply-To: <YfLpNkmlvoR8iPcq@ls3530> (Helge Deller's message of "Thu, 27 Jan
-        2022 19:49:26 +0100")
-Message-ID: <87k0el57cl.fsf@x1.stackframe.org>
+        Thu, 27 Jan 2022 17:34:04 -0500
+X-RG-CM-BuS: 0
+X-RG-CM-SC: 0
+X-RG-CM: Clean
+X-Originating-IP: [70.50.7.94]
+X-RG-Env-Sender: dave.anglin@bell.net
+X-RG-Rigid: 61E9B8D000908B4A
+X-CM-Envelope: MS4xfIOrTKdufD3UM+ssI63W2ayr/UsO+BgK0D7duqoQLUBk7TOYXm5y47USlq2hgd/p2/9dTYU22g/dJpwFm2zCz61oKK9IHgYWSDhSY6g4CTXaT9dL4z08
+ pRChzGGrhxuj1Ew4EKCJgE6EwR71aHutB3fPdRBiGpAEcsvfkUKg9Wr2diyoualWLoOmFvWym2P62anfb8ceWa16Le7tuxpJKC+a706wa7sDIjCpcdyzYndx
+ tZmnzcqCf6kiHJdZcFezNq+sm1PEhbnly2o3j2mqpwwADwD6HuruWryMvDnBBBH8PsMnBuItjlQjnZ1zhGexhbvyu495Gxt1a58ds2RXVmZTTQEgJ4QoBsQj
+ 3RgEEO+2Tu1Fi+mhSlgRHHpdrOrL+dyi37mmcBfjKI2O9+UogwrizywpoDSw4sJGqgfI8QValP8SNZgHzpqJEbFzMXEIFwna3JdwvwCgYbHF38hb0b1qaMQv
+ MzzbUvt7GtLCx13KswiJmVnv+DbuURiGoBjreP3Wi2j5+eWN/f2vjLC1/Cv+km8UDWIIV8R0WuajAaNruFoLmtW9ltlyYQujm5WC2wgFONuTxuSA9cUF33Ut
+ 3oGJE6dmSqEfRd/t+Ho0FeaEH6NOE6oKYAy8xY9nPEKaDA==
+X-CM-Analysis: v=2.4 cv=eZxew5IH c=1 sm=1 tr=0 ts=61f31dc6
+ a=9k1bCY7nR7m1ZFzoCuQ56g==:117 a=9k1bCY7nR7m1ZFzoCuQ56g==:17
+ a=DghFqjY3_ZEA:10 a=FBHGMhGWAAAA:8 a=HblYpiq5tT6TEsmxS5EA:9 a=CjuIK1q_8ugA:10
+ a=_TZt9d5dLS8edx5Vtu8A:9 a=FfaGCDsud1wA:10 a=9gvnlMMaQFpL9xblJ6ne:22
+Received: from mx3210.localdomain (70.50.7.94) by cmx-mtlrgo001.bell.net (5.8.716.03) (authenticated as dave.anglin@bell.net)
+        id 61E9B8D000908B4A; Thu, 27 Jan 2022 17:33:42 -0500
+Received: by mx3210.localdomain (Postfix, from userid 1000)
+        id C4106220116; Thu, 27 Jan 2022 22:33:41 +0000 (UTC)
+Date:   Thu, 27 Jan 2022 22:33:41 +0000
+From:   John David Anglin <dave.anglin@bell.net>
+To:     linux-parisc@vger.kernel.org
+Cc:     Helge Deller <deller@gmx.de>, Deller <deller@kernel.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+Subject: [PATCH] parisc: Fix sglist access in ccio-dma.c
+Message-ID: <YfMdxa0qXdPDSUAr@mx3210.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7FAfvi9dH1s/WA9v"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Helge Deller <deller@gmx.de> writes:
 
-> While working on the parisc port I suddenly noticed that with
-> HARDENED_USERCOPY=y the usercopy checks randomly reported errors which even
-> prevented the kernel to boot into userspace.
->
-> Specifically the function check_kernel_text_object() reported those errors, as
-> it thought the kernel variable I was using belongs to the kernel text area, and
-> as such was invalid to be used.
-> [..]
-> diff --git a/mm/usercopy.c b/mm/usercopy.c
-> index b3de3c4eefba..37a35c6051bc 100644
-> --- a/mm/usercopy.c
-> +++ b/mm/usercopy.c
-> @@ -113,6 +113,15 @@ static bool overlaps(const unsigned long ptr, unsigned long n,
->  	return true;
->  }
->
-> +static bool inside_init_area(const unsigned long ptr, unsigned long n,
-> +		char *start, char *end)
-> +{
-> +	unsigned long initlow = (unsigned long) start;
-> +	unsigned long inithigh = (unsigned long) end;
-> +
-> +	return (ptr >= initlow && (ptr + n) < inithigh);
-> +}
+--7FAfvi9dH1s/WA9v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Gerald added something similar with 7a5da02de8d6 ("locking/lockdep:
-check for freed initmem in static_obj()"), so i wonder whether that
-could be used?
+This patch implements the same change to ccio-dma.c as to sba_iommu.c.
+This ensures that only the allocated entries of the sglist are accessed.
 
-Regards
-Sven
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
+---
+
+diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+index 059566f54429..9be007c9420f 100644
+--- a/drivers/parisc/ccio-dma.c
++++ b/drivers/parisc/ccio-dma.c
+@@ -1003,7 +1003,7 @@ ccio_unmap_sg(struct device *dev, struct scatterlist =
+*sglist, int nents,
+ 	ioc->usg_calls++;
+ #endif
+=20
+-	while(sg_dma_len(sglist) && nents--) {
++	while (nents && sg_dma_len(sglist)) {
+=20
+ #ifdef CCIO_COLLECT_STATS
+ 		ioc->usg_pages +=3D sg_dma_len(sglist) >> PAGE_SHIFT;
+@@ -1011,6 +1011,7 @@ ccio_unmap_sg(struct device *dev, struct scatterlist =
+*sglist, int nents,
+ 		ccio_unmap_page(dev, sg_dma_address(sglist),
+ 				  sg_dma_len(sglist), direction, 0);
+ 		++sglist;
++		nents--;
+ 	}
+=20
+ 	DBG_RUN_SG("%s() DONE (nents %d)\n", __func__, nents);
+
+--7FAfvi9dH1s/WA9v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEnRzl+6e9+DTrEhyEXb/Nrl8ZTfEFAmHzHboACgkQXb/Nrl8Z
+TfFz3g//cVpbEVWEzsXMI7/Q0lIlnf5HJSY5JbS76E6TGiIwgpWhQBpaMzN7iwUy
+bRyiISuo+mJQf1cVJ1D5jSdLDPgV6/ZjoAgtH50aPOPotYktZnXpoKb2VPnpUVVi
+hkKnNuBu/SWqj60sUHHm+pOzDPdtQZwoDYF39BH4rsDE7NRKcKcHGglFjFstgrN+
+kws5IBmgGlvp/30USPlfY1D1SPwh4CmzvvWlbuui7JUOH24j7AnEUojoGSo+om6c
+sk7R4GWeihrOdxWfOBWnqZhWnpoxuIQuPUZDAomqJZB3jOPesKhOeKHoa4t3zw28
+/IlZEnRsTDwKbKKAbQZaoup4iVx6OG10LsU7m91Bs5AO6cY9UtVr8xaM6TkCsp5h
+CC/qoGQwRisbhMTfnX8JwscZBldYNT7rtHIPArfsKcDo33HZTUO4yD50+zrMFmEW
+7b1Z4EsiDC4OozRfgY/qRh99CDxU/5QbbZ+I5NYLEXQMydLfbOJfqDsJS7qDGMnR
+2wnCNvzVxSPgZIrXkvnn9YZpRiIYReLPEpB6ELHiZA9dolkvbSTxeH+bq5GH+fT8
+HGNvB466FwaUTLg4j7+O6SaauZKsbXMiEvcaJPRf9G9ALIShrXT9sfZioamtZNrC
+tpJQFyONV46+t6HQwzkMorlh7D7bb4/yDpLYuSabxpIo8Cp/sfE=
+=8CY8
+-----END PGP SIGNATURE-----
+
+--7FAfvi9dH1s/WA9v--
