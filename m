@@ -2,204 +2,165 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E09B3C43217
-	for <linux-parisc@archiver.kernel.org>; Tue, 15 Feb 2022 11:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A14BDC433EF
+	for <linux-parisc@archiver.kernel.org>; Tue, 15 Feb 2022 12:43:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237125AbiBOLYx (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 15 Feb 2022 06:24:53 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43490 "EHLO
+        id S237963AbiBOMnl (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 15 Feb 2022 07:43:41 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237117AbiBOLYv (ORCPT
+        with ESMTP id S235842AbiBOMnX (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 15 Feb 2022 06:24:51 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3865B108766;
-        Tue, 15 Feb 2022 03:24:37 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF7F21476;
-        Tue, 15 Feb 2022 03:24:36 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.89.144])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 160403F718;
-        Tue, 15 Feb 2022 03:24:29 -0800 (PST)
-Date:   Tue, 15 Feb 2022 11:24:26 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Ard Biesheuvel' <ardb@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>, Rich Felker <dalias@libc.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Guo Ren <guoren@kernel.org>,
-        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
-        <sparclinux@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Helge Deller <deller@gmx.de>, X86 ML <x86@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Arnd Bergmann <arnd@arndb.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
-        Greentime Hu <green.hu@gmail.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "monstr@monstr.eu" <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "dinguyen@kernel.org" <dinguyen@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Richard Weinberger <richard@nod.at>,
+        Tue, 15 Feb 2022 07:43:23 -0500
+X-Greylist: delayed 66 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Feb 2022 04:42:33 PST
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0119108BFA;
+        Tue, 15 Feb 2022 04:42:33 -0800 (PST)
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Jygh01Dlnz9sSX;
+        Tue, 15 Feb 2022 13:41:36 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id AdVA4GYDqysE; Tue, 15 Feb 2022 13:41:36 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Jyggn5Pmtz9sSr;
+        Tue, 15 Feb 2022 13:41:25 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A796A8B77B;
+        Tue, 15 Feb 2022 13:41:25 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id y7YqB1ka0taE; Tue, 15 Feb 2022 13:41:25 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.6.174])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 990F58B787;
+        Tue, 15 Feb 2022 13:41:24 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 21FCfFnd080612
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 15 Feb 2022 13:41:15 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 21FCfFRU080611;
+        Tue, 15 Feb 2022 13:41:15 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 08/14] arm64: simplify access_ok()
-Message-ID: <YguNamXeOtGVPyJf@FVFF77S0Q05N>
-References: <20220214163452.1568807-1-arnd@kernel.org>
- <20220214163452.1568807-9-arnd@kernel.org>
- <CAMj1kXHixUFjV=4m3tzfGz7AiRWc-VczymbKuZq7dyZZNuLKxQ@mail.gmail.com>
- <153bb1887f484ed79ce8224845a4b2ea@AcuMS.aculab.com>
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: [PATCH v4 02/13] powerpc: Move and rename func_descr_t
+Date:   Tue, 15 Feb 2022 13:40:57 +0100
+Message-Id: <529b2ba1d001e8f628ef0d30e8044c9b3d0a4921.1644928018.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1644928018.git.christophe.leroy@csgroup.eu>
+References: <cover.1644928018.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <153bb1887f484ed79ce8224845a4b2ea@AcuMS.aculab.com>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1644928860; l=3244; s=20211009; h=from:subject:message-id; bh=LqqoaonBtqrRWO7nIvfTkS8r91LiUnK51Ncu6Lun4RA=; b=l/zPBQYl8yBdmxldOkocCbn13em50/dw7rkzc5D/bqb0Lb2Xx5ZaCRaHZLOvAiay3K9nW1KQxvIT CjmLjjXbDjWi8nC0KGLhVF52fUkvmlgH+YDyGWUK80uzShnYFR7H
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, Feb 15, 2022 at 09:30:41AM +0000, David Laight wrote:
-> From: Ard Biesheuvel
-> > Sent: 15 February 2022 08:18
-> > 
-> > On Mon, 14 Feb 2022 at 17:37, Arnd Bergmann <arnd@kernel.org> wrote:
-> > >
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > arm64 has an inline asm implementation of access_ok() that is derived from
-> > > the 32-bit arm version and optimized for the case that both the limit and
-> > > the size are variable. With set_fs() gone, the limit is always constant,
-> > > and the size usually is as well, so just using the default implementation
-> > > reduces the check into a comparison against a constant that can be
-> > > scheduled by the compiler.
-> > >
-> > > On a defconfig build, this saves over 28KB of .text.
-> > >
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > > ---
-> > >  arch/arm64/include/asm/uaccess.h | 28 +++++-----------------------
-> > >  1 file changed, 5 insertions(+), 23 deletions(-)
-> > >
-> > > diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-> > > index 357f7bd9c981..e8dce0cc5eaa 100644
-> > > --- a/arch/arm64/include/asm/uaccess.h
-> > > +++ b/arch/arm64/include/asm/uaccess.h
-> > > @@ -26,6 +26,8 @@
-> > >  #include <asm/memory.h>
-> > >  #include <asm/extable.h>
-> > >
-> > > +static inline int __access_ok(const void __user *ptr, unsigned long size);
-> > > +
-> > >  /*
-> > >   * Test whether a block of memory is a valid user space address.
-> > >   * Returns 1 if the range is valid, 0 otherwise.
-> > > @@ -33,10 +35,8 @@
-> > >   * This is equivalent to the following test:
-> > >   * (u65)addr + (u65)size <= (u65)TASK_SIZE_MAX
-> > >   */
-> > > -static inline unsigned long __access_ok(const void __user *addr, unsigned long size)
-> > > +static inline int access_ok(const void __user *addr, unsigned long size)
-> > >  {
-> > > -       unsigned long ret, limit = TASK_SIZE_MAX - 1;
-> > > -
-> > >         /*
-> > >          * Asynchronous I/O running in a kernel thread does not have the
-> > >          * TIF_TAGGED_ADDR flag of the process owning the mm, so always untag
-> > > @@ -46,27 +46,9 @@ static inline unsigned long __access_ok(const void __user *addr, unsigned long s
-> > >             (current->flags & PF_KTHREAD || test_thread_flag(TIF_TAGGED_ADDR)))
-> > >                 addr = untagged_addr(addr);
-> > >
-> > > -       __chk_user_ptr(addr);
-> > > -       asm volatile(
-> > > -       // A + B <= C + 1 for all A,B,C, in four easy steps:
-> > > -       // 1: X = A + B; X' = X % 2^64
-> > > -       "       adds    %0, %3, %2\n"
-> > > -       // 2: Set C = 0 if X > 2^64, to guarantee X' > C in step 4
-> > > -       "       csel    %1, xzr, %1, hi\n"
-> > > -       // 3: Set X' = ~0 if X >= 2^64. For X == 2^64, this decrements X'
-> > > -       //    to compensate for the carry flag being set in step 4. For
-> > > -       //    X > 2^64, X' merely has to remain nonzero, which it does.
-> > > -       "       csinv   %0, %0, xzr, cc\n"
-> > > -       // 4: For X < 2^64, this gives us X' - C - 1 <= 0, where the -1
-> > > -       //    comes from the carry in being clear. Otherwise, we are
-> > > -       //    testing X' - C == 0, subject to the previous adjustments.
-> > > -       "       sbcs    xzr, %0, %1\n"
-> > > -       "       cset    %0, ls\n"
-> > > -       : "=&r" (ret), "+r" (limit) : "Ir" (size), "0" (addr) : "cc");
-> > > -
-> > > -       return ret;
-> > > +       return likely(__access_ok(addr, size));
-> > >  }
-> > > -#define __access_ok __access_ok
-> > > +#define access_ok access_ok
-> > >
-> > >  #include <asm-generic/access_ok.h>
-> > >
-> > > --
-> > > 2.29.2
-> > >
-> > 
-> > With set_fs() out of the picture, wouldn't it be sufficient to check
-> > that bit #55 is clear? (the bit that selects between TTBR0 and TTBR1)
-> > That would also remove the need to strip the tag from the address.
-> > 
-> > Something like
-> > 
-> >     asm goto("tbnz  %0, #55, %2     \n"
-> >              "tbnz  %1, #55, %2     \n"
-> >              :: "r"(addr), "r"(addr + size - 1) :: notok);
-> >     return 1;
-> > notok:
-> >     return 0;
-> > 
-> > with an additional sanity check on the size which the compiler could
-> > eliminate for compile-time constant values.
-> 
-> Is there are reason not to just use:
-> 	size < 1u << 48 && !((addr | (addr + size - 1)) & 1u << 55)
+There are three architectures with function descriptors, try to
+have common names for the address they contain in order to
+refactor some functions into generic functions later.
 
-That has a few problems, including being an ABI change for tasks not using the
-relaxed tag ABI and not working for 52-bit VAs.
+powerpc has 'entry'
+ia64 has 'ip'
+parisc has 'addr'
 
-If we really want to relax the tag checking aspect, there are simpler options,
-including variations on Ard's approach above.
+Vote for 'addr' and update 'func_descr_t' accordingly.
 
-> Ugg, is arm64 addressing as horrid as it looks - with the 'kernel'
-> bit in the middle of the virtual address space?
+Move it in asm/elf.h to have it at the same place on all
+three architectures, remove the typedef which hides its real
+type, and change it to a smoother name 'struct func_desc'.
 
-It's just sign-extension/canonical addressing, except bits [63:56] are
-configurable between a few uses, so the achitecture says bit 55 is the one to
-look at in all configurations to figure out if an address is high/low (in
-addition to checking the remaining bits are canonical).
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+---
+ arch/powerpc/include/asm/code-patching.h | 2 +-
+ arch/powerpc/include/asm/elf.h           | 6 ++++++
+ arch/powerpc/include/asm/types.h         | 6 ------
+ arch/powerpc/kernel/signal_64.c          | 8 ++++----
+ 4 files changed, 11 insertions(+), 11 deletions(-)
 
-Thanks,
-Mark.
+diff --git a/arch/powerpc/include/asm/code-patching.h b/arch/powerpc/include/asm/code-patching.h
+index e26080539c31..409483b2d0ce 100644
+--- a/arch/powerpc/include/asm/code-patching.h
++++ b/arch/powerpc/include/asm/code-patching.h
+@@ -118,7 +118,7 @@ static inline unsigned long ppc_function_entry(void *func)
+ 	 * function's descriptor. The first entry in the descriptor is the
+ 	 * address of the function text.
+ 	 */
+-	return ((func_descr_t *)func)->entry;
++	return ((struct func_desc *)func)->addr;
+ #else
+ 	return (unsigned long)func;
+ #endif
+diff --git a/arch/powerpc/include/asm/elf.h b/arch/powerpc/include/asm/elf.h
+index b8425e3cfd81..971589a21bc0 100644
+--- a/arch/powerpc/include/asm/elf.h
++++ b/arch/powerpc/include/asm/elf.h
+@@ -176,4 +176,10 @@ do {									\
+ /* Relocate the kernel image to @final_address */
+ void relocate(unsigned long final_address);
+ 
++struct func_desc {
++	unsigned long addr;
++	unsigned long toc;
++	unsigned long env;
++};
++
+ #endif /* _ASM_POWERPC_ELF_H */
+diff --git a/arch/powerpc/include/asm/types.h b/arch/powerpc/include/asm/types.h
+index f1630c553efe..97da77bc48c9 100644
+--- a/arch/powerpc/include/asm/types.h
++++ b/arch/powerpc/include/asm/types.h
+@@ -23,12 +23,6 @@
+ 
+ typedef __vector128 vector128;
+ 
+-typedef struct {
+-	unsigned long entry;
+-	unsigned long toc;
+-	unsigned long env;
+-} func_descr_t;
+-
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* _ASM_POWERPC_TYPES_H */
+diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
+index d1e1fc0acbea..73d483b07ff3 100644
+--- a/arch/powerpc/kernel/signal_64.c
++++ b/arch/powerpc/kernel/signal_64.c
+@@ -936,11 +936,11 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
+ 		 * descriptor is the entry address of signal and the second
+ 		 * entry is the TOC value we need to use.
+ 		 */
+-		func_descr_t __user *funct_desc_ptr =
+-			(func_descr_t __user *) ksig->ka.sa.sa_handler;
++		struct func_desc __user *ptr =
++			(struct func_desc __user *)ksig->ka.sa.sa_handler;
+ 
+-		err |= get_user(regs->ctr, &funct_desc_ptr->entry);
+-		err |= get_user(regs->gpr[2], &funct_desc_ptr->toc);
++		err |= get_user(regs->ctr, &ptr->addr);
++		err |= get_user(regs->gpr[2], &ptr->toc);
+ 	}
+ 
+ 	/* enter the signal handler in native-endian mode */
+-- 
+2.34.1
+
