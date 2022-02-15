@@ -2,46 +2,46 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66253C433F5
-	for <linux-parisc@archiver.kernel.org>; Tue, 15 Feb 2022 12:50:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08D7BC433EF
+	for <linux-parisc@archiver.kernel.org>; Tue, 15 Feb 2022 12:50:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237700AbiBOMu3 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 15 Feb 2022 07:50:29 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52128 "EHLO
+        id S236089AbiBOMua (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 15 Feb 2022 07:50:30 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbiBOMu1 (ORCPT
+        with ESMTP id S229844AbiBOMua (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 15 Feb 2022 07:50:27 -0500
+        Tue, 15 Feb 2022 07:50:30 -0500
 Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493CF28E29;
-        Tue, 15 Feb 2022 04:50:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D4328E2B;
+        Tue, 15 Feb 2022 04:50:20 -0800 (PST)
 Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Jyggy1NNJz9sSj;
-        Tue, 15 Feb 2022 13:41:34 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4Jyggp13FYz9sT0;
+        Tue, 15 Feb 2022 13:41:26 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase2.c-s.fr ([172.26.127.65])
         by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id aAFigYi3mPjJ; Tue, 15 Feb 2022 13:41:34 +0100 (CET)
+        with ESMTP id S0f10AOUrKn0; Tue, 15 Feb 2022 13:41:26 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Jyggn54j6z9sSq;
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Jyggn1NYjz9sSH;
         Tue, 15 Feb 2022 13:41:25 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A34A58B778;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1DA0E8B78B;
         Tue, 15 Feb 2022 13:41:25 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 8BMkLkapqY1B; Tue, 15 Feb 2022 13:41:25 +0100 (CET)
+        with ESMTP id dqfLvVJOOgX9; Tue, 15 Feb 2022 13:41:25 +0100 (CET)
 Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.6.174])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 864958B780;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 66C808B776;
         Tue, 15 Feb 2022 13:41:24 +0100 (CET)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 21FCfF0a080604
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 21FCfGnW080617
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 15 Feb 2022 13:41:15 +0100
+        Tue, 15 Feb 2022 13:41:16 +0100
 Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 21FCfCsi080602;
-        Tue, 15 Feb 2022 13:41:12 +0100
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 21FCfFva080616;
+        Tue, 15 Feb 2022 13:41:15 +0100
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -55,90 +55,92 @@ To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
 Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v4 00/13] Fix LKDTM for PPC64/IA64/PARISC v4
-Date:   Tue, 15 Feb 2022 13:40:55 +0100
-Message-Id: <cover.1644928018.git.christophe.leroy@csgroup.eu>
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        Daniel Axtens <dja@axtens.net>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: [PATCH v4 03/13] powerpc: Use 'struct func_desc' instead of 'struct ppc64_opd_entry'
+Date:   Tue, 15 Feb 2022 13:40:58 +0100
+Message-Id: <34e76bac6cbe95a63ecd37df69fb7feb93b0ea7c.1644928018.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1644928018.git.christophe.leroy@csgroup.eu>
+References: <cover.1644928018.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1644928860; l=3486; s=20211009; h=from:subject:message-id; bh=m/DTx99DZSafIIAwqkPz//VBU0dyGp+Z1HSmYNYxr4k=; b=cA7HXYxl5bBjs2eDNDE7zc7AazTXQFugH4g9S2nHM9kGtuT4amV6deKgKTSjs1MSmqM/lI026rsd Qqw7wMTrAUUX5rW7aGfQEz1o7/o1rvZAnijGSKkg2maBIdk3DYCk
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1644928860; l=2500; s=20211009; h=from:subject:message-id; bh=lF3vrnWaSCZb9OJrJGlARG72CsPx1sV+HmC9+sMkkEg=; b=/tPj+khmgESFC6ef3SwpSsEOUxKp2XbhHIzYXcnlariWadT07u6qaQyMZmQ7AKx3IigP1ZJHi6PM HHu6BFZgBnXGYTvNULUqFxtoa+eQAMvQ5CI5TbsSn7gjRDe6KpK8
 X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-PPC64/IA64/PARISC have function descriptors. LKDTM doesn't work
-on those three architectures because LKDTM messes up function
-descriptors with functions.
+'struct ppc64_opd_entry' is somehow redundant with 'struct func_desc',
+the later is more correct/complete as it includes the third
+field which is unused.
 
-This series does some cleanup in the three architectures and
-refactors function descriptors so that it can then easily use it
-in a generic way in LKDTM.
+So use 'struct func_desc' instead of 'struct ppc64_opd_entry'
 
-Changes in v4:
-- Added patch 1 which Fixes 'sparse' for powerpc64le after wrong report on previous series, refer https://github.com/ruscur/linux-ci/actions/runs/1351427671
-- Exported dereference_function_descriptor() to modules
-- Addressed other received comments
-- Rebased on latest powerpc/next (5a72345e6a78120368fcc841b570331b6c5a50da)
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/sections.h |  4 ++--
+ arch/powerpc/kernel/module_64.c     | 10 +++++-----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-Changes in v3:
-- Addressed received comments
-- Swapped some of the powerpc patches to keep func_descr_t renamed as struct func_desc and remove 'struct ppc64_opd_entry'
-- Changed HAVE_FUNCTION_DESCRIPTORS macro to a config item CONFIG_HAVE_FUNCTION_DESCRIPTORS
-- Dropped patch 11 ("Fix lkdtm_EXEC_RODATA()")
-
-Changes in v2:
-- Addressed received comments
-- Moved dereference_[kernel]_function_descriptor() out of line
-- Added patches to remove func_descr_t and func_desc_t in powerpc
-- Using func_desc_t instead of funct_descr_t
-- Renamed HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR to HAVE_FUNCTION_DESCRIPTORS
-- Added a new lkdtm test to check protection of function descriptors
-
-Christophe Leroy (13):
-  powerpc: Fix 'sparse' checking on PPC64le
-  powerpc: Move and rename func_descr_t
-  powerpc: Use 'struct func_desc' instead of 'struct ppc64_opd_entry'
-  powerpc: Remove 'struct ppc64_opd_entry'
-  powerpc: Prepare func_desc_t for refactorisation
-  ia64: Rename 'ip' to 'addr' in 'struct fdesc'
-  asm-generic: Define CONFIG_HAVE_FUNCTION_DESCRIPTORS
-  asm-generic: Define 'func_desc_t' to commonly describe function
-    descriptors
-  asm-generic: Refactor dereference_[kernel]_function_descriptor()
-  lkdtm: Force do_nothing() out of line
-  lkdtm: Really write into kernel text in WRITE_KERN
-  lkdtm: Fix execute_[user]_location()
-  lkdtm: Add a test for function descriptors protection
-
- arch/Kconfig                             |  3 +
- arch/ia64/Kconfig                        |  1 +
- arch/ia64/include/asm/elf.h              |  2 +-
- arch/ia64/include/asm/sections.h         | 24 +-------
- arch/ia64/kernel/module.c                |  6 +-
- arch/parisc/Kconfig                      |  1 +
- arch/parisc/include/asm/sections.h       | 16 ++----
- arch/parisc/kernel/process.c             | 21 -------
- arch/powerpc/Kconfig                     |  1 +
- arch/powerpc/Makefile                    |  2 +-
- arch/powerpc/include/asm/code-patching.h |  2 +-
- arch/powerpc/include/asm/elf.h           |  6 ++
- arch/powerpc/include/asm/sections.h      | 29 ++--------
- arch/powerpc/include/asm/types.h         |  6 --
- arch/powerpc/include/uapi/asm/elf.h      |  8 ---
- arch/powerpc/kernel/module_64.c          | 42 ++++++--------
- arch/powerpc/kernel/ptrace/ptrace.c      |  6 ++
- arch/powerpc/kernel/signal_64.c          |  8 +--
- drivers/misc/lkdtm/core.c                |  1 +
- drivers/misc/lkdtm/lkdtm.h               |  1 +
- drivers/misc/lkdtm/perms.c               | 71 +++++++++++++++++++-----
- include/asm-generic/sections.h           | 15 ++++-
- include/linux/kallsyms.h                 |  2 +-
- kernel/extable.c                         | 24 +++++++-
- tools/testing/selftests/lkdtm/tests.txt  |  1 +
- 25 files changed, 155 insertions(+), 144 deletions(-)
-
+diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/asm/sections.h
+index 38f79e42bf3c..baca39f4c6d3 100644
+--- a/arch/powerpc/include/asm/sections.h
++++ b/arch/powerpc/include/asm/sections.h
+@@ -61,10 +61,10 @@ static inline int overlaps_kernel_text(unsigned long start, unsigned long end)
+ #undef dereference_function_descriptor
+ static inline void *dereference_function_descriptor(void *ptr)
+ {
+-	struct ppc64_opd_entry *desc = ptr;
++	struct func_desc *desc = ptr;
+ 	void *p;
+ 
+-	if (!get_kernel_nofault(p, (void *)&desc->funcaddr))
++	if (!get_kernel_nofault(p, (void *)&desc->addr))
+ 		ptr = p;
+ 	return ptr;
+ }
+diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module_64.c
+index 6a45e6ddbe58..46e8eeb7c432 100644
+--- a/arch/powerpc/kernel/module_64.c
++++ b/arch/powerpc/kernel/module_64.c
+@@ -64,19 +64,19 @@ static unsigned int local_entry_offset(const Elf64_Sym *sym)
+ #else
+ 
+ /* An address is address of the OPD entry, which contains address of fn. */
+-typedef struct ppc64_opd_entry func_desc_t;
++typedef struct func_desc func_desc_t;
+ 
+ static func_desc_t func_desc(unsigned long addr)
+ {
+-	return *(struct ppc64_opd_entry *)addr;
++	return *(struct func_desc *)addr;
+ }
+ static unsigned long func_addr(unsigned long addr)
+ {
+-	return func_desc(addr).funcaddr;
++	return func_desc(addr).addr;
+ }
+ static unsigned long stub_func_addr(func_desc_t func)
+ {
+-	return func.funcaddr;
++	return func.addr;
+ }
+ static unsigned int local_entry_offset(const Elf64_Sym *sym)
+ {
+@@ -187,7 +187,7 @@ static int relacmp(const void *_x, const void *_y)
+ static unsigned long get_stubs_size(const Elf64_Ehdr *hdr,
+ 				    const Elf64_Shdr *sechdrs)
+ {
+-	/* One extra reloc so it's always 0-funcaddr terminated */
++	/* One extra reloc so it's always 0-addr terminated */
+ 	unsigned long relocs = 1;
+ 	unsigned i;
+ 
 -- 
 2.34.1
 
