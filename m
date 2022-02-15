@@ -2,46 +2,46 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08D7BC433EF
-	for <linux-parisc@archiver.kernel.org>; Tue, 15 Feb 2022 12:50:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C6C2C433EF
+	for <linux-parisc@archiver.kernel.org>; Tue, 15 Feb 2022 12:50:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236089AbiBOMua (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 15 Feb 2022 07:50:30 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52162 "EHLO
+        id S237805AbiBOMuf (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 15 Feb 2022 07:50:35 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbiBOMua (ORCPT
+        with ESMTP id S229844AbiBOMud (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 15 Feb 2022 07:50:30 -0500
+        Tue, 15 Feb 2022 07:50:33 -0500
 Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D4328E2B;
-        Tue, 15 Feb 2022 04:50:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9652B28E29;
+        Tue, 15 Feb 2022 04:50:23 -0800 (PST)
 Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Jyggp13FYz9sT0;
-        Tue, 15 Feb 2022 13:41:26 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4Jyggs1Hf4z9sSM;
+        Tue, 15 Feb 2022 13:41:29 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase2.c-s.fr ([172.26.127.65])
         by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id S0f10AOUrKn0; Tue, 15 Feb 2022 13:41:26 +0100 (CET)
+        with ESMTP id k82_Xi-BHsDE; Tue, 15 Feb 2022 13:41:29 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Jyggn1NYjz9sSH;
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Jyggn2w58z9sRw;
         Tue, 15 Feb 2022 13:41:25 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1DA0E8B78B;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 525278B763;
         Tue, 15 Feb 2022 13:41:25 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id dqfLvVJOOgX9; Tue, 15 Feb 2022 13:41:25 +0100 (CET)
+        with ESMTP id 4q9AZT4zcRCb; Tue, 15 Feb 2022 13:41:25 +0100 (CET)
 Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.6.174])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 66C808B776;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7C9AE8B77C;
         Tue, 15 Feb 2022 13:41:24 +0100 (CET)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 21FCfGnW080617
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 21FCfHYB080637
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 15 Feb 2022 13:41:16 +0100
+        Tue, 15 Feb 2022 13:41:17 +0100
 Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 21FCfFva080616;
-        Tue, 15 Feb 2022 13:41:15 +0100
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 21FCfHdL080636;
+        Tue, 15 Feb 2022 13:41:17 +0100
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -55,92 +55,131 @@ To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
 Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        Daniel Axtens <dja@axtens.net>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: [PATCH v4 03/13] powerpc: Use 'struct func_desc' instead of 'struct ppc64_opd_entry'
-Date:   Tue, 15 Feb 2022 13:40:58 +0100
-Message-Id: <34e76bac6cbe95a63ecd37df69fb7feb93b0ea7c.1644928018.git.christophe.leroy@csgroup.eu>
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH v4 08/13] asm-generic: Define 'func_desc_t' to commonly describe function descriptors
+Date:   Tue, 15 Feb 2022 13:41:03 +0100
+Message-Id: <f1f91b142b3c1082bdc1586ce71c9bac1e75213c.1644928018.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1644928018.git.christophe.leroy@csgroup.eu>
 References: <cover.1644928018.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1644928860; l=2500; s=20211009; h=from:subject:message-id; bh=lF3vrnWaSCZb9OJrJGlARG72CsPx1sV+HmC9+sMkkEg=; b=/tPj+khmgESFC6ef3SwpSsEOUxKp2XbhHIzYXcnlariWadT07u6qaQyMZmQ7AKx3IigP1ZJHi6PM HHu6BFZgBnXGYTvNULUqFxtoa+eQAMvQ5CI5TbsSn7gjRDe6KpK8
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1644928860; l=3528; s=20211009; h=from:subject:message-id; bh=f/Kz0vs7DzOIFvt0GMalWSxwhMlMtC2TwHZGNFAW5xk=; b=pjXGNgU4tJTpHtaKVo8K7qLnoS/WBn+e6Gl++nh7f3v0UMDFbRud25AzSQcY/w+ChnJQMG5svT/C IDhKL0suBodK3xIXENbiPQzeZ/hrkMGbkXNHt+ZhHeD6a9PcAk9l
 X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-'struct ppc64_opd_entry' is somehow redundant with 'struct func_desc',
-the later is more correct/complete as it includes the third
-field which is unused.
+We have three architectures using function descriptors, each with its
+own type and name.
 
-So use 'struct func_desc' instead of 'struct ppc64_opd_entry'
+Add a common typedef that can be used in generic code.
+
+Also add a stub typedef for architecture without function descriptors,
+to avoid a forest of #ifdefs.
+
+It replaces the similar 'func_desc_t' previously defined in
+arch/powerpc/kernel/module_64.c
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Daniel Axtens <dja@axtens.net>
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Helge Deller <deller@gmx.de>
 ---
- arch/powerpc/include/asm/sections.h |  4 ++--
- arch/powerpc/kernel/module_64.c     | 10 +++++-----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ arch/ia64/include/asm/sections.h    | 3 +++
+ arch/parisc/include/asm/sections.h  | 5 +++++
+ arch/powerpc/include/asm/sections.h | 4 ++++
+ arch/powerpc/kernel/module_64.c     | 8 --------
+ include/asm-generic/sections.h      | 5 +++++
+ 5 files changed, 17 insertions(+), 8 deletions(-)
 
+diff --git a/arch/ia64/include/asm/sections.h b/arch/ia64/include/asm/sections.h
+index 2460d365a057..3abe0562b01a 100644
+--- a/arch/ia64/include/asm/sections.h
++++ b/arch/ia64/include/asm/sections.h
+@@ -9,6 +9,9 @@
+ 
+ #include <linux/elf.h>
+ #include <linux/uaccess.h>
++
++typedef struct fdesc func_desc_t;
++
+ #include <asm-generic/sections.h>
+ 
+ extern char __phys_per_cpu_start[];
+diff --git a/arch/parisc/include/asm/sections.h b/arch/parisc/include/asm/sections.h
+index c8092e4d94de..ace1d4047a0b 100644
+--- a/arch/parisc/include/asm/sections.h
++++ b/arch/parisc/include/asm/sections.h
+@@ -2,6 +2,11 @@
+ #ifndef _PARISC_SECTIONS_H
+ #define _PARISC_SECTIONS_H
+ 
++#ifdef CONFIG_HAVE_FUNCTION_DESCRIPTORS
++#include <asm/elf.h>
++typedef Elf64_Fdesc func_desc_t;
++#endif
++
+ /* nothing to see, move along */
+ #include <asm-generic/sections.h>
+ 
 diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/asm/sections.h
-index 38f79e42bf3c..baca39f4c6d3 100644
+index 7728a7a146c3..fddfb3937868 100644
 --- a/arch/powerpc/include/asm/sections.h
 +++ b/arch/powerpc/include/asm/sections.h
-@@ -61,10 +61,10 @@ static inline int overlaps_kernel_text(unsigned long start, unsigned long end)
- #undef dereference_function_descriptor
- static inline void *dereference_function_descriptor(void *ptr)
- {
--	struct ppc64_opd_entry *desc = ptr;
-+	struct func_desc *desc = ptr;
- 	void *p;
+@@ -6,6 +6,10 @@
+ #include <linux/elf.h>
+ #include <linux/uaccess.h>
  
--	if (!get_kernel_nofault(p, (void *)&desc->funcaddr))
-+	if (!get_kernel_nofault(p, (void *)&desc->addr))
- 		ptr = p;
- 	return ptr;
- }
++#ifdef CONFIG_HAVE_FUNCTION_DESCRIPTORS
++typedef struct func_desc func_desc_t;
++#endif
++
+ #include <asm-generic/sections.h>
+ 
+ extern char __head_end[];
 diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module_64.c
-index 6a45e6ddbe58..46e8eeb7c432 100644
+index ff93ef4cb5a2..9abc0e783e36 100644
 --- a/arch/powerpc/kernel/module_64.c
 +++ b/arch/powerpc/kernel/module_64.c
-@@ -64,19 +64,19 @@ static unsigned int local_entry_offset(const Elf64_Sym *sym)
- #else
+@@ -32,11 +32,6 @@
  
- /* An address is address of the OPD entry, which contains address of fn. */
--typedef struct ppc64_opd_entry func_desc_t;
-+typedef struct func_desc func_desc_t;
+ #ifdef PPC64_ELF_ABI_v2
  
+-/* An address is simply the address of the function. */
+-typedef struct {
+-	unsigned long addr;
+-} func_desc_t;
+-
  static func_desc_t func_desc(unsigned long addr)
  {
--	return *(struct ppc64_opd_entry *)addr;
-+	return *(struct func_desc *)addr;
+ 	func_desc_t desc = {
+@@ -61,9 +56,6 @@ static unsigned int local_entry_offset(const Elf64_Sym *sym)
  }
- static unsigned long func_addr(unsigned long addr)
- {
--	return func_desc(addr).funcaddr;
-+	return func_desc(addr).addr;
- }
- static unsigned long stub_func_addr(func_desc_t func)
- {
--	return func.funcaddr;
-+	return func.addr;
- }
- static unsigned int local_entry_offset(const Elf64_Sym *sym)
- {
-@@ -187,7 +187,7 @@ static int relacmp(const void *_x, const void *_y)
- static unsigned long get_stubs_size(const Elf64_Ehdr *hdr,
- 				    const Elf64_Shdr *sechdrs)
- {
--	/* One extra reloc so it's always 0-funcaddr terminated */
-+	/* One extra reloc so it's always 0-addr terminated */
- 	unsigned long relocs = 1;
- 	unsigned i;
+ #else
  
+-/* An address is address of the OPD entry, which contains address of fn. */
+-typedef struct func_desc func_desc_t;
+-
+ static func_desc_t func_desc(unsigned long addr)
+ {
+ 	return *(struct func_desc *)addr;
+diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
+index 3ef83e1aebee..bbf97502470c 100644
+--- a/include/asm-generic/sections.h
++++ b/include/asm-generic/sections.h
+@@ -63,6 +63,11 @@ extern __visible const void __nosave_begin, __nosave_end;
+ #else
+ #define dereference_function_descriptor(p) ((void *)(p))
+ #define dereference_kernel_function_descriptor(p) ((void *)(p))
++
++/* An address is simply the address of the function. */
++typedef struct {
++	unsigned long addr;
++} func_desc_t;
+ #endif
+ 
+ static inline bool have_function_descriptors(void)
 -- 
 2.34.1
 
