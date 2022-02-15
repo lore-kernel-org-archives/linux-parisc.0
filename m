@@ -2,109 +2,136 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8157CC433FE
-	for <linux-parisc@archiver.kernel.org>; Tue, 15 Feb 2022 12:50:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E29FC43219
+	for <linux-parisc@archiver.kernel.org>; Tue, 15 Feb 2022 13:17:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237927AbiBOMu4 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 15 Feb 2022 07:50:56 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52316 "EHLO
+        id S238170AbiBONRX (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 15 Feb 2022 08:17:23 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238049AbiBOMuw (ORCPT
+        with ESMTP id S238160AbiBONRV (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 15 Feb 2022 07:50:52 -0500
-Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2739E28E29;
-        Tue, 15 Feb 2022 04:50:42 -0800 (PST)
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Jyggt1WdHz9sRw;
-        Tue, 15 Feb 2022 13:41:30 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vinG_He-9gjD; Tue, 15 Feb 2022 13:41:30 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Jyggn4KfQz9sST;
-        Tue, 15 Feb 2022 13:41:25 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 81D548B763;
-        Tue, 15 Feb 2022 13:41:25 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id QTIey80vSQHy; Tue, 15 Feb 2022 13:41:25 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.6.174])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7BB778B77B;
-        Tue, 15 Feb 2022 13:41:24 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 21FCfHOn080645
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 15 Feb 2022 13:41:17 +0100
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 21FCfHeR080644;
-        Tue, 15 Feb 2022 13:41:17 +0100
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v4 10/13] lkdtm: Force do_nothing() out of line
-Date:   Tue, 15 Feb 2022 13:41:05 +0100
-Message-Id: <a5dcf4d2088e6aca47ab3b4c6d5c0f7fa064e25a.1644928018.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1644928018.git.christophe.leroy@csgroup.eu>
-References: <cover.1644928018.git.christophe.leroy@csgroup.eu>
+        Tue, 15 Feb 2022 08:17:21 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 394D2D10A6;
+        Tue, 15 Feb 2022 05:17:11 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D2493B819C2;
+        Tue, 15 Feb 2022 13:17:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75858C340FA;
+        Tue, 15 Feb 2022 13:17:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644931028;
+        bh=yV4ORJd5b6IZao4Zu1H2u9bAD/0nkvfeGMC8j+boEO0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Y1UbQDYKVd/W55uCfVo2WGlgo3dfDZUC0yTFtlZUY0DOBzt83pgV9/7gMxh05e3AH
+         lgukd8DqmxPwxja7mK4vtMYnDC6X4AvagIoktla5uPG7vSSfPBtEQFLrXn9FMcdgHH
+         E1qEJeHLjvJUuBL6dqkrwsbxdH4jW8atiF/scjZBMC9lLF7Ype1WGnPRnqUer24JD8
+         tu4gGKuwZtD0+Nibza1Ys9PPtyZzsqg7g90GGNebDRKc+NU4HRCxVmDtvM0+9S5mSP
+         qhfZT5HIgJ8aWSTxW8hfUnfgxShZHe3y/AzzhEX87Jyr/ToKwZr4yc1EXWSuI0q6BQ
+         u0/dxkrR5dDfA==
+Received: by mail-wm1-f52.google.com with SMTP id l67-20020a1c2546000000b00353951c3f62so1379952wml.5;
+        Tue, 15 Feb 2022 05:17:08 -0800 (PST)
+X-Gm-Message-State: AOAM531nWLz2K8rL/bc46tYq+Deksn/ZiXUMR8HxJ4KV/G/F9pyHwQOj
+        z0x5V3QvmmSWc4VSjahm5CFqvuHjNvNkD91335I=
+X-Google-Smtp-Source: ABdhPJzhbiTSvbv50mQWSJ7smaLZnr2q978YJ0F6+MeQ3SrwEp5s0NrkvRE5+WnWUVexqYiFblH5E9BGGqHgxsxWGyI=
+X-Received: by 2002:a05:600c:4ecb:: with SMTP id g11mr3088436wmq.98.1644931026534;
+ Tue, 15 Feb 2022 05:17:06 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1644928860; l=1269; s=20211009; h=from:subject:message-id; bh=Qfe2la9R+/icLlKyEXlhAjPyrlVNcwt2uKVNooAPO2A=; b=PUqQRJ5Z3OSO7f5BoncMZOdMS2siQUwkpBmdIn0841YNUh5b5dGI0DIvkCrh6y2Oef6Xlz1Pd1ix xp0ZhccnCwmIOMabi3CewXL6jEcMjZBNMx+WVwbOuXj2aeGJeopa
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+References: <20220214163452.1568807-1-arnd@kernel.org> <20220214163452.1568807-6-arnd@kernel.org>
+ <Ygr0eAA+ZR1eX0wb@zeniv-ca.linux.org.uk>
+In-Reply-To: <Ygr0eAA+ZR1eX0wb@zeniv-ca.linux.org.uk>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 15 Feb 2022 14:16:50 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2+qG=Q9Si_2D7wjM7Qao2JCnYqKgU=W-SFwoG+fT-U3A@mail.gmail.com>
+Message-ID: <CAK8P3a2+qG=Q9Si_2D7wjM7Qao2JCnYqKgU=W-SFwoG+fT-U3A@mail.gmail.com>
+Subject: Re: [PATCH 05/14] uaccess: add generic __{get,put}_kernel_nofault
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        David Miller <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-csky@vger.kernel.org,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-LKDTM tests display that the run do_nothing() at a given
-address, but in reality do_nothing() is inlined into the
-caller.
+On Tue, Feb 15, 2022 at 1:31 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Mon, Feb 14, 2022 at 05:34:43PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > All architectures that don't provide __{get,put}_kernel_nofault() yet
+> > can implement this on top of __{get,put}_user.
+> >
+> > Add a generic version that lets everything use the normal
+> > copy_{from,to}_kernel_nofault() code based on these, removing the last
+> > use of get_fs()/set_fs() from architecture-independent code.
+>
+> I'd put the list of those architectures (AFAICS, that's alpha, ia64,
+> microblaze, nds32, nios2, openrisc, sh, sparc32, xtensa) into commit
+> message - it's not that hard to find out, but...
 
-Force it out of line so that it really runs text at the
-displayed address.
+done.
 
-Acked-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- drivers/misc/lkdtm/perms.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> And AFAICS, you've missed nios2 - see
+> #define __put_user(x, ptr) put_user(x, ptr)
+> in there.  nds32 oddities are dealt with earlier in the series, this
+> one is not...
 
-diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
-index 2dede2ef658f..60b3b2fe929d 100644
---- a/drivers/misc/lkdtm/perms.c
-+++ b/drivers/misc/lkdtm/perms.c
-@@ -21,7 +21,7 @@
- /* This is non-const, so it will end up in the .data section. */
- static u8 data_area[EXEC_SIZE];
- 
--/* This is cost, so it will end up in the .rodata section. */
-+/* This is const, so it will end up in the .rodata section. */
- static const unsigned long rodata = 0xAA55AA55;
- 
- /* This is marked __ro_after_init, so it should ultimately be .rodata. */
-@@ -31,7 +31,7 @@ static unsigned long ro_after_init __ro_after_init = 0x55AA5500;
-  * This just returns to the caller. It is designed to be copied into
-  * non-executable memory regions.
-  */
--static void do_nothing(void)
-+static noinline void do_nothing(void)
- {
- 	return;
- }
--- 
-2.34.1
+Ok, fixed my bug in nios2 __put_user() as well now. This one is not nearly
+as bad as nds32, at least without my patches it should work as expected.
 
+Unfortunately I also noticed that __get_user() on microblaze and nios2
+is completely broken for 64-bit arguments, where these copy eight bytes
+into a four byte buffer. I'll try to come up with a fix for this as well then.
+
+         Arnd
