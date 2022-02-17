@@ -2,125 +2,256 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44772C433F5
-	for <linux-parisc@archiver.kernel.org>; Thu, 17 Feb 2022 20:20:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FDC3C433F5
+	for <linux-parisc@archiver.kernel.org>; Thu, 17 Feb 2022 20:46:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243937AbiBQUUV (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 17 Feb 2022 15:20:21 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46318 "EHLO
+        id S239368AbiBQUqR (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 17 Feb 2022 15:46:17 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbiBQUUU (ORCPT
+        with ESMTP id S229923AbiBQUqR (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 17 Feb 2022 15:20:20 -0500
+        Thu, 17 Feb 2022 15:46:17 -0500
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2260B1451DC
-        for <linux-parisc@vger.kernel.org>; Thu, 17 Feb 2022 12:20:01 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1986715DB0D
+        for <linux-parisc@vger.kernel.org>; Thu, 17 Feb 2022 12:46:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1645129200;
-        bh=slLux7enVKWYUMnvnAoZKEeISAUoGHHwaLpZc56UOgw=;
-        h=X-UI-Sender-Class:Date:Subject:References:To:From:In-Reply-To;
-        b=jwn7sH8Prn63SRyhATdGP90QI0Fp/Tz+67IZU4+HIUNLHvn9+ipXCuUlhAb11bX0c
-         iynpsXKTU+DP6SXBdWkkuKxCWeKEkqbiFz/ybFTXk0yphMp5kkl51NRXcL5DYMQxjC
-         SM/iybnBR7Ncq6JLAM82xpQcIKT82cy9h255smc8=
+        s=badeba3b8450; t=1645130755;
+        bh=iauLLkQAvZVu/wa2QfqYvg2LylWC/9gKuNFnCKiCor0=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=bncZfwjBVp1ohDzuz2zr67T2WPG+OgueSokKIBFpQZgZfW7vjKskIXeQ2m/1wHFJf
+         vl+AnIIGQPcqLpfYtkdk50R/TGshUAzdDiRgu799+pzbo6S6mHvX1dH/wHhcfWzlDC
+         psaW5pUAhXfGWZzXU9qLd8O15TzdoTvwjHlwf+aA=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.175.13]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M4b1y-1nJ8pa14X0-001fcb; Thu, 17
- Feb 2022 21:20:00 +0100
-Message-ID: <d8aeab0d-979b-d35d-0f4c-eac5b7ad31d4@gmx.de>
-Date:   Thu, 17 Feb 2022 21:18:39 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Fwd: [PATCH v6 33/71] parisc: Remove mmap linked list from cache
- handling
-Content-Language: en-US
-References: <20220215144241.3812052-33-Liam.Howlett@oracle.com>
-To:     linux-parisc <linux-parisc@vger.kernel.org>
+Received: from p100.fritz.box ([92.116.175.13]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MQv8x-1nfTTo23UN-00O00I; Thu, 17
+ Feb 2022 21:45:55 +0100
 From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <20220215144241.3812052-33-Liam.Howlett@oracle.com>
-X-Forwarded-Message-Id: <20220215144241.3812052-33-Liam.Howlett@oracle.com>
-Content-Type: text/plain; charset=UTF-8
+To:     linux-parisc@vger.kernel.org
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH 3/4] parisc: Use constants to encode the space registers like SR_KERNEL
+Date:   Thu, 17 Feb 2022 21:45:53 +0100
+Message-Id: <20220217204554.305554-3-deller@gmx.de>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220217204554.305554-1-deller@gmx.de>
+References: <20220217204554.305554-1-deller@gmx.de>
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/ofp4kHkreLC4px1tx4gNIeBI+rMuWzl3E9AwVspRhbPwr6Dqt0
- 3yWIrYuaPa2B0bzZTFsID6llxXeqBBBqMpzzJrgUlNCV9/wMIz0un/pLV62B6P7t6pMLm9m
- 8NqC28G1JViQJKSeLm4x0fYPd/m11+KSk9pq45CwwS2T9qug0Q0rmWgisSgJizniGF1mlaL
- tfsxnleChPtxOf9TF8X3A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qvzssCbDai0=:cmxDp42kK+VEIIy5wsKXj8
- 5G3nmKdfq2BZ8u3cbv1EsEqlkT2Fe/+TIK3WKWoo5EQoo+Gh68UNUUqjPpil0pKoTLYcroNZZ
- G0MHv1hUzWW021Z9lSk5xs5nAsNSGCMOorjLi8s/YpDoXRWThHssf0ATqdKPn7g7+wbeXLea/
- RFn9MBxj9+dw3g2dAgS4D2letkN6Mut2KiiU64y9z6tLlAgVx4UCxRbydl8Sht0nPVwVUYQTz
- ewzaDP5ExWt70EpSYjO2hdOHqAqnW6A32iMt4b+z0FWW8hpRJOoK2OcNaB22miyDoEgkFr/Au
- dAjMVW/Al0+yhNnC8012PGe3Vd7XvRIHZDa4iTKzlIP0PVwWg9S0aopYqlaiV74cV56UDgRDn
- LFURSGFFatsYav/wosIhV24ockZbylDNWNOqq+D6TlMvwPr//4biHf3yB6P83T1j/71ZbARHc
- 9YAxtBm1KS/6eNIpSO8U6zXMulPsQquRTtF1lQlrzlvJabhL7OQxwhfdsxgPj/V8fy05L8oQ+
- nGPcDJT8KWzEf+MpB2Dh+/Q6FBB/h1paywZX/WBpMt4apfZrGKOiJfom0hA8P2SW1mKn+uM8F
- 8RAtCtpG3dnhG2UENLKUiWRIEu23PnV4MwRia6clShc4FZX6prmeMuqVvTQv+RVBXyfwexiv6
- 2p8T8SeykdcEMGxcnKaTcjFvV+lmzMglRyTgMqhJTGvAukkSGGcAUUw3t/WGscFXxZ9WreTET
- KXI123qfwLWNs+v2pruSJ9toaZdmWwUGFM7yAH3vkWJYj4PRDanM34qqeUoLFOCvM/Ci+/4M2
- hnLb7qc+UsQjTdUh/IkXA+90jaZqRr9RCvXLzrdiElnbb8llmecoDObPJtFwT/1+KE/AuV++7
- 34e5joKUiIAR+ywx54q8ydpa2R8lpCXdv2pl35kKZR5hWJUtZmChV5ljzFnSFdjMb/RBVx01v
- ujqTmLOymUpebjO497VJVfDLIqeZDgxDG6x6DokUB6KzLhHtbmV0vbL+3AqMi5VEmzanCl4M1
- tI+9+eiraTHMYBUBADOwYWTmsqqh862kIxBxzvKoISq/MOVpXeW4NG1dD30h773fXSWDGIkCl
- 6JDQO+O1xOa5lQ=
+X-Provags-ID: V03:K1:Bsb81psoXSBGvrKuVunFCkv948MrbtyWsgxiSY9vdkJCeqnwyEf
+ DdbRgMRtuoS6ETCk8bPp5VS2YU7DUuXEb+T1e8bHWQOLtBLdKXUoqX0nEhNfNG7FfWBbIMr
+ ZVXBZVgIZVSdenPbGI7lnKKS3vt8QisOKMkzs/4kF4vg9rayoldjww0O8dyG+D9lzDyHekb
+ YmYbMdaUUw1/9QtIbXHtA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:i0U393wdMOA=:AlroKLsjK0Y01zmTi5vaJs
+ 65lOZZtCp4lGQE1K1oxhBG+LYtPMkdKf4vJSV8gzFMdxA/5RiZ6eYbOIJ/tAw76iaFDKLmyY0
+ aCnyIImkHJObhmK6AFQiP1Lk1VmQZ8DmYEP1G2pa0wirulUYxV2zpXgmxwurq2AjHRJT1wQzx
+ gB6sLK4+uTFOOoSA9qR2+RXBK8uGp89c9H2qu9pFBM0054z+BsXAV/bkcpoOhd9/bi70AND5T
+ IQfqSB2+ObhV3ZWNAUglzdG4tcI6TW6DWsAFfAyDrqi1Wf42WmcGqeB4Nkg0Jwj5BzAhzbYNb
+ bRwHxxGSpBDQiqTU976SRtTGyGT0f9+vG88p8uJbV26hK8gVWDzJg4khsSUdayE26hp4eArTu
+ O/yCv6/q5TsnI1FUP7askllU22JjWxm3BC4sWb9YvyIE84EmUve4EOo7cyjb21+ICFPkSspvU
+ S3UpDrbihfBs9rHS3jV9UMRmsP/0/SaDrYLKLNJAbUPFJocTbCG0J3pRW5GEkmraiPVVKxJVk
+ iCBq/smcmPI4tPxjQuGxax/D/WtIhDyXSuAPAyeKyp999Psi5gCULMyumN7YLVR/x02d53BS7
+ AqBxrMdvone8qlC5/DesYg2MG4ggjCrb+cjS+tlucpikD77KJcwXTMwFryPq8e1TAeo3f2fcw
+ dFgaKwynDAI1+MdCHlmbmIygbpHT1xBuHAoy/TZyqbyL+CYV5QAFdYBqCLdEUriU0BwxKsmVH
+ KhGCTK0MiiLorkfzoVsVpkHWryaCyWC4cM6XsBBtsomsINSkcvt8q3P9ijDqSs11kf5iPvNsp
+ Bsf5DHGoE0kGGd9VX27aqBtDN17vRjZrkU1sINgNbExvIcWw4FZCh0kHZnkilqFU7el/37qGM
+ hwavVF8TYfe+yQ5tH9ydV3gAmlFoKKewYpRoP6m0bEOoSJflUulDbPH5shYgQJYC5ykbNs8FE
+ zfgs3utJt15DWG+RikDfxX2Ht3iDWEp6VfnZd3iirPfoSczmocNBzqTRJhcvPAEg4EZZyziRI
+ mYt1Vaox6xQaf8JexZQRO6Th40mIZbU3tHcVgS50c2hDZkH5/a5yU0av0a7vhBMcCSOMwBRUY
+ L5XJxHGondJDOk=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-To be queued up after next merge window:
+Instead of hardcoding various space registers, use the space register
+constants. Introduce SR_TEMP1 and SR_TEMP2 for %sr1 and %sr2.
 
-From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-
-Use the VMA iterator instead.
-
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Helge Deller <deller@gmx.de>
 =2D--
- arch/parisc/kernel/cache.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ arch/parisc/include/asm/cache.h         | 11 ++++-------
+ arch/parisc/include/asm/mmu_context.h   |  2 +-
+ arch/parisc/include/asm/pgtable.h       |  6 +++---
+ arch/parisc/include/asm/special_insns.h |  4 ++--
+ arch/parisc/kernel/cache.c              |  8 ++++----
+ arch/parisc/kernel/pci-dma.c            |  4 ++--
+ arch/parisc/lib/memcpy.c                | 16 ++++++++--------
+ 7 files changed, 24 insertions(+), 27 deletions(-)
 
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index 94150b91c96f..c3a8d29b6f9f 100644
-=2D-- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -519,9 +519,11 @@ static inline unsigned long mm_total_size(struct mm_s=
-truct *mm)
+diff --git a/arch/parisc/include/asm/cache.h b/arch/parisc/include/asm/cac=
+he.h
+index d53e9e27dba0..5032e758594e 100644
+=2D-- a/arch/parisc/include/asm/cache.h
++++ b/arch/parisc/include/asm/cache.h
+@@ -39,16 +39,13 @@ extern int icache_stride;
+ extern struct pdc_cache_info cache_info;
+ void parisc_setup_cache_timing(void);
+
+-#define pdtlb(addr)	asm volatile("pdtlb 0(%%sr1,%0)" \
++#define pdtlb(sr, addr)	asm volatile("pdtlb 0(%%sr%0,%1)" \
+ 			ALTERNATIVE(ALT_COND_NO_SMP, INSN_PxTLB) \
+-			: : "r" (addr) : "memory")
+-#define pitlb(addr)	asm volatile("pitlb 0(%%sr1,%0)" \
++			: : "i"(sr), "r" (addr) : "memory")
++#define pitlb(sr, addr)	asm volatile("pitlb 0(%%sr%0,%1)" \
+ 			ALTERNATIVE(ALT_COND_NO_SMP, INSN_PxTLB) \
+ 			ALTERNATIVE(ALT_COND_NO_SPLIT_TLB, INSN_NOP) \
+-			: : "r" (addr) : "memory")
+-#define pdtlb_kernel(addr)  asm volatile("pdtlb 0(%0)"   \
+-			ALTERNATIVE(ALT_COND_NO_SMP, INSN_PxTLB) \
+-			: : "r" (addr) : "memory")
++			: : "i"(sr), "r" (addr) : "memory")
+
+ #define asm_io_fdc(addr) asm volatile("fdc %%r0(%0)" \
+ 			ALTERNATIVE(ALT_COND_NO_DCACHE, INSN_NOP) \
+diff --git a/arch/parisc/include/asm/mmu_context.h b/arch/parisc/include/a=
+sm/mmu_context.h
+index e788e995bd7a..c9187fe836a3 100644
+=2D-- a/arch/parisc/include/asm/mmu_context.h
++++ b/arch/parisc/include/asm/mmu_context.h
+@@ -43,7 +43,7 @@ static inline unsigned long __space_to_prot(mm_context_t=
+ context)
+
+ static inline void load_context(mm_context_t context)
  {
- 	struct vm_area_struct *vma;
- 	unsigned long usize =3D 0;
-+	VMA_ITERATOR(vmi, mm, 0);
-
--	for (vma =3D mm->mmap; vma; vma =3D vma->vm_next)
-+	for_each_vma(vmi, vma)
- 		usize +=3D vma->vm_end - vma->vm_start;
-+
- 	return usize;
+-	mtsp(context.space_id, 3);
++	mtsp(context.space_id, SR_USER);
+ 	mtctl(__space_to_prot(context), 8);
  }
 
-@@ -570,6 +572,7 @@ static void flush_user_cache_tlb(struct vm_area_struct=
- *vma,
- void flush_cache_mm(struct mm_struct *mm)
- {
- 	struct vm_area_struct *vma;
-+	VMA_ITERATOR(vmi, mm, 0);
+diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/p=
+gtable.h
+index f0393f00c2ff..7dff736936d0 100644
+=2D-- a/arch/parisc/include/asm/pgtable.h
++++ b/arch/parisc/include/asm/pgtable.h
+@@ -70,9 +70,9 @@ static inline void purge_tlb_entries(struct mm_struct *m=
+m, unsigned long addr)
+ 	unsigned long flags;
 
- 	/* Flushing the whole cache on each cpu takes forever on
- 	   rp3440, etc.  So, avoid it if the mm isn't too big.  */
-@@ -583,13 +586,13 @@ void flush_cache_mm(struct mm_struct *mm)
+ 	purge_tlb_start(flags);
+-	mtsp(mm->context.space_id, 1);
+-	pdtlb(addr);
+-	pitlb(addr);
++	mtsp(mm->context.space_id, SR_TEMP1);
++	pdtlb(SR_TEMP1, addr);
++	pitlb(SR_TEMP1, addr);
+ 	purge_tlb_end(flags);
+ }
 
- 	preempt_disable();
- 	if (mm->context =3D=3D mfsp(3)) {
--		for (vma =3D mm->mmap; vma; vma =3D vma->vm_next)
-+		for_each_vma(vmi, vma)
- 			flush_user_cache_tlb(vma, vma->vm_start, vma->vm_end);
- 		preempt_enable();
- 		return;
+diff --git a/arch/parisc/include/asm/special_insns.h b/arch/parisc/include=
+/asm/special_insns.h
+index 16ee41e77174..41b3ddbd344c 100644
+=2D-- a/arch/parisc/include/asm/special_insns.h
++++ b/arch/parisc/include/asm/special_insns.h
+@@ -55,8 +55,8 @@ static inline void set_eiem(unsigned long val)
+ #define mfsp(reg)	({		\
+ 	unsigned long cr;		\
+ 	__asm__ __volatile__(		\
+-		"mfsp " #reg ",%0" :	\
+-		 "=3Dr" (cr)		\
++		"mfsp %%sr%1,%0"	\
++		: "=3Dr" (cr) : "i"(reg)	\
+ 	);				\
+ 	cr;				\
+ })
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index a08f8499b720..e7b8e74dad8e 100644
+=2D-- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -457,7 +457,7 @@ void flush_kernel_dcache_page_addr(void *addr)
+
+ 	flush_kernel_dcache_page_asm(addr);
+ 	purge_tlb_start(flags);
+-	pdtlb_kernel(addr);
++	pdtlb(SR_KERNEL, addr);
+ 	purge_tlb_end(flags);
+ }
+ EXPORT_SYMBOL(flush_kernel_dcache_page_addr);
+@@ -496,9 +496,9 @@ int __flush_tlb_range(unsigned long sid, unsigned long=
+ start,
+ 	   but cause a purge request to be broadcast to other TLBs.  */
+ 	while (start < end) {
+ 		purge_tlb_start(flags);
+-		mtsp(sid, 1);
+-		pdtlb(start);
+-		pitlb(start);
++		mtsp(sid, SR_TEMP1);
++		pdtlb(SR_TEMP1, start);
++		pitlb(SR_TEMP1, start);
+ 		purge_tlb_end(flags);
+ 		start +=3D PAGE_SIZE;
  	}
+diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
+index 36a57aa38e87..160996f2198e 100644
+=2D-- a/arch/parisc/kernel/pci-dma.c
++++ b/arch/parisc/kernel/pci-dma.c
+@@ -91,7 +91,7 @@ static inline int map_pte_uncached(pte_t * pte,
+ 			printk(KERN_ERR "map_pte_uncached: page already exists\n");
+ 		purge_tlb_start(flags);
+ 		set_pte(pte, __mk_pte(*paddr_ptr, PAGE_KERNEL_UNC));
+-		pdtlb_kernel(orig_vaddr);
++		pdtlb(SR_KERNEL, orig_vaddr);
+ 		purge_tlb_end(flags);
+ 		vaddr +=3D PAGE_SIZE;
+ 		orig_vaddr +=3D PAGE_SIZE;
+@@ -175,7 +175,7 @@ static inline void unmap_uncached_pte(pmd_t * pmd, uns=
+igned long vaddr,
 
--	for (vma =3D mm->mmap; vma; vma =3D vma->vm_next)
-+	for_each_vma(vmi, vma)
- 		flush_cache_pages(vma, mm, vma->vm_start, vma->vm_end);
- 	preempt_enable();
+ 		pte_clear(&init_mm, vaddr, pte);
+ 		purge_tlb_start(flags);
+-		pdtlb_kernel(orig_vaddr);
++		pdtlb(SR_KERNEL, orig_vaddr);
+ 		purge_tlb_end(flags);
+ 		vaddr +=3D PAGE_SIZE;
+ 		orig_vaddr +=3D PAGE_SIZE;
+diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
+index ea70a0e08321..5fc0c852c84c 100644
+=2D-- a/arch/parisc/lib/memcpy.c
++++ b/arch/parisc/lib/memcpy.c
+@@ -13,8 +13,8 @@
+ #include <linux/compiler.h>
+ #include <linux/uaccess.h>
+
+-#define get_user_space() (uaccess_kernel() ? 0 : mfsp(3))
+-#define get_kernel_space() (0)
++#define get_user_space()	mfsp(SR_USER)
++#define get_kernel_space()	SR_KERNEL
+
+ /* Returns 0 for success, otherwise, returns number of bytes not transfer=
+red. */
+ extern unsigned long pa_memcpy(void *dst, const void *src,
+@@ -23,8 +23,8 @@ extern unsigned long pa_memcpy(void *dst, const void *sr=
+c,
+ unsigned long raw_copy_to_user(void __user *dst, const void *src,
+ 			       unsigned long len)
+ {
+-	mtsp(get_kernel_space(), 1);
+-	mtsp(get_user_space(), 2);
++	mtsp(get_kernel_space(), SR_TEMP1);
++	mtsp(get_user_space(), SR_TEMP2);
+ 	return pa_memcpy((void __force *)dst, src, len);
+ }
+ EXPORT_SYMBOL(raw_copy_to_user);
+@@ -32,16 +32,16 @@ EXPORT_SYMBOL(raw_copy_to_user);
+ unsigned long raw_copy_from_user(void *dst, const void __user *src,
+ 			       unsigned long len)
+ {
+-	mtsp(get_user_space(), 1);
+-	mtsp(get_kernel_space(), 2);
++	mtsp(get_user_space(), SR_TEMP1);
++	mtsp(get_kernel_space(), SR_TEMP2);
+ 	return pa_memcpy(dst, (void __force *)src, len);
+ }
+ EXPORT_SYMBOL(raw_copy_from_user);
+
+ void * memcpy(void * dst,const void *src, size_t count)
+ {
+-	mtsp(get_kernel_space(), 1);
+-	mtsp(get_kernel_space(), 2);
++	mtsp(get_kernel_space(), SR_TEMP1);
++	mtsp(get_kernel_space(), SR_TEMP2);
+ 	pa_memcpy(dst, src, count);
+ 	return dst;
  }
 =2D-
 2.34.1
+
