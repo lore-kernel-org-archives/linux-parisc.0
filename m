@@ -2,91 +2,112 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89794C433EF
-	for <linux-parisc@archiver.kernel.org>; Thu, 17 Feb 2022 20:46:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B8CAC433EF
+	for <linux-parisc@archiver.kernel.org>; Thu, 17 Feb 2022 20:46:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbiBQUqV (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 17 Feb 2022 15:46:21 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36170 "EHLO
+        id S243247AbiBQUqY (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 17 Feb 2022 15:46:24 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242835AbiBQUqU (ORCPT
+        with ESMTP id S242835AbiBQUqX (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 17 Feb 2022 15:46:20 -0500
+        Thu, 17 Feb 2022 15:46:23 -0500
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BA015DB10
-        for <linux-parisc@vger.kernel.org>; Thu, 17 Feb 2022 12:46:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C61615DB0D
+        for <linux-parisc@vger.kernel.org>; Thu, 17 Feb 2022 12:46:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
         s=badeba3b8450; t=1645130755;
-        bh=B6Xo1m3cDpc/uLaoYuD1DFEzIyDdozNsioiatBIcQsU=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=LKziR68IRRQUJGVI4jmDqeCpyf9EkrbKolPs84ELPijC0toPy64AX0iCaQST2Q8vZ
-         seMMGH7QAatTYDD4jgGlKScdxaSdUSj+IVjB5D+LOiBeP1yydQ/ePCwBxZRrVCoBEJ
-         C8NgoK3AxRRpkoPL/hNucCD9IQriMHCKMuxTAEEg=
+        bh=QwFeTDflzfrXe5GQ7u/axdfuudKHloY62+8a4ZjvNCM=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=F3eUMLaqINe66oFJuQg+Cn/B2C1uPTRe/9WXP1LuGgowD6qKFzP1VcAHbpNz5tHaL
+         wkpEY0GDbJoxer8353TZUkWEGxsY8/YsdsWPhg7GsTZXXnXlnmYMjWZA3AWp/8fEyL
+         ajJRhMgi437/0rGkbJXaFZ8f4OsCfOLmHuO6wbE8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from p100.fritz.box ([92.116.175.13]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MF3HU-1nVky30xgW-00FRPx; Thu, 17
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MRTNF-1ng1Re2VrJ-00NRlw; Thu, 17
  Feb 2022 21:45:55 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org
 Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH 1/4] parisc: Add defines for various space register
-Date:   Thu, 17 Feb 2022 21:45:51 +0100
-Message-Id: <20220217204554.305554-1-deller@gmx.de>
+Subject: [PATCH 4/4] parisc: Reduce code size by optimizing get_current() function calls
+Date:   Thu, 17 Feb 2022 21:45:54 +0100
+Message-Id: <20220217204554.305554-4-deller@gmx.de>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220217204554.305554-1-deller@gmx.de>
+References: <20220217204554.305554-1-deller@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bzQag6ZxM1Y/uTe2kKTjX2MkERytkt5iyKUXRQ22zTLbuupEgh2
- 2g5WN41gD7IdexJ191uSd9Qy5CR1f8fdnWHVRea1x0fA+MiBMuoCp1AecModsacmiOxBH41
- 3NCDzhg4HTwNGWXNyKua4BKJIRyp/EQ/OKpA23cXdkhfkV7pqWVShOdkb9yTMZ4u38clmot
- NZygHiMF5iKWUVKActT3w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:97cKcTpn95U=:1IWkCJmQF0Hh1+IeeiTROc
- nSUvcw+oUKUu3b85HmJDEaYKw03mR+NSmQlp6ZuFOtdhpptobcXkCpDAQCyN58Zmzfo9eFiqi
- 2S8OyuWkvSiTaGYcypm/VYE92OYOd8xP3U3Be+I8kMlLx+rosZ9EkOUj4EfM/98kNXvXTw2Zp
- e7uvUJEKYO3wjRv7KG8/tzM0X3EVJ7GtMTgvf/7CtKMXvJLKZSUofU2jKwHEVieVKX7aQXyl2
- sP6HxUjQ0x4E7DZCsktVZrizWjw1XiR5lsh7+x9RZWXEIVLeYhZ5GJeU+zeEOjvXK8YAcIGhi
- jsg7BxHi0M1ceI3xv/F1Ktcv8fiYhyWGSA+YuXl4P47v/qoED5YKUd7Dx0KooN8fBmtaQjGyP
- t05LRpoQQafxg6ap7ydgJgTzHmjNA8MM1vPASftb3uNfIMfM3K2mla1L+hV+F7Mt11LBwXbiv
- mRZee4jXjxqblnUYIRiS32vXA+XFDS50f+xvUDfZwB1UmCMPjg5T/gfVjtirVv7ODsuaPTJbt
- BMkS9hp15JkoBf9EI7DZbxzrqEeQNJucWTEbpCc9nmqlyaR/5PWjvptyeGYZDctii6GUoLj9w
- qm+XqyGJtyY7kFc9S5iT7RbbUyluYLjhEcNi7H4sD6L/iQMDMwniRIdIdGz/jjX484hNgjOOe
- J8pGVVenmQK0GOusgcAPW4/9Ecc7SN6NGUKbRRtpXKHVYQ4tAUnvMN6LD4NN19aHDO3D5qDtQ
- 8xJGm8w1HqsXOJ/7Cxht+yoMjTLMnjtt1xjrPS4d+xp7krRshG3S/YzQQ9Ux+G1DsQDAmbVeq
- Sfl5oBTbi08/QLmK/fcje7vdVpg3J1cvYdoXSrw8x1DxVcEcDXaCr/Bsq1vZ73E1PdOTSob+L
- 4ShHSE7nonDJIlm3RPqapV3Ilfz6U6tDvnNwJVQIy6Bv1tdO4TlNj4HXZejz3bqw1yb3Hsdwg
- TS2YpOrJkhpfkBuA8UuW43Duzg4PZ0zjJJMBEYr7HogJJe1WQ0hZX4oyCfpiImKF+eKuNMePh
- BEuWW71NZxDFO/AUCRbyOzljzW7Qd9luQLvPD+gP2AlZJUWsgk3jXmj4bpypHXWu5irNPevK5
- SZpJX0HmhDjGh0=
+X-Provags-ID: V03:K1:6vytxvOOiXSZpfJ6oBzU2GvdBzrTqdxGbtq8PsdDmB/Uo0RBw/4
+ Ftpqu8lwsv+crXyCEjaQnVmtMISAMs4S6iJ4mxpTZaEXnx7TQKn7rFn1kjUgm4LhLEU4JLj
+ Iu7LjoDWG5jTehrAuVRtY6xh6H22DztXciXwRfKESKGVNDBp6BA8BoaWZRkLV9hGyxk1HO6
+ UrzhbuEmVeZ3MUvbp7Cmg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:L8Y7C/Rl1QI=:K0/ky+qMBjzZBfmbOaNy+Q
+ L+NIez8Wiyo6CMGwDTD1c+od0BRRVytJ7iXb9U3WVSlf0nCQ81xGa93ZGt753LrRLLDvBe2LO
+ czbTN2voYk36Nm7QRmG2v4qLDUOCrHSTXAdJjrwwseGImfCK1jagA+3LrqA4uPxgg0FJBlJhx
+ FOYxWaQFWwEg/fQUihePtnCJLRH+MyAe7LGGT1c1koihMhjzD3PmJCCSKPjVaeaB/hH+37qhP
+ pxwPVXVYeGjDxnxkPZegRCRfnclsqhrnzoJ6E00b0JSExYTK3jnYpPkbnICspaEzN0LZfZZwg
+ CR+LcAk+KNE6NllFKhCS0VLCDniUu/KzDdqHbTTIiLEGxecFRlGXMpu/uiolHdcTz+ZGMIMrD
+ 2OoZewySpbSrXkkHjFG99oQpz8qgsJoDbRasMd1wZmQ6GjPrPIA1tVxDKPDd9owAO0y20AhOd
+ F4anKd/T8H3515vIVohD86BADe8W86nfOm4nySs2hWmpujO8MVrpXEHs9e7P35jjQFyLZ+2VP
+ y6uPGaanssFdc8SQxZOiiBWaTrJ9JJV+5c/gdip/Bt3IDx7ho4x0MurAVrnr0rkqzSSeW7wQm
+ +tXVfN6bFKGf0RLIJIbor62vte7ytb/vW4aOLcaoVVCt8XkQER/LYb1vm777BGNUNfo5Yuoz6
+ ZU8zxz6JQKJO3mtzlaaIsI5lAaZSvPX+aGPZ9ZjzkQ0LCnELAMg02smiW0ETk0zFxy1Ex1xlV
+ HPSRJ8mYATjiXzR0rlcTfPKuH+p1YYRdxlyw8gibzl5bIc7H0vwU/66IdpIpcwbBdn+J9MBBD
+ zrLM7bEYd7Ipfjse+mD9GXRJpInww4+PHmOYP6H/09u8Yf1TrX/cBYFqEmjTW87oMzaxeIiay
+ QZ77KTiXPqABPs0DIlUmYH4HWY9uMZKUe5tr+4vI3HWfUxC72q1Kvw61U3vTFPHFWxdOybsEO
+ D6B0Fy4IZ2dgVdJGdlbtjK4JyR7xZbSIEeVZuR59meaPBARR0f9/4QoMYiDQ6KkVR0nZPkRza
+ XRMfLG25HIRMdvJDcHxF/RDkpFzVCJszW3f0VkDSGkoi0DTNGiEkoGI7TVgCMxDDiBd6vcKF4
+ oex1QWsJQLXuuE=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Provide defines for space registers (SR_KERNEL, SR_USER, ...) which
-should be used instead of hardcoding the values.
+The get_current() code uses the mfctl() macro to get the pointer to the
+current task struct from %cr30. The problem with the mfctl() macro is,
+that it is marked volatile which is basically correct, because mfctl()
+is used to get e.g. the current internal timer or interrupt flags as
+well.
+
+But specifically the task struct pointer (%cr30) doesn't change over
+time when the kernel executes code for a task.
+
+So, by dropping the volatile when retrieving %cr30 the compiler is now
+able to get this value only once and optimize the generated code a lot.
+
+A bloat-o-meter comparism shows that this patch saves ~5kB kernel code
+on a 32-bit kernel and ~6kB kernel code on a 64-bit kernel.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 =2D--
- arch/parisc/include/asm/assembly.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/parisc/include/asm/current.h | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/parisc/include/asm/assembly.h b/arch/parisc/include/asm/=
-assembly.h
-index 6369082c6c74..ea0cb318b13d 100644
-=2D-- a/arch/parisc/include/asm/assembly.h
-+++ b/arch/parisc/include/asm/assembly.h
-@@ -47,6 +47,12 @@
- #define PRIV_USER	3
- #define PRIV_KERNEL	0
+diff --git a/arch/parisc/include/asm/current.h b/arch/parisc/include/asm/c=
+urrent.h
+index 568b739e42af..dc7aea07c3f3 100644
+=2D-- a/arch/parisc/include/asm/current.h
++++ b/arch/parisc/include/asm/current.h
+@@ -2,14 +2,16 @@
+ #ifndef _ASM_PARISC_CURRENT_H
+ #define _ASM_PARISC_CURRENT_H
 
-+/* Space register used inside kernel */
-+#define SR_KERNEL	0
-+#define SR_TEMP1	1
-+#define SR_TEMP2	2
-+#define SR_USER		3
+-#include <asm/special_insns.h>
+-
+ #ifndef __ASSEMBLY__
+ struct task_struct;
+
+ static __always_inline struct task_struct *get_current(void)
+ {
+-	return (struct task_struct *) mfctl(30);
++	struct task_struct *ts;
 +
- #ifdef __ASSEMBLY__
++	/* do not use mfctl() macro as it is marked volatile */
++	asm( "mfctl %%cr30,%0" : "=3Dr" (ts) );
++	return ts;
+ }
 
- #ifdef CONFIG_64BIT
+ #define current get_current()
 =2D-
 2.34.1
 
