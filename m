@@ -2,188 +2,111 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AA1AC433F5
-	for <linux-parisc@archiver.kernel.org>; Thu, 17 Feb 2022 10:13:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61DF4C433F5
+	for <linux-parisc@archiver.kernel.org>; Thu, 17 Feb 2022 12:12:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239054AbiBQKNQ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 17 Feb 2022 05:13:16 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55988 "EHLO
+        id S240317AbiBQMNC (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 17 Feb 2022 07:13:02 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236012AbiBQKNP (ORCPT
+        with ESMTP id S240316AbiBQMNB (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 17 Feb 2022 05:13:15 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140AB143469;
-        Thu, 17 Feb 2022 02:13:01 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id n24so7474925ljj.10;
-        Thu, 17 Feb 2022 02:13:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=OO8O5AkWPhI/5yGYSTEQp+LjZetKZnyQ+pZ7++XrzEA=;
-        b=X8w7in6JtN9+vwIDY375tbKdJ6/kAXjQzoJEMNX/aRNZ/xldyGjWjXODYmSy5mi1RE
-         IVBvYSJ5Q0hWoh3euDgluS6hajxAwota0SjPBhdLfholDQzq33VHuJfcHHzCkXGyz8tb
-         MDBzs6ibY/EGdDqB/ff2GewtKr6TpYHNqvy5y4L9nhOeKSaVrEEfVSAdHs3oIc8/KGvy
-         BUoC/Ntz4HLIebyoKI3bup9qeurRZrprpsOzzaMBNquRHtxpasWvx6s1xD7yjJ47gW7a
-         aqMUkT2VhDOvjwLmzIlZFje3GuDLrgVXuDJcvjJJbqm/WRU77L4UMZYg+2nxY7fnS64M
-         8wzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=OO8O5AkWPhI/5yGYSTEQp+LjZetKZnyQ+pZ7++XrzEA=;
-        b=7pr47jE/gdAdaDrCCfyYmBUiEIX35Jia+LTn+J6qHiHUFJ3a6Bm/wYJfBtMgD80XM7
-         08+9aZXK57FDzfN0oNQNxysoi9K3/Z9SCmgPPmMAqi5DvgiNWbWGtT1Psubir4+SXU+o
-         gRV+UCMI/bHhNXyFqqq4EYldR+1mU0vky+FWzW805Nb6ZzUABhsqUHBgWy3W64kJuagb
-         xrQofwp652Cdq7wqG1Ppo7wdJLFt4fCdhv7dcE/6F5zEC0gt38PkKdGWMDRMUqoHH14A
-         Lbe+x56E4n+G+Qrx8fdAHjTSmjCd/nzEYPt6JB/gtxXm0ufp6JJ870vKPi7kBlYpJT/q
-         PKYw==
-X-Gm-Message-State: AOAM531lg7CNRkr5GP49SV/u3DBjyETkU9AirEe1YGwbGmOKQGR7AOrk
-        mSTXBVd88G2R12+sHTThCSLVPemO/hU=
-X-Google-Smtp-Source: ABdhPJzppLbwPh7ryO4JRMtpJc/4Lz2rbVquaymBUgCgBO2OneSkA3o02raf386TVCaqFDiGA98BPg==
-X-Received: by 2002:a05:651c:1544:b0:246:1887:cf4c with SMTP id y4-20020a05651c154400b002461887cf4cmr917179ljp.118.1645092779295;
-        Thu, 17 Feb 2022 02:12:59 -0800 (PST)
-Received: from [192.168.2.145] (109-252-138-165.dynamic.spd-mgts.ru. [109.252.138.165])
-        by smtp.googlemail.com with ESMTPSA id o10sm5079173lfl.116.2022.02.17.02.12.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Feb 2022 02:12:58 -0800 (PST)
-Message-ID: <4f0d1b50-9f55-dd81-f0c7-f5e0dfd75c2a@gmail.com>
-Date:   Thu, 17 Feb 2022 13:12:57 +0300
+        Thu, 17 Feb 2022 07:13:01 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F642B263
+        for <linux-parisc@vger.kernel.org>; Thu, 17 Feb 2022 04:12:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1645099960;
+        bh=QwFeTDflzfrXe5GQ7u/axdfuudKHloY62+8a4ZjvNCM=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=XRoQowYxBVkgP4Vbo4JUzBmdSlf1SSZhy1wd2m2SY2Q87qDOx4icSDyH56DdkKB07
+         5ZwBFq0B1dkCIXaA146Uws9BrmY//gP8JsOAevQYc2V9/UDa0rj/Q/yH60wRhqjzzQ
+         AgCLc9cP6WP0bFoLY+Bp58ubBbjtLXnyjwPR5ZII=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from p100.fritz.box ([92.116.175.13]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N3bWr-1oK9zH1igF-010cVy; Thu, 17
+ Feb 2022 13:12:40 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH 2/2] parisc: Reduce code size by optimizing get_current() function calls
+Date:   Thu, 17 Feb 2022 13:12:39 +0100
+Message-Id: <20220217121239.158611-2-deller@gmx.de>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220217121239.158611-1-deller@gmx.de>
+References: <20220217121239.158611-1-deller@gmx.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v6 00/21] Introduce power-off+restart call chain API
-Content-Language: en-US
-To:     Helge Deller <deller@gmx.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        xen-devel@lists.xenproject.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-References: <20220130233718.21544-1-digetx@gmail.com>
- <635e8121-fca4-580c-6af5-d9317a2eee1b@gmail.com>
- <CAJZ5v0g0MrBm2+GwctkB7kUyBEt6HTAexRCFFRmTF1UKDrVQ-g@mail.gmail.com>
- <de2cbd2a-8d0d-8678-e514-b153d04546cc@gmx.de>
-From:   Dmitry Osipenko <digetx@gmail.com>
-In-Reply-To: <de2cbd2a-8d0d-8678-e514-b153d04546cc@gmx.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:n4XJdq6gkr6CrXab1zfpG+yyko5bZDvFgS5c5vrC39fVBAZnH74
+ H0Hp9lWS3afX8wdn1BLTUcRGhWcltiaB0x4EsQO783Oe0zo5KMpPDFrnQ3eMfaZL7b9SQiV
+ FaS+ylH+BXaiohb+bqC1f1oGmL/ngPEsuFNu1SFsWRUdxtrW5ht0CzzPLRKUuYMjUMNC6ub
+ YGx35lPBPX/d4vzzj/sYQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wcJw1e0/vGE=:wonGNe49POorStaIbHGSI3
+ ANy64GmwlQECAsWAD9nbcatCVKENlBZHMicbj++GffKXHut5raFQUJ49KUrNtU3Q9dlrl+U8/
+ uvNoDqXoDwR94e22L+hrvmajeB0GfTt2vYnrERTSNxlLZ07OpW43kpPRbaprs7faH0ZTdpGa8
+ 4GiXXun7aUgH1Xu8p7nsHCivy2Wr1gQwXM+J6Wp2oceBMO/s1Cf+ec347kSyPD7HYAy2KmmwA
+ tjorKVJEmmHHFXLAc98wY9PLl50iNtjwWXM/+DJpJx2VusTrYdM5KGAUARK0YgShMC9HQgHTw
+ 6JBfGlkAgpkAAaQrk0pTiX6Agy6QS1admWb44x1jQA6dnfDid/UDMMs2MaynygxKGj/Dp9peJ
+ NzbPHZoxG3KWmx4lx3ZIpinA/LTHIOJ3R4eRM7nTgj3NrPu+HK2HOUCo1u4VQgPIJPVjMkZhH
+ ybjWm01zXBf35LXf63JS7Rel6z0WnHnRe0AyLAsfYL+btEIo7pkoGpoAkRDme/PNyIKqX2gIz
+ D2h19gz4PF7zb/k6aPdgP8WEd6DxR0QrPimoL1WnVFmXgaabKauzGQnN1syOz6HQA7NUdEwRw
+ DuCjPRTaLAe5KH++hL1zbp1Dqf3TcziKByIM7ftAI0hiLCHyxqUMIHGOiCvUqeHlh+mGLww+G
+ f+ftF7zYFcw8ogbhTCSffqW4InEIXzvAE8nILil5j/v9i3a/MLlCA9hYBI25LLrh5ed5fvhYo
+ KC6s4KhTJKbg1xhvmSGm9cgBcrv4SPA4VuOzBDLk1gEu0BDHCU74dLqZxoaKZaDwAzac7acSR
+ QLUOVA/7TwfduJXhAzuzn7KhuZwKrQTzxmLbzWcWK7pdy1RaIja3pd7Lb2fU9u+wUBeDd9LtT
+ MmJYI9sXHjSwp+/dW0fTH+6MnXUgbLcKs45QP+I4xNsIct5xL0hA7vIXnZOzX/4g4ENZyeYuP
+ 2mwYbemkYIqFa45NFD0rkQqXqVkFOOKyBDZL2KTRvjdzlr6TzSwB7qeN7dzI4alfC6T9z2fpK
+ TIdP075tCjjAt7SfR46EbQ3f+edxZlZSyrkmuhUQsHUxZ3JnMIq50frUJhHkGFcU4Q==
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-16.02.2022 23:30, Helge Deller пишет:
-> On 2/16/22 13:25, Rafael J. Wysocki wrote:
->> On Tue, Feb 15, 2022 at 11:00 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->>>
->>> 31.01.2022 02:36, Dmitry Osipenko пишет:
->>>> Problem
->>>> -------
->>>>
->>>> SoC devices require power-off call chaining functionality from kernel.
->>>> We have a widely used restart chaining provided by restart notifier API,
->>>> but nothing for power-off.
->>>>
->>>> Solution
->>>> --------
->>>>
->>>> Introduce new API that provides both restart and power-off call chains.
->>>>
->>>> Why combine restart with power-off? Because drivers often do both.
->>>> More practical to have API that provides both under the same roof.
->>>>
->>>> The new API is designed with simplicity and extensibility in mind.
->>>> It's built upon the existing restart and reboot APIs. The simplicity
->>>> is in new helper functions that are convenient for drivers. The
->>>> extensibility is in the design that doesn't hardcode callback
->>>> arguments, making easy to add new parameters and remove old.
->>>>
->>>> This is a third attempt to introduce the new API. First was made by
->>>> Guenter Roeck back in 2014, second was made by Thierry Reding in 2017.
->>>> In fact the work didn't stop and recently arm_pm_restart() was removed
->>>> from v5.14 kernel, which was a part of preparatory work started by
->>>> Guenter Roeck. I took into account experience and ideas from the
->>>> previous attempts, extended and polished them.
->>>
->>>
->>> Rafael and all, do you see anything critical that needs to be improved
->>> in this v6?
->>>
->>> Will be great if you could take this patchset via the power tree if it
->>> looks okay, or give an ack.
->>
->> I need some more time for this, sorry.
+The get_current() code uses the mfctl() macro to get the pointer to the
+current task struct from %cr30. The problem with the mfctl() macro is,
+that it is marked volatile which is basically correct, because mfctl()
+is used to get e.g. the current internal timer or interrupt flags as
+well.
 
-No worries, we're not in a rush.
+But specifically the task struct pointer (%cr30) doesn't change over
+time when the kernel executes code for a task.
 
->> I'm a bit concerned about seeing no response to this set from anyone.
->>
->> It looks like multiple platforms may be affected by it in principle,
->> so doesn't anyone care?
+So, by dropping the volatile when retrieving %cr30 the compiler is now
+able to get this value only once and optimize the generated code a lot.
 
-The platforms that didn't provide ack so far are: SH, x86, IA64, MIPS
-and NDS32. At least x86 and MIPS are alive, not sure why maintainers
-didn't bother to answer yet.
+A bloat-o-meter comparism shows that this patch saves ~5kB kernel code
+on a 32-bit kernel and ~6kB kernel code on a 64-bit kernel.
 
-> I did looked into the whole patch set after applying it locally.
-> 
-> While I agree a new combined API is good, and the beginning looked promising,
-> after some time I started to ask myself if the whole infrastructure might
-> be a little overdesigned.
-> 
-> Anyway, I tested it and it works for me on parisc.
-> And it's probably better than what we have today.
+Signed-off-by: Helge Deller <deller@gmx.de>
+=2D--
+ arch/parisc/include/asm/current.h | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Thank you!
+diff --git a/arch/parisc/include/asm/current.h b/arch/parisc/include/asm/c=
+urrent.h
+index 568b739e42af..dc7aea07c3f3 100644
+=2D-- a/arch/parisc/include/asm/current.h
++++ b/arch/parisc/include/asm/current.h
+@@ -2,14 +2,16 @@
+ #ifndef _ASM_PARISC_CURRENT_H
+ #define _ASM_PARISC_CURRENT_H
+
+-#include <asm/special_insns.h>
+-
+ #ifndef __ASSEMBLY__
+ struct task_struct;
+
+ static __always_inline struct task_struct *get_current(void)
+ {
+-	return (struct task_struct *) mfctl(30);
++	struct task_struct *ts;
++
++	/* do not use mfctl() macro as it is marked volatile */
++	asm( "mfctl %%cr30,%0" : "=3Dr" (ts) );
++	return ts;
+ }
+
+ #define current get_current()
+=2D-
+2.34.1
+
