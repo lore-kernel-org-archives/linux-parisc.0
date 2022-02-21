@@ -2,144 +2,124 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F69CC433FE
-	for <linux-parisc@archiver.kernel.org>; Sun, 20 Feb 2022 06:00:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DA2EC433F5
+	for <linux-parisc@archiver.kernel.org>; Mon, 21 Feb 2022 05:27:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234524AbiBTGBP (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 20 Feb 2022 01:01:15 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47448 "EHLO
+        id S229902AbiBUF1e (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 21 Feb 2022 00:27:34 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236468AbiBTGBO (ORCPT
+        with ESMTP id S1344522AbiBUF1d (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 20 Feb 2022 01:01:14 -0500
-Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CAF4E3B5
-        for <linux-parisc@vger.kernel.org>; Sat, 19 Feb 2022 22:00:53 -0800 (PST)
-X-QQ-mid: bizesmtp71t1645336814toup6w7g
-Received: from localhost.localdomain (unknown [180.102.102.45])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 20 Feb 2022 14:00:06 +0800 (CST)
-X-QQ-SSF: 01400000002000B0F000B00A0000000
-X-QQ-FEAT: DjV0wquoRWbFbMhTh/aiK/+4vF3oTrbzwjW7Ob/10jesuFazuUecCwYqC5XvK
-        Tew27FVHThUVjkWVIjlh9CMfNPNVjApeRa9kJ4qhIgB6phrxrsryM2LmykVnoTt+cLmFaGB
-        WAjl7CIdfGOHuToR2s7P5x9/JNp5JZEaEOsndqIvOb3VrNyvRFNNU/O4IFPEFf8jeMISz2c
-        2snBphFkZ4VcxKm7Y8oYt+eWesd9c02oWGMFGv5KckZVuOWfmfGiruJrYHis6fi18zRoPyO
-        03yhjr6bHBRBM/W1EmFVFL7ZS4zP3eG0AVywskqfz8vKcEnQ1pDL3f0I7F8ka0i2hjPr7je
-        1aH1sh6
-X-QQ-GoodBg: 2
-From:   tangmeng <tangmeng@uniontech.com>
-To:     James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        Mon, 21 Feb 2022 00:27:33 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28D56557;
+        Sun, 20 Feb 2022 21:27:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1645421231; x=1676957231;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dHGj8oHhf1bY1cn6txGNu5geRsuh5pSV2cXKp7lEBiQ=;
+  b=Tqa1sipcYcp5fC1mOcEYYejzZx/zVNhoUmNvUYxSesVknEs021OASzE8
+   TwGdc6dga+goy7T1Opm6H7hQ9v7yhyR4c5BWbSOMCqW1sA+qgcT3AgVsw
+   HFityz3XMJbJ5JHiXLoo0PYTbTRwm/fmESahbp5Eq7oQUkqDxSo6d/vAx
+   wUl7lx00ZpM2n3Us62UejZm4yztHqcIREkv1uBhhEyNmVqPks0KyIvLjz
+   XWeiKhtUPFPSRgq5l3fzMoAkIpw2tAZsXjeswsPhCNk7qEIpjsI5E7vUo
+   cbxIdNM79TmAuzC0KFUV7nAXRD31B2I9KQX2fqcgTOeLFW3NKCX6KNwIU
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10264"; a="238851663"
+X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
+   d="scan'208";a="238851663"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2022 21:27:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
+   d="scan'208";a="572985990"
+Received: from lkp-server01.sh.intel.com (HELO da3212ac2f54) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 20 Feb 2022 21:27:07 -0800
+Received: from kbuild by da3212ac2f54 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nM1E2-0001La-LE; Mon, 21 Feb 2022 05:27:06 +0000
+Date:   Mon, 21 Feb 2022 13:26:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     tangmeng <tangmeng@uniontech.com>,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
         mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com
-Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, nizhen@uniontech.com,
-        zhanglianjie@uniontech.com, nixiaoming@huawei.com,
-        tangmeng <tangmeng@uniontech.com>
-Subject: [PATCH 01/11] kernel/parisc: move soft-power sysctl to its own file
-Date:   Sun, 20 Feb 2022 14:00:00 +0800
-Message-Id: <20220220060000.13079-1-tangmeng@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+Cc:     kbuild-all@lists.01.org, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        nizhen@uniontech.com, zhanglianjie@uniontech.com,
+        nixiaoming@huawei.com, tangmeng <tangmeng@uniontech.com>
+Subject: Re: [PATCH 01/11] kernel/parisc: move soft-power sysctl to its own
+ file
+Message-ID: <202202211342.EcgL15uq-lkp@intel.com>
+References: <20220220060000.13079-1-tangmeng@uniontech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign1
-X-QQ-Bgrelay: 1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220220060000.13079-1-tangmeng@uniontech.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-kernel/sysctl.c is a kitchen sink where everyone leaves their dirty
-dishes, this makes it very difficult to maintain.
+Hi tangmeng,
 
-To help with this maintenance let's start by moving sysctls to places
-where they actually belong.  The proc sysctl maintainers do not want to
-know what sysctl knobs you wish to add for your own piece of code, we
-just care about the core logic.
+Thank you for the patch! Yet something to improve:
 
-All filesystem syctls now get reviewed by fs folks. This commit
-follows the commit of fs, move the soft-power sysctl to its own file,
-kernel/parisc/power.c.
+[auto build test ERROR on hnaz-mm/master]
+[also build test ERROR on deller-parisc/for-next rostedt-trace/for-next linus/master v5.17-rc5 next-20220217]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Signed-off-by: tangmeng <tangmeng@uniontech.com>
+url:    https://github.com/0day-ci/linux/commits/tangmeng/kernel-parisc-move-soft-power-sysctl-to-its-own-file/20220220-174553
+base:   https://github.com/hnaz/linux-mm master
+config: parisc-randconfig-s031-20220220 (https://download.01.org/0day-ci/archive/20220221/202202211342.EcgL15uq-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://github.com/0day-ci/linux/commit/fc2d0c0a37a34fd9c89e5519f2aea93de690c2ce
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review tangmeng/kernel-parisc-move-soft-power-sysctl-to-its-own-file/20220220-174553
+        git checkout fc2d0c0a37a34fd9c89e5519f2aea93de690c2ce
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=parisc SHELL=/bin/bash drivers/parisc/ mm/
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> drivers/parisc/power.c:196:12: error: static declaration of 'pwrsw_enabled' follows non-static declaration
+     196 | static int pwrsw_enabled;
+         |            ^~~~~~~~~~~~~
+   drivers/parisc/power.c:112:5: note: previous definition of 'pwrsw_enabled' with type 'int'
+     112 | int pwrsw_enabled __read_mostly = 1;
+         |     ^~~~~~~~~~~~~
+
+
+vim +/pwrsw_enabled +196 drivers/parisc/power.c
+
+   195	
+ > 196	static int pwrsw_enabled;
+   197	#ifdef CONFIG_SYSCTL
+   198	static struct ctl_table kern_parisc_power_table[] = {
+   199		{
+   200			.procname       = "soft-power",
+   201			.data           = &pwrsw_enabled,
+   202			.maxlen         = sizeof(int),
+   203			.mode           = 0644,
+   204			.proc_handler   = proc_dointvec,
+   205		},
+   206		{ }
+   207	};
+   208	
+
 ---
- drivers/parisc/power.c | 22 ++++++++++++++++++++++
- include/linux/sysctl.h |  1 -
- kernel/sysctl.c        |  9 ---------
- 3 files changed, 22 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/parisc/power.c b/drivers/parisc/power.c
-index 456776bd8ee6..24e0ffbe460a 100644
---- a/drivers/parisc/power.c
-+++ b/drivers/parisc/power.c
-@@ -193,6 +193,26 @@ static struct notifier_block parisc_panic_block = {
- 	.priority	= INT_MAX,
- };
- 
-+static int pwrsw_enabled;
-+#ifdef CONFIG_SYSCTL
-+static struct ctl_table kern_parisc_power_table[] = {
-+	{
-+		.procname       = "soft-power",
-+		.data           = &pwrsw_enabled,
-+		.maxlen         = sizeof(int),
-+		.mode           = 0644,
-+		.proc_handler   = proc_dointvec,
-+	},
-+	{ }
-+};
-+
-+static void __init kernel_parisc_power_sysctls_init(void)
-+{
-+	register_sysctl_init("kernel", kern_parisc_power_table);
-+}
-+#else
-+#define kernel_parisc_power_sysctls_init() do { } while (0)
-+#endif /* CONFIG_SYSCTL */
- 
- static int __init power_init(void)
- {
-@@ -233,6 +253,8 @@ static int __init power_init(void)
- 	atomic_notifier_chain_register(&panic_notifier_list,
- 			&parisc_panic_block);
- 
-+	kernel_parisc_power_sysctls_init();
-+
- 	return 0;
- }
- 
-diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-index 6353d6db69b2..e00bf436d63b 100644
---- a/include/linux/sysctl.h
-+++ b/include/linux/sysctl.h
-@@ -242,7 +242,6 @@ int do_proc_douintvec(struct ctl_table *table, int write,
- 				  int write, void *data),
- 		      void *data);
- 
--extern int pwrsw_enabled;
- extern int unaligned_enabled;
- extern int unaligned_dump_stack;
- extern int no_unaligned_warning;
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 22037f03cd2b..d11390634321 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -1737,15 +1737,6 @@ static struct ctl_table kern_table[] = {
- 		.proc_handler	= proc_dointvec,
- 	},
- #endif
--#ifdef CONFIG_PARISC
--	{
--		.procname	= "soft-power",
--		.data		= &pwrsw_enabled,
--		.maxlen		= sizeof (int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
--	},
--#endif
- #ifdef CONFIG_SYSCTL_ARCH_UNALIGN_ALLOW
- 	{
- 		.procname	= "unaligned-trap",
--- 
-2.20.1
-
-
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
