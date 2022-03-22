@@ -2,131 +2,159 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A5DEC433F5
-	for <linux-parisc@archiver.kernel.org>; Tue, 22 Mar 2022 18:13:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11FF3C433EF
+	for <linux-parisc@archiver.kernel.org>; Tue, 22 Mar 2022 18:15:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237379AbiCVSO6 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 22 Mar 2022 14:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
+        id S237228AbiCVSQ3 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 22 Mar 2022 14:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbiCVSOz (ORCPT
+        with ESMTP id S232524AbiCVSQ2 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 22 Mar 2022 14:14:55 -0400
-X-Greylist: delayed 1346 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 22 Mar 2022 11:13:27 PDT
-Received: from gateway22.websitewelcome.com (gateway22.websitewelcome.com [192.185.47.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D86D639E
-        for <linux-parisc@vger.kernel.org>; Tue, 22 Mar 2022 11:13:25 -0700 (PDT)
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 218CE398A
-        for <linux-parisc@vger.kernel.org>; Tue, 22 Mar 2022 12:50:52 -0500 (CDT)
-Received: from 162-215-252-75.unifiedlayer.com ([208.91.199.152])
-        by cmsmtp with SMTP
-        id Wiein4HwBdx86WieinpSMQ; Tue, 22 Mar 2022 12:50:52 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=EMkcbT+z9hMOzCQkn6zBneEne+tFD8pPsSScVB5S/8c=; b=tKSGP7T3pSSclCVTZcl0BF07xK
-        V2cH7CWm9DyHmYD5pdewLguU80f+3UlP08AEGWnkqKBQOC3a5r9nr7fdo3G5rKOiefZGfYny2trfA
-        lKKpNmqO+iogtwwWnV+IpBCmM3KsWEN2LfWPGE8zcdCedivQDCBhpvhVWwh13h9kiLn9y9zBDQ+xj
-        xidJLOUIconUNrEB47IP5XNfPochoTLkbxCuaMKJB1amoiLyzuOVq3Gdmq1Ku3ntR7qCGF9dd+cSN
-        l+VsSt9hM3xoNzUH2UF8AFzJ4gDWnmWDTDt3iuhX4g+9WY2BhayVAm3FOMa+FJH9pRlGTK4skmOKm
-        85BuCSSQ==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:54400)
-        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@roeck-us.net>)
-        id 1nWieh-002Tku-QZ; Tue, 22 Mar 2022 17:50:51 +0000
-Message-ID: <11063f42-6d3c-64d2-f3ed-9593be469fa5@roeck-us.net>
-Date:   Tue, 22 Mar 2022 10:50:50 -0700
+        Tue, 22 Mar 2022 14:16:28 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F25621E2E
+        for <linux-parisc@vger.kernel.org>; Tue, 22 Mar 2022 11:15:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1647972880;
+        bh=EhXtag+/lO7rPQPFUrU6vgnsioZaF6LQYNdgBz9q2sQ=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=FKybHimgBpQCo8dKhjx9QXgkHOeRRX+qlnq4A7vff1JwKyqQjOoqzMTZphrYmBFIP
+         EfjBY3vrOdnJ6ppgJX+Sd95/+aeDfNwSjz+bhnpZRtZpsAgj17JfL5rsMUHY2TuG0M
+         bsXx+jMH6HYJ+n3bKg442jcz256OfQMsuPa9YYYI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.191.132]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N49hB-1oFEwb2LAn-010846; Tue, 22
+ Mar 2022 19:14:40 +0100
+Message-ID: <23931882-c00e-79b1-09ed-91c8799d0aa7@gmx.de>
+Date:   Tue, 22 Mar 2022 19:14:39 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: hppa vDSO and compiler (non-)support
+ Thunderbird/91.6.2
+Subject: Re: Recurring INEQUIVALENT ALIASES issues and userland
+ corruption/crashes
 Content-Language: en-US
-To:     Helge Deller <deller@gmx.de>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-parisc@vger.kernel.org,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>,
-        Andreas Schwab <schwab@linux-m68k.org>
-References: <d2713ae1-0ca5-9e5a-b7d2-b7d0f1f5614a@kernel.org>
- <2e1f3e41-7097-e68d-d312-9319ad62565c@gmx.de>
- <d2a09bf3-9bd3-588a-99a1-598281d08678@kernel.org>
- <dd4e55aa-0b3e-6e18-7ec2-3bec02cafde0@kernel.org> <YjjJNb0D/b+ZXBVZ@ls3530>
- <28696c20-21ad-b0ac-8093-4ce07225fcd8@kernel.org>
- <812d4a38-8cb1-a7be-c504-87d095aea883@gmx.de>
- <20220322130516.GA724287@roeck-us.net>
- <ccc25312-890a-a534-1681-5ecde56328d0@gmx.de>
- <78abe69b-7914-1b38-c94e-7143f61f4909@roeck-us.net>
- <4d52b78d-ed39-102f-ba64-3ba9c17f58f9@gmx.de>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <4d52b78d-ed39-102f-ba64-3ba9c17f58f9@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1nWieh-002Tku-QZ
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net [108.223.40.66]:54400
-X-Source-Auth: linux@roeck-us.net
-X-Email-Count: 4
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+To:     Sam James <sam@gentoo.org>, linux-parisc@vger.kernel.org
+Cc:     hppa@gentoo.org
+References: <63DA313A-FCE1-4535-9BF3-11E36B2DE422@gentoo.org>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <63DA313A-FCE1-4535-9BF3-11E36B2DE422@gentoo.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:xiRD3PGolxcM2ZhqRtMlexrr1bzkCRbvbS0ZXsR1qPbX9ZdL5Kw
+ QQRIJvZdZJevDT2/9nDnFlybhS9p6nW+//mFplPoKUyJzZLgEEy2tBoHaLA9kNNdmNWOmZ2
+ NszZwZ5Kyx0MKdGFOF9VLVs5NLvCvaDspMxiJUJo8cqVI/0DDya4LGjfYFlkX+lYOhIs9Y/
+ TtVjLQgPSVhAnT0AAOmqA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:v2NFwbev+Y8=:9SitLcQikyN98P18FkrqAm
+ o6dxM7/212g1I5QXPmeLXYsGhWxzeqFsmeaog7Ztt3PhOw3vb85aeLE0HtUU0ezEEI2msEY6Z
+ PvJ90D+we34MGpZwShsBQSL4VtAtVj0chNRUfJmkibyNwMpx67VIEdAdS8TRgh1WoXemVppme
+ GpYf2HDjU6SUakWsSxEzWnEB8n8XGEMtEkVQUNoW2Jpj7CrbeE8fuIXtMdh68m8PW+ebMQVkH
+ sDciFKEScw+XsNEeJy3LqUCXl7WDKamizymTKtxRzcMjMd293/9ZU5hZfwwsHATGqoTf9kBlA
+ ude8GLSq/8lKrK201xYJHquX8zjxEKH7wxLGbk8bNRYGFHwCzOGCUY/zMIXC51Ni9QBGc34p+
+ Z5mr/XaurDrJXrJtgxwlWzPOJh5NypkOVf4DicgrpsQDVYfA0PC3zHd5K9ryJg03u3Yyzb0FU
+ Zaahe9VyybIAuQACJFxIIUdlJh1r2RUbI4gaG3KQ4Knzq8lgqkgFVMNLfYDTKP5Cr3T3WUxNj
+ o4khlGdyAa39gsCivEGwZNQFgpD2RP9jWhKVqUtQD5XN0r80Zw5EmZVwGz86R6roU9RvWwvrm
+ AaGWuM307XJnhvEv9A+JYlyPl979LH4e5mWki0qaW0FQOZPUaLNSw0XJsZazOxQAtjsoKhQXp
+ sY8cUSxK7Ut0ejnG4209+85Suh0voFW168s7jI8FWRWEjeS2sE65gnRGNgv5g2lQl5/twFAnp
+ q7hRXviCIhTwVJgpyKTS3tAfifXKVlZonxYVdYBJg4+wO1yR6itzweWqWk49Rl84QaquNBne1
+ jT0282ISJ7dYATvKetKGw0tXy0wf7l2jMOpftWTMcHrUBAJDPSscM79yKErT3d00DiyncQE9g
+ gy7p9zTFuqCfAVrE7lUxSsCFQ5nnLny8n+f/sU0gWSSb/fFkxhYcAn5SCHQvEfKb7MYgxbrCN
+ NB1O2eGOiodCUBQarCFZBYefKHOhlLV0uQwqCrxZ5v4aJZXhElk8DR3gu6JGKqba9YNRnTvjA
+ i2oAC6KDRzGwyvzp4waUL6D+30oeijAP/fHnURRF/Y5bS/S10Q8SdM0s4+JWtVuLI/GS1S/Af
+ AviakjJS4eXEQA=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 3/22/22 09:16, Helge Deller wrote:
-> On 3/22/22 16:19, Guenter Roeck wrote:
->> On 3/22/22 07:25, Helge Deller wrote:
->>> On 3/22/22 14:05, Guenter Roeck wrote:
->>>> Does that also fix the build problems now seen in mainline ?
->>>
->>> No.
->>>
->>>> Building parisc64:generic-64bit_defconfig ... failed
->>>> --------------
->>>> Error log:
->>>> arch/parisc/kernel/vdso64/Makefile:30: FORCE prerequisite is missing
->>>> arch/parisc/kernel/vdso32/sigtramp.S: Assembler messages:
->>>> arch/parisc/kernel/vdso32/sigtramp.S:39: Error: unknown pseudo-op: `.proc'
->>>> ...
->>>> arch/parisc/kernel/vdso32/restart_syscall.S:32: Error: .cfi_endproc without corresponding .cfi_startproc
->>>> make[2]: *** [arch/parisc/kernel/vdso32/Makefile:34: arch/parisc/kernel/vdso32/restart_syscall.o] Error 1
->>>> make[2]: *** Waiting for unfinished jobs....
->>>> make[2]: *** [arch/parisc/kernel/vdso32/Makefile:34: arch/parisc/kernel/vdso32/sigtramp.o] Error 1
->>>> make[1]: *** [arch/parisc/Makefile:177: vdso_prepare] Error 2
->>>> make: *** [Makefile:219: __sub-make] Error 2
->>>>
->>>> This is with hppa64-linux-gcc (GCC) 11.2.0.
->>>
->>> Can you check if you have the 32-bit compiler (hppa-linux-gcc) installed too?
->>> The errors above happen when building the 32-bit vDSO, for which you need the 32-bit compiler.
->>>
->>
->> Yes, I do, but that doesn't help much if I want to build a 64-bit target such
->> as generic-64bit_defconfig. Am I missing something ?
-> 
-> The 64-bit PA-RISC kernel now includes a built-in a 32-bit and a 64-bit vDSO for userspace.
-> To build the 32-bit vDSO (vdso32) you need the 32-bit hppa compiler installed.
-> That's what's being done above - see the path: arch/parisc/kernel/vdso32/
-> Can you try "make V=1" to see the command line?
-> 
+Hi Sam,
 
+On 3/22/22 18:52, Sam James wrote:
+> In Gentoo, we've just got our hands on an RP3440 (PA8800) which seems to=
+ quite easily hit inequivalent aliasing issues.
+>
+> We've found that under some workloads, the machine copes fine, none of t=
+hat appears in dmesg, and all is well - even for
+> over a week. But as soon as we start other workloads (the problematic on=
+e is building "stages" -- release media for Gentoo),
+> within 30m or so, the machine is in a broken state, with these messages =
+flooding dmesg:
+> ```
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+42994000 and 0x426e1000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+426e1000 and 0x41b56000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+41b56000 and 0x41aae000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+41aae000 and 0x42774000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+42774000 and 0x41202000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+41202000 and 0x428dd000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+41e2c000 and 0x418f6000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+418f6000 and 0x42980000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+42980000 and 0x426cd000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+426cd000 and 0x41b42000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+41b42000 and 0x41a9a000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+41a9a000 and 0x42760000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+42760000 and 0x411ee000 in file bash
+> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x=
+411ee000 and 0x428c9000 in file bash
+> ```
+>
+> When it's in this state, GCC ends up ICEing at some point and other user=
+land command fails too (e.g. last night
+> I tried unpacking a kernel and 'xz' failed the first time, but worked th=
+e second). It might be of note that I think
+> the failures end up happening during a HPPA 1.1 build.
+>
+> I appreciate this isn't really enough information to solve the problem, =
+but I'm not sure what I need to obtain:
+> any suggestions for how to debug this further & get more information to =
+better receive assistance would be most welcome.
+>
+> The machine is currently running 5.17.0 along with Helge's tree up to (a=
+nd including) Linus's pull for 5.18.0
+> (https://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git=
+/commit/?h=3Dfor-next&id=3Da04b1bf574e1f4875ea91f5c62ca051666443200).
 
-I am currently bisecting another problem. I'll try that afterwards.
-Either case, how does one specify two cross compilers with two different
-prefixes on the command line ?
+The INEQUIVALENT ALIASES messages are most likely not related to the insta=
+bility
+of your machine. I see them randomly on the debian buildd servers as well.
 
-Guenter
+Instead of using the latest (development) kernels, I'd suggest that you
+first try with a "stable" kernel.
+On the debian buildd servers I'm currently running Kernel 5.10.106+, which=
+ is pretty stable.
+I think Dave is running 5.16.x quite ok.
+
+> We're also using GCC 11.2 (but a snapshot from their stable 11 branch), =
+glibc 2.34 (with latest patches), and latest
+> Binutils 2.37 (with patches from upstream again).
+>
+> I've also attached the running kernel config in case any suggestions can=
+ be made there to either aid debugging or
+> reduce the chances of this issue occurring.
+>
+> TL:DR: Lots of inequivalent aliases issues when running certain intensiv=
+e workloads (but not others?), system ends up
+> in a bad state and needs a reboot to function correctly (otherwise userl=
+and may misbehave/crash), need more help
+> with how to debug/get more information out of it/narrow it down.
+>
+> Of course, if needed, we can provide access to the machine for kernel ma=
+intainers and show them how to induce a broken
+> State (or do it for them repeatedly) if we can't find a smaller test cas=
+e.
+
+Is there any other output in dmesg which is not INEQUIVALENT ALIASES?
+E.g. "stuck processes" messages?
+
+Helge
