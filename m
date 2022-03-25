@@ -2,111 +2,79 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0B6DC433F5
-	for <linux-parisc@archiver.kernel.org>; Fri, 25 Mar 2022 16:40:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03BA5C433F5
+	for <linux-parisc@archiver.kernel.org>; Fri, 25 Mar 2022 16:46:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241312AbiCYQmW (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 25 Mar 2022 12:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
+        id S1350657AbiCYQsM (ORCPT
+        <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 25 Mar 2022 12:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243097AbiCYQmV (ORCPT
+        with ESMTP id S1377020AbiCYQsJ (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 25 Mar 2022 12:42:21 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E57DF4BB
-        for <linux-parisc@vger.kernel.org>; Fri, 25 Mar 2022 09:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1648226441;
-        bh=6e8x+3vHpe/N4+j4wLJlK1lnp0sz4Gqbdy4NlzdXlDs=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=LD3v6h7lpB19ibr5353KcWs8fTbpha2M1ZAuu5wJasRe32XHnvNSONqfNurBHnciA
-         Lh+XZtMvA0TbDh99NglNAItH1OdytvGhzq2sqN8iKpglPXTVgkOPU3cii3QyZdHgke
-         YviNag2NQPzHu+7ZUF3xsHS4EgEAkHgFMbtC/i5U=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from p100.fritz.box ([92.116.164.212]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MYNNy-1nccZe3ir4-00VNLa; Fri, 25
- Mar 2022 17:40:40 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org
-Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Fri, 25 Mar 2022 12:48:09 -0400
+Received: from mail.sf-mail.de (mail.sf-mail.de [IPv6:2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7400BE3397
+        for <linux-parisc@vger.kernel.org>; Fri, 25 Mar 2022 09:46:34 -0700 (PDT)
+Received: (qmail 2257 invoked from network); 25 Mar 2022 16:46:31 -0000
+Received: from p200300cf070e1300b9c188bfe20b0b3e.dip0.t-ipconnect.de ([2003:cf:70e:1300:b9c1:88bf:e20b:b3e]:42864 HELO daneel.sf-tec.de) (auth=eike@sf-mail.de)
+        by mail.sf-mail.de (Qsmtpd 0.38dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
+        for <linux-parisc@vger.kernel.org>; Fri, 25 Mar 2022 17:46:31 +0100
+From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
+To:     linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH 1/2] parisc: Add constant for control registers and clean up mfctl()
-Date:   Fri, 25 Mar 2022 17:40:39 +0100
-Message-Id: <20220325164040.502188-1-deller@gmx.de>
-X-Mailer: git-send-email 2.35.1
+Subject: Re: [PATCH 01/12] parisc: Switch from GENERIC_CPU_DEVICES to GENERIC_ARCH_TOPOLOGY
+Date:   Fri, 25 Mar 2022 17:46:26 +0100
+Message-ID: <2098073.irdbgypaU6@daneel.sf-tec.de>
+In-Reply-To: <20220325143833.402631-1-deller@gmx.de>
+References: <20220325143833.402631-1-deller@gmx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:i6Qpw2EImUk/Qkcqpmx5qdbhUUA4uX7UU1PuAgqy7QS3TDBycYF
- 3FiSatmxFY6io5Zx9hpvuJRePoYNBrOyotOOewQHYqhQKLhYZz93waco+Hy4E6ewtfR00J5
- LQ4s9n1bx1fSUqXHkeCk/4R3xM6ZnRxnypOo7aM0SFBBDTDUCFTrN4ysjeuSZWLaX8nt0Z9
- Natlm1/Ja9ORx17dk7S6A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Bxd10u3t6bY=:mdRD63tkNzWiv9Gik+6meO
- mwsDU8HhMkrG/Xt4xoKk4xvOlRF+sR6QGJsy3iA9UNUZBeJ9FjAd96MVT3Z08XCCwQ3y170cG
- WMkmdKZ9nGyH35HGuwQHjEBQ7KFfcgCe6g989BB511TustZWZ5WE28VoDUCVpkqtPC23cd8P7
- Sh1TktYPxDYDYz64126IVB7jhDQtXbiZX7V54HaIZT8AN+4qArijTApw2LIF4eChHXr6TWvT1
- 1J6za4ONHCN/HW4qsXdHg5JcrUXisJjAE4kldOyHCAXxFkfrXQBAFxKgB5L+IGrlEazJ0aDFr
- gCLFxmZjBWMBOK56FT1baTntAj2oPTq7r3NzKD4AmBla+iGo5nBZ2G/7j8woTIO3dphk4e+KO
- VlKF4v6iQKpedDPhOsAlCpT1f7J8mRHQJPzCfkkqEcmyz2P02ApTmgAs3dcOX2SXRR9iEM1sM
- 4ltWgW3S/d3D14zwidMUenQju8A18fZEN44P3VTpdZdyy0b7Th65WbveG22S/j7vYk7Q8E/IK
- Sqs1f7WdFszBVu/5mWKp9vehNzJ5cxkqB2s51/9af4Ag+DL3k+HCH8vbzefcExBXwsKnuaWIR
- UaHVrhIICt1mxAHtQLQFxH8dEqzUCPUpTuHrH9dhqZymTEVH2BXEQWHtMS+x3IegH9qbyc1es
- +lThtW/KDfNs0izxhwR1RzCoCC1saNUvo8MLHDKP3wWBrPgd4M6Zpud2FpJBiMRjbB4rPjjf0
- aNUSHxAwl0vdcXtMkqdphxSM2efgQ50BB3CbNCpURRMK0wg4GV+PoSznOjyXvvJ849KL4QElr
- IN6SfrKMOTjkwi0fmCj5/A+DmkbNAlX0moZ/3NItTVFxMhavHF25N+2ndpT1no/4kw+kBO/VK
- G1w4laiI/C5nmk023d1BhCAe9wvokbG1gN2+CXhg98Wa5hLPuEU1xxk0MwKyfryEttIBlq9Pl
- OaSqO4QUIgU5nDnK7Au0zE9eNuzxnyLBwVx1SvL110s4TkYJXuKPZtGgEdDvmH7a6waVvEb7O
- kp3+xJN0+82MaJ42/FydGjtVh971UtLXbAuBwPlEygGYd+aEAhxus3Ydvk/JVlfxtjuZFv/sM
- nf1lmRGAdJ3xSs=
+Content-Type: multipart/signed; boundary="nextPart12981920.uLZWGnKmhe"; micalg="pgp-sha1"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Clean up the code and add often used constants.
+--nextPart12981920.uLZWGnKmhe
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-=2D--
- arch/parisc/include/asm/special_insns.h | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+Am Freitag, 25. M=E4rz 2022, 15:38:22 CET schrieb Helge Deller:
+> Switch away from the own cpu topology code to common code which is used
+> by ARM64 and RISCV. That allows us to enable hotplug later on too.
 
-diff --git a/arch/parisc/include/asm/special_insns.h b/arch/parisc/include=
-/asm/special_insns.h
-index 41b3ddbd344c..c822bd0c0e3c 100644
-=2D-- a/arch/parisc/include/asm/special_insns.h
-+++ b/arch/parisc/include/asm/special_insns.h
-@@ -30,11 +30,15 @@
- 	pa;						\
- })
+> diff --git a/arch/parisc/kernel/topology.c b/arch/parisc/kernel/topology.c
+> index e88a6ce7c96d..72d9aeb54fbe 100644
+> --- a/arch/parisc/kernel/topology.c
+> +++ b/arch/parisc/kernel/topology.c
+> @@ -71,6 +37,12 @@ void __init store_cpu_topology(unsigned int cpuid)
+>  	if (cpuid_topo->core_id !=3D -1)
+>  		return;
+>=20
+> +#ifdef CONFIG_HOTPLUG_CPU
+> +	per_cpu(cpu_devices, cpuid).hotpluggable =3D 1;
+> +#endif
+> +	if (register_cpu(&per_cpu(cpu_devices, cpuid), cpuid))
+> +		printk("Failed to register CPU device");
+> +
 
-+#define CR_EIEM 15	/* External Interrupt Enable Mask */
-+#define CR_CR16 16	/* CR16 Interval Timer */
-+#define CR_EIRR 23	/* External Interrupt Request Register */
-+
- #define mfctl(reg)	({		\
- 	unsigned long cr;		\
- 	__asm__ __volatile__(		\
--		"mfctl " #reg ",%0" :	\
--		 "=3Dr" (cr)		\
-+		"mfctl %1,%0" :		\
-+		 "=3Dr" (cr) : "i" (reg)	\
- 	);				\
- 	cr;				\
- })
-@@ -44,13 +48,8 @@
- 		: /* no outputs */ \
- 		: "r" (gr), "i" (cr) : "memory")
+This seems to be missing a level, and I think also printing the id of the=20
+failing CPU wouldn't hurt either.
 
--/* these are here to de-mystefy the calling code, and to provide hooks */
--/* which I needed for debugging EIEM problems -PB */
--#define get_eiem() mfctl(15)
--static inline void set_eiem(unsigned long val)
--{
--	mtctl(val, 15);
--}
-+#define get_eiem()	mfctl(CR_EIEM)
-+#define set_eiem(val)	mtctl(val, CR_EIEM)
 
- #define mfsp(reg)	({		\
- 	unsigned long cr;		\
-=2D-
-2.35.1
+--nextPart12981920.uLZWGnKmhe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCYj3x4gAKCRBcpIk+abn8
+Tp7KAKCfrSZFsyOig8FWqYP96zhPYdB7jgCfezRR4mu8xhbjX1JZUNk7T0cQ13U=
+=qZre
+-----END PGP SIGNATURE-----
+
+--nextPart12981920.uLZWGnKmhe--
+
+
 
