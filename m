@@ -2,86 +2,98 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8911C433EF
-	for <linux-parisc@archiver.kernel.org>; Fri, 25 Mar 2022 14:38:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C8A6C4332F
+	for <linux-parisc@archiver.kernel.org>; Fri, 25 Mar 2022 14:38:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359345AbiCYOkX (ORCPT
+        id S1359347AbiCYOkY (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 25 Mar 2022 10:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
+        Fri, 25 Mar 2022 10:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359351AbiCYOkS (ORCPT
+        with ESMTP id S1359348AbiCYOkS (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
         Fri, 25 Mar 2022 10:40:18 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9EB972DB
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF9B97284
         for <linux-parisc@vger.kernel.org>; Fri, 25 Mar 2022 07:38:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1648219115;
-        bh=OxcoQczI/0Cr52qdPAjGZ9CUMYyrPLyk9TUFyHKkrZQ=;
+        s=badeba3b8450; t=1648219114;
+        bh=aiF5NcAtwR8oBoe7A06WL/K55rvwjMxWdm5rqjfDrI0=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=OBr6JJnz4It2eGkCeZNUPDBpTV7vlHfxo08x7lwcQC18n2RpR2wPZMdcSL4calBWC
-         ZOzlshuUttecWeAs4106QYJ6h+NsTj7zbD6hJiZ/26BpxVrlsJG6urg71+yiEeb3pV
-         hJhEYv2aL/cPQXGP17BEjahZI9FYU1SWoAIUs90c=
+        b=JnAzITPAbnC/MJeBNw0xd3+kZeCRQ8GJzIn0RzMjulsr7yPFg1DfnA66ZgdTLkqZD
+         v6frpcA06arD8zny5vgxzcNxvAoIIabcFGYIJePIg6x3M4MltEryTNSSPZIhIGxp3v
+         MgtM8mUfaf+bPOgOH9rhIxxRLE3KVZU/2lzZXyiA=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from p100.fritz.box ([92.116.164.212]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mw9UK-1oNFi324BQ-00s5G7; Fri, 25
- Mar 2022 15:38:35 +0100
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MKKUp-1nmGzl39Y7-00LlJI; Fri, 25
+ Mar 2022 15:38:34 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org
 Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH 08/12] parisc: Move init_IRQ() into __cpuinit section
-Date:   Fri, 25 Mar 2022 15:38:29 +0100
-Message-Id: <20220325143833.402631-8-deller@gmx.de>
+Subject: [PATCH 03/12] parisc: Move store_cpu_topology() into __cpuinit section
+Date:   Fri, 25 Mar 2022 15:38:24 +0100
+Message-Id: <20220325143833.402631-3-deller@gmx.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220325143833.402631-1-deller@gmx.de>
 References: <20220325143833.402631-1-deller@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:qTJtg3u8q366DIplyC9ct8sH8EUo4i9AqcDVdobB9uCw7n6r5s9
- lBlEvRljxyym1VmboUCSj2X5G4O+8Gx1w6kU0qUruPI66KB8R9ilf3dV4v57JKq+zaUP8gB
- H30G4yhwepxIp2WMhNstGcYFNBV43HX/eUwfrNyhgzY/gABuYuqMjQZLWLBkN6DHYwiVamC
- 9gl2/nTqxoP0mfXM1zLWA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aOt72KrgqwI=:tVaiMDyg1+YvTUXkyAPmDs
- VnmJ+TbnPiM49NKbe+prN2I/xwje4/bIHoFnDx0Z9D+yKl37agEBNPyhnBTLBOaqyLpnzCzEL
- PGUb58fjdYTOYvPRkg4MXbBTcD5Efof92Pzak+wt4k54SGvNEVI8MHa4gPGv/YfAAs0Gzeh2m
- fCYxfJ9E3QXWcSOKqFylCOyLXkbcnbAkgvnpUstVv2CGQA9P6H2uIDCyIbCgQD4LBbHxl7iBJ
- GVvCzz/JsMFuxaQtknm/YmwoKehed3ZRegKbtjNw+6iqpil+SD6yD5swThf6fsiDCAdMGSgR5
- 9rX8ZLFJoiyonI9Ftwj2uFlgz0VoAd5wFQnrnnYIlgTujQUeJpvQuZN1uxyiKJ5rOlpiKQkT6
- xJ4qQViBsjgft1Cc3EtOQ68TOTY/zINU9SixLOV8wABYkPMHn4gDerWa0ct82o1hX3MxqGud5
- qKanzVwj6e7Rb0SlNHKOMQziO9j3kuksMDgNa46Ma8oBpjAhry60yjTRpnlhkNwx9zoi7nhZu
- YvGYuNE8lQN7uLj2QBW3xKoeh2JNcTsKegleTY9XhIJdUYGd7k28wR4Td4SPsN0H2YrgTyXTL
- 88OfWUHAT5cuERzHduu4rixYdYdlWgz6FpKhWH/s4Mhkyykz4TXkh7+GLLfzoDmb38oiSOo4g
- wAQ3J49j5sD2ES1iLQZIeRdmzRCEr6PhxW9RGjB5biEaQDyl+8Dt3CV2YNbM9dvLOLkqD2LnS
- eCFeJv7WuBOgVmqvQofxZVBnR5wlSP4KA7TBRDrnhAi6U0pAuzDfZ7C2vZcZCuobe9ebT6L7s
- Fwi0qpWxelj9gsrJAcahF47rnQq4Sm7+u1rBdFHOpaz+MH9YkYt14SqnxGxi8b203dxZXY9yN
- nCyE0sfD40GRPEKSEgOLisPdge6vS/IY7alng4XLl1B6DiZT7H37FJkfpttehlUX1B0XnqkKh
- UUFVk+XhPpLF/G8vQYl6SS5bsYGcBaJ3FDn8xcbJFgVxS8SrWncxmWE9zAfVXf+HHUkYGsDZ9
- 2Q0SPgtTjmsorl75qG8KxP54GgnpnOkjXi3AYI0/7jFLwcdhAyPuyH/OaWOihsgMCGSemP6id
- iKckr5tUkj2nBs=
+X-Provags-ID: V03:K1:a/jau4IvwTTMogFIhK3hLVTWJcVnE63wK1KV7W9+tfuDD9ydDm+
+ JjRbMvOk9BJ9GuHENWZiWHoyANEchDeipyLQW0aVyZGftkm7to99RAc7G87hIwTSWmc5ydk
+ vffVEC9KXZHP+JQw8xatCoLCKUCKJZknBKii3wOUtNSL5jWhOBM/N7nR6fubYcbpIYt02rM
+ UaxEhCGg6W8OCPqJx+qsQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MPbL0tszTgk=:f241JD85xKA80YhsEsjRel
+ vYhpUoNfMBTec9guhIt5FIPI4n4sAEZHj2JHWbnvCbthFfx/iiSwA17p8/EEmbeI0WKEGKT9e
+ 6k67EZB225ASIgFdPtz50t71kniIePGsnilsMJbYUYnvr+k+E60XO24SblQCn4+DFz5FC7NJR
+ ccJqljClf8WLqicedXwntXWbzvNi9k0deFvVlT4vAzs54KhW27nqEoGA5R6pa9LD1UaxLWDcI
+ 8asiyyCOOXtktmuVCvpSfWOOqfGd+1iTQKe76UZ2d/T58CUr4d7xsrItit2Tzv646U5FGGz8+
+ jRxFhrV4gfj9BcLBY86mUoFesZ5fN3+iU/4QwS+skyhKSUTOHbuaXuSqtVsmKBw/GGGxfTKXB
+ YJOuzeP6zVgeYuAC1nn9g5PjvvzirBWcCEdPobupLfP6Xwi2pXKHqftBTxD9OIV4HAqjcyCid
+ zymow0y+b6khFVhx8WJQXiFV19LdLjdth5VuGnAqYcbXRzJ9ebMuc58QorZjGvVwF0y9JtWJa
+ N6QnHw0tdOhtM9IM6w6n18XoGzqC4pnQRgnzEyOSzevpHShyo5QPWjiLfKt3mX5w8Vff+i1lq
+ IvVcl/VuBQ9GQBxQngGUZ+EqNGfMO76ql8IN9rbhWh4+n5483JxYZlDv5t2FegjUZCHOr2V3o
+ Qu1FhpAJ7gmPzZya+FC5FqbhzE8jZc6JrWJ/LPjvaNoz9gYR+ysI5p19rC5nhNsrV6pZsIhC9
+ Z/bmHFTygErVcGhAsSTNEvUj26F/gXbuvSepouThZ6FE7uhaMIXOvtudTqg128+KO2jfu0j3L
+ VMdFlTNBG6RV8FdCd/9e3QTLKoJq7wyppREvT3Mftm4sSK3hgmfius1gNeXTqdxdejeTDOJ+S
+ 9rO6/m/fRAsIq9q89TgBLbDgzWwbkFuxeUcQw26EUYjn0BNQbX69SGyh8uiIckYto8cRND2iu
+ SnEqC3wPOB+MpQtMMd03DdL3sDsiEXO86DiJdoWophdvuSA71SVEewfGFhPV1P3mPXU1BNcvN
+ cg7WALNqDFb3VOuT3U672qshxXWciusWShsEU2xWsJTDcHCU6+1Q0Ainx025Ixn8Hw==
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 =2D--
- arch/parisc/kernel/irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/parisc/kernel/topology.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index eb18e16362f6..a8372db32492 100644
-=2D-- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -582,7 +582,7 @@ static void claim_cpu_irqs(void)
- #endif
- }
+diff --git a/arch/parisc/kernel/topology.c b/arch/parisc/kernel/topology.c
+index 72d9aeb54fbe..dc766fb55491 100644
+=2D-- a/arch/parisc/kernel/topology.c
++++ b/arch/parisc/kernel/topology.c
+@@ -16,17 +16,18 @@
+ #include <linux/cpu.h>
 
--void __init init_IRQ(void)
-+void __cpuinit init_IRQ(void)
+ #include <asm/topology.h>
++#include <asm/sections.h>
+
+ static DEFINE_PER_CPU(struct cpu, cpu_devices);
+
+-static int dualcores_found __initdata;
++static int dualcores_found;
+
+ /*
+  * store_cpu_topology is called at boot when only one cpu is running
+  * and with the mutex cpu_hotplug.lock locked, when several cpus have boo=
+ted,
+  * which prevents simultaneous write access to cpu_topology array
+  */
+-void __init store_cpu_topology(unsigned int cpuid)
++void __cpuinit store_cpu_topology(unsigned int cpuid)
  {
- 	local_irq_disable();	/* PARANOID - should already be disabled */
- 	mtctl(~0UL, 23);	/* EIRR : clear all pending external intr */
+ 	struct cpu_topology *cpuid_topo =3D &cpu_topology[cpuid];
+ 	struct cpuinfo_parisc *p;
 =2D-
 2.35.1
 
