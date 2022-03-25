@@ -2,93 +2,86 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 295B7C433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8911C433EF
 	for <linux-parisc@archiver.kernel.org>; Fri, 25 Mar 2022 14:38:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359343AbiCYOkV (ORCPT
+        id S1359345AbiCYOkX (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 25 Mar 2022 10:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49080 "EHLO
+        Fri, 25 Mar 2022 10:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359349AbiCYOkS (ORCPT
+        with ESMTP id S1359351AbiCYOkS (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
         Fri, 25 Mar 2022 10:40:18 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C376B97299
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9EB972DB
         for <linux-parisc@vger.kernel.org>; Fri, 25 Mar 2022 07:38:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1648219114;
-        bh=u4qnli1WWVwxR0RiJIaaYGpYmOLyDM057kihqzKtpsU=;
+        s=badeba3b8450; t=1648219115;
+        bh=OxcoQczI/0Cr52qdPAjGZ9CUMYyrPLyk9TUFyHKkrZQ=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=id9qwhm3heFK0yBt7zDB6LntyxlLoivoq1T1DhCaFsrey+VD3JJkNxcw9UvEp9Bbv
-         77WWrmTWgSfKDHezciKQyRphjZJH78Ebt+mINlmzgR/mrkuyAaEuDxTo0fEYtZ1+aO
-         uAAsaZXksPGQ8/8y7aZ4cGsTF0XpANKjS6prZs7Q=
+        b=OBr6JJnz4It2eGkCeZNUPDBpTV7vlHfxo08x7lwcQC18n2RpR2wPZMdcSL4calBWC
+         ZOzlshuUttecWeAs4106QYJ6h+NsTj7zbD6hJiZ/26BpxVrlsJG6urg71+yiEeb3pV
+         hJhEYv2aL/cPQXGP17BEjahZI9FYU1SWoAIUs90c=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from p100.fritz.box ([92.116.164.212]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MMXQF-1noSr72TWZ-00JZSC; Fri, 25
- Mar 2022 15:38:34 +0100
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mw9UK-1oNFi324BQ-00s5G7; Fri, 25
+ Mar 2022 15:38:35 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org
 Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH 02/12] parisc: Add __cpuinit section for HOTPLUG_CPU
-Date:   Fri, 25 Mar 2022 15:38:23 +0100
-Message-Id: <20220325143833.402631-2-deller@gmx.de>
+Subject: [PATCH 08/12] parisc: Move init_IRQ() into __cpuinit section
+Date:   Fri, 25 Mar 2022 15:38:29 +0100
+Message-Id: <20220325143833.402631-8-deller@gmx.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220325143833.402631-1-deller@gmx.de>
 References: <20220325143833.402631-1-deller@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MBBV1qNjMo6rULsrlVh4hZ4WFQTTngRNVYrgdw356TXY+Aor2WX
- t8vLHfLesxvP1OEUlO1A5CyVdnDJRfwRQ5ZFkIphS4UutNQpG42AJuQoulw6pPJASgdWrrW
- gNIlLy+4q7uUjyv/kXaDoYgjDWneeCbZfPT1U70KCRPXkKC9yzfYWRr6A+lxf9ornED2L0C
- jD+uiySZDHoECrP3fOLvw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0GsB8cOhUoM=:11t4NF9qyYKVmubyIPPzLk
- z/49mhdYjlfjyg34OcoorvIz+WzvYM6/3dqXJcwVMVSO8Rq/MlcL5/nEBOcBpa0wlSOunnZ3u
- u6c/Q6FWjaqOopjmDIPHitMjA1WncTbaIhHRzFUQZGL9YtO4NpdwzH1rXnp6ncY9ZatGS6BDg
- uigdPYGyQNLvJdAeJt7Xd/GXFsV4swtnsbHn21Gr/hMOXyl+pvj7vqiOQ6SUAM98Jiysw/emB
- 2Vqb5ziVeEf4va4Ig37CVuJ/NC3CtULEd8p/Cfzc8iHkQcnVVNX5l6y0yCL1f+a+DCnRAry6E
- QHTqcR6UtiAujNWNF0ClH3fgm9z7CVaIlyO9TcFyCSDkCAG+Ye/INvrBSfBsLII57SuujVCqc
- Iu4bNWNT3Q/aTrbQNtypTRwKxPumBNZQ45XovM+uI3rDjd2UxajAU0ikR1lQWcDBGK4gkZ56I
- 8QAaSdoqzN/dsaMXOeZbJ5hVYsj0A1ihqU2lVyUIqxHunmd77Lm78wJ1RsJjpfch3ZWK7kCZB
- 8UXm9s1+IXNo5uLHskKrAuE+q3mmdihbBLHo6TrIarUiXl3qjK+cbiQ2xQ2875LhV7Rgu5tIK
- Tc8EJo4dXuooA6cz4yGclsE13XrKY7riCfNhJ43f/wuXEMNsfr6mDCtWPK8ImJJgRae8e+2ly
- EMvG339enBCv+Z58LVDleiI9qL10mXRj5PjsQRqlquYUvEarmhJoIS46BJFzoqHXbxZUmXOMk
- b5mtFbLQBe14cZZuhakfQRrWIhbm6m+iE/gXgcEPy+aqJnBeEH3QuMbHmR/AaWWW9nsCPv+1A
- RYqHAbVRCe5jp2E/+EyuKtUs+H6CM54QuXKwpgquclq/ipcpMKnNJQgbj1ecJN83aUoQ7W3ON
- FhJx9lB6xXqnA1TAyL2bT4++0425zUSO92DQCAD9cd8+3hzx6zke7ckqNb8ssVdheeRGuH3QH
- t3wFyJc6dt5s2s4//RCNs52kncT2XUkyzxapxnQZhW8UDJNExCjlYEPodCQiH5/aj1L+9ug4e
- AMOpmIIx4/MlaZBljuYeJiA0uwb7eZhBbSaFAeaxy5w+kApPONVRHO+jDz2H2cpsvg==
+X-Provags-ID: V03:K1:qTJtg3u8q366DIplyC9ct8sH8EUo4i9AqcDVdobB9uCw7n6r5s9
+ lBlEvRljxyym1VmboUCSj2X5G4O+8Gx1w6kU0qUruPI66KB8R9ilf3dV4v57JKq+zaUP8gB
+ H30G4yhwepxIp2WMhNstGcYFNBV43HX/eUwfrNyhgzY/gABuYuqMjQZLWLBkN6DHYwiVamC
+ 9gl2/nTqxoP0mfXM1zLWA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:aOt72KrgqwI=:tVaiMDyg1+YvTUXkyAPmDs
+ VnmJ+TbnPiM49NKbe+prN2I/xwje4/bIHoFnDx0Z9D+yKl37agEBNPyhnBTLBOaqyLpnzCzEL
+ PGUb58fjdYTOYvPRkg4MXbBTcD5Efof92Pzak+wt4k54SGvNEVI8MHa4gPGv/YfAAs0Gzeh2m
+ fCYxfJ9E3QXWcSOKqFylCOyLXkbcnbAkgvnpUstVv2CGQA9P6H2uIDCyIbCgQD4LBbHxl7iBJ
+ GVvCzz/JsMFuxaQtknm/YmwoKehed3ZRegKbtjNw+6iqpil+SD6yD5swThf6fsiDCAdMGSgR5
+ 9rX8ZLFJoiyonI9Ftwj2uFlgz0VoAd5wFQnrnnYIlgTujQUeJpvQuZN1uxyiKJ5rOlpiKQkT6
+ xJ4qQViBsjgft1Cc3EtOQ68TOTY/zINU9SixLOV8wABYkPMHn4gDerWa0ct82o1hX3MxqGud5
+ qKanzVwj6e7Rb0SlNHKOMQziO9j3kuksMDgNa46Ma8oBpjAhry60yjTRpnlhkNwx9zoi7nhZu
+ YvGYuNE8lQN7uLj2QBW3xKoeh2JNcTsKegleTY9XhIJdUYGd7k28wR4Td4SPsN0H2YrgTyXTL
+ 88OfWUHAT5cuERzHduu4rixYdYdlWgz6FpKhWH/s4Mhkyykz4TXkh7+GLLfzoDmb38oiSOo4g
+ wAQ3J49j5sD2ES1iLQZIeRdmzRCEr6PhxW9RGjB5biEaQDyl+8Dt3CV2YNbM9dvLOLkqD2LnS
+ eCFeJv7WuBOgVmqvQofxZVBnR5wlSP4KA7TBRDrnhAi6U0pAuzDfZ7C2vZcZCuobe9ebT6L7s
+ Fwi0qpWxelj9gsrJAcahF47rnQq4Sm7+u1rBdFHOpaz+MH9YkYt14SqnxGxi8b203dxZXY9yN
+ nCyE0sfD40GRPEKSEgOLisPdge6vS/IY7alng4XLl1B6DiZT7H37FJkfpttehlUX1B0XnqkKh
+ UUFVk+XhPpLF/G8vQYl6SS5bsYGcBaJ3FDn8xcbJFgVxS8SrWncxmWE9zAfVXf+HHUkYGsDZ9
+ 2Q0SPgtTjmsorl75qG8KxP54GgnpnOkjXi3AYI0/7jFLwcdhAyPuyH/OaWOihsgMCGSemP6id
+ iKckr5tUkj2nBs=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Provide a __cpuinit section which needs to be used instead of __init
-when CPU hotplugging is enabled.
-
 Signed-off-by: Helge Deller <deller@gmx.de>
 =2D--
- arch/parisc/include/asm/sections.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/parisc/kernel/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/parisc/include/asm/sections.h b/arch/parisc/include/asm/=
-sections.h
-index bb52aea0cb21..4c28c7adaf5f 100644
-=2D-- a/arch/parisc/include/asm/sections.h
-+++ b/arch/parisc/include/asm/sections.h
-@@ -7,6 +7,12 @@
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index eb18e16362f6..a8372db32492 100644
+=2D-- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -582,7 +582,7 @@ static void claim_cpu_irqs(void)
+ #endif
+ }
 
- extern char __alt_instructions[], __alt_instructions_end[];
-
-+#ifdef CONFIG_HOTPLUG_CPU
-+#define __cpuinit
-+#else
-+#define __cpuinit	__init
-+#endif
-+
- #ifdef CONFIG_64BIT
-
- #define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+-void __init init_IRQ(void)
++void __cpuinit init_IRQ(void)
+ {
+ 	local_irq_disable();	/* PARANOID - should already be disabled */
+ 	mtctl(~0UL, 23);	/* EIRR : clear all pending external intr */
 =2D-
 2.35.1
 
