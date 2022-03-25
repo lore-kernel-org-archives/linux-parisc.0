@@ -2,121 +2,89 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4833C433EF
-	for <linux-parisc@archiver.kernel.org>; Thu, 24 Mar 2022 16:12:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D191CC433F5
+	for <linux-parisc@archiver.kernel.org>; Fri, 25 Mar 2022 14:38:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238183AbiCXQNu (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 24 Mar 2022 12:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
+        id S1359341AbiCYOkR (ORCPT
+        <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 25 Mar 2022 10:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233340AbiCXQNu (ORCPT
+        with ESMTP id S1359344AbiCYOkQ (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 24 Mar 2022 12:13:50 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8075C2E6BF
-        for <linux-parisc@vger.kernel.org>; Thu, 24 Mar 2022 09:12:17 -0700 (PDT)
+        Fri, 25 Mar 2022 10:40:16 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB71972E6
+        for <linux-parisc@vger.kernel.org>; Fri, 25 Mar 2022 07:38:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1648138319;
-        bh=4IgeKBKs0vKGsCN8KPBFTWVn/JKCfNJ58ZMopnse4KE=;
-        h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:In-Reply-To;
-        b=jmiZ+h2bXxoWiVwMv5evOj8J1rtNWCw/TO7CIdZEgFbLJ3yjvH+8U+Ly39OCZ+av5
-         R21McSwfqQ4vPkjeNN2bCaStiXqmIM9TZZRgN5TXe2VQs89gQVOwtxz0gTj8fh8roU
-         gqwmmzL3Xo5x1HEWl105/Ni+KBKimv+lCEv2NDvU=
+        s=badeba3b8450; t=1648219115;
+        bh=LI10puTNNK6tskId7IFHg8uCclJ7ZBfeS9cwtacOLc8=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=OIuOPBWaTqb3aSfRG6dC3vA5A/qKd3iF3X+OqPwMM2Z4LaIw4i7Z69x04RTWOkZfB
+         P2YgijyNFX1UFcw2nlyZKPD5RoxFRxNZG3aWSFVH2OH93WqHrLJyeo9+FS/u31ODdM
+         LnhHPg6dpyLu1OR0daFQXNiAbO0Yq4eD0kHodKhw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.161.116]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M3UZG-1nXyIO46T4-000fFd; Thu, 24
- Mar 2022 17:11:59 +0100
-Message-ID: <1a915e38-be42-7252-91cd-cc65e090f7b0@gmx.de>
-Date:   Thu, 24 Mar 2022 17:11:55 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.2
-Subject: Re: Fwd: Updated Debian Ports installation images
-Content-Language: en-US
+Received: from p100.fritz.box ([92.116.164.212]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUXtY-1ngWUd0fmS-00QPUN; Fri, 25
+ Mar 2022 15:38:35 +0100
 From:   Helge Deller <deller@gmx.de>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     "debian-hppa@lists.debian.org" <debian-hppa@lists.debian.org>,
-        linux-parisc <linux-parisc@vger.kernel.org>
-References: <0357f0c9-81ec-31f1-5d96-2da27df679d5@physik.fu-berlin.de>
- <17f3c449-a37b-9903-24a7-ed52bd59df25@gmx.de>
-In-Reply-To: <17f3c449-a37b-9903-24a7-ed52bd59df25@gmx.de>
-Content-Type: text/plain; charset=UTF-8
+To:     linux-parisc@vger.kernel.org
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [PATCH 06/12] parisc: Move disable_sr_hashing_asm() into __cpuinit section
+Date:   Fri, 25 Mar 2022 15:38:27 +0100
+Message-Id: <20220325143833.402631-6-deller@gmx.de>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220325143833.402631-1-deller@gmx.de>
+References: <20220325143833.402631-1-deller@gmx.de>
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:crPwOD2ZYYcSyadwxWlMwd/6jIPBW5i7fo2oYHrP5t4LkSkN/rT
- bZsV2xOm6YMJ0gGH+n8liC2b5HDGb5ibVW8VnP494WeEk+Y+q9h468FLRRuTzaCtbkvDubq
- Woy28VJ+G6tIGFedSurvq9FYoo7lnCCUlUQlPYW+Vc+BNCYRkZCAQhMVmCGljvq2VY5H7wE
- AgPyqZHgWtj5oZi8IryIA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Egwr8IGNU9k=:BECskOx7lER4u7/d0SbF+k
- H9R+4TSzr5UxJjS4dhiXsEd3kpJkGDWfoZ9iqpKP45Gl9Lby0eJxLvWk8HhXSLlGcS6uZI6LE
- kTB/8aelugyJQWBJkyUCfvnIaXnlrRqgiRwlkOr8sSsmFBAsw6p/wNDYVJqK+X/XQzJWXxZDA
- njI2D3/EIR9f5PvhjbZB8Qauje10EHohvUe7+zmPKR+mT5+J2NfVaHofCXn0SPXrcIGWOPb/C
- s5rX4ltGXxmFgn4khepEdUkWFIDi2TLJdN4x6V/7ii8T2fsoPIxf90si0ggjCdGIT2xOdhXDF
- oua4Wa32WyjpKVr46wvB02kjNfT20AJObQzfTldIQL3pTN5o8VO9gLCJSe60UthX2+hCxx0MD
- zXjlavg3H83DceuKf09B5Ao43IMkl+3ts4SHrFm67NevYBmKnKH/nJYL9Valp+2yzmraA2HoN
- qDWcClXCZW7iPSjirrUmemCND+s3MdckpQXVa5dE81AXM3kXQ8uNNUihYn0nZUEfji05i2ZyX
- CgbVKB8BeRnm5otdN5Bxo9Dwvq5PDa1JrvW5LbnCP+Hx3rhtbnwTFFaXG+do3nxMf2l4w4ukN
- vg6+6dFZ+asreClGbWG4dz5VeMNWw1bqEumgPK/LGRg1yyN5W+lID/8URrB7cUSDtV3tjigV6
- polAp8vKEeScGBNT+7no9G9X/Hgjd9l5JIBN+jE5zOyr7fmkitn04/ZsNZccDEP6LGCoqnRHJ
- PnyurZzd7zCHzTPb/ysi01uyfi5Y1Jy1lBIr6LsZJ4CFQ42jOfjAScco9eqCY4+p9k7WcE923
- YQ36NgE7r0NcTmjvVE2MxVhlqhFCmEaYWlmoF39/3Q1tOdHTM1Dtbju3UM4q/7qOZTiSaRZ1V
- 3h7MYVgRUJ8cZbEWbUpstg6YV9R91VSrV3UFjc+iaXPqldpzAHUw4hRhCxckQn6qTKJvkanu4
- aFj1SgVIy7u8cgyXslom63jon8SX78wKm9siao/kWUG958nXcLws1CXwXvSEblfmnzAa/zHeR
- aXFD5FhcdF7fXcZHGYxUoWtLw5j89CtV4biE0Rgd1BzsWe266M+e0TvgqPZRDbqEXHN+fUtf3
- PeGYXnmvRPYgYs=
+X-Provags-ID: V03:K1:Z2jHBRXDy93YXknke44d1qGJaZNjA31kgbhzqQPrvz0wdLlw5/R
+ LFwc2XfEmOnMOE5iShrC035jOUZoCU3KGtoFoBCpr/wmvIOLfRRnPk66x9OZPGZvUxC4avZ
+ sclE30ssYIQS/YaisPHPMl3UWCakeyi5Zmm6HniB1shbOjkoTjUwUXWKSlapbKAq0PUdJ1B
+ nho7HRZLd/AQavIB26lQw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nogc3zvYWbQ=:gJTdKuHpeHaNzUJ8VaZMqR
+ VjnDMnRETRZKkYMZUSHa+CGRovjb3qo4dE+GDPozrcPWpM9p3bMT1Bpst1jCEXwPQF7cQJHCq
+ tGLBvRoBYFKviDRSnuuOB6PBWMUc+6Jy9yRsgzSv6E+8ClFiweYvsLGf4VxSS44ENW+hnz4Ez
+ Y8WyqGShrzna/Pp4LqIv9KBMYHUQqm3UgTDa5gcHCiX2ee6pi89XZZBR1jFZZq9l7/B3iBBRJ
+ RCpV0Xyu+TC5Kj1SKiTX6ZBT/LqOIRGhN4A1SqvYcScBHT4Eat7z+LZNEtyKr6QW8EJG97iJf
+ +YdGja2jayUmXGFsozLFLbMxeNlu2g5+TuN/Uy+Ub2DyhupQTNlvMkMh5hsfmqGXG6/zAHx7E
+ DlPQqy+Yhxc8Nru8ErvEqYGQIXZSikvEYgK8h0b9E+xOvfEgrjasnbunJtSz7Xw9Hfc5JULv9
+ rVihxmMMaorrxvkyYc6+JNEX5hufMH6By8Fz8N2bQ3g5RoUjMl5xdcl+vFqMfBtAaq9b2PDKW
+ RO4/veVDmTEnjnN8u1alVEypmUTM1mlW6dCutNokY0LEqv2WUToeNbH064mFfYQIJY6RytHyf
+ C+w+KjvGt2Ay4uKUzYbmmMBE+Hx4HDhqT/ZKxv1TA2V3qEHhlp+H/MJUNkbHUvAWmRwqSFMNC
+ jGmE5gZec3/T5aKuL9W+kMn9vC5IQj0L0Zw3QUWS73yv1nmPERUymXQD93EuWY6zEWr4MNovv
+ dhNrBKv824bgoYuPKebkXmpu67J4JLPJMpWxWvrr7z0m77Dhlyizb+hJNdxrQkM94m+xXlRv5
+ 6UoQVULd84PPA0pcnfbqvY+UgONo+Ps+TrtNTpsXxL9gHNEEfCMuQEl/fs1+PWgmL7hqcEc2G
+ Czxb7FK0Fst/KQbghZ3NEvNFby9B6mG3lLBL+FCkT8+cZXR0EGTUHFEs2bA2YJLG88jX0utz/
+ zwoOnToYO7H8aSp9Yv+qYWpSlsUqaSnEQK2+Kqo5IOr5fBkREdx98MVQbYfbgd1oy1+t2gj0B
+ OrqgM2n1bmp3nZnNnlAOy8HMlPZvTNZqns1RGm6advBdO2+G38AWMjpXIPNzsUlG/vQ+kgDaG
+ PP9q9hF9o68id8=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Adrian,
+Signed-off-by: Helge Deller <deller@gmx.de>
+=2D--
+ arch/parisc/kernel/pacache.S | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I've sucessfully installed Debian-11 with your installation media
-on a 64-bit rp5440 PA-RISC machine (via serial console).
+diff --git a/arch/parisc/kernel/pacache.S b/arch/parisc/kernel/pacache.S
+index b2ba6d633065..661b1834ac94 100644
+=2D-- a/arch/parisc/kernel/pacache.S
++++ b/arch/parisc/kernel/pacache.S
+@@ -1264,7 +1264,11 @@ ENTRY_CFI(flush_kernel_icache_range_asm)
+ 	nop
+ ENDPROC_CFI(flush_kernel_icache_range_asm)
 
-I had issues with installing the same CD in a 32-bit qemu hppa VM,
-because the stifb graphics driver didn't showed a screen in qemu.
-That's probably a problem of the kernel or qemu, which I still
-need to analyze.
++#ifdef CONFIG_HOTPLUG_CPU
++	.text
++#else
+ 	__INIT
++#endif
 
-Anyway, thanks so much for the new install medias!
-
-Helge
-
-On 3/21/22 19:30, Helge Deller wrote:
-> -------- Forwarded Message --------
-> Subject: Updated Debian Ports installation images
-> Resent-Date: Fri, 18 Mar 2022 17:58:50 +0000 (UTC)
-> Resent-From: debian-alpha@lists.debian.org
-> Date: Fri, 18 Mar 2022 18:58:32 +0100
-> From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> To: debian-alpha@lists.debian.org <debian-alpha@lists.debian.org>
->
-> Hello!
->
-> I have created the first set of installation images in 2022, these are
-> available at the usual location in [1].
->
-> The ISO image for sparc64 has been verified to work correctly, I don't
-> know about the other architectures, however.
->
-> I have also created the first images which include non-free firmware pac=
-kages
-> but these are completely untested and firmware installation might not wo=
-rk
-> correctly as DEP-11 information is not available on the Debian Ports mir=
-rors.
->
-> The non-free images can be found here [2].
->
-> Adrian
->
->> [1] https://cdimage.debian.org/cdimage/ports/snapshots/2022-03-18/
->> [2] https://cdimage.debian.org/cdimage/ports/snapshots/2022-03-18/non-f=
-ree/
->
-> --
->  .''`.  John Paul Adrian Glaubitz
-> : :' :  Debian Developer - glaubitz@debian.org
-> `. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
->   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
->
+ 	/* align should cover use of rfi in disable_sr_hashing_asm and
+ 	 * srdis_done.
+=2D-
+2.35.1
 
