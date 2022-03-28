@@ -2,36 +2,36 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78103C433EF
-	for <linux-parisc@archiver.kernel.org>; Mon, 28 Mar 2022 11:24:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E4BBC433FE
+	for <linux-parisc@archiver.kernel.org>; Mon, 28 Mar 2022 11:28:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240857AbiC1LYd (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 28 Mar 2022 07:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
+        id S241424AbiC1Lab (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 28 Mar 2022 07:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241083AbiC1LXO (ORCPT
+        with ESMTP id S239586AbiC1L37 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 28 Mar 2022 07:23:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E858E55BED;
-        Mon, 28 Mar 2022 04:20:06 -0700 (PDT)
+        Mon, 28 Mar 2022 07:29:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13491120;
+        Mon, 28 Mar 2022 04:23:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 38AFC611B5;
-        Mon, 28 Mar 2022 11:20:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40058C340F3;
-        Mon, 28 Mar 2022 11:20:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5ED1961174;
+        Mon, 28 Mar 2022 11:23:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 751BEC340EC;
+        Mon, 28 Mar 2022 11:23:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648466404;
-        bh=PPyB38zuBoAibvBuvbbADfl/549D/slCttl/tVe3DZc=;
+        s=k20201202; t=1648466621;
+        bh=bPX/khrWPtuH6lxw45TCKs76d2OxZC/P91UXYox1D2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GQiwkRlxk0RUzHTbr+UTcprC5QGTmI9+269Ms1CxYWzy1Gofz+b3ZaL0DkCD2OHdg
-         mGwtw1Rop+QV++zyU7wQXOcntHQy8r552HUyOyMB7ZPJ08eu+MSPAmAhS1Bj5HlQDv
-         l+6kBPkfOsrzxzlP7b8unRLdaQRLDeoW3wdoT3uQZjWeNXSQyAGUBo2WUEA5pZBu1E
-         /ZDY6nx2bQ9z7al+6RLdgiQksMvAQ6XDTXcDKVeMiawetMF6JLUoRHXqdqBTzb086J
-         sd5LV37TKiAtQE4ePdmsMgYvSpnus/MdSSXMe7VBAl+ozV/HfB/08HGnDtVK997Ozq
-         a5LH0TnUaMF+g==
+        b=AmIWko0MxrQz2vAWas11Gr56JNWwrwOJpBRkECfXtjqrQxwdzi2Hn/dbfYQ/hV1kN
+         tMEXInavCot79w2XR6JXI2kFCKveIOwBVIe0q1FjDrDCyI9oxrOCl/2Rk3eXEPaMzn
+         ewgYsCGHMrZuIUp6F69HEDyGzMqaTePHZp8aJV1iIN9ZxLATdliAz+EDH8I2Piy4Rb
+         8JrIurdMWBy0b/nnMjq/g08Ikw38q5onQhUhBFo7PWgfdC16e3I0zSrAr8bsUXcPIR
+         u5HPZ7MKeXekpiBNZn1qk2ZkQKjorv6Kqc08qCSnsq8hSEctJe8Lqu8l7XAvVhnToi
+         d6lK24sQSkIiw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     John David Anglin <dave.anglin@bell.net>,
@@ -40,12 +40,12 @@ Cc:     John David Anglin <dave.anglin@bell.net>,
         rmk+kernel@armlinux.org.uk, akpm@linux-foundation.org,
         ebiederm@xmission.com, wangkefeng.wang@huawei.com,
         zhengqi.arch@bytedance.com, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 39/43] parisc: Fix handling off probe non-access faults
-Date:   Mon, 28 Mar 2022 07:18:23 -0400
-Message-Id: <20220328111828.1554086-39-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 19/21] parisc: Fix handling off probe non-access faults
+Date:   Mon, 28 Mar 2022 07:22:52 -0400
+Message-Id: <20220328112254.1556286-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220328111828.1554086-1-sashal@kernel.org>
-References: <20220328111828.1554086-1-sashal@kernel.org>
+In-Reply-To: <20220328112254.1556286-1-sashal@kernel.org>
+References: <20220328112254.1556286-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -93,10 +93,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 92 insertions(+)
 
 diff --git a/arch/parisc/include/asm/traps.h b/arch/parisc/include/asm/traps.h
-index 34619f010c63..0ccdb738a9a3 100644
+index 8ecc1f0c0483..d0e090a2c000 100644
 --- a/arch/parisc/include/asm/traps.h
 +++ b/arch/parisc/include/asm/traps.h
-@@ -18,6 +18,7 @@ unsigned long parisc_acctyp(unsigned long code, unsigned int inst);
+@@ -17,6 +17,7 @@ void die_if_kernel(char *str, struct pt_regs *regs, long err);
  const char *trap_name(unsigned long code);
  void do_page_fault(struct pt_regs *regs, unsigned long code,
  		unsigned long address);
@@ -105,10 +105,10 @@ index 34619f010c63..0ccdb738a9a3 100644
  
  #endif
 diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index b6fdebddc8e9..39576a9245c7 100644
+index 269b737d2629..bce47e0fb692 100644
 --- a/arch/parisc/kernel/traps.c
 +++ b/arch/parisc/kernel/traps.c
-@@ -662,6 +662,8 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
+@@ -661,6 +661,8 @@ void notrace handle_interruption(int code, struct pt_regs *regs)
  			 by hand. Technically we need to emulate:
  			 fdc,fdce,pdc,"fic,4f",prober,probeir,probew, probeiw
  		*/
@@ -118,11 +118,11 @@ index b6fdebddc8e9..39576a9245c7 100644
  		fault_space = regs->isr;
  		break;
 diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index e9eabf8f14d7..f114e102aaf2 100644
+index 716960f5d92e..5faa3cff4738 100644
 --- a/arch/parisc/mm/fault.c
 +++ b/arch/parisc/mm/fault.c
-@@ -425,3 +425,92 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
- 	}
+@@ -424,3 +424,92 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 		goto no_context;
  	pagefault_out_of_memory();
  }
 +
