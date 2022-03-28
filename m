@@ -2,61 +2,141 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D4D1C433EF
-	for <linux-parisc@archiver.kernel.org>; Sat, 26 Mar 2022 08:58:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 554A7C4332F
+	for <linux-parisc@archiver.kernel.org>; Mon, 28 Mar 2022 11:22:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbiCZJAT (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 26 Mar 2022 05:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
+        id S236733AbiC1LYb (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 28 Mar 2022 07:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbiCZJAS (ORCPT
+        with ESMTP id S241610AbiC1LYB (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 26 Mar 2022 05:00:18 -0400
-Received: from mail.sf-mail.de (mail.sf-mail.de [IPv6:2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E9D29E4C8
-        for <linux-parisc@vger.kernel.org>; Sat, 26 Mar 2022 01:58:41 -0700 (PDT)
-Received: (qmail 26588 invoked from network); 26 Mar 2022 08:58:38 -0000
-Received: from p200300cf0748ae0076d435fffeb7be92.dip0.t-ipconnect.de ([2003:cf:748:ae00:76d4:35ff:feb7:be92]:44430 HELO eto.sf-tec.de) (auth=eike@sf-mail.de)
-        by mail.sf-mail.de (Qsmtpd 0.38dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
-        for <linux-parisc@vger.kernel.org>; Sat, 26 Mar 2022 09:58:38 +0100
-From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
-To:     linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: Re: [PATCH 09/12] parisc: Ensure set_firmware_width() is called only once
-Date:   Sat, 26 Mar 2022 09:58:33 +0100
-Message-ID: <2623688.mvXUDI8C0e@eto.sf-tec.de>
-In-Reply-To: <20220325143833.402631-9-deller@gmx.de>
-References: <20220325143833.402631-1-deller@gmx.de> <20220325143833.402631-9-deller@gmx.de>
+        Mon, 28 Mar 2022 07:24:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE83D56C3D;
+        Mon, 28 Mar 2022 04:21:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E3E161126;
+        Mon, 28 Mar 2022 11:21:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84CD6C340EC;
+        Mon, 28 Mar 2022 11:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648466478;
+        bh=TzN9S2c1jJpI9v8G0EpdcxObJsrqJKiqIfBV48VR++4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=n8FvSGM0+snEAWToKQlnvF0Zn7MlCEujW2AOALzcjEOpadw6FpW4/4+WhpQR8GlKl
+         nnRroaqzXrFR/vrFjM91UScFzNxqAEnP72ZImJkbqo61GS2F14FayIAomKNwk/k59/
+         iJP9qpsULYuw0XZVN5e8c9KeQxKDhPEXnNFrsgLzl0sVdHFiG7jKZKM2zdZ8rwIXca
+         BZU8Ervq477KU6S1afP06RJH7cvsqsqoGozSZiupfdzM0mgn3ESqFuQXY+Aqkd4O5v
+         rK+B4l7kBIgHoEwh8rkPcKjBUA+vxHlb8sw09qmvsZmrKe3WwUqt3NteefSjZwjP6M
+         pHMpe9LvbXlBg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     John David Anglin <dave.anglin@bell.net>,
+        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
+        James.Bottomley@HansenPartnership.com, svens@stackframe.org,
+        ira.weiny@intel.com, akpm@linux-foundation.org,
+        linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.16 30/35] parisc: Fix non-access data TLB cache flush faults
+Date:   Mon, 28 Mar 2022 07:20:06 -0400
+Message-Id: <20220328112011.1555169-30-sashal@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220328112011.1555169-1-sashal@kernel.org>
+References: <20220328112011.1555169-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart11947298.O9o76ZdvQC"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
---nextPart11947298.O9o76ZdvQC
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+From: John David Anglin <dave.anglin@bell.net>
 
-Am Freitag, 25. M=E4rz 2022, 15:38:30 CET schrieb Helge Deller:
-> Make sure, that set_firmware_width() is only called once at
-> runtime. This prevents that if secondary CPUs are started later
-> get stuck in spinlocks.
+[ Upstream commit f839e5f1cef36ce268950c387129b1bfefdaebc9 ]
 
-The second sentence seems to be missing a word.
---nextPart11947298.O9o76ZdvQC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+When a page is not present, we get non-access data TLB faults from
+the fdc and fic instructions in flush_user_dcache_range_asm and
+flush_user_icache_range_asm. When these occur, the cache line is
+not invalidated and potentially we get memory corruption. The
+problem was hidden by the nullification of the flush instructions.
 
------BEGIN PGP SIGNATURE-----
+These faults also affect performance. With pa8800/pa8900 processors,
+there will be 32 faults per 4 KB page since the cache line is 128
+bytes.  There will be more faults with earlier processors.
 
-iF0EABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCYj7VuQAKCRBcpIk+abn8
-TtCLAJ9IU6ZR40I3ZQfSzXhk8oyP/prq1QCfWbLuEPqN/qfoNreEFkcwy1vYD8k=
-=bVNE
------END PGP SIGNATURE-----
+The problem is fixed by using flush_cache_pages(). It does the flush
+using a tmp alias mapping.
 
---nextPart11947298.O9o76ZdvQC--
+The flush_cache_pages() call in flush_cache_range() flushed too
+large a range.
 
+V2: Remove unnecessary preempt_disable() and preempt_enable() calls.
 
+Signed-off-by: John David Anglin <dave.anglin@bell.net>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/parisc/kernel/cache.c | 28 +---------------------------
+ 1 file changed, 1 insertion(+), 27 deletions(-)
+
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index 94150b91c96f..bce71cefe572 100644
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -558,15 +558,6 @@ static void flush_cache_pages(struct vm_area_struct *vma, struct mm_struct *mm,
+ 	}
+ }
+ 
+-static void flush_user_cache_tlb(struct vm_area_struct *vma,
+-				 unsigned long start, unsigned long end)
+-{
+-	flush_user_dcache_range_asm(start, end);
+-	if (vma->vm_flags & VM_EXEC)
+-		flush_user_icache_range_asm(start, end);
+-	flush_tlb_range(vma, start, end);
+-}
+-
+ void flush_cache_mm(struct mm_struct *mm)
+ {
+ 	struct vm_area_struct *vma;
+@@ -581,17 +572,8 @@ void flush_cache_mm(struct mm_struct *mm)
+ 		return;
+ 	}
+ 
+-	preempt_disable();
+-	if (mm->context == mfsp(3)) {
+-		for (vma = mm->mmap; vma; vma = vma->vm_next)
+-			flush_user_cache_tlb(vma, vma->vm_start, vma->vm_end);
+-		preempt_enable();
+-		return;
+-	}
+-
+ 	for (vma = mm->mmap; vma; vma = vma->vm_next)
+ 		flush_cache_pages(vma, mm, vma->vm_start, vma->vm_end);
+-	preempt_enable();
+ }
+ 
+ void flush_cache_range(struct vm_area_struct *vma,
+@@ -605,15 +587,7 @@ void flush_cache_range(struct vm_area_struct *vma,
+ 		return;
+ 	}
+ 
+-	preempt_disable();
+-	if (vma->vm_mm->context == mfsp(3)) {
+-		flush_user_cache_tlb(vma, start, end);
+-		preempt_enable();
+-		return;
+-	}
+-
+-	flush_cache_pages(vma, vma->vm_mm, vma->vm_start, vma->vm_end);
+-	preempt_enable();
++	flush_cache_pages(vma, vma->vm_mm, start, end);
+ }
+ 
+ void
+-- 
+2.34.1
 
