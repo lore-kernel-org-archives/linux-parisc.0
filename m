@@ -2,166 +2,100 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2744BC433F5
-	for <linux-parisc@archiver.kernel.org>; Tue, 29 Mar 2022 18:54:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B7B7C433F5
+	for <linux-parisc@archiver.kernel.org>; Wed, 30 Mar 2022 14:39:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239585AbiC2S4a (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 29 Mar 2022 14:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
+        id S1347026AbiC3OlY (ORCPT
+        <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 30 Mar 2022 10:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237828AbiC2S43 (ORCPT
+        with ESMTP id S243859AbiC3OlX (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 29 Mar 2022 14:56:29 -0400
-Received: from cmx-torrgo002.bell.net (mta-tor-005.bell.net [209.71.212.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95F5622E953
-        for <linux-parisc@vger.kernel.org>; Tue, 29 Mar 2022 11:54:45 -0700 (PDT)
+        Wed, 30 Mar 2022 10:41:23 -0400
+Received: from cmx-mtlrgo001.bell.net (mta-mtl-005.bell.net [209.71.208.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1D85553E2A
+        for <linux-parisc@vger.kernel.org>; Wed, 30 Mar 2022 07:39:25 -0700 (PDT)
 X-RG-CM-BuS: 0
 X-RG-CM-SC: 0
 X-RG-CM: Clean
 X-Originating-IP: [70.50.7.94]
 X-RG-Env-Sender: dave.anglin@bell.net
-X-RG-Rigid: 6243254D0005D102
-X-CM-Envelope: MS4xfBllL5ENdj3dX0GR9RQ383zqxCETF66gPrNeYcPx+XCDfQLXlS5VH2mOXkAndvArpuIVVChsaWwv0eAk1/L/PnJCuL8iBVsIMyxeFYUNGGy/OHRD9H9x
- 2ZKL83gHj2OGxthEZMGJcRstSSpyXQraYVUx0L+B3LEHUNBEoFvLl1o8HLoZ0Yej5asK8yC9ICyC3o0MMzGsbgUDf06BqWFHZDBKo0vz7KEc1GG0kQ/bymPd
- UVCsA0DtDmpJbCi6ybvWkmnUsZ0eb2N1xoohR6mJcwPAAJkY084vx4gvwhd4oqCfAGD4AEbeLFHL71KMMWo1Nl76pkz5I1KKGbRy5iBrcvjL5Q9gWoDZrjso
- 96PRyzc6HUH42mZ5w255f5/UchIyMsFQrkyK7O8FLnk9jYHv44CUxxzfJEysFOuufAeBtWHVXgJJXSYY1nBluZQKMME/sd2g0w8OiNeXt+TVO2/GmOAjHT6u
- BGfGrvZssdgSoBHGWvhXYq4NJeJVEEs1oJfg/hIY8asKx2dO0MIxj8dD9dJ7n1q1n8z+zwIzrYXeV78w00FvPilpCqdHQLsjwPG5uJOWJTQf3yW0s90LtQIG
- v+cy/p3qsf5qV+Sf0X8aRYHPr2YUsSAQKZij256bcJ7D+w==
-X-CM-Analysis: v=2.4 cv=G99/r/o5 c=1 sm=1 tr=0 ts=624355ed
+X-RG-Rigid: 6243249C0021DA0A
+X-CM-Envelope: MS4xfPWb97lPoliU7pAZq/A4vxpiSKAueEgKN3FY6AG3/bBrYVailBamNHHAe/fX5+WkdkA78UjcS9TjaFkIlUUxYUJUMUUafEr97VRgqbCgtyKzl3OTlDYs
+ 5bPMWywfm2xTY/Zb68drtMRrcLII4kZdX9y4uAXl8uHAZy+r7HHdPbl+4iEJLyPP/PZPtGBeEmQbY7SLAQhamn1jDZ4VQA1aCav7zE8W4LOwI8deAPERznRJ
+ INNxvha9rqV5I7WzLfjdLx0+Zjv4SpCNDA2IezMJi4nSvxGvG5JDREk+CAJrCEb5aUT7rDoGX/Xihrz6sNIaXlPAp6xWqhvhQcth7sJVBiHxxrfiHNQF4O+a
+ m/D5Bljjg5fOsb2ksIc4LazHko7codI6l2xHzt4leeU2x9kdkDlIEtbsdRWFKqnehWoCovHeEkuL6vr4vkBxit2XpjnSre9nJ5/MBgKERpvhwlOstkgEki7q
+ dFpkg6tU1BEJUn5QU64wh0SifSHxO3dy0QATYaLlHvGSnCxx0utEo+KgxlohJsqaZp7zWxl9vL8pkYnvPftpe5t6AEX3h/b2aUOyDAxMub40HduYi8E0KxIL
+ BDDsjWm9VYbDeqfxNEoybsA46o4pldaCdGh652TS3/FL9Q==
+X-CM-Analysis: v=2.4 cv=YYreWydf c=1 sm=1 tr=0 ts=62446ad7
  a=9k1bCY7nR7m1ZFzoCuQ56g==:117 a=9k1bCY7nR7m1ZFzoCuQ56g==:17
- a=o8Y5sQTvuykA:10 a=FBHGMhGWAAAA:8 a=Fe-wxvhmr2ytpZrFxScA:9 a=CjuIK1q_8ugA:10
- a=LX2NGLxKwRSNBg788TcA:9 a=FfaGCDsud1wA:10 a=9gvnlMMaQFpL9xblJ6ne:22
-Received: from mx3210.localdomain (70.50.7.94) by cmx-torrgo002.bell.net (5.8.807) (authenticated as dave.anglin@bell.net)
-        id 6243254D0005D102; Tue, 29 Mar 2022 14:54:37 -0400
+ a=o8Y5sQTvuykA:10 a=FBHGMhGWAAAA:8 a=A9HHB92PKj38awnmFOAA:9 a=CjuIK1q_8ugA:10
+ a=6dC2SKYju5Z_YjFVazYA:9 a=FfaGCDsud1wA:10 a=9gvnlMMaQFpL9xblJ6ne:22
+Received: from mx3210.localdomain (70.50.7.94) by cmx-mtlrgo001.bell.net (5.8.807) (authenticated as dave.anglin@bell.net)
+        id 6243249C0021DA0A; Wed, 30 Mar 2022 10:36:07 -0400
 Received: by mx3210.localdomain (Postfix, from userid 1000)
-        id 1D431220115; Tue, 29 Mar 2022 18:54:36 +0000 (UTC)
-Date:   Tue, 29 Mar 2022 18:54:36 +0000
+        id 475BB220116; Wed, 30 Mar 2022 14:36:06 +0000 (UTC)
+Date:   Wed, 30 Mar 2022 14:36:05 +0000
 From:   John David Anglin <dave.anglin@bell.net>
 To:     linux-parisc@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>, Deller <deller@kernel.org>,
         James Bottomley <James.Bottomley@hansenpartnership.com>
-Subject: [PATCH] parisc: Fix patch code locking and flushing
-Message-ID: <YkNV7FZMUsvlPiRe@mx3210.localdomain>
+Subject: [PATCH] parisc: In flush_cache_page, always flush tlb if pfn is valid
+Message-ID: <YkRq1YhoRloLL9dz@mx3210.localdomain>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="j4827DxhtXJW81e+"
+        protocol="application/pgp-signature"; boundary="mrF1SdyeoC4JD9sw"
 Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
 
---j4827DxhtXJW81e+
+--mrF1SdyeoC4JD9sw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-This change fixes the following:
-
-1) The flags variable is not initialized. Always use raw_spin_lock_irqsave
-and raw_spin_unlock_irqrestore to serialize patching.
-
-2) flush_kernel_vmap_range is primarily intended for DMA flushes. Since
-__patch_text_multiple is often called with interrupts disabled, it is
-better to directly call flush_kernel_dcache_range_asm and
-flush_kernel_icache_range_asm. This avoids an extra call.
-
-3) The final call to flush_icache_range is unnecessary.
+The purpose of this change is to inhibit move-in whenever we flush
+or purge.
 
 Signed-off-by: John David Anglin <dave.anglin@bell.net>
 ---
 
-diff --git a/arch/parisc/kernel/patch.c b/arch/parisc/kernel/patch.c
-index 80a0ab372802..e59574f65e64 100644
---- a/arch/parisc/kernel/patch.c
-+++ b/arch/parisc/kernel/patch.c
-@@ -40,10 +40,7 @@ static void __kprobes *patch_map(void *addr, int fixmap,=
- unsigned long *flags,
-=20
- 	*need_unmap =3D 1;
- 	set_fixmap(fixmap, page_to_phys(page));
--	if (flags)
--		raw_spin_lock_irqsave(&patch_lock, *flags);
--	else
--		__acquire(&patch_lock);
-+	raw_spin_lock_irqsave(&patch_lock, *flags);
-=20
- 	return (void *) (__fix_to_virt(fixmap) + (uintaddr & ~PAGE_MASK));
- }
-@@ -52,10 +49,7 @@ static void __kprobes patch_unmap(int fixmap, unsigned l=
-ong *flags)
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index 23348199f3f8..91d218953b5c 100644
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -611,8 +611,8 @@ void
+ flush_cache_page(struct vm_area_struct *vma, unsigned long vmaddr, unsigned long pfn)
  {
- 	clear_fixmap(fixmap);
-=20
--	if (flags)
--		raw_spin_unlock_irqrestore(&patch_lock, *flags);
--	else
--		__release(&patch_lock);
-+	raw_spin_unlock_irqrestore(&patch_lock, *flags);
- }
-=20
- void __kprobes __patch_text_multiple(void *addr, u32 *insn, unsigned int l=
-en)
-@@ -67,8 +61,9 @@ void __kprobes __patch_text_multiple(void *addr, u32 *ins=
-n, unsigned int len)
- 	int mapped;
-=20
- 	/* Make sure we don't have any aliases in cache */
--	flush_kernel_vmap_range(addr, len);
--	flush_icache_range(start, end);
-+	flush_kernel_dcache_range_asm(start, end);
-+	flush_kernel_icache_range_asm(start, end);
-+	flush_tlb_kernel_range(start, end);
-=20
- 	p =3D fixmap =3D patch_map(addr, FIX_TEXT_POKE0, &flags, &mapped);
-=20
-@@ -81,8 +76,10 @@ void __kprobes __patch_text_multiple(void *addr, u32 *in=
-sn, unsigned int len)
- 			 * We're crossing a page boundary, so
- 			 * need to remap
- 			 */
--			flush_kernel_vmap_range((void *)fixmap,
--						(p-fixmap) * sizeof(*p));
-+			flush_kernel_dcache_range_asm((unsigned long)fixmap,
-+						      (unsigned long)p);
-+			flush_tlb_kernel_range((unsigned long)fixmap,
-+					       (unsigned long)p);
- 			if (mapped)
- 				patch_unmap(FIX_TEXT_POKE0, &flags);
- 			p =3D fixmap =3D patch_map(addr, FIX_TEXT_POKE0, &flags,
-@@ -90,10 +87,10 @@ void __kprobes __patch_text_multiple(void *addr, u32 *i=
-nsn, unsigned int len)
- 		}
- 	}
-=20
--	flush_kernel_vmap_range((void *)fixmap, (p-fixmap) * sizeof(*p));
-+	flush_kernel_dcache_range_asm((unsigned long)fixmap, (unsigned long)p);
-+	flush_tlb_kernel_range((unsigned long)fixmap, (unsigned long)p);
- 	if (mapped)
- 		patch_unmap(FIX_TEXT_POKE0, &flags);
--	flush_icache_range(start, end);
- }
-=20
- void __kprobes __patch_text(void *addr, u32 insn)
+ 	if (pfn_valid(pfn)) {
++		flush_tlb_page(vma, vmaddr);
+ 		if (likely(vma->vm_mm->context.space_id)) {
+-			flush_tlb_page(vma, vmaddr);
+ 			__flush_cache_page(vma, vmaddr, PFN_PHYS(pfn));
+ 		} else {
+ 			__purge_cache_page(vma, vmaddr, PFN_PHYS(pfn));
 
---j4827DxhtXJW81e+
+
+--mrF1SdyeoC4JD9sw
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEnRzl+6e9+DTrEhyEXb/Nrl8ZTfEFAmJDVeUACgkQXb/Nrl8Z
-TfGLbQ//XyJoB2e4QUvyYpOT5Cev+QIUt/s2ZeHu/coDqz6xLnjW2YUAVuyTpjSY
-Fbqz8efzniWNMWeMUonOMI1iDy5GKm08RzQvc1dYza1W1HgTTknZR4QRMud0n3pF
-kc9gFVr7PzMTjT1zkv/b+2eR2IecnhSD9D/3Cfitm+EKk7p0pteQiPPyOcOc1iSs
-aa7SFaUKeCuduDy4gVp3u0iWvFSOBy7oajuH3qRCoeKEzkn7dUZ38JcUJSJBlhut
-fYqqLkB2H/AA1OSLQO6WiEV75LRDWepGrJ4R+ulkwr85vBekgal9CyE0S8fymBNK
-965papiKxLhv3nr6IJi2SPsIwMkqv9OxyM+8hDYOn/2i0hsBRgkn5SXpmL4Omdn+
-xKZ6qDQUDYibRAiT/tK5zM+tVdJBEYsQf1p/ETD/+4xtJkEmFnzwmJFbZAxIzgGZ
-HHmIC3r72wzmEkcWMNAw2OPsxgHufIzxq6IuwE0VgMW2qCKkIzSgJf/9PHwscqq4
-iLgSZzSsqyZZjkcbbD1cEc8yjoRLPBTQk/0g/BjtKJuVz0cfh8+yGXmiWBwjJV4+
-/RhZQtWcAAvVZKup2Cm/UIjybXn5M2ecLDVcQhMwUZ+JAJmOLLmgemRbmuOaLnad
-EGmIDmU2LuQPM0n/Rqxk8nuJBs9BQUrKpcYMW00DHEq0KOTtwUo=
-=CQ8r
+iQIzBAABCAAdFiEEnRzl+6e9+DTrEhyEXb/Nrl8ZTfEFAmJEas0ACgkQXb/Nrl8Z
+TfHCVhAAoDMM5DDrhVxmOVxLRR1kvf+nLBUJ+LRYT1XzmIZ0JjwIVWIY4atuWxoq
+n7mlteqzCni+P+R723Vm8+m9pUj7BVcu00JEgX+ECFllJHumAo/ZaixuPx4rQPqP
+RFqiOzIPuwmkxr0Hvt9dBhWMDNaS9KX43Z1ZCf4t9Mn4fSr+59sdvqPdwbg7Yun3
+u949lsJwHRJJL1nfyP9TKCMcSwh89TyW+099mYmKUHsPIdlzSB5El2A2fZ3oiaWZ
+iVwkqVVNCOKqxNC0Blpi53E0QMqhM8rcc/9JuWY7NSbH4DB7cFqIN1O/qiqUBAQj
+0umJ5VTL7VtbND3AIWetfU5xePoeV0hdv+2E8vpwzPmq6pIAH1UUaxN++R2IZvn2
+/18G/AStasTf8zB18Mt5ufcI/Stwfnxe2NNwr3vmOrPtRxwSzIJQJbUG0ZRbgm+u
+JGXvAm4g90d2i+ARNC1Fb0He2TO1f0LdYcKHlT8vs9XbF92LOICd9AqJvyMaP0Jz
+pz6Li+pnBtleeuSHrkuIh2bDt7SU8qDNkZVKtlUPyphz5BCmRTn0xjBjBco0/AMY
+3qDOdyQVnpQ3Ml6VvCgfFpRf7pV7PmQrtC5csFpBnnHZjSaYqvAo5pLZDA3TfX9o
+XKD+WzWlfGrUyAHikAxx86yOmuZ8cQ9Jxx1OXhnPSFb50R4G36M=
+=0BJi
 -----END PGP SIGNATURE-----
 
---j4827DxhtXJW81e+--
+--mrF1SdyeoC4JD9sw--
