@@ -2,36 +2,36 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0742CC433EF
-	for <linux-parisc@archiver.kernel.org>; Tue,  5 Apr 2022 07:14:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C29B5C4332F
+	for <linux-parisc@archiver.kernel.org>; Tue,  5 Apr 2022 07:15:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbiDEHPz (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 5 Apr 2022 03:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
+        id S229952AbiDEHQz (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 5 Apr 2022 03:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231423AbiDEHPo (ORCPT
+        with ESMTP id S231520AbiDEHQU (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 5 Apr 2022 03:15:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267A9101B;
-        Tue,  5 Apr 2022 00:13:46 -0700 (PDT)
+        Tue, 5 Apr 2022 03:16:20 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A3B91376;
+        Tue,  5 Apr 2022 00:14:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B2A27615F2;
-        Tue,  5 Apr 2022 07:13:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15E41C34110;
-        Tue,  5 Apr 2022 07:13:39 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2E827B81B7F;
+        Tue,  5 Apr 2022 07:14:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B91A1C34114;
+        Tue,  5 Apr 2022 07:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649142825;
-        bh=G+0AfE7fg3YZ31nVbGgXwDbWLMbNh9zLjXb0j5/M9J0=;
+        s=k20201202; t=1649142841;
+        bh=9NkMmuam65wjckYWnMD9dwE7b3fOV2WuVPOzMx9DiDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hg9A0ZUMbegvkVZuThrs1ia8iZPEYRY0lQMvLLIqtpCetW7qSu4KdeNggSwvdPzRZ
-         vdXV0CR4AxHItnb3A8brWNCwTS3aRr8wAsDO0ICbwP+iaYd7vN/IOA3CvggnKlm49H
-         tyoXFObs2nuKA/cv+aFmJXCG+/Ix6l6G5KRSvR5OFlXfBZqQ4gAYr4eGQxQBv8HdGe
-         IQ0ASPr55NXWYDy9AMrrLSXyVK2FXcTpIwVcudFAo1+hV4ln7T6cuzynwgfBu+wQuF
-         59MFs1C64vkbD8FLlqPmqm/d5XTHFMyvdgeydHuy1jYGUJfsRCqBJdkQ/vpEHqUxgw
-         ChElq6EWgsxqw==
+        b=kehw3xrKGNE8Dzv0qV7WUHDahuF4D2kt71dLI6GEaT4gV7gL3+AVSgBJjjodN+hJz
+         W69ULYTo7o+bMM/Y2KUgk13wnTf4u9L5/8PpYu70SIQVH/oBpCWNvU2L9qEZTVLLtT
+         89+V4F6qk+1swOYNtR1wEa9yyN57MAR2uI1eQ4x9+Bo140tOKyjxuaFdPnv1M/x0Tf
+         7T03A9kXiKK4lUwJS/YhfJYzo97XZcbQa0LJ5hUoqLn144zy5eAi1wBNKIfqMgZnPC
+         iCkJ+0KhbYzAKnAcIiO3qhZBqM0C2Mbh68jgXKeeKxq5YceOlZa9BvTlcvqt/8hCja
+         dAHKBiSilnW/w==
 From:   guoren@kernel.org
 To:     guoren@kernel.org, palmer@dabbelt.com, arnd@arndb.de,
         gregkh@linuxfoundation.org, hch@lst.de, nathan@kernel.org,
@@ -41,10 +41,11 @@ Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
         sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        heiko@sntech.de
-Subject: [PATCH V12 02/20] uapi: always define F_GETLK64/F_SETLK64/F_SETLKW64 in fcntl.h
-Date:   Tue,  5 Apr 2022 15:12:56 +0800
-Message-Id: <20220405071314.3225832-3-guoren@kernel.org>
+        heiko@sntech.de, Guo Ren <guoren@linux.alibaba.com>,
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH V12 05/20] fs: stat: compat: Add __ARCH_WANT_COMPAT_STAT
+Date:   Tue,  5 Apr 2022 15:12:59 +0800
+Message-Id: <20220405071314.3225832-6-guoren@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220405071314.3225832-1-guoren@kernel.org>
 References: <20220405071314.3225832-1-guoren@kernel.org>
@@ -54,181 +55,127 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Guo Ren <guoren@linux.alibaba.com>
 
-The F_GETLK64/F_SETLK64/F_SETLKW64 fcntl opcodes are only implemented
-for the 32-bit syscall APIs, but are also needed for compat handling
-on 64-bit kernels.
+RISC-V doesn't neeed compat_stat, so using __ARCH_WANT_COMPAT_STAT
+to exclude unnecessary SYSCALL functions.
 
-Consolidate them in unistd.h instead of definining the internal compat
-definitions in compat.h, which is rather error prone (e.g. parisc
-gets the values wrong currently).
-
-Note that before this change they were never visible to userspace due
-to the fact that CONFIG_64BIT is only set for kernel builds.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Guo Ren <guoren@kernel.org>
 Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Tested-by: Heiko Stuebner <heiko@sntech.de>
+Acked-by: Helge Deller <deller@gmx.de>  # parisc
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
 ---
- arch/arm64/include/asm/compat.h        | 4 ----
- arch/mips/include/asm/compat.h         | 4 ----
- arch/mips/include/uapi/asm/fcntl.h     | 4 ++--
- arch/powerpc/include/asm/compat.h      | 4 ----
- arch/s390/include/asm/compat.h         | 4 ----
- arch/sparc/include/asm/compat.h        | 4 ----
- arch/x86/include/asm/compat.h          | 4 ----
- include/uapi/asm-generic/fcntl.h       | 4 ++--
- tools/include/uapi/asm-generic/fcntl.h | 2 --
- 9 files changed, 4 insertions(+), 30 deletions(-)
+ arch/arm64/include/asm/unistd.h   | 1 +
+ arch/mips/include/asm/unistd.h    | 2 ++
+ arch/parisc/include/asm/unistd.h  | 1 +
+ arch/powerpc/include/asm/unistd.h | 1 +
+ arch/s390/include/asm/unistd.h    | 1 +
+ arch/sparc/include/asm/unistd.h   | 1 +
+ arch/x86/include/asm/unistd.h     | 1 +
+ fs/stat.c                         | 2 +-
+ 8 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/compat.h b/arch/arm64/include/asm/compat.h
-index eaa6ca062d89..276328765408 100644
---- a/arch/arm64/include/asm/compat.h
-+++ b/arch/arm64/include/asm/compat.h
-@@ -73,10 +73,6 @@ struct compat_flock {
- 	compat_pid_t	l_pid;
- };
+diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
+index 4e65da3445c7..037feba03a51 100644
+--- a/arch/arm64/include/asm/unistd.h
++++ b/arch/arm64/include/asm/unistd.h
+@@ -3,6 +3,7 @@
+  * Copyright (C) 2012 ARM Ltd.
+  */
+ #ifdef CONFIG_COMPAT
++#define __ARCH_WANT_COMPAT_STAT
+ #define __ARCH_WANT_COMPAT_STAT64
+ #define __ARCH_WANT_SYS_GETHOSTNAME
+ #define __ARCH_WANT_SYS_PAUSE
+diff --git a/arch/mips/include/asm/unistd.h b/arch/mips/include/asm/unistd.h
+index c2196b1b6604..25a5253db7f4 100644
+--- a/arch/mips/include/asm/unistd.h
++++ b/arch/mips/include/asm/unistd.h
+@@ -50,6 +50,8 @@
+ # ifdef CONFIG_32BIT
+ #  define __ARCH_WANT_STAT64
+ #  define __ARCH_WANT_SYS_TIME32
++# else
++#  define __ARCH_WANT_COMPAT_STAT
+ # endif
+ # ifdef CONFIG_MIPS32_O32
+ #  define __ARCH_WANT_SYS_TIME32
+diff --git a/arch/parisc/include/asm/unistd.h b/arch/parisc/include/asm/unistd.h
+index 7708a5806f09..81cbad73b517 100644
+--- a/arch/parisc/include/asm/unistd.h
++++ b/arch/parisc/include/asm/unistd.h
+@@ -164,6 +164,7 @@ type name(type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)	\
+ #define __ARCH_WANT_SYS_CLONE
+ #define __ARCH_WANT_SYS_CLONE3
+ #define __ARCH_WANT_COMPAT_SYS_SENDFILE
++#define __ARCH_WANT_COMPAT_STAT
  
--#define F_GETLK64	12	/*  using 'struct flock64' */
--#define F_SETLK64	13
--#define F_SETLKW64	14
--
- struct compat_flock64 {
- 	short		l_type;
- 	short		l_whence;
-diff --git a/arch/mips/include/asm/compat.h b/arch/mips/include/asm/compat.h
-index bbb3bc5a42fd..6a350c1f70d7 100644
---- a/arch/mips/include/asm/compat.h
-+++ b/arch/mips/include/asm/compat.h
-@@ -65,10 +65,6 @@ struct compat_flock {
- 	s32		pad[4];
- };
- 
--#define F_GETLK64	33
--#define F_SETLK64	34
--#define F_SETLKW64	35
--
- struct compat_flock64 {
- 	short		l_type;
- 	short		l_whence;
-diff --git a/arch/mips/include/uapi/asm/fcntl.h b/arch/mips/include/uapi/asm/fcntl.h
-index 9e44ac810db9..0369a38e3d4f 100644
---- a/arch/mips/include/uapi/asm/fcntl.h
-+++ b/arch/mips/include/uapi/asm/fcntl.h
-@@ -44,11 +44,11 @@
- #define F_SETOWN	24	/*  for sockets. */
- #define F_GETOWN	23	/*  for sockets. */
- 
--#ifndef __mips64
-+#if __BITS_PER_LONG == 32 || defined(__KERNEL__)
- #define F_GETLK64	33	/*  using 'struct flock64' */
- #define F_SETLK64	34
- #define F_SETLKW64	35
--#endif
-+#endif /* __BITS_PER_LONG == 32 || defined(__KERNEL__) */
- 
- #if _MIPS_SIM != _MIPS_SIM_ABI64
- #define __ARCH_FLOCK_EXTRA_SYSID	long l_sysid;
-diff --git a/arch/powerpc/include/asm/compat.h b/arch/powerpc/include/asm/compat.h
-index 7afc96fb6524..83d8f70779cb 100644
---- a/arch/powerpc/include/asm/compat.h
-+++ b/arch/powerpc/include/asm/compat.h
-@@ -52,10 +52,6 @@ struct compat_flock {
- 	compat_pid_t	l_pid;
- };
- 
--#define F_GETLK64	12	/*  using 'struct flock64' */
--#define F_SETLK64	13
--#define F_SETLKW64	14
--
- struct compat_flock64 {
- 	short		l_type;
- 	short		l_whence;
-diff --git a/arch/s390/include/asm/compat.h b/arch/s390/include/asm/compat.h
-index cdc7ae72529d..0f14b3188b1b 100644
---- a/arch/s390/include/asm/compat.h
-+++ b/arch/s390/include/asm/compat.h
-@@ -110,10 +110,6 @@ struct compat_flock {
- 	compat_pid_t	l_pid;
- };
- 
--#define F_GETLK64       12
--#define F_SETLK64       13
--#define F_SETLKW64      14    
--
- struct compat_flock64 {
- 	short		l_type;
- 	short		l_whence;
-diff --git a/arch/sparc/include/asm/compat.h b/arch/sparc/include/asm/compat.h
-index bd949fcf9d63..108078751bb5 100644
---- a/arch/sparc/include/asm/compat.h
-+++ b/arch/sparc/include/asm/compat.h
-@@ -84,10 +84,6 @@ struct compat_flock {
- 	short		__unused;
- };
- 
--#define F_GETLK64	12
--#define F_SETLK64	13
--#define F_SETLKW64	14
--
- struct compat_flock64 {
- 	short		l_type;
- 	short		l_whence;
-diff --git a/arch/x86/include/asm/compat.h b/arch/x86/include/asm/compat.h
-index 7516e4199b3c..8d19a212f4f2 100644
---- a/arch/x86/include/asm/compat.h
-+++ b/arch/x86/include/asm/compat.h
-@@ -58,10 +58,6 @@ struct compat_flock {
- 	compat_pid_t	l_pid;
- };
- 
--#define F_GETLK64	12	/*  using 'struct flock64' */
--#define F_SETLK64	13
--#define F_SETLKW64	14
--
- /*
-  * IA32 uses 4 byte alignment for 64 bit quantities,
-  * so we need to pack this structure.
-diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-index 77aa9f2ff98d..f13d37b60775 100644
---- a/include/uapi/asm-generic/fcntl.h
-+++ b/include/uapi/asm-generic/fcntl.h
-@@ -116,13 +116,13 @@
- #define F_GETSIG	11	/* for sockets. */
+ #ifdef CONFIG_64BIT
+ #define __ARCH_WANT_SYS_TIME
+diff --git a/arch/powerpc/include/asm/unistd.h b/arch/powerpc/include/asm/unistd.h
+index 5eb462af6766..b1129b4ef57d 100644
+--- a/arch/powerpc/include/asm/unistd.h
++++ b/arch/powerpc/include/asm/unistd.h
+@@ -44,6 +44,7 @@
+ #define __ARCH_WANT_SYS_TIME
+ #define __ARCH_WANT_SYS_UTIME
+ #define __ARCH_WANT_SYS_NEWFSTATAT
++#define __ARCH_WANT_COMPAT_STAT
+ #define __ARCH_WANT_COMPAT_SYS_SENDFILE
+ #endif
+ #define __ARCH_WANT_SYS_FORK
+diff --git a/arch/s390/include/asm/unistd.h b/arch/s390/include/asm/unistd.h
+index 9e9f75ef046a..4260bc5ce7f8 100644
+--- a/arch/s390/include/asm/unistd.h
++++ b/arch/s390/include/asm/unistd.h
+@@ -28,6 +28,7 @@
+ #define __ARCH_WANT_SYS_SIGPENDING
+ #define __ARCH_WANT_SYS_SIGPROCMASK
+ # ifdef CONFIG_COMPAT
++#   define __ARCH_WANT_COMPAT_STAT
+ #   define __ARCH_WANT_SYS_TIME32
+ #   define __ARCH_WANT_SYS_UTIME32
+ # endif
+diff --git a/arch/sparc/include/asm/unistd.h b/arch/sparc/include/asm/unistd.h
+index 1e66278ba4a5..d6bc76706a7a 100644
+--- a/arch/sparc/include/asm/unistd.h
++++ b/arch/sparc/include/asm/unistd.h
+@@ -46,6 +46,7 @@
+ #define __ARCH_WANT_SYS_TIME
+ #define __ARCH_WANT_SYS_UTIME
+ #define __ARCH_WANT_COMPAT_SYS_SENDFILE
++#define __ARCH_WANT_COMPAT_STAT
  #endif
  
--#ifndef CONFIG_64BIT
-+#if __BITS_PER_LONG == 32 || defined(__KERNEL__)
- #ifndef F_GETLK64
- #define F_GETLK64	12	/*  using 'struct flock64' */
- #define F_SETLK64	13
- #define F_SETLKW64	14
- #endif
--#endif
-+#endif /* __BITS_PER_LONG == 32 || defined(__KERNEL__) */
+ #ifdef __32bit_syscall_numbers__
+diff --git a/arch/x86/include/asm/unistd.h b/arch/x86/include/asm/unistd.h
+index 80e9d5206a71..761173ccc33c 100644
+--- a/arch/x86/include/asm/unistd.h
++++ b/arch/x86/include/asm/unistd.h
+@@ -22,6 +22,7 @@
+ #  include <asm/unistd_32_ia32.h>
+ #  define __ARCH_WANT_SYS_TIME
+ #  define __ARCH_WANT_SYS_UTIME
++#  define __ARCH_WANT_COMPAT_STAT
+ #  define __ARCH_WANT_COMPAT_SYS_PREADV64
+ #  define __ARCH_WANT_COMPAT_SYS_PWRITEV64
+ #  define __ARCH_WANT_COMPAT_SYS_PREADV64V2
+diff --git a/fs/stat.c b/fs/stat.c
+index 7f734be0e57e..5d8f723c1e0b 100644
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -660,7 +660,7 @@ SYSCALL_DEFINE5(statx,
+ 	return ret;
+ }
  
- #ifndef F_SETOWN_EX
- #define F_SETOWN_EX	15
-diff --git a/tools/include/uapi/asm-generic/fcntl.h b/tools/include/uapi/asm-generic/fcntl.h
-index 99bc9b15ce2b..0197042b7dfb 100644
---- a/tools/include/uapi/asm-generic/fcntl.h
-+++ b/tools/include/uapi/asm-generic/fcntl.h
-@@ -115,13 +115,11 @@
- #define F_GETSIG	11	/* for sockets. */
- #endif
- 
--#ifndef CONFIG_64BIT
- #ifndef F_GETLK64
- #define F_GETLK64	12	/*  using 'struct flock64' */
- #define F_SETLK64	13
- #define F_SETLKW64	14
- #endif
--#endif
- 
- #ifndef F_SETOWN_EX
- #define F_SETOWN_EX	15
+-#ifdef CONFIG_COMPAT
++#if defined(CONFIG_COMPAT) && defined(__ARCH_WANT_COMPAT_STAT)
+ static int cp_compat_stat(struct kstat *stat, struct compat_stat __user *ubuf)
+ {
+ 	struct compat_stat tmp;
 -- 
 2.25.1
 
