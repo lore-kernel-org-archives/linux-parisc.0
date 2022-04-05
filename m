@@ -2,108 +2,210 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 947C7C433F5
-	for <linux-parisc@archiver.kernel.org>; Tue,  5 Apr 2022 06:52:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BCA1C4321E
+	for <linux-parisc@archiver.kernel.org>; Tue,  5 Apr 2022 07:13:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbiDEGyo (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 5 Apr 2022 02:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        id S231414AbiDEHPl (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 5 Apr 2022 03:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbiDEGym (ORCPT
+        with ESMTP id S231408AbiDEHPk (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 5 Apr 2022 02:54:42 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA948FE49;
-        Mon,  4 Apr 2022 23:52:44 -0700 (PDT)
+        Tue, 5 Apr 2022 03:15:40 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBD9C39;
+        Tue,  5 Apr 2022 00:13:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id ABD42B81B96;
-        Tue,  5 Apr 2022 06:52:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5887BC340F3;
-        Tue,  5 Apr 2022 06:52:37 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CDE7CB81B14;
+        Tue,  5 Apr 2022 07:13:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8762C34113;
+        Tue,  5 Apr 2022 07:13:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649141561;
-        bh=sfI+F1qddgBQPEPVyPm4UsT8iPzrWXdjhWe583jbPNo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=V/qs96FwacDoAwIb3AYjsXmHxIyAPgkVCDF70o06rl9Kv/EU36wYnE2B+iVWmFDuY
-         9yuhSTxtp1RApbos0thzGGcgBcYzB4OUjwwadhMoCk9ddnMLEKl7z5ojHVyxLNPTxe
-         fkI47UjfZEnf1/Ud4Zb2n1JXmLeINpIf17so9GlwWdiyUMNfRV7wQ5S+MxBnAEYklV
-         Y8YdKnoXbq3CdeKDF/1PwekiJc2XNSMWQ0QvtapOIX7H8ZI+dMggm5cQNjfN6CVOOX
-         7Pm2r4QROcmMfAGlnaeACUWbHHdwgaBx6T+/ZTGZ0SVcsrXuQJQPOhC5ncYhaHg04Y
-         CE7JnbN9mYeEw==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        scsi <linux-scsi@vger.kernel.org>,
-        "open list\:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        linux-xfs@vger.kernel.org,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Subject: Re: Build regressions/improvements in v5.18-rc1
-In-Reply-To: <CAMuHMdV_-3TOHYehUsHeqwHjQtzN1Ot886K7vwPr4P-4u8eehw@mail.gmail.com>
-        (Geert Uytterhoeven's message of "Tue, 5 Apr 2022 08:46:06 +0200")
-References: <CAHk-=wg6FWL1xjVyHx7DdjD2dHZETA5_=FqqW17Z19X-WTfWSg@mail.gmail.com>
-        <20220404074734.1092959-1-geert@linux-m68k.org>
-        <alpine.DEB.2.22.394.2204041006230.1941618@ramsan.of.borg>
-        <874k38u20c.fsf@tynnyri.adurom.net>
-        <CAMuHMdV_-3TOHYehUsHeqwHjQtzN1Ot886K7vwPr4P-4u8eehw@mail.gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date:   Tue, 05 Apr 2022 09:52:33 +0300
-Message-ID: <87czhwrphq.fsf@kernel.org>
+        s=k20201202; t=1649142819;
+        bh=x++Mq2RxURkLMg1JsydDN/FlbWbJrQ+uoj7qljhzM7U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=g8lWdYDL7+sowPuwtUiFIaeF/QZwAicLOpTYjIejwB2RCAO1eQGBxT7mZ/ADIzJMy
+         bP4oSf9tK1WH0HGMFQ7kdZHs/8xPR78qAu5CJ+5APGlb0PiQGMeraocfLckeBN7ODG
+         G5nCr8+84C930iLweYFldgHAqOwyOJnFK4UCDmBdQc1Ff+xp18s5ILUIwEAz3ZEBNO
+         tUXq3AdK8XCjQSEg0NcplKE3typ/rbUZ35+tJONlSR4vPrXjmAnBC65+9W4LbLTLep
+         voKcCkquYVl9y5hDYc42HJXa7F+NcpI8G3IGO2o5QLsMdFGsSs4Uh/aYkphuXfzT5/
+         J8PxoB8PHGfDw==
+From:   guoren@kernel.org
+To:     guoren@kernel.org, palmer@dabbelt.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, hch@lst.de, nathan@kernel.org,
+        naresh.kamboju@linaro.org
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        heiko@sntech.de
+Subject: [PATCH V12 01/20] uapi: simplify __ARCH_FLOCK{,64}_PAD a little
+Date:   Tue,  5 Apr 2022 15:12:55 +0800
+Message-Id: <20220405071314.3225832-2-guoren@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220405071314.3225832-1-guoren@kernel.org>
+References: <20220405071314.3225832-1-guoren@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+From: Christoph Hellwig <hch@lst.de>
 
-> On Mon, Apr 4, 2022 at 8:39 PM Kalle Valo <kvalo@kernel.org> wrote:
->> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->> >> /kisskb/src/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c:
->> >> error: case label does not reduce to an integer constant: => 3798:2,
->> >> 3809:2
->> >
->> > arm64-gcc5.4/arm64-allmodconfig
->> > powerpc-gcc5/powerpc-allmodconfig
->> > powerpc-gcc5/ppc64_book3e_allmodconfig
->>
->> After v5.17 there were two commits to brcmfmac/sdio.c:
->>
->> $ git log --oneline v5.17.. drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
->> ed26edf7bfd9 brcmfmac: Add BCM43454/6 support
->> 6d766d8cb505 brcmfmac: pcie: Declare missing firmware files in pcie.c
->>
->> I can't see how either of them could cause this warning. Could something
->> else cause this or am I missing something?
->
-> Doh, I should not have reduced the CC list in the xfs subthread...
->
-> The builds above are all gcc-5 builds, so they are affected by the same
-> issue as XFS: unsigned constants that don't fit in int are lacking a
-> "U" suffix.
->
-> I assume Arnd's patch for
-> drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-> fixes this?
-> https://lore.kernel.org/all/CAK8P3a0wRiS03imdXk2WbGONkSSczEGdE-ue5ubF6UyyDE9dQg@mail.gmail.com
+Don't bother to define the symbols empty, just don't use them.
+That makes the intent a little more clear.
 
-Great, thanks. I assume Arnd will submit it officially at some point.
+Remove the unused HAVE_ARCH_STRUCT_FLOCK64 define and merge the
+32-bit mips struct flock into the generic one.
 
+Add a new __ARCH_FLOCK_EXTRA_SYSID macro following the style of
+__ARCH_FLOCK_PAD to avoid having a separate definition just for
+one architecture.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Guo Ren <guoren@kernel.org>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Tested-by: Heiko Stuebner <heiko@sntech.de>
+---
+ arch/mips/include/uapi/asm/fcntl.h     | 26 +++-----------------------
+ include/uapi/asm-generic/fcntl.h       | 19 +++++++------------
+ tools/include/uapi/asm-generic/fcntl.h | 19 +++++++------------
+ 3 files changed, 17 insertions(+), 47 deletions(-)
+
+diff --git a/arch/mips/include/uapi/asm/fcntl.h b/arch/mips/include/uapi/asm/fcntl.h
+index 42e13dead543..9e44ac810db9 100644
+--- a/arch/mips/include/uapi/asm/fcntl.h
++++ b/arch/mips/include/uapi/asm/fcntl.h
+@@ -50,30 +50,10 @@
+ #define F_SETLKW64	35
+ #endif
+ 
+-/*
+- * The flavours of struct flock.  "struct flock" is the ABI compliant
+- * variant.  Finally struct flock64 is the LFS variant of struct flock.	 As
+- * a historic accident and inconsistence with the ABI definition it doesn't
+- * contain all the same fields as struct flock.
+- */
+-
+ #if _MIPS_SIM != _MIPS_SIM_ABI64
+-
+-#include <linux/types.h>
+-
+-struct flock {
+-	short	l_type;
+-	short	l_whence;
+-	__kernel_off_t	l_start;
+-	__kernel_off_t	l_len;
+-	long	l_sysid;
+-	__kernel_pid_t l_pid;
+-	long	pad[4];
+-};
+-
+-#define HAVE_ARCH_STRUCT_FLOCK
+-
+-#endif /* _MIPS_SIM == _MIPS_SIM_ABI32 */
++#define __ARCH_FLOCK_EXTRA_SYSID	long l_sysid;
++#define __ARCH_FLOCK_PAD		long pad[4];
++#endif
+ 
+ #include <asm-generic/fcntl.h>
+ 
+diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
+index ecd0f5bdfc1d..77aa9f2ff98d 100644
+--- a/include/uapi/asm-generic/fcntl.h
++++ b/include/uapi/asm-generic/fcntl.h
+@@ -192,25 +192,19 @@ struct f_owner_ex {
+ 
+ #define F_LINUX_SPECIFIC_BASE	1024
+ 
+-#ifndef HAVE_ARCH_STRUCT_FLOCK
+-#ifndef __ARCH_FLOCK_PAD
+-#define __ARCH_FLOCK_PAD
+-#endif
+-
+ struct flock {
+ 	short	l_type;
+ 	short	l_whence;
+ 	__kernel_off_t	l_start;
+ 	__kernel_off_t	l_len;
+ 	__kernel_pid_t	l_pid;
+-	__ARCH_FLOCK_PAD
+-};
++#ifdef	__ARCH_FLOCK_EXTRA_SYSID
++	__ARCH_FLOCK_EXTRA_SYSID
+ #endif
+-
+-#ifndef HAVE_ARCH_STRUCT_FLOCK64
+-#ifndef __ARCH_FLOCK64_PAD
+-#define __ARCH_FLOCK64_PAD
++#ifdef	__ARCH_FLOCK_PAD
++	__ARCH_FLOCK_PAD
+ #endif
++};
+ 
+ struct flock64 {
+ 	short  l_type;
+@@ -218,8 +212,9 @@ struct flock64 {
+ 	__kernel_loff_t l_start;
+ 	__kernel_loff_t l_len;
+ 	__kernel_pid_t  l_pid;
++#ifdef	__ARCH_FLOCK64_PAD
+ 	__ARCH_FLOCK64_PAD
+-};
+ #endif
++};
+ 
+ #endif /* _ASM_GENERIC_FCNTL_H */
+diff --git a/tools/include/uapi/asm-generic/fcntl.h b/tools/include/uapi/asm-generic/fcntl.h
+index ac190958c981..99bc9b15ce2b 100644
+--- a/tools/include/uapi/asm-generic/fcntl.h
++++ b/tools/include/uapi/asm-generic/fcntl.h
+@@ -187,25 +187,19 @@ struct f_owner_ex {
+ 
+ #define F_LINUX_SPECIFIC_BASE	1024
+ 
+-#ifndef HAVE_ARCH_STRUCT_FLOCK
+-#ifndef __ARCH_FLOCK_PAD
+-#define __ARCH_FLOCK_PAD
+-#endif
+-
+ struct flock {
+ 	short	l_type;
+ 	short	l_whence;
+ 	__kernel_off_t	l_start;
+ 	__kernel_off_t	l_len;
+ 	__kernel_pid_t	l_pid;
+-	__ARCH_FLOCK_PAD
+-};
++#ifdef	__ARCH_FLOCK_EXTRA_SYSID
++	__ARCH_FLOCK_EXTRA_SYSID
+ #endif
+-
+-#ifndef HAVE_ARCH_STRUCT_FLOCK64
+-#ifndef __ARCH_FLOCK64_PAD
+-#define __ARCH_FLOCK64_PAD
++#ifdef	__ARCH_FLOCK_PAD
++	__ARCH_FLOCK_PAD
+ #endif
++};
+ 
+ struct flock64 {
+ 	short  l_type;
+@@ -213,8 +207,9 @@ struct flock64 {
+ 	__kernel_loff_t l_start;
+ 	__kernel_loff_t l_len;
+ 	__kernel_pid_t  l_pid;
++#ifdef	__ARCH_FLOCK64_PAD
+ 	__ARCH_FLOCK64_PAD
+-};
+ #endif
++};
+ 
+ #endif /* _ASM_GENERIC_FCNTL_H */
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.25.1
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
