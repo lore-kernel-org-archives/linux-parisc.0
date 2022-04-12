@@ -2,127 +2,76 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ECFEC4167B
-	for <linux-parisc@archiver.kernel.org>; Tue, 12 Apr 2022 11:08:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03623C433EF
+	for <linux-parisc@archiver.kernel.org>; Tue, 12 Apr 2022 12:57:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343675AbiDLLK1 (ORCPT
-        <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 12 Apr 2022 07:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33622 "EHLO
+        id S243806AbiDLM72 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 12 Apr 2022 08:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354058AbiDLLFC (ORCPT
+        with ESMTP id S1354753AbiDLM4L (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 12 Apr 2022 07:05:02 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7646265799;
-        Tue, 12 Apr 2022 02:56:07 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dmitry.osipenko)
-        with ESMTPSA id CA7361F44465
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1649757366;
-        bh=zGnnxmSlqh0YJeepd6leEtd3OpvyuoG43h8kmGFF2wc=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=P61L93uCY2BzkAlZkIa7DkNYhLesoazkWjHR45+XoCKZ8ns44JwAXtKwQtsKB5IWu
-         LBnshgET/1to4NkH52cenj6AcmR1fzToetNSgDLXX18/JYkgkQQSwZdaXlqZHCnpKj
-         1GBxRjPOedK74qEOQrXw+d5AInCvSk+FnCDQJJggENcP/eOVY2//qX2NkpjVfzBsqa
-         1dFmWcLJ7EUVzhKFegMKqxZGBg1v/mwnu50TrXhdgNf6aMdvdkZzAOzeVFn7EFF2vi
-         bG+4SHDoaE6xdqEupYSgMD2ed1PrE/GTXU258Xq63ayijsB2BJhDrJNAYUxYDRgOkh
-         gETvkTIe02RWg==
-Message-ID: <1b95163a-4b4d-3c0d-440d-0b6dd608b393@collabora.com>
-Date:   Tue, 12 Apr 2022 12:55:59 +0300
+        Tue, 12 Apr 2022 08:56:11 -0400
+Received: from cmx-mtlrgo001.bell.net (mta-mtl-002.bell.net [209.71.208.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9C563DDF8
+        for <linux-parisc@vger.kernel.org>; Tue, 12 Apr 2022 05:29:59 -0700 (PDT)
+X-RG-CM-BuS: 0
+X-RG-CM-SC: 0
+X-RG-CM: Clean
+X-Originating-IP: [70.50.7.94]
+X-RG-Env-Sender: dave.anglin@bell.net
+X-RG-Rigid: 624B12C700C3B734
+X-CM-Envelope: MS4xfA7iYP0LLxnJxwzoTIf/PA4cIdkp9mubW65gy87qcJX9hcxgQQ0CaKuxDLnUPy1i7Joljmr9MuIe3UDgNzBABFj9xDzoz6opwQF+Dr492PcaTHMy4Urk
+ ir4scaWb7b4YzAcAPLkvwwYnQKoc8e966qikRCjZKtZSQf2SVzkAdS1dKhy1W8bLbweFONiPpw3+gH/5QIQGPpvrls7QBIj/Ms3rz55Hwqm7bzoZCQrOI2b6
+ EcSc1UTU6j9UUKQDkN0dn1Mkx5hO01u2ADrxh2yRGKrZu1stvKwYL29sZ4LzEwFv
+X-CM-Analysis: v=2.4 cv=YYreWydf c=1 sm=1 tr=0 ts=6255701e
+ a=9k1bCY7nR7m1ZFzoCuQ56g==:117 a=9k1bCY7nR7m1ZFzoCuQ56g==:17
+ a=IkcTkHD0fZMA:10 a=7mOBRU54AAAA:8 a=VwQbUJbxAAAA:8 a=FBHGMhGWAAAA:8
+ a=nKDW0jC8DGCiTJ8odYsA:9 a=QEXdDO2ut3YA:10 a=wa9RWnbW_A1YIeRBVszw:22
+ a=AjGcO6oz07-iQ99wixmX:22 a=9gvnlMMaQFpL9xblJ6ne:22
+Received: from [192.168.2.49] (70.50.7.94) by cmx-mtlrgo001.bell.net (5.8.807) (authenticated as dave.anglin@bell.net)
+        id 624B12C700C3B734; Tue, 12 Apr 2022 08:27:10 -0400
+Message-ID: <cb19a0a0-69b2-ab14-7767-a0cd7bd671b0@bell.net>
+Date:   Tue, 12 Apr 2022 08:27:11 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v7 16/20] mips: Use do_kernel_power_off()
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: Recurring INEQUIVALENT ALIASES issues and userland
+ corruption/crashes
 Content-Language: en-US
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
- <20220411233832.391817-17-dmitry.osipenko@collabora.com>
-In-Reply-To: <20220411233832.391817-17-dmitry.osipenko@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Sam James <sam@gentoo.org>
+Cc:     linux-parisc@vger.kernel.org, hppa@gentoo.org
+References: <63DA313A-FCE1-4535-9BF3-11E36B2DE422@gentoo.org>
+ <f2ad1439-f304-e6ae-6e4e-b9fda73ec4cd@bell.net>
+ <94439119-D2B6-4961-B61D-95784E09798D@gentoo.org>
+From:   John David Anglin <dave.anglin@bell.net>
+In-Reply-To: <94439119-D2B6-4961-B61D-95784E09798D@gentoo.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+On 2022-04-12 1:18 a.m., Sam James wrote:
+>>> Mar 22 04:19:55 muta.hppa.dev.gentoo.org kernel: INEQUIVALENT ALIASES 0x411ee000 and 0x428c9000 in file bash
+>>> ```
+>> It seems all these messages result from a single call to flush_dcache_page.  Note the sequential behavior of old_addr
+>> and addr, and message times.
+> FWIW, from Helge's config on 5.10.108 (config changes on my end: just disabling unneeded devices to speed up build), I have the same
+> horrible wall:
+This change might help:
+https://lore.kernel.org/linux-parisc/YlNw8jzP9OQRKvlV@mx3210.localdomain/T/#u
 
-On 4/12/22 02:38, Dmitry Osipenko wrote:
-> Kernel now supports chained power-off handlers. Use do_kernel_power_off()
-> that invokes chained power-off handlers. It also invokes legacy
-> pm_power_off() for now, which will be removed once all drivers will
-> be converted to the new power-off API.
-> 
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> ---
->  arch/mips/kernel/reset.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/kernel/reset.c b/arch/mips/kernel/reset.c
-> index 6288780b779e..e7ce07b3e79b 100644
-> --- a/arch/mips/kernel/reset.c
-> +++ b/arch/mips/kernel/reset.c
-> @@ -114,8 +114,7 @@ void machine_halt(void)
->  
->  void machine_power_off(void)
->  {
-> -	if (pm_power_off)
-> -		pm_power_off();
-> +	do_kernel_power_off();
->  
->  #ifdef CONFIG_SMP
->  	preempt_disable();
+It applies on top of Helge's current for-next tree which is based on 5.18.0-rc1+.
 
-Adding ack from Thomas that he gave to v6. It's missing in v7 by accident.
+The messages will no longer appear with this patch on c8000/rp34xx. However, the loop corruption
+might still occur.  If that happens, I think the stall detector will trigger, or maybe some other crash.
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+The loop is changed to flush all mount points on machines with PA8800 or PA8900 processors as I
+believe these CPUs don't support equivalent aliases.
+
+Dave
+
+-- 
+John David Anglin  dave.anglin@bell.net
+
