@@ -2,39 +2,43 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB646C433EF
-	for <linux-parisc@archiver.kernel.org>; Wed, 27 Apr 2022 23:02:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D7FCC43217
+	for <linux-parisc@archiver.kernel.org>; Wed, 27 Apr 2022 23:50:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240032AbiD0XFu (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 27 Apr 2022 19:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60690 "EHLO
+        id S238126AbiD0XxK (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 27 Apr 2022 19:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbiD0XDA (ORCPT
+        with ESMTP id S230362AbiD0XxJ (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 27 Apr 2022 19:03:00 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7248D6B1;
-        Wed, 27 Apr 2022 15:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=jkYRHw7XLP9WroKS48pjCKf8DZNXzuNJkBrmx0UcVRc=; b=fbM2Fu2zuIxXnRnSKiwEiLyyJe
-        XagaY4Y4i5sW6+W+epTqREIZ/ICl1Xi2oNzNqYSLfAiAeujQhcD2J6BRDpwqIfpK1aYn9B4Gepnqm
-        UXEPwRAoI9LiYlvqP9hTq72CQIYynMwPnO/khrMA9H8ZW9ZKFbbeWjtIm9rBmVgqZX/xUmom+B8xi
-        QY1BWJZFFIiYDwppo949ykglLrpZKKBYxdtwbkyN1uybFrzpdjMmPjKvulL2l2aogMZ8iE6aJcjTZ
-        GbdvguHg7iZbdZllsoe1PY/R6t06HkFNrymWUR1pYeoyB7ORK7qb8BLpbexkNshwnkf274e7nAB6M
-        ydSnW7kQ==;
-Received: from [179.113.53.197] (helo=localhost)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1njqaG-0002Qg-Er; Thu, 28 Apr 2022 00:56:33 +0200
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-To:     akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com,
-        kexec@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
+        Wed, 27 Apr 2022 19:53:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63ABB4B1F3;
+        Wed, 27 Apr 2022 16:49:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D512861F06;
+        Wed, 27 Apr 2022 23:49:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 190CEC385A7;
+        Wed, 27 Apr 2022 23:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651103395;
+        bh=fUZjHYw9wwKZPDJTueMs+O0QpaDcmLmJGnfVK2U9fDA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Je1aB/fze7iTbiS9iJu+ljdypRVlpSNOY2ApvQuQXPIJMcX561LCqFU5KD8NuzITn
+         axVegyGDng/no5zGX+N0XJaBX3eCl1u+MBfsPPSUCnAku/LeQQoNnLn0h3GPux3yBk
+         VOvYDvtIfUvjSSlCqhYbS9JVxA2AV5YZM/HgUioKVWSI+XcWSCErb9jz9UvrxK1pys
+         vStoYHEo4wQDcrF+2d88fEDoby5J66HLtUmYbV1qTrDo2OoFmaqWJaLLn5LoRnwbLY
+         cyOzSoD9WN0tR37CmdZFeQgXzlz5t3Jm6TM/uEaGXtF/lFjZIjpGv2bt25uLPFk53d
+         hyeP1plId9baA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id AA5975C0B07; Wed, 27 Apr 2022 16:49:54 -0700 (PDT)
+Date:   Wed, 27 Apr 2022 16:49:54 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
         linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
@@ -46,346 +50,321 @@ Cc:     linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
         rcu@vger.kernel.org, sparclinux@vger.kernel.org,
         xen-devel@lists.xenproject.org, x86@kernel.org,
-        kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net,
-        halves@canonical.com, fabiomirmar@gmail.com,
-        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
-        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
-        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
-        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
+        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
+        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
+        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
+        corbet@lwn.net, d.hatayama@jp.fujitsu.com,
+        dave.hansen@linux.intel.com, dyoung@redhat.com,
+        feng.tang@intel.com, gregkh@linuxfoundation.org,
         mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
         jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
         luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        peterz@infradead.org, rostedt@goodmis.org,
         senozhatsky@chromium.org, stern@rowland.harvard.edu,
         tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org
-Subject: [PATCH 25/30] panic, printk: Add console flush parameter and convert panic_print to a notifier
-Date:   Wed, 27 Apr 2022 19:49:19 -0300
-Message-Id: <20220427224924.592546-26-gpiccoli@igalia.com>
-X-Mailer: git-send-email 2.36.0
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
+        will@kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: [PATCH 20/30] panic: Add the panic informational notifier list
+Message-ID: <20220427234954.GA3204792@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-21-gpiccoli@igalia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220427224924.592546-21-gpiccoli@igalia.com>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Currently the parameter "panic_print" relies in a function called
-directly on panic path; one of the flags the users can set for
-panic_print triggers a console replay mechanism, to show the
-entire kernel log buffer (from the beginning) in a panic event.
+On Wed, Apr 27, 2022 at 07:49:14PM -0300, Guilherme G. Piccoli wrote:
+> The goal of this new panic notifier is to allow its users to
+> register callbacks to run earlier in the panic path than they
+> currently do. This aims at informational mechanisms, like dumping
+> kernel offsets and showing device error data (in case it's simple
+> registers reading, for example) as well as mechanisms to disable
+> log flooding (like hung_task detector / RCU warnings) and the
+> tracing dump_on_oops (when enabled).
+> 
+> Any (non-invasive) information that should be provided before
+> kmsg_dump() as well as log flooding preventing code should fit
+> here, as long it offers relatively low risk for kdump.
+> 
+> For now, the patch is almost a no-op, although it changes a bit
+> the ordering in which some panic notifiers are executed - specially
+> affected by this are the notifiers responsible for disabling the
+> hung_task detector / RCU warnings, which now run first. In a
+> subsequent patch, the panic path will be refactored, then the
+> panic informational notifiers will effectively run earlier,
+> before ksmg_dump() (and usually before kdump as well).
+> 
+> We also defer documenting it all properly in the subsequent
+> refactor patch. Finally, while at it, we removed some useless
+> header inclusions too.
+> 
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Hari Bathini <hbathini@linux.ibm.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Mikko Perttunen <mperttunen@nvidia.com>
+> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
 
-Two problems with that: the dual nature of the panic_print
-isn't really appropriate, the function was originally meant
-to allow users dumping system information on panic events,
-and was "overridden" to also force a console flush of the full
-kernel log buffer. It also turns the code a bit more complex
-and duplicate than it needs to be.
+From an RCU perspective:
 
-This patch proposes 2 changes: first, we decouple panic_print
-from the console flushing mechanism, in the form of a new kernel
-core parameter (panic_console_replay); we kept the functionality
-on panic_print to avoid userspace breakage, although we comment
-in both code and documentation that this panic_print usage is
-deprecated.
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-We converted panic_print function to a panic notifier too, adding
-it on the panic informational notifier list, executed as the final
-callback. This allows a more clear code and makes sense, as
-panic_print_sys_info() is really a panic-time only function.
-We also moved its code to kernel/printk.c, it seems to make more
-sense given it's related to printing stuff.
-
-Suggested-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
- .../admin-guide/kernel-parameters.txt         | 12 +++-
- Documentation/admin-guide/sysctl/kernel.rst   |  5 +-
- include/linux/console.h                       |  2 +
- include/linux/panic.h                         |  1 -
- include/linux/printk.h                        |  1 +
- kernel/panic.c                                | 51 +++------------
- kernel/printk/printk.c                        | 62 +++++++++++++++++++
- 7 files changed, 87 insertions(+), 47 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 8d3524060ce3..c99da8b2b216 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3791,6 +3791,14 @@
- 			timeout < 0: reboot immediately
- 			Format: <timeout>
- 
-+	panic_console_replay
-+			[KNL] Force a kernel log replay in the console on
-+			panic event. Notice that there is already a flush
-+			mechanism for pending messages; this option is meant
-+			for users that wish to replay the *full* buffer.
-+			It deprecates the bit 5 setting on "panic_print",
-+			both having the same functionality.
-+
- 	panic_notifiers_level=
- 			[KNL] Set the panic notifiers execution order.
- 			Format: <unsigned int>
-@@ -3825,12 +3833,14 @@
- 			bit 2: print timer info
- 			bit 3: print locks info if CONFIG_LOCKDEP is on
- 			bit 4: print ftrace buffer
--			bit 5: print all printk messages in buffer
-+			bit 5: print all printk messages in buffer (DEPRECATED)
- 			bit 6: print all CPUs backtrace (if available in the arch)
- 			*Be aware* that this option may print a _lot_ of lines,
- 			so there are risks of losing older messages in the log.
- 			Use this option carefully, maybe worth to setup a
- 			bigger log buffer with "log_buf_len" along with this.
-+			Also, notice that bit 5 was deprecated in favor of the
-+			parameter "panic_console_replay".
- 
- 	panic_on_taint=	Bitmask for conditionally calling panic() in add_taint()
- 			Format: <hex>[,nousertaint]
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index 1144ea3229a3..17b293a0e566 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -763,10 +763,13 @@ bit 1  print system memory info
- bit 2  print timer info
- bit 3  print locks info if ``CONFIG_LOCKDEP`` is on
- bit 4  print ftrace buffer
--bit 5  print all printk messages in buffer
-+bit 5  print all printk messages in buffer (DEPRECATED)
- bit 6  print all CPUs backtrace (if available in the arch)
- =====  ============================================
- 
-+Notice that bit 5 was deprecated in favor of kernel core parameter
-+"panic_console_replay" (see kernel-parameters.txt documentation).
-+
- So for example to print tasks and memory info on panic, user can::
- 
-   echo 3 > /proc/sys/kernel/panic_print
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 7cd758a4f44e..351c14f623ad 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -169,6 +169,8 @@ enum con_flush_mode {
- 	CONSOLE_REPLAY_ALL,
- };
- 
-+extern bool panic_console_replay;
-+
- extern int add_preferred_console(char *name, int idx, char *options);
- extern void register_console(struct console *);
- extern int unregister_console(struct console *);
-diff --git a/include/linux/panic.h b/include/linux/panic.h
-index f5844908a089..34175d0188d0 100644
---- a/include/linux/panic.h
-+++ b/include/linux/panic.h
-@@ -22,7 +22,6 @@ extern unsigned int sysctl_oops_all_cpu_backtrace;
- #endif /* CONFIG_SMP */
- 
- extern int panic_timeout;
--extern unsigned long panic_print;
- extern int panic_on_oops;
- extern int panic_on_unrecovered_nmi;
- extern int panic_on_io_nmi;
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 1522df223c0f..aee2e8ebd541 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -13,6 +13,7 @@
- extern const char linux_banner[];
- extern const char linux_proc_banner[];
- 
-+extern unsigned long panic_print;
- extern int oops_in_progress;	/* If set, an oops, panic(), BUG() or die() is in progress */
- 
- #define PRINTK_MAX_SINGLE_HEADER_LEN 2
-diff --git a/kernel/panic.c b/kernel/panic.c
-index b7c055d4f87f..ff257bd8f81b 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -68,15 +68,6 @@ unsigned int panic_notifiers_level = 2;
- /* DEPRECATED in favor of panic_notifiers_level */
- bool crash_kexec_post_notifiers;
- 
--#define PANIC_PRINT_TASK_INFO		0x00000001
--#define PANIC_PRINT_MEM_INFO		0x00000002
--#define PANIC_PRINT_TIMER_INFO		0x00000004
--#define PANIC_PRINT_LOCK_INFO		0x00000008
--#define PANIC_PRINT_FTRACE_INFO		0x00000010
--#define PANIC_PRINT_ALL_PRINTK_MSG	0x00000020
--#define PANIC_PRINT_ALL_CPU_BT		0x00000040
--unsigned long panic_print;
--
- ATOMIC_NOTIFIER_HEAD(panic_hypervisor_list);
- EXPORT_SYMBOL(panic_hypervisor_list);
- 
-@@ -168,33 +159,6 @@ void nmi_panic(struct pt_regs *regs, const char *msg)
- }
- EXPORT_SYMBOL(nmi_panic);
- 
--static void panic_print_sys_info(bool console_flush)
--{
--	if (console_flush) {
--		if (panic_print & PANIC_PRINT_ALL_PRINTK_MSG)
--			console_flush_on_panic(CONSOLE_REPLAY_ALL);
--		return;
--	}
--
--	if (panic_print & PANIC_PRINT_ALL_CPU_BT)
--		trigger_all_cpu_backtrace();
--
--	if (panic_print & PANIC_PRINT_TASK_INFO)
--		show_state();
--
--	if (panic_print & PANIC_PRINT_MEM_INFO)
--		show_mem(0, NULL);
--
--	if (panic_print & PANIC_PRINT_TIMER_INFO)
--		sysrq_timer_list_show();
--
--	if (panic_print & PANIC_PRINT_LOCK_INFO)
--		debug_show_all_locks();
--
--	if (panic_print & PANIC_PRINT_FTRACE_INFO)
--		ftrace_dump(DUMP_ALL);
--}
--
- /*
-  * Helper that accumulates all console flushing routines executed on panic.
-  */
-@@ -218,7 +182,11 @@ static void console_flushing(void)
- 	debug_locks_off();
- 	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
- 
--	panic_print_sys_info(true);
-+	/* In case users wish to replay the full log buffer... */
-+	if (panic_console_replay) {
-+		pr_warn("Replaying the log buffer from the beginning\n");
-+		console_flush_on_panic(CONSOLE_REPLAY_ALL);
-+	}
- }
- 
- #define PN_HYPERVISOR_BIT	0
-@@ -431,10 +399,8 @@ void panic(const char *fmt, ...)
- 	crash_smp_send_stop();
- 	panic_notifier_hypervisor_once(buf);
- 
--	if (panic_notifier_info_once(buf)) {
--		panic_print_sys_info(false);
-+	if (panic_notifier_info_once(buf))
- 		kmsg_dump(KMSG_DUMP_PANIC);
--	}
- 
- 	panic_notifier_pre_reboot_once(buf);
- 
-@@ -442,10 +408,8 @@ void panic(const char *fmt, ...)
- 
- 	panic_notifier_hypervisor_once(buf);
- 
--	if (panic_notifier_info_once(buf)) {
--		panic_print_sys_info(false);
-+	if (panic_notifier_info_once(buf))
- 		kmsg_dump(KMSG_DUMP_PANIC);
--	}
- 
- 	panic_notifier_pre_reboot_once(buf);
- 
-@@ -814,7 +778,6 @@ EXPORT_SYMBOL(__stack_chk_fail);
- #endif
- 
- core_param(panic, panic_timeout, int, 0644);
--core_param(panic_print, panic_print, ulong, 0644);
- core_param(pause_on_oops, pause_on_oops, int, 0644);
- core_param(panic_on_warn, panic_on_warn, int, 0644);
- core_param(panic_notifiers_level, panic_notifiers_level, uint, 0644);
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index e3a1c429fbbc..ad91d4c04246 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -35,6 +35,7 @@
- #include <linux/memblock.h>
- #include <linux/syscalls.h>
- #include <linux/crash_core.h>
-+#include <linux/panic_notifier.h>
- #include <linux/ratelimit.h>
- #include <linux/kmsg_dump.h>
- #include <linux/syslog.h>
-@@ -3234,6 +3235,61 @@ void __init console_init(void)
- 	}
- }
- 
-+#define PANIC_PRINT_TASK_INFO		0x00000001
-+#define PANIC_PRINT_MEM_INFO		0x00000002
-+#define PANIC_PRINT_TIMER_INFO		0x00000004
-+#define PANIC_PRINT_LOCK_INFO		0x00000008
-+#define PANIC_PRINT_FTRACE_INFO		0x00000010
-+
-+/* DEPRECATED - please use "panic_console_replay" */
-+#define PANIC_PRINT_ALL_PRINTK_MSG	0x00000020
-+
-+#define PANIC_PRINT_ALL_CPU_BT		0x00000040
-+
-+unsigned long panic_print;
-+bool panic_console_replay;
-+
-+static int panic_print_sys_info(struct notifier_block *self,
-+				unsigned long ev, void *unused)
-+{
-+	if (panic_print & PANIC_PRINT_ALL_CPU_BT)
-+		trigger_all_cpu_backtrace();
-+
-+	if (panic_print & PANIC_PRINT_TASK_INFO)
-+		show_state();
-+
-+	if (panic_print & PANIC_PRINT_MEM_INFO)
-+		show_mem(0, NULL);
-+
-+	if (panic_print & PANIC_PRINT_TIMER_INFO)
-+		sysrq_timer_list_show();
-+
-+	if (panic_print & PANIC_PRINT_LOCK_INFO)
-+		debug_show_all_locks();
-+
-+	if (panic_print & PANIC_PRINT_FTRACE_INFO)
-+		ftrace_dump(DUMP_ALL);
-+
-+	/*
-+	 * This is legacy/deprecated feature from panic_print,
-+	 * the console force flushing. We have now the parameter
-+	 * "panic_console_replay", but we need to keep the
-+	 * retro-compatibility with the old stuff...
-+	 */
-+	if (panic_print & PANIC_PRINT_ALL_PRINTK_MSG)
-+		panic_console_replay = true;
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block panic_print_nb = {
-+	.notifier_call = panic_print_sys_info,
-+	.priority = INT_MIN, /* defer to run as late as possible */
-+};
-+
-+core_param(panic_print, panic_print, ulong, 0644);
-+core_param(panic_console_replay, panic_console_replay, bool, 0644);
-+
- /*
-  * Some boot consoles access data that is in the init section and which will
-  * be discarded after the initcalls have been run. To make sure that no code
-@@ -3253,6 +3309,12 @@ static int __init printk_late_init(void)
- 	struct console *con;
- 	int ret;
- 
-+	/*
-+	 * Register the panic notifier to print user information
-+	 * in case the user have that set.
-+	 */
-+	atomic_notifier_chain_register(&panic_info_list, &panic_print_nb);
-+
- 	for_each_console(con) {
- 		if (!(con->flags & CON_BOOT))
- 			continue;
--- 
-2.36.0
-
+> ---
+>  arch/arm64/kernel/setup.c                         | 2 +-
+>  arch/mips/kernel/relocate.c                       | 2 +-
+>  arch/powerpc/kernel/setup-common.c                | 2 +-
+>  arch/x86/kernel/setup.c                           | 2 +-
+>  drivers/bus/brcmstb_gisb.c                        | 2 +-
+>  drivers/hwtracing/coresight/coresight-cpu-debug.c | 4 ++--
+>  drivers/soc/tegra/ari-tegra186.c                  | 3 ++-
+>  include/linux/panic_notifier.h                    | 1 +
+>  kernel/hung_task.c                                | 3 ++-
+>  kernel/panic.c                                    | 4 ++++
+>  kernel/rcu/tree.c                                 | 1 -
+>  kernel/rcu/tree_stall.h                           | 3 ++-
+>  kernel/trace/trace.c                              | 2 +-
+>  13 files changed, 19 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+> index 3505789cf4bd..ac2c7e8c9c6a 100644
+> --- a/arch/arm64/kernel/setup.c
+> +++ b/arch/arm64/kernel/setup.c
+> @@ -444,7 +444,7 @@ static struct notifier_block arm64_panic_block = {
+>  
+>  static int __init register_arm64_panic_block(void)
+>  {
+> -	atomic_notifier_chain_register(&panic_notifier_list,
+> +	atomic_notifier_chain_register(&panic_info_list,
+>  				       &arm64_panic_block);
+>  	return 0;
+>  }
+> diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
+> index 56b51de2dc51..650811f2436a 100644
+> --- a/arch/mips/kernel/relocate.c
+> +++ b/arch/mips/kernel/relocate.c
+> @@ -459,7 +459,7 @@ static struct notifier_block kernel_location_notifier = {
+>  
+>  static int __init register_kernel_offset_dumper(void)
+>  {
+> -	atomic_notifier_chain_register(&panic_notifier_list,
+> +	atomic_notifier_chain_register(&panic_info_list,
+>  				       &kernel_location_notifier);
+>  	return 0;
+>  }
+> diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
+> index 1468c3937bf4..d04b8bf8dbc7 100644
+> --- a/arch/powerpc/kernel/setup-common.c
+> +++ b/arch/powerpc/kernel/setup-common.c
+> @@ -757,7 +757,7 @@ void __init setup_panic(void)
+>  				       &ppc_fadump_block);
+>  
+>  	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && kaslr_offset() > 0)
+> -		atomic_notifier_chain_register(&panic_notifier_list,
+> +		atomic_notifier_chain_register(&panic_info_list,
+>  					       &kernel_offset_notifier);
+>  
+>  	/* Low-level platform-specific routines that should run on panic */
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index c95b9ac5a457..599b25346964 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -1266,7 +1266,7 @@ static struct notifier_block kernel_offset_notifier = {
+>  
+>  static int __init register_kernel_offset_dumper(void)
+>  {
+> -	atomic_notifier_chain_register(&panic_notifier_list,
+> +	atomic_notifier_chain_register(&panic_info_list,
+>  					&kernel_offset_notifier);
+>  	return 0;
+>  }
+> diff --git a/drivers/bus/brcmstb_gisb.c b/drivers/bus/brcmstb_gisb.c
+> index 1ea7b015e225..c64e087fba7a 100644
+> --- a/drivers/bus/brcmstb_gisb.c
+> +++ b/drivers/bus/brcmstb_gisb.c
+> @@ -486,7 +486,7 @@ static int __init brcmstb_gisb_arb_probe(struct platform_device *pdev)
+>  
+>  	if (list_is_singular(&brcmstb_gisb_arb_device_list)) {
+>  		register_die_notifier(&gisb_die_notifier);
+> -		atomic_notifier_chain_register(&panic_notifier_list,
+> +		atomic_notifier_chain_register(&panic_info_list,
+>  					       &gisb_panic_notifier);
+>  	}
+>  
+> diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> index 1874df7c6a73..7b1012454525 100644
+> --- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> +++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> @@ -535,7 +535,7 @@ static int debug_func_init(void)
+>  			    &debug_func_knob_fops);
+>  
+>  	/* Register function to be called for panic */
+> -	ret = atomic_notifier_chain_register(&panic_notifier_list,
+> +	ret = atomic_notifier_chain_register(&panic_info_list,
+>  					     &debug_notifier);
+>  	if (ret) {
+>  		pr_err("%s: unable to register notifier: %d\n",
+> @@ -552,7 +552,7 @@ static int debug_func_init(void)
+>  
+>  static void debug_func_exit(void)
+>  {
+> -	atomic_notifier_chain_unregister(&panic_notifier_list,
+> +	atomic_notifier_chain_unregister(&panic_info_list,
+>  					 &debug_notifier);
+>  	debugfs_remove_recursive(debug_debugfs_dir);
+>  }
+> diff --git a/drivers/soc/tegra/ari-tegra186.c b/drivers/soc/tegra/ari-tegra186.c
+> index 02577853ec49..4ef05ebed739 100644
+> --- a/drivers/soc/tegra/ari-tegra186.c
+> +++ b/drivers/soc/tegra/ari-tegra186.c
+> @@ -73,7 +73,8 @@ static struct notifier_block tegra186_ari_panic_nb = {
+>  static int __init tegra186_ari_init(void)
+>  {
+>  	if (of_machine_is_compatible("nvidia,tegra186"))
+> -		atomic_notifier_chain_register(&panic_notifier_list, &tegra186_ari_panic_nb);
+> +		atomic_notifier_chain_register(&panic_info_list,
+> +					       &tegra186_ari_panic_nb);
+>  
+>  	return 0;
+>  }
+> diff --git a/include/linux/panic_notifier.h b/include/linux/panic_notifier.h
+> index 0bb9dc0dea04..7364a346bcb0 100644
+> --- a/include/linux/panic_notifier.h
+> +++ b/include/linux/panic_notifier.h
+> @@ -7,6 +7,7 @@
+>  
+>  extern struct atomic_notifier_head panic_notifier_list;
+>  extern struct atomic_notifier_head panic_hypervisor_list;
+> +extern struct atomic_notifier_head panic_info_list;
+>  
+>  extern bool crash_kexec_post_notifiers;
+>  
+> diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+> index 52501e5f7655..1b2d7111d5ac 100644
+> --- a/kernel/hung_task.c
+> +++ b/kernel/hung_task.c
+> @@ -85,6 +85,7 @@ hung_task_panic(struct notifier_block *this, unsigned long event, void *ptr)
+>  
+>  static struct notifier_block panic_block = {
+>  	.notifier_call = hung_task_panic,
+> +	.priority = INT_MAX, /* run early to prevent potential log flood */
+>  };
+>  
+>  static void check_hung_task(struct task_struct *t, unsigned long timeout)
+> @@ -378,7 +379,7 @@ static int watchdog(void *dummy)
+>  
+>  static int __init hung_task_init(void)
+>  {
+> -	atomic_notifier_chain_register(&panic_notifier_list, &panic_block);
+> +	atomic_notifier_chain_register(&panic_info_list, &panic_block);
+>  
+>  	/* Disable hung task detector on suspend */
+>  	pm_notifier(hungtask_pm_notify, 0);
+> diff --git a/kernel/panic.c b/kernel/panic.c
+> index ef76f3f9c44d..73ca1bc44e30 100644
+> --- a/kernel/panic.c
+> +++ b/kernel/panic.c
+> @@ -76,6 +76,9 @@ EXPORT_SYMBOL(panic_notifier_list);
+>  ATOMIC_NOTIFIER_HEAD(panic_hypervisor_list);
+>  EXPORT_SYMBOL(panic_hypervisor_list);
+>  
+> +ATOMIC_NOTIFIER_HEAD(panic_info_list);
+> +EXPORT_SYMBOL(panic_info_list);
+> +
+>  static long no_blink(int state)
+>  {
+>  	return 0;
+> @@ -291,6 +294,7 @@ void panic(const char *fmt, ...)
+>  	 * add information to the kmsg dump output.
+>  	 */
+>  	atomic_notifier_call_chain(&panic_hypervisor_list, PANIC_NOTIFIER, buf);
+> +	atomic_notifier_call_chain(&panic_info_list, PANIC_NOTIFIER, buf);
+>  	atomic_notifier_call_chain(&panic_notifier_list, PANIC_NOTIFIER, buf);
+>  
+>  	panic_print_sys_info(false);
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index a4b8189455d5..d5a2674ae81c 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -35,7 +35,6 @@
+>  #include <linux/panic.h>
+>  #include <linux/panic_notifier.h>
+>  #include <linux/percpu.h>
+> -#include <linux/notifier.h>
+>  #include <linux/cpu.h>
+>  #include <linux/mutex.h>
+>  #include <linux/time.h>
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 0c5d8516516a..d8a5840aad5d 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -97,11 +97,12 @@ static int rcu_panic(struct notifier_block *this, unsigned long ev, void *ptr)
+>  
+>  static struct notifier_block rcu_panic_block = {
+>  	.notifier_call = rcu_panic,
+> +	.priority = INT_MAX, /* run early to prevent potential log flood */
+>  };
+>  
+>  static int __init check_cpu_stall_init(void)
+>  {
+> -	atomic_notifier_chain_register(&panic_notifier_list, &rcu_panic_block);
+> +	atomic_notifier_chain_register(&panic_info_list, &rcu_panic_block);
+>  	return 0;
+>  }
+>  early_initcall(check_cpu_stall_init);
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index c1d8a3622ccc..7d02f7a66bb1 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -10138,7 +10138,7 @@ __init static int tracer_alloc_buffers(void)
+>  	/* All seems OK, enable tracing */
+>  	tracing_disabled = 0;
+>  
+> -	atomic_notifier_chain_register(&panic_notifier_list,
+> +	atomic_notifier_chain_register(&panic_info_list,
+>  				       &trace_panic_notifier);
+>  
+>  	register_die_notifier(&trace_die_notifier);
+> -- 
+> 2.36.0
+> 
