@@ -2,90 +2,116 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 035BDC3527E
-	for <linux-parisc@archiver.kernel.org>; Sun,  8 May 2022 09:49:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89425C4332F
+	for <linux-parisc@archiver.kernel.org>; Sun,  8 May 2022 11:09:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229531AbiEHJxf (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 8 May 2022 05:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60640 "EHLO
+        id S232066AbiEHLNk (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 8 May 2022 07:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbiEHJkt (ORCPT
+        with ESMTP id S231926AbiEHLNi (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 8 May 2022 05:40:49 -0400
-Received: from out30-42.freemail.mail.aliyun.com (out30-42.freemail.mail.aliyun.com [115.124.30.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DD4DEC0;
-        Sun,  8 May 2022 02:36:57 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0VCa0vRD_1652002610;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VCa0vRD_1652002610)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 08 May 2022 17:36:51 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        catalin.marinas@arm.com, will@kernel.org
-Cc:     tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+        Sun, 8 May 2022 07:13:38 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590E0DF3D
+        for <linux-parisc@vger.kernel.org>; Sun,  8 May 2022 04:09:48 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id r192so5592560pgr.6
+        for <linux-parisc@vger.kernel.org>; Sun, 08 May 2022 04:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OWmWFuKURN4UwCDRPsgR9Re+rOOqJePNgFLKfmRbPyI=;
+        b=UlTfZYFJ8cQvbSFvJYR0MNjIVNnz94wcIJy7bmyHAq3K7dhExqiXwQ6GlaTqAWyxzy
+         /Z/UihrYn4PiXbZkL0LHCX2s5FoaTSEdl9xmTkNYPq7h9HiO+occ9eYuqUW2zt7FKqmt
+         b3PN1o5ZoZJqlKw9pM5JrZNOlSwE6WvfVuInjWEAmfTWiOCutIUTw8vwaC1o1YFjwp9f
+         +xjwh/8BPP6aVzOrMhkxbxgpxLomJCpFhrQhBvrcVb/DbwLhuEyhNqWHYVVFWiB/5sZZ
+         2U9B/tv5Pzx5HC7lG5vZPP5nVcDqOI8s7xA4xdRGTcVQxNcgXyFbsuZyVPlp5azgbVRy
+         VmuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OWmWFuKURN4UwCDRPsgR9Re+rOOqJePNgFLKfmRbPyI=;
+        b=IyDKPIHxOLHLgZCjbKqMTMFViBwDDcU/en1SEjkxGpubkww77FTCVQw97XSTmo0ndm
+         +qNpNlQjU40NMaCPjuuOxaKX9UnjLyzteL5irgUR4rxzSo4JplqRkx1pukUtLaX1ipIo
+         +ctxsai9yLEDcPax3T+HpnDXFnnMah3xA54rUeVGbUZ3Pxs4PkuCcTAm9G7qFMy4lDm8
+         kR5nA1FsGCFmfzA2l1egnTDBmv5krNIGqPH1hRxwSdSKzzHFpVR2x6Nes6Mjvg7sWLt7
+         iuZPGw4IpyHDb4VG39PkusE6KuS8DHAUSMfjxUAUP6qSP/jJUOpyl52KQi84j+bWxOU7
+         k/wg==
+X-Gm-Message-State: AOAM533+9QHWhaekKS4HNYxEAp0DK9Io0MyHS5TSzu9izMNCBiDMm7wC
+        zC0J8Z6we4b2tg7NgDOoiH3MTg==
+X-Google-Smtp-Source: ABdhPJxZzyOA/OXdDbOTRosPq5K5546OioeGuvjfL98xly+cJSbCFdY7/mzCWxYx8HhR8kOEcFz1eQ==
+X-Received: by 2002:a62:b60f:0:b0:508:2a61:2c8b with SMTP id j15-20020a62b60f000000b005082a612c8bmr11424511pff.2.1652008187667;
+        Sun, 08 May 2022 04:09:47 -0700 (PDT)
+Received: from localhost ([139.177.225.234])
+        by smtp.gmail.com with ESMTPSA id 17-20020a170902e9d100b0015ea8b4b8f3sm4943158plk.263.2022.05.08.04.09.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 May 2022 04:09:47 -0700 (PDT)
+Date:   Sun, 8 May 2022 19:09:45 +0800
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
         deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org,
         paulus@samba.org, hca@linux.ibm.com, gor@linux.ibm.com,
         agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
         svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
-        davem@davemloft.net, arnd@arndb.de, baolin.wang@linux.alibaba.com,
+        davem@davemloft.net, arnd@arndb.de,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
         linux-mm@kvack.org
-Subject: [PATCH v2 0/3] Fix CONT-PTE/PMD size hugetlb issue when unmapping or migrating
-Date:   Sun,  8 May 2022 17:36:38 +0800
-Message-Id: <cover.1652002221.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+Subject: Re: [PATCH v2 1/3] mm: change huge_ptep_clear_flush() to return the
+ original pte
+Message-ID: <Ynek+b3k6PVN3x7J@FVFYT0MHHV2J.usts.net>
+References: <cover.1652002221.git.baolin.wang@linux.alibaba.com>
+ <012a484019e7ad77c39deab0af52a6755d8438c8.1652002221.git.baolin.wang@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <012a484019e7ad77c39deab0af52a6755d8438c8.1652002221.git.baolin.wang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi,
+On Sun, May 08, 2022 at 05:36:39PM +0800, Baolin Wang wrote:
+> It is incorrect to use ptep_clear_flush() to nuke a hugetlb page
+> table when unmapping or migrating a hugetlb page, and will change
+> to use huge_ptep_clear_flush() instead in the following patches.
+> 
+> So this is a preparation patch, which changes the huge_ptep_clear_flush()
+> to return the original pte to help to nuke a hugetlb page table.
+> 
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Now migrating a hugetlb page or unmapping a poisoned hugetlb page, we'll
-use ptep_clear_flush() and set_pte_at() to nuke the page table entry
-and remap it, and this is incorrect for CONT-PTE or CONT-PMD size hugetlb
-page, which will cause potential data consistent issue. This patch set
-will change to use hugetlb related APIs to fix this issue, please find
-details in each patch. Thanks.
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-Note: Mike pointed out the huge_ptep_get() will only return the one specific
-value, and it would not take into account the dirty or young bits of CONT-PTE/PMDs
-like the huge_ptep_get_and_clear() [1]. This inconsistent issue is not introduced
-by this patch set, and will address this issue in another thread [2]. Meanwhile
-the uffd for hugetlb case [3] pointed by Gerald also need another patch to address.
+But one nit below:
 
-[1] https://lore.kernel.org/linux-mm/85bd80b4-b4fd-0d3f-a2e5-149559f2f387@oracle.com/
-[2] https://lore.kernel.org/all/cover.1651998586.git.baolin.wang@linux.alibaba.com/
-[3] https://lore.kernel.org/linux-mm/20220503120343.6264e126@thinkpad/
+[...]
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 8605d7e..61a21af 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -5342,7 +5342,7 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
+>  		ClearHPageRestoreReserve(new_page);
+>  
+>  		/* Break COW or unshare */
+> -		huge_ptep_clear_flush(vma, haddr, ptep);
+> +		(void)huge_ptep_clear_flush(vma, haddr, ptep);
 
-Changes from v1:
- - Add acked tag from Mike.
- - Update some commit message.
- - Add VM_BUG_ON in try_to_unmap() for hugetlb case.
- - Add an explict void casting for huge_ptep_clear_flush() in hugetlb.c.
+Why add a "(void)" here? Is there any warning if no "(void)"?
+IIUC, I think we can remove this, right?
 
-Baolin Wang (3):
-  mm: change huge_ptep_clear_flush() to return the original pte
-  mm: rmap: Fix CONT-PTE/PMD size hugetlb issue when migration
-  mm: rmap: Fix CONT-PTE/PMD size hugetlb issue when unmapping
-
- arch/arm64/include/asm/hugetlb.h   |  4 +--
- arch/arm64/mm/hugetlbpage.c        | 12 +++-----
- arch/ia64/include/asm/hugetlb.h    |  4 +--
- arch/mips/include/asm/hugetlb.h    |  9 ++++--
- arch/parisc/include/asm/hugetlb.h  |  4 +--
- arch/powerpc/include/asm/hugetlb.h |  9 ++++--
- arch/s390/include/asm/hugetlb.h    |  6 ++--
- arch/sh/include/asm/hugetlb.h      |  4 +--
- arch/sparc/include/asm/hugetlb.h   |  4 +--
- include/asm-generic/hugetlb.h      |  4 +--
- mm/hugetlb.c                       |  2 +-
- mm/rmap.c                          | 63 ++++++++++++++++++++++++--------------
- 12 files changed, 73 insertions(+), 52 deletions(-)
-
--- 
-1.8.3.1
-
+>  		mmu_notifier_invalidate_range(mm, range.start, range.end);
+>  		page_remove_rmap(old_page, vma, true);
+>  		hugepage_add_new_anon_rmap(new_page, vma, haddr);
+> -- 
+> 1.8.3.1
+> 
+> 
