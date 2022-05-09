@@ -2,32 +2,32 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BB25C4167D
-	for <linux-parisc@archiver.kernel.org>; Mon,  9 May 2022 23:33:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ED17C433FE
+	for <linux-parisc@archiver.kernel.org>; Mon,  9 May 2022 23:34:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbiEIXhT (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 9 May 2022 19:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40956 "EHLO
+        id S232932AbiEIXh7 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 9 May 2022 19:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232537AbiEIXhH (ORCPT
+        with ESMTP id S232620AbiEIXhY (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 9 May 2022 19:37:07 -0400
+        Mon, 9 May 2022 19:37:24 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249C721E409;
-        Mon,  9 May 2022 16:33:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB4521B169;
+        Mon,  9 May 2022 16:33:19 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: dmitry.osipenko)
-        with ESMTPSA id 3E0D01F41C11
+        with ESMTPSA id 17BD61F41D8C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1652139191;
-        bh=lukCDvlh+VQrMdDntGqnw63sEvxpUquxvKx6zCB6dFM=;
+        s=mail; t=1652139198;
+        bh=95ioqXFiu/sMhB4rC2pN2mOqsgk/IiTVsJJFignNnOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E6Htd2NUIVyNQjm3zjNspKkqxKR6i+iW9w4XOpsS37hUGOUw3VGPJrC2rx39+Tvjo
-         ocX71hfI+QjZ1lP5+X1LQsBmPL7dlCcXv+9SS+Q5TjrCltdIh3RX5eeIHiXvwmIHOF
-         Kulj0kJ1lapR0UDvwLlgi7z12iGZUG5kArtm4alE5b6tURKwWMHCIIuDOdtxMBBqfN
-         uPcI4HMaMJSb1mmQeveHzBRcA1W+g1oEcT8ghi9sEibaTcITp0l5yKtDFG6Z0k8iC2
-         z8WaqKpN987G8alEhWQWRlQTun+nTX2I87+5WJt9cIsDvplddvAA31I22KuGrIBoCV
-         U5x0xoyuIdD+g==
+        b=kd6IbYNbTMtYO8XHzDROg022CiuVMjD14vclGIX2y/UPqQJTY83k+AAQHlzWmnvvY
+         DIbOq+AJ+ca0dm9KVPtIZY6LIwJR0dvHVODvj+gWmFv2rrA23tSPFfLb/Ld7WXpuF/
+         H2du8HyPkBmRsP8eQLukPdey+A1NM1blJJ0oKFmsjrsM19cx1w60DHdJiFj+BNJHgA
+         CT2Gw205sJVKh3AqToaLUeLHth6M3pyFt+gPqA8mU19vHxX0uyWcQDKqZ8zNR9Nmqu
+         cRtxZ2gdReA9506AcmJOJiJA6+rn1NttYLHyho2AlivK1XjmQN+dXmlaF9eF72LNY1
+         oD4iLEbpsl5mw==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -79,201 +79,89 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v8 02/27] notifier: Add blocking/atomic_notifier_chain_register_unique_prio()
-Date:   Tue, 10 May 2022 02:32:10 +0300
-Message-Id: <20220509233235.995021-3-dmitry.osipenko@collabora.com>
+Subject: [PATCH v8 04/27] kernel/reboot: Wrap legacy power-off callbacks into sys-off handlers
+Date:   Tue, 10 May 2022 02:32:12 +0300
+Message-Id: <20220509233235.995021-5-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
 References: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Add variant of blocking/atomic_notifier_chain_register() functions that
-allow registration of a notifier only if it has unique priority, otherwise
--EBUSY error code is returned by the new functions.
+Wrap legacy power-off callbacks into sys-off handlers in order to
+support co-existence of both legacy and new callbacks while we're
+in process of upgrading legacy callbacks to the new API.
 
-Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- include/linux/notifier.h |  5 +++
- kernel/notifier.c        | 88 +++++++++++++++++++++++++++++++---------
- 2 files changed, 74 insertions(+), 19 deletions(-)
+ kernel/reboot.c | 44 ++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 42 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/notifier.h b/include/linux/notifier.h
-index 95e2440037de..aef88c2d1173 100644
---- a/include/linux/notifier.h
-+++ b/include/linux/notifier.h
-@@ -150,6 +150,11 @@ extern int raw_notifier_chain_register(struct raw_notifier_head *nh,
- extern int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
- 		struct notifier_block *nb);
- 
-+extern int atomic_notifier_chain_register_unique_prio(
-+		struct atomic_notifier_head *nh, struct notifier_block *nb);
-+extern int blocking_notifier_chain_register_unique_prio(
-+		struct blocking_notifier_head *nh, struct notifier_block *nb);
-+
- extern int atomic_notifier_chain_unregister(struct atomic_notifier_head *nh,
- 		struct notifier_block *nb);
- extern int blocking_notifier_chain_unregister(struct blocking_notifier_head *nh,
-diff --git a/kernel/notifier.c b/kernel/notifier.c
-index aaf5b56452a6..684fe04f5f70 100644
---- a/kernel/notifier.c
-+++ b/kernel/notifier.c
-@@ -20,7 +20,8 @@ BLOCKING_NOTIFIER_HEAD(reboot_notifier_list);
-  */
- 
- static int notifier_chain_register(struct notifier_block **nl,
--				   struct notifier_block *n)
-+				   struct notifier_block *n,
-+				   bool unique_priority)
- {
- 	while ((*nl) != NULL) {
- 		if (unlikely((*nl) == n)) {
-@@ -30,6 +31,8 @@ static int notifier_chain_register(struct notifier_block **nl,
- 		}
- 		if (n->priority > (*nl)->priority)
- 			break;
-+		if (n->priority == (*nl)->priority && unique_priority)
-+			return -EBUSY;
- 		nl = &((*nl)->next);
- 	}
- 	n->next = *nl;
-@@ -144,12 +147,35 @@ int atomic_notifier_chain_register(struct atomic_notifier_head *nh,
- 	int ret;
- 
- 	spin_lock_irqsave(&nh->lock, flags);
--	ret = notifier_chain_register(&nh->head, n);
-+	ret = notifier_chain_register(&nh->head, n, false);
- 	spin_unlock_irqrestore(&nh->lock, flags);
- 	return ret;
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index 672a658f21ee..2fb0357d9483 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -463,6 +463,47 @@ int devm_register_sys_off_handler(struct device *dev,
  }
- EXPORT_SYMBOL_GPL(atomic_notifier_chain_register);
+ EXPORT_SYMBOL_GPL(devm_register_sys_off_handler);
  
-+/**
-+ *	atomic_notifier_chain_register_unique_prio - Add notifier to an atomic notifier chain
-+ *	@nh: Pointer to head of the atomic notifier chain
-+ *	@n: New entry in notifier chain
-+ *
-+ *	Adds a notifier to an atomic notifier chain if there is no other
-+ *	notifier registered using the same priority.
-+ *
-+ *	Returns 0 on success, %-EEXIST or %-EBUSY on error.
-+ */
-+int atomic_notifier_chain_register_unique_prio(struct atomic_notifier_head *nh,
-+					       struct notifier_block *n)
++static int legacy_pm_power_off_prepare(struct sys_off_data *data)
 +{
-+	unsigned long flags;
-+	int ret;
++	if (pm_power_off_prepare)
++		pm_power_off_prepare();
 +
-+	spin_lock_irqsave(&nh->lock, flags);
-+	ret = notifier_chain_register(&nh->head, n, true);
-+	spin_unlock_irqrestore(&nh->lock, flags);
-+	return ret;
++	return NOTIFY_DONE;
 +}
-+EXPORT_SYMBOL_GPL(atomic_notifier_chain_register_unique_prio);
++
++static int legacy_pm_power_off(struct sys_off_data *data)
++{
++	if (pm_power_off)
++		pm_power_off();
++
++	return NOTIFY_DONE;
++}
++
++/*
++ * Register sys-off handlers for legacy PM callbacks. This allows legacy
++ * PM callbacks co-exist with the new sys-off API.
++ *
++ * TODO: Remove legacy handlers once all legacy PM users will be switched
++ *       to the sys-off based APIs.
++ */
++static int __init legacy_pm_init(void)
++{
++	register_sys_off_handler(SYS_OFF_MODE_POWER_OFF_PREPARE,
++				 SYS_OFF_PRIO_DEFAULT,
++				 legacy_pm_power_off_prepare, NULL);
++
++	register_sys_off_handler(SYS_OFF_MODE_POWER_OFF, SYS_OFF_PRIO_DEFAULT,
++				 legacy_pm_power_off, NULL);
++
++	return 0;
++}
++core_initcall(legacy_pm_init);
++
++static void do_kernel_power_off_prepare(void)
++{
++	blocking_notifier_call_chain(&power_off_prep_handler_list, 0, NULL);
++}
 +
  /**
-  *	atomic_notifier_chain_unregister - Remove notifier from an atomic notifier chain
-  *	@nh: Pointer to head of the atomic notifier chain
-@@ -222,18 +248,9 @@ bool atomic_notifier_call_chain_is_empty(struct atomic_notifier_head *nh)
-  *	synchronized by an rwsem.
-  */
- 
--/**
-- *	blocking_notifier_chain_register - Add notifier to a blocking notifier chain
-- *	@nh: Pointer to head of the blocking notifier chain
-- *	@n: New entry in notifier chain
-- *
-- *	Adds a notifier to a blocking notifier chain.
-- *	Must be called in process context.
-- *
-- *	Returns 0 on success, %-EEXIST on error.
-- */
--int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
--		struct notifier_block *n)
-+static int __blocking_notifier_chain_register(struct blocking_notifier_head *nh,
-+					      struct notifier_block *n,
-+					      bool unique_priority)
+  *	kernel_power_off - power_off the system
+  *
+@@ -471,8 +512,7 @@ EXPORT_SYMBOL_GPL(devm_register_sys_off_handler);
+ void kernel_power_off(void)
  {
- 	int ret;
- 
-@@ -243,15 +260,48 @@ int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
- 	 * such times we must not call down_write().
- 	 */
- 	if (unlikely(system_state == SYSTEM_BOOTING))
--		return notifier_chain_register(&nh->head, n);
-+		return notifier_chain_register(&nh->head, n, unique_priority);
- 
- 	down_write(&nh->rwsem);
--	ret = notifier_chain_register(&nh->head, n);
-+	ret = notifier_chain_register(&nh->head, n, unique_priority);
- 	up_write(&nh->rwsem);
- 	return ret;
- }
-+
-+/**
-+ *	blocking_notifier_chain_register - Add notifier to a blocking notifier chain
-+ *	@nh: Pointer to head of the blocking notifier chain
-+ *	@n: New entry in notifier chain
-+ *
-+ *	Adds a notifier to a blocking notifier chain.
-+ *	Must be called in process context.
-+ *
-+ *	Returns 0 on success, %-EEXIST on error.
-+ */
-+int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
-+		struct notifier_block *n)
-+{
-+	return __blocking_notifier_chain_register(nh, n, false);
-+}
- EXPORT_SYMBOL_GPL(blocking_notifier_chain_register);
- 
-+/**
-+ *	blocking_notifier_chain_register_unique_prio - Add notifier to a blocking notifier chain
-+ *	@nh: Pointer to head of the blocking notifier chain
-+ *	@n: New entry in notifier chain
-+ *
-+ *	Adds a notifier to an blocking notifier chain if there is no other
-+ *	notifier registered using the same priority.
-+ *
-+ *	Returns 0 on success, %-EEXIST or %-EBUSY on error.
-+ */
-+int blocking_notifier_chain_register_unique_prio(struct blocking_notifier_head *nh,
-+						 struct notifier_block *n)
-+{
-+	return __blocking_notifier_chain_register(nh, n, true);
-+}
-+EXPORT_SYMBOL_GPL(blocking_notifier_chain_register_unique_prio);
-+
- /**
-  *	blocking_notifier_chain_unregister - Remove notifier from a blocking notifier chain
-  *	@nh: Pointer to head of the blocking notifier chain
-@@ -354,7 +404,7 @@ EXPORT_SYMBOL_GPL(blocking_notifier_call_chain);
- int raw_notifier_chain_register(struct raw_notifier_head *nh,
- 		struct notifier_block *n)
- {
--	return notifier_chain_register(&nh->head, n);
-+	return notifier_chain_register(&nh->head, n, false);
- }
- EXPORT_SYMBOL_GPL(raw_notifier_chain_register);
- 
-@@ -433,10 +483,10 @@ int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
- 	 * such times we must not call mutex_lock().
- 	 */
- 	if (unlikely(system_state == SYSTEM_BOOTING))
--		return notifier_chain_register(&nh->head, n);
-+		return notifier_chain_register(&nh->head, n, false);
- 
- 	mutex_lock(&nh->mutex);
--	ret = notifier_chain_register(&nh->head, n);
-+	ret = notifier_chain_register(&nh->head, n, false);
- 	mutex_unlock(&nh->mutex);
- 	return ret;
- }
+ 	kernel_shutdown_prepare(SYSTEM_POWER_OFF);
+-	if (pm_power_off_prepare)
+-		pm_power_off_prepare();
++	do_kernel_power_off_prepare();
+ 	migrate_to_reboot_cpu();
+ 	syscore_shutdown();
+ 	pr_emerg("Power down\n");
 -- 
 2.35.1
 
