@@ -2,32 +2,32 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A6B5C388F3
-	for <linux-parisc@archiver.kernel.org>; Mon,  9 May 2022 23:34:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1829C4332F
+	for <linux-parisc@archiver.kernel.org>; Mon,  9 May 2022 23:34:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232971AbiEIXiC (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 9 May 2022 19:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
+        id S233075AbiEIXiM (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 9 May 2022 19:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbiEIXhx (ORCPT
+        with ESMTP id S232934AbiEIXh7 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 9 May 2022 19:37:53 -0400
+        Mon, 9 May 2022 19:37:59 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E592272CE;
-        Mon,  9 May 2022 16:33:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C1B21E30B;
+        Mon,  9 May 2022 16:33:59 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: dmitry.osipenko)
-        with ESMTPSA id 0842C1F41E8A
+        with ESMTPSA id 6209F1F441DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1652139202;
-        bh=8Fx2NXCMOUBUfmtFhnG6e+1bhUvia7Lkro+EJHtjozI=;
+        s=mail; t=1652139238;
+        bh=UUAJJ/IBIhNY6NA1AxJmIDD0rKb6vfi9bj1ZHogZ1sk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RryRpTBWSvFrqD7A7EctZOMN6tE1a1/5heQcWEPcVbcoeASmRzyrn+watrDphnz1q
-         gr0qo93ZE/53tbomd6WV1UoDxm182gd/Hwbei2xLmUuosOcOg00u121ZZYdCv5U0Ec
-         ADOyWCsjg1iIXn/9D6iPK+ueBrwxIG/eVse+9TJHcuDRFcjJUAqLMIwnYbPaNy2viZ
-         LcZ/hWkRfc3wjZpKDS3wxSoVKAByM9jcjXSEITcDoaj2VrvHgo3EaXqnrqMzZkrxws
-         AbnZOxmEdJ1KPvFAifSKgdx2cTW2g9ZZvBuT5AlXPNuvg1BMexEMF47dJ+tuFKEEYa
-         aihfJhaIo/8qw==
+        b=TkUASExCPh+FoXzL2OnCGIIu2Z2HXaBISDFgR7ixWfN1WdyIfCSpaUflnD7rWGxDG
+         vQCzwQpQuFj71TlHQA9DCAV9sF+sdQH9hcN7lAC3LqA9C4TbZrGN3bNuc1ngng/O7i
+         rySb86VyOpMwBjDX/TS735BJig4rEchyEIwVD9KJ+d21dHQBFQDukdAhgeiYB28NSu
+         ynWq6arqtBNX91H7sywe74sjkSSFI7BlaiTD+aG/xhTaRyK3ZGoePGigvGG/rQBHkh
+         cCEmV1YRV999ye8BFKhlDYmcEURuTzQcgUzY2QPWWaOq0izK+9ObffwREMFkcbNPRX
+         aXMbf/7L3uBQA==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -79,66 +79,53 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v8 05/27] kernel/reboot: Add do_kernel_power_off()
-Date:   Tue, 10 May 2022 02:32:13 +0300
-Message-Id: <20220509233235.995021-6-dmitry.osipenko@collabora.com>
+Subject: [PATCH v8 14/27] xen/x86: Use do_kernel_power_off()
+Date:   Tue, 10 May 2022 02:32:22 +0300
+Message-Id: <20220509233235.995021-15-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
 References: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Add do_kernel_power_off() helper that will remove open-coded pm_power_off
-invocations from the architecture code. This is the first step on the way
-to remove the global pm_power_off variable, which will allow us to
-implement consistent power-off chaining support.
+Kernel now supports chained power-off handlers. Use do_kernel_power_off()
+that invokes chained power-off handlers. It also invokes legacy
+pm_power_off() for now, which will be removed once all drivers will
+be converted to the new sys-off API.
 
+Acked-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- include/linux/reboot.h |  2 ++
- kernel/reboot.c        | 13 +++++++++++++
- 2 files changed, 15 insertions(+)
+ arch/x86/xen/enlighten_pv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/reboot.h b/include/linux/reboot.h
-index 05981ef079d8..6b951d68c0c7 100644
---- a/include/linux/reboot.h
-+++ b/include/linux/reboot.h
-@@ -63,6 +63,8 @@ extern void machine_shutdown(void);
- struct pt_regs;
- extern void machine_crash_shutdown(struct pt_regs *);
+diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
+index 5038edb79ad5..af1f6e886225 100644
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -31,6 +31,7 @@
+ #include <linux/gfp.h>
+ #include <linux/edd.h>
+ #include <linux/objtool.h>
++#include <linux/reboot.h>
  
-+void do_kernel_power_off(void);
-+
- /*
-  * sys-off handler API.
-  */
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index 2fb0357d9483..9afa99a32d62 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -504,6 +504,19 @@ static void do_kernel_power_off_prepare(void)
- 	blocking_notifier_call_chain(&power_off_prep_handler_list, 0, NULL);
+ #include <xen/xen.h>
+ #include <xen/events.h>
+@@ -1071,8 +1072,7 @@ static void xen_machine_halt(void)
+ 
+ static void xen_machine_power_off(void)
+ {
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 	xen_reboot(SHUTDOWN_poweroff);
  }
  
-+/**
-+ *	do_kernel_power_off - Execute kernel power-off handler call chain
-+ *
-+ *	Expected to be called as last step of the power-off sequence.
-+ *
-+ *	Powers off the system immediately if a power-off handler function has
-+ *	been registered. Otherwise does nothing.
-+ */
-+void do_kernel_power_off(void)
-+{
-+	atomic_notifier_call_chain(&power_off_handler_list, 0, NULL);
-+}
-+
- /**
-  *	kernel_power_off - power_off the system
-  *
 -- 
 2.35.1
 
