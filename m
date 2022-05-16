@@ -2,95 +2,108 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D859CC433F5
-	for <linux-parisc@archiver.kernel.org>; Mon, 16 May 2022 22:25:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04423C433F5
+	for <linux-parisc@archiver.kernel.org>; Mon, 16 May 2022 22:54:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346601AbiEPWZf (ORCPT
-        <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 16 May 2022 18:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
+        id S233809AbiEPWy4 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 16 May 2022 18:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbiEPWZd (ORCPT
+        with ESMTP id S1349806AbiEPWyz (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 16 May 2022 18:25:33 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9F23CFDD
-        for <linux-parisc@vger.kernel.org>; Mon, 16 May 2022 15:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1652739874;
-        bh=IW9R0GPPjRR5tCFGNpUk/WDUL4egcfD5WxGzL/LMJ9g=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=PLjzGFqxD6VW44KUVGtXKb9ewzQiBqI8GN5okKDkXVxJmLqMTfRx+IrC528hdbtOZ
-         N3WQY2TvgaaUOZZ/oT9tvZ2P+rjDO3E2coWImxB927gmjU1BIOO6/eOeym0EmHiS8x
-         OKW7J2YoUS/XRxMid3ktujKg/XM+iQ63P3lrVlVE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.160.68]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MpDJd-1nXeTF1BZX-00qlny; Tue, 17
- May 2022 00:24:34 +0200
-Message-ID: <2df8c4f1-f93d-8ef0-3bfd-9249d43953fc@gmx.de>
-Date:   Tue, 17 May 2022 00:24:24 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
+        Mon, 16 May 2022 18:54:55 -0400
+X-Greylist: delayed 2722 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 16 May 2022 15:54:55 PDT
+Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF2B419AE
+        for <linux-parisc@vger.kernel.org>; Mon, 16 May 2022 15:54:55 -0700 (PDT)
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_D2F55E12-0882-4041-BC45-6AF20112F08F";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha512
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.100.31\))
 Subject: Re: [PATCH, V3] parisc: Rewrite cache flush code for PA8800/PA8900
-Content-Language: en-US
-To:     Sam James <sam@gentoo.org>
+From:   Sam James <sam@gentoo.org>
+In-Reply-To: <2df8c4f1-f93d-8ef0-3bfd-9249d43953fc@gmx.de>
+Date:   Mon, 16 May 2022 23:54:44 +0100
 Cc:     Rolf Eike Beer <eike-kernel@sf-tec.de>,
         John David Anglin <dave.anglin@bell.net>,
         linux-parisc@vger.kernel.org, Deller <deller@kernel.org>,
         James Bottomley <James.Bottomley@hansenpartnership.com>
+Message-Id: <F63F43FC-D3BA-4477-B4F0-B4BCABA61878@gentoo.org>
 References: <YoJqZ2rUA25360Ld@mx3210.localdomain>
  <5568470.DvuYhMxLoT@daneel.sf-tec.de>
  <325ef4bc-5dd3-bae2-e435-c00768f85377@gmx.de>
  <0E5A13A5-8210-4E86-A8D1-4B056062BAF9@gentoo.org>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <0E5A13A5-8210-4E86-A8D1-4B056062BAF9@gentoo.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Xh0AAtkX8ydT1EaZEXCFaoKolRUADFyXEp25ZBbDp3Eaw87giUb
- bRCQ5IZnUGtBFAX+zbHuo5ynRFguRX1/oRo37l6sDzsS599ZMub0bl6HYM6f7HuNKODACUF
- KNm1vlEduEbme2/N7jYJ83XTRrH/ddcVRXaYgOTRUucrVqY84Bxs4AcPHz9X/Znmrx7IULn
- KWnFYVo4sKwYM3LGr9jSg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Umv956F0D94=:cZykHfh4TUDCI4jW/UyYaf
- /gY/+Kki9gjSoKVxSe+MR4KBvzqU5KkHAK6RsDH/PuaZViiGH8VUaWBsbCAx8tLz8lhQWNV3N
- aNc5SpCgI44nR+P77Myws03sAvl4jMBmy8ByFm6pAS8CGLt8TfF7E70alRqtStph82w56uPHQ
- UovrjCvC5IfoPCTMz9LF3oAtGUurimgeucuBDU9OxnNB8ZHYg3vaOWaVZy/0+w4iQNlkEKlR4
- IYaoQnnl86e4f116XkMEDjVKIh8LrqvqVOaBDCTrc9o4AtpFe2v+ic3ME1OgUapo5wukHY1Z+
- cDCk4PUkHMAReGZ8cz0xg+C2zhTEq+DDlWF7EaCo5arSNGT+xMD+yIMgB5o63ip8pn50MDjmQ
- 8Rki7DN0Irp4zCYW5IZ4abF16mI0/bVGOjYtYyV7xXyee08tbapzmsG3yVlfuO3jOzlHGO48W
- ymVV1FdGUp99qyZsAA6QPrKNSLEbBLONQIqQGn+7o7AXSKAvIohUCjkFVeTyslc6o9xo95vq9
- ATK0Gz92YB9HCfUL5MMn9XJZ7s1QEI5OU2QaE8pZyU1ImRwOA6GieulputLiffcg68/BVLYe8
- LhvIuWdok0aNdZz5gQcm0CPC2wKqODY8OZ+J0FewhPX81OIE6bD2KupOOUFXfao+1a17Fm/BW
- T7LUKVTyANl5xLy9hlrktPGGp3NSj4L/OGT5fNDNHsiy16C3pxQx/T/R34ZvWW6GkRjfdmcfg
- rShBz377SZY7mS5BKNxC/QAbN/mwg73kCbE80KsRm/cp8m2JNdnmpa96aiQdve5EFMo8Rw/2f
- 0GYzw6cORrtXmcW3i78fiuTyvzJGwUzpB0DHxPxBoc+Gmb3LXpI+ASrRJx4qPxIONjkftdjKh
- ayWXuR1XVNRBblYOoeKWJqhgLZuqzXC9HQzGMuZ6aUmfn4OLkSeoynByrcMFIthoQ8SSnnVcF
- aPty36GtC5CuvN/qEGV0K9yVMQ/qU3ghw1eEuoCFERHgcW575LtSK/yDNNLGEPadJgxovMxJt
- 9sM1OqGNFSp77W26gZGmqhtR/zNydi1SvDtl+Tj7vxLPe1Q5P58yfUbuX3N/RlwBr+7w+7HfW
- 98wlLX3UoCoilE=
+ <2df8c4f1-f93d-8ef0-3bfd-9249d43953fc@gmx.de>
+To:     Helge Deller <deller@gmx.de>
+X-Mailer: Apple Mail (2.3696.100.31)
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 5/17/22 00:09, Sam James wrote:
->> On 16 May 2022, at 22:49, Helge Deller <deller@gmx.de> wrote:
->>
->> [snip]
-> Hi Helge,
->
->> FWIW, I've done some cleanups to this patch and committed it to my for-=
-next tree.
->> In case it's split up, please use the revised version.
->>
->
-> Should I be testing with for-next (which contains this patch) or for-nex=
-t-next (which has some smaller bits)?
 
-for-next is for v5.18.
+--Apple-Mail=_D2F55E12-0882-4041-BC45-6AF20112F08F
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-for-next-next is planed to for v5.19
 
-so, please use for-next, since we want to get 5.18 finally fixed.
 
-Thanks!
-Helge
+> On 16 May 2022, at 23:24, Helge Deller <deller@gmx.de> wrote:
+>=20
+> On 5/17/22 00:09, Sam James wrote:
+>>> On 16 May 2022, at 22:49, Helge Deller <deller@gmx.de> wrote:
+>>>=20
+>>> [snip]
+>> Hi Helge,
+>>=20
+>>> FWIW, I've done some cleanups to this patch and committed it to my =
+for-next tree.
+>>> In case it's split up, please use the revised version.
+>>>=20
+>>=20
+>> Should I be testing with for-next (which contains this patch) or =
+for-next-next (which has some smaller bits)?
+>=20
+> for-next is for v5.18.
+>=20
+> for-next-next is planed to for v5.19
+>=20
+> so, please use for-next, since we want to get 5.18 finally fixed.
+>=20
+
+Got it, thanks to both you and Dave!
+
+I'll be testing it on RP3440 (PA8800) and C8000 (PA8900). If you need =
+it, I can test on C3600 (PA8600) too.
+
+Best,
+sam
+
+> Thanks!
+> Helge
+
+
+--Apple-Mail=_D2F55E12-0882-4041-BC45-6AF20112F08F
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGTBAEBCgB9FiEEYOpPv/uDUzOcqtTy9JIoEO6gSDsFAmKC1jRfFIAAAAAALgAo
+aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldDYw
+RUE0RkJGRkI4MzUzMzM5Q0FBRDRGMkY0OTIyODEwRUVBMDQ4M0IACgkQ9JIoEO6g
+SDug7Af9HRnzhPkf3qCd7rOnWKHiY3Wzoc0Q6n3hzXQGum093g/yP3ypwg9SKigG
+gIqLToWzxgyWrKLJnTVSoJb6tWkGVO7cIQxivwKz8DGpIju85yKF8cux3M2Vtykg
++poPyQdQI0XVUYkGr60cgVuPgOFVIVIg6YrFSkMM2p537AMfvDesNq/f/Kxmimsj
+FVD8q42W0ZeiKe4PuvScfP8ofxGsUpsWTPozciSLavAWQlSQguXC6ArYo6vXFKxg
+RwBIa/ZFuH6927gzhGr5Fzou76RUdXl/pilUyzTijQIgf55L2qK/LnvkjH7nIu8K
+awRV11ULrlphjz2nwmtLELFnrDUOWQ==
+=XBz9
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_D2F55E12-0882-4041-BC45-6AF20112F08F--
