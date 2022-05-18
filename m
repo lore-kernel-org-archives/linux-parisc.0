@@ -2,36 +2,36 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73E1AC4332F
-	for <linux-parisc@archiver.kernel.org>; Wed, 18 May 2022 12:34:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BBBFC433F5
+	for <linux-parisc@archiver.kernel.org>; Wed, 18 May 2022 12:35:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237052AbiERMeu (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 18 May 2022 08:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
+        id S237209AbiERMfJ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 18 May 2022 08:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236971AbiERMeL (ORCPT
+        with ESMTP id S237088AbiERMef (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 18 May 2022 08:34:11 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D406170641;
-        Wed, 18 May 2022 05:29:57 -0700 (PDT)
+        Wed, 18 May 2022 08:34:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1031F195BF8;
+        Wed, 18 May 2022 05:30:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B0142B81FBA;
-        Wed, 18 May 2022 12:29:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2971CC385AA;
-        Wed, 18 May 2022 12:29:38 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 09B2FB81FBA;
+        Wed, 18 May 2022 12:30:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F6E0C385AA;
+        Wed, 18 May 2022 12:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652876979;
-        bh=T4OxzCgaUBm2DqSHVnJ48Imayt8DaPfRZpxmkuNlJUk=;
+        s=k20201202; t=1652877009;
+        bh=J6r/QpIudsRd9kmTBML/fcglHaqE7Am2Dj6WFc1ZLw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O4Gwy2CLaxkWGYPlfjE1xp8IMfIBQ+EP+i4O99KjWycwZG2QpL7WZDKreU3OiEr+S
-         2mDfdUcKVi/foTYTaUup6PEPF1hC9zHr8xQBZ9fapi6bsF7WsDdndDxw9C0bxac8Sc
-         smBi4cnwHY+mDmpK1yRj/Q2IDSHzc2koOnC+vUoOEgb5Bk6qyGp3N+zDnDIX5Ojf4Q
-         NzjlFFfsa+3rxfHKxDCghwzeJPb9cZLqq0zmQFhLWTHeQZHKtbzyS0X7AEif0qAR17
-         P4I0Gr0ErirOPDFcjnIhGF7aufGAxfXhdum/xYx3uk1XC9523kymQgo8mPHck04ZRZ
-         MsO0aeo7Lpb6Q==
+        b=pk2Z5unD+a/2g/rz82Lmlm1lJZZo4+GJaW3v17Nv+z2h6e6HQb9yhcq41SXZAmWaU
+         Uzf9D2mNzd5+1QTWOCzZGL1EKGjeF9Pq71ld28PGJ9ILqlVVQF3CyZEu1giz8YMwxK
+         XdGMbCv7Afk4V0TqWnqDYKFL+8JitGuWGBZlCg6Bqsr8SRvhVXDtFp21xhhE9oQSEJ
+         eNP0BnRfHfBNXXqLLjg5sKAvs/i/Ci8OAMgimBjDyvIUnbYrSLNcQ1lOmzADHc068v
+         x4b0EEAhBNFXWaMQnno6hyo0poCnre9juBPeTz6DZzWPfMDb1n7hjl4EsFoOP2oBZP
+         mKj1Mfxq4yx3Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Yang Yingliang <yangyingliang@huawei.com>,
@@ -40,12 +40,12 @@ Cc:     Yang Yingliang <yangyingliang@huawei.com>,
         Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
         edumazet@google.com, pabeni@redhat.com, arnd@arndb.de,
         jgg@ziepe.ca, netdev@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 4/6] ethernet: tulip: fix missing pci_disable_device() on error in tulip_init_one()
-Date:   Wed, 18 May 2022 08:29:27 -0400
-Message-Id: <20220518122929.343615-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 3/5] ethernet: tulip: fix missing pci_disable_device() on error in tulip_init_one()
+Date:   Wed, 18 May 2022 08:29:58 -0400
+Message-Id: <20220518123000.343787-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220518122929.343615-1-sashal@kernel.org>
-References: <20220518122929.343615-1-sashal@kernel.org>
+In-Reply-To: <20220518123000.343787-1-sashal@kernel.org>
+References: <20220518123000.343787-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -71,7 +71,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/dec/tulip/tulip_core.c b/drivers/net/ethernet/dec/tulip/tulip_core.c
-index 3e3e08698876..fea4223ad6f1 100644
+index 851b6d1f5a42..35bcb2c52dbc 100644
 --- a/drivers/net/ethernet/dec/tulip/tulip_core.c
 +++ b/drivers/net/ethernet/dec/tulip/tulip_core.c
 @@ -1410,8 +1410,10 @@ static int tulip_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
@@ -86,7 +86,7 @@ index 3e3e08698876..fea4223ad6f1 100644
  
  	SET_NETDEV_DEV(dev, &pdev->dev);
  	if (pci_resource_len (pdev, 0) < tulip_tbl[chip_idx].io_size) {
-@@ -1788,6 +1790,7 @@ static int tulip_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+@@ -1789,6 +1791,7 @@ static int tulip_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
  
  err_out_free_netdev:
  	free_netdev (dev);
