@@ -2,155 +2,106 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52397C433F5
-	for <linux-parisc@archiver.kernel.org>; Wed, 18 May 2022 07:39:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 488FEC433F5
+	for <linux-parisc@archiver.kernel.org>; Wed, 18 May 2022 07:44:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232317AbiERHi6 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 18 May 2022 03:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
+        id S232318AbiERHn5 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 18 May 2022 03:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232286AbiERHiz (ORCPT
+        with ESMTP id S232373AbiERHn4 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 18 May 2022 03:38:55 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CE31059E0;
-        Wed, 18 May 2022 00:38:54 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id F09A21F9A4;
-        Wed, 18 May 2022 07:38:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652859533; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+lyyDjAjgyfEhWEBfN0EDdR6Jmx4pHSl+tBKIhX1g7c=;
-        b=j0w4/FD8BT6n50PoBFWZ2B9hxn1McNizrLx3lcvWYTHgmFBxhdJUV3RAv4Ssdii4QSileV
-        Dl88LCOs7NY6Zlry9hleanS5GY4TpOEfeqkhXf/HNSrx5fV+jFGy5YS3+L30Mt6n4dNsLm
-        vyO1S4F65bAw7AbpuXo9HU2OHf85ddo=
-Received: from suse.cz (unknown [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 5D79B2C142;
-        Wed, 18 May 2022 07:38:52 +0000 (UTC)
-Date:   Wed, 18 May 2022 09:38:52 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        David Gow <davidgow@google.com>,
-        Evan Green <evgreen@chromium.org>,
-        Julius Werner <jwerner@chromium.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-pm@vger.kernel.org,
-        akpm@linux-foundation.org, bhe@redhat.com,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
-        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
-        halves@canonical.com, fabiomirmar@gmail.com,
-        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
-        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
-        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
-        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Norris <computersforpeace@gmail.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dexuan Cui <decui@microsoft.com>,
-        Doug Berger <opendmb@gmail.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Justin Chen <justinpopo6@gmail.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Markus Mayer <mmayer@broadcom.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mihai Carabas <mihai.carabas@oracle.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        zhenwei pi <pizhenwei@bytedance.com>
-Subject: Re: [PATCH 19/30] panic: Add the panic hypervisor notifier list
-Message-ID: <YoSijKwuwbY9uHxG@alley>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-20-gpiccoli@igalia.com>
- <YoJZVZl/MH0KiE/J@alley>
- <ad082ce7-db50-13bb-3dbb-9b595dfa78be@igalia.com>
- <YoOpyW1+q+Z5as78@alley>
- <d72b9aab-675c-ac89-b73a-b1de4a0b722d@igalia.com>
+        Wed, 18 May 2022 03:43:56 -0400
+X-Greylist: delayed 1801 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 18 May 2022 00:43:52 PDT
+Received: from outbound5i.eu.mailhop.org (outbound5i.eu.mailhop.org [35.156.234.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6977027FF9
+        for <linux-parisc@vger.kernel.org>; Wed, 18 May 2022 00:43:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1652857063; cv=none;
+        d=outbound.mailhop.org; s=arc-outbound20181012;
+        b=bRd8+Q46NgbENUyIchSjDUSeu2fpzdS4QFbCk3vZ6xZAERIsNy/gaMfx0PIl9XEav8rv6p8BAudUT
+         rkfVYHRYAbn4MSeDjs3Oww5P0O5iJb5/NiJH/KjahLHDPAHQ3Ef+Azg/zyRxZ5iEMysWxzgrCvXqKb
+         Usd9lrdm4khDKx6u1S3CpPHDwAw7ogvaUdXv81mEv7kZ80G7JvCgujIg0doSMAAeTw1U3mwG2xFUSa
+         ElbzY9lMWlke9jToHpkMzQvgiRkeYS1iRFzsbhyPTyjcVI3mZLNC1fJtTDSb6PHWXWU/6vKvpJNINP
+         ynNEv5NEZAciq2QxlHxGJza8SORv0qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=outbound.mailhop.org; s=arc-outbound20181012;
+        h=content-type:mime-version:message-id:in-reply-to:date:references:subject:cc:
+         to:from:dkim-signature:dkim-signature:from;
+        bh=N/AKMdeBtgz5NQpWuWjsa101CdoV6t7LzXY8BMZ3fMw=;
+        b=DoX9rQ7Nj2mhTjJsXWmcGMdx+Vq2rrWvcCdZXZaIhZauBSLZmxmg7TgKhJM/tLoRiEkwR4JS07tr2
+         2wU/bUdDbcebSeA2vcn9fhnACg8xIpUXYULGgiSqMSkuzd/+eJSnqrDbk14Iu/HHryRafDZY5CXYIo
+         oJA1GEM3vfzGU3vy92xaGx2tkSL5Ff2nmrZ/1kRdAffYK2OF6XVnikoGmEUUjcwPOaciT8CppC4BTW
+         tQ6PKOcT0tN9mlD83r3wAgJQ/mvPLmKQnr3hZsjFziaNrCpM0yThviwXj+dtL2Te1O4SR3MVm/7U5y
+         q/OAptRsCodZ2rbZKa+cIOQ2WKEJ9DQ==
+ARC-Authentication-Results: i=1; outbound2.eu.mailhop.org;
+        spf=pass smtp.mailfrom=stackframe.org smtp.remote-ip=130.180.31.158;
+        dmarc=none header.from=stackframe.org;
+        arc=none header.oldest-pass=0;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=stackframe.org; s=duo-1634547266507-560c42ae;
+        h=content-type:mime-version:message-id:in-reply-to:date:references:subject:cc:
+         to:from:from;
+        bh=N/AKMdeBtgz5NQpWuWjsa101CdoV6t7LzXY8BMZ3fMw=;
+        b=pjWBNuhmQMkaPfH2nDM9FJ6nIieBw9uWsU38qgsoGkvtQUpocZhvYWmaeHghKkHaVJuRfOvb97ibm
+         bb5zWoWcAnK3HNzmJaune5ej2NjvARBt4pjOCu1aBdN6hPEIInkXlW+nSLGzAfzllvNqBm9w+5w/F5
+         02TPwIepknJGPPD4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=outbound.mailhop.org; s=dkim-high;
+        h=content-type:mime-version:message-id:in-reply-to:date:references:subject:cc:
+         to:from:from;
+        bh=N/AKMdeBtgz5NQpWuWjsa101CdoV6t7LzXY8BMZ3fMw=;
+        b=C5JWoV/XCME7SRTZM9uEBf0N8H9VvOudCR3f6adjtyZyB8EP3j/i33zSJ9K/7Z9dHp0ug/xcnEbHN
+         3bJ0/QVNNAsmX/FeUzQIPLPt+mydsAjWV3hUhcdjSOPGYanqiXnfjSg9fI7onzcJUjtBCWoOumojWp
+         FrzdXoHwRzkIseoDPgWH93JYQKrde+/2AnlAy532NLH+Cm+3kw0fBPWltATu7GsutoVVVwukzvksxw
+         Tonnb93MXbXL6MAAbNR9b8WY0CnGmHsW8vNbZvqsQfLMbur6RR0wvjpIszCMirwXHJV/2gSEZL+peD
+         KekrsPMYXcG16hOlfTB5MAF6wVAARpg==
+X-Originating-IP: 130.180.31.158
+X-MHO-RoutePath: dG9ta2lzdG5lcm51
+X-MHO-User: cd84c994-d677-11ec-bc05-4b4748ac966b
+X-Report-Abuse-To: https://support.duocircle.com/support/solutions/articles/5000540958-duocircle-standard-smtp-abuse-information
+X-Mail-Handler: DuoCircle Outbound SMTP
+Received: from mail.duncanthrax.net (ip-130-180-031-158.um40.pools.vodafone-ip.de [130.180.31.158])
+        by outbound2.eu.mailhop.org (Halon) with ESMTPSA
+        id cd84c994-d677-11ec-bc05-4b4748ac966b;
+        Wed, 18 May 2022 06:57:40 +0000 (UTC)
+Received: from ip-046-005-169-013.um12.pools.vodafone-ip.de ([46.5.169.13] helo=x1.stackframe.org.stackframe.org)
+        by mail.duncanthrax.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <svens@stackframe.org>)
+        id 1nrDct-0000CC-IW; Wed, 18 May 2022 08:57:43 +0200
+From:   Sven Schnelle <svens@stackframe.org>
+To:     Helge Deller <deller@gmx.de>
+Cc:     linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: Re: [PATCH] parisc: Prevent using same register as soure and target
+ in extru/shr
+References: <YoOZy3A3R0i0DUWB@p100>
+        <8b5c308a-f3ea-e07f-053a-ad086ce75c43@gmx.de>
+Date:   Wed, 18 May 2022 08:57:36 +0200
+In-Reply-To: <8b5c308a-f3ea-e07f-053a-ad086ce75c43@gmx.de> (Helge Deller's
+        message of "Tue, 17 May 2022 14:54:44 +0200")
+Message-ID: <87zgjfl44f.fsf@x1.stackframe.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d72b9aab-675c-ac89-b73a-b1de4a0b722d@igalia.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue 2022-05-17 13:42:06, Guilherme G. Piccoli wrote:
-> On 17/05/2022 10:57, Petr Mladek wrote:
-> >> Disagree here, I'm CCing Florian for information.
-> >>
-> >> This notifier preserves RAM so it's *very interesting* if we have
-> >> kmsg_dump() for example, but maybe might be also relevant in case kdump
-> >> kernel is configured to store something in a persistent RAM (then,
-> >> without this notifier, after kdump reboots the system data would be lost).
-> > 
-> > I see. It is actually similar problem as with
-> > drivers/firmware/google/gsmi.c.
-> > 
-> > I does similar things like kmsg_dump() so it should be called in
-> > the same location (after info notifier list and before kdump).
-> > 
-> > A solution might be to put it at these notifiers at the very
-> > end of the "info" list or make extra "dump" notifier list.
-> 
-> Here I still disagree. I've commented in the other response thread
-> (about Google gsmi) about the semantics of the hypervisor list, but
-> again: this list should contain callbacks that
-> 
-> (a) Should run early, _by default_ before a kdump;
-> (b) Communicate with the firmware/hypervisor in a "low-risk" way;
-> 
-> Imagine a scenario where users configure kdump kernel to save something
-> in a persistent form in DRAM - it'd be like a late pstore, in the next
-> kernel. This callback enables that, it's meant to inform FW "hey, panic
-> happened, please from now on don't clear the RAM in the next FW-reboot".
-> I don't see a reason to postpone that - let's see if the maintainers
-> have an opinion.
+Helge Deller <deller@gmx.de> writes:
 
-I have answered this in more detail in the other reply, see
-https://lore.kernel.org/r/YoShZVYNAdvvjb7z@alley
+> On 5/17/22 14:49, Helge Deller wrote:
+>> In 2004 Randolph added the shr() assembly macro and noted that the
+>> source and target register could not be the same.
+>>
+>> I did not find any confindence in the docs for this restriction. Maybe
+>> it's related that on PA2.0 the upper bits may be clobbered?
+>
+> Looking at the generated kernel code from C-files, I'll find all over usages of
+> 	extru source, x,y,  target
+> where source and target are the same register.
+> So, at least for 32-bit this restriction can't be true.
 
-I agree that both notifiers in
-
-    drivers/soc/bcm/brcmstb/pm/pm-arm.c
-    drivers/firmware/google/gsmi.c
-
-better fit into the hypervisor list after all.
-
-Best Regards,
-Petr
+I did a quick objdump on the 64 bit HP-UX kernel and that one also uses
+extrd/extrw where target and source are the same register. So i don't
+think that restriction is true.
