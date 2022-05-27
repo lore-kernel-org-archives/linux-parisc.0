@@ -2,292 +2,173 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C506FC433EF
-	for <linux-parisc@archiver.kernel.org>; Fri, 27 May 2022 10:11:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AE86C433FE
+	for <linux-parisc@archiver.kernel.org>; Fri, 27 May 2022 10:46:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243542AbiE0KLD (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 27 May 2022 06:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43006 "EHLO
+        id S1351153AbiE0Kqt (ORCPT
+        <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 27 May 2022 06:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbiE0KLC (ORCPT
+        with ESMTP id S1344688AbiE0Kqi (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 27 May 2022 06:11:02 -0400
-Received: from condef-07.nifty.com (condef-07.nifty.com [202.248.20.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F30128141
-        for <linux-parisc@vger.kernel.org>; Fri, 27 May 2022 03:11:01 -0700 (PDT)
-Received: from conuserg-08.nifty.com ([10.126.8.71])by condef-07.nifty.com with ESMTP id 24RA4YuJ017505
-        for <linux-parisc@vger.kernel.org>; Fri, 27 May 2022 19:04:48 +0900
-Received: from grover.sesame (133-32-177-133.west.xps.vectant.ne.jp [133.32.177.133]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 24RA2hPU029808;
-        Fri, 27 May 2022 19:02:48 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 24RA2hPU029808
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1653645768;
-        bh=63AM9Y7KFJuXBvKXOmj6kJdz+ZNVbwHrp42ZdIFptX0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RW1wttQF3Oea8ArmryxA7c5OlRphy4XLSdTGnKXoDhQDvP5OS0CvMg6u22wNMneYx
-         MmO+ShRV77S1L7Kw29gY8hdiRenlRehQa9VP/A7EW8Q74MIo5gh55tpvyRw/EjcNDt
-         FtZa4M+gKZRkV1J7Xeaw1CpPiJZPNC+qWSvPi6SIOT+q7f3UQqnuWYNdCbUsSk7eeK
-         VXAsUTwKMj0SR86wH6e551ECa1syR07zSaD6957dxD4pxsoSxokifNvrkHppOu8zAW
-         mngXMEsnyFXgvcZ5tdQ8cgd6TbzUkBzBfMsFXGJzFu11tESBdN4bw0fStXUmgTILtj
-         rmlIrYn4jxCTQ==
-X-Nifty-SrcIP: [133.32.177.133]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
+        Fri, 27 May 2022 06:46:38 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248E4140E2;
+        Fri, 27 May 2022 03:46:37 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id m20so7894959ejj.10;
+        Fri, 27 May 2022 03:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VEAekRrz/FSY4pk4QnV3m6H5QVjhz8BFDYr0EcpVw1E=;
+        b=nXTl96gpCDbYy3bbmZHUFxanwBKanpTD5T3ye91nNt0S5DzRS50X+C3V5calou/Tbd
+         W3tp+Pa5ui5nyk/J9IilzxqUhKzX+QyGcukjZk0ELfa/RtKrZMaq9i+yE1j0RcYeHGEH
+         V+4RtLXDWPxnAymJMfcVpu0JZEZoxenwNXkmgyYKMQXGnN1Ls7NkOSx9TgW4IEazH0HS
+         TOy4lNsQjFRd71dz5D/Ux8BGGU+UgNurAc7P2zcBMC8bJFwbS5pJWekOq461oc+DsRDd
+         eh87WbfBiCTIu2NxwA+S3LoC7J0WxrnESI1Jt77XHjKjToAke3bka2tT28oXpFfiDYxk
+         GFbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=VEAekRrz/FSY4pk4QnV3m6H5QVjhz8BFDYr0EcpVw1E=;
+        b=LO/1f7GqF0w+xraxHPRErJiYfcdeZvbNzV9YGGojCAY5Bupb1bp0W3LZctCENfsFtR
+         /WAKDzDKat2OkwGPW6D9fTl8fLj4Etmld6CZcJPticTjrF4H+haFomQ5h2e2HbYEdbs9
+         rJXKpbLU4YBYdRz+DOOZSbUePDCap7/oqhjphJIaE5H/vNGTmKGyWs34XdICGbJfAF2E
+         FnHaX6s/oiFnVrTvwhnGudEJM0wErbTqenz+2gjOQJe2b/lD6oLvnqlQCGKjtFr1Yece
+         d/2nPYfV3C7ZHShCeCpBEDW/M2LNQKNi0ij4kNVyvIb3aU7A7WLEEfAmvHnsZOmvVZPm
+         eUGQ==
+X-Gm-Message-State: AOAM530kWFv/pmgO/9MV407r0PZ0iD3pk3N1Wphwja2DI6Sdq8+O0cTf
+        4C7lKcUVxCvRV2qALA5lixmZBgoYiWo=
+X-Google-Smtp-Source: ABdhPJyWn7wVchQLELsEVq6TA/gUzEaBn19VUAXtFTYBInhQr0sSQqMx29HcpQwhBHqmmOM8Z+iT0g==
+X-Received: by 2002:a17:907:7baa:b0:6fe:b3dc:2378 with SMTP id ne42-20020a1709077baa00b006feb3dc2378mr30766036ejc.266.1653648395645;
+        Fri, 27 May 2022 03:46:35 -0700 (PDT)
+Received: from gmail.com (563BA16F.dsl.pool.telekom.hu. [86.59.161.111])
+        by smtp.gmail.com with ESMTPSA id i20-20020a17090639d400b006fec1a73e48sm1320742eje.64.2022.05.27.03.46.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 May 2022 03:46:34 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 27 May 2022 12:46:31 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Richard Henderson <rth@twiddle.net>,
+        David Hildenbrand <david@redhat.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michal Simek <monstr@monstr.eu>,
+        Russell King <linux@armlinux.org.uk>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        linux-riscv@lists.infradead.org,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonas Bonn <jonas@southpole.se>, Will Deacon <will@kernel.org>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        openrisc@lists.librecores.org, linux-s390@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-m68k@lists.linux-m68k.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Chris Zankel <chris@zankel.net>,
         Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, llvm@lists.linux.dev,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH v7 4/8] kbuild: check static EXPORT_SYMBOL* by script instead of modpost
-Date:   Fri, 27 May 2022 19:01:51 +0900
-Message-Id: <20220527100155.1996314-5-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220527100155.1996314-1-masahiroy@kernel.org>
-References: <20220527100155.1996314-1-masahiroy@kernel.org>
+        Alistair Popple <apopple@nvidia.com>,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        sparclinux@vger.kernel.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-xtensa@linux-xtensa.org, Nicholas Piggin <npiggin@gmail.com>,
+        linux-sh@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Borislav Petkov <bp@alien8.de>, linux-mips@vger.kernel.org,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Helge Deller <deller@gmx.de>, Vineet Gupta <vgupta@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-um@lists.infradead.org, linux-alpha@vger.kernel.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-ia64@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dinh Nguyen <dinguyen@kernel.org>, Guo Ren <guoren@kernel.org>,
+        linux-snps-arc@lists.infradead.org,
+        Hugh Dickins <hughd@google.com>, Rich Felker <dalias@libc.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        linuxppc-dev@lists.ozlabs.org, Brian Cain <bcain@quicinc.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        linux-parisc@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v3] mm: Avoid unnecessary page fault retires on shared
+ memory types
+Message-ID: <YpCsBwFArieTpvg2@gmail.com>
+References: <20220524234531.1949-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220524234531.1949-1-peterx@redhat.com>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The 'static' specifier and EXPORT_SYMBOL() are an odd combination.
 
-Commit 15bfc2348d54 ("modpost: check for static EXPORT_SYMBOL*
-functions") tried to detect it, but this check has false negatives.
+* Peter Xu <peterx@redhat.com> wrote:
 
-Here is the sample code.
+> This patch provides a ~12% perf boost on my aarch64 test VM with a simple
+> program sequentially dirtying 400MB shmem file being mmap()ed and these are
+> the time it needs:
+>
+>   Before: 650.980 ms (+-1.94%)
+>   After:  569.396 ms (+-1.38%)
 
-  Makefile:
+Nice!
 
-    obj-y += foo1.o foo2.o
+>  arch/x86/mm/fault.c           |  4 ++++
 
-  foo1.c:
+Reviewed-by: Ingo Molnar <mingo@kernel.org>
 
-    #include <linux/export.h>
-    static void foo(void) {}
-    EXPORT_SYMBOL(foo);
+Minor comment typo:
 
-  foo2.c:
+> +		/*
+> +		 * We should do the same as VM_FAULT_RETRY, but let's not
+> +		 * return -EBUSY since that's not reflecting the reality on
+> +		 * what has happened - we've just fully completed a page
+> +		 * fault, with the mmap lock released.  Use -EAGAIN to show
+> +		 * that we want to take the mmap lock _again_.
+> +		 */
 
-    void foo(void) {}
+s/reflecting the reality on what has happened
+ /reflecting the reality of what has happened
 
-foo1.c exports the static symbol 'foo', but modpost cannot catch it
-because it is fooled by foo2.c, which has a global symbol with the
-same name.
+>  	ret = handle_mm_fault(vma, address, fault_flags, NULL);
+> +
+> +	if (ret & VM_FAULT_COMPLETED) {
+> +		/*
+> +		 * NOTE: it's a pity that we need to retake the lock here
+> +		 * to pair with the unlock() in the callers. Ideally we
+> +		 * could tell the callers so they do not need to unlock.
+> +		 */
+> +		mmap_read_lock(mm);
+> +		*unlocked = true;
+> +		return 0;
 
-s->is_static is cleared if a global symbol with the same name is found
-somewhere, but EXPORT_SYMBOL() and the global symbol do not necessarily
-belong to the same compilation unit.
+Indeed that's a pity - I guess more performance could be gained here, 
+especially in highly parallel threaded workloads?
 
-This check should be done per compilation unit, but I do not know how
-to do it in modpost. modpost runs against vmlinux.o or modules, which
-merges multiple objects, then forgets their origin.
+Thanks,
 
-modpost cannot parse individual objects because they may not be ELF but
-LLVM IR when CONFIG_LTO_CLANG=y.
-
-Add a simple bash script to parse the output from ${NM}. This works for
-CONFIG_LTO_CLANG=y because llvm-nm can dump symbols of LLVM IR files.
-
-Revert 15bfc2348d54.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM-14 (x86-64)
----
-
-Changes in v7:
-  - Fix sparc64 build (skip the line if the number of fields is less than 3)
-
-Changes in v5:
-  - Add more comments in the script
-
-Changes in v4:
-  - New patch
-
- scripts/Makefile.build     |  4 +++
- scripts/check-local-export | 65 ++++++++++++++++++++++++++++++++++++++
- scripts/mod/modpost.c      | 28 +---------------
- 3 files changed, 70 insertions(+), 27 deletions(-)
- create mode 100755 scripts/check-local-export
-
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 23e1fb19f9ad..0135b4e7f78b 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -248,9 +248,12 @@ cmd_gen_ksymdeps = \
- 	$(CONFIG_SHELL) $(srctree)/scripts/gen_ksymdeps.sh $@ >> $(dot-target).cmd
- endif
- 
-+cmd_check_local_export = $(srctree)/scripts/check-local-export $@
-+
- define rule_cc_o_c
- 	$(call cmd_and_fixdep,cc_o_c)
- 	$(call cmd,gen_ksymdeps)
-+	$(call cmd,check_local_export)
- 	$(call cmd,checksrc)
- 	$(call cmd,checkdoc)
- 	$(call cmd,gen_objtooldep)
-@@ -261,6 +264,7 @@ endef
- define rule_as_o_S
- 	$(call cmd_and_fixdep,as_o_S)
- 	$(call cmd,gen_ksymdeps)
-+	$(call cmd,check_local_export)
- 	$(call cmd,gen_objtooldep)
- 	$(call cmd,gen_symversions_S)
- endef
-diff --git a/scripts/check-local-export b/scripts/check-local-export
-new file mode 100755
-index 000000000000..017119d89cd2
---- /dev/null
-+++ b/scripts/check-local-export
-@@ -0,0 +1,65 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Copyright (C) 2022 Masahiro Yamada <masahiroy@kernel.org>
-+#
-+# Exit with error if a local exported symbol is found.
-+# EXPORT_SYMBOL should be used for global symbols.
-+
-+set -e
-+
-+declare -A symbol_types
-+declare -a export_symbols
-+
-+exit_code=0
-+
-+while read value type name
-+do
-+	# Skip the number of fields is less than 3.
-+	#
-+	# case 1)
-+	#   For undefined symbols, the first field (value) is empty.
-+	#   The outout looks like this:
-+	#     "                 U _printk"
-+	#   It is unneeded to record undefined symbols.
-+	#
-+	# case 2)
-+	#   For Clang LTO, llvm-nm outputs a line with type 't' but empty name:
-+	#     "---------------- t"
-+	if [[ -z ${name} ]]; then
-+		continue
-+	fi
-+
-+	# save (name, type) in the associative array
-+	symbol_types[${name}]=${type}
-+
-+	# append the exported symbol to the array
-+	if [[ ${name} == __ksymtab_* ]]; then
-+		export_symbols+=(${name#__ksymtab_})
-+	fi
-+
-+	# If there is no symbol in the object, ${NM} (both GNU nm and llvm-nm)
-+	# shows 'no symbols' diagnostic (but exits with 0). It is harmless and
-+	# hidden by '2>/dev/null'. However, it suppresses real error messages
-+	# as well. Add a hand-crafted error message here.
-+	#
-+	# Use --quiet instead of 2>/dev/null when we upgrade the minimum version
-+	# of binutils to 2.37, llvm to 13.0.0.
-+	#
-+	# Then, the following line will be really simple:
-+	#   done < <(${NM} --quiet ${1})
-+done < <(${NM} ${1} 2>/dev/null || { echo "${0}: ${NM} failed" >&2; false; } )
-+
-+# Catch error in the process substitution
-+wait $!
-+
-+for name in "${export_symbols[@]}"
-+do
-+	# nm(3) says "If lowercase, the symbol is usually local"
-+	if [[ ${symbol_types[$name]} =~ [a-z] ]]; then
-+		echo "$@: error: local symbol '${name}' was exported" >&2
-+		exit_code=1
-+	fi
-+done
-+
-+exit ${exit_code}
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index e74224a6a8e8..9269735f85c5 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -212,7 +212,6 @@ struct symbol {
- 	unsigned int crc;
- 	bool crc_valid;
- 	bool weak;
--	bool is_static;		/* true if symbol is not global */
- 	bool is_gpl_only;	/* exported by EXPORT_SYMBOL_GPL */
- 	char name[];
- };
-@@ -242,7 +241,7 @@ static struct symbol *alloc_symbol(const char *name)
- 
- 	memset(s, 0, sizeof(*s));
- 	strcpy(s->name, name);
--	s->is_static = true;
-+
- 	return s;
- }
- 
-@@ -2064,20 +2063,6 @@ static void read_symbols(const char *modname)
- 					     sym_get_data(&info, sym));
- 	}
- 
--	// check for static EXPORT_SYMBOL_* functions && global vars
--	for (sym = info.symtab_start; sym < info.symtab_stop; sym++) {
--		unsigned char bind = ELF_ST_BIND(sym->st_info);
--
--		if (bind == STB_GLOBAL || bind == STB_WEAK) {
--			struct symbol *s =
--				find_symbol(remove_dot(info.strtab +
--						       sym->st_name));
--
--			if (s)
--				s->is_static = false;
--		}
--	}
--
- 	check_sec_ref(modname, &info);
- 
- 	if (!mod->is_vmlinux) {
-@@ -2507,7 +2492,6 @@ static void read_dump(const char *fname)
- 			mod->from_dump = true;
- 		}
- 		s = sym_add_exported(symname, mod, gpl_only);
--		s->is_static = false;
- 		sym_set_crc(s, crc);
- 		sym_update_namespace(symname, namespace);
- 	}
-@@ -2572,7 +2556,6 @@ int main(int argc, char **argv)
- 	char *missing_namespace_deps = NULL;
- 	char *dump_write = NULL, *files_source = NULL;
- 	int opt;
--	int n;
- 	LIST_HEAD(dump_lists);
- 	struct dump_list *dl, *dl2;
- 
-@@ -2648,15 +2631,6 @@ int main(int argc, char **argv)
- 	if (sec_mismatch_count && !sec_mismatch_warn_only)
- 		error("Section mismatches detected.\n"
- 		      "Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.\n");
--	for (n = 0; n < SYMBOL_HASH_SIZE; n++) {
--		struct symbol *s;
--
--		for (s = symbolhash[n]; s; s = s->next) {
--			if (s->is_static)
--				error("\"%s\" [%s] is a static EXPORT_SYMBOL\n",
--				      s->name, s->module->name);
--		}
--	}
- 
- 	if (nr_unresolved > MAX_UNRESOLVED_REPORTS)
- 		warn("suppressed %u unresolved symbol warnings because there were too many)\n",
--- 
-2.32.0
-
+	Ingo
