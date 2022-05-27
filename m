@@ -2,34 +2,36 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6759C4167B
-	for <linux-parisc@archiver.kernel.org>; Fri, 27 May 2022 10:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAD06C433EF
+	for <linux-parisc@archiver.kernel.org>; Fri, 27 May 2022 10:08:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350791AbiE0KF2 (ORCPT
-        <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 27 May 2022 06:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
+        id S235443AbiE0KII (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 27 May 2022 06:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350915AbiE0KFL (ORCPT
+        with ESMTP id S232795AbiE0KIH (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 27 May 2022 06:05:11 -0400
-Received: from conuserg-08.nifty.com (conuserg-08.nifty.com [210.131.2.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102691078B0;
-        Fri, 27 May 2022 03:05:09 -0700 (PDT)
+        Fri, 27 May 2022 06:08:07 -0400
+X-Greylist: delayed 117 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 May 2022 03:08:06 PDT
+Received: from condef-08.nifty.com (condef-08.nifty.com [202.248.20.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1701269A3
+        for <linux-parisc@vger.kernel.org>; Fri, 27 May 2022 03:08:06 -0700 (PDT)
+Received: from conuserg-08.nifty.com ([10.126.8.71])by condef-08.nifty.com with ESMTP id 24RA4T0J020409
+        for <linux-parisc@vger.kernel.org>; Fri, 27 May 2022 19:04:42 +0900
 Received: from grover.sesame (133-32-177-133.west.xps.vectant.ne.jp [133.32.177.133]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 24RA2hPX029808;
-        Fri, 27 May 2022 19:02:51 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 24RA2hPX029808
+        by conuserg-08.nifty.com with ESMTP id 24RA2hPQ029808;
+        Fri, 27 May 2022 19:02:44 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 24RA2hPQ029808
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1653645772;
-        bh=/LDGWcsQ86eGZ6AnM0sm302Ykct401VHcmgP1DL7HYM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rRtdN563IfYIa8UJiH9R6JJ+H+T8TUQiUgBziOGfpObJBS0vJgoUxq8MvApQYo5aV
-         O71PUr/VsqixjttnfTjeyypDUIv9rUsWLb4ujUwS/UU5A03nVQausNmzgYsgiYd43r
-         05WZFD8zP5J7ZoAldPOyNxWUv3GVaKzQh/fXLSxQJdNBqhfrcpQX3n4pdcni0SDM0A
-         4+PlqZsMPV/nyTcr799AAberdlGpzsfkVc30H9yuFqKcDiiHcXF143AZUtVsD/9Vme
-         2qvC268JrtUk4pUuE7NcTuPbeplTB5qsk4W8ZllSNgK7otYw7cd9E5l9gvfBKOKbTn
-         KnhUoIuWymdYA==
+        s=dec2015msa; t=1653645764;
+        bh=61zPFwXwuMzPPnYh5a2KY2eJrg46Tur01X/5UtHyktY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=2YPSV64Qy3StO2+UBYGQgOhCFR1cwIATKIFqJYTyDsdkMxdosGUD6v4/ed3N9Wbk1
+         H1h3RaS9tKQtF6OA0intkN7q+jMauoV0j4XpNnk+qeMaHauQVnjQtPsX46qKIqTlht
+         qIcHJse9UrOKt4R3ixLQUU3xdvackns8mxdNPk48DqTn4a4hapvuTTzCTWMgvQSjWb
+         kWRmGEDf1557zuUF7bglIVEyA4k9SQ43JXps4nTZV643+td0aA6zHEbs5v9kXYu7I6
+         oVCa2dvrMpB++v4qmTDq7rN5UQ+6n7qzYQO0EJuBLUNT7TKQo+5sNP5W2LBXYd4nOu
+         1xOiN1zVA94Tg==
 X-Nifty-SrcIP: [133.32.177.133]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
@@ -38,70 +40,50 @@ Cc:     linux-kernel@vger.kernel.org,
         Josh Poimboeuf <jpoimboe@redhat.com>, llvm@lists.linux.dev,
         Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <n.schier@avm.de>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>
-Subject: [PATCH v7 7/8] kbuild: add cmd_and_savecmd macro
-Date:   Fri, 27 May 2022 19:01:54 +0900
-Message-Id: <20220527100155.1996314-8-masahiroy@kernel.org>
+Subject: [PATCH v7 0/8] kbuild: yet another series of cleanups
+Date:   Fri, 27 May 2022 19:01:47 +0900
+Message-Id: <20220527100155.1996314-1-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220527100155.1996314-1-masahiroy@kernel.org>
-References: <20220527100155.1996314-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Separate out the command execution part of if_changed, as we did
-for if_changed_dep.
 
-This allows us to reuse it in if_changed_rule.
+A couple errors have been reported since I applied v6.
 
-  define rule_foo
-          $(call cmd_and_savecmd,foo)
-          $(call cmd,bar)
-  endef
+I am sending v7.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nicolas Schier <n.schier@avm.de>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM-14 (x86-64)
----
 
-(no changes since v4)
+Masahiro Yamada (8):
+  kbuild: replace $(linked-object) with CONFIG options
+  kbuild: do not create *.prelink.o for Clang LTO or IBT
+  parisc: fix the exit status of arch/parisc/nm
+  kbuild: check static EXPORT_SYMBOL* by script instead of modpost
+  kbuild: make built-in.a rule robust against too long argument error
+  kbuild: make *.mod rule robust against too long argument error
+  kbuild: add cmd_and_savecmd macro
+  kbuild: rebuild multi-object modules when objtool is updated
 
-Changes in v4:
-  - New.
-    Resent of my previous submission.
-    https://lore.kernel.org/all/20210831074004.3195284-10-masahiroy@kernel.org/
+ arch/parisc/Makefile       |  2 +-
+ arch/parisc/nm             | 12 +++++-
+ scripts/Kbuild.include     | 10 ++++-
+ scripts/Makefile.build     | 87 +++++++++++++++++---------------------
+ scripts/Makefile.lib       |  7 ---
+ scripts/Makefile.modfinal  |  5 +--
+ scripts/Makefile.modpost   |  9 +---
+ scripts/check-local-export | 65 ++++++++++++++++++++++++++++
+ scripts/mod/modpost.c      | 35 +--------------
+ 9 files changed, 128 insertions(+), 104 deletions(-)
+ mode change 100644 => 100755 arch/parisc/nm
+ create mode 100755 scripts/check-local-export
 
- scripts/Kbuild.include | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-index 455a0a6ce12d..ece44b735061 100644
---- a/scripts/Kbuild.include
-+++ b/scripts/Kbuild.include
-@@ -142,9 +142,11 @@ check-FORCE = $(if $(filter FORCE, $^),,$(warning FORCE prerequisite is missing)
- if-changed-cond = $(newer-prereqs)$(cmd-check)$(check-FORCE)
- 
- # Execute command if command has changed or prerequisite(s) are updated.
--if_changed = $(if $(if-changed-cond),                                        \
-+if_changed = $(if $(if-changed-cond),$(cmd_and_savecmd),@:)
-+
-+cmd_and_savecmd =                                                            \
- 	$(cmd);                                                              \
--	printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd, @:)
-+	printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd
- 
- # Execute the command and also postprocess generated .d dependencies file.
- if_changed_dep = $(if $(if-changed-cond),$(cmd_and_fixdep),@:)
 -- 
 2.32.0
 
