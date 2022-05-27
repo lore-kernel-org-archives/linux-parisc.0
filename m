@@ -2,34 +2,34 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C6C0C433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3865C4332F
 	for <linux-parisc@archiver.kernel.org>; Fri, 27 May 2022 10:05:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235508AbiE0KFZ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 27 May 2022 06:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
+        id S1350537AbiE0KF1 (ORCPT
+        <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 27 May 2022 06:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350917AbiE0KFL (ORCPT
+        with ESMTP id S1350936AbiE0KFT (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 27 May 2022 06:05:11 -0400
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 May 2022 03:05:10 PDT
+        Fri, 27 May 2022 06:05:19 -0400
 Received: from conuserg-08.nifty.com (conuserg-08.nifty.com [210.131.2.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB33106A69;
-        Fri, 27 May 2022 03:05:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCB110656D;
+        Fri, 27 May 2022 03:05:17 -0700 (PDT)
 Received: from grover.sesame (133-32-177-133.west.xps.vectant.ne.jp [133.32.177.133]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 24RA2hPY029808;
-        Fri, 27 May 2022 19:02:52 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 24RA2hPY029808
+        by conuserg-08.nifty.com with ESMTP id 24RA2hPW029808;
+        Fri, 27 May 2022 19:02:50 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 24RA2hPW029808
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1653645773;
-        bh=jCYP4PRhKOSnrfF8IZ7vFN4wM6bjQvDGDEXIDORQ8GA=;
+        s=dec2015msa; t=1653645771;
+        bh=3Oj1DhJn8CmLNtWlFeZrpT6DZfeTSEt5AwsBsBHThdw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jikzAhA331ol0PYeJLvjeBEbXdujI+kIf0o3ofXuKIEM+meJCBxUL0pXT+5ICkrrk
-         WGEI+qfbQ/eYfPv2X/mCpePNalEwvJoQquANrW6/9yUIYvayiJG3pecAlquCklvEzu
-         u9CAnTa2xAQfvS1milmRCkFvz1Ows9DtGa22empJVZwYjcSYwicxgZfullj8vV0NpX
-         hX66B4UH9sI7lX+LKJvr0edE2Gsv1wZM/9PTdvP6Iw+GTJyitv6VLegEP4RdZeO1DD
-         0UWOpTu5TFRnHiim7arEAU9NCmnt1bLfqR+NSrzOK26eqN0h/T4CftjLGI9wKkrUH9
-         bW4oOJqflZ3eQ==
+        b=v0PffPwf03F/kuXj7tkaHCU736AoC3p/iSQGFT4EuXdSk7N4AHNFlo+HaQjmoyMK5
+         MYXLldeol6bR3qKJAaweMayW9SJ7L6Ol6Gx2LFBAz6wUIBmKQeNtVMh+l6om88wy+U
+         9sXkPMptAwV2mpoMEItMwB2cESfr5Y0wkSPl1NUMRVGd1ntYQ/pbDemHSt8Yc71iwX
+         ZDOd7CzWE/FqZ/+GM1ZY3esJH3uCAuKs1WCrHQ7JXPKRhsYCDRAqY01YdQQusFIhY8
+         jXOfjZIOwRY7MZIVVBUlPLoYWmd/bZ5dq9bXs3v3fdYJ4Uu2NTj8B9IZyukH/7O3RK
+         JL/jIbsOZOSlQ==
 X-Nifty-SrcIP: [133.32.177.133]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
@@ -38,16 +38,15 @@ Cc:     linux-kernel@vger.kernel.org,
         Josh Poimboeuf <jpoimboe@redhat.com>, llvm@lists.linux.dev,
         Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
         Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <n.schier@avm.de>,
         Sedat Dilek <sedat.dilek@gmail.com>,
         Michal Marek <michal.lkml@markovi.net>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>
-Subject: [PATCH v7 8/8] kbuild: rebuild multi-object modules when objtool is updated
-Date:   Fri, 27 May 2022 19:01:55 +0900
-Message-Id: <20220527100155.1996314-9-masahiroy@kernel.org>
+Subject: [PATCH v7 6/8] kbuild: make *.mod rule robust against too long argument error
+Date:   Fri, 27 May 2022 19:01:53 +0900
+Message-Id: <20220527100155.1996314-7-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220527100155.1996314-1-masahiroy@kernel.org>
 References: <20220527100155.1996314-1-masahiroy@kernel.org>
@@ -57,56 +56,52 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-When CONFIG_LTO_CLANG or CONFIG_X86_KERNEL_IBT is enabled, objtool for
-multi-object modules is postponed until the objects are linked together.
+Like built-in.a, the command length of the *.mod rule scales with
+the depth of the directory times the number of objects in the Makefile.
 
-Make sure to re-run objtool and re-link multi-object modules when
-objtool is updated.
+Add $(obj)/ by the shell command (awk) instead of by Make's builtin
+function.
+
+In-tree modules still have some room to the limit (ARG_MAX=2097152),
+but this is more future-proof for big modules in a deep directory.
+
+For example, you can build i915 as a module (CONFIG_DRM_I915=m) and
+compare drivers/gpu/drm/i915/.i915.mod.cmd with/without this commit.
+
+The issue is more critical for external modules because the M= path
+can be very long as Jeff Johnson reported before [1].
+
+[1] https://lore.kernel.org/linux-kbuild/4c02050c4e95e4cb8cc04282695f8404@codeaurora.org/
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
 Tested-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nicolas Schier <n.schier@avm.de>
 Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM-14 (x86-64)
 ---
 
-(no changes since v4)
+Changes in v7:
+  - Add comment to the code
 
-Changes in v4:
-  - New
-    Resent of my previous submission
-    https://lore.kernel.org/linux-kbuild/20210831074004.3195284-11-masahiroy@kernel.org/
-
- scripts/Makefile.build | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ scripts/Makefile.build | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 31feb798e16e..bd5fc2b37387 100644
+index 014ebee70fd6..31feb798e16e 100644
 --- a/scripts/Makefile.build
 +++ b/scripts/Makefile.build
-@@ -412,13 +412,18 @@ $(obj)/modules.order: $(obj-m) FORCE
- $(obj)/lib.a: $(lib-y) FORCE
- 	$(call if_changed,ar)
+@@ -274,8 +274,10 @@ $(obj)/%.o: $(src)/%.c $(recordmcount_source) FORCE
+ 	$(call if_changed_rule,cc_o_c)
+ 	$(call cmd,force_checksrc)
  
--quiet_cmd_link_multi-m = LD [M]  $@
--      cmd_link_multi-m = $(LD) $(ld_flags) -r -o $@ @$(patsubst %.o,%.mod,$@) $(cmd_objtool)
-+quiet_cmd_ld_multi_m = LD [M]  $@
-+      cmd_ld_multi_m = $(LD) $(ld_flags) -r -o $@ @$(patsubst %.o,%.mod,$@) $(cmd_objtool)
-+
-+define rule_ld_multi_m
-+	$(call cmd_and_savecmd,ld_multi_m)
-+	$(call cmd,gen_objtooldep)
-+endef
+-cmd_mod = echo $(addprefix $(obj)/, $(call real-search, $*.o, .o, -objs -y -m)) | \
+-	$(AWK) -v RS='( |\n)' '!x[$$0]++' > $@
++# To make this rule robust against "Argument list too long" error,
++# ensure to add $(obj)/ prefix by a shell command.
++cmd_mod = echo $(call real-search, $*.o, .o, -objs -y -m) | \
++	$(AWK) -v RS='( |\n)' '!x[$$0]++ { print("$(obj)/"$$0) }' > $@
  
- $(multi-obj-m): objtool-enabled := $(delay-objtool)
- $(multi-obj-m): part-of-module := y
- $(multi-obj-m): %.o: %.mod FORCE
--	$(call if_changed,link_multi-m)
-+	$(call if_changed_rule,ld_multi_m)
- $(call multi_depend, $(multi-obj-m), .o, -objs -y -m)
- 
- targets := $(filter-out $(PHONY), $(targets))
+ $(obj)/%.mod: FORCE
+ 	$(call if_changed,mod)
 -- 
 2.32.0
 
