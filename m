@@ -2,138 +2,193 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D422AC433EF
-	for <linux-parisc@archiver.kernel.org>; Sat, 28 May 2022 07:12:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 339F6C43217
+	for <linux-parisc@archiver.kernel.org>; Sun, 29 May 2022 20:37:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbiE1HMN (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 28 May 2022 03:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55646 "EHLO
+        id S231809AbiE2UhB (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 29 May 2022 16:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbiE1HMM (ORCPT
+        with ESMTP id S229999AbiE2Ug6 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 28 May 2022 03:12:12 -0400
-Received: from conssluserg-06.nifty.com (conssluserg-06.nifty.com [210.131.2.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDBF2DE8;
-        Sat, 28 May 2022 00:12:09 -0700 (PDT)
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 24S7Bllt002344;
-        Sat, 28 May 2022 16:11:48 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 24S7Bllt002344
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1653721908;
-        bh=Ke5jHo8VtsnIBuHnKcTafO9UNs8CqmDY9CjC7LoWcyg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SvcSdFCEKE8RRXBMIA7XpimKe+J6UWfLaXXEF+jpQfgdH3GrR8iY9q+ZsIV8xpUKG
-         St5ue4XgFERGiF+RT4A6EvCeqUvsstIYFgPOqpteV32R21Bjx2ckbRlHWHpo47vG/u
-         I88KuEAfS8feRvZ1Zeu6e8/TF4z9c0qR3/CeLnvYu1SNlyr0FGFXmOg9qe8kTiydNj
-         XOVejqH6RrgBpRp8OhPPt43V0mzC7828XWYpqPtFLDDVU5P4JWiXvfNQNb71p9BZqb
-         gtsgVUBMyYe+u8aEOVKUYCS6ptlP6MLeS0ATaUDDjS8saLcJzCjLZSIqfyqyfzvrf5
-         uzrCpOzyd8HEA==
-X-Nifty-SrcIP: [209.85.216.51]
-Received: by mail-pj1-f51.google.com with SMTP id c10-20020a17090a4d0a00b001e283823a00so2764637pjg.0;
-        Sat, 28 May 2022 00:11:48 -0700 (PDT)
-X-Gm-Message-State: AOAM531zQaVWxXBQqYCASmimnbBy+RekmmU/IR17+KK2VGxCk/LQZG+4
-        pzucTx50/0ztqOSeHxet2oVIXgtpbU9sW/8gtuE=
-X-Google-Smtp-Source: ABdhPJxIgcs0jv5kYFRTIFUI+PolCz13bwvjdRWJmELBANgzVLOZHuuZI+qAblhvtkFaI4hepCODALq+NqXohlAZTOc=
-X-Received: by 2002:a17:90a:9b08:b0:1e2:837f:bcce with SMTP id
- f8-20020a17090a9b0800b001e2837fbccemr5889109pjp.144.1653721907307; Sat, 28
- May 2022 00:11:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220527100155.1996314-1-masahiroy@kernel.org>
- <20220527100155.1996314-2-masahiroy@kernel.org> <CA+icZUX_xeZ8k-3YZppGbuYzeypU8f_iz_-tuMJ1bg0dhikH8A@mail.gmail.com>
-In-Reply-To: <CA+icZUX_xeZ8k-3YZppGbuYzeypU8f_iz_-tuMJ1bg0dhikH8A@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 28 May 2022 16:10:22 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARyyomaAS1FK6CMbXKB69RzZMA-hDHL1wzLsuHtCkckyw@mail.gmail.com>
-Message-ID: <CAK7LNARyyomaAS1FK6CMbXKB69RzZMA-hDHL1wzLsuHtCkckyw@mail.gmail.com>
-Subject: Re: [PATCH v7 1/8] kbuild: replace $(linked-object) with CONFIG options
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        clang-built-linux <llvm@lists.linux.dev>,
+        Sun, 29 May 2022 16:36:58 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585DC6327;
+        Sun, 29 May 2022 13:36:57 -0700 (PDT)
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24TJMjwU012617;
+        Sun, 29 May 2022 20:33:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=x4N7bX0DRRebDZ+llHBEoOO1y8RqkpeB+Jlf+Vx+ui4=;
+ b=hakF/8aPF5DH3ICHAn7P7Q7xBA4KtdA0je0+nJRBs+xaI2hHDxgItX2ciwK19sCxk0JA
+ lJnlqKta8jHKJkMqJ1rgWh3qDwM1i/TtlTQ6ooSKLwvTWHLC31BcYNAGC/G9N1aAutXV
+ V/4AJkKs1JGbbdy51HbI6h6b7Z42larzwd7F8tbvXbgPaisrk9ryWS8vf9H7FU54t9UR
+ 0Eo3hWRTOOaJavYhxG1gVT9JHKnOc8gKYbkkKxn8voKk4y3jdzUzhrmCMfV05FMX0fA5
+ j1Oa7gTPBzc3qIRMostgXnmcMPZVXypM3JAAZSk7OQxWvEnIL9TkJkNVyyqJFOQLb2Mf xw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3gby3esrdj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 May 2022 20:33:34 +0000
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 24TKP7nu010580;
+        Sun, 29 May 2022 20:33:33 GMT
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3gby3esrd9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 May 2022 20:33:33 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24TKLpBX018675;
+        Sun, 29 May 2022 20:33:31 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 3gbcakh5ud-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 May 2022 20:33:30 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24TKXR4r17105322
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 29 May 2022 20:33:27 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5933511C04C;
+        Sun, 29 May 2022 20:33:27 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EEE2A11C04A;
+        Sun, 29 May 2022 20:33:24 +0000 (GMT)
+Received: from osiris (unknown [9.145.39.236])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sun, 29 May 2022 20:33:24 +0000 (GMT)
+Date:   Sun, 29 May 2022 22:33:23 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Will Deacon <will@kernel.org>,
+        Matt Turner <mattst88@gmail.com>, linux-s390@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brian Cain <bcain@quicinc.com>, Borislav Petkov <bp@alien8.de>,
+        linux-alpha@vger.kernel.org, Alistair Popple <apopple@nvidia.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <vgupta@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Rich Felker <dalias@libc.org>, sparclinux@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        David Hildenbrand <david@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-xtensa@linux-xtensa.org, linux-sh@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
+        Richard Henderson <rth@twiddle.net>,
+        Guo Ren <guoren@kernel.org>, linux-parisc@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
         Helge Deller <deller@gmx.de>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-um@lists.infradead.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        openrisc@lists.librecores.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-hexagon@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Stafford Horne <shorne@gmail.com>, linux-csky@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-riscv@lists.infradead.org, Max Filippov <jcmvbkbc@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Chris Zankel <chris@zankel.net>,
+        Michal Simek <monstr@monstr.eu>, x86@kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v4] mm: Avoid unnecessary page fault retires on shared
+ memory types
+Message-ID: <YpPYkzbrQmy4FjrI@osiris>
+References: <20220527193936.30678-1-peterx@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220527193936.30678-1-peterx@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: oFSau6Dj_1rg8rX4SeOfmoPaYp5LEgWy
+X-Proofpoint-GUID: M6Ru04-Ir3Ey8vHF11WRaj0WUz41oFky
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-29_05,2022-05-27_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 clxscore=1011 phishscore=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=818 suspectscore=0 mlxscore=0 adultscore=0
+ bulkscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2204290000 definitions=main-2205290119
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Sat, May 28, 2022 at 11:32 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Fri, May 27, 2022 at 1:56 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > *.prelink.o is created when CONFIG_LTO_CLANG or CONFIG_X86_KERNEL_IBT
-> > is enabled.
-> >
-> > Replace $(linked-object) with $(CONFIG_LTO_CLANG)$(CONFIG_X86_KERNEL_IBT)
-> > so you will get better idea when the --link option is passed.
-> >
-> > No functional change is intended.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> Hi Masahiroy,
->
-> I was not CCed on the cover-letter and only on some patches in this series.
->
-> So, I have re-tested this series by pulling from kbuild.git#kbuild
-> (saw later you renewed the parisc/nm patch).
->
-> While testing my selfmade LLVM version 14.0.4 (PGO + ThinLTO
-> optimized) toolchain I included this series.
->
-> Just built fine and I was able to boot on bare metal.
->
-> -Sedat -
->
+On Fri, May 27, 2022 at 03:39:36PM -0400, Peter Xu wrote:
+> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> index e173b6187ad5..4608cc962ecf 100644
+> --- a/arch/s390/mm/fault.c
+> +++ b/arch/s390/mm/fault.c
+> @@ -433,6 +433,17 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  			goto out_up;
+>  		goto out;
+>  	}
+> +
+> +	/* The fault is fully completed (including releasing mmap lock) */
+> +	if (fault & VM_FAULT_COMPLETED) {
+> +		/*
+> +		 * Gmap will need the mmap lock again, so retake it.  TODO:
+> +		 * only conditionally take the lock when CONFIG_PGSTE set.
+> +		 */
+> +		mmap_read_lock(mm);
+> +		goto out_gmap;
+> +	}
+> +
+>  	if (unlikely(fault & VM_FAULT_ERROR))
+>  		goto out_up;
+>  
 
-Thanks for your testing!
+Guess the patch below on top of your patch is what we want.
+Just for clarification: if gmap is not NULL then the process is a kvm
+process. So, depending on the workload, this optimization makes sense.
 
-I added your Tested-by tag.
-
-
-
-
-
-> > ---
-> >
-> > Changes in v7:
-> >   - New patch
-> >
-> >  scripts/Makefile.build | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> > index 06400504150b..f80196eef03a 100644
-> > --- a/scripts/Makefile.build
-> > +++ b/scripts/Makefile.build
-> > @@ -219,7 +219,7 @@ objtool_args =                                                              \
-> >         $(if $(CONFIG_STACK_VALIDATION), --stackval)                    \
-> >         $(if $(CONFIG_HAVE_STATIC_CALL_INLINE), --static-call)          \
-> >         --uaccess                                                       \
-> > -       $(if $(linked-object), --link)                                  \
-> > +       $(if $($(CONFIG_LTO_CLANG)$(CONFIG_X86_KERNEL_IBT)), --link)    \
-> >         $(if $(part-of-module), --module)                               \
-> >         $(if $(CONFIG_GCOV_KERNEL), --no-unreachable)
-> >
-> > @@ -284,7 +284,6 @@ quiet_cmd_cc_prelink_modules = LD [M]  $@
-> >  # modules into native code
-> >  $(obj)/%.prelink.o: objtool-enabled = y
-> >  $(obj)/%.prelink.o: part-of-module := y
-> > -$(obj)/%.prelink.o: linked-object := y
-> >
-> >  $(obj)/%.prelink.o: $(obj)/%.o FORCE
-> >         $(call if_changed,cc_prelink_modules)
-> > --
-> > 2.32.0
-> >
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+index 4608cc962ecf..e1d40ca341b7 100644
+--- a/arch/s390/mm/fault.c
++++ b/arch/s390/mm/fault.c
+@@ -436,12 +436,11 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+ 
+ 	/* The fault is fully completed (including releasing mmap lock) */
+ 	if (fault & VM_FAULT_COMPLETED) {
+-		/*
+-		 * Gmap will need the mmap lock again, so retake it.  TODO:
+-		 * only conditionally take the lock when CONFIG_PGSTE set.
+-		 */
+-		mmap_read_lock(mm);
+-		goto out_gmap;
++		if (gmap) {
++			mmap_read_lock(mm);
++			goto out_gmap;
++		}
++		goto out;
+ 	}
+ 
+ 	if (unlikely(fault & VM_FAULT_ERROR))
