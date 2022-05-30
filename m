@@ -2,92 +2,168 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52488C433F5
-	for <linux-parisc@archiver.kernel.org>; Mon, 30 May 2022 14:29:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B42EDC433F5
+	for <linux-parisc@archiver.kernel.org>; Mon, 30 May 2022 15:59:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240159AbiE3O3g (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 30 May 2022 10:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S239593AbiE3P7q (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 30 May 2022 11:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242014AbiE3O1U (ORCPT
+        with ESMTP id S240364AbiE3P7j (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 30 May 2022 10:27:20 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120678FFAB
-        for <linux-parisc@vger.kernel.org>; Mon, 30 May 2022 06:51:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1653918670;
-        bh=jfEaLxYqUDDV4VkM7c1+xtbsNovQ009YqPttUtsEnpA=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=HRiPZVQt/ik99NhwABxaA9zndjRmuYjMqlB4MfGznn7BHE2A/69i6nkmlcQxhwTSx
-         czaR0VKv00Ya+i9LVN65Ca740CSGDUOe3iuX4XKuypYf0+0SjTjm+UOgO4PFWo5ctd
-         RRv7MtuY8PpK+oM/2KnmyV96Qic8utp3P/ubF9qs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from p100 ([92.116.163.222]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M1Ycr-1nygbN0DWN-0036vA; Mon, 30
- May 2022 15:51:10 +0200
-Date:   Mon, 30 May 2022 15:51:08 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [PATCH] parisc: Drop __ARCH_WANT_OLD_READDIR and
- __ARCH_WANT_SYS_OLDUMOUNT
-Message-ID: <YpTLzAuADYsIb4jZ@p100>
+        Mon, 30 May 2022 11:59:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1D15436B77
+        for <linux-parisc@vger.kernel.org>; Mon, 30 May 2022 08:53:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1653925988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bDYue/Afd3VGZHzU7tYF7qy5xBeBUpqe85rLuoAiRcE=;
+        b=J1k0ViqXX50q4YtrtSr+gUyUFh8HWbwq8lrj3YOlJReGycsAfTrN4ha7IS9/MYleZV5BoC
+        DDkLmRENtwy2IA8YjtxdqunukNLU9RHg/Lqlwzd5BQIQB5+6uSPZ9SSQd4cPtXfZGHwUqA
+        hMmc5YYN80rBR10NXFaKHTj1qveKv5M=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-274-pWGES00RMoe657dyFcTcpQ-1; Mon, 30 May 2022 11:53:01 -0400
+X-MC-Unique: pWGES00RMoe657dyFcTcpQ-1
+Received: by mail-il1-f198.google.com with SMTP id r9-20020a92cd89000000b002d16798b3cfso8564292ilb.22
+        for <linux-parisc@vger.kernel.org>; Mon, 30 May 2022 08:53:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bDYue/Afd3VGZHzU7tYF7qy5xBeBUpqe85rLuoAiRcE=;
+        b=PDGkQggyiqkr4B2XSLEvtkrHZatQfslUQolQRVgi0X6KGxTnmsK16eELxtk7r8ICzH
+         1tni9ZrXsmjcfkb2jqG/wKxujrGp1lr5WUurHJ46D68f/9tBkZvcKO54FM7V109S78qb
+         QH1w3QDFlS72yDbgsZkN0lmonTBkVaekpTDpk7ilWbCn8jsHTVuDPTFk53v5u77maNBA
+         sQT/IZPw8GrNKtNNMC5WlgYO4jBfouaLcK2SzJpqvBOiwxIkByHsF9UIBXFawmUMkWuP
+         LKNHiK8y5vG4RqvCBCXR2OeQoaTRDiZujYqZdraGXDnTHEogjltHIVg3Mp6rjfxoF2xJ
+         08vQ==
+X-Gm-Message-State: AOAM532ZpiUmdlE0a4uhDl5MCy+q/W24WGNAEmP3OKJR0Mp1hUz0WB1R
+        nPPoyA0KjxaJaIb1cYHB2jCpw6NOST0F3zqQMnbxIwiu/GtNOoY7kDyPH+Jav7EAHS9TFnevx2i
+        nho9gGH8baD2En0hC3TMhMURB
+X-Received: by 2002:a5d:9cc8:0:b0:663:2899:4b8 with SMTP id w8-20020a5d9cc8000000b00663289904b8mr16857399iow.192.1653925980597;
+        Mon, 30 May 2022 08:53:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyKQIoyyqGc41UCjMUnObS0GZ5Lh8IPSVLY8KDGIOa5YRMfMwdzANPXLWIG/1E7oUnwvcvO1w==
+X-Received: by 2002:a5d:9cc8:0:b0:663:2899:4b8 with SMTP id w8-20020a5d9cc8000000b00663289904b8mr16857337iow.192.1653925980357;
+        Mon, 30 May 2022 08:53:00 -0700 (PDT)
+Received: from xz-m1.local (cpec09435e3e0ee-cmc09435e3e0ec.cpe.net.cable.rogers.com. [99.241.198.116])
+        by smtp.gmail.com with ESMTPSA id 66-20020a021d45000000b0032e75bfe344sm2781109jaj.171.2022.05.30.08.52.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 May 2022 08:52:59 -0700 (PDT)
+Date:   Mon, 30 May 2022 11:52:54 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Will Deacon <will@kernel.org>,
+        Matt Turner <mattst88@gmail.com>, linux-s390@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brian Cain <bcain@quicinc.com>, Borislav Petkov <bp@alien8.de>,
+        linux-alpha@vger.kernel.org, Alistair Popple <apopple@nvidia.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <vgupta@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Rich Felker <dalias@libc.org>, sparclinux@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        David Hildenbrand <david@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-xtensa@linux-xtensa.org, linux-sh@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
+        Richard Henderson <rth@twiddle.net>,
+        Guo Ren <guoren@kernel.org>, linux-parisc@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Helge Deller <deller@gmx.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-um@lists.infradead.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        openrisc@lists.librecores.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-hexagon@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Stafford Horne <shorne@gmail.com>, linux-csky@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-riscv@lists.infradead.org, Max Filippov <jcmvbkbc@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Chris Zankel <chris@zankel.net>,
+        Michal Simek <monstr@monstr.eu>, x86@kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v4] mm: Avoid unnecessary page fault retires on shared
+ memory types
+Message-ID: <YpToVpjXmdFqGOpY@xz-m1.local>
+References: <20220527193936.30678-1-peterx@redhat.com>
+ <YpPYkzbrQmy4FjrI@osiris>
+ <33fd4731-9765-d78b-bdc3-f8243c98e81f@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Provags-ID: V03:K1:1Fqo9dO1gEGscAUEmgE9pcgmJQCpzhXLWKgY2zaqAET20TkKFAe
- kb7VHffOdq8P0omfiuPEj3zA+yfLHKNGPz6LZsbQduAmACHCLk1F34mXkS41NyoiCXyvFQL
- MzrGOpIIUVeV2EJEyJsOK54iD6R7MYJyZmsPHkWpEPxiAiZ2oGoY/5rnkRmRDnBIWwPkQtv
- JHCe0Hp4WNC2S74lwr/mQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NtvMfPUBFzo=:FDP39shWO5BjVDFkLjy1pi
- cxH5cm5Nu1b9/lVzJn71pV9t/01hoP6rpAzo8daCdroT7+FGucqy4zrIJonuIfe5SSj4btXGb
- p/71OWLKXsQjnZVAbQ9O79XJL0aF5ZVyLthgVY79oeva87f/EgNRDo4ftEGUthjlLy+zYlgrw
- C8YKxOtKFDSJ9hIFgOCuW4LbIkmCThbJ0IhqoVAzMKvFeQ9pD+AiboVywlJQJLRU3YxcsGjam
- 8AlU605vhQU7ek8sIKLiCDjFti7rD6uvPpP+9ZA4IxnAn5wAhxPRDMh4XQs/3uEH9KYocteLQ
- Gd3JZyXi9ZXFj2chhyuqPMWzEKr6VgAheOiOm6fV/z+N/9jybSF0bzLGAihJHsQLMucfVNKih
- qbrCCMOviWFNVHrFFll4JKUE9qauM/GTzlL5Dpco2gR3nb4JmKRyPdG+ou4zSTpYyaV5pHNG6
- hbfGRzDSV+nOBKA1+/tbvxUsC0Dj0SFdEcVmpm7yfTHhHbrzj6t4/qVNO7xA2zxDVh50QHTUM
- RYXllZ8beUfAwrqoJC7RqVgWtTX6/7V4+dO10tAKfHy63tD6GG1YSBlDRA9st8xje9ixvZUWZ
- ftxZTz2KbYy2gEIQptKfKVVkl2Q/GPOqx/jxmGmtciPATZA7uGaU7I6bACk4rH0fqln38ZEFN
- zzdpKMYwNIuSiornKnhYMf54I6n/fJR1ytLA5YiURH+cUFZeAzGNgtexWDKuw/5fZ4QnQn8SM
- xqypBC844faWXQdkEX7Hq953fCReR8Dxl1U9Ytcl1+Gf96xV1d2IzSOPPJNJ+2nrgA4cCKYUw
- QCQojlU03EMmpbTMRWuvQ+IPAAynN878rmlx5FJTASapCa5ocu0Y2DvZGBGLfK06tMmaXlNDR
- SJeQOKuLErBOpElCuRIXmWrdLymA737R8929OmyHXZdn9ni6WthYO5aykG8AU05Gf7Yn5Kn0w
- d96XmbWAXl9P1HSTZlSy+7QKLXM6ndXGrTY99cy5qQV3SSGjXa7YyXvoTSbQJ3Qpe/+HVCAgX
- 9qy4aNwtZNoJCu7rFnapG25n75xAs179B9MD7sif05+gn5Cg3Sva1f2q7g7CK5Sp07JNLQ2NO
- af3YcD8JWuybYIG6Vkx0D22BVAGrQ+8bhGblDbWX7qCYX01tDc2iIaTXA==
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <33fd4731-9765-d78b-bdc3-f8243c98e81f@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Those old syscalls aren't exported via our syscall table, so just drop
-them.
+On Mon, May 30, 2022 at 11:35:10AM +0200, Christian Borntraeger wrote:
+> 
+> 
+> Am 29.05.22 um 22:33 schrieb Heiko Carstens:
+> [...]
+> > 
+> > Guess the patch below on top of your patch is what we want.
+> > Just for clarification: if gmap is not NULL then the process is a kvm
+> > process. So, depending on the workload, this optimization makes sense.
+> > 
+> > diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> > index 4608cc962ecf..e1d40ca341b7 100644
+> > --- a/arch/s390/mm/fault.c
+> > +++ b/arch/s390/mm/fault.c
+> > @@ -436,12 +436,11 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+> >   	/* The fault is fully completed (including releasing mmap lock) */
+> >   	if (fault & VM_FAULT_COMPLETED) {
+> > -		/*
+> > -		 * Gmap will need the mmap lock again, so retake it.  TODO:
+> > -		 * only conditionally take the lock when CONFIG_PGSTE set.
+> > -		 */
+> > -		mmap_read_lock(mm);
+> > -		goto out_gmap;
+> > +		if (gmap) {
+> > +			mmap_read_lock(mm);
+> > +			goto out_gmap;
+> > +		}
+> > +		goto out;
+> 
+> Yes, that makes sense. With that
+> 
+> Acked-by: Christian Borntraeger <borntraeger@linux.ibm.com>
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Looks sane, thanks Heiko, Christian.  I'll cook another one.
 
-diff --git a/arch/parisc/include/asm/unistd.h b/arch/parisc/include/asm/un=
-istd.h
-index 7708a5806f09..c033e427838f 100644
-=2D-- a/arch/parisc/include/asm/unistd.h
-+++ b/arch/parisc/include/asm/unistd.h
-@@ -142,7 +142,6 @@ type name(type1 arg1, type2 arg2, type3 arg3, type4 ar=
-g4, type5 arg5)	\
- }
+-- 
+Peter Xu
 
- #define __ARCH_WANT_NEW_STAT
--#define __ARCH_WANT_OLD_READDIR
- #define __ARCH_WANT_STAT64
- #define __ARCH_WANT_SYS_ALARM
- #define __ARCH_WANT_SYS_GETHOSTNAME
-@@ -156,7 +155,6 @@ type name(type1 arg1, type2 arg2, type3 arg3, type4 ar=
-g4, type5 arg5)	\
- #define __ARCH_WANT_SYS_FADVISE64
- #define __ARCH_WANT_SYS_GETPGRP
- #define __ARCH_WANT_SYS_NICE
--#define __ARCH_WANT_SYS_OLDUMOUNT
- #define __ARCH_WANT_SYS_SIGPENDING
- #define __ARCH_WANT_SYS_SIGPROCMASK
- #define __ARCH_WANT_SYS_FORK
