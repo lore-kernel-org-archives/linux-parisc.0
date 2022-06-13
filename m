@@ -2,113 +2,157 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC1E1CCA473
-	for <linux-parisc@archiver.kernel.org>; Mon, 13 Jun 2022 01:16:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AD0FCCA486
+	for <linux-parisc@archiver.kernel.org>; Mon, 13 Jun 2022 08:26:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbiFMBQF (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 12 Jun 2022 21:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
+        id S240062AbiFMI0U (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 13 Jun 2022 04:26:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbiFMBQD (ORCPT
+        with ESMTP id S239358AbiFMI0R (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 12 Jun 2022 21:16:03 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED783252A4;
-        Sun, 12 Jun 2022 18:16:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AE9F4B80CFB;
-        Mon, 13 Jun 2022 01:16:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A678C341C4;
-        Mon, 13 Jun 2022 01:16:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655082960;
-        bh=T/oPYXJvfTUUTAn3CsqoozPh9/pXSGnZmlhYNE8gbWs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PxWK/9l6TdsQa77yV2AJPnGPvbYWhjRLP+wFfrNAXLjgtstoiHZXCMoo8B2IqcL7y
-         rJYzFIT+mHg3ZKrHvaheUxROxBUNvqFs2qlykv4MpcQSZOCcE5InVYzVY9gAedqrzl
-         FnuwwSzIfvkZHuyrFJ7SxGf5qezL+KsNEXhVx5VKfPjeumd7apyl49oYKlxtRU1zpg
-         GDBh5Hgh8YUFAxR7RJZPuea54fZ5P93OWebgMT4J8xA0g1zF/FoCx8KzlVZ5id19aY
-         dSaS71/WhW/0o+WHBrRP1zFeukLpZRbthXoRShYwKaOPOzZU843Ve5m0UWJoV8qtRs
-         VsQDIkfPoli1Q==
-Received: by mail-ua1-f48.google.com with SMTP id 63so1644079uaw.10;
-        Sun, 12 Jun 2022 18:16:00 -0700 (PDT)
-X-Gm-Message-State: AOAM532X/HcAEa2YaFJjCvzIZNL9PJ69x/UlVxmrZ9PxP1xJd59Lnaez
-        pTd191Ygtk+bldpMc6ZaUQWfW507LiPajqQWev8=
-X-Google-Smtp-Source: ABdhPJy022BVkvpX4bwvrgAxTSG7Jz6gfQIdan6W4shKCc4lN35Y4ktHFEjUhhT0WI19MsTm4e13W+ximSNeINXMAlQ=
-X-Received: by 2002:ab0:3459:0:b0:378:ec81:4a8b with SMTP id
- a25-20020ab03459000000b00378ec814a8bmr14374212uaq.83.1655082959409; Sun, 12
- Jun 2022 18:15:59 -0700 (PDT)
+        Mon, 13 Jun 2022 04:26:17 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1225E1EED7;
+        Mon, 13 Jun 2022 01:26:14 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id m125-20020a1ca383000000b0039c63fe5f64so2647384wme.0;
+        Mon, 13 Jun 2022 01:26:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3JSggHLDbkXyuZCKaU+uQ7H5KVpBjE3ZWWl/F0t3JyI=;
+        b=hln/7KIUboOODQa9/Iv7zWAXFI8kFLhiLL+AWnA7ZL0itAJaB93eguKFQupB8Lv94a
+         mnMuLqlfVsMy6aSBFmNweaacWKXWw7aT6TScazfBGhspJqqH/PMOPWdnnnaxNLaf842d
+         D+3NPCattkXMe8VyippSy6AVlz1Q90Igxi/lQII1yr2hkIK0YZRpsj0TKs2Px7tXlVgY
+         915w6r1r+N9IHNGMPf7O4C6rOlcjLzR4xSEqc3Zfq8tMbY0ayFsU19Cug+0HkT25Saig
+         zkxTdXbzsbpEfsV6HhW0WtRME3JJZVdyKx57BtFZ0WE2gh0TSNH76QSkgUTVIoEuHNxT
+         f/gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3JSggHLDbkXyuZCKaU+uQ7H5KVpBjE3ZWWl/F0t3JyI=;
+        b=YRQJp1GBM3OcBer6Bp1WG/lVEMPbsdDfQzMPh5cIijwX90UumIifd1W7M9eZ9tOszB
+         5TKl/a0hV5ldDpz7+f9oV27/cDUZv0Xa/xnwc9fZw9n7CCQCMyb/FtECSzWxIrDXppb/
+         Ye09YW/mZOxpI8n0iwJx5ZMNrEHAvOQb/r/j7oW93vahxjzvyBWWcSxwlkuv2u7wVWQG
+         X5sbWQOGc+JHZxzPSk30elqMZx3J9FHvagdN7/rHVt00R1pTvFtyMh3iUaYo2OSFI5aC
+         k8hMkMwMG9o7FdJHCG6Dxaet7U9Y+D5HPReKeLWn0oj1EOQb+nInIl70eEfpdQYzMesu
+         3K+Q==
+X-Gm-Message-State: AOAM5308RPuyABds5tbz4EScO3Ovyc2GgLPib84QRdAipfTp7gj5CkO5
+        /7msG24JNLD8C5BKoOQn0Qg1EAN/JWJ5bTQ75cw=
+X-Google-Smtp-Source: ABdhPJxgJ3qlsWHXb4q5Q9LeHOXh1hQWbFNdZBk/6atfvyd1YyWRPGtuhT6/ZUDmb0vG1CLuyzfEgHlG2xi/itwptM8=
+X-Received: by 2002:a05:600c:1c9a:b0:39c:7db4:90c3 with SMTP id
+ k26-20020a05600c1c9a00b0039c7db490c3mr13053942wms.161.1655108772491; Mon, 13
+ Jun 2022 01:26:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220405071314.3225832-1-guoren@kernel.org> <20220405071314.3225832-3-guoren@kernel.org>
- <20220608094108.GA18122@asgard.redhat.com>
-In-Reply-To: <20220608094108.GA18122@asgard.redhat.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 13 Jun 2022 09:15:48 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQhFbN3mK0jco=NAKZr4qCgvX4zkw3h6jdffr66Rz7REQ@mail.gmail.com>
-Message-ID: <CAJF2gTQhFbN3mK0jco=NAKZr4qCgvX4zkw3h6jdffr66Rz7REQ@mail.gmail.com>
-Subject: Re: [PATCH V12 02/20] uapi: always define F_GETLK64/F_SETLK64/F_SETLKW64
- in fcntl.h
-To:     Eugene Syromiatnikov <esyr@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
+References: <20220608142723.103523089@infradead.org> <20220608144517.251109029@infradead.org>
+In-Reply-To: <20220608144517.251109029@infradead.org>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Mon, 13 Jun 2022 16:26:01 +0800
+Message-ID: <CAJhGHyCnu_BsKf5STMMJKMWm0NVZ8qXT8Qh=BhhCjSSgwchL3Q@mail.gmail.com>
+Subject: Re: [PATCH 21/36] x86/tdx: Remove TDX_HCALL_ISSUE_STI
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Richard Henderson <rth@twiddle.net>, ink@jurassic.park.msu.ru,
+        mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk,
+        ulli.kroll@googlemail.com, linus.walleij@linaro.org,
+        shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com,
+        Will Deacon <will@kernel.org>, guoren@kernel.org,
+        bcain@quicinc.com, Huacai Chen <chenhuacai@kernel.org>,
+        kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net,
+        monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org,
+        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+        shorne@gmail.com, James.Bottomley@hansenpartnership.com,
+        deller@gmx.de, Michael Ellerman <mpe@ellerman.id.au>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, ldv@strace.io
+        Albert Ou <aou@eecs.berkeley.edu>, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
+        Richard Weinberger <richard@nod.at>,
+        anton.ivanov@cambridgegreys.com,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        acme <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        jolsa@kernel.org, Namhyung Kim <namhyung@kernel.org>,
+        Juergen Gross <jgross@suse.com>, srivatsa@csail.mit.edu,
+        amakhalov@vmware.com, VMware Inc <pv-drivers@vmware.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>, chris@zankel.net,
+        jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org,
+        pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com,
+        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
+        sudeep.holla@arm.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, Anup Patel <anup@brainfault.org>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>,
+        yury.norov@gmail.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com,
+        senozhatsky@chromium.org, john.ogness@linutronix.de,
+        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
+        joel@joelfernandes.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        vschneid@redhat.com, jpoimboe@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
+        rcu@vger.kernel.org, Isaku Yamahata <isaku.yamahata@gmail.com>,
+        kirill.shutemov@linux.intel.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Wed, Jun 8, 2022 at 5:41 PM Eugene Syromiatnikov <esyr@redhat.com> wrote=
-:
+On Wed, Jun 8, 2022 at 10:48 PM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> On Tue, Apr 05, 2022 at 03:12:56PM +0800, guoren@kernel.org wrote:
-> > From: Christoph Hellwig <hch@lst.de>
-> >
-> > Note that before this change they were never visible to userspace due
-> > to the fact that CONFIG_64BIT is only set for kernel builds.
+> Now that arch_cpu_idle() is expected to return with IRQs disabled,
+> avoid the useless STI/CLI dance.
 >
-> > -#ifndef CONFIG_64BIT
-> > +#if __BITS_PER_LONG =3D=3D 32 || defined(__KERNEL__)
->
-> Actually, it's quite the opposite: "ifndef" usage made it vailable at all=
- times
-> to the userspace, and this change has actually broken building strace
-> with the latest kernel headers[1][2].  There could be some debate
-> whether having these F_*64 definitions exposed to the user space 64-bit
-> applications, but it seems that were no harm (as they were exposed alread=
-y
-> for quite some time), and they are useful at least for strace for compat
-> application tracing purposes.
->
-> [1] https://github.com/strace/strace/runs/6779763146?check_suite_focus=3D=
-true#step:4:3222
-> [2] https://pipelines.actions.githubusercontent.com/serviceHosts/e5309ebd=
--8a2f-43f4-a212-b52080275b5d/_apis/pipelines/1/runs/1473/signedlogcontent/1=
-2?urlExpires=3D2022-06-08T09%3A37%3A13.9248496Z&urlSigningMethod=3DHMACV1&u=
-rlSignature=3DfIT7vd0O4NNRwzwKWLXY4UVZBIIF3XiVI9skAsGvV0I%3D
->
-Yes, there is no CONFIG_64BIT in userspace, we shouldn't limit it with
-(__BITS_PER_LONG =3D=3D 32 || defined(__KERNEL__)) to break the
-compatibility. Just export F_*64 definitions permanently.
+> Per the specs this is supposed to work, but nobody has yet relied up
+> this behaviour so broken implementations are possible.
 
---=20
-Best Regards
- Guo Ren
+I'm totally newbie here.
 
-ML: https://lore.kernel.org/linux-csky/
+The point of safe_halt() is that STI must be used and be used
+directly before HLT to enable IRQ during the halting and stop
+the halting if there is any IRQ.
+
+In TDX case, STI must be used directly before the hypercall.
+Otherwise, no IRQ can come and the vcpu would be stalled forever.
+
+Although the hypercall has an "irq_disabled" argument.
+But the hypervisor doesn't (and can't) touch the IRQ flags no matter
+what the "irq_disabled" argument is.  The IRQ is not enabled during
+the halting if the IRQ is disabled before the hypercall even if
+irq_disabled=false.
+
+The "irq_disabled" argument is used for workaround purposes:
+https://lore.kernel.org/kvm/c020ee0b90c424a7010e979c9b32a28e9c488a51.1651774251.git.isaku.yamahata@intel.com/
+
+Hope my immature/incorrect reply elicits a real response from
+others.
+
+Thanks
+Lai
