@@ -2,190 +2,110 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 428BAC433EF
-	for <linux-parisc@archiver.kernel.org>; Wed, 15 Jun 2022 21:31:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CA98C433EF
+	for <linux-parisc@archiver.kernel.org>; Thu, 16 Jun 2022 08:11:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348159AbiFOVba (ORCPT
-        <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 15 Jun 2022 17:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
+        id S233903AbiFPIL6 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 16 Jun 2022 04:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239542AbiFOVb3 (ORCPT
+        with ESMTP id S1359612AbiFPIL6 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 15 Jun 2022 17:31:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902744924D;
-        Wed, 15 Jun 2022 14:31:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 268F6617C1;
-        Wed, 15 Jun 2022 21:31:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA8F8C3411A;
-        Wed, 15 Jun 2022 21:31:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655328687;
-        bh=h/A3iOsL+jSiXeun+GclseG7VDKI7T9E6iC83VBXQmc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jRcv7OdG8w6WZvKDmpHu4ZTNDPKNmUeNwkF/5kyOU3kogbTfbnziKBi4Jemy89mPK
-         VB9ZLSW8Ef+8WhlhpERgKh3C4AwlLVT0YSGP+NZY7Y8aQQnRCCTfxkla/ct4P4xzOS
-         m384ySKBIIAd638YYDqCOcxaXX3uj/4hJTyxkYvLHgkuIFRDDkI8+xZ2gKK6GJvocM
-         p6WIsw8yQJAavGl0gEUO2R8b7panqmJ9rBrYblYA0mmSsjYt6gOUgcj3KHSNIx9Iq4
-         CevdQYGBbuq+VVg9ZAfGZt1g9BYutIbzx1PyMaX9HpjQg/PQYxJc+gN2u0EeJbcuw0
-         5w3ycwJy5spww==
-Date:   Thu, 16 Jun 2022 00:29:18 +0300
-From:   "jarkko@kernel.org" <jarkko@kernel.org>
-To:     "hch@lst.de" <hch@lst.de>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "svens@linux.ibm.com" <svens@linux.ibm.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "jpoimboe@kernel.org" <jpoimboe@kernel.org>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "zepan@sipeed.com" <zepan@sipeed.com>,
-        "iii@linux.ibm.com" <iii@linux.ibm.com>,
-        "deller@gmx.de" <deller@gmx.de>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "joey.gouly@arm.com" <joey.gouly@arm.com>,
-        "anemo@mba.ocn.ne.jp" <anemo@mba.ocn.ne.jp>,
-        "egorenar@linux.ibm.com" <egorenar@linux.ibm.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "luis.machado@linaro.org" <luis.machado@linaro.org>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "mbenes@suse.cz" <mbenes@suse.cz>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "jniethe5@gmail.com" <jniethe5@gmail.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
-        "dja@axtens.net" <dja@axtens.net>,
-        "liaochang1@huawei.com" <liaochang1@huawei.com>,
-        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-        "huschle@linux.ibm.com" <huschle@linux.ibm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "James.Bottomley@hansenpartnership.com" 
-        <James.Bottomley@hansenpartnership.com>,
-        "song@kernel.org" <song@kernel.org>,
-        "guoren@kernel.org" <guoren@kernel.org>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "dave.anglin@bell.net" <dave.anglin@bell.net>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "atomlin@redhat.com" <atomlin@redhat.com>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "javierm@redhat.com" <javierm@redhat.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "philipp.tomsich@vrull.eu" <philipp.tomsich@vrull.eu>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "samitolvanen@google.com" <samitolvanen@google.com>,
-        "yangtiezhu@loongson.cn" <yangtiezhu@loongson.cn>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        "nathaniel@profian.com" <nathaniel@profian.com>,
-        "michael.roth@amd.com" <michael.roth@amd.com>,
-        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
-        "Sakkinen, Jarkko" <jarkko@profian.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "wangkefeng.wang@huawei.com" <wangkefeng.wang@huawei.com>,
-        "tmricht@linux.ibm.com" <tmricht@linux.ibm.com>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "atishp@atishpatra.org" <atishp@atishpatra.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-        "nico@fluxnic.net" <nico@fluxnic.net>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
-        "kernel@esmil.dk" <kernel@esmil.dk>,
-        "ashimida@linux.alibaba.com" <ashimida@linux.alibaba.com>,
-        "elver@google.com" <elver@google.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "Keshavamurthy, Anil S" <anil.s.keshavamurthy@intel.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "chenzhongjin@huawei.com" <chenzhongjin@huawei.com>,
-        "andrealmeid@igalia.com" <andrealmeid@igalia.com>,
-        "changbin.du@intel.com" <changbin.du@intel.com>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>
-Subject: Re: [PATCH] kprobes: Enable tracing for mololithic kernel images
-Message-ID: <YqpPLqW6/AWEQhGr@iki.fi>
-References: <YqAy0qjI4Lktk/uJ@iki.fi>
- <20220608232115.ccd4399f4a1d133e9b65c2a9@kernel.org>
- <CAPhsuW6iUieQvA6KqzSLgtxmjkVSWCuVwNA338DATb_myHxo7w@mail.gmail.com>
- <CAPhsuW6BzUtqnjvaGJScXRpghs0_V_phpdyd4_oAKhvmkX-GFw@mail.gmail.com>
- <YqEF6+YKqCHsWZJW@bombadil.infradead.org>
- <20220609034852.GA30873@lst.de>
- <YqH0iEgsi6+bwS3x@bombadil.infradead.org>
- <e7dedb9086193ca7682edc10fabc4195894e5146.camel@intel.com>
- <Yqh/5nn0AhdwaCm8@iki.fi>
- <20220615063707.GA22930@lst.de>
+        Thu, 16 Jun 2022 04:11:58 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAAB5D658;
+        Thu, 16 Jun 2022 01:11:55 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id a15so818148wrh.2;
+        Thu, 16 Jun 2022 01:11:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=amDKED5mOsWQ+K/CNIGULiX1ELwKCA1nvvmyVqf77To=;
+        b=a8siBkH637bA11QQzzQ3C0wN2P3xzXYSr+nJqJgAr44mli5jvIzPSia4y9/XpC+2Hj
+         eHBsKThuPe3ZeCiXZLKkgadkmUkaCbeU1ZqDdxhkR84uMb/vtWav0bC7HdH5XcFpunVt
+         FE7aGJsU1E7BAKq6N2k9OYM8hF64yq9RWTvx0KFtTRpHJEQREm9Ef1G6fyz8yHQGA6Zx
+         0ZkxVLZGdqOFdPaTUHivovdxlezUDnzGV2iL7lcCQV/899mdlLpxiweRNU+5IdWTUwQn
+         Xnf8IeNhU8YL72JlEb8x27e3CR6/Xk4z0k5CF+oT6xGW3jZu2suPXoMmmab2oubJV9NF
+         KDew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=amDKED5mOsWQ+K/CNIGULiX1ELwKCA1nvvmyVqf77To=;
+        b=LiE2Qn1oaRKKLz1855tQakpgS+KRcvHJiNuRmZYGIzkxaHxjZAEw6yjPNL3/pZRRo8
+         x6DAMA+6+O7s8kJvSuPXpNg8baaz44JP4iE+giJaTc1unxRCPj0uHzIxRHLUjAwqQ0ub
+         10cuKRdmDIP6Eppum78l8SFZ1HqzwB4Wtw+zI4PN9Lp47q7hcO2kuNxEFIGUhbRrHiYi
+         s993IRMVwDx7O2JKXvB+O8FH+KqQqrtQBdo4Ucx2WrgQ7SpRRX8K8uelKY2SNr+n3tfA
+         qdK7KbT/RUaf4sKvfuvIlIhQEy8kuMTpdWfgOo8u1d9N9GxTT9mn0UrsXPJElpbZww/0
+         gFZw==
+X-Gm-Message-State: AJIora/okulU64LEqBWzjH0yGYjSrrmvZ0PFuDvKQAO7XD7lbG5aI3ha
+        50YupG6M58DqsrOAkw4inE0=
+X-Google-Smtp-Source: AGRyM1tA5uOFbmCqdUcOl257wMGAaUdvz/veRfzBd7RyXGoXL0BYHVKGwGsAa72bXy/8qZWbm6LzDg==
+X-Received: by 2002:a5d:6484:0:b0:219:eb95:3502 with SMTP id o4-20020a5d6484000000b00219eb953502mr3452169wri.692.1655367114079;
+        Thu, 16 Jun 2022 01:11:54 -0700 (PDT)
+Received: from localhost.localdomain (host-87-16-96-199.retail.telecomitalia.it. [87.16.96.199])
+        by smtp.gmail.com with ESMTPSA id o18-20020a5d6852000000b0021552eebde6sm1121807wrw.32.2022.06.16.01.11.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jun 2022 01:11:53 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Nick Terrell <terrelln@fb.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        John David Anglin <dave.anglin@bell.net>,
+        linux-parisc@vger.kernel.org,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v4 0/2] Replace kmap() with kmap_local_page() in zstd.c
+Date:   Thu, 16 Jun 2022 10:11:31 +0200
+Message-Id: <20220616081133.14144-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220615063707.GA22930@lst.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 08:37:07AM +0200, hch@lst.de wrote:
-> On Tue, Jun 14, 2022 at 03:32:38PM +0300, jarkko@kernel.org wrote:
-> > > Like say for a next step we moved prog pack out of bpf into core code,
-> > > gave it it's own copy of module_alloc(), and then made kprobes use it.
-> > > Then we would have something with improved W^X guard rails, and kprobes
-> > > would not depend on modules anymore. I think maybe it's a step in the
-> > > right direction, even if it's not perfect.
-> > 
-> > So you're saying that I should (as a first step) basically clone
-> > module_alloc() implementation for kprobes, and future for BPF 
-> > use, in order to get a clean starting point?
-> 
-> I don't think cloning the code helps anyone.  The fact that except
-> for the eBPF mess everyone uses module_alloc and the related
-> infrastructure is a feature and not a bug.  The interface should
-> become better than what we have right now, but there is few enough
-> users that this can be done in one go.
-> 
-> So assuming we really care deeply enough about fancy tracing without
-> modules (and I'm not sure we do, even if you don't use modules it
-> doesn't hurt to just build the modules code, I do that all the time
-> for my test machines), the general approach in your series is the
-> right one.
+This is a little series which serves the purpose to replace kmap() with
+kmap_local_page() in btrfs/zstd.c. Actually this task is only
+accomplished in patch 2/2. 
 
-OK, thanks for the elaboration!
+Instead patch 1/2 is a pre-requisite for the above-mentioned replacement,
+but, above all else, it has the purpose to conform the prototypes of
+__kunmap_{local,atomic}() to their own semantic. Since those functions
+don't make changes to the memory pointed by their arguments, make those
+arguments take pointers to const void.
 
-However I bake it, I doubt that next version is going to be the final
-version, given all the angles. Therefore, I mostly Christophe's
-suggestions on compilation flags, and also split this into per-arch
-patches.
+This little series has version number 4, despite it's the first time the
+two component patches have been re-united in a series. This may be a
+questionable choice, however patch 1/2 should be at its v4 and patch 2/2
+should be at its v3. I've tried to preserve the logs of version changes,
+so, as said, this new series carries v4.
 
-That should be at least to the right direction.
+Furthermore, v4 is due to the fact that for v3 (where for the first time
+the two above-mentioned patches had been united in a series) I forgot to
+Cc several Maintainers and lists related to patch 1/2.
 
-BR, Jarkko
+Sorry for the noise I provided to whom have received this same series
+twice with no changes at all.
+
+Fabio M. De Francesco (2):
+  highmem: Make __kunmap_{local,atomic}() take "const void *"
+  btrfs: Replace kmap() with kmap_local_page() in zstd.c
+
+ arch/parisc/include/asm/cacheflush.h |  6 ++--
+ arch/parisc/kernel/cache.c           |  2 +-
+ fs/btrfs/zstd.c                      | 42 +++++++++++++++-------------
+ include/linux/highmem-internal.h     | 10 +++----
+ mm/highmem.c                         |  2 +-
+ 5 files changed, 33 insertions(+), 29 deletions(-)
+
+-- 
+2.36.1
+
