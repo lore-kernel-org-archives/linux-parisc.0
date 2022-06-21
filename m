@@ -2,206 +2,356 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F4C7CCA473
-	for <linux-parisc@archiver.kernel.org>; Tue, 21 Jun 2022 22:04:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12255CCA482
+	for <linux-parisc@archiver.kernel.org>; Tue, 21 Jun 2022 23:57:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354953AbiFUWEO (ORCPT
+        id S1354071AbiFUX5R (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 21 Jun 2022 18:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
+        Tue, 21 Jun 2022 19:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235648AbiFUWEN (ORCPT
+        with ESMTP id S229982AbiFUX5O (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 21 Jun 2022 18:04:13 -0400
-X-Greylist: delayed 431 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 21 Jun 2022 15:04:12 PDT
-Received: from mailout.easymail.ca (mailout.easymail.ca [64.68.200.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1FE2D1D0;
-        Tue, 21 Jun 2022 15:04:11 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mailout.easymail.ca (Postfix) with ESMTP id C97F261DF6;
-        Tue, 21 Jun 2022 21:56:59 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at emo09-pco.easydns.vpn
-Received: from mailout.easymail.ca ([127.0.0.1])
-        by localhost (emo09-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id FLc2uL2Ic0RZ; Tue, 21 Jun 2022 21:56:59 +0000 (UTC)
-Received: from mail.gonehiking.org (unknown [38.15.45.1])
-        by mailout.easymail.ca (Postfix) with ESMTPA id 45ED161DF5;
-        Tue, 21 Jun 2022 21:56:59 +0000 (UTC)
-Received: from [192.168.1.4] (internal [192.168.1.4])
-        by mail.gonehiking.org (Postfix) with ESMTP id C716D3EF14;
-        Tue, 21 Jun 2022 15:56:58 -0600 (MDT)
-Message-ID: <7a6df2da-95e8-b2fd-7565-e4b7a51c5b63@gonehiking.org>
-Date:   Tue, 21 Jun 2022 15:56:58 -0600
+        Tue, 21 Jun 2022 19:57:14 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5101C186CA;
+        Tue, 21 Jun 2022 16:57:13 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25LJHFt2012606;
+        Tue, 21 Jun 2022 23:56:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2021-07-09; bh=I9VUsXTeCErywBNKneFYp5mpvZSZCqFWtRZtD7nEsHo=;
+ b=UgUqMr6yBExSvhRm5IWJFlwgnYompsYX+wxLJ7qimAs+Q7Vk0xZaRQODUQYiFarqU6+N
+ ZTarSr2bvWej74X5pe6Mht6YXlQgP3b7lz80/XtGiHvNRew57/kjQs56l60wToAIvwrQ
+ FbEo9e7CrnXpBUQDIVKPNySDx/2TCf3otGrJ4VLu+3cWPwroXQeYx3HUN5ChwCdXtMQO
+ ZDQlVzB1ZVuxv60clqi7d3OrGLQei8CZ6fq8e4RBI536afRI7YhWUUCT7E2WFFO3pFp+
+ OjvKpVb+rS8g1JzDtm4Ae7Z1hXUsgzIFGVNkVBLxw8vHYgv5r37n0ujIgfywZARK4PrG Pg== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3gs6kf6vnb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jun 2022 23:56:35 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 25LNok7c039924;
+        Tue, 21 Jun 2022 23:56:34 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com with ESMTP id 3gtf5cysds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jun 2022 23:56:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oXRxeAxcKG5xZ5wuSJtvW88NPu69qSjuurV/FW0XF2z4jvOyE45Z2U18SzHTb9h9cqnb/knSHhOzQRXIS4v1jzEdvKDQW9ZwaHfTdSFbqpiIhpnuHq7ka/CWjViMMObCvbXJy47xgqveLFC4srXgG6aZkFzSfs5jLGebNzloUTV8GGQH00lq7WmtWMFx6gbOU0fBU4T7rR0AafZGMmWGzzKoWOR6n03N5LgMiSg6w+fobnHCJnSNAcnqNpq9C6/IBUO4MS2EhZ4UqE0mHpXos0bU/IU3JLvWdb7eQJQ9i7czTE/WndUAvhyFbHnwG5lLp7TOZ5vEyDBtIK+norUipw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=I9VUsXTeCErywBNKneFYp5mpvZSZCqFWtRZtD7nEsHo=;
+ b=dfvRA3Rd+PPIcMLdq6s4t8z9QcZNo96rAQ+9SLwCKqEmgLNerHWVoqboNqNF/93cBXExbh5vBbkbK99SX84sjxuQ53SPnwHjNwkNXY/f/3JIFAwUlaphP0Y3vYdMZyFOs/dq31J7bxGTPsg3foTK2bCC+TkREO5QNkDLK/a9XrCayPHfmZ92z5D4gvsRiWKtf5oRw6g9fQqd+n9B9OARAcQN9G1cxHd7lyXjX8QBmVLRgOyHhDyfbiSPTfQNhhgHxR8egcGYD8VMwCg0KqtcH8GO/jp1gPD5ziLWBkpdhL/Wd4Sj6/MrJn+UDlYThSVA96u1Khd6hd0nb+MXOCpthg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=I9VUsXTeCErywBNKneFYp5mpvZSZCqFWtRZtD7nEsHo=;
+ b=qa7c+sMlHj+C/E80zr++3XHS4l/O9sAs0Yt349zvO3FtLL2dVBRpaUzhryiQgJjgrylrMpn2GpZHuiOtFcODdVXv8F33j/jhebxeclfhOAv2Hh2firUgyR7M+mGtixnhXFrsPUE2RT87IL+0qumtrPpNz0znNwnl36QmkmZbyZ8=
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by MWHPR10MB1501.namprd10.prod.outlook.com (2603:10b6:300:24::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5353.15; Tue, 21 Jun
+ 2022 23:56:32 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::2125:9bb7:bfeb:81f9]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::2125:9bb7:bfeb:81f9%8]) with mapi id 15.20.5353.022; Tue, 21 Jun 2022
+ 23:56:31 +0000
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Michal Hocko <mhocko@suse.com>, Peter Xu <peterx@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        James Houghton <jthoughton@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        catalin.marinas@arm.com, will@kernel.org,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2 1/4] hugetlb: skip to end of PT page mapping when pte not present
+Date:   Tue, 21 Jun 2022 16:56:17 -0700
+Message-Id: <20220621235620.291305-2-mike.kravetz@oracle.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20220621235620.291305-1-mike.kravetz@oracle.com>
+References: <20220621235620.291305-1-mike.kravetz@oracle.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR04CA0283.namprd04.prod.outlook.com
+ (2603:10b6:303:89::18) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Reply-To: khalid@gonehiking.org
-Subject: Re: [PATCH v2 2/3] scsi: BusLogic remove bus_to_virt
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Matt Wang <wwentao@vmware.com>,
-        Miquel van Smoorenburg <mikevs@xs4all.net>,
-        Mark Salyzyn <salyzyn@android.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-parisc@vger.kernel.org, Denis Efremov <efremov@linux.com>
-References: <20220617125750.728590-1-arnd@kernel.org>
- <20220617125750.728590-3-arnd@kernel.org>
-From:   Khalid Aziz <khalid@gonehiking.org>
-In-Reply-To: <20220617125750.728590-3-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 74ce3319-f277-4cbc-519a-08da53e1aa55
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1501:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1501ED1071778FE857339423E2B39@MWHPR10MB1501.namprd10.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5dPWq6OKGgc3xc6Jm8BtQlAAgsjKh4XmdKVRfk6Ni+fak1qympT0LLgQpDSw4/+bAvqEiaPyzVZmYIfnRyUyAcFkQfNKnGQvtpnGFT2uGvVytgheVRzhCgJJnQ6CZTf2quazgmjqgjSuTLxobSmMAiiaArmtsH50gOlXYBBQ7dVzOFiU530HdBwOLwKJTeZz9pOeEEGjIX0jbvcPmoXo0kTeC1ZWzAufQPaNgXSIwbSqDXEBpr1LTvYF6CfaSpCyY46FCh2y7/txFgIx2Vf16/O+OANF03FS4Y/ejl48NVtYKWh8J+GXZJpNitcN7q+fGlUhW2PGry3ofomZM6bdpNNnB+kl3ACrs0k/RnmyS85hCxEom0bK/+ByEj2lGJ6NCBWpJne/QObS5o9OT2wYcojKo+qtRJ6kG6zN9kKR0tVXj9oAnZAReYkjuTN6TgT9pRnmMj3KtlALYNYgTF1o9dCY20qJk/vwvQLznlhaQmlw9GYdvgo3aJ37UbcEAD0bCcaXOGHFZjVN/MEJpew7r0J/T9gvnVuXh47gGW1QiZfha03X9keX1AsLl542KP1OBDdJkafYm5zxAv8O05AXAZE43dBQtRLgKPGCAtjetIaYFiUZu9ny4z6ktrRpSkC/9puf1Il6uY8y9J2V0Wv+MWc0AznoVm1C57y6L81h0L8QCsm0Dtw54aHbBvgEcFZv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(376002)(346002)(366004)(136003)(39860400002)(396003)(7416002)(38100700002)(478600001)(316002)(6666004)(186003)(5660300002)(8936002)(2616005)(1076003)(83380400001)(41300700001)(2906002)(86362001)(8676002)(66556008)(26005)(6512007)(66946007)(36756003)(66476007)(44832011)(6486002)(4326008)(54906003)(921005)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YpRafMEOMx4ox9WScDZH+wEyccEDqDgl8V3Tz3aZKz9utEuTSX2vLJfssXSi?=
+ =?us-ascii?Q?1DHj5Khbz6EyV/jP6eljNDBj02eVumibpYL4ltwfoKm6uQgq1Fc6xnprV4Wp?=
+ =?us-ascii?Q?X4dO09AKbTt3E2zi/UuSUkYFr+kd8i4sdb0wvlyZvCguj/umB7SffH7lSJFW?=
+ =?us-ascii?Q?WqWv/duLE6B247Exiksu5EKL7zYbaGH6myx6iCnjJ7Rpv0jBRQLwP3t2/ogb?=
+ =?us-ascii?Q?rUJKfAnwnatuS4BEvpDp2LGKn2UHSFgSUWG8AsYB34pX3ut4V1in3EWHBKH1?=
+ =?us-ascii?Q?LTJhSPddDvKGCkWB7C4D75jYznXnMhnlXGkh/p8XlrVJ9ygLsohSOpdNOkT9?=
+ =?us-ascii?Q?d5Iy26GCFwMXgn+VN7tK36MNIMUXwn0hYZw0V4E6pcAppFHxwO78IRb+hP0J?=
+ =?us-ascii?Q?8BBC24zv869kfO7XrjoLLKN6F+9L1I2QMYKWJN+Z2Uh43crJx8rnKzErr8Ua?=
+ =?us-ascii?Q?7RpKmo5sOT6fZKiJpBPg31flX8btRfBPIdjBhmoWZZl9PDqLOJgxu/afwNHr?=
+ =?us-ascii?Q?dUNLJGUHpyR3fK2mLotiEl91e/QWZWEpi30YzDqVT5Ye9/w1P4ocU77nLnOx?=
+ =?us-ascii?Q?9p7Xb0LkHq+zaxbgvQ7RMOTwsm8pFcV203n3WOJG1nx42wpKd4yUEgajjGrg?=
+ =?us-ascii?Q?FXysMCpcNiIr9js9ujstfiliCVg8/GimToczuZXusL5IzMvVwMkCtU9HBMjz?=
+ =?us-ascii?Q?TRML2HODWuKrUb3ceoS1M2gmuGEIP653xnpXmtA+eNiW4tWhT81nLfcJvncg?=
+ =?us-ascii?Q?7Qe0X5XLb74KBD1qs0C/vkTP0+nIsTbctblo8umJdEeJV7h/M3w3zgD+v2vU?=
+ =?us-ascii?Q?GwDoBBO40zfmrwtcQpreDTws1Xg/A3of1Z9GaO7XbSq1rFxAqNLMKteTPn2u?=
+ =?us-ascii?Q?oBiBEyyHetmJkepaBwZI5uAwLCfUPSq0kc2YvoXFwYGkovPRCY5Nd7v1jKx+?=
+ =?us-ascii?Q?5UwqqKRhWDV/eK2kVv4Zz6kcsWZYqr0UlmjO3N3M1zZdwT2LihPILhf43NIu?=
+ =?us-ascii?Q?DAhv3Fno985wHuuqQPhgzDakmvcUhKtgYQ0jl3sNvoLGEzq1H8QtQTn0OiGh?=
+ =?us-ascii?Q?dQrWgivFOuO/oNFgD4hsCiNqmfvLI7Dqh57wz12QmtaA+2aCHn/VdBBYzZBt?=
+ =?us-ascii?Q?GfI/usWHV6Jt1dmuOT1qgehzE6oKqx98OS/isF09HyHk/lCJdWqVaHGnuN7r?=
+ =?us-ascii?Q?X050E7P3HTrzyfX+/b1vAfwBGWpRhsm7lQPKl5KuHfsS0fFvsFtuPu9f9xYb?=
+ =?us-ascii?Q?d2kb6Oim7q9UINqWRvQl68Ykab/N2/HJbuDyYs1kIwoOeOt2F4XOm1LpuQTe?=
+ =?us-ascii?Q?VjnYW8DBhZcNMS2wvYO9ebTLXAeOA6kF9lctG6NoHDJrnbZ2Wi0MC+AwDAqd?=
+ =?us-ascii?Q?x+5VGSoi0CYN9HKSMaVCZ5+irvcBMJOCXIpehpvcytPu78UXWflYv4Y2fKq/?=
+ =?us-ascii?Q?u0GAo2fOCvn3UCuBQxtc+pKa+kHyjZ+xAU0cGmpDeGSGDqfkjHJKKt6WhbDO?=
+ =?us-ascii?Q?rMUI+snw+4YA8Uta+JEbTOe39Cc+rrvwEnRauXBjcecOJmMqg4qETXpKO7gh?=
+ =?us-ascii?Q?riRpriZUVg0YUmSCCLGj0Ulevun04dUodI4UmMRBfvVr5yNI/WBgkF4ijq5D?=
+ =?us-ascii?Q?ncUQafahqdH0yxzcMu/1Z+q+pjK9S6w26sN4wnNjGk2YyQ0FsLg96IQ0Tp2z?=
+ =?us-ascii?Q?K4T8tFomoe7h5UgbgamELZxTVBQHOc0906hYNwvc+9D+fP2sTaUK3sCKM6wA?=
+ =?us-ascii?Q?Z9KpJd9PM73ptIp++7cKoMY7wkCOdWc=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74ce3319-f277-4cbc-519a-08da53e1aa55
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2022 23:56:31.8228
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TnenMtLhFQvsRoyj6PsZOaQIIGuSvM2sH/xaUCUggf0nmQqCY9FAwxv5gbk+17LNAtAqWRxWDbkM+dTXUo++7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1501
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.517,18.0.883
+ definitions=2022-06-21_10:2022-06-21,2022-06-21 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 suspectscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2204290000
+ definitions=main-2206210105
+X-Proofpoint-ORIG-GUID: wYEz4IocbbzavqKo51z_zKs0l33aQYzr
+X-Proofpoint-GUID: wYEz4IocbbzavqKo51z_zKs0l33aQYzr
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 6/17/22 06:57, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The BusLogic driver is the last remaining driver that relies on the
-> deprecated bus_to_virt() function, which in turn only works on a few
-> architectures, and is incompatible with both swiotlb and iommu support.
-> 
-> Before commit 391e2f25601e ("[SCSI] BusLogic: Port driver to 64-bit."),
-> the driver had a dependency on x86-32, presumably because of this
-> problem. However, the change introduced another bug that made it still
-> impossible to use the driver on any 64-bit machine.
-> 
-> This was in turn fixed in commit 56f396146af2 ("scsi: BusLogic: Fix
-> 64-bit system enumeration error for Buslogic"), 8 years later, which
-> shows that there are not a lot of users.
-> 
-> Maciej is still using the driver on 32-bit hardware, and Khalid mentioned
-> that the driver works with the device emulation used in VirtualBox
-> and VMware. Both of those only emulate it for Windows 2000 and older
-> operating systems that did not ship with the better LSI logic driver.
-> 
-> Do a minimum fix that searches through the list of descriptors to find
-> one that matches the bus address. This is clearly as inefficient as
-> was indicated in the code comment about the lack of a bus_to_virt()
-> replacement. A better fix would likely involve changing out the entire
-> descriptor allocation for a simpler one, but that would be much
-> more invasive.
-> 
-> Cc: Maciej W. Rozycki <macro@orcam.me.uk>
-> Cc: Matt Wang <wwentao@vmware.com>
-> Cc: Khalid Aziz <khalid@gonehiking.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/scsi/BusLogic.c | 27 ++++++++++++++++-----------
->   drivers/scsi/Kconfig    |  2 +-
->   2 files changed, 17 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
-> index a897c8f914cf..d057abfcdd5c 100644
-> --- a/drivers/scsi/BusLogic.c
-> +++ b/drivers/scsi/BusLogic.c
-> @@ -2515,12 +2515,26 @@ static int blogic_resultcode(struct blogic_adapter *adapter,
->   	return (hoststatus << 16) | tgt_status;
->   }
->   
-> +/*
-> + * turn the dma address from an inbox into a ccb pointer
-> + * This is rather inefficient.
-> + */
-> +static struct blogic_ccb *
-> +blogic_inbox_to_ccb(struct blogic_adapter *adapter, struct blogic_inbox *inbox)
-> +{
-> +	struct blogic_ccb *ccb;
-> +
-> +	for (ccb = adapter->all_ccbs; ccb; ccb = ccb->next_all)
-> +		if (inbox->ccb == ccb->dma_handle)
-> +			break;
-> +
-> +	return ccb;
-> +}
->   
->   /*
->     blogic_scan_inbox scans the Incoming Mailboxes saving any
->     Incoming Mailbox entries for completion processing.
->   */
-> -
->   static void blogic_scan_inbox(struct blogic_adapter *adapter)
->   {
->   	/*
-> @@ -2540,16 +2554,7 @@ static void blogic_scan_inbox(struct blogic_adapter *adapter)
->   	enum blogic_cmplt_code comp_code;
->   
->   	while ((comp_code = next_inbox->comp_code) != BLOGIC_INBOX_FREE) {
-> -		/*
-> -		   We are only allowed to do this because we limit our
-> -		   architectures we run on to machines where bus_to_virt(
-> -		   actually works.  There *needs* to be a dma_addr_to_virt()
-> -		   in the new PCI DMA mapping interface to replace
-> -		   bus_to_virt() or else this code is going to become very
-> -		   innefficient.
-> -		 */
-> -		struct blogic_ccb *ccb =
-> -			(struct blogic_ccb *) bus_to_virt(next_inbox->ccb);
-> +		struct blogic_ccb *ccb = blogic_inbox_to_ccb(adapter, adapter->next_inbox);
+HugeTLB address ranges are linearly scanned during fork, unmap and
+remap operations.  If a non-present entry is encountered, the code
+currently continues to the next huge page aligned address.  However,
+a non-present entry implies that the page table page for that entry
+is not present.  Therefore, the linear scan can skip to the end of
+range mapped by the page table page.  This can speed operations on
+large sparsely populated hugetlb mappings.
 
-This change looks good enough as workaround to not use bus_to_virt() for 
-now. There are two problems I see though. One, I do worry about 
-blogic_inbox_to_ccb() returning NULL for ccb which should not happen 
-unless the mailbox pointer was corrupted which would indicate a bigger 
-problem. Nevertheless a NULL pointer causing kernel panic concerns me. 
-How about adding a check before we dereference ccb?
+Create a new routine hugetlb_mask_last_page() that will return an
+address mask.  When the mask is ORed with an address, the result
+will be the address of the last huge page mapped by the associated
+page table page.  Use this mask to update addresses in routines which
+linearly scan hugetlb address ranges when a non-present pte is
+encountered.
 
-Second, with this patch applied, I am seeing errors from the driver:
+hugetlb_mask_last_page is related to the implementation of
+huge_pte_offset as hugetlb_mask_last_page is called when huge_pte_offset
+returns NULL.  This patch only provides a complete hugetlb_mask_last_page
+implementation when CONFIG_ARCH_WANT_GENERAL_HUGETLB is defined.
+Architectures which provide their own versions of huge_pte_offset can also
+provide their own version of hugetlb_mask_last_page.
 
-=====================
-[ 1623.902685]  sdb: sdb1 sdb2
-[ 1623.903245] sd 2:0:0:0: [sdb] Attached SCSI disk
-[ 1623.911000] scsi2: Illegal CCB #76 status 2 in Incoming Mailbox
-[ 1623.911005] scsi2: Illegal CCB #76 status 2 in Incoming Mailbox
-[ 1623.911070] scsi2: Illegal CCB #79 status 2 in Incoming Mailbox
-[ 1651.458008] scsi2: Warning: Partition Table appears to have Geometry 
-256/63 which is
-[ 1651.458013] scsi2: not compatible with current BusLogic Host Adapter 
-Geometry 255/63
-[ 1658.797609] scsi2: Resetting BusLogic BT-958D Failed
-[ 1659.533208] sd 2:0:0:0: Device offlined - not ready after error recovery
-[ 1659.533331] sd 2:0:0:0: Device offlined - not ready after error recovery
-[ 1659.533333] sd 2:0:0:0: Device offlined - not ready after error recovery
-[ 1659.533342] sd 2:0:0:0: [sdb] tag#101 FAILED Result: 
-hostbyte=DID_TIME_OUT driverbyte=DRIVER_OK cmd_age=35s
-[ 1659.533345] sd 2:0:0:0: [sdb] tag#101 CDB: Read(10) 28 00 00 00 00 28 
-00 00 10 00
-[ 1659.533346] I/O error, dev sdb, sector 40 op 0x0:(READ) flags 0x80700 
-phys_seg 1 prio class 0
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Tested-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Acked-by: Muchun Song <songmuchun@bytedance.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+ include/linux/hugetlb.h |  1 +
+ mm/hugetlb.c            | 56 +++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 52 insertions(+), 5 deletions(-)
 
-=================
-
-This is on VirtualBox using emulated BusLogic adapter.
-
-This patch needs more refinement.
-
-Thanks,
-Khalid
-
-
-
->   		if (comp_code != BLOGIC_Cn erroneousMD_NOTFOUND) {
->   			if (ccb->status == BLOGIC_CCB_ACTIVE ||
->   					ccb->status == BLOGIC_CCB_RESET) {
-> diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
-> index cf75588a2587..56bdc08d0b77 100644
-> --- a/drivers/scsi/Kconfig
-> +++ b/drivers/scsi/Kconfig
-> @@ -513,7 +513,7 @@ config SCSI_HPTIOP
->   
->   config SCSI_BUSLOGIC
->   	tristate "BusLogic SCSI support"
-> -	depends on PCI && SCSI && VIRT_TO_BUS
-> +	depends on PCI && SCSI
->   	help
->   	  This is support for BusLogic MultiMaster and FlashPoint SCSI Host
->   	  Adapters. Consult the SCSI-HOWTO, available from
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 642a39016f9a..e37465e830fe 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -197,6 +197,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			unsigned long addr, unsigned long sz);
+ pte_t *huge_pte_offset(struct mm_struct *mm,
+ 		       unsigned long addr, unsigned long sz);
++unsigned long hugetlb_mask_last_page(struct hstate *h);
+ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
+ 				unsigned long *addr, pte_t *ptep);
+ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 98492733cc64..0e4877cea62e 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4736,6 +4736,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+ 	unsigned long npages = pages_per_huge_page(h);
+ 	struct address_space *mapping = src_vma->vm_file->f_mapping;
+ 	struct mmu_notifier_range range;
++	unsigned long last_addr_mask;
+ 	int ret = 0;
+ 
+ 	if (cow) {
+@@ -4755,11 +4756,14 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+ 		i_mmap_lock_read(mapping);
+ 	}
+ 
++	last_addr_mask = hugetlb_mask_last_page(h);
+ 	for (addr = src_vma->vm_start; addr < src_vma->vm_end; addr += sz) {
+ 		spinlock_t *src_ptl, *dst_ptl;
+ 		src_pte = huge_pte_offset(src, addr, sz);
+-		if (!src_pte)
++		if (!src_pte) {
++			addr |= last_addr_mask;
+ 			continue;
++		}
+ 		dst_pte = huge_pte_alloc(dst, dst_vma, addr, sz);
+ 		if (!dst_pte) {
+ 			ret = -ENOMEM;
+@@ -4776,8 +4780,10 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+ 		 * after taking the lock below.
+ 		 */
+ 		dst_entry = huge_ptep_get(dst_pte);
+-		if ((dst_pte == src_pte) || !huge_pte_none(dst_entry))
++		if ((dst_pte == src_pte) || !huge_pte_none(dst_entry)) {
++			addr |= last_addr_mask;
+ 			continue;
++		}
+ 
+ 		dst_ptl = huge_pte_lock(h, dst, dst_pte);
+ 		src_ptl = huge_pte_lockptr(h, src, src_pte);
+@@ -4938,6 +4944,7 @@ int move_hugetlb_page_tables(struct vm_area_struct *vma,
+ 	unsigned long sz = huge_page_size(h);
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	unsigned long old_end = old_addr + len;
++	unsigned long last_addr_mask;
+ 	unsigned long old_addr_copy;
+ 	pte_t *src_pte, *dst_pte;
+ 	struct mmu_notifier_range range;
+@@ -4953,12 +4960,16 @@ int move_hugetlb_page_tables(struct vm_area_struct *vma,
+ 	flush_cache_range(vma, range.start, range.end);
+ 
+ 	mmu_notifier_invalidate_range_start(&range);
++	last_addr_mask = hugetlb_mask_last_page(h);
+ 	/* Prevent race with file truncation */
+ 	i_mmap_lock_write(mapping);
+ 	for (; old_addr < old_end; old_addr += sz, new_addr += sz) {
+ 		src_pte = huge_pte_offset(mm, old_addr, sz);
+-		if (!src_pte)
++		if (!src_pte) {
++			old_addr |= last_addr_mask;
++			new_addr |= last_addr_mask;
+ 			continue;
++		}
+ 		if (huge_pte_none(huge_ptep_get(src_pte)))
+ 			continue;
+ 
+@@ -5003,6 +5014,7 @@ static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct
+ 	struct hstate *h = hstate_vma(vma);
+ 	unsigned long sz = huge_page_size(h);
+ 	struct mmu_notifier_range range;
++	unsigned long last_addr_mask;
+ 	bool force_flush = false;
+ 
+ 	WARN_ON(!is_vm_hugetlb_page(vma));
+@@ -5023,11 +5035,14 @@ static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct
+ 				end);
+ 	adjust_range_if_pmd_sharing_possible(vma, &range.start, &range.end);
+ 	mmu_notifier_invalidate_range_start(&range);
++	last_addr_mask = hugetlb_mask_last_page(h);
+ 	address = start;
+ 	for (; address < end; address += sz) {
+ 		ptep = huge_pte_offset(mm, address, sz);
+-		if (!ptep)
++		if (!ptep) {
++			address |= last_addr_mask;
+ 			continue;
++		}
+ 
+ 		ptl = huge_pte_lock(h, mm, ptep);
+ 		if (huge_pmd_unshare(mm, vma, &address, ptep)) {
+@@ -6301,6 +6316,7 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+ 	unsigned long pages = 0, psize = huge_page_size(h);
+ 	bool shared_pmd = false;
+ 	struct mmu_notifier_range range;
++	unsigned long last_addr_mask;
+ 	bool uffd_wp = cp_flags & MM_CP_UFFD_WP;
+ 	bool uffd_wp_resolve = cp_flags & MM_CP_UFFD_WP_RESOLVE;
+ 
+@@ -6317,12 +6333,15 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+ 	flush_cache_range(vma, range.start, range.end);
+ 
+ 	mmu_notifier_invalidate_range_start(&range);
++	last_addr_mask = hugetlb_mask_last_page(h);
+ 	i_mmap_lock_write(vma->vm_file->f_mapping);
+ 	for (; address < end; address += psize) {
+ 		spinlock_t *ptl;
+ 		ptep = huge_pte_offset(mm, address, psize);
+-		if (!ptep)
++		if (!ptep) {
++			address |= last_addr_mask;
+ 			continue;
++		}
+ 		ptl = huge_pte_lock(h, mm, ptep);
+ 		if (huge_pmd_unshare(mm, vma, &address, ptep)) {
+ 			/*
+@@ -6873,6 +6892,33 @@ pte_t *huge_pte_offset(struct mm_struct *mm,
+ 	return (pte_t *)pmd;
+ }
+ 
++/*
++ * Return a mask that can be used to update an address to the last huge
++ * page in a page table page mapping size.  Used to skip non-present
++ * page table entries when linearly scanning address ranges.  Architectures
++ * with unique huge page to page table relationships can define their own
++ * version of this routine.
++ */
++unsigned long hugetlb_mask_last_page(struct hstate *h)
++{
++	unsigned long hp_size = huge_page_size(h);
++
++	if (hp_size == PUD_SIZE)
++		return P4D_SIZE - PUD_SIZE;
++	else if (hp_size == PMD_SIZE)
++		return PUD_SIZE - PMD_SIZE;
++	else
++		return 0UL;
++}
++
++#else
++
++/* See description above.  Architectures can provide their own version. */
++__weak unsigned long hugetlb_mask_last_page(struct hstate *h)
++{
++	return 0UL;
++}
++
+ #endif /* CONFIG_ARCH_WANT_GENERAL_HUGETLB */
+ 
+ /*
+-- 
+2.35.3
 
