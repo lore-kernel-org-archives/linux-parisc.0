@@ -2,58 +2,40 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E29EBC43334
-	for <linux-parisc@archiver.kernel.org>; Tue, 21 Jun 2022 08:45:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F4C7CCA473
+	for <linux-parisc@archiver.kernel.org>; Tue, 21 Jun 2022 22:04:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbiFUIp5 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 21 Jun 2022 04:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
+        id S1354953AbiFUWEO (ORCPT
+        <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 21 Jun 2022 18:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbiFUIpz (ORCPT
+        with ESMTP id S235648AbiFUWEN (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 21 Jun 2022 04:45:55 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB9D26553;
-        Tue, 21 Jun 2022 01:45:54 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0974F1F966;
-        Tue, 21 Jun 2022 08:45:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1655801153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7pouBC4i764FgZXOuJ6SFkbk2xa1PZt6dSFI3XEoLes=;
-        b=BxLNshCDBQRc4XmBU9sLjI5ynrIOKZzeUOi0zGyby68AWR+NLDKh1gQWWSjQmyLNWRb+W0
-        dy0bLKDuzMCdi110ykiH+iFiyHYjXJJ9LzLM8QxvKgjLk/ggBpz5iUtfZUkwmUxpm4jxDI
-        CIeoXXpEVaSAUBtAywORVhvrAqEkhoM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1655801153;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7pouBC4i764FgZXOuJ6SFkbk2xa1PZt6dSFI3XEoLes=;
-        b=k6ybPuTnlEi+J6ckMb+UuqBX0ObNoZVxlTDbFsuZr7WGvkpdlP8i7LXSwEWQ9sn0i6kP5E
-        tdUC8b/eV67CtfCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D3B6C13A88;
-        Tue, 21 Jun 2022 08:45:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id qHp9M0CFsWJvEAAAMHmgww
-        (envelope-from <hare@suse.de>); Tue, 21 Jun 2022 08:45:52 +0000
-Message-ID: <cc1028ad-bd51-dea7-9f3d-fb954416b9fa@suse.de>
-Date:   Tue, 21 Jun 2022 10:45:52 +0200
+        Tue, 21 Jun 2022 18:04:13 -0400
+X-Greylist: delayed 431 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 21 Jun 2022 15:04:12 PDT
+Received: from mailout.easymail.ca (mailout.easymail.ca [64.68.200.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1FE2D1D0;
+        Tue, 21 Jun 2022 15:04:11 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id C97F261DF6;
+        Tue, 21 Jun 2022 21:56:59 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo09-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo09-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id FLc2uL2Ic0RZ; Tue, 21 Jun 2022 21:56:59 +0000 (UTC)
+Received: from mail.gonehiking.org (unknown [38.15.45.1])
+        by mailout.easymail.ca (Postfix) with ESMTPA id 45ED161DF5;
+        Tue, 21 Jun 2022 21:56:59 +0000 (UTC)
+Received: from [192.168.1.4] (internal [192.168.1.4])
+        by mail.gonehiking.org (Postfix) with ESMTP id C716D3EF14;
+        Tue, 21 Jun 2022 15:56:58 -0600 (MDT)
+Message-ID: <7a6df2da-95e8-b2fd-7565-e4b7a51c5b63@gonehiking.org>
+Date:   Tue, 21 Jun 2022 15:56:58 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
+ Thunderbird/91.10.0
+Reply-To: khalid@gonehiking.org
 Subject: Re: [PATCH v2 2/3] scsi: BusLogic remove bus_to_virt
 Content-Language: en-US
 To:     Arnd Bergmann <arnd@kernel.org>, linux-scsi@vger.kernel.org,
@@ -63,7 +45,6 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         Robin Murphy <robin.murphy@arm.com>,
         iommu@lists.linux-foundation.org,
-        Khalid Aziz <khalid@gonehiking.org>,
         "Maciej W . Rozycki" <macro@orcam.me.uk>,
         Matt Wang <wwentao@vmware.com>,
         Miquel van Smoorenburg <mikevs@xs4all.net>,
@@ -73,15 +54,15 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
         linux-parisc@vger.kernel.org, Denis Efremov <efremov@linux.com>
 References: <20220617125750.728590-1-arnd@kernel.org>
  <20220617125750.728590-3-arnd@kernel.org>
-From:   Hannes Reinecke <hare@suse.de>
+From:   Khalid Aziz <khalid@gonehiking.org>
 In-Reply-To: <20220617125750.728590-3-arnd@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 6/17/22 14:57, Arnd Bergmann wrote:
+On 6/17/22 06:57, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
 > The BusLogic driver is the last remaining driver that relies on the
@@ -165,7 +146,49 @@ On 6/17/22 14:57, Arnd Bergmann wrote:
 > -		struct blogic_ccb *ccb =
 > -			(struct blogic_ccb *) bus_to_virt(next_inbox->ccb);
 > +		struct blogic_ccb *ccb = blogic_inbox_to_ccb(adapter, adapter->next_inbox);
->   		if (comp_code != BLOGIC_CMD_NOTFOUND) {
+
+This change looks good enough as workaround to not use bus_to_virt() for 
+now. There are two problems I see though. One, I do worry about 
+blogic_inbox_to_ccb() returning NULL for ccb which should not happen 
+unless the mailbox pointer was corrupted which would indicate a bigger 
+problem. Nevertheless a NULL pointer causing kernel panic concerns me. 
+How about adding a check before we dereference ccb?
+
+Second, with this patch applied, I am seeing errors from the driver:
+
+=====================
+[ 1623.902685]  sdb: sdb1 sdb2
+[ 1623.903245] sd 2:0:0:0: [sdb] Attached SCSI disk
+[ 1623.911000] scsi2: Illegal CCB #76 status 2 in Incoming Mailbox
+[ 1623.911005] scsi2: Illegal CCB #76 status 2 in Incoming Mailbox
+[ 1623.911070] scsi2: Illegal CCB #79 status 2 in Incoming Mailbox
+[ 1651.458008] scsi2: Warning: Partition Table appears to have Geometry 
+256/63 which is
+[ 1651.458013] scsi2: not compatible with current BusLogic Host Adapter 
+Geometry 255/63
+[ 1658.797609] scsi2: Resetting BusLogic BT-958D Failed
+[ 1659.533208] sd 2:0:0:0: Device offlined - not ready after error recovery
+[ 1659.533331] sd 2:0:0:0: Device offlined - not ready after error recovery
+[ 1659.533333] sd 2:0:0:0: Device offlined - not ready after error recovery
+[ 1659.533342] sd 2:0:0:0: [sdb] tag#101 FAILED Result: 
+hostbyte=DID_TIME_OUT driverbyte=DRIVER_OK cmd_age=35s
+[ 1659.533345] sd 2:0:0:0: [sdb] tag#101 CDB: Read(10) 28 00 00 00 00 28 
+00 00 10 00
+[ 1659.533346] I/O error, dev sdb, sector 40 op 0x0:(READ) flags 0x80700 
+phys_seg 1 prio class 0
+
+=================
+
+This is on VirtualBox using emulated BusLogic adapter.
+
+This patch needs more refinement.
+
+Thanks,
+Khalid
+
+
+
+>   		if (comp_code != BLOGIC_Cn erroneousMD_NOTFOUND) {
 >   			if (ccb->status == BLOGIC_CCB_ACTIVE ||
 >   					ccb->status == BLOGIC_CCB_RESET) {
 > diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
@@ -182,15 +205,3 @@ On 6/17/22 14:57, Arnd Bergmann wrote:
 >   	  This is support for BusLogic MultiMaster and FlashPoint SCSI Host
 >   	  Adapters. Consult the SCSI-HOWTO, available from
 
-CCB handling in the driver is ugly anyway, so that'll be good enough.
-
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-
-Cheers,
-
-Hannes
--- 
-Dr. Hannes Reinecke		           Kernel Storage Architect
-hare@suse.de			                  +49 911 74053 688
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
