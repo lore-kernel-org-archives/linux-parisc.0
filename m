@@ -2,137 +2,118 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57EB7CCA47B
-	for <linux-parisc@archiver.kernel.org>; Thu, 30 Jun 2022 05:24:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A432C43334
+	for <linux-parisc@archiver.kernel.org>; Thu, 30 Jun 2022 06:23:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbiF3FYY (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 30 Jun 2022 01:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
+        id S232384AbiF3GXL (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 30 Jun 2022 02:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232386AbiF3FWV (ORCPT
+        with ESMTP id S232231AbiF3GXL (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 30 Jun 2022 01:22:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8946F41629;
-        Wed, 29 Jun 2022 22:20:23 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 819FC1BB2;
-        Wed, 29 Jun 2022 22:20:23 -0700 (PDT)
-Received: from a077893.blr.arm.com (unknown [10.162.41.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D6CEA3F66F;
-        Wed, 29 Jun 2022 22:20:14 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org
-Cc:     hch@infradead.org, christophe.leroy@csgroup.eu,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, openrisc@lists.librecores.org,
-        linux-xtensa@linux-xtensa.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-um@lists.infradead.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Subject: [PATCH V6 25/26] sh/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date:   Thu, 30 Jun 2022 10:46:29 +0530
-Message-Id: <20220630051630.1718927-26-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
-References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+        Thu, 30 Jun 2022 02:23:11 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C976B49D;
+        Wed, 29 Jun 2022 23:23:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1656570174;
+        bh=9no9UVFH+eQR836qWFvRWMdx3fxP2OaI7OaE+hfAIMY=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=CnNiwm2MrxE1svdABLjcsOAK+WvrcIDPptmHBhtXTtMjOcjz/ByifP3xey3R/RV6x
+         NbFhL0xeJ62jkXBm3hrbmosJUI7rHDQAFMtp0DmwMX0DF6SvQ2ed0Hl7RgagmsnmUB
+         67zvLKSqQeiSQG6p0omuMCo8cLUSKW6z5DtDkeG8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.136.11]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MQ5vW-1oJwjt411k-00M3Xg; Thu, 30
+ Jun 2022 08:22:54 +0200
+Message-ID: <04b47f81-77d6-9429-5b8f-fdf4fbbfb62d@gmx.de>
+Date:   Thu, 30 Jun 2022 08:22:25 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH] dec/tulip:fix repeated words in comments
+Content-Language: en-US
+To:     Jilin Yuan <yuanjilin@cdjrlc.com>, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20220629095405.8668-1-yuanjilin@cdjrlc.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <20220629095405.8668-1-yuanjilin@cdjrlc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HZk557EiuA7heqLeox0iNOLRa7BQNU1W5AzmGYEGvOgGq05m5Fk
+ wTbbwrvi6Hr6Pl1jCnl21CmMyfy9Dscaqw86Z2NT8wP4xTPVoxfrPdwUEYlfYcJo2Sl8GVR
+ 4AMafTR3qBBvh2ObQzngxyR+oJrzY0OlZGTeh3mjuSnMXoGb85Y38r+/MABqfV0Nav1omOX
+ DiPL/AhKyKJVb8/3pu2eg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1cXFSoHM2eQ=:/o58ILoAMTSTmEZy3b2FZu
+ 7Ex2FuzVLfIQ4eIi+QLDd7NfsjyKqJZuzLSRMv7sr8zoGWsxHnjs4zZgTxHR7l0beLP9GFwjJ
+ p5c3TkjIY0M3aECNjoqMxrfk8pFoxqqS5z706/y0WT2XIZDNIBWTuoz6ZJbdwXV7fA+9zb/PG
+ MKXOtrhNagNCPfQ8zzjX8RxD3TUbBXBWZqPYFJr4LgopNazsucDywEVxBKtquZkKRp60ObYV+
+ wtGJ7HHxRwWQj9p75vnCyr4sCfI+3EB+wgdU51le6GhOJ12Qvc1YEh3ObINC4tvME3DAWalF6
+ 1NlvsjSMabFofynxnQSvilGcd/rnqmfpcHvvP5H1QbFEwd1CAzgjLfu8aKL/zXjbcS1McgQbB
+ st+/1KTZuePdI9Nvj+HVzXTkqX4ZplHd05YBxz2GuL+OI5py2BHMAMuBwC8FL9TeYIyUqKx/Y
+ 2NjjFv8BsJz6XjDvjizq0e/aV4lQ0Q0eKGQKEwbqqbrjCRQZv2aHpWMf5gHb8ef8BKECj8PaB
+ Q1YZowxgHQ7rO+CgN4gE8uZlE6lDbJeWDuONszvXrbAKnOZ5GXSuHUNOqGMv2dW0epZnzQ0WP
+ YHwFzZS2HVAH0dlDcq7CWhlQ+c97cGtxE5vK/nAwq76G760Lpcs4KLoh3RWrbhC2warwxQSDV
+ 7niYKfsV+MOsYKDw1SLmKKPFnqNYgbChhmVoT/pZexOKqfjqKyELuah2DTX/rb/thV7P4M2rO
+ OItsGeoHgDOrr69LLmLJrNqOl1xXZGVafjkml8EzOskwbKZQLuglVteKLVHJ7wrKR7aE0SfeM
+ QnyX6vDDtpOGfD2v04+10BxqG2kSj1/zHGKTQWcwPneZ3gc4BD5674dsO/cBSmr0wmeVsSahT
+ ui9Kshm9v+7A8UnyGx1ZdfnueNySOmZ44Wvh2DZ47f5QoGG1TkW+Ts6QcKk4XbHIMXEGasWlt
+ HuOhOx2hehle+e9z6SBNFYjeo3yHQvbylC3tIkDKioF5jG4LUCFz4Ehn/axc7q5noG/UmJIze
+ 3X9CXDCteHvgiR7Fyh9JSbuE9hA20hTmNBf+tdwYR+yaC0Pq7nS/H0cm3Mz3j5s8C4m6FAKxC
+ 2gP+dBrueh/2sILB0gAEQbWOHoDxK2VnsqkEU84Zx1eY04E90F7FKJ6jA==
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
+On 6/29/22 11:54, Jilin Yuan wrote:
+> Delete the redundant word 'this'.
+>
+> Signed-off-by: Jilin Yuan <yuanjilin@cdjrlc.com>
+> ---
+>  drivers/net/ethernet/dec/tulip/xircom_cb.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/dec/tulip/xircom_cb.c b/drivers/net/et=
+hernet/dec/tulip/xircom_cb.c
+> index 8759f9f76b62..61825c9bd6be 100644
+> --- a/drivers/net/ethernet/dec/tulip/xircom_cb.c
+> +++ b/drivers/net/ethernet/dec/tulip/xircom_cb.c
+> @@ -742,7 +742,7 @@ static void activate_receiver(struct xircom_private =
+*card)
+>
+>  /*
+>  deactivate_receiver disables the receiver on the card.
+> -To achieve this this code disables the receiver first;
+> +To achieve this code disables the receiver first;
 
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/sh/Kconfig               |  1 +
- arch/sh/include/asm/pgtable.h | 17 -----------------
- arch/sh/mm/mmap.c             | 20 ++++++++++++++++++++
- 3 files changed, 21 insertions(+), 17 deletions(-)
+No.
+Instead it should be something like:
+To achieve this, this code disables the receiver first; ...
 
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 5f220e903e5a..91f3ea325388 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -12,6 +12,7 @@ config SUPERH
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_PTE_SPECIAL
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HIBERNATION_POSSIBLE if MMU
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_WANT_IPC_PARSE_VERSION
-diff --git a/arch/sh/include/asm/pgtable.h b/arch/sh/include/asm/pgtable.h
-index d7ddb1ec86a0..6fb9ec54cf9b 100644
---- a/arch/sh/include/asm/pgtable.h
-+++ b/arch/sh/include/asm/pgtable.h
-@@ -89,23 +89,6 @@ static inline unsigned long phys_addr_mask(void)
-  * completely separate permission bits for user and kernel space.
-  */
- 	 /*xwr*/
--#define __P000	PAGE_NONE
--#define __P001	PAGE_READONLY
--#define __P010	PAGE_COPY
--#define __P011	PAGE_COPY
--#define __P100	PAGE_EXECREAD
--#define __P101	PAGE_EXECREAD
--#define __P110	PAGE_COPY
--#define __P111	PAGE_COPY
--
--#define __S000	PAGE_NONE
--#define __S001	PAGE_READONLY
--#define __S010	PAGE_WRITEONLY
--#define __S011	PAGE_SHARED
--#define __S100	PAGE_EXECREAD
--#define __S101	PAGE_EXECREAD
--#define __S110	PAGE_RWX
--#define __S111	PAGE_RWX
- 
- typedef pte_t *pte_addr_t;
- 
-diff --git a/arch/sh/mm/mmap.c b/arch/sh/mm/mmap.c
-index 6a1a1297baae..46c1183493af 100644
---- a/arch/sh/mm/mmap.c
-+++ b/arch/sh/mm/mmap.c
-@@ -162,3 +162,23 @@ int valid_mmap_phys_addr_range(unsigned long pfn, size_t size)
- {
- 	return 1;
- }
-+
-+static const pgprot_t protection_map[16] = {
-+	[VM_NONE]					= PAGE_NONE,
-+	[VM_READ]					= PAGE_READONLY,
-+	[VM_WRITE]					= PAGE_COPY,
-+	[VM_WRITE | VM_READ]				= PAGE_COPY,
-+	[VM_EXEC]					= PAGE_EXECREAD,
-+	[VM_EXEC | VM_READ]				= PAGE_EXECREAD,
-+	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
-+	[VM_SHARED]					= PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= PAGE_READONLY,
-+	[VM_SHARED | VM_WRITE]				= PAGE_WRITEONLY,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC]				= PAGE_EXECREAD,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_EXECREAD,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_RWX,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_RWX
-+};
-+DECLARE_VM_GET_PAGE_PROT
--- 
-2.25.1
+but better look at the whole comment including the next line,
+in which case it could become:
+
+Disable the receiver first, then wait for it to become inactive.
+
+...
+
+>  then it waits for the receiver to become inactive.
+>
+>  must be called with the lock held and interrupts disabled.
+> @@ -829,7 +829,7 @@ static void activate_transmitter(struct xircom_priva=
+te *card)
+>
+>  /*
+>  deactivate_transmitter disables the transmitter on the card.
+> -To achieve this this code disables the transmitter first;
+> +To achieve this code disables the transmitter first;
+>  then it waits for the transmitter to become inactive.
+
+same here...
+
+
+>
+>  must be called with the lock held and interrupts disabled.
 
