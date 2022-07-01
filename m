@@ -2,106 +2,186 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38233C433EF
-	for <linux-parisc@archiver.kernel.org>; Fri,  1 Jul 2022 18:40:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51345C3F2D4
+	for <linux-parisc@archiver.kernel.org>; Fri,  1 Jul 2022 20:10:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbiGASkM (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 1 Jul 2022 14:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60866 "EHLO
+        id S231946AbiGAUKw (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 1 Jul 2022 16:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbiGASkL (ORCPT
+        with ESMTP id S231648AbiGAUKu (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 1 Jul 2022 14:40:11 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A0223152;
-        Fri,  1 Jul 2022 11:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1656700803;
-        bh=LQhKkVh7ERzHyd0XFztdkI4wYKz/OTZWu0gTeX+kc9k=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=ko5EUt6drjtBLxn8lnaa94mVfh3+4mSBNr/LUgwpUM+B2O+6IKrNQL8eXH1iqYe9l
-         2Md92OUhe8EeS5oZuBpn6GJcirljPxi7e0MXw5wIcUxTugrO0pXhElfMpqvjr3wMUR
-         c83MbRGQXDH8NgYYCqSxSYgrcOUxu/ouICxPrsas=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from p100 ([92.116.182.192]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MDywu-1nxPPT2KrE-009xA4; Fri, 01
- Jul 2022 20:40:03 +0200
-Date:   Fri, 1 Jul 2022 20:40:02 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     mcgrof@kernel.org, jeyu@kernel.org, linux-modules@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: [PATCH v2] modules: Ensure natural alignment for .altinstructions
- and __bug_table sections
-Message-ID: <Yr8/gr8e8I7tVX4d@p100>
+        Fri, 1 Jul 2022 16:10:50 -0400
+Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE96E1EAE1;
+        Fri,  1 Jul 2022 13:10:48 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 50D84580357;
+        Fri,  1 Jul 2022 16:01:57 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Fri, 01 Jul 2022 16:01:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1656705717; x=1656712917; bh=mr
+        ZZqztLVKSIkpl2ZtG9SZsAXGvA9Vl+x5zOkvs3Bjg=; b=ifFqAwFeM2wxyJCvKE
+        TcogHoKvz8Ikgyvbheen4lB6TK8my3nTFtPtZqZwV2EJoW1d675CVWiRCQYrtpCV
+        gjmX3xfutUzOU3hClg0Njj4ieVpzITbRxgXZVuosglRi9Ve/QUV4hEboq9Cl6D5q
+        5ZUDm0FkkQme2ysoms3ELh8Ej8sCf/bY7d3513Rv+xbTCp2MmH04t4WPs+p30/R/
+        NUoTk/RQLxrRh5NqM1X0miI8sZ9j0rcT8Y1gbcNzWv3fehEjbKWta0Zm2a34hcFz
+        IRiPSucdZsSIbDrwFJcccZcbWOSp8i+md8XOrmXWaR/5piNMD50Sh8euiQzn0koH
+        sIGA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1656705717; x=1656712917; bh=mrZZqztLVKSIk
+        pl2ZtG9SZsAXGvA9Vl+x5zOkvs3Bjg=; b=P1MvxlIOuM7l0z+qS8yeYED1ddgJs
+        ZCs2QYRhK40y97qVVKx50uDXKGc7mEB0wEwGcSiJsX1JtDdjkQWUx99X65YS4sz+
+        VfSaSS6Ie4KKuWHsotLfT5em9QY23iuX70+vsHcDY2KRtIP+aVtenEK44OuBMsai
+        UBAjIHn3DU+BwynQs3RgoaYjQarWyRcQP7W5Gh2Uup25KvchrpUJqNUtKa3U+bgZ
+        BTQhJ+xzfCrqL5QAda74Vyo+egxNHDbWs7GXn2vOV7ssh9klKGGfy1CHr9gnsXME
+        J2Ch54d15PxAoSgBunXMCXpz/ijn5crnwUN/1XIG9K1lsPwNHpUnb99dA==
+X-ME-Sender: <xms:tVK_Yn0kldOcLkWk3dfIzfXt7vEQSWSDQuQhk6xOyUH6462s2Aafdw>
+    <xme:tVK_YmHzembFAoNWd77N3YnMz2ToCVVA3ID83I0u19Nq-hOul4kwoPfowFqG0OJU5
+    9Up9yAkJymy0CEPig>
+X-ME-Received: <xmr:tVK_Yn4ez4uypnFnFJ_3S-MZZK2rMoSOVkyJcaQENIV3-JxGd7QBPtijtwYnd0ibdz0oyf0Ih3Ol2g8rOwlklU9P9_G8MyY9ieFatffNBjzmGTzr0MCSIh0uclg2SZmSBTnenw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehfedgudeggecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghm
+    uhgvlhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenuc
+    ggtffrrghtthgvrhhnpedukeetueduhedtleetvefguddvvdejhfefudelgfduveeggeeh
+    gfdufeeitdevteenucevlhhushhtvghrufhiiigvpeegnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:tVK_Ys2boEFyZ2b7B1aml8ZopCfvtqe4SBKhfTNbbjUwaL5H_-Vt5w>
+    <xmx:tVK_YqFInOCCYvQ6u16XXnQamCJINVqY-HKUCA2295MtRmC9HX0L8w>
+    <xmx:tVK_Yt8uHh-EDhML-nWscQ8f9B1_bd-I8tbDH-V2EpmCZ_1zpFsBkg>
+    <xmx:tVK_YiGQ7OXgBCgZlUMKnwYghy6mgLV662iTefVRH5xGXr6DzTd3uQ>
+Feedback-ID: i0ad843c9:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 1 Jul 2022 16:01:54 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc:     Samuel Holland <samuel@sholland.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Chris Zankel <chris@zankel.net>,
+        Colin Ian King <colin.king@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jan Beulich <jbeulich@suse.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Juergen Gross <jgross@suse.com>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Kees Cook <keescook@chromium.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Maximilian Heyne <mheyne@amazon.de>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Rich Felker <dalias@libc.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Sven Schnelle <svens@stackframe.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Wei Liu <wei.liu@kernel.org>, Wei Xu <xuwei5@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        iommu@lists.linux-foundation.org, iommu@lists.linux.dev,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-hyperv@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        x86@kernel.org, xen-devel@lists.xenproject.org
+Subject: [PATCH v3 8/8] genirq: Provide an IRQ affinity mask in non-SMP configs
+Date:   Fri,  1 Jul 2022 15:00:56 -0500
+Message-Id: <20220701200056.46555-9-samuel@sholland.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220701200056.46555-1-samuel@sholland.org>
+References: <20220701200056.46555-1-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:V5gOQb0rPPCFwBpCuwfiHq/tFNJjfharij+9vL3FdnDAm2wBBWI
- 96O1pYHAyF7lCJE0O7tIdCP1OaKt85C7BcGhvPA6EKK11BRaxx4b1iFA2ETGkzSVFNH/yaF
- zdh3MMWwKgzlRY6Izzk6bXdtTXgUpN9FzUoH9iN9l7MKn+l8SxSMZh2lBQQb7aDzaYKg0bB
- 4NU+S7zkdJvhMeKF7adrw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:cylAGrI9jeY=:5FFRWh/zKj+pba37xv/oVO
- Tw+LQcfrmUWKF/l8f10i6zuTgxvnsKB0rK37i5rjJ+vZYpdz3HUwlywvKps/WI8vTuSvfdFfY
- Ivfjn9e9/ibOLgbWOmsNTThRfv1F8T6e8q8L/szeWlOM7djtf7DAcy04cpo/VVIKJwPCghA1U
- hdf+nAVSioCf9fq48tQSWG6ak4sqZekK3lNh5N8rHgVhcFsS4wVvuELN0lE7dvxXjkF+m1O0n
- c56a5m0svh+riJtLUytaxe+rqEhnUsxI3u2YqDhMVTG2ybBYu9aAdVTmZyhmVfp1MB+j2DkNw
- QZ1wHRx0a4Q0twAgsQt4jA6zwfj0XONMUEh3dhP8Sd+CuvP2PPqq3/18ZcjHfFFJhT5o8EVYR
- vXCtVFLmGMNF6b6o7wbIN842iP40DrmRQizjy6XFweJTQ/L1KypHPlzmme8PMQ4QFottRaTJ+
- 092/UDxfFrSxv4ovXHNJMcIDagFopT1EpfvG5mrWYeTgLAR+n5YynL8MtkZgNQUv/Iz4FATCY
- W3qPEqrH8s73ncqJwrHtYgn0Im17pus484pfj4mOzKRs6LsP917vcw/mOpi5nokYvZeocj8VF
- cT5Po02kAmPFUIhA8vbjl2xMVzi/fbGP2RU8T+M16EKYbniHT8zoF1VgT1PaDiGYw9i5G4yWd
- wdratacGg2/hNICzbAU44+zkJsjevRtl8PAAOjJG11TIVcfzvjQiY/H4arDfhOYW0urREOS0y
- M6GBc5Q1s4tLoZh3n5JRS+c1DAFkB0YGCeChCSnz+2+bGyGKYTWE9hhBOUqvj7tixrLu+d229
- 28IPjBQhwC7UE7ffrfKOcJAKaHWe30/5Npl1UkwWlK3LDmN6XUNkKiWbEl6RKyNL2+oxQZme1
- Qom1pFuaGEf7bR3rdNJc8+36KhQZ/BBzIt3Jg32IOR/SvW+cEwNm3Ay2JUrL+gHZe2g8ry5ZU
- WZflRotB6m3rfqW2CRtvhJMrmWAF0zF02cfEKb2HzPTOntdiY19NdyTglwPVAtEbFZCdzVuYE
- 1h5jUzPIV7HCXqAwuxeDbFCohKPIx2Mz0lIWVr42DWkhh8mZxLLexAbNp3KIXR9mqQsBYVFBT
- o/16XP4gvtgvP3zKtA0sMlsgIY0MBNXsXi//o5z7VbACrfver+DCRBthw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-In the kernel image vmlinux.lds.S linker scripts the .altinstructions
-and __bug_table sections are 32- or 64-bit aligned because they hold 32-
-and/or 64-bit values.
+IRQ affinity masks are not allocated in uniprocessor configurations.
+This requires special case non-SMP code in drivers for irqchips which
+have per-CPU enable or mask registers.
 
-But for modules the module.lds.S linker script doesn't define a default
-alignment yet, so the linker chooses the default byte alignment, which
-then leads to unnecessary unaligned memory accesses at runtime.
+Since IRQ affinity is always the same in a uniprocessor configuration,
+we can provide a correct affinity mask without allocating one per IRQ.
 
-Usually such unaligned accesses are unnoticed, because either the
-hardware (as on x86 CPUs) or in-kernel exception handlers (e.g. on hppa
-or sparc) emulate and fix them up at runtime.
+By returning a real cpumask from irq_data_get_affinity_mask even when
+SMP is disabled, irqchip drivers which iterate over that mask will
+automatically do the right thing.
 
-On hppa the 32-bit unalignment exception handler was temporarily broken
-due another bad commit, and as such wrong values were returned on
-unaligned accesses to the altinstructions table. This then led to
-undefined behaviour because wrong kernel addresses were patched and we
-suddenly faced lots of unrelated bugs, as can be seen in this mail
-thread:
-https://lore.kernel.org/all/07d91863-dacc-a503-aa2b-05c3b92a1e39@bell.net/T/#mab602dfa32be5e229d5e192ab012af196d04d75d
-
-This patch adds the missing natural alignment for kernel modules to
-avoid unnecessary (hard- or software-based) fixups.
-
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- scripts/module.lds.S | 2 ++
- 1 file changed, 2 insertions(+)
 
---
-v2: updated commit message
+Changes in v3:
+ - Use cpumask_of(0) instead of cpu_possible_mask
 
-diff --git a/scripts/module.lds.S b/scripts/module.lds.S
-index 1d0e1e4dc3d2..3a3aa2354ed8 100644
---- a/scripts/module.lds.S
-+++ b/scripts/module.lds.S
-@@ -27,6 +27,8 @@ SECTIONS {
- 	.ctors			0 : ALIGN(8) { *(SORT(.ctors.*)) *(.ctors) }
- 	.init_array		0 : ALIGN(8) { *(SORT(.init_array.*)) *(.init_array) }
+ include/linux/irq.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-+	.altinstructions	0 : ALIGN(8) { KEEP(*(.altinstructions)) }
-+	__bug_table		0 : ALIGN(8) { KEEP(*(__bug_table)) }
- 	__jump_table		0 : ALIGN(8) { KEEP(*(__jump_table)) }
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index 02073f7a156e..996e22744edd 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -151,7 +151,9 @@ struct irq_common_data {
+ #endif
+ 	void			*handler_data;
+ 	struct msi_desc		*msi_desc;
++#ifdef CONFIG_SMP
+ 	cpumask_var_t		affinity;
++#endif
+ #ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
+ 	cpumask_var_t		effective_affinity;
+ #endif
+@@ -882,13 +884,19 @@ static inline int irq_data_get_node(struct irq_data *d)
+ static inline
+ const struct cpumask *irq_data_get_affinity_mask(struct irq_data *d)
+ {
++#ifdef CONFIG_SMP
+ 	return d->common->affinity;
++#else
++	return cpumask_of(0);
++#endif
+ }
+ 
+ static inline void irq_data_update_affinity(struct irq_data *d,
+ 					    const struct cpumask *m)
+ {
++#ifdef CONFIG_SMP
+ 	cpumask_copy(d->common->affinity, m);
++#endif
+ }
+ 
+ static inline const struct cpumask *irq_get_affinity_mask(int irq)
+-- 
+2.35.1
 
- 	__patchable_function_entries : { *(__patchable_function_entries) }
