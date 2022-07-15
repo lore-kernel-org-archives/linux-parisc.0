@@ -2,50 +2,74 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F26ACCA485
-	for <linux-parisc@archiver.kernel.org>; Tue, 12 Jul 2022 02:40:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDB77C433EF
+	for <linux-parisc@archiver.kernel.org>; Fri, 15 Jul 2022 03:13:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbiGLCkJ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 11 Jul 2022 22:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
+        id S241140AbiGODNQ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 14 Jul 2022 23:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbiGLCkF (ORCPT
+        with ESMTP id S229945AbiGODNQ (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 11 Jul 2022 22:40:05 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 608458CCA2;
-        Mon, 11 Jul 2022 19:40:04 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5600415DB;
-        Mon, 11 Jul 2022 19:40:04 -0700 (PDT)
-Received: from [10.162.42.8] (unknown [10.162.42.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 840C13F792;
-        Mon, 11 Jul 2022 19:39:56 -0700 (PDT)
-Message-ID: <48ab9e36-48be-916e-2ce7-03ef59d67dae@arm.com>
-Date:   Tue, 12 Jul 2022 08:09:53 +0530
+        Thu, 14 Jul 2022 23:13:16 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A052CC91;
+        Thu, 14 Jul 2022 20:13:15 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 23so3273293pgc.8;
+        Thu, 14 Jul 2022 20:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=0kNvzHNczTALecfT9wto6CsS50awskOSoxCbfvaNPgc=;
+        b=d6rOttoave+cYYycQLZVtn7+6/EvvZMoC4KlEKnu5+Iy0CvIZB6RZvM+yDNYgjVsg2
+         zExWP1Kt2mvHL2caS42uLQwLfFdIGT+vt+VNkOv6EFVEz1IJ1Ei1z/SUwomvWvL9yqs/
+         LsfjR3vwcHDm1bfvDdBsjVXVCIzYFoJ6KMcatcAC61WXc2/vMcOjiKCXnv0z+ZYpPW1D
+         29300GYk48m1QvWYlTwrWUJ2ga8Ap1QJw6DN92YdxZnF6aT4PwJr+48L7OzWyifSHnIo
+         bBliGjA2A7iI1JHvd2yG0VTITazqxx3xOm38zhCb9ZIUiYeXEPs2TlvdcILgJvPCljIq
+         R2+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=0kNvzHNczTALecfT9wto6CsS50awskOSoxCbfvaNPgc=;
+        b=QN1KHrm48rAJD5fzBNOgZjhfCzLL8XI17G9WwVqedi0xmXJr+o4BaGjxNFXWcshhUC
+         CmHS6PrTCfGBrnbZ9z4vGHmXJ+SL//YgSGSzEtX6lBI19hHyXLtjSBs9HctMfkGtO8ml
+         0X9hX9AlLkBpQXtn1QQ5jdSmNs+WGL0Jk1Lk3arotJV5+ANfLEgRLd7sS7cRoK04QdK5
+         b3hxuKptjV7JNBQnFwgpsHI5UcaJeOqyfLIA1IDX2EmNzpCp490SxVhvM69ihquIZeOd
+         rPXrHv86Nkbp/d28j3C/DMopZHJJHhmRfkIGHsxWayrIdb6LHd94G3taAg8koCq+59N7
+         L0+Q==
+X-Gm-Message-State: AJIora/SCLgVhagKduoZ2Bldj4py96FUWu4qtip08JTEn/nvRD2iAyXq
+        /rHgr7ZE3NSmYeZkhSv0VcQ+s5MPcxY=
+X-Google-Smtp-Source: AGRyM1vK5uqkhNs5DYoiUnUKiOfj2RRKOpP4xHProAEOYr/w1Br1ZQPpNcitPwDkSe+/qgFCXMCFZg==
+X-Received: by 2002:a63:2051:0:b0:412:6d61:ab0a with SMTP id r17-20020a632051000000b004126d61ab0amr10627004pgm.52.1657854794876;
+        Thu, 14 Jul 2022 20:13:14 -0700 (PDT)
+Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
+        by smtp.gmail.com with ESMTPSA id d12-20020a170903230c00b0016c6a6d8967sm2236563plh.83.2022.07.14.20.13.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jul 2022 20:13:14 -0700 (PDT)
+Message-ID: <d95d1afe-655c-3526-0c7e-949dfad8c6ba@gmail.com>
+Date:   Thu, 14 Jul 2022 20:13:12 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH V7 00/26] mm/mmap: Drop __SXXX/__PXXX macros from across
- platforms
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [PATCH V12 01/20] uapi: simplify __ARCH_FLOCK{,64}_PAD a little
 Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, hch@infradead.org, christophe.leroy@csgroup.eu,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, openrisc@lists.librecores.org,
-        linux-xtensa@linux-xtensa.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-um@lists.infradead.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
- <20220711131417.9cac57d9b88eea8bbd7d8616@linux-foundation.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20220711131417.9cac57d9b88eea8bbd7d8616@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
+To:     guoren@kernel.org, palmer@dabbelt.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, hch@lst.de, nathan@kernel.org,
+        naresh.kamboju@linaro.org
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        heiko@sntech.de
+References: <20220405071314.3225832-1-guoren@kernel.org>
+ <20220405071314.3225832-2-guoren@kernel.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20220405071314.3225832-2-guoren@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
@@ -53,16 +77,55 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 
 
-On 7/12/22 01:44, Andrew Morton wrote:
-> On Mon, 11 Jul 2022 12:35:34 +0530 Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+On 4/5/2022 12:12 AM, guoren@kernel.org wrote:
+> From: Christoph Hellwig <hch@lst.de>
 > 
->> This series drops __SXXX/__PXXX macros from across platforms in the tree.
+> Don't bother to define the symbols empty, just don't use them.
+> That makes the intent a little more clear.
 > 
-> I've updated mm-unstable to this version, thanks.  I skipped the added-to-mm
-> emails to avoid wearing out people's inboxes.
+> Remove the unused HAVE_ARCH_STRUCT_FLOCK64 define and merge the
+> 32-bit mips struct flock into the generic one.
 > 
-> Reissuing a 26-patch series N times is rather noisy.  Please prefer to send incremental
-> fixes when changes are minor.  It makes it so much easier for reviewers to see what
-> happened.
+> Add a new __ARCH_FLOCK_EXTRA_SYSID macro following the style of
+> __ARCH_FLOCK_PAD to avoid having a separate definition just for
+> one architecture.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Guo Ren <guoren@kernel.org>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> Tested-by: Heiko Stuebner <heiko@sntech.de>
 
-Sure, got it, will follow next time.
+Being late to this, but this breaks the perf build for me using a MIPS 
+toolchain with the following:
+
+   CC 
+/home/fainelli/work/buildroot/output/bmips/build/linux-custom/tools/perf/trace/beauty/fcntl.o
+In file included from 
+../../../../host/mipsel-buildroot-linux-gnu/sysroot/usr/include/asm/fcntl.h:77,
+                  from ../include/uapi/linux/fcntl.h:5,
+                  from trace/beauty/fcntl.c:10:
+../include/uapi/asm-generic/fcntl.h:188:8: error: redefinition of 
+'struct flock'
+  struct flock {
+         ^~~~~
+In file included from ../include/uapi/linux/fcntl.h:5,
+                  from trace/beauty/fcntl.c:10:
+../../../../host/mipsel-buildroot-linux-gnu/sysroot/usr/include/asm/fcntl.h:63:8: 
+note: originally defined here
+  struct flock {
+         ^~~~~
+make[6]: *** 
+[/home/fainelli/work/buildroot/output/bmips/build/linux-custom/tools/build/Makefile.build:97: 
+/home/fainelli/work/buildroot/output/bmips/build/linux-custom/tools/perf/trace/beauty/fcntl.o] 
+Error 1
+
+the kernel headers are set to 4.1.31 which is arguably old but 
+toolchains using newer kernel headers do not fare much better either 
+unfortunately as I tried a toolchain with kernel headers 4.9.x.
+
+I will start doing more regular MIPS builds of the perf tools since that 
+seems to escape our testing.
+
+Thanks!
+-- 
+Florian
