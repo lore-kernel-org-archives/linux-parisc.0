@@ -2,71 +2,75 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B4DEC433EF
-	for <linux-parisc@archiver.kernel.org>; Sat, 23 Jul 2022 09:24:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98518CCA48D
+	for <linux-parisc@archiver.kernel.org>; Mon, 25 Jul 2022 19:39:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbiGWJYP (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 23 Jul 2022 05:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53056 "EHLO
+        id S236292AbiGYTjy (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 25 Jul 2022 15:39:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbiGWJYK (ORCPT
+        with ESMTP id S230280AbiGYTjw (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 23 Jul 2022 05:24:10 -0400
-Received: from smtpbg.qq.com (unknown [43.155.67.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B2C1B7A2;
-        Sat, 23 Jul 2022 02:24:05 -0700 (PDT)
-X-QQ-mid: bizesmtp72t1658568229t3z4a5d0
-Received: from localhost.localdomain ( [125.70.163.183])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 23 Jul 2022 17:23:47 +0800 (CST)
-X-QQ-SSF: 01000000002000F0U000B00A0000000
-X-QQ-FEAT: OICyp1OkQRKndH9F0Qp603hXMB+jOD7gUnBkqJrFVmU/ujnQ1kvKKpiWmqMkZ
-        USkipFIkDHhKq4UopB8l3seBH9w8JqeujndJ2guTTQ3xw2NhhaZ/0EBQ/UvtfR+TzwrJQhh
-        yz4U0MndvXZ76CX9ROXTJo7MLAnIB/+pYnKdoPeCvXIFIJIUWVfLRf8Jq2lMjU35cne7s8h
-        7h3jPppxrcO7iBiXyv1J7CvWe6ca4Sk0LuyGEh4dSa+3MenQclBzuNbcZ9Tv7278Ht/xLhG
-        3yeLfM6Tde9yoUN3pC7kyeHwlq62cv7qB90BR0du4ZQ4Qa9bDksY286LA+pRasvby8sqtJC
-        WecjmsNyqRKL/Za1L+Op8Mw5tmkklDFhhs3N3e3phbZGlfz/u5YbicSnIQrh8Am/Sabk7Qo
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     deller@gmx.de
-Cc:     James.Bottomley@HansenPartnership.com, svens@stackframe.org,
-        hanyihao@vivo.com, akpm@linux-foundation.org, willy@infradead.org,
-        dave.anglin@bell.net, anshuman.khandual@arm.com,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] parisc/mm: Remove the static variable initialisations to 0
-Date:   Sat, 23 Jul 2022 17:23:41 +0800
-Message-Id: <20220723092341.6885-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.35.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybglogicsvr:qybglogicsvr6
+        Mon, 25 Jul 2022 15:39:52 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381A9205CC;
+        Mon, 25 Jul 2022 12:39:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EFF03B810E5;
+        Mon, 25 Jul 2022 19:39:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24445C341C6;
+        Mon, 25 Jul 2022 19:39:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1658777989;
+        bh=cuudPE0wtvbxElXfQCMzPg0O3xDu7MgSPTnAUbd2BI0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lnm0tSCCxjmphQNW5NriYcH19FeO0pMC/0MZl19jo18xWrIdpmYjjReLjZrbQc3nV
+         M3OCLSW3PO1gZvubU1+zIdU9EZbB6ratbRpHX/aNA2dD8ZrjXLNedUC8xa5hrDNMbu
+         lcZp1M+CGZGybihQDDnCvRc7tTtqd8IELi5v8huc=
+Date:   Mon, 25 Jul 2022 12:39:48 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Ben Dooks <ben-linux@fluff.org>
+Cc:     linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-parisc@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linux-alpha@vger.kernel.org
+Subject: Re: [PATCH] profile: setup_profiling_timer() is moslty not
+ implemented
+Message-Id: <20220725123948.f16674b10022404814161d4a@linux-foundation.org>
+In-Reply-To: <20220721195509.418205-1-ben-linux@fluff.org>
+References: <20220721195509.418205-1-ben-linux@fluff.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Initialise global and static variable to 0 is always unnecessary.
-Remove the unnecessary initialisations.
+On Thu, 21 Jul 2022 20:55:09 +0100 Ben Dooks <ben-linux@fluff.org> wrote:
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/parisc/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> The setup_profiling_timer() is mostly un-implemented by many
+> architectures. In many places it isn't guarded by CONFIG_PROFILE
+> which is needed for it to be used. Make it a weak symbol in
+> kernel/profile.c and remove the 'return -EINVAL' implementations
+> from the kenrel.
+> 
+> There are a couple of architectures which do return 0 from
+> the setup_profiling_timer() function but they don't seem to
+> do anything else with it. To keep the /proc compatibility for
+> now, leave these for a future update or removal.
+> 
+> On ARM, this fixes the following sparse warning:
+> arch/arm/kernel/smp.c:793:5: warning: symbol 'setup_profiling_timer' was not declared. Should it be static?
 
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index f03e0961fa25..b0c43f3b0a5f 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -722,7 +722,7 @@ static unsigned long space_id[SID_ARRAY_SIZE] = { 1 }; /* disallow space 0 */
- static unsigned long dirty_space_id[SID_ARRAY_SIZE];
- static unsigned long space_id_index;
- static unsigned long free_space_ids = NR_SPACE_IDS - 1;
--static unsigned long dirty_space_ids = 0;
-+static unsigned long dirty_space_ids;
- 
- static DEFINE_SPINLOCK(sid_lock);
- 
--- 
-2.35.1
+I'll grab this.
 
+We have had some problems with weak functions lately.  See
+
+https://lore.kernel.org/all/87ee0q7b92.fsf@email.froward.int.ebiederm.org/T/#u
+
+Hopefully that was a rare corner case.
