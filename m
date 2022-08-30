@@ -2,47 +2,47 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FB56ECAAD1
-	for <linux-parisc@archiver.kernel.org>; Tue, 30 Aug 2022 17:30:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 226C3ECAAA1
+	for <linux-parisc@archiver.kernel.org>; Tue, 30 Aug 2022 17:31:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbiH3RaL (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 30 Aug 2022 13:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
+        id S231830AbiH3RbI (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 30 Aug 2022 13:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231446AbiH3R3d (ORCPT
+        with ESMTP id S231864AbiH3Raf (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 30 Aug 2022 13:29:33 -0400
+        Tue, 30 Aug 2022 13:30:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD41E161DF6;
-        Tue, 30 Aug 2022 10:26:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E02C32FB;
+        Tue, 30 Aug 2022 10:27:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E286617B7;
-        Tue, 30 Aug 2022 17:25:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5FFDC433D6;
-        Tue, 30 Aug 2022 17:25:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A764617CA;
+        Tue, 30 Aug 2022 17:25:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A05ABC43470;
+        Tue, 30 Aug 2022 17:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661880304;
-        bh=0UNnv2i9eJ0n3T5tvgfPl5EcflL/BNSCEdAu21ZbrJc=;
+        s=k20201202; t=1661880355;
+        bh=AMvkWcumkyw9/k0EQQQuY6LBmsfboRqftOvewoCknF0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M7SI+0hMAjjL5qpi0WmG/WHqN/3Ue0MPG242kayjscYfRxc11JPf11v7eZdb7rhzD
-         XWeViHdzKaV41ny7mYAwzlnpep7FpMXFfXP612VvI+DmGZdKPw7YPwzsnayN/wyyqq
-         KdgcohFaPtecs9pwecwRtfgBfCO5SHMMlfw6IZ+gtXDXuW9tADnFJBhSCQNpu7g5Me
-         4QKDuBAlbcvucbrK3Au8t2k0Zq47Q2ae8uYsbua19tqz+ppMndnvTmTXzoGhKeqZD9
-         Yt5Wvyu1e2VhrgzG659KMQyjqF9e08vbIp+HXmErN6Z2zv9nKgxTFIjKxoPg5kwqvP
-         N0CIiQE27HrPg==
+        b=G7CDzrzPXB37ExIjDEKtF+MQUGyfZB32u8kEwqvW2tFxin/Keck9MoziJf+E7x9dF
+         4E3AWFUxC9a/eO5Kl9ClerXEsievVe8jXmMQ+CZh2hydyz/raAZu37yX/4iQtMb3zO
+         JTAksAGdmNQBQnkxVC9+c6wFU2IsphBz17Pfc2jseNnFc0buAA4f6KWyzONg1/krgt
+         yecCpqAuwvnzBnz1sA2q7MzLLVOdM4GyOBht+uAlsyt/Cbp9HLqztGzBIffIRHMfxY
+         pUr0ds6i5BvwIqIGooTM/54wNOGYHQNAwY3PKbQu1pfvLF5v9pYPR/VSDC8okA6+D6
+         yuWF/0EH77yIA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Li Qiong <liqiong@nfschina.com>, Helge Deller <deller@gmx.de>,
         Sasha Levin <sashal@kernel.org>,
         James.Bottomley@HansenPartnership.com, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 06/12] parisc: ccio-dma: Handle kmalloc failure in ccio_init_resources()
-Date:   Tue, 30 Aug 2022 13:24:37 -0400
-Message-Id: <20220830172444.581654-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 04/10] parisc: ccio-dma: Handle kmalloc failure in ccio_init_resources()
+Date:   Tue, 30 Aug 2022 13:25:35 -0400
+Message-Id: <20220830172541.581820-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220830172444.581654-1-sashal@kernel.org>
-References: <20220830172444.581654-1-sashal@kernel.org>
+In-Reply-To: <20220830172541.581820-1-sashal@kernel.org>
+References: <20220830172541.581820-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -66,10 +66,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index 5013568c571e5..6209d58e9492a 100644
+index 6efab7a06c5fc..73ee74d6e7a3d 100644
 --- a/drivers/parisc/ccio-dma.c
 +++ b/drivers/parisc/ccio-dma.c
-@@ -1378,15 +1378,17 @@ ccio_init_resource(struct resource *res, char *name, void __iomem *ioaddr)
+@@ -1390,15 +1390,17 @@ ccio_init_resource(struct resource *res, char *name, void __iomem *ioaddr)
  	}
  }
  
@@ -89,7 +89,7 @@ index 5013568c571e5..6209d58e9492a 100644
  }
  
  static int new_ioc_area(struct resource *res, unsigned long size,
-@@ -1541,7 +1543,10 @@ static int __init ccio_probe(struct parisc_device *dev)
+@@ -1552,7 +1554,10 @@ static int __init ccio_probe(struct parisc_device *dev)
  		return -ENOMEM;
  	}
  	ccio_ioc_init(ioc);
@@ -99,8 +99,8 @@ index 5013568c571e5..6209d58e9492a 100644
 +		return -ENOMEM;
 +	}
  	hppa_dma_ops = &ccio_ops;
+ 	dev->dev.platform_data = kzalloc(sizeof(struct pci_hba_data), GFP_KERNEL);
  
- 	hba = kzalloc(sizeof(*hba), GFP_KERNEL);
 -- 
 2.35.1
 
