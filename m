@@ -2,115 +2,77 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F7D9C6FA82
-	for <linux-parisc@archiver.kernel.org>; Sun,  4 Sep 2022 08:11:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5976DECAAA1
+	for <linux-parisc@archiver.kernel.org>; Tue,  6 Sep 2022 05:49:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233236AbiIDILR (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 4 Sep 2022 04:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44034 "EHLO
+        id S229818AbiIFFt5 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 6 Sep 2022 01:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232793AbiIDILQ (ORCPT
+        with ESMTP id S233073AbiIFFtz (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 4 Sep 2022 04:11:16 -0400
-Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C9A3ED50;
-        Sun,  4 Sep 2022 01:11:12 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 12DCE2B05E77;
-        Sun,  4 Sep 2022 04:11:09 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute3.internal (MEProxy); Sun, 04 Sep 2022 04:11:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1662279069; x=1662282669; bh=GmIJUh8a0b
-        qNdokPkQCJbK/aqSeG2wVzu5bAlLl44Yg=; b=VDzD4vEe1cQ8Qa+CwfOJLi6Yjf
-        0CtxsOaLjvil3Bcmh/97DHGVpIm+SkQBL3X/zZ7R10pDR6kLiMhDb0UmY1oD5pvk
-        TP7zSlf6y6p1WQQ3UxTP3Bu74fUen0x/DDvuecbz5YUt0QeitSYxfWVmbJtm70B0
-        vCfrqSqaLTPV8bORbkzSoDIVH4Kfs+VUespVAMuEnVR6VBF9al6kh6Kj5saD5F2T
-        Eyatx60smtoz+wtA+tCj+MCPuU6KEDpsnoxM+QOe3LCzv1RwbWMCorvMHDKpPrEF
-        SuytBNnyEVAuYoui83mzyOc/Du0DOkS+Nz5VSsDkwt7YdGF4oE5MAq2tpp6g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        i56a14606.fm1; t=1662279069; x=1662282669; bh=GmIJUh8a0bqNdokPkQ
-        CJbK/aqSeG2wVzu5bAlLl44Yg=; b=utGey7os7UJCKWBcQwk4SM5x9OOCiQuJRj
-        7nWp3WGGvAXOboRyUluQvWZoUFACDnkV52Dh7CPakiJN4g4OKiPwP7eVP5T96UMi
-        OZeDSniSHQpSt9hZrFRYILIWMs7RR68CXoU9b+BkzKC04ZNIezhBlrkbUCbABPj3
-        VVdho3b3Zxk2LFyaIDXe2pnXZ2e+eu5pzE+29yXgre2f7qAYATw58oGBetBgxqA2
-        okknTzHKmhQMRYbuJJWDuMSVs53ZW1eayI6b2TzdeQv5TUAZdAwcR9u30AtjH7qY
-        /RJwkZTSFti15KJjQnIl2AS52r+cI8wPmj6YlC2gvf37g0VYe84Q==
-X-ME-Sender: <xms:nV0UY-u2oDOm6AeYCakuLXVtz-EHTAnp6N-8miNW3jow4HoZaKtS7A>
-    <xme:nV0UYzcgXxJo2xIudA7dOmLoJjJs0legwLZSUH3eeebRMLET_pbAcEfFCM0Sv1rmz
-    hHWts5_9ekP4rlZWGA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdelgedgtddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:nV0UY5x5hqUBtoPU6MBtv3uZgn23_StmLVUr4UT9WVQBlS0ezgbvZA>
-    <xmx:nV0UY5NbN_T5PtU0YQcwJbeIzc5iE1fNboKxDrMMXHwmhf8yu0IfgA>
-    <xmx:nV0UY-_Tn9kZR9JgmtNh4cF3iFFEs4kvTLQc8YDMy2Qbk5UO_e3B8w>
-    <xmx:nV0UY1ZmzthWojjUxhUrw1f8auXbDw_rSNEq0tdsOkdn_qgUm0MGwONsjlc>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id EA084B60083; Sun,  4 Sep 2022 04:11:08 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-841-g7899e99a45-fm-20220811.002-g7899e99a
-Mime-Version: 1.0
-Message-Id: <eded16ee-b9c9-4830-a75c-685056e56b56@www.fastmail.com>
-In-Reply-To: <20220903224526.553897-1-linus.walleij@linaro.org>
-References: <20220903224526.553897-1-linus.walleij@linaro.org>
-Date:   Sun, 04 Sep 2022 10:10:48 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Linus Walleij" <linus.walleij@linaro.org>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        "Helge Deller" <deller@gmx.de>
-Cc:     linux-parisc@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "John David Anglin" <dave.anglin@bell.net>
-Subject: Re: [PATCH 1/2 v4] parisc: Remove 64bit access on 32bit machines
-Content-Type: text/plain
+        Tue, 6 Sep 2022 01:49:55 -0400
+Received: from mail-m973.mail.163.com (mail-m973.mail.163.com [123.126.97.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 628633F1D2;
+        Mon,  5 Sep 2022 22:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=xNbDr
+        StuvGwqNWDw0moNbItRHfUwiEd/kR4i8Eepi4o=; b=cpK+KPJH5Nd4O2uXzqhYd
+        ysvezgukB+IWTxmiQqT7AMDzyP4dK/+6EwYJdrDvdFiBpepHagD0TyW/Dlo5ZAGj
+        df/TATXXT1KKEzbs4mytgkpE83uWuTWnyuUEr1HP9jK8WnNCAAGPMM/9BCOcT6WT
+        u5ZQR1qR2St2g3GtQPLt+Y=
+Received: from localhost.localdomain (unknown [116.128.244.169])
+        by smtp3 (Coremail) with SMTP id G9xpCgD3EVZw3xZjkgoxbQ--.41059S2;
+        Tue, 06 Sep 2022 13:49:39 +0800 (CST)
+From:   Jiangshan Yi <13667453960@163.com>
+To:     James.Bottomley@HansenPartnership.com, deller@gmx.de
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiangshan Yi <yijiangshan@kylinos.cn>,
+        k2ci <kernel-bot@kylinos.cn>
+Subject: [PATCH] Input: hp_sdc: fix spelling typo in comment
+Date:   Tue,  6 Sep 2022 13:49:01 +0800
+Message-Id: <20220906054901.2283059-1-13667453960@163.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: G9xpCgD3EVZw3xZjkgoxbQ--.41059S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrury7Jr47ZFy5GFyfZr4Utwb_yoWfAFc_Gw
+        1xWr48Xr4kGF4Igw4UtFWavF1Ikr98KrnrZwn5ZwsxWa9rZan8K34kGryIk347WFWqkr15
+        Xa1ruFZ29r13KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbl4i5UUUUU==
+X-Originating-IP: [116.128.244.169]
+X-CM-SenderInfo: bprtllyxuvjmiwq6il2tof0z/1tbi8BN0+1uoiEvWwwAAsJ
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Sun, Sep 4, 2022, at 12:45 AM, Linus Walleij wrote:
-> The parisc was using some readq/writeq accessors without special
-> considerations as to what will happen on 32bit CPUs if you do
-> this. Maybe we have been lucky that it "just worked" on 32bit
-> due to the compiler behaviour, or the code paths were never
-> executed.
->
-> Fix the two offending code sites like this:
->
-> arch/parisc/lib/iomap.c:
->
-> - Put ifdefs around the 64bit accessors and make sure
->   that ioread64, ioread64be, iowrite64 and iowrite64be
->   are not available on 32bit builds.
->
-> - Also fold in a bug fix where 64bit access was by
->   mistake using 32bit writel() accessors rather
->   than 64bit writeq().
->
-> drivers/parisc/sba_iommu.c:
->
-> - Access any 64bit registers using _lo_hi-semantics by way
->   of the readq and writeq operations provided by
->   <linux/io-64-nonatomic-lo-hi.h>
->
-> Cc: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linux-arch@vger.kernel.org
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: John David Anglin <dave.anglin@bell.net>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+From: Jiangshan Yi <yijiangshan@kylinos.cn>
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Fix spelling typo in comment.
+
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: Jiangshan Yi <yijiangshan@kylinos.cn>
+---
+ include/linux/hp_sdc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/hp_sdc.h b/include/linux/hp_sdc.h
+index 6f1dee7e67e0..9be8704e2d38 100644
+--- a/include/linux/hp_sdc.h
++++ b/include/linux/hp_sdc.h
+@@ -180,7 +180,7 @@ switch (val) {						\
+ 
+ #define HP_SDC_CMD_SET_IM	0x40    /* 010xxxxx == set irq mask */
+ 
+-/* The documents provided do not explicitly state that all registers betweem 
++/* The documents provided do not explicitly state that all registers between
+  * 0x01 and 0x1f inclusive can be read by sending their register index as a 
+  * command, but this is implied and appears to be the case.
+  */
+-- 
+2.25.1
+
+
+No virus found
+		Checked by Hillstone Network AntiVirus
+
