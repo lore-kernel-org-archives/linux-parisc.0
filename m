@@ -2,77 +2,106 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5976DECAAA1
-	for <linux-parisc@archiver.kernel.org>; Tue,  6 Sep 2022 05:49:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C205ECAAA1
+	for <linux-parisc@archiver.kernel.org>; Fri,  9 Sep 2022 22:38:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbiIFFt5 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 6 Sep 2022 01:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
+        id S229685AbiIIWiM (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 9 Sep 2022 18:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233073AbiIFFtz (ORCPT
+        with ESMTP id S229774AbiIIWiL (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 6 Sep 2022 01:49:55 -0400
-Received: from mail-m973.mail.163.com (mail-m973.mail.163.com [123.126.97.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 628633F1D2;
-        Mon,  5 Sep 2022 22:49:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=xNbDr
-        StuvGwqNWDw0moNbItRHfUwiEd/kR4i8Eepi4o=; b=cpK+KPJH5Nd4O2uXzqhYd
-        ysvezgukB+IWTxmiQqT7AMDzyP4dK/+6EwYJdrDvdFiBpepHagD0TyW/Dlo5ZAGj
-        df/TATXXT1KKEzbs4mytgkpE83uWuTWnyuUEr1HP9jK8WnNCAAGPMM/9BCOcT6WT
-        u5ZQR1qR2St2g3GtQPLt+Y=
-Received: from localhost.localdomain (unknown [116.128.244.169])
-        by smtp3 (Coremail) with SMTP id G9xpCgD3EVZw3xZjkgoxbQ--.41059S2;
-        Tue, 06 Sep 2022 13:49:39 +0800 (CST)
-From:   Jiangshan Yi <13667453960@163.com>
-To:     James.Bottomley@HansenPartnership.com, deller@gmx.de
-Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiangshan Yi <yijiangshan@kylinos.cn>,
-        k2ci <kernel-bot@kylinos.cn>
-Subject: [PATCH] Input: hp_sdc: fix spelling typo in comment
-Date:   Tue,  6 Sep 2022 13:49:01 +0800
-Message-Id: <20220906054901.2283059-1-13667453960@163.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 9 Sep 2022 18:38:11 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784F2F653D
+        for <linux-parisc@vger.kernel.org>; Fri,  9 Sep 2022 15:38:10 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id bj12so7233402ejb.13
+        for <linux-parisc@vger.kernel.org>; Fri, 09 Sep 2022 15:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=6EP33BV0TfYyrJ4fchWrKDHolm4FaPueLJRrBAEVrQA=;
+        b=mF8soULIR5HkFy2HYmmOB5pV37C0M47XE/NO9cqyQ9GpeXvRfebtkka60MfwBdyCn3
+         OmF3RehNNncQgpXWYcls9NQqI6DM7vPeSFpKrvyyEiIvh+9nEECyItbg7A9EOkmp9SDa
+         AxbS6xUrBYBej2XRQEJRMKAZxGXQ4BM0TU+oGoUaVoG2/CEBH7ZQGECAahZA+g8Gw/OS
+         Qm87MLMqzHUkrqBzUVYKAkGtZMQD74Q2lLZUpXHElFgQ5tLK+ymE68fB7uZkIW6MpvUq
+         mN63UelOQ2S5cTlcGW4v0Hxy4iFypW/V5gQGqwRa9CYcmUbX/MOY0zNbc8//lWhFMYJl
+         ADuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=6EP33BV0TfYyrJ4fchWrKDHolm4FaPueLJRrBAEVrQA=;
+        b=dw+kKgr8fb8oIeAuR+vcrw24aqXiomjB+AFiHq+xy8CMFrAYIQC7Hp4kkNdYEItSdE
+         BDiXwttgmmHAEaoC++qK8ha9t95Y9uV5dGs/d5r/mZj7e7akZCm93PQivJarzz96EC1D
+         xMi58ouWRa58AUyytUETdIUvzB8xc8Q3q0exY9ETrj5mZ8zWQ+QaI7u9PlZDQ1gwug6d
+         W8H8S6vPzi5TWqrpWFf0N5MMHmoJN5iQchIW+djSHbL1edI9EuGk38p3DQbkrxS+/R5C
+         s7VBO0cZdJ9qlRPoKUY/gTjw1weEDBZGwOYqX+C3jL+ISNOvdLRPycRJOdSZXFBOdKdG
+         UMBA==
+X-Gm-Message-State: ACgBeo1DP+YIUjTAXTUmHql9h9YQwB4Ugq9hFsgKbE7/GMSpLDverumB
+        WH9z0QigjwWh7ABeOZwHx5Dy9Qz9kJ1oKRQy5zo6jg==
+X-Google-Smtp-Source: AA6agR6P4BoSeY4HaOaQdooaMJA8lOFm8HE7hrotOZ2+nY/um0tPfO0ujoUkJImQAz4m6NPSaqOKqZf9/fJAHrYsdGg=
+X-Received: by 2002:a17:907:7242:b0:741:770b:dfc6 with SMTP id
+ ds2-20020a170907724200b00741770bdfc6mr11427201ejc.203.1662763089099; Fri, 09
+ Sep 2022 15:38:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: G9xpCgD3EVZw3xZjkgoxbQ--.41059S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrury7Jr47ZFy5GFyfZr4Utwb_yoWfAFc_Gw
-        1xWr48Xr4kGF4Igw4UtFWavF1Ikr98KrnrZwn5ZwsxWa9rZan8K34kGryIk347WFWqkr15
-        Xa1ruFZ29r13KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbl4i5UUUUU==
-X-Originating-IP: [116.128.244.169]
-X-CM-SenderInfo: bprtllyxuvjmiwq6il2tof0z/1tbi8BN0+1uoiEvWwwAAsJ
+References: <20220903224526.553897-1-linus.walleij@linaro.org> <eded16ee-b9c9-4830-a75c-685056e56b56@www.fastmail.com>
+In-Reply-To: <eded16ee-b9c9-4830-a75c-685056e56b56@www.fastmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 10 Sep 2022 00:37:57 +0200
+Message-ID: <CACRpkdaV0CQGeLgqCCw6gEY4yBHEe0uS3eE5hkf-OJOBxQynYQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2 v4] parisc: Remove 64bit access on 32bit machines
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        John David Anglin <dave.anglin@bell.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: Jiangshan Yi <yijiangshan@kylinos.cn>
+On Sun, Sep 4, 2022 at 10:11 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Sun, Sep 4, 2022, at 12:45 AM, Linus Walleij wrote:
+> > The parisc was using some readq/writeq accessors without special
+> > considerations as to what will happen on 32bit CPUs if you do
+> > this. Maybe we have been lucky that it "just worked" on 32bit
+> > due to the compiler behaviour, or the code paths were never
+> > executed.
+> >
+> > Fix the two offending code sites like this:
+> >
+> > arch/parisc/lib/iomap.c:
+> >
+> > - Put ifdefs around the 64bit accessors and make sure
+> >   that ioread64, ioread64be, iowrite64 and iowrite64be
+> >   are not available on 32bit builds.
+> >
+> > - Also fold in a bug fix where 64bit access was by
+> >   mistake using 32bit writel() accessors rather
+> >   than 64bit writeq().
+> >
+> > drivers/parisc/sba_iommu.c:
+> >
+> > - Access any 64bit registers using _lo_hi-semantics by way
+> >   of the readq and writeq operations provided by
+> >   <linux/io-64-nonatomic-lo-hi.h>
+> >
+> > Cc: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
+> > Cc: Helge Deller <deller@gmx.de>
+> > Cc: linux-parisc@vger.kernel.org
+> > Cc: linux-arch@vger.kernel.org
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: John David Anglin <dave.anglin@bell.net>
+> > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-Fix spelling typo in comment.
+Thanks Arnd,
 
-Reported-by: k2ci <kernel-bot@kylinos.cn>
-Signed-off-by: Jiangshan Yi <yijiangshan@kylinos.cn>
----
- include/linux/hp_sdc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+it seems quiet around parisc, maybe you could apply these two to
+the arch tree as well?
 
-diff --git a/include/linux/hp_sdc.h b/include/linux/hp_sdc.h
-index 6f1dee7e67e0..9be8704e2d38 100644
---- a/include/linux/hp_sdc.h
-+++ b/include/linux/hp_sdc.h
-@@ -180,7 +180,7 @@ switch (val) {						\
- 
- #define HP_SDC_CMD_SET_IM	0x40    /* 010xxxxx == set irq mask */
- 
--/* The documents provided do not explicitly state that all registers betweem 
-+/* The documents provided do not explicitly state that all registers between
-  * 0x01 and 0x1f inclusive can be read by sending their register index as a 
-  * command, but this is implied and appears to be the case.
-  */
--- 
-2.25.1
-
-
-No virus found
-		Checked by Hillstone Network AntiVirus
-
+Yours,
+Linus Walleij
