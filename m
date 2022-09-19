@@ -2,43 +2,43 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0414ECAA3D
-	for <linux-parisc@archiver.kernel.org>; Mon, 19 Sep 2022 10:17:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CBE9C6FD1C
+	for <linux-parisc@archiver.kernel.org>; Mon, 19 Sep 2022 10:20:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbiISKR0 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 19 Sep 2022 06:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
+        id S231330AbiISKT7 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 19 Sep 2022 06:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbiISKRG (ORCPT
+        with ESMTP id S230432AbiISKRw (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 19 Sep 2022 06:17:06 -0400
+        Mon, 19 Sep 2022 06:17:52 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5589F1EC58;
-        Mon, 19 Sep 2022 03:17:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8A122B00;
+        Mon, 19 Sep 2022 03:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=vB057xACRVSJThllhGE8f2SmJ9TT+oL90mm46lxduII=; b=kywikNV+JOhuRC6ERD1VlqqQP3
-        erY7uC0VJQwPrnJCDMV8vfbpvSyHcY5xZAwrHnLhU5SZPz5xsRyEakEPdOOJm3k5Xas/FH1DSzD0x
-        JpjT7nP0xdYKwFrD4JURDMdgc59IXKV8ZuNXomLhDpG/Fj4XRo/JBHLnr5d8v3/5Fr6jiBv6mjn0F
-        0/mLjpSN/K9XY5Ib4bNuBDGghVOMVV0dUFwAUO+xXbcCitVgxm2fBTuHCaU8/6F92gZK0Sn/AvWyA
-        UiOBLuXdDZrgv/G0qDliEH3JMAvX3TIRnlGHv57WGn7U9pGViPVLLg38RK01Fa5hPm/uyqkvYdoqF
-        pVe3AaZA==;
+        bh=QoMAr3LApQWawpgafmfgLtjlo5s7sxEjoowggy+JX/o=; b=kEL0jdoeDuXpIUENKRvpLsR2sv
+        0zAz+fP+mIxElsrdbbO1xpXzDOap+WRebbmPNQ1ONsvisMt1NH+BXft1IZG51vqSfudHX4+LIHrSX
+        GpuYNjx2dLnu7Z5tT3hUgpnBnHxsdHEDHmwnC8iDVR8fYaQ5EQ9prZ7UiulCISmqAQGiWbvfv/Fka
+        7RqUHmLKy9t6tMrFWsMxzBo+91RuvQ9ccepql5V9ZWkf8+nomRELgmwDvAsaOBzjxLtdWQ+/I4CgT
+        5P697PEJZAJaRZ4DYe+zb/QXGU0PQvLAotVDC2hCkaErqtdMBvS+goXfu3YsSUVpKgdBiM2Lkvw/S
+        lfEPmrfw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oaDpI-004aiZ-8o; Mon, 19 Sep 2022 10:16:32 +0000
+        id 1oaDqB-004bEl-2D; Mon, 19 Sep 2022 10:17:27 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E7288302ED7;
-        Mon, 19 Sep 2022 12:16:24 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A7CD5302F92;
+        Mon, 19 Sep 2022 12:16:25 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 0FB662BA49045; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
-Message-ID: <20220919101521.274051658@infradead.org>
+        id AFEB12BABC0C7; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
+Message-ID: <20220919101523.312333837@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 19 Sep 2022 11:59:53 +0200
+Date:   Mon, 19 Sep 2022 12:00:23 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -100,7 +100,7 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: [PATCH v2 14/44] cpuidle,cpu_pm: Remove RCU fiddling from cpu_pm_{enter,exit}()
+Subject: [PATCH v2 44/44] arm64,riscv,perf: Remove RCU_NONIDLE() usage
 References: <20220919095939.761690562@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -108,44 +108,53 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-All callers should still have RCU enabled.
+The PM notifiers should no longer be ran with RCU disabled (per the
+previous patches), as such this hack is no longer required either.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
 ---
- kernel/cpu_pm.c |    9 ---------
- 1 file changed, 9 deletions(-)
+ drivers/perf/arm_pmu.c       |   11 +----------
+ drivers/perf/riscv_pmu_sbi.c |    8 +-------
+ 2 files changed, 2 insertions(+), 17 deletions(-)
 
---- a/kernel/cpu_pm.c
-+++ b/kernel/cpu_pm.c
-@@ -30,16 +30,9 @@ static int cpu_pm_notify(enum cpu_pm_eve
- {
- 	int ret;
- 
--	/*
--	 * This introduces a RCU read critical section, which could be
--	 * disfunctional in cpu idle. Copy RCU_NONIDLE code to let RCU know
--	 * this.
--	 */
--	ct_irq_enter_irqson();
- 	rcu_read_lock();
- 	ret = raw_notifier_call_chain(&cpu_pm_notifier.chain, event, NULL);
- 	rcu_read_unlock();
--	ct_irq_exit_irqson();
- 
- 	return notifier_to_errno(ret);
- }
-@@ -49,11 +42,9 @@ static int cpu_pm_notify_robust(enum cpu
- 	unsigned long flags;
- 	int ret;
- 
--	ct_irq_enter_irqson();
- 	raw_spin_lock_irqsave(&cpu_pm_notifier.lock, flags);
- 	ret = raw_notifier_call_chain_robust(&cpu_pm_notifier.chain, event_up, event_down, NULL);
- 	raw_spin_unlock_irqrestore(&cpu_pm_notifier.lock, flags);
--	ct_irq_exit_irqson();
- 
- 	return notifier_to_errno(ret);
- }
+--- a/drivers/perf/arm_pmu.c
++++ b/drivers/perf/arm_pmu.c
+@@ -762,17 +762,8 @@ static void cpu_pm_pmu_setup(struct arm_
+ 		case CPU_PM_ENTER_FAILED:
+ 			 /*
+ 			  * Restore and enable the counter.
+-			  * armpmu_start() indirectly calls
+-			  *
+-			  * perf_event_update_userpage()
+-			  *
+-			  * that requires RCU read locking to be functional,
+-			  * wrap the call within RCU_NONIDLE to make the
+-			  * RCU subsystem aware this cpu is not idle from
+-			  * an RCU perspective for the armpmu_start() call
+-			  * duration.
+ 			  */
+-			RCU_NONIDLE(armpmu_start(event, PERF_EF_RELOAD));
++			armpmu_start(event, PERF_EF_RELOAD);
+ 			break;
+ 		default:
+ 			break;
+--- a/drivers/perf/riscv_pmu_sbi.c
++++ b/drivers/perf/riscv_pmu_sbi.c
+@@ -747,14 +747,8 @@ static int riscv_pm_pmu_notify(struct no
+ 		case CPU_PM_ENTER_FAILED:
+ 			/*
+ 			 * Restore and enable the counter.
+-			 *
+-			 * Requires RCU read locking to be functional,
+-			 * wrap the call within RCU_NONIDLE to make the
+-			 * RCU subsystem aware this cpu is not idle from
+-			 * an RCU perspective for the riscv_pmu_start() call
+-			 * duration.
+ 			 */
+-			RCU_NONIDLE(riscv_pmu_start(event, PERF_EF_RELOAD));
++			riscv_pmu_start(event, PERF_EF_RELOAD);
+ 			break;
+ 		default:
+ 			break;
 
 
