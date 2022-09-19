@@ -2,43 +2,43 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 545B1C6FD34
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D00DC6FA90
 	for <linux-parisc@archiver.kernel.org>; Mon, 19 Sep 2022 10:20:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231473AbiISKUd (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 19 Sep 2022 06:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
+        id S231477AbiISKUe (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 19 Sep 2022 06:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbiISKRp (ORCPT
+        with ESMTP id S229984AbiISKRk (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 19 Sep 2022 06:17:45 -0400
+        Mon, 19 Sep 2022 06:17:40 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F1922B20;
-        Mon, 19 Sep 2022 03:17:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF95BEE17;
+        Mon, 19 Sep 2022 03:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=DdEsMVUZF4If17doP56YIzy8DGEaYRA+HGcY5bau4R0=; b=jqHZgeFh3oCBgwT003zG9s2gjC
-        NezJyvyixinM4ERqxFhZtUISrOXW8i6MLLnuICKomLr7AbtR8v72zY+8bw/cWPW2/QvND6Rwx4Q2d
-        qjrqewLEupnsgcJ14d1u/q+BvBv5v8kX/h8JBR56A5BEetgbXcPWarCexJ78cxzK5gZJYUDUAEoOT
-        vM8X10xsA7/NNWmxGL3307kKYqIC1woYOcW8+VSoI+sRpSxqk/Ew8xBvTA93sr8w9fFjmdHB/anNI
-        DljTLjNK/qwU3GgRskIhPhKOq40gbXaYpXRYIxmcmMo7792McGRuHm+laihmXnhk0bIFOHTEjtfMi
-        BBIavKFA==;
+        bh=Vr6T2clVTCKzoOuqPun2LzaBPyz9xLY6Bd2T3LwNb5Y=; b=l6JY0yWli0iEZp32b7Bby14YD2
+        39493K1NJwG1SAUm/vCDnDKz4SLvbKnyOjPlUTGB4naV3RyAE0714sa9gSs3tdL+FC1ToX1uTACXc
+        Ewpt1OpyvnzzGvA3zzGqdvaSQ/yio6jDOot75ThUnZjNdLwnDn0/IZ+lZYn691hsTAHsQFOXvV/r9
+        9/DjyEmGT0x/AXRbm9f287QwOjNi6XX75sjBEn2gepQshrAgXueUWFkoaZTytsBgMPC/PvIzgaXMF
+        9qP38XhX8galq11nQytQnaDfnKD7LOIvfp19c22HE/GrpeMVZE+FZzkERfBMpihVLG9fwvb0QlNKg
+        s8ffbpdQ==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oaDq5-004b7h-H1; Mon, 19 Sep 2022 10:17:21 +0000
+        id 1oaDq6-004b8G-7d; Mon, 19 Sep 2022 10:17:22 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 122E8302EF6;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 28F6A302F1F;
         Mon, 19 Sep 2022 12:16:25 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 251012BA7B0F1; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
-Message-ID: <20220919101521.543128460@infradead.org>
+        id 4AD7D2BA9210F; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
+Message-ID: <20220919101521.953707131@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 19 Sep 2022 11:59:57 +0200
+Date:   Mon, 19 Sep 2022 12:00:03 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -99,8 +99,9 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: [PATCH v2 18/44] cpuidle,intel_idle: Fix CPUIDLE_FLAG_IRQ_ENABLE *again*
+        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH v2 24/44] arm64,smp: Remove trace_.*_rcuidle() usage
 References: <20220919095939.761690562@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -108,42 +109,35 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-  vmlinux.o: warning: objtool: intel_idle_irq+0x10c: call to trace_hardirqs_off() leaves .noinstr.text section
+Ever since commit d3afc7f12987 ("arm64: Allow IPIs to be handled as
+normal interrupts") this function is called in regular IRQ context.
 
-As per commit 32d4fd5751ea ("cpuidle,intel_idle: Fix
-CPUIDLE_FLAG_IRQ_ENABLE"):
-
-  "must not have tracing in idle functions"
-
-Clearly people can't read and tinker along until splat dissapears.
-This straight up reverts commit d295ad34f236 ("intel_idle: Fix false
-positive RCU splats due to incorrect hardirqs state").
-
-It doesn't re-introduce the problem because preceding patches fixed it
-properly.
-
-Fixes: d295ad34f236 ("intel_idle: Fix false positive RCU splats due to incorrect hardirqs state")
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/idle/intel_idle.c |    8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ arch/arm64/kernel/smp.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -168,13 +168,7 @@ static __cpuidle int intel_idle_irq(stru
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -865,7 +865,7 @@ static void do_handle_IPI(int ipinr)
+ 	unsigned int cpu = smp_processor_id();
  
- 	raw_local_irq_enable();
- 	ret = __intel_idle(dev, drv, index);
--
--	/*
--	 * The lockdep hardirqs state may be changed to 'on' with timer
--	 * tick interrupt followed by __do_softirq(). Use local_irq_disable()
--	 * to keep the hardirqs state correct.
--	 */
--	local_irq_disable();
-+	raw_local_irq_disable();
+ 	if ((unsigned)ipinr < NR_IPI)
+-		trace_ipi_entry_rcuidle(ipi_types[ipinr]);
++		trace_ipi_entry(ipi_types[ipinr]);
  
- 	return ret;
+ 	switch (ipinr) {
+ 	case IPI_RESCHEDULE:
+@@ -914,7 +914,7 @@ static void do_handle_IPI(int ipinr)
+ 	}
+ 
+ 	if ((unsigned)ipinr < NR_IPI)
+-		trace_ipi_exit_rcuidle(ipi_types[ipinr]);
++		trace_ipi_exit(ipi_types[ipinr]);
  }
+ 
+ static irqreturn_t ipi_handler(int irq, void *data)
 
 
