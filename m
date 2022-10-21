@@ -2,270 +2,118 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C715DC4332F
-	for <linux-parisc@archiver.kernel.org>; Fri, 21 Oct 2022 05:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 258F2C4332F
+	for <linux-parisc@archiver.kernel.org>; Fri, 21 Oct 2022 06:25:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbiJUFNl (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 21 Oct 2022 01:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
+        id S229897AbiJUGZC (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 21 Oct 2022 02:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbiJUFNk (ORCPT
+        with ESMTP id S229742AbiJUGZB (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 21 Oct 2022 01:13:40 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1A2224AAE;
-        Thu, 20 Oct 2022 22:13:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1666329218; x=1697865218;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=tSgW7eWdGSIprhy1GtLWEOVyBo94BWT87FvHLv7N54g=;
-  b=cQy/E6nX3Q3jk+Yf64HVUzQNYF1l9kXw3rxNZZEppEzizm2x8fGHQenK
-   /WWkCWiBb6QN0A5iU0LyLDfkWlS631D1TqYkq371vl0L6DskZO1kcrx3A
-   cFxJNNQmfVQ3DfRUWvw49pmQ3yfyW6+E+X4McKL3WHdFNzn+63GwwMMAD
-   POzPRgWy64tOvvDvJW6ePGS8XN0sWGoA83w8ourM20N+tbS5EOmrgL6pj
-   x3DMj/rLMz/w+tN6403L5wreWbqaPBnKtDvpn/vSrJ072SPu3WRCw+iMU
-   SLERjrpx32vWJj9VZBzPW/YJcutyCo7YP23ijCclGgJW8WQBmaB/zUILk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10506"; a="308598523"
-X-IronPort-AV: E=Sophos;i="5.95,200,1661842800"; 
-   d="scan'208";a="308598523"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2022 22:13:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10506"; a="625138409"
-X-IronPort-AV: E=Sophos;i="5.95,200,1661842800"; 
-   d="scan'208";a="625138409"
-Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 20 Oct 2022 22:13:28 -0700
-Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1olkLX-0002DY-1V;
-        Fri, 21 Oct 2022 05:13:27 +0000
-Date:   Fri, 21 Oct 2022 13:12:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     ntfs3@lists.linux.dev, linux-parisc@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-ext4@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD REGRESSION
- acee3e83b493505058d1e48fce167f623dac1a05
-Message-ID: <63522a57.pwxlK8v2/w+DMFI9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        Fri, 21 Oct 2022 02:25:01 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E895725B
+        for <linux-parisc@vger.kernel.org>; Thu, 20 Oct 2022 23:24:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1666333494;
+        bh=wFQsF1cjqJo95iMLqGtGrEvdIyBG7ZGhjsvwCx/S510=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=jyNjMVG9XOgQgvvZJT5Nx7a8VK5rEWfsS/ZJDI6dsfMFnokXHzkdyNxSVgDdjpmsV
+         SFU20ORbOf3MmwcAaFw8Vpi14wMuE+prhbkyGD0kTV17v33lpT64vvJrS8fsUnwsgh
+         CwywVXw909IS3V4u6yMsBgvp4bHJ+q+8LuuqHVW0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from p100.fritz.box ([92.116.168.94]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MplXp-1pT19n1pGP-00q83H; Fri, 21
+ Oct 2022 08:24:54 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org
+Cc:     Mikulas Patocka <mpatocka@redhat.com>
+Subject: [PATCH 2/2] parisc/serial: Rename 8250_gsc.c to 8250_parisc.c
+Date:   Fri, 21 Oct 2022 08:24:45 +0200
+Message-Id: <20221021062445.28701-2-deller@gmx.de>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20221021062445.28701-1-deller@gmx.de>
+References: <20221021062445.28701-1-deller@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:rADhSgdJMDZMm0FSRfuluyOSfIbeFQK8wrIXI/l8VKbqCpK00C6
+ 0O1WlTrYaScJQ5R1lZN+4w+5P6xbjvUXD/OLTPzNSqQRQTU5JtflY+mQu48oVlvoiQ7EU6z
+ urJfYLm4CyFJ6tONs5+sCkZOIwpNkfKzPO43XbkxygRnV9DGPgy8t9cK6GPuHIzFFxBUoab
+ rZiDr8LHZA84MZj2BcsKQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YjMamR/KSN4=:Lk4rAN3fhCBNjzPcU39PUO
+ pV4SKMd428VqeDn81ixohtZ8LYw79ediMYMiS11KR5iceekhNf3JIrwN6GCHsdvb5FPvDzJHd
+ 2Xoo56kgTLZRd5X66T23AaAJcyeYDgksgfZXObQp2GPXKtsqBiKdkdiK8QwVCNFpPqDQwEFsz
+ cIQScXISbn0bjkdzljZ9orvhnKrgpuJW6bS52P8caVv8JK5vySpwqib30qoLNghyXtytWxsKM
+ fl/lcsbpX37C6M1wuvdZ6KdlgE1uHSJ5mVPtcbBFcD+DFWiToWRz3m5XeldvMzk8pSu2huSUV
+ gG9ToeolljUmq9pKZcJeEX1iNd1MeRzw8QitH7AryvFl5G2mwJ0vnj2+7kOzHUQUKHZ10cDUa
+ kWrLJXy5hLMd4lSpm9b1/83wRTgtwAeLyXLuBvzMrqday+gmibQp6OGN71Kxd7Clm3ha3w8Jr
+ Jlxe9aXV/3gKRdFxtWprTnGQ9n8bF7GvLMhq7joooepXConJCdGbGjDpGczzUvkahkb3fGqNq
+ KtGgm2chEOj+QeMKR+f+hayr7cdD1cseydAsJ07qXgGcEIHN8aRg/vbAP1xicao0+Xn9ihyYH
+ 7d4U1cPd5s7VBu8yXlv2KNlIE7bnxYrbZcM1HSqL3EwTtS+ZDxH00e7FVJGTn5b9AkP0lgB+s
+ PI0zZro5DX+xaCxNwHc7HxfQYrl5rbAMyVNEOZvhoGuVwR2emJsz3dtT8mSbMa56cvh6tO1L4
+ n4F+GG++Hqkycii+01qV6JWlzKtphsAANvPTRhrWmXp0rDqHv71eKbLGhNWpOPWgvjxMrFrTw
+ LZNsp+6f7rbeZxFafufFEt133uu9PSQYNZB/BzVKNrDLh+eN4rg1cjCk0cWCN0jVxmTT28IYy
+ 5veF9xi8fST4QD6Y3O9LS04ti45tNnKtf8jj4i7XuAkYXyVICqpwTMrDT/CpAzR/AbD4gLuGO
+ ZMsyVeULogsE8RkUO4RUf9GNvOcD6OKE/FH/qPhZ4fTU0IbCLehcNi5THef8P8uEhf1njfxX+
+ nBPMxTq7WIiZ+KbQ6pd8DChr6dGP375tNUwihUE7U3YjK9P1ylR2+XUbjxrM1CGJOSDusMO9a
+ iwA2MO1Ofjk3rujpy5Dt9RZ5O9J6ZiqW3E45sIjxkn+XoWQGaiJhk7zAwnoVqqigkrLRZzY1i
+ 7FLSNVuc5FJxjOZKsSHGnbmcb0LrOVG3xpRX0m008ozTQbuTJev1wB7pi7FlpMCi5KuAVcUkZ
+ H3BJRZV8VgN2uAtFuifzMvWUw0mHSaxmitrUw2Tf8+Jv2xGYdnL4UO+jkz++voPawnLg6OMm6
+ lrpbolOtCWKFB/9QR4pMrGskPymIPROyvB3Bj6MZGpHXr2yecFe71GskR7vrM5qiFgqMOQJIJ
+ vO3GQFure9OpgrE2krGu4YI/Bw1U0DSr5MpN2+ZtRCyQW0yJP0zesH2+WnEzFJ1sZJMGc/9U9
+ Umy5Hi1YKNhQMev5VDtEv4F1eq/6tPzQrzbgDwZuquSLQNTR1dbMzNWGTU26AXk4Gt3X/ZN3w
+ vEME55PgxAerzEkFvqx7jHT1VPpcsFRXAG3Y5JFtWBWvU
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: acee3e83b493505058d1e48fce167f623dac1a05  Add linux-next specific files for 20221020
+The file name of this driver is misleading - it handles various serial
+ports on parisc machines, not just such on the GSC bus.
+Rename the file to make this clearer.
 
-Error/Warning reports:
+Suggested-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
+=2D--
+ drivers/tty/serial/8250/{8250_gsc.c =3D> 8250_parisc.c} | 0
+ drivers/tty/serial/8250/Kconfig                       | 2 +-
+ drivers/tty/serial/8250/Makefile                      | 2 +-
+ 3 files changed, 2 insertions(+), 2 deletions(-)
+ rename drivers/tty/serial/8250/{8250_gsc.c =3D> 8250_parisc.c} (100%)
 
-https://lore.kernel.org/linux-mm/202210090954.pTR6m6rj-lkp@intel.com
-https://lore.kernel.org/linux-mm/202210110857.9s0tXVNn-lkp@intel.com
+diff --git a/drivers/tty/serial/8250/8250_gsc.c b/drivers/tty/serial/8250/=
+8250_parisc.c
+similarity index 100%
+rename from drivers/tty/serial/8250/8250_gsc.c
+rename to drivers/tty/serial/8250/8250_parisc.c
+diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kco=
+nfig
+index 7b3ffb7f50ab..b0f62345bc84 100644
+=2D-- a/drivers/tty/serial/8250/Kconfig
++++ b/drivers/tty/serial/8250/Kconfig
+@@ -116,7 +116,7 @@ config SERIAL_8250_CONSOLE
 
-Error/Warning: (recently discovered and may have been fixed)
+ 	  If unsure, say N.
 
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/idma64.ko] undefined!
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
-arch/parisc/kernel/drivers.c:337 print_hwpath() warn: impossible condition '(path->bc[i] == -1) => (0-255 == (-1))'
-arch/parisc/kernel/drivers.c:410 setup_bus_id() warn: impossible condition '(path.bc[i] == -1) => (0-255 == (-1))'
-arch/parisc/kernel/drivers.c:486 create_parisc_device() warn: impossible condition '(modpath->bc[i] == -1) => (0-255 == (-1))'
-arch/parisc/kernel/drivers.c:759 hwpath_to_device() warn: impossible condition '(modpath->bc[i] == -1) => (0-255 == (-1))'
-fs/ext4/super.c:1744:19: warning: 'deprecated_msg' defined but not used [-Wunused-const-variable=]
+-config SERIAL_8250_GSC
++config SERIAL_8250_PARISC
+ 	tristate
+ 	depends on SERIAL_8250 && PARISC
+ 	default SERIAL_8250
+diff --git a/drivers/tty/serial/8250/Makefile b/drivers/tty/serial/8250/Ma=
+kefile
+index bee908f99ea0..1615bfdde2a0 100644
+=2D-- a/drivers/tty/serial/8250/Makefile
++++ b/drivers/tty/serial/8250/Makefile
+@@ -12,7 +12,7 @@ obj-$(CONFIG_SERIAL_8250)		+=3D 8250.o 8250_base.o
+ 8250_base-$(CONFIG_SERIAL_8250_DMA)	+=3D 8250_dma.o
+ 8250_base-$(CONFIG_SERIAL_8250_DWLIB)	+=3D 8250_dwlib.o
+ 8250_base-$(CONFIG_SERIAL_8250_FINTEK)	+=3D 8250_fintek.o
+-obj-$(CONFIG_SERIAL_8250_GSC)		+=3D 8250_gsc.o
++obj-$(CONFIG_SERIAL_8250_PARISC)	+=3D 8250_parisc.o
+ obj-$(CONFIG_SERIAL_8250_PCI)		+=3D 8250_pci.o
+ obj-$(CONFIG_SERIAL_8250_EXAR)		+=3D 8250_exar.o
+ obj-$(CONFIG_SERIAL_8250_HP300)		+=3D 8250_hp300.o
+=2D-
+2.37.3
 
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- i386-allyesconfig
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-defconfig
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a003
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a005
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a012
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a014
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- i386-randconfig-a016
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- parisc-randconfig-m041-20221019
-|   |-- arch-parisc-kernel-drivers.c-create_parisc_device()-warn:impossible-condition-(modpath-bc-i-)-(-)
-|   |-- arch-parisc-kernel-drivers.c-hwpath_to_device()-warn:impossible-condition-(modpath-bc-i-)-(-)
-|   |-- arch-parisc-kernel-drivers.c-print_hwpath()-warn:impossible-condition-(path-bc-i-)-(-)
-|   `-- arch-parisc-kernel-drivers.c-setup_bus_id()-warn:impossible-condition-(path.bc-i-)-(-)
-|-- s390-allmodconfig
-|   |-- ERROR:devm_ioremap_resource-drivers-dma-idma64.ko-undefined
-|   `-- ERROR:devm_ioremap_resource-drivers-dma-qcom-hdma.ko-undefined
-|-- x86_64-allyesconfig
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-defconfig
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-a002
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-a006
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-a011
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-a015
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-randconfig-m001
-|   `-- arch-x86-kernel-apic-apic.c-generic_processor_info()-warn:always-true-condition-(num_processors-()-)-(-u32max-)
-|-- x86_64-rhel-8.3
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-rhel-8.3-func
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-rhel-8.3-kselftests
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-rhel-8.3-kunit
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-|-- x86_64-rhel-8.3-kvm
-|   `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-`-- x86_64-rhel-8.3-syz
-    `-- fs-ext4-super.c:warning:deprecated_msg-defined-but-not-used
-clang_recent_errors
-|-- arm-mmp2_defconfig
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- arm-s3c2410_defconfig
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- arm64-randconfig-r013-20221019
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- hexagon-randconfig-r006-20221019
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- hexagon-randconfig-r041-20221019
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- hexagon-randconfig-r045-20221019
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   `-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
-|-- i386-randconfig-a002
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- i386-randconfig-a004
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- i386-randconfig-a011
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- i386-randconfig-a013
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- i386-randconfig-a015
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- powerpc-allmodconfig
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-|   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-|-- powerpc-mpc512x_defconfig
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- s390-randconfig-r044-20221019
-|   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|-- x86_64-randconfig-a005
-|   |-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
-
-elapsed time: 1482m
-
-configs tested: 74
-configs skipped: 3
-
-gcc tested configs:
-powerpc                           allnoconfig
-arc                                 defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-i386                          randconfig-a001
-x86_64                              defconfig
-i386                          randconfig-a003
-x86_64                           rhel-8.3-syz
-alpha                               defconfig
-x86_64                         rhel-8.3-kunit
-sh                               allmodconfig
-i386                          randconfig-a005
-alpha                            allyesconfig
-x86_64                           rhel-8.3-kvm
-x86_64                          rhel-8.3-func
-s390                             allmodconfig
-x86_64                               rhel-8.3
-mips                             allyesconfig
-x86_64                    rhel-8.3-kselftests
-arc                              allyesconfig
-powerpc                          allmodconfig
-m68k                             allyesconfig
-x86_64                           allyesconfig
-s390                                defconfig
-arc                  randconfig-r043-20221019
-m68k                             allmodconfig
-x86_64                        randconfig-a004
-s390                             allyesconfig
-arm                                 defconfig
-x86_64                        randconfig-a002
-x86_64                        randconfig-a006
-i386                                defconfig
-x86_64                        randconfig-a013
-i386                             allyesconfig
-i386                          randconfig-a014
-i386                          randconfig-a012
-x86_64                        randconfig-a015
-i386                          randconfig-a016
-x86_64                        randconfig-a011
-arm                              allyesconfig
-arm64                            allyesconfig
-xtensa                    smp_lx200_defconfig
-mips                         db1xxx_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                      ppc40x_defconfig
-sh                           se7712_defconfig
-m68k                         apollo_defconfig
-loongarch                           defconfig
-nios2                         10m50_defconfig
-sh                           se7343_defconfig
-sh                           se7750_defconfig
-
-clang tested configs:
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-riscv                randconfig-r042-20221019
-hexagon              randconfig-r045-20221019
-hexagon              randconfig-r041-20221019
-x86_64                        randconfig-a005
-s390                 randconfig-r044-20221019
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-i386                          randconfig-a013
-x86_64                          rhel-8.3-rust
-i386                          randconfig-a015
-x86_64                        randconfig-a012
-i386                          randconfig-a011
-x86_64                        randconfig-a014
-arm                       mainstone_defconfig
-powerpc                      obs600_defconfig
-arm                            mmp2_defconfig
-mips                           ip28_defconfig
-s390                             alldefconfig
-arm                         s3c2410_defconfig
-powerpc                     mpc512x_defconfig
-powerpc                          allmodconfig
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
