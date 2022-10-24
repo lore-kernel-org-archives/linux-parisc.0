@@ -2,114 +2,113 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86F78FA3741
-	for <linux-parisc@archiver.kernel.org>; Mon, 24 Oct 2022 18:48:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A34D6C38A2D
+	for <linux-parisc@archiver.kernel.org>; Mon, 24 Oct 2022 20:08:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbiJXSsS (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 24 Oct 2022 14:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
+        id S233387AbiJXUIF (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 24 Oct 2022 16:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231582AbiJXSrj (ORCPT
+        with ESMTP id S231857AbiJXUHq (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 24 Oct 2022 14:47:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481E33C8D6;
-        Mon, 24 Oct 2022 10:29:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 350BB614CA;
-        Mon, 24 Oct 2022 16:43:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 495C4C433D7;
-        Mon, 24 Oct 2022 16:43:19 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="R/LWqL0H"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1666629797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jVwnCaFZdOk86y5jBEGAHVTaPFA8qqxydDorS9HQrxk=;
-        b=R/LWqL0HmERHhgI7BdwcGOaB3Q8XsPIH6B/Gdo3HJUMIuT9hwUE+2aIfUs7T5AhOI79Jt6
-        d8ngYNFZKfkYsUwIv2qdXPqC/aoaC88pmme7vJsjJeVfqbHgYDfmh3RufMLuzpN+0qp8US
-        fVJyhkYuwNudc5bRrrZ+Jls0DQkggGI=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 885087f8 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Mon, 24 Oct 2022 16:43:17 +0000 (UTC)
-Date:   Mon, 24 Oct 2022 18:43:09 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Christoph =?utf-8?Q?B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        SeongJae Park <sj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Helge Deller <deller@gmx.de>, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mmc@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: Re: [PATCH v1 0/5] convert tree to
- get_random_u32_{below,above,between}()
-Message-ID: <Y1bAnU4pCczkw5j8@zx2c4.com>
-References: <20221022014403.3881893-1-Jason@zx2c4.com>
- <20221021205522.6b56fd24@kernel.org>
- <Y1NwJJOIB4gI5G11@zx2c4.com>
- <20221021223242.05df0a5b@kernel.org>
- <Y1OD2tdVwQsydSNV@zx2c4.com>
- <20221021230322.00dd045c@kernel.org>
- <Y1WtAZfciG1z2CC7@mit.edu>
+        Mon, 24 Oct 2022 16:07:46 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC58457E30;
+        Mon, 24 Oct 2022 11:27:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1666635988;
+        bh=AHsSRYOn624aglQzBbLTGeMMeK4dqdkEWBCmG0Qjo0c=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=Xb99oPI3Bv8y0+6+AzNe69kBOwgCKvpWHOeW/bYLY3GZmZukYvqliSJMnJYILnc1/
+         ReV2JzC2EHdkXqGrtPwmxCimb+JTYTMK/b2niqBb0SwtI6P8ZklMTq9KvA+hwOHpXe
+         zu+HmZt/61Z8/NgrHkacRPfShKyaD1K4yamtETfU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.136.30]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MFsUv-1osH8Z1Abf-00HKCF; Mon, 24
+ Oct 2022 20:21:12 +0200
+Message-ID: <703cb0e6-a98a-a8cf-880b-c86a456f57b2@gmx.de>
+Date:   Mon, 24 Oct 2022 20:21:11 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Y1WtAZfciG1z2CC7@mit.edu>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Subject: Re: [PATCH] MAINTAINERS: adjust entry after renaming parisc serial
+ driver
+Content-Language: en-US
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-parisc@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20221024132223.9697-1-lukas.bulwahn@gmail.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <20221024132223.9697-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:X+RkhzcAKeJ4LaBz452qdQRxK7w7nMwo0/N8QXvkyA8rTCrO51P
+ ykRVIZVpAJLLv93RHCxL/KHLh4Gh8aVPmN0BVFkgbdf6cuMI64plWRW2ZUiqJqyfaQleS8j
+ m+/XwtREHojiolHMxnQo335Q/ksZ65VvtAaduvY91Mv0jvSQOTFNhxPJ8ZU+U4E18DqrHi2
+ bQo2nu3DamlzL2sqXwlwA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ckw8bMAx+o0=:buDpt2fWNcjgKDH3O+qEgm
+ zxBePrRCZyai4uxYvYVr/TmdkAE5uO+TV5qZfRsqjFX2xOfmTCJWlAIwWrs4ncsjqS/conkmR
+ QQtzxJwo6rJ6FyEvBiNwZEsLh+OI+WyUfb+fsIH9YOC+wZhuWD+bV2qmkX2Cl0644golveWt8
+ REy51jWubVH8Y1lXSyPaQcEMzo1Fiso8M4bseFnVZKgdJ8wPqvdAG/drQ0fvDxTdL0kLyv4mT
+ VpAgJALpDduI2KCxicF8f89ZZg9H7MSizAWkOROqlxlOh4PpAa94e3GHv/HJa0ucTlBkvubDB
+ CsNMi/FNQE8zkvdvL1PMth1KcuVceFv4qtMEuQwJeKylS07QWchZGo9y9qVQR3lMsGiJ+4olI
+ 9meyWIBVOmAkrQE9Vs3oXFWukuizYu6pR78FjXvI9tB7J6KMi6n+5rLeT80F0Um3TbTv8FvmC
+ 3Tev97gzjR1nmfBDS/reHi4qjkbs0pBIUtyQU5Z4JFZRRIzeMPdvj5pBLhaw0yf4iCr3h60Zc
+ +xJQppc+o4x/YHGdbciF0xPBr8jf+sMksmZ7bVOFwWXrr5QIXThD/LW6S6dPZFGZvO9MF6omR
+ BgEriNDTvvdzc9ceQOoEFilLS0cJs9NP5Gl7xWmXFH+kluDWQ7xqAEqtF05ZuqdgMUR+yuSXr
+ s9mLaRs1KHGCek/TeX0yoPXOMAx7PjYGJCKc/UQ2oSIMXVDJWrc0C6dfzr+sfY/kDh3yxNKyb
+ TaPdHBVYMVyDtn8QzLMICLzjPsetsbbE55eE2+i5LpTE10d8tf3WNaqtmILNvYSwr6+L/lc3s
+ sWS2yAAIx4y8/it+Eua1gEB1rfCv8Un6ZRnzKe0Wueml4kXTgrdTkiIEs/6ia87GInnFv9Iuq
+ X+daJOzuRmyt0TvmDAzxmb066G5C/xGBUb6ACyE8J4W+QO8nXb4hE07LbeoEvql+jy54AdHFL
+ duC++sZB94m3AI7GM/f0oXVcQchNjgtuhAgj67sVOtE4ehMcAEhRHa0IbwiWr+DOIXNF6jEWa
+ aVigZ+4U3X1HquQiXlxndUGqS+jPaJeD3fJXNdb4yQ+2GI81TzNvilhVjJthrFTUXuWx1rSMS
+ IDZxX3zHleOWFV9VEwjo82HX8R0eiAqkBJdSwtunopeFMhUpi37hH3ZkLGh1RCaR6CpREn402
+ WprwsTPvFxkPFTGvdqCzxmK9ro+Y8QCwE9cKOtGIVytwS454m+Adzj6t9tW+IFUPXBH6daBmC
+ oZsfDX8sxeXoJciYCGqkXDUw2vB1VppMPq3rE1bYmzW7iSzh+Rmist4khJOVYPTyIm65ETP84
+ afFNxCUF/xzdRMq/HF20L8E4iFSrAZxOoxDhIza9O9w/Jhv44w0cdG+d/9KB9Mrvnf5mDJpUv
+ hsrNEJuXOW2Yqu9eIaRLrq8rRZX/d1QtTSZ2elZ3rNPQBj26zcoG0nd3nyiznpxTHIDTrDNLs
+ 3fs2seKkapg8375H6gN7s/pZLzdOXKWtD0xj+AcCk2KqIainPX/hCtgzzgIY4kcYwVdVySIYT
+ DfWcEEtyehAZolUgVAixKU5vCJKPfl/hujgcFDbMtQxBT
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Sun, Oct 23, 2022 at 05:07:13PM -0400, Theodore Ts'o wrote:
-> On Fri, Oct 21, 2022 at 11:03:22PM -0700, Jakub Kicinski wrote:
-> > On Sat, 22 Oct 2022 07:47:06 +0200 Jason A. Donenfeld wrote:
-> > > On Fri, Oct 21, 2022 at 10:32:42PM -0700, Jakub Kicinski wrote:
-> > > > But whatever. I mean - hopefully there aren't any conflicts in the ~50
-> > > > networking files you touch. I just wish that people didn't pipe up with
-> > > > the tree wide changes right after the merge window. Feels like the
-> > > > worst possible timing.  
-> > > 
-> > > Oh, if the timing is what makes this especially worrisome, I have
-> > > no qualms about rebasing much later, and reposting this series then.
-> > > I'll do that.
-> > 
-> > Cool, thanks! I promise to not be grumpy if you repost around rc6 :)
-> 
-> One way of making things less painful for the stable branch and for
-> the upstream branch is to *add* new helpers instead of playing
-> replacement games like s/prandom_u32_max/get_random_u32_below/.  This
-> is what causes the patch conflict problems.
-> 
-> One advantage of at least adding the new functions to the stable
-> branches, even if we don't do the wholesale replacement, is that it
+On 10/24/22 15:22, Lukas Bulwahn wrote:
+> Commit 9e4e2ce1a78e ("parisc/serial: Rename 8250_gsc.c to 8250_parisc.c"=
+)
+> renames the parisc serial driver file, but does not adjust the entry in
+> MAINTAINERS.
+>
+> Hence, ./scripts/get_maintainer.pl --self-test=3Dpatterns complains abou=
+t a
+> broken reference.
+>
+> Repair this file reference in PARISC ARCHITECTURE.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-That's a good idea. I'll also save the removal commit, anyhow, for a
-separate thing at the end of 6.2 rc1, so that -next doesn't have issues
-either.  That's how things wound up going down for the first tranche of
-these, and that worked well.
+Nice catch, Lukas!
+Applied to the parisc git tree.
 
-Jason
+Thanks,
+Helge
+
+
+> ---
+>   MAINTAINERS | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 91d95924cff4..0c8198b3329a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -15637,7 +15637,7 @@ F:	drivers/input/serio/gscps2.c
+>   F:	drivers/input/serio/hp_sdc*
+>   F:	drivers/parisc/
+>   F:	drivers/parport/parport_gsc.*
+> -F:	drivers/tty/serial/8250/8250_gsc.c
+> +F:	drivers/tty/serial/8250/8250_parisc.c
+>   F:	drivers/video/console/sti*
+>   F:	drivers/video/fbdev/sti*
+>   F:	drivers/video/logo/logo_parisc*
+
