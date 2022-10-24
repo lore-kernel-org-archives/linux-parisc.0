@@ -2,170 +2,225 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B59F3FA3744
-	for <linux-parisc@archiver.kernel.org>; Mon, 24 Oct 2022 18:03:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51BA3ECAAA1
+	for <linux-parisc@archiver.kernel.org>; Mon, 24 Oct 2022 18:26:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbiJXSDk (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 24 Oct 2022 14:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
+        id S231537AbiJXS0u (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 24 Oct 2022 14:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbiJXSDA (ORCPT
+        with ESMTP id S231881AbiJXS0d (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 24 Oct 2022 14:03:00 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on20629.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e8a::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202A81EAEA;
-        Mon, 24 Oct 2022 09:43:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ICDCvE1cGkaXDQ9dNdHygCGl4wXrKwHA0jssd1Q+yj9q9rko3Xdq3hK8c+NnDEw80iFQto06X96PtoqyEvChaUtzx4hY4VjvYJVoqMVnc4TqIU6c0Wl6+pMJFmX9eQUf9kslVG/Oqj06MJwZm/jW0FAyWmsiPSnuYW0G+x88AjzTrz5+V/owsC9OjsTUNjPw0OBS9RI8JPyG3THCMuIAyxLWiWLDoDwGY85Z2dBm+WgXevnwzARYHI1nbrnGjO7mBZjhmp635XJXnPkKAYLWo0+N6WqXs4ekOtYjMM5nR2movnDgpkewiV2lspqgtmAvCV0uTRZd7QL/K3W8qyIOGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k55sh9OjiE0ha8dqN/6u+9zcSFi0E1S4KdYJWOmTGq8=;
- b=k1paNC2UDXZMoacm7GoSMrLfWXRPnBrZO5Q4Jk3t165ZzZtKli8L+lv9l5QWkdcms59XwAC5VlnukykOwWUFbzke1CkP0XeC9yqDIbgV0qtlupU1tjqHOaaDugRvHTi9Z+KecqkSj7Hp8FbBYaRZGyW2HnXgRpgylPfVJvc0FvEioYtoWKCursbETUrCfkhwkJZGDJeryfCu9i4IN0xQypz2kWexGpZOV7c8sCtxw4WDs17nF4KdaCFUf2uMOJruQxrraK+tX/2ufj9TVwE2fPKn5bzlU4dbigndJOdnRA6hw/DT3Q6dIOcu9Z/YD88IzLftPixXU1z0xTOath/fGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k55sh9OjiE0ha8dqN/6u+9zcSFi0E1S4KdYJWOmTGq8=;
- b=kjj/r5Ny18+6u+JodYtWt44+A382Ma2Tku8hOID+C4vwVY7XqI7GVjiFyQ7qZKLPyR/fgT7fRQrsiN8M96MHIwfsINw1ue0f7OZ+8vBgHm4XpdYJBNoPt41bAxcYoVXrdtboiz5D9NLgnw2wnEMdQRn9UEGJY9PUy5Ejlm0Z7tvo2uzX0xObF+FGnGy9bsvhHy5VsCkzq6pU+1xOaXkf1FfMxfmMHCDYhzqDHbHAhshL1g7y9Ioo50uSD/rCK9IRHRyGm0s9P5p1vk9UGQoEdDtRiiqCfehbLFxvjaViN+W8jPgyAL+byR08oCcerfYBfOibHAO5NBYFrT0tfsJ9mQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MN2PR12MB4238.namprd12.prod.outlook.com (2603:10b6:208:199::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.23; Mon, 24 Oct
- 2022 16:37:13 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de%6]) with mapi id 15.20.5746.021; Mon, 24 Oct 2022
- 16:37:13 +0000
-Date:   Mon, 24 Oct 2022 13:37:12 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Christoph =?utf-8?Q?B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        SeongJae Park <sj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Helge Deller <deller@gmx.de>, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mmc@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: Re: [PATCH v1 0/5] convert tree to
- get_random_u32_{below,above,between}()
-Message-ID: <Y1a/OAJdW+dERHiR@nvidia.com>
-References: <20221022014403.3881893-1-Jason@zx2c4.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221022014403.3881893-1-Jason@zx2c4.com>
-X-ClientProxiedBy: MN2PR01CA0009.prod.exchangelabs.com (2603:10b6:208:10c::22)
- To LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+        Mon, 24 Oct 2022 14:26:33 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD117F100;
+        Mon, 24 Oct 2022 10:08:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1666631284; x=1698167284;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9hFNN8FocKL1s+t62fqYOxCC2IjJmS0OeL8/lk60yi4=;
+  b=ZB3Le7AknfvHmRCA5ulPNGOt4r+KoJBwaOnpK4h/nvonVF61OUB4S720
+   Pi+5EnIdzYU5x/GSaQcowY13AKjFsC54opoLgyHRdPcm6UYCsAyOlHTsO
+   5WlvLu6eE61RhNDirXrBkjpAuLt3eVQ92Dpe/OKKDTu6LXZNqxHNOXEC5
+   eiCSVXtbN9Ww+OtJr+jQTJ8KNOb5+VBj0dglefCjWifzND6qAw6/kA+2e
+   qSlfW55d3QM9584nwFkFIXK6iHYGeDjDKjTQXoVZTw1YmXVzROJZmOalU
+   96h/lBH2lW6T1wdGMITxZl9aHsTbKyYRWIUCNXGBkDeTAnLghVTdiyqS4
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="371689507"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; 
+   d="scan'208";a="371689507"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2022 09:59:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="662496666"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; 
+   d="scan'208";a="662496666"
+Received: from lkp-server02.sh.intel.com (HELO b6d29c1a0365) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 24 Oct 2022 09:59:46 -0700
+Received: from kbuild by b6d29c1a0365 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1on0nh-0005Wl-1e;
+        Mon, 24 Oct 2022 16:59:45 +0000
+Date:   Tue, 25 Oct 2022 00:58:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     ntfs3@lists.linux.dev, netdev@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        amd-gfx@lists.freedesktop.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD SUCCESS WITH WARNING
+ 76cf65d1377f733af1e2a55233e3353ffa577f54
+Message-ID: <6356c451.pwLIF+9EvDUrDjTY%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN2PR12MB4238:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0fec61a3-506b-441f-0275-08dab5de00ff
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EKf80sMrg5IUycWDwhzQGsqhRuRUNEo7co2x6wOatZpaB8t5SUjUHbjAzEr6sRorBvJGsd0/tcT09UpbrAJwcfNhYs/Jg5UoK3Jjoql0TRL1veT7dcI0rexcOtjQYU3c/PD586SfWLxsB8Qu4nrKs+amImQbAeOUnBw/xvaeBbsp819ObeGXW7RI8M5GCpbHipLB+bcZ2n7vo6ylspnISqWqRSjnnLcfbdirJAvcAWn1ijXq6fDiyGByuG31c/K3EBhQXKsv0PaaXjpw6WEimArqnEB4l5DezcFtAt1IHo9N2KF2UkNO7sE9JqcSt4KYZ0kKCslN4fmsF7a8PwpGRZ9gVxDLM7CeqF/JUdTgZcNjtNGogOtecNmLyHwXVD3Ds0lFHcSvpaSHe0XgkhK1MWz4ccGI4dC+r884Rl+W2TJVObYMgqkzkLoXCHJhQXY97m1ikA4hgZs0qvEgSPOUk8Flujc8ZakU95c0DL5zpCoSvqTvSHZEnJPlTYkGrelVPhoLhmLmMA2cr9tSlWcDfkAwBt2sxC09sjlXvRsx9sk502zBfEPjQe4hBEWImrRmfPTjdNKhMhbMXKZi+1sUpv4FTF/0F+TpkkUjJOXmAn2AIEGCDpfvxRSpcm6+V4wuVkaDazIw9R91Y8i0S3a3xNJ2wAD/SH4xrwI4lBKgw/000+OmPzXYst4AReTcXzGFIOGbziklkPp1hdsq1ntvJQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(376002)(346002)(136003)(396003)(366004)(451199015)(6486002)(478600001)(54906003)(316002)(7406005)(7416002)(66946007)(66556008)(66476007)(6506007)(8676002)(4326008)(41300700001)(6916009)(5660300002)(8936002)(26005)(36756003)(6512007)(38100700002)(83380400001)(2906002)(2616005)(186003)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zV0ZvoIw8ElUdZSnE+53L7/s2Lw9Z0tCRY0pU4bjiONBEzMp//3qKb0bLgnT?=
- =?us-ascii?Q?luu646/cUA9wc8DJrSUGSGSkQB26guhodVON6cVMCUvYlPRSW4x+OrHc/AxZ?=
- =?us-ascii?Q?oNsxW+M+ZMFX9queecYkKl+Ho63dc2uIgb69s8faH+iDEyhnjNwZbp8QGI2z?=
- =?us-ascii?Q?WgAqd631DcIyDFUXxhewccmoWHUSxDdi1Z+NOprNHh56Hmccktkqu3K6LWBx?=
- =?us-ascii?Q?+35gJGUx0jrdX7omox7zE1Xtz5AarWKcQaVPV7qVLlBYX9c5P0y6QF/nao3N?=
- =?us-ascii?Q?BnP3pESNyEYS0FLK1l2XQ56MX2od6gRR7X3Fm4dZ10f2KLq1zTtuc61j4DV0?=
- =?us-ascii?Q?r7uf6ibUMK6KzxVlT4D3KLyOU925+dYqAsAOMOJoJ0yKqF4NHNJX+iN3fYD+?=
- =?us-ascii?Q?v/46CX0UTN9qbIs56xryLjUUtuJ4vNBdyxehJQ3msa70AyJTiE1sz+oEZYPV?=
- =?us-ascii?Q?b59iLoLm/BJkK4CBoKWP9/m1sWdPlHm4wA8zbLJ3ozQGAeDfoTZLEDnDre8b?=
- =?us-ascii?Q?CP3hwpxXpNd72XfNV0nMNyuSprnMyNCz8Ohi82MTNRoZMEUwsQiLqDeHGHuY?=
- =?us-ascii?Q?Jv4Ej/l3j2LVb8sFkoIQFvr45H7/SxqCd9PbkMiWx+p5/0yXk2seEYWRpA0M?=
- =?us-ascii?Q?ymi6OQ2p7MGVsyzLULIzz88eZT6UL8sQQIL3t5uGQZRwbhVWEUd7BG4LLDtw?=
- =?us-ascii?Q?SHn8bqfc163LfRlRmaveJCPELg0Au+5kM5Ux9zdU+80DYqSqbq6lTQPSY2BS?=
- =?us-ascii?Q?QV03v8PYp0RIbmagf5svpXc5w8UyWvXjPzC03jKKRnxCFHq7zDqSeMo85j62?=
- =?us-ascii?Q?vDMafIvempx1LImdNG+k6axHCPNkmdg3DB1FOprpdrFVgixQaPKd+L2LaKoY?=
- =?us-ascii?Q?pjqSHVnI1N/yST1NU4ZFh2BJ2yyqzzjSyGqj1blCMSzhlSlRJ3jf4uUCLGjK?=
- =?us-ascii?Q?x4wTgxuaG3fFRIRu/eSONbfIm84e8MXCt7sLfdvhQe10hk5Y5YT5gH81iPht?=
- =?us-ascii?Q?pmXR9NgmWM1Qglk2IqHrWyZvxpHqNWBvwA0CFYq9FIw/T9UvyLi447sXp0Fh?=
- =?us-ascii?Q?b/bIpp5pd+n4crt+I95W4IHQh6JsJz2EMyKKdrgUaJSlYWwIJbAOtpVCbwtt?=
- =?us-ascii?Q?NsMsCcHOLciSOTGO9tnG7k+JncjFoxOzCVPN8Vj7xa05uiEv9DML2obLP4Om?=
- =?us-ascii?Q?aNyrOjBMv3zOWG2Wb95mppM1PTQLvsf5DNN6+71IUwwPknrG+FdlrDKVimTh?=
- =?us-ascii?Q?JMb+HrGacxL3LV/0gjxOLL4xxKbn3GaYUYrIMoa4Ue+/Q6YAFPDJu1FdVcjo?=
- =?us-ascii?Q?ExfLabg1a/zAkF9Jexm/xdjR4ksawnbO6kvQKUqSQG0RpdktHcyd639dXpMf?=
- =?us-ascii?Q?LL3A0FFsCUXAhaCcQUYtIZ2oSzbyI6tt4yqq8SNDFbKx7AKKhk+6moaEx1E+?=
- =?us-ascii?Q?zWC7/maV8irSk1XSAVhM4XjpUu8WrZNwCo17MZlXrE6Kf4nSlQ00CQe2Rz5/?=
- =?us-ascii?Q?VyvZa1RqT/m42NrbvbnR17eddDyaXxk5KEbu37rw1QWQYgb/Gzfcj+wkGu4r?=
- =?us-ascii?Q?FAa7n4+VgqzXYzfguXg=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fec61a3-506b-441f-0275-08dab5de00ff
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2022 16:37:13.3550
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: M08JolLSTvc/mpUbbK/5pFVHM/zVSM/eOfwLc7op140A/TyaKEMEkxMK7/WMGLcq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4238
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, Oct 21, 2022 at 09:43:58PM -0400, Jason A. Donenfeld wrote:
-> Hey everyone,
-> 
-> Here's the second and final tranche of tree-wide conversions to get
-> random integer handling a bit tamer. It's predominantly another
-> Coccinelle-based patchset.
-> 
-> First we s/prandom_u32_max/get_random_u32_below/, since the former is
-> just a deprecated alias for the latter. Then in the next commit we can
-> remove prandom_u32_max all together. I'm quite happy about finally being
-> able to do that. It means that prandom.h is now only for deterministic and 
-> repeatable randomness, not non-deterministic/cryptographic randomness.
-> That line is no longer blurred.
-> 
-> Then, in order to clean up a bunch of inefficient patterns, we introduce
-> two trivial static inline helper functions built on top of
-> get_random_u32_below: get_random_u32_above and get_random_u32_between.
-> These are pretty straight forward to use and understand. Then the final
-> two patches convert some gnarly open-coded number juggling to use these
-> helpers.
-> 
-> I've used Coccinelle for all the treewide patches, so hopefully review
-> is rather uneventful. I didn't accept all of the changes that Coccinelle
-> proposed, though, as these tend to be somewhat context-specific. I erred
-> on the side of just going with the most obvious cases, at least this
-> time through. And then we can address more complicated cases through
-> actual maintainer trees.
-> 
-> Since get_random_u32_below() sits in my random.git tree, these patches
-> too will flow through that same tree.
-> 
-For drivers/infiniband
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 76cf65d1377f733af1e2a55233e3353ffa577f54  Add linux-next specific files for 20221024
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Warning reports:
 
-Jason
+https://lore.kernel.org/linux-mm/202210090954.pTR6m6rj-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210110857.9s0tXVNn-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210111318.mbUfyhps-lkp@intel.com
+https://lore.kernel.org/linux-mm/202210240729.zs46Cfzo-lkp@intel.com
+
+Warning: (recently discovered and may have been fixed)
+
+arch/parisc/kernel/setup.c:78 setup_cmdline() warn: curly braces intended?
+drivers/net/phy/phylink.c:588 phylink_validate_mask_caps() warn: variable dereferenced before check 'state' (see line 583)
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- i386-randconfig-s041-20221024
+|   |-- fs-ntfs3-index.c:sparse:sparse:restricted-__le32-degrades-to-integer
+|   |-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s1-got-unsigned-short
+|   `-- fs-ntfs3-namei.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-restricted-__le16-const-usertype-s2-got-unsigned-short
+|-- microblaze-randconfig-m031-20221023
+|   `-- drivers-net-phy-phylink.c-phylink_validate_mask_caps()-warn:variable-dereferenced-before-check-state-(see-line-)
+|-- parisc-randconfig-m031-20221023
+|   `-- arch-parisc-kernel-setup.c-setup_cmdline()-warn:curly-braces-intended
+`-- x86_64-randconfig-m001
+    `-- arch-x86-kernel-apic-apic.c-generic_processor_info()-warn:always-true-condition-(num_processors-()-)-(-u32max-)
+clang_recent_errors
+|-- hexagon-randconfig-r045-20221023
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
+|   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a001-20221024
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a011
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- i386-randconfig-a015
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- powerpc-randconfig-r015-20221023
+|   |-- drivers-gpu-drm-amd-amdgpu-mmhub_v2_0.c:warning:variable-data-is-uninitialized-when-used-here
+|   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- riscv-randconfig-r042-20221023
+|   `-- ld.lld:error:undefined-symbol:dax_holder_notify_failure
+|-- s390-randconfig-r022-20221023
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- s390-randconfig-r044-20221023
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- x86_64-randconfig-a002-20221024
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+|-- x86_64-randconfig-a004-20221024
+|   `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+`-- x86_64-randconfig-a005-20221024
+    `-- fs-ntfs3-namei.c:warning:variable-uni1-is-used-uninitialized-whenever-if-condition-is-true
+
+elapsed time: 726m
+
+configs tested: 91
+configs skipped: 3
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                          rhel-8.3-func
+i386                                defconfig
+x86_64               randconfig-a013-20221024
+x86_64                               rhel-8.3
+x86_64               randconfig-a012-20221024
+x86_64                           allyesconfig
+x86_64                           rhel-8.3-syz
+x86_64                           rhel-8.3-kvm
+m68k                        m5272c3_defconfig
+x86_64               randconfig-a016-20221024
+powerpc                           allnoconfig
+arm                                 defconfig
+mips                             allyesconfig
+x86_64               randconfig-a011-20221024
+i386                          randconfig-a014
+powerpc                          allmodconfig
+x86_64               randconfig-a015-20221024
+csky                              allnoconfig
+i386                             allyesconfig
+sh                          kfr2r09_defconfig
+sh                               allmodconfig
+x86_64               randconfig-a014-20221024
+i386                          randconfig-a012
+i386                          randconfig-a016
+arc                                 defconfig
+alpha                            allyesconfig
+powerpc                      makalu_defconfig
+arm                              allyesconfig
+arm                            xcep_defconfig
+m68k                             allmodconfig
+powerpc                    amigaone_defconfig
+sh                           sh2007_defconfig
+arm64                            allyesconfig
+arc                              allyesconfig
+arc                  randconfig-r043-20221024
+m68k                             allyesconfig
+arc                         haps_hs_defconfig
+alpha                               defconfig
+sh                            migor_defconfig
+mips                     loongson1b_defconfig
+riscv                randconfig-r042-20221024
+s390                                defconfig
+parisc                generic-64bit_defconfig
+arc                  randconfig-r043-20221023
+s390                             allmodconfig
+xtensa                          iss_defconfig
+s390                 randconfig-r044-20221024
+powerpc                      bamboo_defconfig
+ia64                             allmodconfig
+s390                             allyesconfig
+arm                        shmobile_defconfig
+arm                            hisi_defconfig
+arc                          axs103_defconfig
+powerpc                        cell_defconfig
+mips                        bcm47xx_defconfig
+sparc                       sparc64_defconfig
+x86_64                         rhel-8.3-kunit
+
+clang tested configs:
+i386                 randconfig-a001-20221024
+i386                 randconfig-a002-20221024
+i386                 randconfig-a003-20221024
+i386                 randconfig-a004-20221024
+i386                 randconfig-a005-20221024
+i386                 randconfig-a006-20221024
+hexagon              randconfig-r045-20221023
+i386                          randconfig-a013
+hexagon              randconfig-r041-20221024
+i386                          randconfig-a011
+riscv                randconfig-r042-20221023
+x86_64               randconfig-a001-20221024
+arm                          moxart_defconfig
+powerpc                      obs600_defconfig
+x86_64               randconfig-a005-20221024
+x86_64               randconfig-a003-20221024
+powerpc                       ebony_defconfig
+x86_64               randconfig-a006-20221024
+i386                          randconfig-a015
+hexagon              randconfig-r045-20221024
+x86_64               randconfig-a004-20221024
+arm                             mxs_defconfig
+s390                 randconfig-r044-20221023
+mips                       rbtx49xx_defconfig
+x86_64               randconfig-a002-20221024
+arm                          pxa168_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                      ppc44x_defconfig
+hexagon              randconfig-r041-20221023
+arm                            dove_defconfig
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
