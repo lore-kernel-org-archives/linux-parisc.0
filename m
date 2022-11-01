@@ -2,109 +2,104 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F4C7ECAAA1
-	for <linux-parisc@archiver.kernel.org>; Thu, 27 Oct 2022 16:38:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06606C4321E
+	for <linux-parisc@archiver.kernel.org>; Tue,  1 Nov 2022 17:47:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235551AbiJ0Qiw (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 27 Oct 2022 12:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
+        id S230220AbiKARrT (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 1 Nov 2022 13:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235659AbiJ0Qiv (ORCPT
+        with ESMTP id S229562AbiKARrS (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 27 Oct 2022 12:38:51 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6669B18708A;
-        Thu, 27 Oct 2022 09:38:51 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id f5-20020a17090a4a8500b002131bb59d61so6050189pjh.1;
-        Thu, 27 Oct 2022 09:38:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4/1b1qcy/q10T/xwgjyAFlhqgrlOQeWECP0LCGi9PrM=;
-        b=kR+vQY5k4SVLrCb743A3JHbbgYqiBt7Cq6HYCSuJ1fDX1M8gu+PLLJA8as+BSESMpS
-         EdCqdj+v9yDXU2Mg8ZoETV7ph55TjCA3sImosMIChII8sFDgeth2mVWVuPnyEO/rN5T/
-         4WK4C97ij4A8rOw9RMEqwBvb0nE5idBSnEEpwuC4Xbl9zRJLndurVLtgWtBTGn4ZNA9A
-         AncikKgof6oFcmmYtXlXzESkC+wLxWGu0QTnqIMoPxoiegZGNu0NaUngeDMzRIG2ovU8
-         o57CHpi+d/YhjTbR2hUGYn8hs8hm70BLNv/eUnGC9o0WLWmS3AeT0jSkf9bLY6Gcrd5j
-         rang==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4/1b1qcy/q10T/xwgjyAFlhqgrlOQeWECP0LCGi9PrM=;
-        b=xLGUcFFY2mb/Ilfm3iAvzUYS0qJb8VMZOajySugPRCPeK5hTAU9eKBctt7c4la8ivC
-         Yem/2MnH8Sz8/5SV3f5fLBnsbI+mHdvU3Z/0YqUVC2G6C/xXl1bk23uOqOvvJEpWhAuo
-         hskyjFkhlJBEJ1xLUHA0xuXN9U2txQYAYCFq5pK8xiqs9w4wXEmceDIdtm71HNMy9vKL
-         reRSrJZGMTpHlPfZIURalDF+S2L+b/EiDxnT1l2o+QLBrlCmzi+9sBJavMHCOlSxSUiz
-         gx48K9AFO1gYskV59zTb18LTdaFImGMjXrGX2MFBwuW7VB+Ll32Mjoea27TqpWb5UyUL
-         gFVA==
-X-Gm-Message-State: ACrzQf1U3p4caOxWy+Pist7AUcoSjEXSwb4WqsLlCCCni49XKdxxHudZ
-        zNcrrtoJFeiO1zaLEcJ7l+E=
-X-Google-Smtp-Source: AMsMyM6NQyy9M6pqOOyiHu/Iq8naC2MMbmNJilYhAd895GtcEme5YsDNjgXNAMotBpRf5wqwbsIfNw==
-X-Received: by 2002:a17:90a:c691:b0:212:fd5f:1ab8 with SMTP id n17-20020a17090ac69100b00212fd5f1ab8mr10886380pjt.11.1666888730774;
-        Thu, 27 Oct 2022 09:38:50 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:99d6:ae15:f9aa:1819])
-        by smtp.gmail.com with ESMTPSA id a6-20020a170902710600b001865e69b4d7sm1370799pll.264.2022.10.27.09.38.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Oct 2022 09:38:50 -0700 (PDT)
-Date:   Thu, 27 Oct 2022 09:38:46 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tue, 1 Nov 2022 13:47:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514231D0D3;
+        Tue,  1 Nov 2022 10:47:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E0AF6616D8;
+        Tue,  1 Nov 2022 17:47:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CD53C433D6;
+        Tue,  1 Nov 2022 17:47:05 +0000 (UTC)
+Date:   Tue, 1 Nov 2022 17:47:01 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linux-fsdevel@vger.kernel.org,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Tony Lindgren <tony@atomide.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-input@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Subject: Re: [RFC][PATCH v2 15/31] timers: Input: Use del_timer_shutdown()
- before freeing timer
-Message-ID: <Y1q0FiznpwJ7/TPm@google.com>
-References: <20221027150525.753064657@goodmis.org>
- <20221027150927.992061541@goodmis.org>
- <20221027112117.7324570a@gandalf.local.home>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: Re: [PATCH] mm: remove kern_addr_valid() completely
+Message-ID: <Y2FblZlz2LIGh5qH@arm.com>
+References: <20221018074014.185687-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20221027112117.7324570a@gandalf.local.home>
+In-Reply-To: <20221018074014.185687-1-wangkefeng.wang@huawei.com>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, Oct 27, 2022 at 11:21:17AM -0400, Steven Rostedt wrote:
-> [
->   quilt mail --send still can't handle unicode characters.
->     Here's the patch again
-> ]
+On Tue, Oct 18, 2022 at 03:40:14PM +0800, Kefeng Wang wrote:
+> Most architectures(except arm64/x86/sparc) simply return 1 for
+> kern_addr_valid(), which is only used in read_kcore(), and it
+> calls copy_from_kernel_nofault() which could check whether the
+> address is a valid kernel address, so no need kern_addr_valid(),
+> let's remove unneeded kern_addr_valid() completely.
 > 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> Before a timer is freed, del_timer_shutdown() must be called.
-> 
-> Link: https://lore.kernel.org/all/20220407161745.7d6754b3@gandalf.local.home/
-> 
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: "Pali Rohár" <pali@kernel.org>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Tony Lindgren <tony@atomide.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+For arm64:
 
-Please feel free to merge with the rest of the series.
-
-Thanks.
-
--- 
-Dmitry
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
