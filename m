@@ -2,117 +2,137 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DD51C4332F
-	for <linux-parisc@archiver.kernel.org>; Sat, 26 Nov 2022 05:39:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 074F4C43217
+	for <linux-parisc@archiver.kernel.org>; Sat, 26 Nov 2022 21:01:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbiKZFjr (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 26 Nov 2022 00:39:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48462 "EHLO
+        id S229493AbiKZVA7 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sat, 26 Nov 2022 16:00:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbiKZFjp (ORCPT
+        with ESMTP id S229480AbiKZVA5 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 26 Nov 2022 00:39:45 -0500
-Received: from matoro.tk (unknown [IPv6:2600:1700:4b10:9d80::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF781DF02
-        for <linux-parisc@vger.kernel.org>; Fri, 25 Nov 2022 21:39:29 -0800 (PST)
-DKIM-Signature: a=rsa-sha256; bh=rRYXhZE8iXwwzsvSbuJ7sRpQMfVhOpkt0NnNjG+IThc=;
- c=relaxed/relaxed; d=matoro.tk;
- h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:In-Reply-To:Message-Id:Message-Id:References:References:Autocrypt:Openpgp;
- i=@matoro.tk; s=20221003; t=1669441164; v=1; x=1669873164;
- b=L135vICtZ+kUyc3dkgSccA2yB1mogG3zg9fGtTEo9pMQk9ILISsKoZYRjzE5BCRWhGzAfoby
- JQL7WFgX6JGdY4hfBatGQd8wanmsx8JkrYeqjp5/hOMxxa6ih/cLDwnqIW/ggZ4xHjc14BHSCbG
- rF1EXCX/VC1+u1mSmsuMK0n1n5sIBqo38yxGTinBOGc/HnhHPFUfLSVdrOoK0/nCGdK1kxpO2G4
- hVUeGmeXqlSR9A87N1Tw5qM7rHDzm8oUFUPoeGMUTSRskJqHdv+vdW4Pd6TyF0ricgbu20mD+Yl
- gsEuBXsak4L7WdmWpCb81+K9K3CFgwSe3HcNGabdCnCeHXsw0GgqkyYi8UOExOHDMknWfRzx6WZ
- EAmXpjIC23MG6UolnrSJZuXN/+KwSL+3l8Hhu/fM5rRhk+5eTHxmpzNw/DhaErd4kDPRO4iUxx7
- xetaYFvms6l+jR9TOiGrGdNZ/cp+wqlyXKh4cM7sDxY8LVMA5yT9r3aOHH5jxAwk4xUfLLYbjn5
- yMQZPF1c4ja/ShdnyNuE891XT8I2bIkL9S34v+kpnzbN/a97pvTXluomOOgpUl/PjqFEFhT6bN9
- bSZapThvgujGiXByFUvmjg2W8+d6UQSaJcOp6YABytP0pWXvF6w3+i5QRK2wVyjfG/yKZ2HRkAV
- qMcGVlpu78c=
-Received: by matoro.tk (envelope-sender
- <matoro_mailinglist_kernel@matoro.tk>) with ESMTPS id 91e889f3; Sat, 26 Nov
- 2022 00:39:24 -0500
+        Sat, 26 Nov 2022 16:00:57 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A1EB844
+        for <linux-parisc@vger.kernel.org>; Sat, 26 Nov 2022 13:00:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1669496452; bh=+js8B2q6EsXUH8CgX+i191qIRCayrOe8TGNaMWOLc+E=;
+        h=X-UI-Sender-Class:Date:Subject:From:To:References:In-Reply-To;
+        b=d3tGwWMxtabq29m8oQCY6X+e/3/XQCaHsYtC2XnZRA1NqEVM4cXGHrAaWEyfhWFaI
+         LsdqnDK/Uo8lk2rBQOoutRxVx/hwOFrQ7xRRkNrUBWmnz67/GQ/d58q7xdepCGm45+
+         6w9gES1BC1+bBygUabN+p8Rocy29zk7N5Rn7mXKFfhVXmfI4xh3QopXtHp4HIDeAIh
+         iA5hopZJfq5WCE0UT+0Ls8Vb46AhwbRhfUUY5eZfq0Jwq/sFkYU/unq4Ty1vFLBtnf
+         yxN+66Htp3reGGiHWsHybSBM3J2s+7c4BdefAo94++rziiV2iiukzlZUQWPw9k11bb
+         tuufXnmQivv3Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([92.116.155.181]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MKKZ3-1pJZql1jJ9-00Ln4m; Sat, 26
+ Nov 2022 22:00:52 +0100
+Message-ID: <655e7bde-f03c-3b96-dada-dc029f7d367e@gmx.de>
+Date:   Sat, 26 Nov 2022 22:00:52 +0100
 MIME-Version: 1.0
-Date:   Sat, 26 Nov 2022 00:39:24 -0500
-From:   matoro <matoro_mailinglist_kernel@matoro.tk>
-To:     Ian Lance Taylor <iant@golang.org>
-Cc:     John David Anglin <dave.anglin@bell.net>, deller@gmx.de,
-        linux-parisc@vger.kernel.org, hppa@gentoo.org
-Subject: Re: Correct goarch.sh settings for gccgo on hppa?
-In-Reply-To: <CAOyqgcXknGW0AvMy-noFZsSxYdiruoA_HxXaiuW+n-osyyzyMg@mail.gmail.com>
-References: <7013a3e7d6c9c77c5010bc1c72971758@matoro.tk>
- <67cd6ed7-e2cb-0e0a-5611-e4cd57eb8feb@bell.net>
- <cc3d9dc4727b3e7d76e76a2f0bb200ac@matoro.tk>
- <CAOyqgcXknGW0AvMy-noFZsSxYdiruoA_HxXaiuW+n-osyyzyMg@mail.gmail.com>
-Message-ID: <067345a4e47eed632a994084ae53856b@matoro.tk>
-X-Sender: matoro_mailinglist_kernel@matoro.tk
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH 2/2] parisc: Fix kgdb keyboard input in pdc early console
+ driver
+Content-Language: en-US
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org
+References: <20221123152435.276718-1-deller@gmx.de>
+ <20221123152435.276718-2-deller@gmx.de>
+In-Reply-To: <20221123152435.276718-2-deller@gmx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ftkxdVVWJHH6kKyhfSS0xodLzXK3e78MJio7PGXJXeaCRFHKsbZ
+ TMyfjbnKrvKEXmENfBGbrauaOuFMHuf8ZP1dtsmAWinoJCxxYS14iYjgiBRqW+EIIN+XnYz
+ 0gCSVkwokHoFxgfcURvAQOruYyAw1dfW7jnzoNIOqC4WPj9ZXPK+yCPoshRyG+kLHCbHm68
+ MhhfDp2bI4wnWOMsbyrpA==
+UI-OutboundReport: notjunk:1;M01:P0:JxzJ6oVTh7Q=;PHTfVRQ9NLnPPnwWQx42xYKU352
+ VuJ9fHkPe0/JUuQlaoDTXUk/9mlwYdVALQGZewHny8IXx8A+uLzi26ORxE7ERUAxJELbphxa7
+ eP+ZgkeQvumihB0p8HJ9NjIVpr9QlDCaiB5cQyHmmucF1FcUhIkXNgyjhxl+AAYuSPNaH2F95
+ wARFJWJ2tqNBgyEfKQ+ss4nj9p0XvZjrTfl/avY+Qp+pIFYAUZc1gBVbbgctgymQY4V9+7IFA
+ Hc4NdWG7+EGD+tVVM5wfGIMPwQUscjk74jQBrKUgCFjLXvgjRCKOLmFiR1MlfOrjKJvTdZT56
+ CnbF1HmE6xK4Y3VY3SVTPXhL9KbwXkVeTwxRmcfl3t4Wpkvb2ONxmXKyfYAL8E0rx3wqHkWJc
+ XPSv9cEZwdaJ9WmiitP4Z+IbDha2l3KDnW8B+VQf40UX2u+AIHGImu8LR1gY7jZKjdKNMPaVg
+ dclbt/RL6X+EPlhsqq7fZeYbCr2g5wgtHlJQnxCqHLmDl/Y2PLTT127CKR3jWy5nKl9v4Okz1
+ polwigaMiyQidVs4U064VvcjrvPeL4PBLZNcYb30+ykpw4qjC+gq7R9lFuoLElpkUiOuzjKMb
+ pOyDFUbI7Ey0AQpODepAHWbQ01Ef7fYmyx7ASdRnxSeHOLxYgBVgigJyr0HyYekJk535NGbNH
+ pWymzI+20e8Am96ev2AqVyGGynmLKfY1FrH4GnuG84vRc6R1po3v/zbKcfPDsqgxYpa+Iz8BK
+ aNewFxu8ZBTG7GEvz20QjrDSu2CbWtFyTPaoAX+Ati9CBAlC87VG35KRd3jw9vqkZ40NAoggE
+ TBMaTLp1P82sgCZLOkPm3+Vyqr2SdmTt1UdyjJIYsOhUsfXzPcjS1BnzJNd0YurRwS0UdDyeU
+ Wp9sKj1SUyN+0tYpF0FFEQZ4FWHBRDdE1jzLk5ykwrfZAnXMSsweZuWa4Km5z9OUzdvjPT522
+ GxVnV6lso7OczTuId783cdsW8mE=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Oh sorry, should have clarified.  I did all those parts already, just 
-didn't include them because I assumed the at-fault piece would be in 
-goarch.sh.  This is for Linux only.
+On 11/23/22 16:24, Helge Deller wrote:
+> Commit 027c3d345e2a ("parisc: Convert PDC console to an early console")
+> broke (physical) keyboard input for kgdb due to the spinlocks used in
+> the PDC console function.
+> Fix it by using using PDC calls which are not protected by spinlocks.
+>
+> Fixes: 027c3d345e2a ("parisc: Convert PDC console to an early console")
+> Signed-off-by: Helge Deller <deller@gmx.de>
 
-All I did for the conditional stuff was add HPPA to all the 32-bit 
-files, and add the two unique syscall numbers.  This was based on the 
-instructions in configure.ac.  Here is the complete patch:  
-https://dpaste.com/HVHNU9BKF.txt
+I dropped this series as it didn't fixed my problem:
+The USB keyboard on my C3000 probably needs a USB reset when a HPMC
+occurs to get it working again.
 
-Is there something I might be missing?
+Helge
 
--------- Original Message --------
-Subject: Re: Correct goarch.sh settings for gccgo on hppa?
-Date: 2022-11-26 00:25
- From: Ian Lance Taylor <iant@golang.org>
-To: matoro <matoro_mailinglist_kernel@matoro.tk>
 
-On Fri, Nov 25, 2022 at 8:31 PM matoro
-<matoro_mailinglist_kernel@matoro.tk> wrote:
-> 
-> Thank you both for the suggestions.  I tried the following values:
-> 
-> diff --git a/libgo/goarch.sh b/libgo/goarch.sh
-> index 977f318b3..e0d6a3ad8 100755
-> --- a/libgo/goarch.sh
-> +++ b/libgo/goarch.sh
-> @@ -88,6 +88,16 @@ case $goarch in
->                  ;;
->          esac
->          ;;
-> +    hppa)
-> +       bigendian=true
-> +       defaultphyspagesize=4096
-> +       family=HPPA
-> +       int64align=8
-> +       minframesize=64
-> +       pcquantum=4
-> +       ptrsize=4
-> +       stackalign=64
-> +       ;;
->       ia64)
->          family=IA64
->          cachelinesize=128
-> 
-> But unfortunately got the same result.  I wonder if there is something
-> else missing?
-> 
-> Ian, if you have the time, I have a machine you can use to look at 
-> this.
+> ---
+>   arch/parisc/kernel/pdc_cons.c | 14 ++------------
+>   1 file changed, 2 insertions(+), 12 deletions(-)
+>
+> diff --git a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons=
+.c
+> index 7d0989f523d0..bb498c6d51c2 100644
+> --- a/arch/parisc/kernel/pdc_cons.c
+> +++ b/arch/parisc/kernel/pdc_cons.c
+> @@ -12,29 +12,19 @@
+>   #include <asm/page.h>		/* for PAGE0 */
+>   #include <asm/pdc.h>		/* for iodc_call() proto and friends */
+>
+> -static DEFINE_SPINLOCK(pdc_console_lock);
+> -
+>   static void pdc_console_write(struct console *co, const char *s, unsig=
+ned count)
+>   {
+>   	int i =3D 0;
+> -	unsigned long flags;
+>
+> -	spin_lock_irqsave(&pdc_console_lock, flags);
+>   	do {
+>   		i +=3D pdc_iodc_print(s + i, count - i);
+>   	} while (i < count);
+> -	spin_unlock_irqrestore(&pdc_console_lock, flags);
+>   }
+>
+>   #ifdef CONFIG_KGDB
+>   static int kgdb_pdc_read_char(void)
+>   {
+> -	int c;
+> -	unsigned long flags;
+> -
+> -	spin_lock_irqsave(&pdc_console_lock, flags);
+> -	c =3D pdc_iodc_getc();
+> -	spin_unlock_irqrestore(&pdc_console_lock, flags);
+> +	int c =3D pdc_iodc_getc_unlocked();
+>
+>   	return (c <=3D 0) ? NO_POLL_CHAR : c;
+>   }
+> @@ -42,7 +32,7 @@ static int kgdb_pdc_read_char(void)
+>   static void kgdb_pdc_write_char(u8 chr)
+>   {
+>   	if (PAGE0->mem_cons.cl_class !=3D CL_DUPLEX)
+> -		pdc_console_write(NULL, &chr, 1);
+> +		pdc_iodc_print_unlocked(&chr, 1);
+>   }
+>
+>   static struct kgdb_io kgdb_pdc_io_ops =3D {
+> --
+> 2.38.1
+>
 
-As far as I know gccgo has never been ported to parisc.  This requires
-a fair bit more than just fixing up goarch.sh.  There are a bunch of
-files in libgo that are conditionally compiled based on the GOARCH
-(processor) and GOOS (operating system) values.  These are marked in
-the files by comments that start with "+build" or "go:build".  Many of
-those comments will need to be adjusted to recognize parisc and
-whatever operating system you are using.  If this is for HP/UX, there
-is also operating specific code required in various places.
-
-I'm happy to answer questions about doing the port, but it's not a 
-trivial task.
-
-Ian
