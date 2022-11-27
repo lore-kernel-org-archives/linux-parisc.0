@@ -2,141 +2,232 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9727FC47088
-	for <linux-parisc@archiver.kernel.org>; Sat, 26 Nov 2022 21:36:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB146C4332F
+	for <linux-parisc@archiver.kernel.org>; Sun, 27 Nov 2022 06:53:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbiKZVgd (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 26 Nov 2022 16:36:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41962 "EHLO
+        id S229514AbiK0Gxy (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 27 Nov 2022 01:53:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbiKZVgc (ORCPT
+        with ESMTP id S229493AbiK0Gxy (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 26 Nov 2022 16:36:32 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7B015A35
-        for <linux-parisc@vger.kernel.org>; Sat, 26 Nov 2022 13:36:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1669498588; bh=qBosl0qnGdS7MiRdl5lH9+kvm6szht8PS1NyKeQS9LI=;
-        h=X-UI-Sender-Class:From:To:Subject:Date:In-Reply-To:References;
-        b=ixvZ6ing2TBelQIYhGiiOPe97DH2ast3aJporCESIIb+AT/bhQMxv4ficj4B96vBv
-         Y5zMi4HkjA/FAqm18yvfWboNU5RleQmQY003pH8x7jpcEJlhQG1r2+bUj4Sn+Qjj/k
-         NuMKHcdo58m5W1Po9buA3R06wt9fifwPZRFChbXVYxuibOIr9CYuRaeUappneOAVds
-         qxcKKPmHpAQ9WkItDPmdUJz4d6Pof2C1oHLD6nj9edFtN9lSX8aMusrHLvT0C7jYpV
-         R15JeMPNGNyWfJ6n8EofNzMD+aXjPQA0o9MJuFJl4AsQWdjTbPHt+ZSrtj6EqFYSH6
-         eowL9X6dCOy5g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from p100.fritz.box ([92.116.155.181]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mqs0R-1odEh32S5R-00moY7 for
- <linux-parisc@vger.kernel.org>; Sat, 26 Nov 2022 22:36:28 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     linux-parisc@vger.kernel.org
-Subject: [PATCH 3/4] parisc: Drop duplicate kgdb_pdc console in pdc_cons.c
-Date:   Sat, 26 Nov 2022 22:36:20 +0100
-Message-Id: <20221126213621.363838-3-deller@gmx.de>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221126213621.363838-1-deller@gmx.de>
-References: <20221126213621.363838-1-deller@gmx.de>
+        Sun, 27 Nov 2022 01:53:54 -0500
+Received: from matoro.tk (unknown [IPv6:2600:1700:4b10:9d80::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1B4B63
+        for <linux-parisc@vger.kernel.org>; Sat, 26 Nov 2022 22:53:38 -0800 (PST)
+DKIM-Signature: a=rsa-sha256; bh=0qTMKMZlpnpo2+S8wS8MwGrjhez8jrNeVwlR03hHmC8=;
+ c=relaxed/relaxed; d=matoro.tk;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:In-Reply-To:Message-Id:Message-Id:References:References:Autocrypt:Openpgp;
+ i=@matoro.tk; s=20221003; t=1669532008; v=1; x=1669964008;
+ b=mY2f4J8SuJL5IZyzwg20LXo6cyZSfttxgxv1l7gUbAKmm2m8Qmj3QK0oVeSkCkANTYfa9nE2
+ 8Z/l7cJ9104xeXm1kaupYdVoJFkpR09cAK6xsmUENb9lV0svPvLlE8cA4r9pB+B4Dfb+1J2M07s
+ ncfS0vExVuh2ie0u155hXcV6NUp56H2MgVUBY34nAX0C/KvTOER6qCRq/5pIZWEB1muzxkjr04i
+ tmBQHPY2V2oqz1ks7pxOYiwCQ3lwJrSZ8/1WkSN2XWiB0K8MZNIggCzPHMQ118I3jAcTlwj1/aJ
+ RzyeArhya6WxpprwfOs3K3sAH3CmuYN0Q6cmdGE2tQJnV/W/XsBkF/1doDTeFzSFEO8VFAnFe69
+ fvyWpADQupk9c1gPlwm+bOVq1TKYaruT8FHLYSU/cxAcyTkckmrCZJW6s2sGh53Vy7N2E4Rf0SD
+ Z1mI1vEj1uNuWIw9hzFqjIWHSLeXdfPIiBq9evjHBU0Yg1TSsd9txeSvtnRu5o4DfrcmZC8gY7F
+ KqHn5lfBuDwca1G6BHS85T7ecmWvbPxmP33/h05njBGbT6l77YS2rCfVniRICN9982BoVVEyGSx
+ 93Hcj9xRi4/izjd5A8nBEtNOIs67pYbznToZH2+jtA10nzPrrQ2yG1GG3guLEZgIO0oPkiYqMuF
+ Kv8dSxATjac=
+Received: by matoro.tk (envelope-sender
+ <matoro_mailinglist_kernel@matoro.tk>) with ESMTPS id 388c889c; Sun, 27 Nov
+ 2022 01:53:28 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wpeq5+fuuutHRRW/xpY/jBIaXOW8x62jJz/Qgyygyk9bvYe7eW7
- C5DBaKVHc7wWFlhZXC80kA2fM5CXMlTM2iBe+qNRzWTCYT6JnuQjnpv8ZnqvEgJq/ZZtnn6
- P26J0rgaHbPCrMJiLbQefWtfdNEPerNOrehRrLOyB7pOzN80AqXOT88V698RB+/0hPKOETA
- XoSdnCAbODsETsgf5dV/A==
-UI-OutboundReport: notjunk:1;M01:P0:tkntjkuTdV0=;xXbqgoxymyh/pQoxqObD7+tV/0a
- H6FiGiHpKiRq0fNY83TCErNsr5UDvnuGLj6tm8dQLw8A42+KYYNgkT7897ORwFsv7omri5UTv
- fasgVrMMj8+DXNFyBSco+5ET6RkHqjNa4wq2+bQahDPJ5ipOOirb8ywTUl+dSueSdyV2hFicG
- fWcnGoYmyAXA7Sc1GR+oC/pBnnPsj+z0LaYTJ0eyGsVBbkhbBLvDS7GOkUXs19bWihZ/hqVud
- 5ExxYdkvxwtG547GFWeNF58vC+eqE7F9Id7aHt/zDKa9DQlpA0J2FWWo+1zabrWkA3C9Zf8d5
- 8cmIAln2kqfQXIVOjbQ+uZwzrIgY/gpHPdU1CRh21nOaKpdGGziCWcuSnIUpWgIm7lQLTIKCz
- BVacymuN3kxakBhXsxefYLzZ60mKez/10MRZZ4/epswFrmPDUSUtDNcymYwOcRmNEJueyZH4G
- XgNXO3/lLq1y47cRjAHbA3yxX/IFtv7cPvPFIwfpUeNMha+26X2Y+OwGRTTQ4S3wHg/XPgu40
- DX5xiVCyaoYJ5b00IAYq5+laK7NrxRX+IAGR6e5NRMDJyJVs6L3wDAcZDLVuVswXpEBf9QCde
- M54LD8JO85JJmSOXrYap6rmQHZ5lX6HqNSMvGX/g19s6IJquy5dppq2FL4cb92d5KCxGNrhLC
- 4KSvNndZe3eVAJ+mCbtiNYGrE78R631STgKfECAJG/ka9TRF+wQleldwlcP0MT5k0pr8JXRbk
- bSmVER1X/AK0PC7oxBZmfHnkoFSbBlRJTUKlok0ursG6CUUjInUMKALNB1MO+rVoENsGvtpAq
- pdX4P+SfYrFRBnCwmB+zok4JaaUaisKxICrvLTQz2uxg4yCUXmp+pc/7zWibvOJmVKy7OKqrp
- E1r9BO2XoJ0n4xlXHc3y8pRWPg6P5+rTpBbYObmcsgo5ZTYNpTNJW/2i4W7QIBCsOy4ZuVrrj
- f5XsUQ==
+Date:   Sun, 27 Nov 2022 01:53:28 -0500
+From:   matoro <matoro_mailinglist_kernel@matoro.tk>
+To:     Ian Lance Taylor <iant@golang.org>
+Cc:     John David Anglin <dave.anglin@bell.net>, deller@gmx.de,
+        linux-parisc@vger.kernel.org, hppa@gentoo.org
+Subject: Re: Correct goarch.sh settings for gccgo on hppa?
+In-Reply-To: <CAOyqgcWK4UhU-GhEvUo26X_UEK_GK-a1xzqr27J98HAe1J9VYg@mail.gmail.com>
+References: <7013a3e7d6c9c77c5010bc1c72971758@matoro.tk>
+ <67cd6ed7-e2cb-0e0a-5611-e4cd57eb8feb@bell.net>
+ <cc3d9dc4727b3e7d76e76a2f0bb200ac@matoro.tk>
+ <CAOyqgcXknGW0AvMy-noFZsSxYdiruoA_HxXaiuW+n-osyyzyMg@mail.gmail.com>
+ <067345a4e47eed632a994084ae53856b@matoro.tk>
+ <CAOyqgcWK4UhU-GhEvUo26X_UEK_GK-a1xzqr27J98HAe1J9VYg@mail.gmail.com>
+Message-ID: <8d3b98ad973d3cd0ed807ec9d2edeaf2@matoro.tk>
+X-Sender: matoro_mailinglist_kernel@matoro.tk
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The kgdb console is already registered in kgdb.c, so the duplicate code
-can be dropped.
+Surprisingly yes, a trivial program does work.  Seems the problems only 
+arise on anything more than that.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-=2D--
- arch/parisc/kernel/pdc_cons.c | 36 -----------------------------------
- 1 file changed, 36 deletions(-)
+$ go version
+go version go1.18 gccgo (Gentoo 12.2.1_p20221008 p1) 12.2.1 20221008 
+linux/hppa
+$ cat test.go
+package main
+import "fmt"
+func main() {
+     fmt.Println("Hello World!")
+}
+$ go build test.go
+$ ./test
+Hello World!
 
-diff --git a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons.c
-index 7d0989f523d0..eebfc3e3d94c 100644
-=2D-- a/arch/parisc/kernel/pdc_cons.c
-+++ b/arch/parisc/kernel/pdc_cons.c
-@@ -8,50 +8,18 @@
- #include <linux/console.h>
- #include <linux/init.h>
- #include <linux/serial_core.h>
--#include <linux/kgdb.h>
- #include <asm/page.h>		/* for PAGE0 */
- #include <asm/pdc.h>		/* for iodc_call() proto and friends */
+Main issue is that the exact stacktrace is different in between runs.  I 
+tried setting GOMAXPROCS=1 in order to make it reproducible but that 
+completely changed the error.
 
--static DEFINE_SPINLOCK(pdc_console_lock);
--
- static void pdc_console_write(struct console *co, const char *s, unsigned=
- count)
- {
- 	int i =3D 0;
--	unsigned long flags;
+$ GOMAXPROCS=1 go install github.com/gokcehan/lf@latest
+panic: runtime error: invalid memory address or nil pointer dereference
+[signal SIGSEGV: segmentation violation code=0x1 addr=0x40 pc=0x0]
 
--	spin_lock_irqsave(&pdc_console_lock, flags);
- 	do {
- 		i +=3D pdc_iodc_print(s + i, count - i);
- 	} while (i < count);
--	spin_unlock_irqrestore(&pdc_console_lock, flags);
--}
--
--#ifdef CONFIG_KGDB
--static int kgdb_pdc_read_char(void)
--{
--	int c;
--	unsigned long flags;
--
--	spin_lock_irqsave(&pdc_console_lock, flags);
--	c =3D pdc_iodc_getc();
--	spin_unlock_irqrestore(&pdc_console_lock, flags);
--
--	return (c <=3D 0) ? NO_POLL_CHAR : c;
- }
+goroutine 15 [running]:
+memchr
+         :0
+created by net_1http.Transport.queueForDial
+         
+/var/tmp/portage/sys-devel/gcc-12.2.1_p20221008/work/gcc-12-20221008/libgo/go/net/http/transport.go:1418 
++0x37b
 
--static void kgdb_pdc_write_char(u8 chr)
--{
--	if (PAGE0->mem_cons.cl_class !=3D CL_DUPLEX)
--		pdc_console_write(NULL, &chr, 1);
--}
--
--static struct kgdb_io kgdb_pdc_io_ops =3D {
--	.name =3D "kgdb_pdc",
--	.read_char =3D kgdb_pdc_read_char,
--	.write_char =3D kgdb_pdc_write_char,
--};
--#endif
--
- static int __init pdc_earlycon_setup(struct earlycon_device *device,
- 				     const char *opt)
- {
-@@ -65,10 +33,6 @@ static int __init pdc_earlycon_setup(struct earlycon_de=
-vice *device,
- 	earlycon_console->write =3D pdc_console_write;
- 	device->port.iotype =3D UPIO_MEM32BE;
+Here is as much info as I am able to get out of gdb:
 
--#ifdef CONFIG_KGDB
--	kgdb_register_io_module(&kgdb_pdc_io_ops);
--#endif
--
- 	return 0;
- }
+$ GOMAXPROCS=1 gdb --quiet --args /usr/local/bin/go install 
+github.com/gokcehan/lf@latest
+Reading symbols from /usr/local/bin/go...
+Reading symbols from 
+/usr/lib/debug//usr/hppa2.0-unknown-linux-gnu/gcc-bin/12/go-12.debug...
+(gdb) r
+Starting program: /usr/local/bin/go install 
+github.com/gokcehan/lf@latest
+warning: Unable to find libthread_db matching inferior's thread library, 
+thread debugging will not be available.
+[New LWP 7838]
+[New LWP 7839]
 
-=2D-
-2.38.1
+Thread 3 "go" received signal SIGSEGV, Segmentation fault.
+[Switching to LWP 7839]
+0xf7556aa8 in memcmp () from /lib/libc.so.6
+(gdb) bt full
+#0  0xf7556aa8 in memcmp () from /lib/libc.so.6
+No symbol table info available.
+#1  0xf8d41134 in net_1http.Transport.dialConn (t=0x41a90340, 
+t@entry=0x41acc370, ctx=..., param=...)
+     at 
+/var/tmp/portage/sys-devel/gcc-12.2.1_p20221008/work/gcc-12-20221008/libgo/go/net/http/transport.go:1645
+         trace = 0x0
+         wrapErr = 0x433107ec
+         cm = 0x4180b950
+         pconn = 0x41acc370
+         err = {__methods = 0x0, __object = 0x0}
+#2  0xf8d42b7c in net_1http.Transport.dialConnFor (t=0x41acc370, 
+w=0x4180b950)
+     at 
+/var/tmp/portage/sys-devel/gcc-12.2.1_p20221008/work/gcc-12-20221008/libgo/go/net/http/transport.go:1449
+         pc = <optimized out>
+         err = <optimized out>
+         delivered = <optimized out>
+#3  0xf8d42eb4 in net/http.go..thunk166 (__go_thunk_parameter=<optimized 
+out>)
+     at 
+/var/tmp/portage/sys-devel/gcc-12.2.1_p20221008/work/gcc-12-20221008/libgo/go/net/http/transport.go:1418
+No locals.
+#4  0xf8ea2264 in runtime.kickoff ()
+     at 
+/var/tmp/portage/sys-devel/gcc-12.2.1_p20221008/work/gcc-12-20221008/libgo/go/runtime/proc.go:1316
+         gp = 0x4180b950
+         fv = 0x4180e5b8
+         param = 0x41acc370
+#5  0xf74f4284 in setcontext () from /lib/libc.so.6
+No symbol table info available.
+#6  0x00000000 in ?? ()
+No symbol table info available.
+Backtrace stopped: previous frame identical to this frame (corrupt 
+stack?)
 
+This seems to have something at least, is it useful?
+
+-------- Original Message --------
+Subject: Re: Correct goarch.sh settings for gccgo on hppa?
+Date: 2022-11-26 22:17
+ From: Ian Lance Taylor <iant@golang.org>
+To: matoro <matoro_mailinglist_kernel@matoro.tk>
+
+On Fri, Nov 25, 2022, 9:39 PM matoro 
+<matoro_mailinglist_kernel@matoro.tk>
+wrote:
+
+> Oh sorry, should have clarified.  I did all those parts already, just
+> didn't include them because I assumed the at-fault piece would be in
+> goarch.sh.  This is for Linux only.
+> 
+> All I did for the conditional stuff was add HPPA to all the 32-bit
+> files, and add the two unique syscall numbers.  This was based on the
+> instructions in configure.ac.  Here is the complete patch:
+> https://dpaste.com/HVHNU9BKF.txt
+> 
+> Is there something I might be missing?
+> 
+
+
+Good to hear you have updated the build tags.  I don't know what is 
+wrong,
+tough.  Can you run the failing program under the debugger and find out
+where that address is coming from?
+
+But first: does a trivial hello world program work?
+
+Ian
+
+
+
+-------- Original Message --------
+> Subject: Re: Correct goarch.sh settings for gccgo on hppa?
+> Date: 2022-11-26 00:25
+>  From: Ian Lance Taylor <iant@golang.org>
+> To: matoro <matoro_mailinglist_kernel@matoro.tk>
+> 
+> On Fri, Nov 25, 2022 at 8:31 PM matoro
+> <matoro_mailinglist_kernel@matoro.tk> wrote:
+> >
+> > Thank you both for the suggestions.  I tried the following values:
+> >
+> > diff --git a/libgo/goarch.sh b/libgo/goarch.sh
+> > index 977f318b3..e0d6a3ad8 100755
+> > --- a/libgo/goarch.sh
+> > +++ b/libgo/goarch.sh
+> > @@ -88,6 +88,16 @@ case $goarch in
+> >                  ;;
+> >          esac
+> >          ;;
+> > +    hppa)
+> > +       bigendian=true
+> > +       defaultphyspagesize=4096
+> > +       family=HPPA
+> > +       int64align=8
+> > +       minframesize=64
+> > +       pcquantum=4
+> > +       ptrsize=4
+> > +       stackalign=64
+> > +       ;;
+> >       ia64)
+> >          family=IA64
+> >          cachelinesize=128
+> >
+> > But unfortunately got the same result.  I wonder if there is something
+> > else missing?
+> >
+> > Ian, if you have the time, I have a machine you can use to look at
+> > this.
+> 
+> As far as I know gccgo has never been ported to parisc.  This requires
+> a fair bit more than just fixing up goarch.sh.  There are a bunch of
+> files in libgo that are conditionally compiled based on the GOARCH
+> (processor) and GOOS (operating system) values.  These are marked in
+> the files by comments that start with "+build" or "go:build".  Many of
+> those comments will need to be adjusted to recognize parisc and
+> whatever operating system you are using.  If this is for HP/UX, there
+> is also operating specific code required in various places.
+> 
+> I'm happy to answer questions about doing the port, but it's not a
+> trivial task.
+> 
+> Ian
+> 
