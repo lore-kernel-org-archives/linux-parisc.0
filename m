@@ -2,104 +2,250 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 013FBC433FE
-	for <linux-parisc@archiver.kernel.org>; Mon, 28 Nov 2022 21:24:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16552C47089
+	for <linux-parisc@archiver.kernel.org>; Fri,  2 Dec 2022 16:00:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbiK1VYU (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 28 Nov 2022 16:24:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55178 "EHLO
+        id S233779AbiLBP76 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 2 Dec 2022 10:59:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231909AbiK1VYT (ORCPT
+        with ESMTP id S233540AbiLBP74 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 28 Nov 2022 16:24:19 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE0410FC3
-        for <linux-parisc@vger.kernel.org>; Mon, 28 Nov 2022 13:24:18 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id s196so11119464pgs.3
-        for <linux-parisc@vger.kernel.org>; Mon, 28 Nov 2022 13:24:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=golang-org.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9NBCbjseT6e+Shy1FdUuIkXAgUD9VMP0mwaLAPqsdlg=;
-        b=F+Xli0MBh1du9HhjNLCpVhmFdZd/av3dIpf1JmCXxj5+tZfGqwlTs3oo3regqadulO
-         0d6pKu9OXoQLk3/KuFmpo2EBLqj+PyrIce5SKdT0BgJ4ey2Srz9yQJdnlsXI1SGDQndy
-         Mr5v1WUNuvm+P1L8N425UJCO5CcgGSZArpsyRUPCuPByJnTjFcRDLUeOUjOqTlieMW5C
-         5T41Xq0vTPjT4bKAEDmlKXgkvwc5Nn94+7sWAH5jA0Bb9Alcoo9hHeGStMJ1Jf1Qe4cj
-         15ITEJOKKLG6fUEHFJWwakBo8vIJ2w5fCTxlG6mTqCg1l0Asq+BRhWFOUg5nVtQU1drI
-         R1hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9NBCbjseT6e+Shy1FdUuIkXAgUD9VMP0mwaLAPqsdlg=;
-        b=bFILKpU3/xUQIqDwAwM+6UQdb3wvxWxy4nR4NmwWHVLNtDCFiSBpsWmE8PqvVPlk3t
-         /5bq2mpwU/dt8+TbFTK1ZBNv9ka6PDhf/HZg9XG3Cm0HkaYJgoxeHzLiUkptX7PmAm/X
-         YfXYd/iBJGSNnU9UmZF6qxnkHefq+WzQHbldd/i2w6QBk32DLm9iaTFNEDvsjdJ4NxbX
-         lO7J4TSSPsbYBhdt5/GVk/hq73Ttkgz0w3SVxmTURmIjgMw9f/0H5zHwmgT71nfmAezg
-         abkbRt5GGMurrvwMcHHRu0IfI3vGwEQpY/uV+BjBACtVnuSGWvFR1SS7q4lIWe26KRjC
-         C7aw==
-X-Gm-Message-State: ANoB5pkJbVzfpWhQt1od+o5afpmf5zJUreRw/+nwgaYxnsVXz9wJgoQ9
-        hEZCDHBCh0tiDaP9Zn4iUhtblXDfymXfQG0ohtFLwg==
-X-Google-Smtp-Source: AA0mqf5a869Z+y3PWhK1f0iQBvG6zg9cdoOC5JLfJPIV/9BrEuggdmfa1XYB3ZM2xhu/WP/MwCLQWI0XpHLq0VWPq3E=
-X-Received: by 2002:a65:6049:0:b0:477:2ac1:9d2c with SMTP id
- a9-20020a656049000000b004772ac19d2cmr27938038pgp.184.1669670658124; Mon, 28
- Nov 2022 13:24:18 -0800 (PST)
+        Fri, 2 Dec 2022 10:59:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE139A4E3
+        for <linux-parisc@vger.kernel.org>; Fri,  2 Dec 2022 07:58:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669996733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=B+hXh5P61A2DdBxK6OLw+4jPvT0r9cthvTrIhcW2QOA=;
+        b=V5EvK5la88P0Vw5L9npruJd3zjFlCQYiESb38SrZ/Fl4Eq+ORERbxxQ0Z7JFFZapejU49M
+        Wtbr2THtrH8iXGA9BmLddTIDGM0M3Ak28xYAY2t+3SV8X85Mudy9hxt8H9XB0wOb96TkBm
+        sDO61h1w2euzOQV70lpGLMyL11mfDmU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-411-aad4T597M-uqDalSOOGakQ-1; Fri, 02 Dec 2022 10:58:50 -0500
+X-MC-Unique: aad4T597M-uqDalSOOGakQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 471C8800B23;
+        Fri,  2 Dec 2022 15:58:48 +0000 (UTC)
+Received: from vschneid.remote.csb (unknown [10.33.36.77])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 437932028CE4;
+        Fri,  2 Dec 2022 15:58:42 +0000 (UTC)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        x86@kernel.org
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Guo Ren <guoren@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH v3 0/8] Generic IPI sending tracepoint
+Date:   Fri,  2 Dec 2022 15:58:09 +0000
+Message-Id: <20221202155817.2102944-1-vschneid@redhat.com>
 MIME-Version: 1.0
-References: <7013a3e7d6c9c77c5010bc1c72971758@matoro.tk> <67cd6ed7-e2cb-0e0a-5611-e4cd57eb8feb@bell.net>
- <cc3d9dc4727b3e7d76e76a2f0bb200ac@matoro.tk> <CAOyqgcXknGW0AvMy-noFZsSxYdiruoA_HxXaiuW+n-osyyzyMg@mail.gmail.com>
- <067345a4e47eed632a994084ae53856b@matoro.tk> <CAOyqgcWK4UhU-GhEvUo26X_UEK_GK-a1xzqr27J98HAe1J9VYg@mail.gmail.com>
- <8d3b98ad973d3cd0ed807ec9d2edeaf2@matoro.tk> <e4ea795a-ad17-4c8c-0231-579906813839@gmx.de>
- <CAOyqgcXbXHVX8qJzyFVgdV5J4hkZXwD_bwe+ZBzJsSdTQ7zbew@mail.gmail.com> <5e5c81e3b576674f769707c1def830f8@matoro.tk>
-In-Reply-To: <5e5c81e3b576674f769707c1def830f8@matoro.tk>
-From:   Ian Lance Taylor <iant@golang.org>
-Date:   Mon, 28 Nov 2022 13:24:07 -0800
-Message-ID: <CAOyqgcWqcMEbi5WH-w_ARwTXOmG81+yf3fesSHAff0dQHCLo8g@mail.gmail.com>
-Subject: Re: Correct goarch.sh settings for gccgo on hppa?
-To:     matoro <matoro_mailinglist_kernel@matoro.tk>
-Cc:     Helge Deller <deller@gmx.de>,
-        John David Anglin <dave.anglin@bell.net>,
-        linux-parisc@vger.kernel.org, hppa@gentoo.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Mon, Nov 28, 2022 at 1:07 PM matoro
-<matoro_mailinglist_kernel@matoro.tk> wrote:
->
-> That seemed to do the trick!  Looks like it needs support added to
-> golang.org/x/sys/unix:  https://dpaste.com/4K99E4DWH.txt
->
-> This is something I can look into on my own though.  I might come back
-> to ask about the asm parts, but will try and figure it out.
->
-> So does this mean it is a GC bug?
+Background
+==========
 
-It's a GC bug but it's probably going to require a parisc specific
-fix, likely in runtime/stack.c though possibly elsewhere as well.
+Detecting IPI *reception* is relatively easy, e.g. using
+trace_irq_handler_{entry,exit} or even just function-trace
+flush_smp_call_function_queue() for SMP calls.  
 
-Ian
+Figuring out their *origin*, is trickier as there is no generic tracepoint tied
+to e.g. smp_call_function():
 
+o AFAIA x86 has no tracepoint tied to sending IPIs, only receiving them
+  (cf. trace_call_function{_single}_entry()).
+o arm/arm64 do have trace_ipi_raise(), which gives us the target cpus but also a
+  mostly useless string (smp_calls will all be "Function call interrupts").
+o Other architectures don't seem to have any IPI-sending related tracepoint.  
 
-> -------- Original Message --------
-> Subject: Re: Correct goarch.sh settings for gccgo on hppa?
-> Date: 2022-11-28 15:20
->  From: Ian Lance Taylor <iant@golang.org>
-> To: Helge Deller <deller@gmx.de>
->
-> On Sun, Nov 27, 2022 at 12:19 AM Helge Deller <deller@gmx.de> wrote:
-> >
-> > I don't know if it's relevant, but on hppa the stack grows upwards,
-> > while on all(?) other platforms the stack grows downwards.
-> > Maybe something is missing, esp. since setcontext() is involved where
-> > a new context including stack is set and this leads to the "corrupt
-> > stack" ?
->
-> Interesting point and quite possibly relevant.  See the code in
-> runtime/stack.c.  More generally, see if the tests behave better with
-> the environment variable GOGC=off.  That disables the garbage
-> collector.
->
-> Ian
+I believe one reason those tracepoints used by arm/arm64 ended up as they were
+is because these archs used to handle IPIs differently from regular interrupts
+(the IRQ driver would directly invoke an IPI-handling routine), which meant they 
+never showed up in trace_irq_handler_{entry, exit}. The trace_ipi_{entry,exit}
+tracepoints gave a way to trace IPI reception but those have become redundant as
+of: 
+
+      56afcd3dbd19 ("ARM: Allow IPIs to be handled as normal interrupts")
+      d3afc7f12987 ("arm64: Allow IPIs to be handled as normal interrupts")
+
+which gave IPIs a "proper" handler function used through
+generic_handle_domain_irq(), which makes them show up via
+trace_irq_handler_{entry, exit}.
+
+Changing stuff up
+=================
+
+Per the above, it would make sense to reshuffle trace_ipi_raise() and move it
+into generic code. This also came up during Daniel's talk on Osnoise at the CPU
+isolation MC of LPC 2022 [1]. 
+
+Now, to be useful, such a tracepoint needs to export:
+o targeted CPU(s)
+o calling context
+
+The only way to get the calling context with trace_ipi_raise() is to trigger a
+stack dump, e.g. $(trace-cmd -e ipi* -T echo 42).
+
+This is instead introducing a new tracepoint which exports the relevant context
+(callsite, and requested callback for when the callsite isn't helpful), and is
+usable by all architectures as it sits in generic code. 
+
+Another thing worth mentioning is that depending on the callsite, the _RET_IP_
+fed to the tracepoint is not always useful - generic_exec_single() doesn't tell
+you much about the actual callback being sent via IPI, which is why the new
+tracepoint also has a @callback argument.
+
+Patches
+=======
+
+o Patch 1 is included for convenience and will be merged independently. FYI I
+  have libtraceevent patches [2] to improve the 
+  pretty-printing of cpumasks using the new type, which look like:
+  <...>-3322  [021]   560.402583: ipi_send_cpumask:     cpumask=14,17,21 callsite=on_each_cpu_cond_mask+0x40 callback=flush_tlb_func+0x0
+  <...>-187   [010]   562.590584: ipi_send_cpumask:     cpumask=0-23 callsite=on_each_cpu_cond_mask+0x40 callback=do_sync_core+0x0
+
+o Patches 2-6 spread out the tracepoint across relevant sites.
+  Patch 6 ends up sprinkling lots of #include <trace/events/ipi.h> which I'm not
+  the biggest fan of, but is the least horrible solution I've been able to come
+  up with so far.
+  
+o Patch 8 is trying to be smart about tracing the callback associated with the
+  IPI.
+
+This results in having IPI trace events for:
+
+o smp_call_function*()
+o smp_send_reschedule()
+o irq_work_queue*()
+o standalone uses of __smp_call_single_queue()
+
+This is incomplete, just looking at arm64 there's more IPI types that aren't
+covered: 
+
+  IPI_CPU_STOP,
+  IPI_CPU_CRASH_STOP,
+  IPI_TIMER,
+  IPI_WAKEUP,
+
+... But it feels like a good starting point.
+
+Links
+=====
+
+[1]: https://youtu.be/5gT57y4OzBM?t=14234
+[2]: https://lore.kernel.org/all/20221116144154.3662923-1-vschneid@redhat.com/
+
+Revisions
+=========
+
+v2 -> v3
+++++++++
+
+o Dropped the generic export of smp_send_reschedule(), turned it into a macro
+  and a bunch of imports
+o Dropped the send_call_function_single_ipi() macro madness, split it into sched
+  and smp bits using some of Peter's suggestions
+
+v1 -> v2
+++++++++
+
+o Ditched single-CPU tracepoint
+o Changed tracepoint signature to include callback
+o Changed tracepoint callsite field to void *; the parameter is still UL to save
+  up on casts due to using _RET_IP_.
+o Fixed linking failures due to not exporting smp_send_reschedule()
+
+Steven Rostedt (Google) (1):
+  tracing: Add __cpumask to denote a trace event field that is a
+    cpumask_t
+
+Valentin Schneider (7):
+  trace: Add trace_ipi_send_cpumask()
+  sched, smp: Trace IPIs sent via send_call_function_single_ipi()
+  smp: Trace IPIs sent via arch_send_call_function_ipi_mask()
+  irq_work: Trace self-IPIs sent via arch_irq_work_raise()
+  treewide: Trace IPIs sent via smp_send_reschedule()
+  smp: reword smp call IPI comment
+  sched, smp: Trace smp callback causing an IPI
+
+ arch/alpha/kernel/smp.c                      |  2 +-
+ arch/arc/kernel/smp.c                        |  2 +-
+ arch/arm/kernel/smp.c                        |  5 +-
+ arch/arm/mach-actions/platsmp.c              |  2 +
+ arch/arm64/kernel/smp.c                      |  3 +-
+ arch/csky/kernel/smp.c                       |  2 +-
+ arch/hexagon/kernel/smp.c                    |  2 +-
+ arch/ia64/kernel/smp.c                       |  4 +-
+ arch/loongarch/include/asm/smp.h             |  2 +-
+ arch/mips/include/asm/smp.h                  |  2 +-
+ arch/mips/kernel/rtlx-cmp.c                  |  2 +
+ arch/openrisc/kernel/smp.c                   |  2 +-
+ arch/parisc/kernel/smp.c                     |  4 +-
+ arch/powerpc/kernel/smp.c                    |  6 +-
+ arch/powerpc/kvm/book3s_hv.c                 |  3 +
+ arch/powerpc/platforms/powernv/subcore.c     |  2 +
+ arch/riscv/kernel/smp.c                      |  4 +-
+ arch/s390/kernel/smp.c                       |  2 +-
+ arch/sh/kernel/smp.c                         |  2 +-
+ arch/sparc/kernel/smp_32.c                   |  2 +-
+ arch/sparc/kernel/smp_64.c                   |  2 +-
+ arch/x86/include/asm/smp.h                   |  2 +-
+ arch/x86/kvm/svm/svm.c                       |  4 +
+ arch/x86/kvm/x86.c                           |  2 +
+ arch/xtensa/kernel/smp.c                     |  2 +-
+ include/linux/smp.h                          |  8 +-
+ include/trace/bpf_probe.h                    |  6 ++
+ include/trace/events/ipi.h                   | 22 ++++++
+ include/trace/perf.h                         |  6 ++
+ include/trace/stages/stage1_struct_define.h  |  6 ++
+ include/trace/stages/stage2_data_offsets.h   |  6 ++
+ include/trace/stages/stage3_trace_output.h   |  6 ++
+ include/trace/stages/stage4_event_fields.h   |  6 ++
+ include/trace/stages/stage5_get_offsets.h    |  6 ++
+ include/trace/stages/stage6_event_callback.h | 20 +++++
+ include/trace/stages/stage7_class_define.h   |  2 +
+ kernel/irq_work.c                            | 14 +++-
+ kernel/sched/core.c                          | 19 +++--
+ kernel/sched/smp.h                           |  2 +-
+ kernel/smp.c                                 | 78 ++++++++++++++++----
+ samples/trace_events/trace-events-sample.c   |  2 +-
+ samples/trace_events/trace-events-sample.h   | 34 +++++++--
+ virt/kvm/kvm_main.c                          |  1 +
+ 43 files changed, 250 insertions(+), 61 deletions(-)
+
+--
+2.31.1
+
