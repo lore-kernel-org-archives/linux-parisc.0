@@ -2,135 +2,121 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51BBFC4332F
-	for <linux-parisc@archiver.kernel.org>; Sat, 17 Dec 2022 22:04:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D09BC3DA79
+	for <linux-parisc@archiver.kernel.org>; Sat, 17 Dec 2022 22:04:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbiLQWEr (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 17 Dec 2022 17:04:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53666 "EHLO
+        id S229624AbiLQWEs (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sat, 17 Dec 2022 17:04:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbiLQWEn (ORCPT
+        with ESMTP id S229735AbiLQWEn (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
         Sat, 17 Dec 2022 17:04:43 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90AEE011
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBFE7FD30
         for <linux-parisc@vger.kernel.org>; Sat, 17 Dec 2022 14:04:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1671314680; bh=xVbiTtplwHmDVtHBadwsyLXpl9f0VXl5L8XmpuJkw6U=;
+        t=1671314680; bh=77l3N0weOo3yGbHoN7xASq1Pgy0xZdMgqvZFHKiEEBE=;
         h=X-UI-Sender-Class:From:To:Subject:Date:In-Reply-To:References;
-        b=VglpqwP8lqfD/AmG1Kz0+0rdrrvqYbLAkPHrFO5Pv24ztD6mt8guuaFstlqZouTHx
-         k+2CjOu8OidYJNuTPGX2zSjgb7AtK5mtRyc5YVaay9MuS6ioFBjifKsA0viwKfsolq
-         iUkYLLkrQS950B74+qsLYmYnxG0nhhZApN8QTVaRj4s7IrnzTrALSNePSaYw1hI6W2
-         Kq3htq5rXYU4gQVmfUb0JTqDWSGsmwUUHRdg5RR+ruRlzdK7MRo79xDKIxRm2/n/YO
-         HQ+l4dQ4/cTv+fitAE3eDXZSOSpO+9xI6poq1BBxv0p3omvCg8M13TdxGqFR5YK//P
-         q8HGDcZANwmIQ==
+        b=ApbMBFJ/3w/MJOvXOgKnBXWjaZTINEs28OAjHoE/dnIUsrmFK+P0JevJhATQXsQyI
+         U8aEH2mmSgjGHlJRaJfZcjBASo8frgh5Z8mvfalPGyhfgstMVcioB+sNsYTRTPLdWh
+         WMdT5DIEKCcVyyfYWehbAZGMn/3Z6LEPb2M9AqK6q3qo5NY4aFcv1Pnqth29bSuaKz
+         BrfZjsZSe6QkybVUtmuOjlmmj76/4L9Mt0s08Y48MYzxect3dgvzz3AYFLXuz+578H
+         r9chi+3zyFGPLn2yx7XqygIc+fBlHllmZQByE1k5cdJTYbPw2O9oxTo5HtGXxQvviC
+         C2FrOaILb+avA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from p100.fritz.box ([92.116.160.18]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MhU5R-1oSupH07MZ-00ee3e for
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MnJlW-1ofGUW1Ctg-00jLQz for
  <linux-parisc@vger.kernel.org>; Sat, 17 Dec 2022 23:04:40 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org
-Subject: [PATCH 2/6] parisc: Fix locking in pdc_iodc_print() firmware call
-Date:   Sat, 17 Dec 2022 23:04:24 +0100
-Message-Id: <20221217220428.383330-2-deller@gmx.de>
+Subject: [PATCH 5/6] parisc: Move pdc_result struct to firmware.c
+Date:   Sat, 17 Dec 2022 23:04:27 +0100
+Message-Id: <20221217220428.383330-5-deller@gmx.de>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221217220428.383330-1-deller@gmx.de>
 References: <20221217220428.383330-1-deller@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/09C9W7JQhoE8Uj9MrEpKzYI/zBE4cqo1F0qreqQr9qYKzeVJtk
- gUjPKx8tgZcpMi3DkFPzqR34s6LhGTtLcoyOArLzxEt2BOhZjgUAfXVGddouxKUCFMeYdDH
- h9vcIXwn2wV4p2afntNZh2dCYOPkbD0JjvXpkgdM0we1u3z5qLGHvtnjef3NobsrN1NhlEH
- fJeGgLdRhzwvVWJxJ86HA==
-UI-OutboundReport: notjunk:1;M01:P0:JYeKNydDv7w=;E5nbiLTJ2va3RF2wbfZ+NclldAQ
- EO0/3Q42+HZ3iVSuE2u4RmcRbVUJPCZY3HpjydYv263f9vziC/g85Hve2CqVprICBXk3KTBqO
- XoIPOF1SJVUTWG2mLtBfmswX91Tmx/Q+1G3oCDOVX+ergfRQzdUEvIyoGyCQpCQMMdySreMbB
- ByCUwUjhJ2L39PrHrsk6NeHDRcwpXdu5X2fNW8ehdWTro2kN+0a6SLDf1e9MTdByVk+/ub0RJ
- RFy1sd5AqnLCE8lXLqVTUh3esHuuRwpRRs/IK2uyOeI3zAefaQ6N++c2SoxDqDqbJh/3zP/fF
- yhSrNlF/0qcze/cA1+jKSEWkdngeCgR5YbPLPVyOgVcAof5oR0dSfM/CC7IrPO4bVi577Uu1T
- UOMGSrzdJoOKmrU86okHJYVBKcsf15Z4W234fjXV2w6zsmK0d1nohHuTUWWsmhLdMmHtY07VY
- Y7qloObgjupl6j7uOK7p79QK2Ir1s0T9m8Th5kxPSkOXMObAC56Q0fhr8S6cz3LhMv8mEbP/Y
- bC/g5DZFi3uZfKKDS143Kr9U7jpWnY0JTApSq1kcv5G3qcCQwN7Zt+YMvpEFyXgjFEAjypGoj
- gUszSF7uLA/+rGOdCmUORd8TNGViZ12CuPQb7lRacVRf09zR94wm90wr4MG3P47V84k/Cepph
- qCHkJVnCT+adlmyiSXGu8VMaVZK/RULOjDQqxV7k4WKgA/1Ejg7wQwwUusJ392KFW1Q4goqcd
- UcIx24QdTTVW9tv2vCKbR5EH3Rypb4UHyk0NIBhOc2iFLxjwz1fooL45KRWrVXoV3nzIj7UPe
- iaW2SUsvsaLdPlKe03rjPzLBaKfAOwjjScGrbAxqGYz3acfWwNrt4XHxyyAPWA71mQVyk63Qj
- rwq+Het4YkB1hWvWns44JCwSfh3buYJgyQfKKfzNiA2XTZwreKEjh8WUdgPKYEQqY/BBkxcfa
- sDmFtk/61eXMNlakX2+42CmtDgw=
+X-Provags-ID: V03:K1:qsf+RXvsSSbOAFnwOcfa62z6qoicrC7W3tn7tVh3CYmJVR1t3gT
+ W5HyQhhShqLY8eKdu0PnZIlyguUgNOzcyyPie0vHaoPynt0Mxezc4l8a+V4pHt9GTJu6x+C
+ ArhaG5uI0b6Zsj/TCjBjjvJF25vwOAdQE614tYVNo3WIyl4jqtVAmq9xUgEZkmKWzG961fJ
+ 7b4C2cQNaUsBr7/XwvSlw==
+UI-OutboundReport: notjunk:1;M01:P0:TBNbLBm30VU=;pW27XTRrgubcPYB4YXkO+5cOgOi
+ 8fxczJ1d144mNO3yhE7eRNsv0ihlh+tBpaWcEGiH9wEelBXbeL2URB1sDtO+V2GrEPiRY/ppw
+ y3NJXdUbefJrVjcHz5gEoZ+fH/nIDFIsHDZ2+FIJyAek4uUiFsUL6k/+ZUsNgb8meHDCzZeu+
+ y9Sscn+B48XfO+b1XgrvkdFkcvrbGoJUSZLMpd2PvXWFMq9ZIGjcmQ5Ip4WX+ErhtpEV9cywy
+ KF4/kXLkLv+SET+PGi/3PIi9XW57Zvb4Q8aeY6mtCJ+OMWpAmQhUOYQ5V0nU0AXOpykAkfx6E
+ Jag3/Ta/Mp2A4HDhrDge6tVcSafZCtibzIG58gdHd/zeVeDGfva0qdS7DNqrd8uaDeulPHwUQ
+ 2sKXoQ5mjGEeKbiUw3C6/2g06amQ5o4syTCne/wRuTvCQtlGP/7dC7KjAC168vxgD6DSgE7kZ
+ MYFrF/Obe+XNSyknhktXIOb2Ig3QPB7mtFzfkq9wrqx6iV0LRtjlg7ddx8MfCNR7Z8KeNWIey
+ GEUmP7RfLf5AR1w6nxWWwcJ8UaoKReC8MCtiX3EIEHaJ770rximnYFoorZPQw03xmzhmh37zC
+ SyEOkZ+Vc5Ft8l/tRcasRF7W7dUoYOndkhX9RMjXXRpw9Re4ZDOUvCCt8qrUmD2uwhoMjrFgi
+ rigIvbX/uS7AnOl8RHOQy4Y32tHPKERb6q58ILnYtO2Gn95ZfwMNpa/ofPceXIS5ZENrgeqJz
+ 9+x3uGXc9E2j0MP726OpUJLPPBrmI7kbwz6kxiLG+3Gg3gERHiHowUsA0j0PDU7IQVrkRZJ9C
+ DACGdckmkqGQf9hv/v+PYnrVgxK73xjXiZZm4+8pgqCLA3Ig4OI+wQi0s/K4AHjZfxamZKN0x
+ F+X2yFmuXoavUOlHujT8YSBm7bX+wUfdUkjQ2M+2/BFXF+eEih+kbZNcllmbj5A1L4YlofKVt
+ eo/98/aVyqWj8sXVMU11WLlrPBQ=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Utilize pdc_lock spinlock to protect parallel modifications of the
-iodc_dbuf[] buffer, check length to prevent buffer overflow of
-iodc_dbuf[], drop the iodc_retbuf[] buffer and fix some wrong
-indentings.
-
 Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: <stable@vger.kernel.org> # 6.0+
 =2D--
- arch/parisc/kernel/firmware.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ arch/parisc/kernel/firmware.c |  4 ++--
+ arch/parisc/kernel/real2.S    | 17 ++---------------
+ 2 files changed, 4 insertions(+), 17 deletions(-)
 
 diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
-index 6a7e315bcc2e..5bccf0025fbd 100644
+index 5bccf0025fbd..9d7516376fbf 100644
 =2D-- a/arch/parisc/kernel/firmware.c
 +++ b/arch/parisc/kernel/firmware.c
-@@ -1288,9 +1288,8 @@ void pdc_io_reset_devices(void)
+@@ -74,8 +74,8 @@
+ static DEFINE_SPINLOCK(pdc_lock);
+ #endif
 
- #endif /* defined(BOOTLOADER) */
+-extern unsigned long pdc_result[NUM_PDC_RESULT];
+-extern unsigned long pdc_result2[NUM_PDC_RESULT];
++unsigned long pdc_result[NUM_PDC_RESULT]  __aligned(8);
++unsigned long pdc_result2[NUM_PDC_RESULT] __aligned(8);
 
--/* locked by pdc_console_lock */
--static int __attribute__((aligned(8)))   iodc_retbuf[32];
--static char __attribute__((aligned(64))) iodc_dbuf[4096];
-+/* locked by pdc_lock */
-+static char iodc_dbuf[4096] __page_aligned_bss;
+ #ifdef CONFIG_64BIT
+ #define WIDE_FIRMWARE 0x1
+diff --git a/arch/parisc/kernel/real2.S b/arch/parisc/kernel/real2.S
+index 2b16d8d6598f..4dc12c4c0980 100644
+=2D-- a/arch/parisc/kernel/real2.S
++++ b/arch/parisc/kernel/real2.S
+@@ -15,28 +15,15 @@
 
- /**
-  * pdc_iodc_print - Console print using IODC.
-@@ -1307,6 +1306,9 @@ int pdc_iodc_print(const unsigned char *str, unsigne=
-d count)
- 	unsigned int i;
- 	unsigned long flags;
+ #include <linux/linkage.h>
 
-+	count =3D min_t(unsigned int, count, sizeof(iodc_dbuf));
-+
-+	spin_lock_irqsave(&pdc_lock, flags);
- 	for (i =3D 0; i < count;) {
- 		switch(str[i]) {
- 		case '\n':
-@@ -1322,12 +1324,11 @@ int pdc_iodc_print(const unsigned char *str, unsig=
-ned count)
- 	}
+-
+-	.section	.bss
+-
+-	.export pdc_result
+-	.export pdc_result2
+-	.align 8
+-pdc_result:
+-	.block	ASM_PDC_RESULT_SIZE
+-pdc_result2:
+-	.block	ASM_PDC_RESULT_SIZE
+-
+ 	.export real_stack
+-	.export real32_stack
+ 	.export real64_stack
+-	.align	64
++	__PAGE_ALIGNED_BSS
+ real_stack:
+-real32_stack:
+ real64_stack:
+ 	.block	8192
 
- print:
--        spin_lock_irqsave(&pdc_lock, flags);
--        real32_call(PAGE0->mem_cons.iodc_io,
--                    (unsigned long)PAGE0->mem_cons.hpa, ENTRY_IO_COUT,
--                    PAGE0->mem_cons.spa, __pa(PAGE0->mem_cons.dp.layers),
--                    __pa(iodc_retbuf), 0, __pa(iodc_dbuf), i, 0);
--        spin_unlock_irqrestore(&pdc_lock, flags);
-+	real32_call(PAGE0->mem_cons.iodc_io,
-+		(unsigned long)PAGE0->mem_cons.hpa, ENTRY_IO_COUT,
-+		PAGE0->mem_cons.spa, __pa(PAGE0->mem_cons.dp.layers),
-+		__pa(pdc_result), 0, __pa(iodc_dbuf), i, 0);
-+	spin_unlock_irqrestore(&pdc_lock, flags);
-
- 	return i;
- }
-@@ -1354,10 +1355,10 @@ int pdc_iodc_getc(void)
- 	real32_call(PAGE0->mem_kbd.iodc_io,
- 		    (unsigned long)PAGE0->mem_kbd.hpa, ENTRY_IO_CIN,
- 		    PAGE0->mem_kbd.spa, __pa(PAGE0->mem_kbd.dp.layers),
--		    __pa(iodc_retbuf), 0, __pa(iodc_dbuf), 1, 0);
-+		    __pa(pdc_result), 0, __pa(iodc_dbuf), 1, 0);
-
- 	ch =3D *iodc_dbuf;
--	status =3D *iodc_retbuf;
-+	status =3D *pdc_result;
- 	spin_unlock_irqrestore(&pdc_lock, flags);
-
- 	if (status =3D=3D 0)
+ #define N_SAVED_REGS 9
+-
++	.section	.bss
+ save_cr_space:
+ 	.block	REG_SZ * N_SAVED_REGS
+ save_cr_end:
 =2D-
 2.38.1
 
