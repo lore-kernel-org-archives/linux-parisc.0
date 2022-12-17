@@ -2,110 +2,97 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ABFAC3DA6E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79946C4332F
 	for <linux-parisc@archiver.kernel.org>; Sat, 17 Dec 2022 22:04:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229469AbiLQWEp (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        id S229964AbiLQWEp (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
         Sat, 17 Dec 2022 17:04:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53670 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbiLQWEn (ORCPT
+        with ESMTP id S229469AbiLQWEn (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
         Sat, 17 Dec 2022 17:04:43 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB71BFAE7
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C37E010
         for <linux-parisc@vger.kernel.org>; Sat, 17 Dec 2022 14:04:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1671314680; bh=XG4VbDB0J4izQ6gNlDnI7d1/KeFFRXC9PgG+5mF6L80=;
-        h=X-UI-Sender-Class:From:To:Subject:Date:In-Reply-To:References;
-        b=AOYcasQjor4I/YDn7nZfUCCpNS6zyy+7Mhbc/4R1BE5vtLTHfckm3wAKeADByCvTA
-         gxUpDTpdlUu8urZayPnYZ1YHruvbw4bvYStyRUlHV7bxLeU688RZg7JiKPsF2539bF
-         7B4pK0vEtMRXZp2oEqEFp2OqHtCqaDPhXoyRqNm2UiTYrY62GhHbSCqXL9NEfre+8Z
-         xDl5LyLfxUDCk0O1PYuDbAg48/v4+Jw3ugBbhJ7tN30TDtxG4lB5nonv/1nUB0DVUn
-         dsx3Wku1WUV9ONMBOHOsxIh8URxZ+fOdNe+tn7+siLpwnmSe6f9YPJezTDPjqm8DTG
-         8vyNYVbO+ox5Q==
+        t=1671314680; bh=lPhOkcviP5cIFEr/v7cW3NawV3oKdVOmZI/JsrKubSI=;
+        h=X-UI-Sender-Class:From:To:Subject:Date;
+        b=Pq7w4qkIkh/mkBeMrdtQArLO63cry8Ul2YoeZcMgXCDYp4mWSN+YkpvjKQYk4LiWn
+         Wq03hbTZ0z62LXN/HiPcFfJd6hQzVpjoTh6nbJ3zb3M6Cf0I48b+PGO/QYz/w1ZweP
+         zs8EVidqC+l5bgCXfMAwlseO0KHwQ5VKBQ/1PgVsXxNu+W/UF6FRBhDBfDQzP5TLMK
+         0uiBDJQiXBRepMjzGgy8xNB7YLY07cHVSPtw3gvRA+Ok7EE6bDVtLqHSda3CC3EhHL
+         KWoNflgD6OWNfDy4gc+biLl9S7VAeYNNjintEzn5iNIOdbNFT2pfVQwGCKgCvegiUT
+         sHeXXmAd9WYZQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from p100.fritz.box ([92.116.160.18]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MNKm0-1pH9ve0p6Q-00Om6N for
- <linux-parisc@vger.kernel.org>; Sat, 17 Dec 2022 23:04:40 +0100
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mw9UE-1ooARH3vnQ-00s2a5 for
+ <linux-parisc@vger.kernel.org>; Sat, 17 Dec 2022 23:04:39 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org
-Subject: [PATCH 4/6] parisc: Drop locking in pdc console code
-Date:   Sat, 17 Dec 2022 23:04:26 +0100
-Message-Id: <20221217220428.383330-4-deller@gmx.de>
+Subject: [PATCH 1/6] parisc: Drop PMD_SHIFT from calculation in pgtable.h
+Date:   Sat, 17 Dec 2022 23:04:23 +0100
+Message-Id: <20221217220428.383330-1-deller@gmx.de>
 X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221217220428.383330-1-deller@gmx.de>
-References: <20221217220428.383330-1-deller@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tuunWJO8/QL8+ngL6cHbhGu4HwQF3unHbrOptDTKcmKxwOFsrxO
- Zs8ngEls43vuJ162DmQyZLBKgszpziJ28sgmhqxC21M3Wv+dvmVrj2Re+rOt3PpjRjWWPOp
- rkpIT/9VnUGW80e7Y5qSVU/wHaImLFEzmEgNkjT/FdxnrvIpLFrelJkvofkSteOusOyqWTa
- w12bcuJvgcDchDYLOswZA==
-UI-OutboundReport: notjunk:1;M01:P0:iWV2UMIWKYs=;wTWAeg8hTWECYaWCJyRp/WXNQNz
- OuJCEF2dnj4jOyOjQXupBylTtOMCk3JP9wwtTgyl8vhnqu08mck9/Ob8uhPkQ5JZuj85VGigU
- VreUjdPyWU08fM1QecPuRygmAtd+EQcxof0chliBfpn3LL4EPEVTgs1WzVISmFOBuDHScrAVi
- 4pWgr3Oebg/257S20eOiZ1A1nvWG2nfPpqDVFERlUz4UjOPP3zA1jixPUgJze7xmWoSlfmomv
- iiDJbD0nWCQp1K4uFjW7RVg+RuCXTamlpQu1XUKi9Wjp4W9jA9Uk4P5IhyRNUGzTQkgXz1I2f
- 4v2aeFN09A71+HDf4pGpYzZaACLLLm5YP0ISvUOH6/9R0UIxHyrgPd0vTlIcazTte/An5a02q
- kXtjznlixLqF4It2AYUfBFrkNFql6Fy8H3uRXbChe78PGPEtpJ+D3lD3mS39zOU/mWzSkTHrC
- 9WKOvwbhMjnG3bi3+lBm52lHViFEwKXNNzja8zlwrEGtx1MBOThIryOWrIo4vCB5ME0HGEHtj
- a1ETP7Ie1j0EHs2x3U8LofxEocYBp/f0e+yftV+0knronLboEYRAWdckghy5dCHyvUZNkZRfS
- 1FqySSqlucZSoFgKK3sx5ItAI78tO3POg6qUKvNRjzHIPDPMtmJQ6NuMRfBvcNYTxcqyu4NMF
- 1szDhl9S7gwcmcF7PYR5Fo75SfrFo+mUhTwmbYVreb6ajYw2FbZzYSHh2X/aQdAJMJ6p17GcD
- M2qzeqkACoq1Y5a2A2DFxmIVMMqbtzSif1Lg2feeMp3+nkFURNM7ZOgqvt4FRy6mBi/YGNX2f
- lWcikxRAZkqEuz6UYnuh2Pu6/8Xsrq2m8gDwLTTVG9bBP7CYuANl0rwFHT4xeb7h3M9c/dxY9
- Sf2p9j+fI/PpXLZYB6/t1N7HdBYvg1TvYIEHFQgfeL3bMU6HhfA0wu/QQ4MHLxtg1iTYiqaAz
- IFOe7A==
+X-Provags-ID: V03:K1:8QRu3spDNW0+hHA6cvK2ZYBUErBk93cxPhyXYDb1UuBhzoR0+lS
+ EXU5MrSzqxKDKNmPE9CV7zYGSTk/XcY22hURS8D8o6ysCU7N9uidvQaMkfgaay1rJ6OGV/7
+ 1oG3t+HBgeF3Ym9shqgABXmISyDyIKGJ4q3TEKq8dSelVua8j39dXe2yFS9NuJWwnUHdvoC
+ xFh+csdYBDkeQhSWjgjXQ==
+UI-OutboundReport: notjunk:1;M01:P0:bIpo4XhEDkI=;4x4guHmVcDFDnmdfa+N8fv5HiS9
+ /0F2QXfTAYin3Gm/YWym30cKJg4b70lnbUYBoNkItCKfbcpH4D3oqFH6zZm3YlBL0wE1O7IJz
+ +O9GFr2WYm6b59yqK8au9Q+iX1pkv08Ht1UduOt9fQmTXHxXdorwZkDfwancpJ2rgYnV16yCq
+ wHUQSLJu5ULAx9jS+SS2U/sEbcVx8e5GhpHD2weBRFi9RvL+M/tUfpCXddNyR6bcTrOJdO41Q
+ F5YHdYMsUBKPxh9HAB9Xv4NkMKrEsvKMJkDwtAgyKaZNZSdGaNlsupIPKeB7Xy5Tg51BylsCT
+ XG99ifOseRCAcHknKtxB8mPXycBKXpsH5MbizQyjXLaGXddsaCXBzEokc/K7u7VIdZ4DL9Br3
+ OLO4R8T/C6b+XC5gRPFlBSa+MEaSUUPk72qM2Jfdr3p9lLzimNlOpDbFwkPYM/bLAK6O4ZKxW
+ hjwAfbHx+EEBahRaDAZtdUymG+N8u9octMJ5VIuAWbj9XXpvFy7YaRjtBvq0fcwiY0bdD7SgO
+ 2VjA/FemCyW3NGvWHq9IrK6CMuUyshkz1l0OuCR2DU5k5V01TLP16o3mBYOUiO9K7LG2jUj8T
+ 3/9r2xwpeIaGekPEORLmQMrS6qCPdMVCbK3iePK6aThvrR7fMPXaULc3s/vKqKhUZrp2e5FCO
+ jvLvq2YtaMNA8FP6E9SpjCl0SZbu0mTEDrzrABM0Ee5exlz0aJrIldMJHghPeBY2d+HWpNN8a
+ SyvGwKFcZ1Sc8kCenZYrmQqnFFpQgR9Y81VHVME2BvQz+A5T/b9GKlKMFFMJiaDjKuVSglaHS
+ rx5D3fSTzY1IqsZE35LsZDiigPmTwBSHfO35iaCE+pOyBIgJ3clPNbHYUam9J2dadfN0jvPfu
+ 1HosrqkPM3tisVl+PkgQufmhHT/QheD8cYQDF6OA/KKUnYswHLab0mOA5K3OLkFvx+XpK/FUU
+ g50wRj7Roe/Gnh34Y0kOQfmbfx0=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-No need to have specific locking for console I/O since
-the PDC functions provide an own locking.
+PMD_SHIFT isn't defined if CONFIG_PGTABLE_LEVELS =3D=3D 3, and as
+such the kernel test robot found this warning:
+
+ In file included from include/linux/pgtable.h:6,
+                  from arch/parisc/kernel/head.S:23:
+ arch/parisc/include/asm/pgtable.h:169:32: warning: "PMD_SHIFT" is not def=
+ined, evaluates to 0 [-Wundef]
+     169 | #if (KERNEL_INITIAL_ORDER) >=3D (PMD_SHIFT)
+
+Avoid the warning by using PLD_SHIFT and BITS_PER_PTE.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: <stable@vger.kernel.org> # 6.1+
+Reported-by: kernel test robot <lkp@intel.com>
 =2D--
- arch/parisc/kernel/pdc_cons.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ arch/parisc/include/asm/pgtable.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons.c
-index 7d0989f523d0..df374f7b42c9 100644
-=2D-- a/arch/parisc/kernel/pdc_cons.c
-+++ b/arch/parisc/kernel/pdc_cons.c
-@@ -12,29 +12,19 @@
- #include <asm/page.h>		/* for PAGE0 */
- #include <asm/pdc.h>		/* for iodc_call() proto and friends */
+diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/p=
+gtable.h
+index ecd028854469..68ae77069d23 100644
+=2D-- a/arch/parisc/include/asm/pgtable.h
++++ b/arch/parisc/include/asm/pgtable.h
+@@ -166,8 +166,8 @@ extern void __update_cache(pte_t pte);
 
--static DEFINE_SPINLOCK(pdc_console_lock);
--
- static void pdc_console_write(struct console *co, const char *s, unsigned=
- count)
- {
- 	int i =3D 0;
--	unsigned long flags;
-
--	spin_lock_irqsave(&pdc_console_lock, flags);
- 	do {
- 		i +=3D pdc_iodc_print(s + i, count - i);
- 	} while (i < count);
--	spin_unlock_irqrestore(&pdc_console_lock, flags);
- }
-
- #ifdef CONFIG_KGDB
- static int kgdb_pdc_read_char(void)
- {
--	int c;
--	unsigned long flags;
--
--	spin_lock_irqsave(&pdc_console_lock, flags);
--	c =3D pdc_iodc_getc();
--	spin_unlock_irqrestore(&pdc_console_lock, flags);
-+	int c =3D pdc_iodc_getc();
-
- 	return (c <=3D 0) ? NO_POLL_CHAR : c;
- }
+ /* This calculates the number of initial pages we need for the initial
+  * page tables */
+-#if (KERNEL_INITIAL_ORDER) >=3D (PMD_SHIFT)
+-# define PT_INITIAL	(1 << (KERNEL_INITIAL_ORDER - PMD_SHIFT))
++#if (KERNEL_INITIAL_ORDER) >=3D (PLD_SHIFT + BITS_PER_PTE)
++# define PT_INITIAL	(1 << (KERNEL_INITIAL_ORDER - PLD_SHIFT - BITS_PER_PT=
+E))
+ #else
+ # define PT_INITIAL	(1)  /* all initial PTEs fit into one page */
+ #endif
 =2D-
 2.38.1
 
