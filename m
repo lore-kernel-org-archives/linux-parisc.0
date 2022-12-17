@@ -2,97 +2,102 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79946C4332F
-	for <linux-parisc@archiver.kernel.org>; Sat, 17 Dec 2022 22:04:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0F66C4167B
+	for <linux-parisc@archiver.kernel.org>; Sat, 17 Dec 2022 22:04:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbiLQWEp (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 17 Dec 2022 17:04:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
+        id S229506AbiLQWEq (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sat, 17 Dec 2022 17:04:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbiLQWEn (ORCPT
+        with ESMTP id S229611AbiLQWEn (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
         Sat, 17 Dec 2022 17:04:43 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C37E010
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6B3E013
         for <linux-parisc@vger.kernel.org>; Sat, 17 Dec 2022 14:04:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1671314680; bh=lPhOkcviP5cIFEr/v7cW3NawV3oKdVOmZI/JsrKubSI=;
-        h=X-UI-Sender-Class:From:To:Subject:Date;
-        b=Pq7w4qkIkh/mkBeMrdtQArLO63cry8Ul2YoeZcMgXCDYp4mWSN+YkpvjKQYk4LiWn
-         Wq03hbTZ0z62LXN/HiPcFfJd6hQzVpjoTh6nbJ3zb3M6Cf0I48b+PGO/QYz/w1ZweP
-         zs8EVidqC+l5bgCXfMAwlseO0KHwQ5VKBQ/1PgVsXxNu+W/UF6FRBhDBfDQzP5TLMK
-         0uiBDJQiXBRepMjzGgy8xNB7YLY07cHVSPtw3gvRA+Ok7EE6bDVtLqHSda3CC3EhHL
-         KWoNflgD6OWNfDy4gc+biLl9S7VAeYNNjintEzn5iNIOdbNFT2pfVQwGCKgCvegiUT
-         sHeXXmAd9WYZQ==
+        t=1671314680; bh=pKwdDsCdec+OWgQwT0Z/y0rVzZh/45ZL17kX64ShjGw=;
+        h=X-UI-Sender-Class:From:To:Subject:Date:In-Reply-To:References;
+        b=q3ag3iH4lWvWrofU+8lHnFE+9y8wkl6Sn1wmSuMYpxARKW7t8cuK/8NG6FegVoN57
+         T/hUug/hvpdPhUmJmXC9M+Pyt5sWktJ1cEQtpVFIXPWdSKkbkHafav7CMIw3kNMyCH
+         JeX/97513BSg91bTlyXmvWVFFWCExPMYtMipUho9FIDJDGxlgtXWiOQa+YY+9dYtpO
+         1ynewn0znWCeiP5U4VIkDgK/67Oq5rBU6TF44fCIPFzNvvTvbFWGVqidVAZSxjorkb
+         MLNtpu4INWqR/vedIw5qf5h/FUiSYXsvAVSD5HuXDtx/nJAqsc9dJJiLeLvNW2E1Wk
+         5aLpaKoFRwLcQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from p100.fritz.box ([92.116.160.18]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mw9UE-1ooARH3vnQ-00s2a5 for
- <linux-parisc@vger.kernel.org>; Sat, 17 Dec 2022 23:04:39 +0100
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N79yQ-1oqJ5Y0Rlk-017V3V for
+ <linux-parisc@vger.kernel.org>; Sat, 17 Dec 2022 23:04:40 +0100
 From:   Helge Deller <deller@gmx.de>
 To:     linux-parisc@vger.kernel.org
-Subject: [PATCH 1/6] parisc: Drop PMD_SHIFT from calculation in pgtable.h
-Date:   Sat, 17 Dec 2022 23:04:23 +0100
-Message-Id: <20221217220428.383330-1-deller@gmx.de>
+Subject: [PATCH 3/6] parisc: Drop duplicate kgdb_pdc console
+Date:   Sat, 17 Dec 2022 23:04:25 +0100
+Message-Id: <20221217220428.383330-3-deller@gmx.de>
 X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20221217220428.383330-1-deller@gmx.de>
+References: <20221217220428.383330-1-deller@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8QRu3spDNW0+hHA6cvK2ZYBUErBk93cxPhyXYDb1UuBhzoR0+lS
- EXU5MrSzqxKDKNmPE9CV7zYGSTk/XcY22hURS8D8o6ysCU7N9uidvQaMkfgaay1rJ6OGV/7
- 1oG3t+HBgeF3Ym9shqgABXmISyDyIKGJ4q3TEKq8dSelVua8j39dXe2yFS9NuJWwnUHdvoC
- xFh+csdYBDkeQhSWjgjXQ==
-UI-OutboundReport: notjunk:1;M01:P0:bIpo4XhEDkI=;4x4guHmVcDFDnmdfa+N8fv5HiS9
- /0F2QXfTAYin3Gm/YWym30cKJg4b70lnbUYBoNkItCKfbcpH4D3oqFH6zZm3YlBL0wE1O7IJz
- +O9GFr2WYm6b59yqK8au9Q+iX1pkv08Ht1UduOt9fQmTXHxXdorwZkDfwancpJ2rgYnV16yCq
- wHUQSLJu5ULAx9jS+SS2U/sEbcVx8e5GhpHD2weBRFi9RvL+M/tUfpCXddNyR6bcTrOJdO41Q
- F5YHdYMsUBKPxh9HAB9Xv4NkMKrEsvKMJkDwtAgyKaZNZSdGaNlsupIPKeB7Xy5Tg51BylsCT
- XG99ifOseRCAcHknKtxB8mPXycBKXpsH5MbizQyjXLaGXddsaCXBzEokc/K7u7VIdZ4DL9Br3
- OLO4R8T/C6b+XC5gRPFlBSa+MEaSUUPk72qM2Jfdr3p9lLzimNlOpDbFwkPYM/bLAK6O4ZKxW
- hjwAfbHx+EEBahRaDAZtdUymG+N8u9octMJ5VIuAWbj9XXpvFy7YaRjtBvq0fcwiY0bdD7SgO
- 2VjA/FemCyW3NGvWHq9IrK6CMuUyshkz1l0OuCR2DU5k5V01TLP16o3mBYOUiO9K7LG2jUj8T
- 3/9r2xwpeIaGekPEORLmQMrS6qCPdMVCbK3iePK6aThvrR7fMPXaULc3s/vKqKhUZrp2e5FCO
- jvLvq2YtaMNA8FP6E9SpjCl0SZbu0mTEDrzrABM0Ee5exlz0aJrIldMJHghPeBY2d+HWpNN8a
- SyvGwKFcZ1Sc8kCenZYrmQqnFFpQgR9Y81VHVME2BvQz+A5T/b9GKlKMFFMJiaDjKuVSglaHS
- rx5D3fSTzY1IqsZE35LsZDiigPmTwBSHfO35iaCE+pOyBIgJ3clPNbHYUam9J2dadfN0jvPfu
- 1HosrqkPM3tisVl+PkgQufmhHT/QheD8cYQDF6OA/KKUnYswHLab0mOA5K3OLkFvx+XpK/FUU
- g50wRj7Roe/Gnh34Y0kOQfmbfx0=
+X-Provags-ID: V03:K1:EYNo8BBWUSpsyuSWDHcuqZJc/DlcdwY91qSfMiOf9rH4XlchDo8
+ XcDUN3ynjiRVFGHZ2KSb0mPoSrC/8dTD3IoIvSytk+9+YEYchqoJc1ni3vsDrsZCMGH4J3K
+ /Jx38MINIpbIETg0g8WAwSc3WIL/6zCj4K6gcEqgJGeY0jE78Wgz2J6rqnCVw57sCoQ+y7W
+ TBefct422UNmEQJTEPkPA==
+UI-OutboundReport: notjunk:1;M01:P0:ydUprJsfL0A=;GBUHJlIleiSrurA2JTFNJBDunQ1
+ 6/RLfF06VZZ3lLZtc2dJMzIKwhYp7cS7941eMwghz6yP3pJS8R4ps7QFZ6oyKH4ihQY8Jg5bR
+ kcXTwiGllG9Fv+fcUfI34rV6lEr94+gtCOXVE3HBYhNNXXnPqWohADilOaDKmylYLkXkFzVo2
+ jwQluhhfKxykFRboTMj69NW9qHOyTAR/iATFaAEzFIIieESR6BAxWqIqqg1GAE7wU+qIfy/6+
+ Hat1xNjJh11/bjwYQYpIE4Go9NSA/iBz5Xn6xl3bmtP68x59KUC/dVFxnNvOOOxtMtmYrZZf+
+ PPNvFspdHoa5HhRfDLmi85yqDvp14Vg34exYkW+D2TC68VU2tBUj+hwNTkMDfq0vYM5yyV2xI
+ +hfITTB7285K6r+S6F18afz+yo1NwcaRxjXLDvsy2etWGTwUZX5UEZTz6UGdPD8rzZLqRraCn
+ NedMN90ucjGEC6n5BSKWDh11JDJRQ/Ib92kyu1IGvErTABs7hZeQMdBJbcQRh7jZhqfFRkyf5
+ N9rnw0pBphS6CXAb58qzZDT0H/B5n22VHvlP8VWSaGPRvp5LnivQHYeR2dN5TEI9zr+bPaDXb
+ nX+OnCATyBzBdQWn1rhD9vBUznV/Y+Lc0SAd7g40alBxv2yjSe9XjWEdrx+o2xgxKoX2I6Pl6
+ E+OqW7vaJy1qH+D0vKqYVNxtTv82hUgy6s9tBS6J1vSxj84CH28lEEMRadZJuze2LVZm1jD9F
+ UMQEDes8lC5Rgg+C+ep4WJgAMRiQr5DkHG7JpTjuU+1Wyf4iNH42Cs/8ZUGNQbS3kM4IksDGV
+ J627GVKjtD8UJR2w4AGVgvpaDIwACWmWtaiz8QnCT1/zBCTAFNZyThxQYOGGgzvA1XU5Pdh0e
+ azYptbpE7uPh19m/IwBwcuSBO8ITOHu2RRX4heA2fxvvKjHFbDzJ2UpaB2cDVZZHh0a3hunc8
+ 28de6w==
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-PMD_SHIFT isn't defined if CONFIG_PGTABLE_LEVELS =3D=3D 3, and as
-such the kernel test robot found this warning:
-
- In file included from include/linux/pgtable.h:6,
-                  from arch/parisc/kernel/head.S:23:
- arch/parisc/include/asm/pgtable.h:169:32: warning: "PMD_SHIFT" is not def=
-ined, evaluates to 0 [-Wundef]
-     169 | #if (KERNEL_INITIAL_ORDER) >=3D (PMD_SHIFT)
-
-Avoid the warning by using PLD_SHIFT and BITS_PER_PTE.
+The kgdb console is already implemented and registered in pdc_cons.c,
+so the duplicate code can be dropped.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
-Reported-by: kernel test robot <lkp@intel.com>
+Cc: <stable@vger.kernel.org> # 6.1+
 =2D--
- arch/parisc/include/asm/pgtable.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/parisc/kernel/kgdb.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
-diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/p=
-gtable.h
-index ecd028854469..68ae77069d23 100644
-=2D-- a/arch/parisc/include/asm/pgtable.h
-+++ b/arch/parisc/include/asm/pgtable.h
-@@ -166,8 +166,8 @@ extern void __update_cache(pte_t pte);
-
- /* This calculates the number of initial pages we need for the initial
-  * page tables */
--#if (KERNEL_INITIAL_ORDER) >=3D (PMD_SHIFT)
--# define PT_INITIAL	(1 << (KERNEL_INITIAL_ORDER - PMD_SHIFT))
-+#if (KERNEL_INITIAL_ORDER) >=3D (PLD_SHIFT + BITS_PER_PTE)
-+# define PT_INITIAL	(1 << (KERNEL_INITIAL_ORDER - PLD_SHIFT - BITS_PER_PT=
-E))
- #else
- # define PT_INITIAL	(1)  /* all initial PTEs fit into one page */
- #endif
+diff --git a/arch/parisc/kernel/kgdb.c b/arch/parisc/kernel/kgdb.c
+index ab7620f695be..b16fa9bac5f4 100644
+=2D-- a/arch/parisc/kernel/kgdb.c
++++ b/arch/parisc/kernel/kgdb.c
+@@ -208,23 +208,3 @@ int kgdb_arch_handle_exception(int trap, int signo,
+ 	}
+ 	return -1;
+ }
+-
+-/* KGDB console driver which uses PDC to read chars from keyboard */
+-
+-static void kgdb_pdc_write_char(u8 chr)
+-{
+-	/* no need to print char. kgdb will do it. */
+-}
+-
+-static struct kgdb_io kgdb_pdc_io_ops =3D {
+-	.name		=3D "kgdb_pdc",
+-	.read_char	=3D pdc_iodc_getc,
+-	.write_char	=3D kgdb_pdc_write_char,
+-};
+-
+-static int __init kgdb_pdc_init(void)
+-{
+-	kgdb_register_io_module(&kgdb_pdc_io_ops);
+-	return 0;
+-}
+-early_initcall(kgdb_pdc_init);
 =2D-
 2.38.1
 
