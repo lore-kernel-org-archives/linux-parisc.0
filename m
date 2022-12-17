@@ -2,84 +2,110 @@ Return-Path: <linux-parisc-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3C25C4332F
-	for <linux-parisc@archiver.kernel.org>; Fri, 16 Dec 2022 04:37:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ABFAC3DA6E
+	for <linux-parisc@archiver.kernel.org>; Sat, 17 Dec 2022 22:04:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbiLPEhd (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 15 Dec 2022 23:37:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47652 "EHLO
+        id S229469AbiLQWEp (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sat, 17 Dec 2022 17:04:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbiLPEhd (ORCPT
+        with ESMTP id S229506AbiLQWEn (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 15 Dec 2022 23:37:33 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32FB1147E;
-        Thu, 15 Dec 2022 20:37:31 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id r18so986096pgr.12;
-        Thu, 15 Dec 2022 20:37:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XLygs21yUm+BsQ9K/jaILqjtoVN7cCv+GmldKd5jCoY=;
-        b=atuW7kj1tICjX6XOEoGlMKRElIbgy8WI/deoKifcFx1519QZRpDCOoxmKj7EgE2l4w
-         PKzJI7L2ZbVuy2LOhWOolJwT0c6HGC5z3GYIC7j6xM/AunIUu1/hMOhZv9S06C7VFhC1
-         4Q2nDbmd0YUF9RndxPqP2p/GdMMZ3K4yhoxZk3FVJ0hYXbi4IN4jZVfHJrGPnQoXbTYJ
-         YAB5z7iNwRy7E4EGbWHbVIEyT9ICXQ8iqfiE3z4SLn1NrJW7NLywpAeLKJB/g9wvfmaM
-         r5jcdkMrnO+dY5EbBAyyZATVFCQYX6igkBalPuLJ6BkhstYEmOV58RsJNRueXOX7Ax8G
-         6CbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XLygs21yUm+BsQ9K/jaILqjtoVN7cCv+GmldKd5jCoY=;
-        b=1RDrx1hZ8KHNAUD1/NRRTJ1CPTNhPrld6r2CD6nnJSi5rEybp6koCneM3aNZte9UBO
-         cmDjJ7ObK2xdG8AixelWloZR1cGFaWt+L23EdMB1GSOiKHoLErguHgiF04Q24K6kjbD5
-         JYKpKNAJPInTwyfZgymWBhR8UVMAwWJA3TlJ8iuR6zH16YLbK3AbPB0gt6yB/sytYR7z
-         9dE/ikpFRmcOiB+qpcLUFGuTdO1j9+qdCFa5ifoItvkfjSFE2vGjal+EbK/6hRegywLh
-         HDE5OPllMYS9sV6BAQmdjbenUXor3mHmKymQM3O0RYgsCJqIKaQxUJBTuQez460TA7iR
-         2Zmw==
-X-Gm-Message-State: AFqh2kqo1LdKxAEzULNywHgPzgjgnME/mdLFRsdSc6n6vPpAdXnpMm9V
-        qM3EpT/p1resnd9qPpoHFbF1TFpJvVYrvz4OC/mm9WQjBiU=
-X-Google-Smtp-Source: AMrXdXt5JWumad1PiboheGKsXmVaNjeH8snNXdAqZ+Iojn+pij8j6t8nwEgKCk6P8kauAlDPnokzu+Szv1Dew2bD4rM=
-X-Received: by 2002:a63:584c:0:b0:484:2672:2c6a with SMTP id
- i12-20020a63584c000000b0048426722c6amr142358pgm.535.1671165451321; Thu, 15
- Dec 2022 20:37:31 -0800 (PST)
+        Sat, 17 Dec 2022 17:04:43 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB71BFAE7
+        for <linux-parisc@vger.kernel.org>; Sat, 17 Dec 2022 14:04:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1671314680; bh=XG4VbDB0J4izQ6gNlDnI7d1/KeFFRXC9PgG+5mF6L80=;
+        h=X-UI-Sender-Class:From:To:Subject:Date:In-Reply-To:References;
+        b=AOYcasQjor4I/YDn7nZfUCCpNS6zyy+7Mhbc/4R1BE5vtLTHfckm3wAKeADByCvTA
+         gxUpDTpdlUu8urZayPnYZ1YHruvbw4bvYStyRUlHV7bxLeU688RZg7JiKPsF2539bF
+         7B4pK0vEtMRXZp2oEqEFp2OqHtCqaDPhXoyRqNm2UiTYrY62GhHbSCqXL9NEfre+8Z
+         xDl5LyLfxUDCk0O1PYuDbAg48/v4+Jw3ugBbhJ7tN30TDtxG4lB5nonv/1nUB0DVUn
+         dsx3Wku1WUV9ONMBOHOsxIh8URxZ+fOdNe+tn7+siLpwnmSe6f9YPJezTDPjqm8DTG
+         8vyNYVbO+ox5Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from p100.fritz.box ([92.116.160.18]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MNKm0-1pH9ve0p6Q-00Om6N for
+ <linux-parisc@vger.kernel.org>; Sat, 17 Dec 2022 23:04:40 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     linux-parisc@vger.kernel.org
+Subject: [PATCH 4/6] parisc: Drop locking in pdc console code
+Date:   Sat, 17 Dec 2022 23:04:26 +0100
+Message-Id: <20221217220428.383330-4-deller@gmx.de>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20221217220428.383330-1-deller@gmx.de>
+References: <20221217220428.383330-1-deller@gmx.de>
 MIME-Version: 1.0
-References: <639b23c8.DdUNqMCLdxZ7gLv2%lkp@intel.com>
-In-Reply-To: <639b23c8.DdUNqMCLdxZ7gLv2%lkp@intel.com>
-From:   Vincent Mailhol <vincent.mailhol@gmail.com>
-Date:   Fri, 16 Dec 2022 13:37:20 +0900
-Message-ID: <CAMZ6RqJ7-GTPe7tNdhTYCF6OrnagfNL_7EXrhn5HD=YB8dtCGw@mail.gmail.com>
-Subject: Re: [linux-next:master] BUILD REGRESSION 459c73db4069c27c1d4a0e20d055b837396364b8
-To:     kernel test robot <lkp@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
-        linux-xfs@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, kvm@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tuunWJO8/QL8+ngL6cHbhGu4HwQF3unHbrOptDTKcmKxwOFsrxO
+ Zs8ngEls43vuJ162DmQyZLBKgszpziJ28sgmhqxC21M3Wv+dvmVrj2Re+rOt3PpjRjWWPOp
+ rkpIT/9VnUGW80e7Y5qSVU/wHaImLFEzmEgNkjT/FdxnrvIpLFrelJkvofkSteOusOyqWTa
+ w12bcuJvgcDchDYLOswZA==
+UI-OutboundReport: notjunk:1;M01:P0:iWV2UMIWKYs=;wTWAeg8hTWECYaWCJyRp/WXNQNz
+ OuJCEF2dnj4jOyOjQXupBylTtOMCk3JP9wwtTgyl8vhnqu08mck9/Ob8uhPkQ5JZuj85VGigU
+ VreUjdPyWU08fM1QecPuRygmAtd+EQcxof0chliBfpn3LL4EPEVTgs1WzVISmFOBuDHScrAVi
+ 4pWgr3Oebg/257S20eOiZ1A1nvWG2nfPpqDVFERlUz4UjOPP3zA1jixPUgJze7xmWoSlfmomv
+ iiDJbD0nWCQp1K4uFjW7RVg+RuCXTamlpQu1XUKi9Wjp4W9jA9Uk4P5IhyRNUGzTQkgXz1I2f
+ 4v2aeFN09A71+HDf4pGpYzZaACLLLm5YP0ISvUOH6/9R0UIxHyrgPd0vTlIcazTte/An5a02q
+ kXtjznlixLqF4It2AYUfBFrkNFql6Fy8H3uRXbChe78PGPEtpJ+D3lD3mS39zOU/mWzSkTHrC
+ 9WKOvwbhMjnG3bi3+lBm52lHViFEwKXNNzja8zlwrEGtx1MBOThIryOWrIo4vCB5ME0HGEHtj
+ a1ETP7Ie1j0EHs2x3U8LofxEocYBp/f0e+yftV+0knronLboEYRAWdckghy5dCHyvUZNkZRfS
+ 1FqySSqlucZSoFgKK3sx5ItAI78tO3POg6qUKvNRjzHIPDPMtmJQ6NuMRfBvcNYTxcqyu4NMF
+ 1szDhl9S7gwcmcF7PYR5Fo75SfrFo+mUhTwmbYVreb6ajYw2FbZzYSHh2X/aQdAJMJ6p17GcD
+ M2qzeqkACoq1Y5a2A2DFxmIVMMqbtzSif1Lg2feeMp3+nkFURNM7ZOgqvt4FRy6mBi/YGNX2f
+ lWcikxRAZkqEuz6UYnuh2Pu6/8Xsrq2m8gDwLTTVG9bBP7CYuANl0rwFHT4xeb7h3M9c/dxY9
+ Sf2p9j+fI/PpXLZYB6/t1N7HdBYvg1TvYIEHFQgfeL3bMU6HhfA0wu/QQ4MHLxtg1iTYiqaAz
+ IFOe7A==
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue. 15 Dec. 2022 at 22:57, kernel test robot <lkp@intel.com> wrote:
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> branch HEAD: 459c73db4069c27c1d4a0e20d055b837396364b8  Add linux-next specific files for 20221215
->
-> Error/Warning reports:
+No need to have specific locking for console I/O since
+the PDC functions provide an own locking.
 
-(...)
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: <stable@vger.kernel.org> # 6.1+
+=2D--
+ arch/parisc/kernel/pdc_cons.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-> Documentation/networking/devlink/etas_es58x.rst: WARNING: document isn't included in any toctree
+diff --git a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons.c
+index 7d0989f523d0..df374f7b42c9 100644
+=2D-- a/arch/parisc/kernel/pdc_cons.c
++++ b/arch/parisc/kernel/pdc_cons.c
+@@ -12,29 +12,19 @@
+ #include <asm/page.h>		/* for PAGE0 */
+ #include <asm/pdc.h>		/* for iodc_call() proto and friends */
 
-A patch for this warning is on its way:
-  https://lore.kernel.org/linux-next/20221213051136.721887-1-mailhol.vincent@wanadoo.fr/T/#u
+-static DEFINE_SPINLOCK(pdc_console_lock);
+-
+ static void pdc_console_write(struct console *co, const char *s, unsigned=
+ count)
+ {
+ 	int i =3D 0;
+-	unsigned long flags;
 
-(...)
+-	spin_lock_irqsave(&pdc_console_lock, flags);
+ 	do {
+ 		i +=3D pdc_iodc_print(s + i, count - i);
+ 	} while (i < count);
+-	spin_unlock_irqrestore(&pdc_console_lock, flags);
+ }
 
-Yours sincerely,
-Vincent Mailhol
+ #ifdef CONFIG_KGDB
+ static int kgdb_pdc_read_char(void)
+ {
+-	int c;
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&pdc_console_lock, flags);
+-	c =3D pdc_iodc_getc();
+-	spin_unlock_irqrestore(&pdc_console_lock, flags);
++	int c =3D pdc_iodc_getc();
+
+ 	return (c <=3D 0) ? NO_POLL_CHAR : c;
+ }
+=2D-
+2.38.1
+
