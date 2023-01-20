@@ -2,112 +2,89 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46BCFC678DE
-	for <linux-parisc@archiver.kernel.org>; Thu, 19 Jan 2023 14:41:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 855C8C38159
+	for <linux-parisc@archiver.kernel.org>; Fri, 20 Jan 2023 05:56:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbjASOlX (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 19 Jan 2023 09:41:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
+        id S229819AbjATF4N (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 20 Jan 2023 00:56:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbjASOk1 (ORCPT
+        with ESMTP id S229816AbjATF4K (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 19 Jan 2023 09:40:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FCC10DA
-        for <linux-parisc@vger.kernel.org>; Thu, 19 Jan 2023 06:37:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1674139053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QbSxuBYwyBhZhp7hgOeOy88U7e5YyI7vjVO9jj/5+zE=;
-        b=VxejWXolYSzIQbvZGB2XtvUw8c1r1kEFME4gp0tc/xjn/bbssEYxG6sukGUE/I2MJyudAI
-        VM6QxGO3VjCWmQPs7KOI0HxWneTT/yhk6dS5UUY1xMo9h+Z6rwjGHAU8opOwcAOeD9oEp/
-        +3upvDcogbciLAwcU79udLcaLHvc5WE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-567-l4TS9XtFOxaf2EwwHWgw-g-1; Thu, 19 Jan 2023 09:37:29 -0500
-X-MC-Unique: l4TS9XtFOxaf2EwwHWgw-g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 07306857A88;
-        Thu, 19 Jan 2023 14:37:27 +0000 (UTC)
-Received: from vschneid.remote.csb (unknown [10.33.36.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9C6872026D68;
-        Thu, 19 Jan 2023 14:37:22 +0000 (UTC)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        x86@kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Guo Ren <guoren@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH v4 6/7] smp: reword smp call IPI comment
-Date:   Thu, 19 Jan 2023 14:36:18 +0000
-Message-Id: <20230119143619.2733236-7-vschneid@redhat.com>
-In-Reply-To: <20230119143619.2733236-1-vschneid@redhat.com>
-References: <20230119143619.2733236-1-vschneid@redhat.com>
+        Fri, 20 Jan 2023 00:56:10 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB78AD09;
+        Thu, 19 Jan 2023 21:56:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5L8b9+6lFLvmsEhRZ8nAxeepW7lwqOKRUfjfE9A+xf4=; b=nvH1AyXrH6mgsG41yfNyLvr0ar
+        L4Bh8wYJLS/Axo9nm8GvLjYknRvqAA2UbIWop3KVkLAoaLc3NbaIhl2pOElDG2csVvEaIlcgp/TPD
+        Tml/7R2TYACkWhHxh4aeYdJqDabkfLkw8JjN552Oi30xTNC6pSbPhVIiDWpCcUTseRejn18Xyv18t
+        ks5yiRosowg9RUy2okDuD72dVGlM6I4M5eHQKSRlLdWO9ovZzyoDjzPKufMpfwOhDDnq5qnPqvZkh
+        AwgkMd6U56w51Tci1yEAjj3q1uU73Qdkd8wHolQnsq0gU1K6c4q5e6xuFv4Krw2nDuvwXor8W1bpZ
+        Tq5T49mg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pIkNd-002vuk-2d;
+        Fri, 20 Jan 2023 05:56:01 +0000
+Date:   Fri, 20 Jan 2023 05:56:01 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>, linux-parisc@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] fs/sysv: Replace kmap() with kmap_local_page()
+Message-ID: <Y8os8QR1pRXyu4N8@ZenIV>
+References: <20230119153232.29750-1-fmdefrancesco@gmail.com>
+ <20230119153232.29750-5-fmdefrancesco@gmail.com>
+ <Y8oWsiNWSXlDNn5i@ZenIV>
+ <Y8oYXEjunDDAzSbe@casper.infradead.org>
+ <Y8ocXbztTPbxu3bq@ZenIV>
+ <Y8oem+z9SN487MIm@casper.infradead.org>
+ <Y8ohpDtqI8bPAgRn@ZenIV>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y8ohpDtqI8bPAgRn@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Accessing the call_single_queue hasn't involved a spinlock since 2014:
+On Fri, Jan 20, 2023 at 05:07:48AM +0000, Al Viro wrote:
+> On Fri, Jan 20, 2023 at 04:54:51AM +0000, Matthew Wilcox wrote:
+> 
+> > > Sure, but... there's also this:
+> > > 
+> > > static inline void __kunmap_local(const void *addr)
+> > > {
+> > > #ifdef ARCH_HAS_FLUSH_ON_KUNMAP
+> > >         kunmap_flush_on_unmap(addr);
+> > > #endif
+> > > }
+> > > 
+> > > Are you sure that the guts of that thing will be happy with address that is not
+> > > page-aligned?  I've looked there at some point, got scared of parisc (IIRC)
+> > > MMU details and decided not to rely upon that...
+> > 
+> > Ugh, PA-RISC (the only implementor) definitely will flush the wrong
+> > addresses.  I think we should do this, as having bugs that only manifest
+> > on one not-well-tested architecture seems Bad.
+> > 
+> >  static inline void __kunmap_local(const void *addr)
+> >  {
+> >  #ifdef ARCH_HAS_FLUSH_ON_KUNMAP
+> > -       kunmap_flush_on_unmap(addr);
+> > +       kunmap_flush_on_unmap(PAGE_ALIGN_DOWN(addr));
+> >  #endif
+> >  }
+> 
+> PTR_ALIGN_DOWN(addr, PAGE_SIZE), perhaps?
 
-  6897fc22ea01 ("kernel: use lockless list for smp_call_function_single")
-
-The llist operations (namely cmpxchg() and xchg()) provide similar ordering
-guarantees, update the comment to lessen confusion.
-
-Signed-off-by: Valentin Schneider <vschneid@redhat.com>
----
- kernel/smp.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/smp.c b/kernel/smp.c
-index 93b4386cd3096..821b5986721ac 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -495,9 +495,10 @@ void __smp_call_single_queue(int cpu, struct llist_node *node)
- #endif
- 
- 	/*
--	 * The list addition should be visible before sending the IPI
--	 * handler locks the list to pull the entry off it because of
--	 * normal cache coherency rules implied by spinlocks.
-+	 * The list addition should be visible to the target CPU when it pops
-+	 * the head of the list to pull the entry off it in the IPI handler
-+	 * because of normal cache coherency rules implied by the underlying
-+	 * llist ops.
- 	 *
- 	 * If IPIs can go out of order to the cache coherency protocol
- 	 * in an architecture, sufficient synchronisation should be added
--- 
-2.31.1
-
+	Anyway, that's a question to parisc folks; I _think_ pdtlb
+quietly ignores the lower bits of address, so that part seems
+to be safe, but I wouldn't bet upon that.  And when I got to
+flush_kernel_dcache_page_asm I gave up - it's been a long time
+since I've dealt with parisc assembler.
