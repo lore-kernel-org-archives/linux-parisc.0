@@ -2,74 +2,60 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A65C64EC6
-	for <linux-parisc@archiver.kernel.org>; Tue,  7 Feb 2023 20:27:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A6CAC6379F
+	for <linux-parisc@archiver.kernel.org>; Wed,  8 Feb 2023 09:52:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229457AbjBGU14 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 7 Feb 2023 15:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
+        id S230021AbjBHJwD (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 8 Feb 2023 04:52:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbjBGU1y (ORCPT
+        with ESMTP id S231150AbjBHJvk (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 7 Feb 2023 15:27:54 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFEB30E82;
-        Tue,  7 Feb 2023 12:27:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XM5/DhrpywJuIcEgHHCo/8ZgkbeDJDYpTgAA6DELtws=; b=U421OkqtCK6gXcQf62Ryz9sZ/W
-        LZu+W2C5RVzWjNR1EJOlHTdtbUA8ODN3LbSVdDS3DjxVjKsvyfrdU85iUtIK1EgYxrddQ0m2wTalm
-        OssTp+Q+6OmZYy35VF4f8TBsgThmOB3u+RJ5a68V/pzMcXN/KM/Ez/WO3wthlQHUm0ELHHtc9xZYE
-        D46tkAcEKppoPWtpXr3+JsOkVr4ibVV2RCEgi+21G7Cx3eq2LJAbAe7NpSaz6q0Nunm9jiFI6Bw1a
-        MDE52Mqb5eTuWPKHiCG+W54+Ozx9KzoajI/jLRKPpRgEHssXN6Hk+ibtCKSSi8VsmJPAbnS9pIDOm
-        jRVggYwA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pPUZ1-000XLi-7h; Tue, 07 Feb 2023 20:27:39 +0000
-Date:   Tue, 7 Feb 2023 20:27:39 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-arch@vger.kernel.org
-Cc:     Yin Fengwei <fengwei.yin@intel.com>, linux-mm@kvack.org,
-        linux-alpha@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-        openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org
-Subject: Re: API for setting multiple PTEs at once
-Message-ID: <Y+K0O35jNNzxiXE6@casper.infradead.org>
-References: <Y9wnr8SGfGGbi/bk@casper.infradead.org>
+        Wed, 8 Feb 2023 04:51:40 -0500
+X-Greylist: delayed 88561 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 08 Feb 2023 01:51:29 PST
+Received: from mail.crawnon.pl (mail.crawnon.pl [51.68.198.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C810043455
+        for <linux-parisc@vger.kernel.org>; Wed,  8 Feb 2023 01:51:29 -0800 (PST)
+Received: by mail.crawnon.pl (Postfix, from userid 1002)
+        id 15974A2E18; Tue,  7 Feb 2023 09:15:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=crawnon.pl; s=mail;
+        t=1675761327; bh=C5hX24svv/9/TME4wPCHfYjl17BCtmuxEd1i9B4zdYs=;
+        h=Date:From:To:Subject:From;
+        b=g+UH8bCrVl6MtXuyTKBojq4yna6tYAfWpOEuLGJxlQtyX7KoRf5vIEgKbBM3x0l4/
+         onWQrbDx4LVExrnNWqvGP7QAuM7Dmpu54hmdIlCfykyOTpfT/1EEzbWU1YdUYneo95
+         42O5eE6tru86SECfV8Awh8sq+iFwSYYX0EkWicSVStNoM6rkBZZ76jFqYGAL9nKLGp
+         kw1wOIvca8/3TTyWV+9+1blpfNtuQrJKHiUYSbYk/eWn6Y1eblqEcRMkDJIn13kXXb
+         y0vxg+bx9UxvejQVXw1IN5N2JtHadHjaPjBk2XteWeUQNZeYFeZrf2HDJls5XXut+a
+         JoWC7rXWRJuZQ==
+Received: by mail.crawnon.pl for <linux-parisc@vger.kernel.org>; Tue,  7 Feb 2023 09:15:23 GMT
+Message-ID: <20230207074500-0.1.90.hvh1.0.04s45lt9ad@crawnon.pl>
+Date:   Tue,  7 Feb 2023 09:15:23 GMT
+From:   =?UTF-8?Q? "Miko=C5=82aj_Fiodorczyk" ?= 
+        <mikolaj.fiodorczyk@crawnon.pl>
+To:     <linux-parisc@vger.kernel.org>
+Subject: Fotowoltaika - nowe warunki
+X-Mailer: mail.crawnon.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9wnr8SGfGGbi/bk@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 09:14:23PM +0000, Matthew Wilcox wrote:
-> For those of you not subscribed, linux-mm is currently discussing
-> how best to handle page faults on large folios.  I simply made it work
-> when adding large folio support.  Now Yin Fengwei is working on
-> making it fast.
+Dzie=C5=84 dobry,
 
-OK, here's an actual implementation:
+chcia=C5=82bym poinformowa=C4=87, i=C5=BC mog=C4=85 Pa=C5=84stwo uzyska=C4=
+=87 dofinansowanie na systemy fotowoltaiczne w ramach nowej edycji progra=
+mu M=C3=B3j Pr=C4=85d.
 
-https://lore.kernel.org/linux-mm/20230207194937.122543-3-willy@infradead.org/
+Program zapewnia 6000 z=C5=82 dofinansowania na instalacj=C4=99 paneli i =
+16 000 z=C5=82 na magazyn energii, ni=C5=BCsze cen pr=C4=85du i mo=C5=BCl=
+iwo=C5=9B=C4=87 odliczenia koszt=C3=B3w zwi=C4=85zanych z instalacj=C4=85=
+ fotowoltaiki w ramach rozliczenia PIT (tzw. ulga termomodernizacyjna).
 
-It survives a run of xfstests.  If your architecture doesn't store its
-PFNs at PAGE_SHIFT, you're going to want to implement your own set_ptes(),
-or you'll see entirely the wrong pages mapped into userspace.  You may
-also wish to implement set_ptes() if it can be done more efficiently
-than __pte(pteval(pte) + PAGE_SIZE).
+Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
+temacie?
 
-Architectures that implement things like flush_icache_page() and
-update_mmu_cache() may want to propose batched versions of those.
-That's alpha, csky, m68k, mips, nios2, parisc, sh,
-arm, loongarch, openrisc, powerpc, riscv, sparc and xtensa.
-Maintainers BCC'd, mailing lists CC'd.
 
-I'm happy to collect implementations and submit them as part of a v6.
+Pozdrawiam,
+Miko=C5=82aj Fiodorczyk
