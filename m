@@ -2,156 +2,158 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FE5AC636D7
-	for <linux-parisc@archiver.kernel.org>; Tue, 21 Feb 2023 19:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A2DBC6379F
+	for <linux-parisc@archiver.kernel.org>; Wed, 22 Feb 2023 08:36:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbjBUT4W (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 21 Feb 2023 14:56:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
+        id S230267AbjBVIg2 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 22 Feb 2023 03:36:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjBUT4V (ORCPT
+        with ESMTP id S230223AbjBVIg0 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 21 Feb 2023 14:56:21 -0500
-Received: from cmx-mtlrgo001.bell.net (mta-mtl-005.bell.net [209.71.208.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B585A2E0F7;
-        Tue, 21 Feb 2023 11:55:55 -0800 (PST)
-X-RG-CM-BuS: 0
-X-RG-CM-SC: 0
-X-RG-CM: Clean
-X-Originating-IP: [174.88.80.104]
-X-RG-Env-Sender: dave.anglin@bell.net
-X-RG-Rigid: 63E35DF70165B4D4
-X-CM-Envelope: MS4xfKLify6GlGaWNdUS4n+aaa4q8slEddb/v0x7uYoAtSjZjT8Erud2yI/0u3itKqfqoTpMZzsgbdCVpGSsW6cvmTshGYdjqrUngJeKP5dFnCXf/1k+yIbn
- DtJnxRIY2QsY6w65trIVAANhnJe4hf4vLn7PRTe5CDXzSxvyG4WJOzh+9QuQ71h85QMxY0yWc6XDB3K2ebfAynAMddGFNtSA0dyjll/FMUFo9GnX7phTTLEk
- gHqwiPqHeq1lCw9/KGD2P8h6V/y+pT0tuNLFF3CayaRmu6IcG5pmnxdlRNQ82kGO6h3qPSnhxBnbwSga41X4HEhlBdwOCbpfs8NBh62WNYc=
-X-CM-Analysis: v=2.4 cv=AuWNYMxP c=1 sm=1 tr=0 ts=63f521c8
- a=jp24WXWxBM5iMX8AJ3NPbw==:117 a=jp24WXWxBM5iMX8AJ3NPbw==:17
- a=IkcTkHD0fZMA:10 a=FBHGMhGWAAAA:8 a=ntG9WA4U48cCQLUU1awA:9 a=QEXdDO2ut3YA:10
- a=9gvnlMMaQFpL9xblJ6ne:22
-Received: from [192.168.2.49] (174.88.80.104) by cmx-mtlrgo001.bell.net (5.8.814) (authenticated as dave.anglin@bell.net)
-        id 63E35DF70165B4D4; Tue, 21 Feb 2023 14:55:52 -0500
-Message-ID: <3b65e748-45b2-3875-fef3-b6ca6f87163f@bell.net>
-Date:   Tue, 21 Feb 2023 14:55:53 -0500
+        Wed, 22 Feb 2023 03:36:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16717252B9
+        for <linux-parisc@vger.kernel.org>; Wed, 22 Feb 2023 00:35:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1677054919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rmxOmW2Bi0X9FdGRBJxRliQUyu7bX3a5ch+5lNPbh68=;
+        b=ftydmFf1zAW3bh4a9vHDTgHxHxO899wVd0EjTomSQaj6pi9Q1TM10xAbA5znv5Gfijy6IW
+        QExuS3RsTkucEANXmQYejmShEn8fEr3tVZ+U6d5pVxMsLqQbV2LhI6zaQ2Cp/yqJrYZJTM
+        kdyNmeKB/XDBQdDSFTs8O7s4T3wr4UQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-3-MmktJbUpMh-UegbYJy6C9Q-1; Wed, 22 Feb 2023 03:35:14 -0500
+X-MC-Unique: MmktJbUpMh-UegbYJy6C9Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 39BDD858F0E;
+        Wed, 22 Feb 2023 08:35:13 +0000 (UTC)
+Received: from localhost (ovpn-13-7.pek2.redhat.com [10.72.13.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 223FB440D9;
+        Wed, 22 Feb 2023 08:35:11 +0000 (UTC)
+Date:   Wed, 22 Feb 2023 16:35:08 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        David Laight <David.Laight@aculab.com>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
+Subject: Re: [PATCH v4 12/16] parisc: mm: Convert to GENERIC_IOREMAP
+Message-ID: <Y/XTvJRtZXKa6b/M@MiWiFi-R3L-srv>
+References: <20230216123419.461016-1-bhe@redhat.com>
+ <20230216123419.461016-13-bhe@redhat.com>
+ <Y+40p3oegc2Of9w2@casper.infradead.org>
+ <Y+5Fcc6wsbr0qmoN@MiWiFi-R3L-srv>
+ <bff4f286-ccf8-40bc-8fe5-d4041adf89f5@app.fastmail.com>
+ <Y++Bypsg9YCmUEcd@MiWiFi-R3L-srv>
+ <107be2c9-021b-85f6-d32d-ddb9e75ce24f@csgroup.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: liburing test results on hppa
-Content-Language: en-US
-From:   John David Anglin <dave.anglin@bell.net>
-To:     Jens Axboe <axboe@kernel.dk>,
-        linux-parisc <linux-parisc@vger.kernel.org>
-Cc:     io-uring@vger.kernel.org, Helge Deller <deller@gmx.de>
-References: <64ff4872-cc6f-1e6a-46e5-573c7e64e4c9@bell.net>
- <c198a68c-c80e-e554-c33e-f4448e89764a@kernel.dk>
- <b0ad2098-979e-f256-a553-401bad9921e0@bell.net>
- <6eddaf2b-991f-f848-4832-7005eccdeffa@kernel.dk>
- <ee1ef3d0-9854-87bc-0c45-f073710f9ef5@kernel.dk>
- <b9c3abb9-b8e1-a0f3-51c8-d47c7410d3c5@bell.net>
-In-Reply-To: <b9c3abb9-b8e1-a0f3-51c8-d47c7410d3c5@bell.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <107be2c9-021b-85f6-d32d-ddb9e75ce24f@csgroup.eu>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 2023-02-16 9:59 p.m., John David Anglin wrote:
->>>>> As mentioned previously, this one and the other -233 I suspect are due
->>>>> to the same coloring issue as was fixed by Helge's patch for the ring
->>>>> mmaps, as the provided buffer rings work kinda the same way. The
->>>>> application allocates some aligned memory, and registers it and the
->>>>> kernel then maps it.
->>>>>
->>>>> I wonder if these would work properly if the address was aligned to
->>>>> 0x400000? Should be easy to verify, just modify the alignment for the
->>>>> posix_memalign() calls in test/buf-ring.c.
->>>> Doesn't help.  Same error.  Can you point to where the kernel maps it?
->>> Yep, it goes io_uring.c:io_uring_register() ->
->>> kbuf.c:io_register_pbuf_ring() -> rsrc.c:io_pin_pages() which ultimately
->>> calls pin_user_pages() to map the memory.
->> Followup - a few of the provided buffer ring cases failed to properly
->> initialize the ring, poll-mshot-race was one of them... I've pushed out
->> fixes for this. Not sure if it fixes your particular issue, but worth
->> giving it another run.
-> Results are still the same:
-> Running test file-verify.t Found 163840, wanted 688128
-> Buffered novec reg test failed
-> Test file-verify.t failed with ret 1
->
-> Tests timed out (2): <a4c0b3decb33.t> <send-zerocopy.t>
-> Tests failed (4): <buf-ring.t> <file-verify.t> <ringbuf-read.t> <send_recvmsg.t>
->
-> poll-mshot-race still causes HPMC.
+Hi Christophe, Arnd,
 
-The timeouts are not a problem.  The following change fixed <a4c0b3decb33.t> <send-zerocopy.t>:
+On 02/17/23 at 01:46pm, Christophe Leroy wrote:
+> 
+> 
+> Le 17/02/2023 � 14:31, Baoquan He a �crit�:
+> > On 02/16/23 at 04:18pm, Arnd Bergmann wrote:
+> >> On Thu, Feb 16, 2023, at 16:02, Baoquan He wrote:
+> >>> On 02/16/23 at 01:50pm, Matthew Wilcox wrote:
+> >>> It's not if including asm-generic/iomap.h. The ARCH_HAS_IOREMAP_xx is to
+> >>> avoid redefinition there.
+> >>>
+> >>> include/asm-generic/iomap.h:
+> >>> ----
+> >>> #ifndef ARCH_HAS_IOREMAP_WC
+> >>> #define ioremap_wc ioremap
+> >>> #endif
+> >>
+> >> I'd change that to the usual '#ifndef ioremap_wc' in that case.
+> > 
+> > Not sure if I got you. Kill all ARCH_HAS_IOREMAP_xxx in kernel? If yes,
+> > sounds like a good idea.
+> > 
+> 
+> At least kill that one at the first place in your series, and then the 
+> other ones in a follow-up series maybe.
 
-diff --git a/test/a4c0b3decb33.c b/test/a4c0b3decb33.c
-index f282d1b..6be73b6 100644
---- a/test/a4c0b3decb33.c
-+++ b/test/a4c0b3decb33.c
-@@ -124,7 +124,7 @@ static void loop(void)
-              if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid)
-                  break;
-              sleep_ms(1);
--            if (current_time_ms() - start < 5 * 1000)
-+            if (current_time_ms() - start < 100 * 1000)
-                  continue;
-              kill_and_wait(pid, &status);
-              break;
-diff --git a/test/runtests.sh b/test/runtests.sh
-index 924fdce..8c3a4bf 100755
---- a/test/runtests.sh
-+++ b/test/runtests.sh
-@@ -1,7 +1,7 @@
-  #!/usr/bin/env bash
+I made a patch to remove all ARCH_HAS_IOREMAP_xx macros in architectures
+and the ifdeffery of ARCH_HAS_IOREMAP_xx in asm-generic/iomap.h.
+But the change will cause building error as below. Becuase we usually
+have '#include <asm-generic/iomap.h>' at the beginning of
+arch/xx/include/asm/io.h, and have '#include <asm-generic/io.h>' at the
+end of arch/xx/include/asm/io.h. For architecutres which has
+ARCH_HAS_IOREMAP_xx defining, we need move ''#include <asm-generic/iomap.h>
+dowe to below '#include <asm-generic/io.h>'. Please help check if it's
+still worth doing.
 
-  TESTS=("$@")
--TIMEOUT=60
-+TIMEOUT=300
-  DMESG_FILTER="cat"
-  TEST_DIR=$(dirname "$0")
-  FAILED=()
 
-I believe you are correct about the colouring issue being the problem with the other tests.
-I've been playing with the send_recvmsg.t test as it seems the simplest.
+***move '#include <asm-generic/iomap.h>' below '#include <asm-generic/io.h>' 
+***
+diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+index 8ab68cde1f13..a8d55fc62959 100644
+--- a/arch/x86/include/asm/io.h
++++ b/arch/x86/include/asm/io.h
+@@ -209,8 +209,6 @@ void memset_io(volatile void __iomem *, int, size_t);
+ #define memcpy_toio memcpy_toio
+ #define memset_io memset_io
+ 
+-#include <asm-generic/iomap.h>
+-
+ /*
+  * ISA space is 'always mapped' on a typical x86 system, no need to
+  * explicitly ioremap() it. The fact that the ISA IO space is mapped
+@@ -329,6 +327,8 @@ extern bool is_early_ioremap_ptep(pte_t *ptep);
+ #include <asm-generic/io.h>
+ #undef PCI_IOBASE
+ 
++#include <asm-generic/iomap.h>
++
+ #ifdef CONFIG_MTRR
+ extern int __must_check arch_phys_wc_index(int handle);
+ #define arch_phys_wc_index arch_phys_wc_index
 
-On parisc, caches are required to detect that the same physical memory is being accessed by
-two virtual addresses if offset bits 42 through 63 are the same in both virtual addresses (i.e.,
-the addresses must be equal modulo 0x400000).  There is also a constraint on space bits but
-space register hashing is disabled, so it doesn't come into play.
 
-We have a linear offset between kernel and physical addresses in linux.  So, the user virtual
-address must be equivalent to the physical address of a page for user and kernel accesses to
-be detected by the caches.
-
-For io_uring to work, I believe the user and kernel addresses used to access the buffers must
-be equivalent.  However, as far as I can see, we only setup equivalent aliases for file backed
-mappings with MAP_SHARED.  There doesn't appear to be any connection between the kernel
-page addresses allocated for a mapping and the assigned user virtual addresses.  Thus, it doesn't
-help to align the user virtual address to 0x400000.  The kernel virtual address still has the wrong
-colour.
-
-Maybe something could by done with anonymous MAP_SHARED mappings to make them equivalent?
-The mmap man page says "Support for MAP_ANONYMOUS in conjunction with MAP_SHARED was added
-in Linux 2.4."
-
-I tried to use a file based mapping in the send_recvmsg.t (tried both ring.ring_fd and a temporary
-file).  At first, I thought this worked.  But it turns out that pin_user_pages fails and returns -EFAULT.
-
-                        reg.ring_addr = (unsigned long) ptr;
-                         reg.ring_entries = 1;
-                         reg.bgid = BUF_BGID;
-                         if (io_uring_register_buf_ring(&ring, &reg, 0)) {
-                                 no_pbuf_ring = 1;
-                                 goto out;
-                         }
-
-So, the io_uring_register_buf_ring call fails and the code bails with no error message.
-
-I'm not sure why pin_user_pages fails.  Today, I've been wondering if a mlock call would
-lock the mmap'd buffer into RAM and fix pin_user_pages?
-
-Dave
-
--- 
-John David Anglin  dave.anglin@bell.net
+***Building error after removing ARCH_HAS_IOREMAP_xx
+***
+In file included from ./include/linux/io.h:13,
+                 from ./include/linux/irq.h:20,
+                 from ./include/xen/events.h:6,
+                 from arch/x86/entry/common.c:25:
+./arch/x86/include/asm/io.h:321: warning: "ioremap_wc" redefined
+  321 | #define ioremap_wc ioremap_wc
+      | 
+In file included from ./arch/x86/include/asm/io.h:212:
+./include/asm-generic/iomap.h:97: note: this is the location of the previous definition
+   97 | #define ioremap_wc ioremap
+      | 
+./arch/x86/include/asm/io.h:323: warning: "ioremap_wt" redefined
+  323 | #define ioremap_wt ioremap_wt
+      | 
+./include/asm-generic/iomap.h:101: note: this is the location of the previous definition
+  101 | #define ioremap_wt ioremap
 
