@@ -2,307 +2,171 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ECD9C6FA8E
-	for <linux-parisc@archiver.kernel.org>; Sun, 26 Feb 2023 18:12:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58185C7EE2E
+	for <linux-parisc@archiver.kernel.org>; Sun, 26 Feb 2023 20:13:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbjBZSMy (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 26 Feb 2023 13:12:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52746 "EHLO
+        id S229795AbjBZUNx (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 26 Feb 2023 15:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjBZSMy (ORCPT
+        with ESMTP id S229379AbjBZUNv (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 26 Feb 2023 13:12:54 -0500
-X-Greylist: delayed 544 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 26 Feb 2023 10:12:43 PST
-Received: from dellerweb.de (unknown [IPv6:2a02:c207:3003:236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC86F959
-        for <linux-parisc@vger.kernel.org>; Sun, 26 Feb 2023 10:12:43 -0800 (PST)
-Received: from mx3210.localdomain (bras-base-otwaon0925w-grc-18-174-88-80-104.dsl.bell.ca [174.88.80.104])
-        by dellerweb.de (Postfix) with ESMTPSA id 97DED1600342;
-        Sun, 26 Feb 2023 19:03:36 +0100 (CET)
-Received: by mx3210.localdomain (Postfix, from userid 1000)
-        id 15BE022012C; Sun, 26 Feb 2023 18:03:33 +0000 (UTC)
-Date:   Sun, 26 Feb 2023 18:03:33 +0000
-From:   John David Anglin <dave@parisc-linux.org>
-To:     linux-parisc@vger.kernel.org
-Cc:     Helge Deller <deller@gmx.de>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Subject: [PATCH] parisc: Cleanup mmap implementation
-Message-ID: <Y/ue9R0ccHfdueYx@mx3210.localdomain>
+        Sun, 26 Feb 2023 15:13:51 -0500
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6BAD301;
+        Sun, 26 Feb 2023 12:13:50 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id cf14so4701877qtb.10;
+        Sun, 26 Feb 2023 12:13:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Gg5lD1thnSOjSPD2ugSmhhuDJpRIfjxQ4WV4ji/sEm4=;
+        b=b4fvqlKEnKtSkihrg55JYq+ke0pEzfiymXjhN3I6/fQybr+DvLraWGgthf8ZtPjCuQ
+         6xXuuE3Y+TLKzGA8BaKIGqVv49ebOFSGwJQ+h5Ngr2W1Xu8xllIDi1ZXlwoERY0x45ra
+         ReBdvXHBsf3RgUvVSazqK8baSqpxGG3NGPUro9cfOO02NMuyy4/uhKWAxVoiMIuXrV88
+         l+K48IrSMo4w6Z6EThjVQfC/gdYNb460HM6nurUHmXYspkS4R1cQLrryx70FCmqQntv1
+         tsgV9ECV6YcDKfNlVpnl2VYdVjOSEMg41u2aMYCXM5p6wALfJw9b8DSaeoYU8tB/ukpo
+         ZDqg==
+X-Gm-Message-State: AO0yUKXVUfRCo9lua3f27kFTNtm06jvdTBQ/z3wEd2OdaiblPaBAWZyw
+        jPnSQ54eFzaQTRJV29N2cVkUnHiCg/Uz/w==
+X-Google-Smtp-Source: AK7set/moY1L6F+ebE6HKWgvhvMgP5uM2L9z7Rmqe5nF1PsdDFF11lerf3DY0AEL23MzZqU7yIzsFA==
+X-Received: by 2002:ac8:5907:0:b0:3b8:3629:7cb7 with SMTP id 7-20020ac85907000000b003b836297cb7mr39427624qty.64.1677442428848;
+        Sun, 26 Feb 2023 12:13:48 -0800 (PST)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id k8-20020a05620a142800b0073ba211e765sm3591529qkj.19.2023.02.26.12.13.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Feb 2023 12:13:47 -0800 (PST)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-536af432ee5so124981857b3.0;
+        Sun, 26 Feb 2023 12:13:47 -0800 (PST)
+X-Received: by 2002:a81:af5f:0:b0:536:38b4:f51 with SMTP id
+ x31-20020a81af5f000000b0053638b40f51mr8731562ywj.5.1677442427017; Sun, 26 Feb
+ 2023 12:13:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="DyOWv91KpGSD+FpM"
-Content-Disposition: inline
+References: <20230113171026.582290-1-david@redhat.com> <20230113171026.582290-12-david@redhat.com>
+In-Reply-To: <20230113171026.582290-12-david@redhat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 26 Feb 2023 21:13:33 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX-FDga8w=pgg1myskEx6wp+oyZifhPPPFnWrc1zW7ZpQ@mail.gmail.com>
+Message-ID: <CAMuHMdX-FDga8w=pgg1myskEx6wp+oyZifhPPPFnWrc1zW7ZpQ@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable v1 11/26] microblaze/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        Michal Simek <monstr@monstr.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+Hi David,
 
---DyOWv91KpGSD+FpM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jan 13, 2023 at 6:16 PM David Hildenbrand <david@redhat.com> wrote:
+> Let's support __HAVE_ARCH_PTE_SWP_EXCLUSIVE by stealing one bit
+> from the type. Generic MM currently only uses 5 bits for the type
+> (MAX_SWAPFILES_SHIFT), so the stolen bit is effectively unused.
+>
+> The shift by 2 when converting between PTE and arch-specific swap entry
+> makes the swap PTE layout a little bit harder to decipher.
+>
+> While at it, drop the comment from paulus---copy-and-paste leftover
+> from powerpc where we actually have _PAGE_HASHPTE---and mask the type in
+> __swp_entry_to_pte() as well.
+>
+> Cc: Michal Simek <monstr@monstr.eu>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-This change simplifies the randomization of file mapping regions. It
-reworks the code to remove duplication. The flow is now similar to
-that for mips. Finally, we consistently use the do_color_align variable
-to determine when color alignment is needed.
+Thanks for your patch, which is now commit b5c88f21531c3457
+("microblaze/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE") in
 
-Tested on rp3440.
+>  arch/m68k/include/asm/mcf_pgtable.h   |  4 +--
 
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
----
+What is this m68k change doing here?
+Sorry for not noticing this earlier.
 
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_paris=
-c.c
-index 09a34b07f02e..39acccabf2ed 100644
---- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -25,31 +25,26 @@
- #include <linux/random.h>
- #include <linux/compat.h>
-=20
--/* we construct an artificial offset for the mapping based on the physical
-- * address of the kernel mapping variable */
--#define GET_LAST_MMAP(filp)		\
--	(filp ? ((unsigned long) filp->f_mapping) >> 8 : 0UL)
--#define SET_LAST_MMAP(filp, val)	\
--	 { /* nothing */ }
--
--static int get_offset(unsigned int last_mmap)
--{
--	return (last_mmap & (SHM_COLOUR-1)) >> PAGE_SHIFT;
--}
-+/*
-+ * Construct an artificial page offset for the mapping based on the physic=
-al
-+ * address of the kernel file mapping variable.
-+ */
-+#define GET_FILP_PGOFF(filp)		\
-+	(filp ? (((unsigned long) filp->f_mapping) >> 8)	\
-+		 & ((SHM_COLOUR-1) >> PAGE_SHIFT) : 0UL)
-=20
--static unsigned long shared_align_offset(unsigned int last_mmap,
-+static unsigned long shared_align_offset(unsigned long filp_pgoff,
- 					 unsigned long pgoff)
- {
--	return (get_offset(last_mmap) + pgoff) << PAGE_SHIFT;
-+	return (filp_pgoff + pgoff) << PAGE_SHIFT;
- }
-=20
- static inline unsigned long COLOR_ALIGN(unsigned long addr,
--			 unsigned int last_mmap, unsigned long pgoff)
-+			 unsigned long filp_pgoff, unsigned long pgoff)
- {
- 	unsigned long base =3D (addr+SHM_COLOUR-1) & ~(SHM_COLOUR-1);
- 	unsigned long off  =3D (SHM_COLOUR-1) &
--		(shared_align_offset(last_mmap, pgoff) << PAGE_SHIFT);
--
-+		shared_align_offset(filp_pgoff, pgoff);
- 	return base + off;
- }
-=20
-@@ -98,126 +93,91 @@ static unsigned long mmap_upper_limit(struct rlimit *r=
-lim_stack)
- 	return PAGE_ALIGN(STACK_TOP - stack_base);
- }
-=20
-+enum mmap_allocation_direction {UP, DOWN};
-=20
--unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
--		unsigned long len, unsigned long pgoff, unsigned long flags)
-+static unsigned long arch_get_unmapped_area_common(struct file *filp,
-+	unsigned long addr, unsigned long len, unsigned long pgoff,
-+	unsigned long flags, enum mmap_allocation_direction dir)
- {
- 	struct mm_struct *mm =3D current->mm;
- 	struct vm_area_struct *vma, *prev;
--	unsigned long task_size =3D TASK_SIZE;
--	int do_color_align, last_mmap;
-+	unsigned long filp_pgoff;
-+	int do_color_align;
- 	struct vm_unmapped_area_info info;
-=20
--	if (len > task_size)
-+	if (unlikely(len > TASK_SIZE))
- 		return -ENOMEM;
-=20
- 	do_color_align =3D 0;
- 	if (filp || (flags & MAP_SHARED))
- 		do_color_align =3D 1;
--	last_mmap =3D GET_LAST_MMAP(filp);
-+	filp_pgoff =3D GET_FILP_PGOFF(filp);
-=20
- 	if (flags & MAP_FIXED) {
--		if ((flags & MAP_SHARED) && last_mmap &&
--		    (addr - shared_align_offset(last_mmap, pgoff))
-+		/* Even MAP_FIXED mappings must reside within TASK_SIZE */
-+		if (TASK_SIZE - len < addr)
-+			return -EINVAL;
-+
-+		if ((flags & MAP_SHARED) && filp &&
-+		    (addr - shared_align_offset(filp_pgoff, pgoff))
- 				& (SHM_COLOUR - 1))
- 			return -EINVAL;
--		goto found_addr;
-+		return addr;
- 	}
-=20
- 	if (addr) {
--		if (do_color_align && last_mmap)
--			addr =3D COLOR_ALIGN(addr, last_mmap, pgoff);
-+		if (do_color_align)
-+			addr =3D COLOR_ALIGN(addr, filp_pgoff, pgoff);
- 		else
- 			addr =3D PAGE_ALIGN(addr);
-=20
- 		vma =3D find_vma_prev(mm, addr, &prev);
--		if (task_size - len >=3D addr &&
-+		if (TASK_SIZE - len >=3D addr &&
- 		    (!vma || addr + len <=3D vm_start_gap(vma)) &&
- 		    (!prev || addr >=3D vm_end_gap(prev)))
--			goto found_addr;
-+			return addr;
- 	}
-=20
--	info.flags =3D 0;
- 	info.length =3D len;
-+	info.align_mask =3D do_color_align ? (PAGE_MASK & (SHM_COLOUR - 1)) : 0;
-+	info.align_offset =3D shared_align_offset(filp_pgoff, pgoff);
-+
-+	if (dir =3D=3D DOWN) {
-+		info.flags =3D VM_UNMAPPED_AREA_TOPDOWN;
-+		info.low_limit =3D PAGE_SIZE;
-+		info.high_limit =3D mm->mmap_base;
-+		addr =3D vm_unmapped_area(&info);
-+		if (!(addr & ~PAGE_MASK))
-+			return addr;
-+		VM_BUG_ON(addr !=3D -ENOMEM);
-+
-+		/*
-+		 * A failed mmap() very likely causes application failure,
-+		 * so fall back to the bottom-up function here. This scenario
-+		 * can happen with large stack limits and large mmap()
-+		 * allocations.
-+		 */
-+	}
-+
-+	info.flags =3D 0;
- 	info.low_limit =3D mm->mmap_legacy_base;
- 	info.high_limit =3D mmap_upper_limit(NULL);
--	info.align_mask =3D last_mmap ? (PAGE_MASK & (SHM_COLOUR - 1)) : 0;
--	info.align_offset =3D shared_align_offset(last_mmap, pgoff);
--	addr =3D vm_unmapped_area(&info);
--
--found_addr:
--	if (do_color_align && !last_mmap && !(addr & ~PAGE_MASK))
--		SET_LAST_MMAP(filp, addr - (pgoff << PAGE_SHIFT));
--
--	return addr;
-+	return vm_unmapped_area(&info);
- }
-=20
--unsigned long
--arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr=
-0,
--			  const unsigned long len, const unsigned long pgoff,
--			  const unsigned long flags)
-+unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
-+	unsigned long len, unsigned long pgoff, unsigned long flags)
- {
--	struct vm_area_struct *vma, *prev;
--	struct mm_struct *mm =3D current->mm;
--	unsigned long addr =3D addr0;
--	int do_color_align, last_mmap;
--	struct vm_unmapped_area_info info;
--
--	/* requested length too big for entire address space */
--	if (len > TASK_SIZE)
--		return -ENOMEM;
--
--	do_color_align =3D 0;
--	if (filp || (flags & MAP_SHARED))
--		do_color_align =3D 1;
--	last_mmap =3D GET_LAST_MMAP(filp);
--
--	if (flags & MAP_FIXED) {
--		if ((flags & MAP_SHARED) && last_mmap &&
--		    (addr - shared_align_offset(last_mmap, pgoff))
--			& (SHM_COLOUR - 1))
--			return -EINVAL;
--		goto found_addr;
--	}
--
--	/* requesting a specific address */
--	if (addr) {
--		if (do_color_align && last_mmap)
--			addr =3D COLOR_ALIGN(addr, last_mmap, pgoff);
--		else
--			addr =3D PAGE_ALIGN(addr);
--
--		vma =3D find_vma_prev(mm, addr, &prev);
--		if (TASK_SIZE - len >=3D addr &&
--		    (!vma || addr + len <=3D vm_start_gap(vma)) &&
--		    (!prev || addr >=3D vm_end_gap(prev)))
--			goto found_addr;
--	}
--
--	info.flags =3D VM_UNMAPPED_AREA_TOPDOWN;
--	info.length =3D len;
--	info.low_limit =3D PAGE_SIZE;
--	info.high_limit =3D mm->mmap_base;
--	info.align_mask =3D last_mmap ? (PAGE_MASK & (SHM_COLOUR - 1)) : 0;
--	info.align_offset =3D shared_align_offset(last_mmap, pgoff);
--	addr =3D vm_unmapped_area(&info);
--	if (!(addr & ~PAGE_MASK))
--		goto found_addr;
--	VM_BUG_ON(addr !=3D -ENOMEM);
--
--	/*
--	 * A failed mmap() very likely causes application failure,
--	 * so fall back to the bottom-up function here. This scenario
--	 * can happen with large stack limits and large mmap()
--	 * allocations.
--	 */
--	return arch_get_unmapped_area(filp, addr0, len, pgoff, flags);
--
--found_addr:
--	if (do_color_align && !last_mmap && !(addr & ~PAGE_MASK))
--		SET_LAST_MMAP(filp, addr - (pgoff << PAGE_SHIFT));
-+	return arch_get_unmapped_area_common(filp,
-+			addr, len, pgoff, flags, UP);
-+}
-=20
--	return addr;
-+unsigned long arch_get_unmapped_area_topdown(struct file *filp,
-+	unsigned long addr, unsigned long len, unsigned long pgoff,
-+	unsigned long flags)
-+{
-+	return arch_get_unmapped_area_common(filp,
-+			addr, len, pgoff, flags, DOWN);
- }
-=20
- static int mmap_is_legacy(void)
+Furthermore, several things below look strange to me...
 
+>  arch/microblaze/include/asm/pgtable.h | 45 +++++++++++++++++++++------
+>  2 files changed, 37 insertions(+), 12 deletions(-)
+>
+> diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
+> index 3f8f4d0e66dd..e573d7b649f7 100644
+> --- a/arch/m68k/include/asm/mcf_pgtable.h
+> +++ b/arch/m68k/include/asm/mcf_pgtable.h
+> @@ -46,8 +46,8 @@
+>  #define _CACHEMASK040          (~0x060)
+>  #define _PAGE_GLOBAL040                0x400   /* 68040 global bit, used for kva descs */
+>
+> -/* We borrow bit 7 to store the exclusive marker in swap PTEs. */
+> -#define _PAGE_SWP_EXCLUSIVE    0x080
+> +/* We borrow bit 24 to store the exclusive marker in swap PTEs. */
+> +#define _PAGE_SWP_EXCLUSIVE    CF_PAGE_NOCACHE
 
+CF_PAGE_NOCACHE is 0x80, so this is still bit 7, thus the new comment
+is wrong?
 
---DyOWv91KpGSD+FpM
-Content-Type: application/pgp-signature; name="signature.asc"
+>
+>  /*
+>   * Externally used page protection values.
+> diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
+> index 42f5988e998b..7e3de54bf426 100644
+> --- a/arch/microblaze/include/asm/pgtable.h
+> +++ b/arch/microblaze/include/asm/pgtable.h
+> @@ -131,10 +131,10 @@ extern pte_t *va_to_pte(unsigned long address);
+>   * of the 16 available.  Bit 24-26 of the TLB are cleared in the TLB
+>   * miss handler.  Bit 27 is PAGE_USER, thus selecting the correct
+>   * zone.
+> - * - PRESENT *must* be in the bottom two bits because swap cache
+> - * entries use the top 30 bits.  Because 4xx doesn't support SMP
+> - * anyway, M is irrelevant so we borrow it for PAGE_PRESENT.  Bit 30
+> - * is cleared in the TLB miss handler before the TLB entry is loaded.
+> + * - PRESENT *must* be in the bottom two bits because swap PTEs use the top
+> + * 30 bits.  Because 4xx doesn't support SMP anyway, M is irrelevant so we
+> + * borrow it for PAGE_PRESENT.  Bit 30 is cleared in the TLB miss handler
+> + * before the TLB entry is loaded.
 
------BEGIN PGP SIGNATURE-----
+So the PowerPC 4xx comment is still here?
 
-iQIzBAABCAAdFiEEnRzl+6e9+DTrEhyEXb/Nrl8ZTfEFAmP7nu0ACgkQXb/Nrl8Z
-TfE+YRAAjM4w7SbarLM2dPIXc6LAumfkRD5ZTK+XMuiI8AcSoiWpR7DD34Y2LS3X
-WfRG1frrGD9NTB2fqK61x9Z+e6ujhlcKymXBHwRmg81voutLeGfYWJOVv5Qj+yU8
-eSfGKVVn+1fRPDVUG5OLI/tA9aN4CXh92xNui8E3r3qfF/BDFAlOCXeHMWPTW3kA
-IuaBk2xdV0rnFDX4e3Iasc7S6/6NgvR306oAI6xERXQSXPaUOiEF198nOXJLub7h
-D93V60EnKzF2E3G+J1W5Fh8SIhnFkuwRXPLJbVF/277K9iuXEbG5kJYtMUbltdGW
-kqeLu66h5UjQxK1ywM7B5gu9X2Ek5xmUCs3o+rEAVFUawcLShtTfelEu/ADeklLv
-84c4pmEpDitqMqrH+c/S5HUow/upDZSHK2bKSwfvTFip6osI1TORJRmNte8nXdtx
-s2FKZOv2qM0HFX2Oa066kh12udhRKKO3K5n25aFxlQhbm1kHivyosLRdrF51WLVO
-4hxs+EaA/EGX0kdFb+u9uT5cW8yn7PnLoayyCY4JWREAg2GxSHnu32cqC7NvlIJ0
-LACk9MAIMHon7dt2Cd7SGlVupd3Q7fExHMqjo+YbSZ8O7ZlPxJVVeKwihbgikumo
-bwbyuVj6u4S9xwyxD437G8W6FwxHMKyXQrLS6sScgQDVx195Fos=
-=etF7
------END PGP SIGNATURE-----
+>   * - All other bits of the PTE are loaded into TLBLO without
+>   *  * modification, leaving us only the bits 20, 21, 24, 25, 26, 30 for
+>   * software PTE bits.  We actually use bits 21, 24, 25, and
+> @@ -155,6 +155,9 @@ extern pte_t *va_to_pte(unsigned long address);
+>  #define _PAGE_ACCESSED 0x400   /* software: R: page referenced */
+>  #define _PMD_PRESENT   PAGE_MASK
+>
+> +/* We borrow bit 24 to store the exclusive marker in swap PTEs. */
+> +#define _PAGE_SWP_EXCLUSIVE    _PAGE_DIRTY
 
---DyOWv91KpGSD+FpM--
+_PAGE_DIRTY is 0x80, so this is also bit 7, thus the new comment is
+wrong?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
