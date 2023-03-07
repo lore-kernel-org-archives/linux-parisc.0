@@ -2,127 +2,131 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66A90C678D5
-	for <linux-parisc@archiver.kernel.org>; Tue,  7 Mar 2023 15:00:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5221C678D5
+	for <linux-parisc@archiver.kernel.org>; Tue,  7 Mar 2023 21:42:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbjCGPA4 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 7 Mar 2023 10:00:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
+        id S231183AbjCGVmD (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 7 Mar 2023 16:42:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbjCGPAP (ORCPT
+        with ESMTP id S230044AbjCGVmC (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 7 Mar 2023 10:00:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA74B9224B
-        for <linux-parisc@vger.kernel.org>; Tue,  7 Mar 2023 06:42:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678200165;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sqdAC23AFCpafEftyGbYSrYoVeo5kk0ftc/PmTPLnCU=;
-        b=RnC1oS1yl0HbZ6NepuOhyPYVwAjK6Mk7qGZXoASawD2ef7nVBqaZ6swRZ0HWFA2cmztZqt
-        qImrU8q6eS3qjV4LXLya5ja/QLYrcd0WUi3zCK+WDsUBEeEUEDh8l8rCy5jMaKPTkSM0zN
-        8OZ8AZBy8/I6JvGvtDb3ktw1MLPK6/0=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-316--Mbwj-W3NLC_0yM8Mt1Txw-1; Tue, 07 Mar 2023 09:36:31 -0500
-X-MC-Unique: -Mbwj-W3NLC_0yM8Mt1Txw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8FCA33C6986A;
-        Tue,  7 Mar 2023 14:36:30 +0000 (UTC)
-Received: from vschneid.remote.csb (unknown [10.33.37.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 79249401B290;
-        Tue,  7 Mar 2023 14:36:26 +0000 (UTC)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tue, 7 Mar 2023 16:42:02 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2814BA6740
+        for <linux-parisc@vger.kernel.org>; Tue,  7 Mar 2023 13:41:59 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id a2so15642638plm.4
+        for <linux-parisc@vger.kernel.org>; Tue, 07 Mar 2023 13:41:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112; t=1678225318;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h0UBWEzua7mI1E3a/+R1pzklpJ+RGJpYFy9mijom/UM=;
+        b=3d0i9L9fgsM6wfDV6SgEVPe2doCmA84h8dgaHpMbejZeZuQRklJuURRf6PhkCN7ukc
+         w/n+8nbuC+OW0mQWtjtERbzb9wBvkWnsuB3UcR0sH2Ba3g7FDMT+jDol43sV0ZSapUuU
+         afFVzDtGs7qaCnWpNgGUvXPCI9VeRCtjLQt1T3AcBXMLT19wGawFny88dkq7b+SM519J
+         izcWM0iUW0/Sac/AVhLneLvdpP7x0olNKc4YqRIWvevDICe0+qs1ypmIQEYjXt6H2n6Q
+         PGyqmNUpfeGmcTALJ+qCkHjqjpTn7tbuCsOrFtOo3YqXRw3n/PRxx6fcIN5oBf8fOwBc
+         hPrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678225318;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h0UBWEzua7mI1E3a/+R1pzklpJ+RGJpYFy9mijom/UM=;
+        b=Lo8OB0en1ckN4ax2QBFTlssP09ghX6FnFUzOY3tI57MDDnNxxxpW9EzMQokCUO3X0M
+         EMjinnedfi2caqXn49lR43Tfi1josFzfkURRbmwocA4s28nTs2zLrYf/zmTdD0cuOEcq
+         K0V6nzA7/P2P0eCIRiIUXHbN+u/V7a30HRTUBpR9t2RAVqlHsHZgcGsDe9d4e+miaTgr
+         5GGu/VElIuTaBXACpB0a4mql9kf88PVtuLRzF0N4MF5y121swdgT4Qi2AggV4I2mAVee
+         nu3ptvQtYhT1q9hTx8UGU6/p5ssBGC2Q6Sw0Lh9BopZW6vOXMftlJ4kgIMtsjhZgbwDz
+         tSnw==
+X-Gm-Message-State: AO0yUKV4+DxIGIIYAo6L2VszSrO3KZJjjPCDDRRR0BYxdAZvpdTlrPPw
+        A+IToRaEl3NOtknfewsTfc+LOg==
+X-Google-Smtp-Source: AK7set/K6eJAQf/eSbaq269PoSBswE0gsDc5h7lzSW9lr2zauw1plinMmCGHpVyR/4qKnDR1/eXDIg==
+X-Received: by 2002:a17:902:ce90:b0:19a:9434:af30 with SMTP id f16-20020a170902ce9000b0019a9434af30mr18505363plg.18.1678225318377;
+        Tue, 07 Mar 2023 13:41:58 -0800 (PST)
+Received: from localhost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id km12-20020a17090327cc00b0019e30e3068bsm8866509plb.168.2023.03.07.13.41.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Mar 2023 13:41:57 -0800 (PST)
+Date:   Tue, 07 Mar 2023 13:41:57 -0800 (PST)
+X-Google-Original-Date: Tue, 07 Mar 2023 13:40:59 PST (-0800)
+Subject:     Re: [PATCH v5 12/26] riscv: Remove COMMAND_LINE_SIZE from uapi
+In-Reply-To: <20230306100508.1171812-13-alexghiti@rivosinc.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>, corbet@lwn.net,
+        Richard Henderson <richard.henderson@linaro.org>,
+        ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org,
+        linux@armlinux.org.uk, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, chenhuacai@kernel.org,
+        kernel@xen0n.name, geert@linux-m68k.org, monstr@monstr.eu,
+        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+        svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
+        davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
         linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        x86@kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Guo Ren <guoren@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH v5 1/7] trace: Add trace_ipi_send_cpumask()
-Date:   Tue,  7 Mar 2023 14:35:52 +0000
-Message-Id: <20230307143558.294354-2-vschneid@redhat.com>
-In-Reply-To: <20230307143558.294354-1-vschneid@redhat.com>
-References: <20230307143558.294354-1-vschneid@redhat.com>
-MIME-Version: 1.0
+        linux-arch@vger.kernel.org, alexghiti@rivosinc.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alexghiti@rivosinc.com
+Message-ID: <mhng-d4be5bb5-f0ad-4e76-9b11-83732d233a45@palmer-ri-x1c9a>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-trace_ipi_raise() is unsuitable for generically tracing IPI sources due to
-its "reason" argument being an uninformative string (on arm64 all you get
-is "Function call interrupts" for SMP calls).
+On Mon, 06 Mar 2023 02:04:54 PST (-0800), alexghiti@rivosinc.com wrote:
+> As far as I can tell this is not used by userspace and thus should not
+> be part of the user-visible API.
+>
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/setup.h      | 7 +++++++
+>  arch/riscv/include/uapi/asm/setup.h | 2 --
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+>  create mode 100644 arch/riscv/include/asm/setup.h
+>
+> diff --git a/arch/riscv/include/asm/setup.h b/arch/riscv/include/asm/setup.h
+> new file mode 100644
+> index 000000000000..f165a14344e2
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/setup.h
+> @@ -0,0 +1,7 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +#ifndef _ASM_RISCV_SETUP_H
+> +#define _ASM_RISCV_SETUP_H
+> +
+> +#define COMMAND_LINE_SIZE       1024
+> +
+> +#endif /* _ASM_RISCV_SETUP_H */
+> diff --git a/arch/riscv/include/uapi/asm/setup.h b/arch/riscv/include/uapi/asm/setup.h
+> index 66b13a522880..17fcecd4a2f8 100644
+> --- a/arch/riscv/include/uapi/asm/setup.h
+> +++ b/arch/riscv/include/uapi/asm/setup.h
+> @@ -3,6 +3,4 @@
+>  #ifndef _UAPI_ASM_RISCV_SETUP_H
+>  #define _UAPI_ASM_RISCV_SETUP_H
+>
+> -#define COMMAND_LINE_SIZE	1024
+> -
+>  #endif /* _UAPI_ASM_RISCV_SETUP_H */
 
-Add a variant of it that exports a target cpumask, a callsite and a callback.
+Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
 
-Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/trace/events/ipi.h | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/include/trace/events/ipi.h b/include/trace/events/ipi.h
-index 0be71dad6ec03..b1125dc27682c 100644
---- a/include/trace/events/ipi.h
-+++ b/include/trace/events/ipi.h
-@@ -35,6 +35,28 @@ TRACE_EVENT(ipi_raise,
- 	TP_printk("target_mask=%s (%s)", __get_bitmask(target_cpus), __entry->reason)
- );
- 
-+TRACE_EVENT(ipi_send_cpumask,
-+
-+	TP_PROTO(const struct cpumask *cpumask, unsigned long callsite, void *callback),
-+
-+	TP_ARGS(cpumask, callsite, callback),
-+
-+	TP_STRUCT__entry(
-+		__cpumask(cpumask)
-+		__field(void *, callsite)
-+		__field(void *, callback)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_cpumask(cpumask, cpumask_bits(cpumask));
-+		__entry->callsite = (void *)callsite;
-+		__entry->callback = callback;
-+	),
-+
-+	TP_printk("cpumask=%s callsite=%pS callback=%pS",
-+		  __get_cpumask(cpumask), __entry->callsite, __entry->callback)
-+);
-+
- DECLARE_EVENT_CLASS(ipi_handler,
- 
- 	TP_PROTO(const char *reason),
--- 
-2.31.1
-
+Thanks!
