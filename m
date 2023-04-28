@@ -2,54 +2,54 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D4C4C7EE32
-	for <linux-parisc@archiver.kernel.org>; Fri, 28 Apr 2023 09:27:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FE22C77B61
+	for <linux-parisc@archiver.kernel.org>; Fri, 28 Apr 2023 09:27:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345588AbjD1J1W (ORCPT
+        id S1345715AbjD1J1Z (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 28 Apr 2023 05:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
+        Fri, 28 Apr 2023 05:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345592AbjD1J1S (ORCPT
+        with ESMTP id S229823AbjD1J1Q (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 28 Apr 2023 05:27:18 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74944496;
-        Fri, 28 Apr 2023 02:27:16 -0700 (PDT)
+        Fri, 28 Apr 2023 05:27:16 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244D930D2;
+        Fri, 28 Apr 2023 02:27:15 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 580052002E;
-        Fri, 28 Apr 2023 09:27:15 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9E3EC21E77;
+        Fri, 28 Apr 2023 09:27:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1682674035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1682674033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5VYWy/AvbpTwYMUvgq/Qf7JvO1LdK29uHbuVPQM8w+I=;
-        b=GVDAylSdFB2aC8MzuHMzQQpnFsJO4b+FYu4OUDiHDHTyD+mATNULQ82rwHCWtJJ2n7oa4O
-        wmtSxgAGOys9EGQlQlyGj32QskSRu6EmzTrpvbR8TcTaUiGEWxITGrBNjm9U13oGsvKd9E
-        L3rjOzqF3CBsko70lonU/BQKqTYWGMo=
+        bh=R/tS9JBmx3EXdW6NzCCqF9BfBp/DOJu84iEDqCwvGtE=;
+        b=wKxtEH3AScg58g5NxG0UbfbNTtkJ6JeTguhi0yuaWoVWndHRO9PO2Cf2ngyyGZzklX0dlO
+        rhmnAwE7AgpYoQ4Eo2vXMaT2+AzViZ8qqjtoGII7az2G3WnAitfDMDl2xQ5klB9iTSkfwE
+        b8WC6nl9qEmBzJMny3Akxy9v19U7+9M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1682674035;
+        s=susede2_ed25519; t=1682674033;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5VYWy/AvbpTwYMUvgq/Qf7JvO1LdK29uHbuVPQM8w+I=;
-        b=OVW7mKvhPqZ91zi25yBTo9BJR5O4Kqqzh5IohkbwFTzfRAquwndXbRpfe1BoyZ0d8UJeDt
-        2gGjf0nPmiJngkBg==
+        bh=R/tS9JBmx3EXdW6NzCCqF9BfBp/DOJu84iEDqCwvGtE=;
+        b=B8IcnCwTx9BI4HcJ/KMkG8g3A2nmCE6/2KeuB/KX+ZyJL+mELGUWP9cxf9z9UYuIKVsN/x
+        hrdnpVdBZlAPwVDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE31E139C3;
-        Fri, 28 Apr 2023 09:27:14 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3D5DD139C3;
+        Fri, 28 Apr 2023 09:27:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0HViOXKRS2ReFwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Fri, 28 Apr 2023 09:27:14 +0000
+        id oC0kDnGRS2ReFwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 28 Apr 2023 09:27:13 +0000
 From:   Thomas Zimmermann <tzimmermann@suse.de>
 To:     deller@gmx.de, geert@linux-m68k.org, javierm@redhat.com,
         daniel@ffwll.ch, vgupta@kernel.org, chenhuacai@kernel.org,
@@ -63,9 +63,9 @@ Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
         sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-parisc@vger.kernel.org,
         Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH v2 5/5] fbdev: Define framebuffer I/O from Linux' I/O functions
-Date:   Fri, 28 Apr 2023 11:27:11 +0200
-Message-Id: <20230428092711.406-6-tzimmermann@suse.de>
+Subject: [PATCH v2 1/5] fbdev/matrox: Remove trailing whitespaces
+Date:   Fri, 28 Apr 2023 11:27:07 +0200
+Message-Id: <20230428092711.406-2-tzimmermann@suse.de>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230428092711.406-1-tzimmermann@suse.de>
 References: <20230428092711.406-1-tzimmermann@suse.de>
@@ -75,113 +75,61 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Implement framebuffer I/O helpers, such as fb_read*() and fb_write*()
-with Linux' regular I/O functions. Remove all ifdef cases for the
-various architectures.
-
-Most of the supported architectures use __raw_() I/O functions or treat
-framebuffer memory like regular memory. This is also implemented by the
-architectures' I/O function, so we can use them instead.
-
-Sparc uses SBus to connect to framebuffer devices. It provides respective
-implementations of the framebuffer I/O helpers. The involved sbus_()
-I/O helpers map to the same code as Sparc's regular I/O functions. As
-with other platforms, we can use those instead.
-
-We leave a TODO item to replace all fb_() functions with their regular
-I/O counterparts throughout the fbdev drivers.
+Fix coding style. No functional changes.
 
 Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
 ---
- include/linux/fb.h | 63 +++++++++++-----------------------------------
- 1 file changed, 15 insertions(+), 48 deletions(-)
+ drivers/video/fbdev/matrox/matroxfb_accel.c | 6 +++---
+ drivers/video/fbdev/matrox/matroxfb_base.h  | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/fb.h b/include/linux/fb.h
-index 08cb47da71f8..4aa9e90edd17 100644
---- a/include/linux/fb.h
-+++ b/include/linux/fb.h
-@@ -15,7 +15,6 @@
- #include <linux/list.h>
- #include <linux/backlight.h>
- #include <linux/slab.h>
--#include <asm/io.h>
+diff --git a/drivers/video/fbdev/matrox/matroxfb_accel.c b/drivers/video/fbdev/matrox/matroxfb_accel.c
+index 9cb0685feddd..ce51227798a1 100644
+--- a/drivers/video/fbdev/matrox/matroxfb_accel.c
++++ b/drivers/video/fbdev/matrox/matroxfb_accel.c
+@@ -88,7 +88,7 @@
  
- struct vm_area_struct;
- struct fb_info;
-@@ -511,58 +510,26 @@ struct fb_info {
-  */
- #define STUPID_ACCELF_TEXT_SHIT
+ static inline void matrox_cfb4_pal(u_int32_t* pal) {
+ 	unsigned int i;
+-	
++
+ 	for (i = 0; i < 16; i++) {
+ 		pal[i] = i * 0x11111111U;
+ 	}
+@@ -96,7 +96,7 @@ static inline void matrox_cfb4_pal(u_int32_t* pal) {
  
--// This will go away
--#if defined(__sparc__)
--
--/* We map all of our framebuffers such that big-endian accesses
-- * are what we want, so the following is sufficient.
-+/*
-+ * TODO: Update fbdev drivers to call the I/O helpers directly and
-+ *       remove the fb_() tokens.
-  */
--
--// This will go away
--#define fb_readb sbus_readb
--#define fb_readw sbus_readw
--#define fb_readl sbus_readl
--#define fb_readq sbus_readq
--#define fb_writeb sbus_writeb
--#define fb_writew sbus_writew
--#define fb_writel sbus_writel
--#define fb_writeq sbus_writeq
--#define fb_memset sbus_memset_io
--#define fb_memcpy_fromfb sbus_memcpy_fromio
--#define fb_memcpy_tofb sbus_memcpy_toio
--
--#elif defined(__i386__) || defined(__alpha__) || defined(__x86_64__) ||	\
--	defined(__hppa__) || defined(__sh__) || defined(__powerpc__) ||	\
--	defined(__arm__) || defined(__aarch64__) || defined(__mips__)
--
--#define fb_readb __raw_readb
--#define fb_readw __raw_readw
--#define fb_readl __raw_readl
--#define fb_readq __raw_readq
--#define fb_writeb __raw_writeb
--#define fb_writew __raw_writew
--#define fb_writel __raw_writel
--#define fb_writeq __raw_writeq
-+#define fb_readb readb
-+#define fb_readw readw
-+#define fb_readl readl
-+#if defined(CONFIG_64BIT)
-+#define fb_readq readq
-+#endif
-+#define fb_writeb writeb
-+#define fb_writew writew
-+#define fb_writel writel
-+#if defined(CONFIG_64BIT)
-+#define fb_writeq writeq
-+#endif
- #define fb_memset memset_io
- #define fb_memcpy_fromfb memcpy_fromio
- #define fb_memcpy_tofb memcpy_toio
+ static inline void matrox_cfb8_pal(u_int32_t* pal) {
+ 	unsigned int i;
+-	
++
+ 	for (i = 0; i < 16; i++) {
+ 		pal[i] = i * 0x01010101U;
+ 	}
+@@ -482,7 +482,7 @@ static void matroxfb_1bpp_imageblit(struct matrox_fb_info *minfo, u_int32_t fgx,
+ 			/* Tell... well, why bother... */
+ 			while (height--) {
+ 				size_t i;
+-				
++
+ 				for (i = 0; i < step; i += 4) {
+ 					/* Hope that there are at least three readable bytes beyond the end of bitmap */
+ 					fb_writel(get_unaligned((u_int32_t*)(chardata + i)),mmio.vaddr);
+diff --git a/drivers/video/fbdev/matrox/matroxfb_base.h b/drivers/video/fbdev/matrox/matroxfb_base.h
+index 958be6805f87..c93c69bbcd57 100644
+--- a/drivers/video/fbdev/matrox/matroxfb_base.h
++++ b/drivers/video/fbdev/matrox/matroxfb_base.h
+@@ -301,9 +301,9 @@ struct matrox_altout {
+ 	int		(*verifymode)(void* altout_dev, u_int32_t mode);
+ 	int		(*getqueryctrl)(void* altout_dev,
+ 					struct v4l2_queryctrl* ctrl);
+-	int		(*getctrl)(void* altout_dev, 
++	int		(*getctrl)(void *altout_dev,
+ 				   struct v4l2_control* ctrl);
+-	int		(*setctrl)(void* altout_dev, 
++	int		(*setctrl)(void *altout_dev,
+ 				   struct v4l2_control* ctrl);
+ };
  
--#else
--
--#define fb_readb(addr) (*(volatile u8 *) (addr))
--#define fb_readw(addr) (*(volatile u16 *) (addr))
--#define fb_readl(addr) (*(volatile u32 *) (addr))
--#define fb_readq(addr) (*(volatile u64 *) (addr))
--#define fb_writeb(b,addr) (*(volatile u8 *) (addr) = (b))
--#define fb_writew(b,addr) (*(volatile u16 *) (addr) = (b))
--#define fb_writel(b,addr) (*(volatile u32 *) (addr) = (b))
--#define fb_writeq(b,addr) (*(volatile u64 *) (addr) = (b))
--#define fb_memset memset
--#define fb_memcpy_fromfb memcpy
--#define fb_memcpy_tofb memcpy
--
--#endif
--
- #define FB_LEFT_POS(p, bpp)          (fb_be_math(p) ? (32 - (bpp)) : 0)
- #define FB_SHIFT_HIGH(p, val, bits)  (fb_be_math(p) ? (val) >> (bits) : \
- 						      (val) << (bits))
 -- 
 2.40.0
 
