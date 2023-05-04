@@ -2,139 +2,70 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B81EEC77B75
-	for <linux-parisc@archiver.kernel.org>; Wed,  3 May 2023 20:38:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37167C77B75
+	for <linux-parisc@archiver.kernel.org>; Thu,  4 May 2023 03:13:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbjECUiZ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 3 May 2023 16:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
+        id S229648AbjEDDNd (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 3 May 2023 23:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjECUiY (ORCPT
+        with ESMTP id S229735AbjEDDNa (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 3 May 2023 16:38:24 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C434D1BFA;
-        Wed,  3 May 2023 13:38:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1683146295; i=deller@gmx.de;
-        bh=WbtO82rvqnofg6Vql73giIKq0gCF5O63zgx51A8dv+M=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=t8eFN1/soQoxV2k6EbqzLLQjTpnYT7WEvWezF9lj5DDdsjOis8gPlnk90ynu7Bmak
-         X6fPMp299A7yxHNYAZpDFxCS5ONByfy+B3nYyCutK22uPKg7dk4uowxXdowbr4/ixm
-         7Tu+fhL2RsPMsFLx3j7mEmGUcQDUbqG2OHY7B0fLq/1rpg8FTa/poHfs3USz0w7ZRi
-         1FtsFKGIQMxFmyMPLabQOVUDABB61QUsvqWHofeAIO4hga9AcrtmFk+BNl7Tlbd95W
-         9FbILiT9RkV99RBkvD+qWBvcuVD4wkOXhmJXc0D1yTiO5seZJ4aeAkirPvs18oxi5E
-         BWWsJKOFBuLZw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from p100 ([94.134.144.191]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MtOGU-1qESFs3lsM-00urGn; Wed, 03
- May 2023 22:38:14 +0200
-Date:   Wed, 3 May 2023 22:38:12 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Wed, 3 May 2023 23:13:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E807F107;
+        Wed,  3 May 2023 20:13:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C33761142;
+        Thu,  4 May 2023 03:13:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E06DFC433D2;
+        Thu,  4 May 2023 03:13:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683170008;
+        bh=4fzGFUbk2IxyPs28j1fiZXOG5k6nDVG5tTY8Mi72EuE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=MwDc2ycPv2+Af97IALXrpnkooInfwhFRzK4/JOlafdTnSNmkBh4AFdpCPWdAgGkR3
+         WlNAxNz/yZWYDa4bskczLIFB2U31cVLdkle1GNxAx3zW4uCQTYtfbQOcgIGbGMZpCn
+         M36KZj1DmonR1bqJSd4bDAukNRpAln7NUhNoF1JxdWsHWDl5I32QT9a0z+1IQbuqOt
+         uS5rhQXWhebhnT0S+J3nU7ut6xncJAZqCAGRmQgUbMtbR+59GmFpAiPpajHMJ4mVNd
+         YgnhmtQHNi2mkEawmzkonzRvEYfx2wuqgvyz/sQCEi+PI2Kv83cH2OXgvqQFcn7wIi
+         hdmCkl+s8yaMw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CEAF4E5FFC9;
+        Thu,  4 May 2023 03:13:28 +0000 (UTC)
+Subject: Re: [GIT PULL] parisc architecture fixes for v6.4-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZFLGNBvD7LbjKbu7@p100>
+References: <ZFLGNBvD7LbjKbu7@p100>
+X-PR-Tracked-List-Id: <linux-parisc.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZFLGNBvD7LbjKbu7@p100>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.4-1
+X-PR-Tracked-Commit-Id: 6e3220ba3323a2c24be834aebf5d6e9f89d0993f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 1a5304fecee523060f26e2778d9d8e33c0562df3
+Message-Id: <168317000883.23861.1282965046184313922.pr-tracker-bot@kernel.org>
+Date:   Thu, 04 May 2023 03:13:28 +0000
+To:     Helge Deller <deller@gmx.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
         James Bottomley <James.Bottomley@hansenpartnership.com>,
         John David Anglin <dave.anglin@bell.net>
-Subject: [GIT PULL] parisc architecture fixes for v6.4-rc1
-Message-ID: <ZFLGNBvD7LbjKbu7@p100>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:L9QAoakUzGLtfuJV6bQ+Z3SzhASXhY/jccPnTXcTJCxCTuNjA2r
- WMes8FnIqZzU07QM1Ofc6/11R8WVM4ZgJJmAxlvsgSV/trl8+eUY74f5GTwVb88+9t6kqgm
- B7UKWP1TW/FkTPCwr39Y5fjDGscblXwMVPNNn/jrITj7kxObga71mwUPkyJDEe1E0jQTfBN
- l7MfcenDFCDbXmYtn6riA==
-UI-OutboundReport: notjunk:1;M01:P0:JrosATKi0uE=;Xf3ry0Cp2bNnZsUfwKWjMXujoqy
- ZLFHiRinkyOsujCljBXMPpOwtnG9X0rphfVsSP1iuqev8/+SGTq8K1P8lBEO1LN6iNc8kZf7r
- Z4apKCqyTZDYs1AOfnBC3/6yyxsz+zkUetcNfs1peOUCApYO7J3XKkSF0jCK+4F+zZ0GrZGBM
- B7Ml9PlJ8jtzJanbIQ6S6lrwy0i9FqivEjFQE/hK0SPURcMsWeg6gJgmFAzzSI0cYFIN6C514
- jwsxAGmgKOkSCiTC2BgmPMEQvw65OnKcU0OevB4GeeONAbwGaxVQDNDW9Auxr8rLiuuDWUSwC
- eRORKaV4E7dAeHDMGFyvEK8NvhPsV7D6c3g/0G6S/PUsPcEk7+PXFsmIxconlVCWeYE99IsJJ
- vfoQrtLfYVmcp0/x1RzzmflOTE++v2PYIC9HVyVWtQmQ9iHOso4stWczDcvD6aOHFbiRslic2
- ppDlkBWcTBTw76dEpZzfmRp42xa2R/SVSHzDbev5HtJsf/XuovQILkLNSRl7f5pZTfkxeYwSP
- n9I8P+4rpsX1UAWmrL8E2O6gDGD3hlLtVQtWkeS+zuG86fsFcvKLqX79Fqb7X/G327X+Nibwg
- V70t47j4Yr+mvWgZW7B3KJA2KfPdAfds2+wHWeTXH3/BbVc/W/wh9Zk+RZHWccS//z+YVIJ2/
- uN+R+qxz3jBafD/nAlAd2RgZ4sTtGG6e4nxA7YvxdCnmTdNzEtzHTbNU9hEsdRogbdDE0MeOU
- cufN4hQVXD3BvprpJdZr9iVSON06d5aoQBEV/ZXv/caq9GDbiFZGfEFQ1pOGYUFnXP5mBvdeU
- 8/fdSAlIHSAI6H8IsAmCljLKfPppRDJnsEmX6KmI1TYKP8CShsvCulJ55gGKaYMCIMpFlXxG1
- zL84HYY3beuSbdYgmnSklni62nLz/DCOevqpHmRWbVdcdrsDxQuA848RvIM58/vqZxFOoCngA
- oqKmzlrm0lI3ZWBzRWW1G/QL1hY=
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-Hi Linus,
+The pull request you sent on Wed, 3 May 2023 22:38:12 +0200:
 
-please pull the parisc architecture updates and fixes for 6.4-rc1:
+> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.4-1
 
-Two important fixes in here:
-* The argument pointer register was wrong when calling 64-bit firmware
-  functions, which may cause random memory corruption or crashes.
-* Ensure page alignment in cache flush functions, otherwise not all
-  memory might get flushed.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/1a5304fecee523060f26e2778d9d8e33c0562df3
 
-The other patches are cleanups (mmap implementation, panic path) and
-usual smaller updates.
+Thank you!
 
-All patches, with the execption of the argument pointer patch, have been
-in stable since weeks. I rebased to fix a small conflict in the
-docs to make pulling easier for you.
-
-Thanks,
-Helge
-
-=2D--
-The following changes since commit 348551ddaf311c76b01cdcbaf61b6fef06a4914=
-4:
-
-  Merge tag 'pinctrl-v6.4-1' of git://git.kernel.org/pub/scm/linux/kernel/=
-git/linusw/linux-pinctrl (2023-05-02 15:40:41 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git ta=
-gs/parisc-for-6.4-1
-
-for you to fetch changes up to 6e3220ba3323a2c24be834aebf5d6e9f89d0993f:
-
-  parisc: Fix argument pointer in real64_call_asm() (2023-05-03 17:43:26 +=
-0200)
-
-=2D---------------------------------------------------------------
-parisc architecture updates and fixes for kernel v6.4-rc1:
-
-- Calculate correct argument pointer in real64_call_asm()
-- Cleanup mmap implementation regarding color alignment (John David Anglin=
-)
-- Spinlock fixes in panic path (Guilherme G. Piccoli)
-- build doc update for parisc64 (Randy Dunlap)
-- Ensure page alignment in flush functions
-
-=2D---------------------------------------------------------------
-Guilherme G. Piccoli (1):
-      parisc: Replace regular spinlock with spin_trylock on panic path
-
-Helge Deller (4):
-      parisc: Limit amount of kgdb breakpoints on parisc
-      parisc: Ensure page alignment in flush functions
-      parisc: Drop HP-UX constants and structs from grfioctl.h
-      parisc: Fix argument pointer in real64_call_asm()
-
-John David Anglin (1):
-      parisc: Cleanup mmap implementation regarding color alignment
-
-Randy Dunlap (1):
-      parisc: update kbuild doc. aliases for parisc64
-
- Documentation/kbuild/kbuild.rst    |   1 +
- arch/parisc/include/asm/grfioctl.h |  38 ---------
- arch/parisc/include/asm/kgdb.h     |   2 +
- arch/parisc/include/asm/pdc.h      |   1 +
- arch/parisc/kernel/firmware.c      |  27 +++++-
- arch/parisc/kernel/pacache.S       |   2 +
- arch/parisc/kernel/real2.S         |   5 +-
- arch/parisc/kernel/sys_parisc.c    | 166 ++++++++++++++------------------=
------
- drivers/parisc/power.c             |  16 ++--
- 9 files changed, 104 insertions(+), 154 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
