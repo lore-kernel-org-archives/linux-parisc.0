@@ -2,37 +2,37 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C081EC7EE24
-	for <linux-parisc@archiver.kernel.org>; Mon,  8 May 2023 19:46:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBF36C7EE2C
+	for <linux-parisc@archiver.kernel.org>; Mon,  8 May 2023 19:47:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234066AbjEHTqt (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 8 May 2023 15:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58024 "EHLO
+        id S233866AbjEHTrG (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 8 May 2023 15:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233812AbjEHTqE (ORCPT
+        with ESMTP id S233746AbjEHTqi (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 8 May 2023 15:46:04 -0400
+        Mon, 8 May 2023 15:46:38 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F062972A6;
-        Mon,  8 May 2023 12:44:46 -0700 (PDT)
-Message-ID: <20230508185218.643400362@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B47961BD;
+        Mon,  8 May 2023 12:44:55 -0700 (PDT)
+Message-ID: <20230508185219.123719053@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683575047;
+        s=2020; t=1683575062;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=hx5fWQqpBJqFhc3VD4cFl0lkC1fEFtezXeQ/kkMDuYM=;
-        b=dMSiYiyMCD3/kfD6ycKkp08Cs2yGyR46ibmTbUZ4EPuuwnERkLqo1DPunwf9Bd+Lh282Kk
-        iyz5crAqn34/Z1DU1FdeHq8w2ICxkwvwPupWSapQM5bKWcd06oqKMF65CPiBv3i5Jdq5GK
-        No9UCLkO9a75FWDWNjS5cUfUlOLyZkVKjYuIut6Mde17+klVjF/vsV/x/8XZgC94CcLGgL
-        esCNz6eRqlPWNCIMyIyPzBMIvNBVYenPTUQOWaJr4izZS/Q4K0oHTNZvGzzHj78cMSROKA
-        7adYzjGge8G4Bi2MTD6vyk5VOcXBsF4npN+FHo+bMYD6KtCMSa31T9g3imKuVQ==
+         references:references; bh=6WUCUG1CCgVCdNI4CLJSTwJWrFInFv2K4B15hgoY0Kw=;
+        b=2Bs14rnpSX2uI3czdlUR6dxpOrB8cEiRoXze+GgpUpTrI18Aq7yjGjS1XrIAZlUcMz3uMd
+        81Ee1d8CAuUMu/Cea+MINgrvBWHwWj7aDMuNr9CKHOJX1LeWVUg0eeYcWQU9yCm43mA5jI
+        nFRUbISTZF5fup1DHvzKGJ2Ro5zcwHRYKT108/qXaIregxzdzIyi6qtb0OSPviLcC3U5Mv
+        hOogc1YJR/1XoEgdejSpRreCY8gNmg522997lkxJczmDMtlDTe0lWlFMtvRe2lPbkikk5B
+        AJmhANjWq9Jk3iE2vBuDwP6T9O4FvPd4wQJubneDx2wjQYPHoPvHEFI2vraUuA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683575047;
+        s=2020e; t=1683575062;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=hx5fWQqpBJqFhc3VD4cFl0lkC1fEFtezXeQ/kkMDuYM=;
-        b=5H4Y1AwaHO6MuLieAAEsSuc7IElwyyxQTr8AXtmBcHORWW1C5BYTyvmgYBKAcPiBa35CdM
-        lrZnB79si3SXI4BQ==
+         references:references; bh=6WUCUG1CCgVCdNI4CLJSTwJWrFInFv2K4B15hgoY0Kw=;
+        b=hCFX0auSqHWTem7lXZILDzRTaJhCgFeurJJC+rgTLqc9kN9+C6WS+qXnmDMKwZNzqpefKl
+        nTGLqooH8Ea+o8DQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -66,71 +66,164 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         linux-riscv@lists.infradead.org,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: [patch v3 25/36] parisc: Switch to hotplug core state synchronization
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        David Woodhouse <dwmw@amazon.co.uk>
+Subject: [patch v3 34/36] x86/smpboot: Implement a bit spinlock to protect the
+ realmode stack
 References: <20230508181633.089804905@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon,  8 May 2023 21:44:07 +0200 (CEST)
+Date:   Mon,  8 May 2023 21:44:22 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Switch to the CPU hotplug core state tracking and synchronization
-mechanim. No functional change intended.
+Parallel AP bringup requires that the APs can run fully parallel through
+the early startup code including the real mode trampoline.
 
+To prepare for this implement a bit-spinlock to serialize access to the
+real mode stack so that parallel upcoming APs are not going to corrupt each
+others stack while going through the real mode startup code.
+
+Co-developed-by: David Woodhouse <dwmw@amazon.co.uk>
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Michael Kelley <mikelley@microsoft.com>
 
 
 ---
- arch/parisc/Kconfig          |    1 +
- arch/parisc/kernel/process.c |    4 ++--
- arch/parisc/kernel/smp.c     |    7 +++----
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/realmode.h      |    3 +++
+ arch/x86/kernel/head_64.S            |   13 +++++++++++++
+ arch/x86/realmode/init.c             |    3 +++
+ arch/x86/realmode/rm/trampoline_64.S |   27 ++++++++++++++++++++++-----
+ 4 files changed, 41 insertions(+), 5 deletions(-)
 ---
 
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -57,6 +57,7 @@ config PARISC
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_REGS_AND_STACK_ACCESS_API
-+	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
- 	select GENERIC_SCHED_CLOCK
- 	select GENERIC_IRQ_MIGRATION if SMP
- 	select HAVE_UNSTABLE_SCHED_CLOCK if SMP
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -166,8 +166,8 @@ void __noreturn arch_cpu_idle_dead(void)
+--- a/arch/x86/include/asm/realmode.h
++++ b/arch/x86/include/asm/realmode.h
+@@ -52,6 +52,7 @@ struct trampoline_header {
+ 	u64 efer;
+ 	u32 cr4;
+ 	u32 flags;
++	u32 lock;
+ #endif
+ };
  
- 	local_irq_disable();
+@@ -64,6 +65,8 @@ extern unsigned long initial_stack;
+ extern unsigned long initial_vc_handler;
+ #endif
  
--	/* Tell __cpu_die() that this CPU is now safe to dispose of. */
--	(void)cpu_report_death();
-+	/* Tell the core that this CPU is now safe to dispose of. */
-+	cpuhp_ap_report_dead();
++extern u32 *trampoline_lock;
++
+ extern unsigned char real_mode_blob[];
+ extern unsigned char real_mode_relocs[];
  
- 	/* Ensure that the cache lines are written out. */
- 	flush_cache_all_local();
---- a/arch/parisc/kernel/smp.c
-+++ b/arch/parisc/kernel/smp.c
-@@ -500,11 +500,10 @@ int __cpu_disable(void)
- void __cpu_die(unsigned int cpu)
- {
- 	pdc_cpu_rendezvous_lock();
-+}
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -252,6 +252,17 @@ SYM_INNER_LABEL(secondary_startup_64_no_
+ 	movq	TASK_threadsp(%rax), %rsp
  
--	if (!cpu_wait_death(cpu, 5)) {
--		pr_crit("CPU%u: cpu didn't die\n", cpu);
--		return;
--	}
-+void arch_cpuhp_cleanup_dead_cpu(unsigned int cpu)
-+{
- 	pr_info("CPU%u: is shutting down\n", cpu);
+ 	/*
++	 * Now that this CPU is running on its own stack, drop the realmode
++	 * protection. For the boot CPU the pointer is NULL!
++	 */
++	movq	trampoline_lock(%rip), %rax
++	testq	%rax, %rax
++	jz	.Lsetup_gdt
++	lock
++	btrl	$0, (%rax)
++
++.Lsetup_gdt:
++	/*
+ 	 * We must switch to a new descriptor in kernel space for the GDT
+ 	 * because soon the kernel won't have access anymore to the userspace
+ 	 * addresses where we're currently running on. We have to do that here
+@@ -433,6 +444,8 @@ SYM_DATA(initial_code,	.quad x86_64_star
+ #ifdef CONFIG_AMD_MEM_ENCRYPT
+ SYM_DATA(initial_vc_handler,	.quad handle_vc_boot_ghcb)
+ #endif
++
++SYM_DATA(trampoline_lock, .quad 0);
+ 	__FINITDATA
  
- 	/* set task's state to interruptible sleep */
+ 	__INIT
+--- a/arch/x86/realmode/init.c
++++ b/arch/x86/realmode/init.c
+@@ -154,6 +154,9 @@ static void __init setup_real_mode(void)
+ 
+ 	trampoline_header->flags = 0;
+ 
++	trampoline_lock = &trampoline_header->lock;
++	*trampoline_lock = 0;
++
+ 	trampoline_pgd = (u64 *) __va(real_mode_header->trampoline_pgd);
+ 
+ 	/* Map the real mode stub as virtual == physical */
+--- a/arch/x86/realmode/rm/trampoline_64.S
++++ b/arch/x86/realmode/rm/trampoline_64.S
+@@ -37,6 +37,24 @@
+ 	.text
+ 	.code16
+ 
++.macro LOAD_REALMODE_ESP
++	/*
++	 * Make sure only one CPU fiddles with the realmode stack
++	 */
++.Llock_rm\@:
++	btl	$0, tr_lock
++	jnc	2f
++	pause
++	jmp	.Llock_rm\@
++2:
++	lock
++	btsl	$0, tr_lock
++	jc	.Llock_rm\@
++
++	# Setup stack
++	movl	$rm_stack_end, %esp
++.endm
++
+ 	.balign	PAGE_SIZE
+ SYM_CODE_START(trampoline_start)
+ 	cli			# We should be safe anyway
+@@ -49,8 +67,7 @@ SYM_CODE_START(trampoline_start)
+ 	mov	%ax, %es
+ 	mov	%ax, %ss
+ 
+-	# Setup stack
+-	movl	$rm_stack_end, %esp
++	LOAD_REALMODE_ESP
+ 
+ 	call	verify_cpu		# Verify the cpu supports long mode
+ 	testl   %eax, %eax		# Check for return code
+@@ -93,8 +110,7 @@ SYM_CODE_START(sev_es_trampoline_start)
+ 	mov	%ax, %es
+ 	mov	%ax, %ss
+ 
+-	# Setup stack
+-	movl	$rm_stack_end, %esp
++	LOAD_REALMODE_ESP
+ 
+ 	jmp	.Lswitch_to_protected
+ SYM_CODE_END(sev_es_trampoline_start)
+@@ -177,7 +193,7 @@ SYM_CODE_START(pa_trampoline_compat)
+ 	 * In compatibility mode.  Prep ESP and DX for startup_32, then disable
+ 	 * paging and complete the switch to legacy 32-bit mode.
+ 	 */
+-	movl	$rm_stack_end, %esp
++	LOAD_REALMODE_ESP
+ 	movw	$__KERNEL_DS, %dx
+ 
+ 	movl	$(CR0_STATE & ~X86_CR0_PG), %eax
+@@ -241,6 +257,7 @@ SYM_DATA_START(trampoline_header)
+ 	SYM_DATA(tr_efer,		.space 8)
+ 	SYM_DATA(tr_cr4,		.space 4)
+ 	SYM_DATA(tr_flags,		.space 4)
++	SYM_DATA(tr_lock,		.space 4)
+ SYM_DATA_END(trampoline_header)
+ 
+ #include "trampoline_common.S"
 
 
