@@ -2,48 +2,48 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2071C77B7D
-	for <linux-parisc@archiver.kernel.org>; Wed, 10 May 2023 20:49:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50537C77B7C
+	for <linux-parisc@archiver.kernel.org>; Wed, 10 May 2023 20:52:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236740AbjEJUtl (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 10 May 2023 16:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
+        id S236957AbjEJUwF (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 10 May 2023 16:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236781AbjEJUtb (ORCPT
+        with ESMTP id S236961AbjEJUve (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 10 May 2023 16:49:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7301718;
-        Wed, 10 May 2023 13:49:26 -0700 (PDT)
+        Wed, 10 May 2023 16:51:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D1EE9EDC;
+        Wed, 10 May 2023 13:51:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3EFB464055;
-        Wed, 10 May 2023 20:49:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80FDCC4331F;
-        Wed, 10 May 2023 20:49:25 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3AE0D63FF5;
+        Wed, 10 May 2023 20:50:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81EFDC4339B;
+        Wed, 10 May 2023 20:50:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683751765;
-        bh=9rGJoJO7RgySdArNWzGJPgLnRAXGcjh9LFZnabg/7Z4=;
+        s=k20201202; t=1683751807;
+        bh=NmeAihU+l9US5FZym48z2oc5TV/w6wDH93dkXnSsAy8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ONtyHj08tiTt5EJZ1JKEhY66TrTTHzoxiuTOORon/jy/2kp2Pt9A5P3rcspkVZVRU
-         d/RbmCpV/CK97nMkVXOEO72hY1OXkeSWC3VVKSJJ4I/cRcQs48CqRqn4SfWZzYOdgf
-         jlG32KbZqOrhebx2U0LG1eIX0aqf5BaTO50pWFR1wJ5l5nIHZi3CaArGsQRNXFx8RE
-         IXH78VPQB/AWlqZz4D4CJT28MqO5umBGEX1x5gMJxejofEq/ZpmrtMV5xII3TN6ZK9
-         p/Axx+BK20zIS3q1TTKWyd/5dhtv6JC7BuuRpVg3CJBv4v2JUZaXC8fTzGLIg5n6eG
-         H38KmU3QfzCIw==
+        b=Xp3vGro2kOVtbOP/WkV71B3oFjx8IWJcYwul401wAK0ZVv/ZX4s/Z5h0mJwuabfoB
+         OiOQiwcS+FAKkETZytdopicOtMnWL6OjsG1yJR5JgP9h7UGv+98RZri2WGtohz1tRo
+         rg9nNAeAPEN6HXXSRSaflSlJsMfEKttT2rTFU5oxlbqXIsaGfZsWwsYtVLQnyINwQ9
+         ezB3XoOUxsHZSsYBz07auotRisjwR3fYHzcYZfSi5Q+FIFNzVnx7pvcsH5MTWqmq/s
+         LAtTbeQghldP9CXqEsTnATIOC8xnO3CqIT2wVMYxNp4mhpF6gc8dJ1hhWwpGkxphDb
+         7CQdnjm0h20+Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Jeroen Roovers <jer@xs4all.nl>, Helge Deller <deller@gmx.de>,
         Sasha Levin <sashal@kernel.org>, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.3 9/9] parisc: Replace regular spinlock with spin_trylock on panic path
-Date:   Wed, 10 May 2023 16:49:05 -0400
-Message-Id: <20230510204905.104628-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 8/8] parisc: Replace regular spinlock with spin_trylock on panic path
+Date:   Wed, 10 May 2023 16:49:49 -0400
+Message-Id: <20230510204950.104873-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230510204905.104628-1-sashal@kernel.org>
-References: <20230510204905.104628-1-sashal@kernel.org>
+In-Reply-To: <20230510204950.104873-1-sashal@kernel.org>
+References: <20230510204950.104873-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -80,7 +80,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 34 insertions(+), 10 deletions(-)
 
 diff --git a/arch/parisc/include/asm/pdc.h b/arch/parisc/include/asm/pdc.h
-index 40793bef8429f..2b4fad8328e85 100644
+index fcbcf9a96c111..77622558bf651 100644
 --- a/arch/parisc/include/asm/pdc.h
 +++ b/arch/parisc/include/asm/pdc.h
 @@ -80,6 +80,7 @@ int pdc_do_firm_test_reset(unsigned long ftc_bitmap);
@@ -92,7 +92,7 @@ index 40793bef8429f..2b4fad8328e85 100644
  void pdc_io_reset_devices(void);
  int pdc_iodc_getc(void);
 diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
-index 6817892a2c585..cc124d9f1f7f7 100644
+index bd325f2b5349e..3e051a973e9b2 100644
 --- a/arch/parisc/kernel/firmware.c
 +++ b/arch/parisc/kernel/firmware.c
 @@ -1232,15 +1232,18 @@ int __init pdc_soft_power_info(unsigned long *power_reg)
