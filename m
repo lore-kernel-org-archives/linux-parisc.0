@@ -2,64 +2,65 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60C7AC77B7C
-	for <linux-parisc@archiver.kernel.org>; Wed, 24 May 2023 15:26:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F280EC77B73
+	for <linux-parisc@archiver.kernel.org>; Wed, 24 May 2023 15:27:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235363AbjEXP0r (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 24 May 2023 11:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
+        id S235867AbjEXP07 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 24 May 2023 11:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234883AbjEXP0q (ORCPT
+        with ESMTP id S235805AbjEXP06 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 24 May 2023 11:26:46 -0400
+        Wed, 24 May 2023 11:26:58 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12702122;
-        Wed, 24 May 2023 08:26:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D3D10B;
+        Wed, 24 May 2023 08:26:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1684941999; i=deller@gmx.de;
-        bh=+u+YPRciweWPPguaxEgTzruDX0igJ4dkk2Wtadt6QVA=;
+        t=1684941998; i=deller@gmx.de;
+        bh=+7ESBTMnHGzg+BKexPIHQjMLlUGjKMaqw4IK8630UvE=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=tgq8QwkypsPRETeu+19MR6ZTBDZejuyxcvDSAhNK6C9kPDFZoR+sLoUmYrLp2v0qQ
-         Oo+R6oMG/ZhVh9nYB0o6ro85A/Xo8KQNLZvQL4nEvq+lrObnYr5+lObF8oGxIPXJsO
-         KrwsLQ8A6uxnCygqj5B8dz2XFfHHfzU7addqr6c0kFUZACz7xFiCyHB8Kxp/ERPjg7
-         SqxDyZ6Xly9UkoUTsoAvLoxekB4JFUzsjbgAnBk/dL2E7J1QkVNa2fDDVZsaYIUfSe
-         oXNS3i2IQaAIyyKqYQIV/hFGfBwd4eBAbR6jiNv/07fDPECCeq2iD3Qk5ptDn1LqBK
-         iBOsESCtXF0rg==
+        b=VUgJ0nXppL2cSoQPfPaZ9sFoxXNPq3sAWnlS2eRSnwHoGM5lbpghuqTKcBqWr9TDX
+         RUsG/RFliWFIYSrqEI05t/eIeRWNPqVyrZAwx7GxnoLF3fVr6lvlCthH4DJZ/Jhb16
+         669t/7BzI8s69lwdGSilAdF6c/JFoe+j3AmbP7hUwxdxd3hJMkd932eketQdzP9NY5
+         GTWCklCGS+Wuiu3nbXe4y25H6BVN8GkQXkvVxr8sgJXYEQXm8cgWhNN2AIpbAYEotr
+         HjdIl7dnTtbp8S72+y+7QGsAZt2Czp3J9+AE0y2dMQFVN+NHtJBvFPjvDKmU77XqSi
+         HYRkvFP580uLA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from p100.fritz.box ([94.134.145.4]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N7R1J-1qCC9r3QFB-017m18; Wed, 24
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mlw7f-1qS4a526J1-00j47c; Wed, 24
  May 2023 17:26:38 +0200
 From:   Helge Deller <deller@gmx.de>
 To:     linux@armlinux.org.uk, dinguyen@kernel.org,
         linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-Cc:     Helge Deller <deller@gmx.de>
-Subject: [PATCH 3/3] parisc: Fix flush_dcache_page() for usage from irq context
-Date:   Wed, 24 May 2023 17:26:33 +0200
-Message-Id: <20230524152633.203927-4-deller@gmx.de>
+Cc:     Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/3] arm: Fix flush_dcache_page() for usage from irq context
+Date:   Wed, 24 May 2023 17:26:31 +0200
+Message-Id: <20230524152633.203927-2-deller@gmx.de>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20230524152633.203927-1-deller@gmx.de>
 References: <20230524152633.203927-1-deller@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1nlE0hasgl6gijxKoEdYfyHTI6vIMSOKaK+RqkKBabLx7UsK7Xo
- npxRasd38wBp+V4q8fJGGVe6hCTQhHravYda1JFL6bI2UYwo7iwgzUnZI624CMkgi1y9ue+
- DMb4jU4oy7QsTpmV/pY1WrN/dhtRBMyXkX+fMTt93HK/7yj+1uyp8VTelCIFyk84EKJo4c8
- wlcGYzf8BJ56dyHSvi44A==
-UI-OutboundReport: notjunk:1;M01:P0:E+j+R85yQko=;gNHlAFRU0+wZJTeqYwEDvCqffmo
- 2TQXCFebAzwn7rcTvYSRGbe7rcv2TP1t59xR9J2ZnolsYc8GYpPMZUrshiTcnz9zt6/hVSTXW
- y/9mX0vPvgIVYE4lN3GZkAbuQaIZo8Qas2zo9VWhsbApwseyT/CM9zuXBqaWUiKCwIVkAeCOL
- lkaSJazdaicSv6XhNQdQii8XiQYwZgDD9ns5STZtIhsia81lXB+B6EBNcIgV0TQroeBzsNQKI
- eVZgI/EcYFw0D4DBOlgbtQWY72Ih8c9g9OnINFZPl/8iUIm8HkrT/doQv7FIFuPP7VdSH7k5I
- 1Chk2mTF32RbdNqrd9B7nJsRhWJS+Ve1w9cm0K/JK6oGkXri9fEsra8N8Rb7Um1rAWjXamwDb
- XXrS1eoCMouD60VgjyGlyp+XO7bGHTKLUzA7vcWt6bNJttzIG9uF/LWrmGtn/StjKIhT6K41E
- l3Dv8I07vR1dcXDWf7XQEa/0WJ2XLDxf8uDeYL4FW2PhgD5LgXvU2p7kL+Eo+blOu99AeuLvx
- iIOU85Hm6+wV+XeK5pc4/HAZ+U0LMLTSFuufIiXSPKi8vk39PkdVcA7Z/pMwkfTu7FMXfU+mu
- 8qZ1EC++r4mCfgu57JLk91Kj6IS0+mIgwIlzyHZyNjHXFe4Xek5UtgyAtAMk0chC3I8bAWrll
- 3L3gAa4B+4288Msyps2+tKmvEie+whjbZgWWuGw5rB+bdlpltrH30NPTR/CIqjhqmkIXpOx73
- s4Cfgfl0WPNKBT9tGJFhlwy12WDrlbYbOiMUx56IoZnDRu8GRlU6yPF/bZU+4Z2qpmy+YiKAw
- uf0VHIK2wgO6WM5qfVq109o/NhPBNGklqaPgWliDRfYKr7EkJ+9iRO77CX6A2tRnMC2oZheGS
- Km7EqyPsRg3GfDa+KuSY27joemHpvNIq02DsOprnqF3ZkH1LAkmwm3CCpHB7otzVkHGyYTiro
- URbiTZsabGRmQoQ30FXhqVpJ8mE=
+X-Provags-ID: V03:K1:tUOwkAD2Hwce0F7HpGXdFvczL1Vky+pJRPAudFb5SqpMeggqADn
+ B/fQ3hYtCFp2le+aYewHIkulKDk774tIryq4+2qkyw3mjaF0HIG659O24ZDTrNfPlyMck6t
+ dO6+9pQO60addIt/pr8QsTme9dFEhBQBJSZ3/xQRtY8INuwR+D0OVhig/RM7AWJKaCTkUjk
+ zXnUkLghltylQ/1QDAHXA==
+UI-OutboundReport: notjunk:1;M01:P0:x5fMiYGFG/Y=;QxAs8oUyx99ZIokWpAiA7fEQnee
+ mG3XQQGTRp0m0H8wQATcLxS6FSwRgYHVbRC7IahhpHsH0eToisxnnlA/6blF72C7sWn+lemem
+ 9S7u2P4gKqzJnKVw2SifzUlVrKyPsXC3YP1p04CZGvjVZ1HeUJLrDZFkohNFfS6q/NbpD2kFT
+ p8V6sRTxxqJ6RslEGOssl56LSUxpFNQiGWpc/t4ausZGt5jc4dC/7OKL9FNsPoejR4tVu31Qd
+ 06+Sgd2jzwXfNi1rST8rzNDaXfRbJ4iqK32ctzf5GWJfT1BKtQ7RSWPntt5I64DaUk99d4vt1
+ SInwnAqiXHonKeEOB7B/hqS9ZvQA/BYtLF+cGf1YJm56ZLEV/G8UVTDZo+eQkKyjai+OxP1AS
+ ZmWWQP6PT4BaQ1pDffWQ4Hd2/XE8Sr0LoOr5USvmzUbhaxJv35Hw+2Wb3Ov40d8dZTYFgeBen
+ cTlNnyalUGAt3R+uNeFsXsYCSliyCb8AtMRrbZ0BB5fi2nLUetg3xIHccqLgR+Y7v+CIgCW9S
+ aAOSWzjX2XZ5wwKRKfEpJirlsEyDg8KJBud3VfSB60QP7JsDQyoKDhcQNDSxNzIAe9Mf1CzRp
+ hbks40j1tb/w4bZ665MgamCQr1GNdllwUtOISrD2uKpczgm+cJ3Fwuvji+yfX00+YqgiZVk60
+ GGkGOeR7z2fOa43Y6nRrXVoDpotPHPIRs4RpLwoEqXURg75iCHsIwryEbOPyko/bkyXZpZwPl
+ S0f6O8GTTrgSe+DSd258j5WNIjxczc1XtsP62zkiO2bfWDYgbrXseHRRIuWBgmxLqYCEho5ZQ
+ 8D7MCYvCRF+ygs+4f5sB2h5QUCyeZfNP4hFA3+lhEE/jpj0JW9IZUvZbsJNWbZhb6nh5fWldN
+ BVMdtXDy+hURct4nW5J+dP2pJAkzNEirnzmL/krZZRQH4+kG3eoiHRRj1fOh1yWItxVY0QKHy
+ fYBNzn82UH+cn1smT46PEofvVmM=
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
@@ -67,25 +68,28 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 Since at least kernel 6.1, flush_dcache_page() is called with IRQs
 disabled, e.g. from aio_complete().
 
-But the current implementation for flush_dcache_page() on parisc
+But the current implementation for flush_dcache_page() on ARM
 unintentionally re-enables IRQs, which may lead to deadlocks.
 
 Fix it by using xa_lock_irqsave() and xa_unlock_irqrestore()
 for the flush_dcache_mmap_*lock() macros instead.
 
-Cc: linux-parisc@vger.kernel.org
+Cc: Russell King (Oracle) <linux@armlinux.org.uk>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Helge Deller <deller@gmx.de>
 =2D--
- arch/parisc/include/asm/cacheflush.h | 4 ++++
- arch/parisc/kernel/cache.c           | 5 +++--
+ arch/arm/include/asm/cacheflush.h | 4 ++++
+ arch/arm/mm/flush.c               | 5 +++--
  2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/as=
-m/cacheflush.h
-index 0bdee6724132..c8b6928cee1e 100644
-=2D-- a/arch/parisc/include/asm/cacheflush.h
-+++ b/arch/parisc/include/asm/cacheflush.h
-@@ -48,6 +48,10 @@ void flush_dcache_page(struct page *page);
+diff --git a/arch/arm/include/asm/cacheflush.h b/arch/arm/include/asm/cach=
+eflush.h
+index a094f964c869..5b8a1ef0dc50 100644
+=2D-- a/arch/arm/include/asm/cacheflush.h
++++ b/arch/arm/include/asm/cacheflush.h
+@@ -315,6 +315,10 @@ static inline void flush_anon_page(struct vm_area_str=
+uct *vma,
 
  #define flush_dcache_mmap_lock(mapping)		xa_lock_irq(&mapping->i_pages)
  #define flush_dcache_mmap_unlock(mapping)	xa_unlock_irq(&mapping->i_pages=
@@ -95,38 +99,41 @@ index 0bdee6724132..c8b6928cee1e 100644
 +#define flush_dcache_mmap_unlock_irqrestore(mapping, flags)	\
 +		xa_unlock_irqrestore(&mapping->i_pages, flags)
 
- #define flush_icache_page(vma,page)	do { 		\
- 	flush_kernel_dcache_page_addr(page_address(page)); \
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index 1d3b8bc8a623..ca4a302d4365 100644
-=2D-- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -399,6 +399,7 @@ void flush_dcache_page(struct page *page)
- 	unsigned long offset;
- 	unsigned long addr, old_addr =3D 0;
- 	unsigned long count =3D 0;
+ /*
+  * We don't appear to need to do anything here.  In fact, if we did, we'd
+diff --git a/arch/arm/mm/flush.c b/arch/arm/mm/flush.c
+index 7ff9feea13a6..d57ec9165520 100644
+=2D-- a/arch/arm/mm/flush.c
++++ b/arch/arm/mm/flush.c
+@@ -238,6 +238,7 @@ static void __flush_dcache_aliases(struct address_spac=
+e *mapping, struct page *p
+ {
+ 	struct mm_struct *mm =3D current->active_mm;
+ 	struct vm_area_struct *mpnt;
 +	unsigned long flags;
  	pgoff_t pgoff;
 
- 	if (mapping && !mapping_mapped(mapping)) {
-@@ -420,7 +421,7 @@ void flush_dcache_page(struct page *page)
- 	 * to flush one address here for them all to become coherent
- 	 * on machines that support equivalent aliasing
+ 	/*
+@@ -248,7 +249,7 @@ static void __flush_dcache_aliases(struct address_spac=
+e *mapping, struct page *p
  	 */
+ 	pgoff =3D page->index;
+
 -	flush_dcache_mmap_lock(mapping);
 +	flush_dcache_mmap_lock_irqsave(mapping, flags);
  	vma_interval_tree_foreach(mpnt, &mapping->i_mmap, pgoff, pgoff) {
+ 		unsigned long offset;
+
+@@ -262,7 +263,7 @@ static void __flush_dcache_aliases(struct address_spac=
+e *mapping, struct page *p
  		offset =3D (pgoff - mpnt->vm_pgoff) << PAGE_SHIFT;
- 		addr =3D mpnt->vm_start + offset;
-@@ -460,7 +461,7 @@ void flush_dcache_page(struct page *page)
- 		}
- 		WARN_ON(++count =3D=3D 4096);
+ 		flush_cache_page(mpnt, mpnt->vm_start + offset, page_to_pfn(page));
  	}
 -	flush_dcache_mmap_unlock(mapping);
 +	flush_dcache_mmap_unlock_irqrestore(mapping, flags);
  }
- EXPORT_SYMBOL(flush_dcache_page);
 
+ #if __LINUX_ARM_ARCH__ >=3D 6
 =2D-
 2.38.1
 
