@@ -2,125 +2,105 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF13EC77B7A
-	for <linux-parisc@archiver.kernel.org>; Thu, 25 May 2023 18:18:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACEC8C7EE29
+	for <linux-parisc@archiver.kernel.org>; Thu, 25 May 2023 19:06:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbjEYSSE (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 25 May 2023 14:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
+        id S235427AbjEYTG4 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 25 May 2023 15:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240853AbjEYSR5 (ORCPT
+        with ESMTP id S244035AbjEYTFp (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 25 May 2023 14:17:57 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276789E;
-        Thu, 25 May 2023 11:17:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1685038584; i=deller@gmx.de;
-        bh=K2LpqUproNVaEYfciKE2xUVes3IFu6inT1ojIZWxRK0=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=opM6ZycxGEnfKtweb5YWEWAN530UjohDS09mCOh47Kc3Snfr/ROPCfIOylBQndoe0
-         ZLTz1BjU2i+TZdc+BU0Vd8M8Wn96D0zdWLphkPmTjGKyUODaFFapwbEBfZpLnQWf0d
-         dDNTogpfAaB7eMI+zlKffM1IsnD9yA9fQ0FHEdBH+OCQx/CffzuPXvfzk6u5LnAuUt
-         M067+FohpOaj7qFR3mAh+CzlDbYZH+jOmfokYU4AbodaT2hf0dXJVQ7hiMqViMf2tP
-         X5HK8oTI4EYl71gYwno969NU7xlpu9Y0wSDTgqCs8agQDFU6yDz7gbf40EgYGT/v/B
-         FHSBhye0W50Pw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.157.173]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Ml6mE-1qPBBj3Htk-00lXgN; Thu, 25
- May 2023 20:16:23 +0200
-Message-ID: <dda2616a-f4d0-fca0-5c5c-7a0f49f947e3@gmx.de>
-Date:   Thu, 25 May 2023 20:16:13 +0200
+        Thu, 25 May 2023 15:05:45 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA1386BB;
+        Thu, 25 May 2023 11:54:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1685040849; x=1716576849;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=I9uqk67X9bs3sYyrSKFArEnF17vc0xskgqqQ5rfNWro=;
+  b=InJhDBtxi2J6JTpkhmNMySs/N0m5KSd8O9SBEwqH1nMQGcvOKeS9mGMM
+   Le5eDrDrwk9rBArR+HSpM0eh0wTxSyv3CbXzsAYYIZGiEiMWI3jWd7a3d
+   J+YyaqmcbXWO0Drgh61oNyuFzm1FnTlIWgM4VsGgoiY0CTPJhuxX5PcNK
+   DhbWmHQ2o8I9cvAuqo5SV0CUV+uNuI/5tyyqatKZtfD5Q7pYt6eneLM8F
+   mCmb5E6Uql5kySb3GAAxomb9vG3+rRVOpF7oBMp7rfcVTM+JFMPLw6cMh
+   0zFWnIYCzW80aWy6QrQWjv82GYuG2XWUU3Ay/9GRZCYYDw7oGZjIJ6qlK
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10721"; a="351499792"
+X-IronPort-AV: E=Sophos;i="6.00,191,1681196400"; 
+   d="scan'208";a="351499792"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2023 11:53:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10721"; a="794765493"
+X-IronPort-AV: E=Sophos;i="6.00,191,1681196400"; 
+   d="scan'208";a="794765493"
+Received: from shuklaas-mobl1.amr.corp.intel.com (HELO [10.212.186.148]) ([10.212.186.148])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2023 11:52:59 -0700
+Message-ID: <603f5357-3018-6c1b-2dc8-ec96aee9552c@intel.com>
+Date:   Thu, 25 May 2023 11:52:58 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH] mm/slab: rename CONFIG_SLAB to CONFIG_SLAB_DEPRECATED
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 2/2] signal: move show_unhandled_signals sysctl to its own
+ file
 Content-Language: en-US
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Qin Jian <qinjian@cqplus1.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-mm@kvack.org,
-        David Rientjes <rientjes@google.com>
-References: <20230523091139.21449-1-vbabka@suse.cz>
- <be109b49-8510-5887-72ae-738db9945619@google.com>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <be109b49-8510-5887-72ae-738db9945619@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:K1zdwa4g6OWygvqnRQK3gXolaxN9hnmaCD/sfFOygFxv5gAj6ei
- THk+aQNQMiH0oWH34qhfh7vFSX4rOi68z08hA0sfnE3E8jQpgoB8aCeQFBdovw6CWb27TGJ
- akSe+X2hZ+TCagNXuXGocolM7BrEtSmVXxnNOhc988TLQvzcbu0JUSnRiyxetx0lbRk6hr6
- RCFXL34mSj82AxaBd7hHw==
-UI-OutboundReport: notjunk:1;M01:P0:yGqLH3vcUq4=;IeBJUDWQ4H8EmLJY7QSDptEyjrX
- /7ngAukTu5+WessWpw6c7f8qrRpW4JGSC7nPNRjj+Y5miQDY0dsuPzsAcCL6qd/PR5VCMHBPS
- E8JgPITjt58RQW+LXkgbHua0lJgufsN2sZTZLtGxRxzIcjbZzYGkvgfhxHpgnt1Qc4bI1F2jH
- IlNjipVfrrLZ9EknTVNXHpIbNmuaggtQUROs1GNscWNeOXuTbRtIElWCD3lG/2SaGCh2bJZ0H
- 4daYHz9js01cfK0Y+vipU98eZ+G9vFObXuVLs5A3ULpfabkfcqLBZBw47hiC7xjVhjH7LOQkC
- dgWx2wGHzp3Uf6q3Kt/Ea3Ycn9D/fCFtoYWAXLQh48dMj9o8wz7g8bC7D5QYUlEygTpq8uBVG
- UFrzmA5nd/gCh75Ei+6B1JKixUNOmUNdJZ++9RhNrF4FX0zlIuzQH/PcKIrCoZRsURDQt8ZuO
- wQkku4i+G0xieBvC3yyOQImF2uBxMLYG8UTDEWH+4+T+JUp9BWFsxXeAwg56xS7I7McvJrLLz
- tUA5Hn6e2vx6UPn4nvHeA6JSXM/5pOX7X7Kw5IGoWspGzdY+X1OI9nDxRatfMk0dBppo9VdoD
- LsvM4IGmGM9hJZJKrBm1b+lfQwisdHfAjHTHjE9g8ZrflyBl4SP2kv+7cQBSyjCzWpKHDt+OE
- PvlYbD52GIneTph324pRyi2niQIt6l7SOhAz7514Iox403svHi9vqbyrQWNteeRl8zG3kL3FN
- U6AGRE18ei2676TvUjU+wckhBVDKBIKQhctOycQFMN3fBiyv3XJQGOJlofBh6wSrv2FEmF678
- 2NOdbX/20joBRFq4wL6mUlvDxvkNv/7q5ukMbQ9BdHyNMmcbfWCFUx4p+LIcsJ/taNp/x4e3S
- 3D9bXJ7icV9nFtl0BFX9I8mT1bHrL1rslN/dCd4iHansWfGb+Pursh6OC6oYejd2RljJ8UM/1
- WDrEhvOseS9Yb+a/0lFfWeAlRuI=
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     keescook@chromium.org, yzaikin@google.com, ebiederm@xmission.com,
+        arnd@arndb.de, bp@alien8.de, James.Bottomley@hansenpartnership.com,
+        deller@gmx.de, tglx@linutronix.de, mingo@redhat.com,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        luto@kernel.org, peterz@infradead.org, brgerst@gmail.com,
+        christophe.jaillet@wanadoo.fr, kirill.shutemov@linux.intel.com,
+        jroedel@suse.de, j.granados@samsung.com, akpm@linux-foundation.org,
+        willy@infradead.org, linux-parisc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230522210814.1919325-1-mcgrof@kernel.org>
+ <20230522210814.1919325-3-mcgrof@kernel.org>
+ <d0fe7a6f-8cd9-0b81-758a-f3b444e74bab@intel.com>
+ <ZG29HWE9NWn56hTg@bombadil.infradead.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <ZG29HWE9NWn56hTg@bombadil.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 5/24/23 02:29, David Rientjes wrote:
-> On Tue, 23 May 2023, Vlastimil Babka wrote:
->
->> As discussed at LSF/MM [1] [2] and with no objections raised there,
->> deprecate the SLAB allocator. Rename the user-visible option so that
->> users with CONFIG_SLAB=3Dy get a new prompt with explanation during mak=
-e
->> oldconfig, while make olddefconfig will just switch to SLUB.
->>
->> In all defconfigs with CONFIG_SLAB=3Dy remove the line so those also
->> switch to SLUB. Regressions due to the switch should be reported to
->> linux-mm and slab maintainers.
->>
->> [1] https://lore.kernel.org/all/4b9fc9c6-b48c-198f-5f80-811a44737e5f@su=
-se.cz/
->> [2] https://lwn.net/Articles/932201/
->>
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->
-> Acked-by: David Rientjes <rientjes@google.com>
+On 5/24/23 00:30, Luis Chamberlain wrote:
+>> It doesn't actually have anything to do with moving the
+>> show_unhandled_signals sysctl, right?
+> Well in my case it is making sure the sysctl variable used is declared
+> as well.
 
-I did tested SLUB on parisc with 32- and 64-bit kernel, so you may add:
+But what does this have to do with _this_ patch?  This:
 
-Acked-by: Helge Deller <deller@gmx.de> # parisc
+> --- a/arch/x86/kernel/umip.c
+> +++ b/arch/x86/kernel/umip.c
+> @@ -12,6 +12,7 @@
+>  #include <asm/insn.h>
+>  #include <asm/insn-eval.h>
+>  #include <linux/ratelimit.h>
+> +#include <linux/signal.h>
 
-Helge
+For instance.  You don't move things to another header or make *ANY*
+change to the compilation of umip.c.  So why patch it?
+
+It looks to me like a _fundamentally_ superfluous change.  That hunk
+literally *can't* be related to the rest of the patch.
+
+>> If that's the case, it would be nice to have this in its own patch.
+> If its not really fixing any build bugs or functional bugs I don't see
+> the need. But if you really want it, I can do it.
+> 
+> Let me know!
+
+Yes, I really want it.
+
+Please remove all the x86 bits from _this_ patch.  If x86 has a
+separate, preexisting problem, please send that patch separately with a
+separate changelog and justification.
+
+We'll take a look.
