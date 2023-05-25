@@ -2,63 +2,139 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D129C7EE29
-	for <linux-parisc@archiver.kernel.org>; Thu, 25 May 2023 19:52:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1D75C77B7E
+	for <linux-parisc@archiver.kernel.org>; Thu, 25 May 2023 22:04:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242148AbjEYTwN (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 25 May 2023 15:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
+        id S229689AbjEYWEB (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 25 May 2023 18:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242131AbjEYTwL (ORCPT
+        with ESMTP id S229583AbjEYWEA (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 25 May 2023 15:52:11 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB88186;
-        Thu, 25 May 2023 12:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=D7NQmRuqfIsEVR83BVLhsz0LP5kJifZlCo3sFrhILyA=; b=RbmZ2COJ0hOjRehG14J87kDkCi
-        MHCwALzarsaHHrZifIhnzjBtS5ICNh0Dpx01/0rzkQt5UHRlDdncz2xyvRRg4hiCtzr3dZ5/aQP6g
-        TCOlcRlB7CRYm/N7wHEHzGG+3tpBPmVxPLSkKrgtjKnr87P+VrpYfMn4fYFcShV+DM9jxv2XrhrFr
-        EQ7XVYTflbx7l3tiuzgd1gzn5uo7n71cHoSAunqtJlwJaEW7IVWFIQNBk57qUNaUp0Y+easuXgzme
-        zFP/KaSD2jxjzd871VCfrlgs+iTR26KC1DVufH+43lQ1cekF9VoVwx9QmRZ4+OMn4yH8WWWDZA3+x
-        CKtoNQdw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1q2Fxt-00HTHf-00;
-        Thu, 25 May 2023 18:45:33 +0000
-Date:   Thu, 25 May 2023 11:45:32 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     keescook@chromium.org, yzaikin@google.com, ebiederm@xmission.com,
-        arnd@arndb.de, bp@alien8.de, James.Bottomley@hansenpartnership.com,
-        deller@gmx.de, tglx@linutronix.de, mingo@redhat.com,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, peterz@infradead.org, brgerst@gmail.com,
-        christophe.jaillet@wanadoo.fr, kirill.shutemov@linux.intel.com,
-        jroedel@suse.de, j.granados@samsung.com, akpm@linux-foundation.org,
-        willy@infradead.org, linux-parisc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] signal: move show_unhandled_signals sysctl to its
- own file
-Message-ID: <ZG+szFEwbwh6lB9I@bombadil.infradead.org>
-References: <20230522210814.1919325-1-mcgrof@kernel.org>
- <20230522210814.1919325-3-mcgrof@kernel.org>
- <d0fe7a6f-8cd9-0b81-758a-f3b444e74bab@intel.com>
- <ZG29HWE9NWn56hTg@bombadil.infradead.org>
+        Thu, 25 May 2023 18:04:00 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8FF12F;
+        Thu, 25 May 2023 15:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1685052229; i=deller@gmx.de;
+        bh=SsAf7b4y97Nz6toWCyih9XFzTB1HYHiHYEbgFoAyUPk=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=Bdx9dcbCONDzwGU4nOK+CaJil/UE3UaeONhSCU1g6l3u9fAjOyYzBU3TMgytD0n7J
+         ijH6ghisvLmEglri4UIjU5Mh2D83MPt4AJlj6YXqQvUM7gCOrzRqYh8/KEunWWr169
+         5+WdqgSeJHzHZZpEF87TbOt+gfqWWWXzgjd5KmAICcF8nZNk+JWNduRJuCaPjBlitZ
+         fKwrGfr07xsSot+kFWLhBcIphpGkfpnnGiDKEYiXg/vRhcAbGUA+EHg9CxabAgi33U
+         LwxroKKKbH3WI77LuCqFiVmEF1pg9WY1rEDE2vMDk9vEEmBcaMGJ3cvfZDUvRv6NUU
+         4xcHeMrNnQlaA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from p100 ([94.134.157.173]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MDhhX-1prcME1dyB-00Ajjz; Fri, 26
+ May 2023 00:03:49 +0200
+Date:   Fri, 26 May 2023 00:03:47 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture fixes for v6.4-rc4
+Message-ID: <ZG/bQ/x4YOSPEdu0@p100>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZG29HWE9NWn56hTg@bombadil.infradead.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Provags-ID: V03:K1:u93dmrWybYRZofkjdl4pOv+k5JFuIVkbyH5ibcKnt57lxOcIlXJ
+ HlFsMn0mtMrxbc+3Yx7QFFw7OzvullndTJRKaalydcJUI34uoikdvYV3SB6PVlJHmLnq6/Y
+ fPq5hbD5xpA3MP5VZTXDIlUAKJxSLw4sfFwBjjPqyz4gtoieuYWDaHdEhbmnp+WCauNTRUN
+ ytp3r9e0rS+9kZgJf+OaA==
+UI-OutboundReport: notjunk:1;M01:P0:5AAdnsqmMXU=;P30GigKAyB7oFVY2bQXGiZleJ14
+ Du4p4hLeEp6TIZ9PkTsMSLBqEq1hnreUye2xtrZtNWcjsguEuySguDOEIMRyQCZnnaptwpCt+
+ sdsfcc1Ll4NcGJmp3Fq0KFDJmRtc+x8LfuSDB+SOrbFF6A0CHs3lwQY1GuMpD23qA83aiDntW
+ KjlsUC8/YiE9awTVLkmoyPJumudKRhjFkz19oZItqA7DbzSrVdUm21dmklfeqH2E4/TcDqSdP
+ W2y7/dpkat9kfdpOCvXBZVol5uSXexZU+bTEeIvgH2cp5f8FwsmE97WaKvkR0yB8vnc2dYAqQ
+ L5DtEvXgJu8rcpiwt/sWzNZ4Zq6YRJvl7kix7j3SpJXehPBSXzHIhjDMyGDXwZEYl9Q5n5TBN
+ RfQCPFNUV5GPF2sJRo3dUO6Df/5qhy0ln6XEBjXHzE8p72DuHgBDohxQwu3FFoXxHGyLgkr8V
+ W+2329u0GyV4bC7F8Oc/C8Z94jS6pv0U0eO1TFte77aCUsu0yZE/3Q6PstJzf0hNqFvdfwDMh
+ NJeXiBJIQ8pkWsolq3CgtBPy/ubiJIMtXbOSZRhalfBVXe2vGlLe1w2705XJuXIvr97OyfPW7
+ hPpbCZKkXglYgfQCMf0jWVBDfnq8F4Zxg650kxrdU4Y1mOXNO1JMlhDS00i6eN7MQ0aQ6xaFc
+ xxd+SNPX6GsUFQ5Q6F9UCACytstBUtWRnjh85Un5UU145FSNTMcSWsjhvNr7zk9bV+7tYj2cL
+ F73hNc0kf45BCjznUt5kc0VLON1YZX9td5BTvqvJQkVTPFJaMYKaGFepIdBh03N5VhyJmLXCB
+ w5fhgGfNyFG+3eYcN3w69Um7Y1MWDFtydGfZxhZF7KE4s21+3d/j/V3s5x0bmqFrtluzYLDEy
+ k0TKQcymmYbYAcvzQdkWJ/j1LNxMDnJGNtNZGgWEDPx7oFbiyCbFhHI+vbof0ldlJCrAXJ+KL
+ dC4L0eMSqGaaZj2xsyWtwQtJDRg=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Wed, May 24, 2023 at 12:30:37AM -0700, Luis Chamberlain wrote:
-> Let me know!
+Hi Linus,
 
-Re-poke. I know, it's just been a day :P
+please pull the parisc architecture fixes and updates for 6.4-rc4:
 
-  Luis
+Quite a bunch of real bugfixes in here and most of them are tagged for
+backporting: A fix for cache flushing from irq context, a kprobes & kgdb
+breakpoint handling fix, and a fix in the alternative code patching
+function to take care of CPU hotplugging.
+
+parisc now provides LOCKDEP support and comes with a lightweight spinlock
+check. Both features helped me to find the cache flush bug.
+
+Additionally writing the AGP gatt has been fixed, the machine allows the
+user to reboot after a system halt and arch_sync_dma_for_cpu() has been
+optimized for PCXL PCUs.
+
+Thanks,
+Helge
+
+=2D--
+The following changes since commit 44c026a73be8038f03dbdeef028b642880cf151=
+1:
+
+  Linux 6.4-rc3 (2023-05-21 14:05:48 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git ta=
+gs/parisc-for-6.4-3
+
+for you to fetch changes up to 61e150fb310729c98227a5edf6e4a3619edc3702:
+
+  parisc: Fix flush_dcache_page() for usage from irq context (2023-05-24 1=
+9:03:49 +0200)
+
+=2D---------------------------------------------------------------
+parisc architecture fixes for kernel v6.4-rc4:
+
+- Fix flush_dcache_page() for usage from irq context
+- Handle kprobes breakpoints only in kernel context
+- Handle kgdb breakpoints only in kernel context
+- Use num_present_cpus() in alternative patching code
+- Enable LOCKDEP support
+- Add lightweight spinlock checks
+- Flush AGP gatt writes and adjust gatt mask in parisc_agp_mask_memory()
+- Allow to reboot machine after system halt
+- Improve cache flushing for PCXL in arch_sync_dma_for_cpu()
+
+=2D---------------------------------------------------------------
+Helge Deller (9):
+      parisc: Improve cache flushing for PCXL in arch_sync_dma_for_cpu()
+      parisc: Flush gatt writes and adjust gatt mask in parisc_agp_mask_me=
+mory()
+      parisc: Use num_present_cpus() in alternative patching code
+      parisc: Add lightweight spinlock checks
+      parisc: Enable LOCKDEP support
+      parisc: Allow to reboot machine after system halt
+      parisc: Handle kprobes breakpoints only in kernel context
+      parisc: Handle kgdb breakpoints only in kernel context
+      parisc: Fix flush_dcache_page() for usage from irq context
+
+ arch/parisc/Kconfig                      |  4 ++++
+ arch/parisc/Kconfig.debug                | 11 +++++++++
+ arch/parisc/include/asm/cacheflush.h     |  4 ++++
+ arch/parisc/include/asm/spinlock.h       | 39 +++++++++++++++++++++++++++=
++----
+ arch/parisc/include/asm/spinlock_types.h |  8 +++++--
+ arch/parisc/kernel/alternative.c         |  2 +-
+ arch/parisc/kernel/cache.c               |  5 ++--
+ arch/parisc/kernel/pci-dma.c             | 18 ++++++++++++++-
+ arch/parisc/kernel/process.c             | 11 ++++++---
+ arch/parisc/kernel/traps.c               | 18 +++++++++++----
+ drivers/char/agp/parisc-agp.c            | 15 +++++++++++-
+ 11 files changed, 116 insertions(+), 19 deletions(-)
