@@ -2,31 +2,31 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E04B1C77B7A
-	for <linux-parisc@archiver.kernel.org>; Fri, 26 May 2023 22:22:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AC22C77B7C
+	for <linux-parisc@archiver.kernel.org>; Fri, 26 May 2023 22:22:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243077AbjEZWWr (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 26 May 2023 18:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40812 "EHLO
+        id S237655AbjEZWWt (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 26 May 2023 18:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237800AbjEZWWq (ORCPT
+        with ESMTP id S237792AbjEZWWr (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 26 May 2023 18:22:46 -0400
+        Fri, 26 May 2023 18:22:47 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3D5BB;
-        Fri, 26 May 2023 15:22:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1336D12A;
+        Fri, 26 May 2023 15:22:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=7I+m1g7na/yjhxthJGIYbRam59qypHh9f0/DcF7s0Gw=; b=dTUKjzHilPPj4bODYepSmnAgwc
-        w+I1BnJkTV6SLiZU1ESKgv3XJ/LpPQLmmg2i0wDMbTMVXOwuR3r6JPDkCIaaNtYDLfPRhYzZs/nvS
-        UQIVNecH2dRYmp28N3EtL/kAILDyt78RGKD+sSMi+aljzmL1YF4zBY6kyBh13xgIQmNYrU8r70EXi
-        uyJ/ku2pbhwvF5XZKjt8dSDHlAvO7F1TqOHEKw4uXgf2fesaLtoCtPHf2rF76DECaW2AW8tQmYNlQ
-        JMzsAQpbwWkUmiFxDcwqFH9mR4ukBp6tla30VYj1dFy2mTiWi5w65dnfLYYw9AQTb46ZL4ik1mikq
-        v2//tw0Q==;
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=IzItOB3HiwfECPzC/ygFZaFi0mtHzGOxDJyi3k00e5g=; b=XhKaA/EFveChr6XSzEIIdk96Bd
+        N/LzOSqRdpRE7noKTonD+Npx3tdNYEMg39PuqpF/5A+X7Rw+T8IQtL1E5EPqgyiVX0Oi4e6kd75pq
+        U4hEQsQLOzOCu8bOewafR1MzBn2xWevyIAUl8L3vtHkl1jRfzAn8NZZGFDhr8vemSMCFa+BDB0Pt4
+        /Uy2Fv3S28wHZaRMri6FbXMzWNqC4Rpplr5I2Njcr1wFuI2AOrDufkOQedrb1dGfZHJl9mjP7u7A2
+        G5hlUz2qYXz+Uj9ZCPTx04v3CeLnTvYxH2HPb4GU9gyOs8xv1NMxN69hRutCYC51allOLJKCOcf00
+        j46705Ig==;
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1q2fp1-0047Un-2S;
+        id 1q2fp1-0047Uh-28;
         Fri, 26 May 2023 22:22:07 +0000
 From:   Luis Chamberlain <mcgrof@kernel.org>
 To:     keescook@chromium.org, yzaikin@google.com, ebiederm@xmission.com,
@@ -40,12 +40,10 @@ Cc:     j.granados@samsung.com, akpm@linux-foundation.org,
         willy@infradead.org, linux-parisc@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 2/2] signal: move show_unhandled_signals sysctl to its own file
-Date:   Fri, 26 May 2023 15:22:06 -0700
-Message-Id: <20230526222207.982107-3-mcgrof@kernel.org>
+Subject: [PATCH v2 0/2] kernel/sysctl.c: remove to major base directories
+Date:   Fri, 26 May 2023 15:22:04 -0700
+Message-Id: <20230526222207.982107-1-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20230526222207.982107-1-mcgrof@kernel.org>
-References: <20230526222207.982107-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: Luis Chamberlain <mcgrof@infradead.org>
@@ -53,102 +51,36 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The show_unhandled_signals sysctl is the only sysctl for debug
-left on kernel/sysctl.c. We've been moving the syctls out from
-kernel/sysctl.c so to help avoid merge conflicts as the shared
-array gets out of hand.
+Changes on this v2:
 
-This change incurs simplifies sysctl registration by localizing
-it where it should go for a penalty in size of increasing the
-kernel by 23 bytes, we accept this given recent cleanups have
-actually already saved us 1465 bytes in the prior commits.
+  o remove header changes to architecture code. If they were already
+    comiling this should not fail
 
-./scripts/bloat-o-meter vmlinux.3-remove-dev-table vmlinux.4-remove-debug-table
-add/remove: 3/1 grow/shrink: 0/1 up/down: 177/-154 (23)
-Function                                     old     new   delta
-signal_debug_table                             -     128    +128
-init_signal_sysctls                            -      33     +33
-__pfx_init_signal_sysctls                      -      16     +16
-sysctl_init_bases                             85      59     -26
-debug_table                                  128       -    -128
-Total: Before=21256967, After=21256990, chg +0.00%
+Now that Joel has cleaned up and removed one of the routines which we wanted
+to deprecate, remove two major arrays from kernel/sysctl.c which are empty or
+almost empty. One of them, the debug one just needs moving to its source, so
+do that.
+                                                                                                                                                                                              
+The move for the signal sysctl costs us 23 bytes but we have already saved
+1465 bytes with the other recent cleanup Joel made. The next step is to
+depreecate one more call and then we can simplify the registration to only
+use ARRAY_SIZE() completely and remove the extra empty entries all over.
+That should save us tons of bytes all around in the kernel and we'd then 
+later kill for good all recursion possible sysctl registration calls.
+                                                                                                                                                                                             
+These patches apply on top of sysctl-next [0] which already carry Joel's
+patches.                                                                                                             
+                                                                                                                                                                                              
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=sysctl-next  
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
+Luis Chamberlain (2):
+  sysctl: remove empty dev table
+  signal: move show_unhandled_signals sysctl to its own file
+
  kernel/signal.c | 23 +++++++++++++++++++++++
- kernel/sysctl.c | 14 --------------
- 2 files changed, 23 insertions(+), 14 deletions(-)
+ kernel/sysctl.c | 19 -------------------
+ 2 files changed, 23 insertions(+), 19 deletions(-)
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 8f6330f0e9ca..5ba4150c01a7 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -45,6 +45,7 @@
- #include <linux/posix-timers.h>
- #include <linux/cgroup.h>
- #include <linux/audit.h>
-+#include <linux/sysctl.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/signal.h>
-@@ -4771,6 +4772,28 @@ static inline void siginfo_buildtime_checks(void)
- #endif
- }
- 
-+#if defined(CONFIG_SYSCTL)
-+static struct ctl_table signal_debug_table[] = {
-+#ifdef CONFIG_SYSCTL_EXCEPTION_TRACE
-+	{
-+		.procname	= "exception-trace",
-+		.data		= &show_unhandled_signals,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec
-+	},
-+#endif
-+	{ }
-+};
-+
-+static int __init init_signal_sysctls(void)
-+{
-+	register_sysctl_init("debug", signal_debug_table);
-+	return 0;
-+}
-+early_initcall(init_signal_sysctls);
-+#endif /* CONFIG_SYSCTL */
-+
- void __init signals_init(void)
- {
- 	siginfo_buildtime_checks();
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index a7fdb828afb6..43240955dcad 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2331,24 +2331,10 @@ static struct ctl_table vm_table[] = {
- 	{ }
- };
- 
--static struct ctl_table debug_table[] = {
--#ifdef CONFIG_SYSCTL_EXCEPTION_TRACE
--	{
--		.procname	= "exception-trace",
--		.data		= &show_unhandled_signals,
--		.maxlen		= sizeof(int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec
--	},
--#endif
--	{ }
--};
--
- int __init sysctl_init_bases(void)
- {
- 	register_sysctl_init("kernel", kern_table);
- 	register_sysctl_init("vm", vm_table);
--	register_sysctl_init("debug", debug_table);
- 
- 	return 0;
- }
 -- 
 2.39.2
 
