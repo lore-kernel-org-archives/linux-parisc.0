@@ -2,159 +2,115 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0C21C7EE2F
-	for <linux-parisc@archiver.kernel.org>; Sat, 27 May 2023 13:40:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FC23C77B7E
+	for <linux-parisc@archiver.kernel.org>; Sun, 28 May 2023 19:20:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbjE0NkK (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 27 May 2023 09:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32956 "EHLO
+        id S229913AbjE1TUx (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 28 May 2023 15:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231872AbjE0NkK (ORCPT
+        with ESMTP id S229917AbjE1TUw (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 27 May 2023 09:40:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471EEDE;
-        Sat, 27 May 2023 06:40:08 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1685194803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uhphG4bdKEhlSrLILx8LQHUnhtq5h2kh7PjylDw7WHk=;
-        b=c7tPQEf1tDSaswC+udb6n2rEFtodyCz+0hqKKRaloSAWHscsivpNExWbDw/lNzJYugWAC1
-        Jm29ndY/DVZdilpSdABXMmg7zcNPlf2ipCdzoFFpOsDlGdRTaa/cDp4VQIgvIIuUN9JR/Z
-        4wJQUUIDzQZJXqPtRi0VknCvN575jHF4GBgn5HyL1/e+ips0AysDA2DuVxTFjRXavrRMCR
-        ErEe1ocMuKOicQKxwfjXlIfBvhnKCrT8khka2tjtWb5cZaLE3ZEkUSF51OwhE4SNq1hAJg
-        OsmAHNMb9ZxT3Z/Q3tFuCRyz5jSjP+VvrhVlox0l3Z4ceASC3h0ieO88IF9MuA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1685194803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uhphG4bdKEhlSrLILx8LQHUnhtq5h2kh7PjylDw7WHk=;
-        b=IAhogYOgiDrfm9G9lFn3jmOMGU4kEEQCTcf6iURfWSFeMNN2CJaahVSnX2MzxuXmnO+mLX
-        zbrDN0kZP7Q4fvCA==
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Arjan van de Veen <arjan@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Piotr Gorski <lucjan.lucjanov@gmail.com>,
-        Usama Arif <usama.arif@bytedance.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        xen-devel@lists.xenproject.org,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sabin Rapan <sabrapan@amazon.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [patch v3 31/36] x86/apic: Provide cpu_primary_thread mask
-In-Reply-To: <87y1lbl7r6.ffs@tglx>
-References: <20230508181633.089804905@linutronix.de>
- <20230508185218.962208640@linutronix.de>
- <20230524204818.3tjlwah2euncxzmh@box.shutemov.name> <87y1lbl7r6.ffs@tglx>
-Date:   Sat, 27 May 2023 15:40:02 +0200
-Message-ID: <87sfbhlwp9.ffs@tglx>
+        Sun, 28 May 2023 15:20:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2523EDE;
+        Sun, 28 May 2023 12:20:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A7C561AFD;
+        Sun, 28 May 2023 19:20:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B88E1C433D2;
+        Sun, 28 May 2023 19:20:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1685301650;
+        bh=K0NUl1YtlPlH6WTIMBjKWd7Wa38VBIFNSQcMk56EWco=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=1Gsl1PRApwWAoN/Rhupn2CZ1X7+yZ4Bme7TvbsezeAWTQrw6XGPvcBEJHGzEJAiiu
+         1vO36ClvbD2Eo3jmikEe/wbzhprRjMSh2x/0/ipDZUHExdUIiYnhtPyNvySxLM+dUr
+         0AbWhdfLTKqF2iEF3MGLPtLrQf2K5zd0fezwakms=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, linux-parisc@vger.kernel.org,
+        Helge Deller <deller@gmx.de>, stable@kernel.org
+Subject: [PATCH 4.19 112/132] parisc: Fix flush_dcache_page() for usage from irq context
+Date:   Sun, 28 May 2023 20:10:51 +0100
+Message-Id: <20230528190837.193837361@linuxfoundation.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230528190833.565872088@linuxfoundation.org>
+References: <20230528190833.565872088@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Fri, May 26 2023 at 12:14, Thomas Gleixner wrote:
-> On Wed, May 24 2023 at 23:48, Kirill A. Shutemov wrote:
->> This patch causes boot regression on TDX guest. The guest crashes on SMP
->> bring up.
+From: Helge Deller <deller@gmx.de>
 
-The below should fix that. Sigh...
+commit 61e150fb310729c98227a5edf6e4a3619edc3702 upstream.
 
-Thanks,
+Since at least kernel 6.1, flush_dcache_page() is called with IRQs
+disabled, e.g. from aio_complete().
 
-        tglx
-----
-Subject: x86/smp: Initialize cpu_primary_thread_mask late
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Fri, 26 May 2023 21:38:47 +0200
+But the current implementation for flush_dcache_page() on parisc
+unintentionally re-enables IRQs, which may lead to deadlocks.
 
-Marking primary threads in the cpumask during early boot is only correct in
-certain configurations, but broken e.g. for the legacy hyperthreading
-detection.
+Fix it by using xa_lock_irqsave() and xa_unlock_irqrestore()
+for the flush_dcache_mmap_*lock() macros instead.
 
-This is due to the complete mess in the CPUID evaluation code which
-initializes smp_num_siblings only half during early init and fixes it up
-later when identify_boot_cpu() is invoked.
-
-So using smp_num_siblings before identify_boot_cpu() leads to incorrect
-results.
-
-Fixing the early CPU init code to provide the proper data is a larger scale
-surgery as the code has dependencies on data structures which are not
-initialized during early boot.
-
-Move the initialization of cpu_primary_thread_mask wich depends on
-smp_num_siblings being correct to an early initcall so that it is set up
-correctly before SMP bringup.
-
-Fixes: f54d4434c281 ("x86/apic: Provide cpu_primary_thread mask")
-Reported-by: "Kirill A. Shutemov" <kirill@shutemov.name>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-parisc@vger.kernel.org
+Cc: stable@kernel.org # 5.18+
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/apic/apic.c |   18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ arch/parisc/include/asm/cacheflush.h |    5 +++++
+ arch/parisc/kernel/cache.c           |    5 +++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2398,6 +2398,21 @@ static void cpu_mark_primary_thread(unsi
- 	if (smp_num_siblings == 1 || !(apicid & mask))
- 		cpumask_set_cpu(cpu, &__cpu_primary_thread_mask);
- }
-+
-+/*
-+ * Due to the utter mess of CPUID evaluation smp_num_siblings is not valid
-+ * during early boot. Initialize the primary thread mask before SMP
-+ * bringup.
-+ */
-+static int __init smp_init_primary_thread_mask(void)
-+{
-+	unsigned int cpu;
-+
-+	for (cpu = 0; cpu < nr_logical_cpuids; cpu++)
-+		cpu_mark_primary_thread(cpu, cpuid_to_apicid[cpu]);
-+	return 0;
-+}
-+early_initcall(smp_init_primary_thread_mask);
- #else
- static inline void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid) { }
- #endif
-@@ -2544,7 +2559,8 @@ int generic_processor_info(int apicid, i
- 	set_cpu_present(cpu, true);
- 	num_processors++;
+--- a/arch/parisc/include/asm/cacheflush.h
++++ b/arch/parisc/include/asm/cacheflush.h
+@@ -57,6 +57,11 @@ extern void flush_dcache_page(struct pag
  
--	cpu_mark_primary_thread(cpu, apicid);
-+	if (system_state >= SYSTEM_BOOTING)
-+		cpu_mark_primary_thread(cpu, apicid);
+ #define flush_dcache_mmap_lock(mapping)		xa_lock_irq(&mapping->i_pages)
+ #define flush_dcache_mmap_unlock(mapping)	xa_unlock_irq(&mapping->i_pages)
++#define flush_dcache_mmap_lock_irqsave(mapping, flags)		\
++		xa_lock_irqsave(&mapping->i_pages, flags)
++#define flush_dcache_mmap_unlock_irqrestore(mapping, flags)	\
++		xa_unlock_irqrestore(&mapping->i_pages, flags)
++
  
- 	return cpu;
+ #define flush_icache_page(vma,page)	do { 		\
+ 	flush_kernel_dcache_page(page);			\
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -309,6 +309,7 @@ void flush_dcache_page(struct page *page
+ 	struct vm_area_struct *mpnt;
+ 	unsigned long offset;
+ 	unsigned long addr, old_addr = 0;
++	unsigned long flags;
+ 	pgoff_t pgoff;
+ 
+ 	if (mapping && !mapping_mapped(mapping)) {
+@@ -328,7 +329,7 @@ void flush_dcache_page(struct page *page
+ 	 * declared as MAP_PRIVATE or MAP_SHARED), so we only need
+ 	 * to flush one address here for them all to become coherent */
+ 
+-	flush_dcache_mmap_lock(mapping);
++	flush_dcache_mmap_lock_irqsave(mapping, flags);
+ 	vma_interval_tree_foreach(mpnt, &mapping->i_mmap, pgoff, pgoff) {
+ 		offset = (pgoff - mpnt->vm_pgoff) << PAGE_SHIFT;
+ 		addr = mpnt->vm_start + offset;
+@@ -351,7 +352,7 @@ void flush_dcache_page(struct page *page
+ 			old_addr = addr;
+ 		}
+ 	}
+-	flush_dcache_mmap_unlock(mapping);
++	flush_dcache_mmap_unlock_irqrestore(mapping, flags);
  }
+ EXPORT_SYMBOL(flush_dcache_page);
+ 
+
+
