@@ -2,128 +2,113 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57F77C7EE23
-	for <linux-parisc@archiver.kernel.org>; Tue, 30 May 2023 15:22:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AC69C77B7A
+	for <linux-parisc@archiver.kernel.org>; Tue, 30 May 2023 16:00:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjE3PWE (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 30 May 2023 11:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52426 "EHLO
+        id S233096AbjE3QAw (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 30 May 2023 12:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjE3PWD (ORCPT
+        with ESMTP id S233089AbjE3QAu (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 30 May 2023 11:22:03 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67D7B0;
-        Tue, 30 May 2023 08:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1685460105; i=deller@gmx.de;
-        bh=vTIHiQonw99HwoGqxwwqwXaUuoEBzUMMXLvJyYETUjw=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=qXtWwxea1BNr1sWzLPP19hX6sXKn10d0d/FCP8BHD/aYrz9g5XYV5clElO7zt7aP9
-         mS4jeoUA7/KKpJpfjhbATBU0yEltR1vSu8boyJ2NfwYvM2e4Myskb9Kippl/pNgd0p
-         Z8xAeLeVebLcIO0Hh+/WTMTy9GMpxWpeVRJK5ft7k6kSNGQHLfZb6IdhoMtSp4sWJ/
-         SJI7720vAfr1a4x+nNpaLrkXs+qN/G2TiVyVwcBNI7/3oaJC4uAnv3gtyPXjFU2kM/
-         lollBfsYSCfGlBsPRReJd+IX2ujFfGmABd/BGuflpQ8POQ69f4Re6iyoR+mjgaAacV
-         /TeiGIJ+fwDqA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.145.122]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MStCe-1peHO3085O-00UH8w; Tue, 30
- May 2023 17:21:45 +0200
-Message-ID: <35c48a28-db5d-731f-b2c3-fb63e5274c3e@gmx.de>
-Date:   Tue, 30 May 2023 17:21:44 +0200
+        Tue, 30 May 2023 12:00:50 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B074B2;
+        Tue, 30 May 2023 09:00:49 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1685462447;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=m93yS995VjAenJm1Tq30bXHcCehNtX8a6hAD3sks2W4=;
+        b=AfBAWRGV89Mc653n/xLqy7vteib+6M5/l2mZj+wR8AGKO3PMoCQnprQPz2JjGFxvFh3npR
+        75LwJDM0EE4g+P7BnJV6fDBo0D5A2wsMq2qcoO+Epgc1++GT/hm/IsyZQlfl88sd3wNdLj
+        HacEZyX2iikiKMUlVpHMaBRfI2+ABpbUurQzM9ir/bGUnTaJbVHwLys+6ejBpuK/Ql2gfK
+        8t5edlP2m1H7BWSDdUEp+QUPxhedXZYO6JcbMtV5DS0rwT2VI36zKlSE9ot+0iGtjPkQ+7
+        L4moXOZFPonmdPVRaj68CTj/NyhRRfgqXsWZ04Esn64uoqL2rtpo8bp2DKqCyA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1685462447;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=m93yS995VjAenJm1Tq30bXHcCehNtX8a6hAD3sks2W4=;
+        b=kHOcw6J0QHtLvp0yEL0d0xC3npNrA5vZH/XdZXuEI3If84/jq/yLIElk56Kjr2Nz9yF9mV
+        nI3pJZIHdR0bsSDw==
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Arjan van de Veen <arjan@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Piotr Gorski <lucjan.lucjanov@gmail.com>,
+        Usama Arif <usama.arif@bytedance.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sabin Rapan <sabrapan@amazon.com>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [patch] x86/smpboot: Disable parallel bootup if cc_vendor != NONE
+In-Reply-To: <20230530122951.2wu5rwcu26ofov6f@box.shutemov.name>
+References: <20230524204818.3tjlwah2euncxzmh@box.shutemov.name>
+ <87y1lbl7r6.ffs@tglx> <87sfbhlwp9.ffs@tglx>
+ <20230529023939.mc2akptpxcg3eh2f@box.shutemov.name> <87bki3kkfi.ffs@tglx>
+ <20230529203129.sthnhzgds7ynddxd@box.shutemov.name>
+ <20230530005428.jyrc2ezx5raohlrt@box.shutemov.name> <87mt1mjhk3.ffs@tglx>
+ <87jzwqjeey.ffs@tglx> <87cz2ija1e.ffs@tglx>
+ <20230530122951.2wu5rwcu26ofov6f@box.shutemov.name>
+Date:   Tue, 30 May 2023 18:00:46 +0200
+Message-ID: <87wn0pizbl.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH] parisc: Enable LOCKDEP support
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-References: <1e406b76-77c2-4ffd-ba51-943f36416a6b@roeck-us.net>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <1e406b76-77c2-4ffd-ba51-943f36416a6b@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cWCnI6OTSQI8LLk/nvjCwjwL3FcAM3drSFBthvX2ti3FRxAtO8P
- yws30pCYetS4pPPqOEatT5Q8oWH05nMuQVA+hzK6kqBjr0WfszKw2WbdYE+19F6UL391NFN
- PRHBo11AQfsW9TrWFF6ymo420fhld4zGty9GrsTS9kscREcFr2CPIYQA60c5+njVuXIB0XT
- DowoH5XqFWrUWqv/B/9Qg==
-UI-OutboundReport: notjunk:1;M01:P0:pGF1PEqkgIw=;IL53ncp8LsIIKIL2Tj7RUXyyE5E
- f0cho/9yxoNiLhWcWne/Vn+UWuDtRJYMY//8gjIKnLa30I6eEcCPSRfkZaDZW171X3QeCJ4ZL
- 7yudV3wRWSAhZ2KDTW4orM27L58JYN7piIe3XDgd4UXJpsczvPdKhigKxSrK9Poykh7KjOgrK
- W+8q8q96Od6c/gS4xD3ZK9e15a+Ve4QzzFuSd2d2SOLX4XmcKGcWcr4E13xPeviJQPygJSV2d
- K3+Ok4ttYjvOJwbaBZ6TWBf/UaVwD62xSXBNaqKjHb4oSipmjdbtDQ+Fd4GeXnYVkct3DIpCz
- gFGDDkHmxzXCoJe31To4xUVmJv4WMhUsFsdBIUo74jD9LpfTE0+jQyAHLKYWWc8VeVZUjyaO+
- qGoFYt/3cDePEIL+KFBBU4ZDycvUV0YQjjrdn5QkHDuByINfXTi9LAv1Yg6BFR0K8Tn60ukQe
- pgM5F7nm/S3mn3fTaOG4MN3OAfOlXEKnIwINiVg0Ap4PFu1Nm9yvB9TQ+blPJMM2jm9EH4KIm
- Yv5UMZOl+je6icFDf9r9FiWnlduXrSJapFkDOs5pFFa5uOSx3/u/v+DLL8XA0rEk6IogDVPoY
- Qrs2RIR/MMWIRo2hNyRtIAbepK81MQWRHKYj6Jqmc7QIZLGH7O9ou0uqRDciQZJXhznroviMw
- odzQ1cg92S55DWlLnDHsaYSfSKfq281EgvMPGmJy5uCqHoSitm/NwZ/nKaQO5K7o+BIOToLgM
- E5y/7HxGFHkSITLatgKg89v3ACbVF2TpKiCc5q7ica89fD/9yKIeYVv5HkXwieYFahjlNWOXW
- mr+x7wyYlZhb/DSw20tHjO79pv+UDVWJdzAaKY045ToiVrB5/Sfw/Bhp/BJLUxhiZpxz+f8rr
- Z/vva+guFNR0KTqQ0jTZJ65moNNgyawN6KluAg3uApyzjnr/yNpQiQpxhzOVV6B1qemuGWFWG
- ysq3dA==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 5/30/23 16:19, Guenter Roeck wrote:
-> Helge,
+On Tue, May 30 2023 at 15:29, Kirill A. Shutemov wrote:
+> On Tue, May 30, 2023 at 02:09:17PM +0200, Thomas Gleixner wrote:
+>> The decision to allow parallel bringup of secondary CPUs checks
+>> CC_ATTR_GUEST_STATE_ENCRYPT to detect encrypted guests. Those cannot use
+>> parallel bootup because accessing the local APIC is intercepted and raises
+>> a #VC or #VE, which cannot be handled at that point.
+>> 
+>> The check works correctly, but only for AMD encrypted guests. TDX does not
+>> set that flag.
+>> 
+>> Check for cc_vendor != CC_VENDOR_NONE instead. That might be overbroad, but
+>> definitely works for both AMD and Intel.
 >
-> On Tue, May 23, 2023 at 09:06:40AM +0200, Helge Deller wrote:
->> Cc: <stable@vger.kernel.org> # v6.0+
->> Signed-off-by: Helge Deller <deller@gmx.de>
->> ---
->>   arch/parisc/Kconfig | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
->> index 466a25525364..967bde65dd0e 100644
->> --- a/arch/parisc/Kconfig
->> +++ b/arch/parisc/Kconfig
->> @@ -130,6 +130,10 @@ config PM
->>   config STACKTRACE_SUPPORT
->>   	def_bool y
->>
->> +config LOCKDEP_SUPPORT
->> +	bool
->> +	default y
->> +
->>   config ISA_DMA_API
->>   	bool
->>
->
-> This patch results in a bunch of WARNING message with each parisc boot i=
-f
-> CONFIG_PROVE_LOCKING and CONFIG_DEBUG_LOCKDEP are enabled.
->
-> WARNING: CPU: 0 PID: 0 at kernel/locking/lockdep.c:5545 check_flags+0x24=
-c/0x274
-> Backtrace:
->   [<1026d44c>] lock_acquire+0xdc/0x388
->   [<10e8c66c>] _raw_spin_lock_irqsave+0x64/0x98
->   [<10e922dc>] down_trylock+0x20/0x58
->   [<102768c8>] __down_trylock_console_sem+0x44/0x114
->   [<1027b768>] vprintk_emit+0xa8/0x3dc
->   [<1027bac4>] vprintk_default+0x28/0x38
->   [<1027c574>] vprintk+0xa4/0xb4
->   [<10e6c62c>] _printk+0x30/0x40
->   [<10e37700>] report_bug+0x338/0x35c
->   [<101c19fc>] handle_interruption+0x654/0x768
->   [<101bb070>] intr_check_sig+0x0/0x38
->
-> WARNING: CPU: 0 PID: 0 at kernel/context_tracking.c:367 ct_irq_enter+0x9=
-4/0xb0
-> Backtrace:
->   [<101f0c1c>] irq_enter+0x18/0x30
->   [<101c2dec>] do_cpu_irq_mask+0x7c/0x388
->   [<101bb064>] intr_return+0x0/0xc
->
-> Is that going to be fixed, or should I disable CONFIG_PROVE_LOCKING
-> for parisc in my testing ?
+> It boots fine with TDX, but I think it is wrong. cc_get_vendor() will
+> report CC_VENDOR_AMD even on bare metal if SME is enabled. I don't think
+> we want it.
 
-They should be looked at and fixed over time. Right now please disable
-for now, as I personally won't have time to check as I'm leaving
-for vacation. You may send me your .config in private mail though, in
-case I find time.
+Right. Did not think about that.
 
-Helge
+But the same way is CC_ATTR_GUEST_MEM_ENCRYPT overbroad for AMD. Only
+SEV-ES traps RDMSR if I'm understandig that maze correctly.
+
+Thanks,
+
+        tglx
