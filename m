@@ -2,47 +2,47 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC32FC83003
-	for <linux-parisc@archiver.kernel.org>; Wed, 31 May 2023 13:51:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82ACCC7EE23
+	for <linux-parisc@archiver.kernel.org>; Wed, 31 May 2023 14:07:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237023AbjEaNvJ (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Wed, 31 May 2023 09:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
+        id S237499AbjEaOH4 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Wed, 31 May 2023 10:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237230AbjEaNuC (ORCPT
+        with ESMTP id S236749AbjEaOHl (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Wed, 31 May 2023 09:50:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254202D4E;
-        Wed, 31 May 2023 06:45:39 -0700 (PDT)
+        Wed, 31 May 2023 10:07:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4181128;
+        Wed, 31 May 2023 07:03:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0B76163B9C;
-        Wed, 31 May 2023 13:45:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9408EC4339E;
-        Wed, 31 May 2023 13:45:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B20D163B8E;
+        Wed, 31 May 2023 13:44:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7559FC433D2;
+        Wed, 31 May 2023 13:44:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685540721;
-        bh=awNbbUrZKfXcgaKH6JhIK8hfjJtLZGaowOiSziy/Zt0=;
+        s=k20201202; t=1685540677;
+        bh=iNgp5Hm7P8kptTMGsGtME1vUwWLJboJ1EV9ZvMnE6Sk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LZscV3U2QhtfqRJBlmrvZ/NFo7ZEfs7B1K+JTSU9gVAsfJCm0QK7LoWYL+nJjHtew
-         SzzhUmCnEdDCkruQxxW8STXjquaVe3GacCGVdmGHS98RS1zapzhWMXpWg6AmDWJkeB
-         Co5u0+wYr7hRqlJ0utb4L8cGDgwUDeQfXGGwuhbdz/xQUZFLFJx7H/U9LqLr54Z2N5
-         KLqnMogUzTW6nF0zdfAEsis1OZXNMTKRzUmW3g/sbXWpWZnna+lWWMgPkC3jBhMdv1
-         OliAG8DWO7pUOnqvQwBHn1SXsC5P5n+tCOgbja6bVv49D0+0gzSqM/lSWSEDYLdR/D
-         cCD3HdRHd8NUQ==
+        b=uVZ+Uoi+8kIJLIo4DULcft4XZrMXqjtEBSJ93gyhUaqE6AHuQLvnR3c0w2LHfwsWE
+         q3y7bllyI2nr7Yi+B45ew3ObR9hGoQ6XorQKpfOggLeQyxnPvTMT1qioueBFdH+nt4
+         WVYb7C9YR7Ps2gbuTisnJQ4ipv5JTdFZjG3vqpGfD7eGC5JyZFclhrwRmPH8b8h7r1
+         qJErqOLFofH6nPCqhZ7YtR7D6lPwdGUY9I/CLUrpfgQcIgMc3YOWhQhc80UKhA1Cl6
+         wto09/Vc3garzC+Jt6mOLiY4LeZfv1HqefWXi04mZNs5pQa5EU1JcvT9PJA2KV2uSO
+         L5e02ZKYERMLw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, airlied@redhat.com,
-        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 12/17] parisc: Flush gatt writes and adjust gatt mask in parisc_agp_mask_memory()
-Date:   Wed, 31 May 2023 09:44:56 -0400
-Message-Id: <20230531134502.3384828-12-sashal@kernel.org>
+        James.Bottomley@HansenPartnership.com, gaoxin@cdjrlc.com,
+        linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 14/21] parisc: Improve cache flushing for PCXL in arch_sync_dma_for_cpu()
+Date:   Wed, 31 May 2023 09:44:07 -0400
+Message-Id: <20230531134415.3384458-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230531134502.3384828-1-sashal@kernel.org>
-References: <20230531134502.3384828-1-sashal@kernel.org>
+In-Reply-To: <20230531134415.3384458-1-sashal@kernel.org>
+References: <20230531134415.3384458-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -53,57 +53,53 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Helge Deller <deller@gmx.de>
 
-[ Upstream commit d703797380c540bbeac03f104ebcfc364eaf47cc ]
+[ Upstream commit 59fa12646d9f56c842b4d5b6418ed77af625c588 ]
 
-Flush caches after changing gatt entries and calculate entry according
-to SBA requirements.
+Add comment in arch_sync_dma_for_device() and handle the direction flag in
+arch_sync_dma_for_cpu().
+
+When receiving data from the device (DMA_FROM_DEVICE) unconditionally
+purge the data cache in arch_sync_dma_for_cpu().
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/agp/parisc-agp.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ arch/parisc/kernel/pci-dma.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/char/agp/parisc-agp.c b/drivers/char/agp/parisc-agp.c
-index d68d05d5d3838..514f9f287a781 100644
---- a/drivers/char/agp/parisc-agp.c
-+++ b/drivers/char/agp/parisc-agp.c
-@@ -90,6 +90,9 @@ parisc_agp_tlbflush(struct agp_memory *mem)
+diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
+index 36610a5c029fc..fc90ccfee1572 100644
+--- a/arch/parisc/kernel/pci-dma.c
++++ b/arch/parisc/kernel/pci-dma.c
+@@ -446,11 +446,27 @@ void arch_dma_free(struct device *dev, size_t size, void *vaddr,
+ void arch_sync_dma_for_device(phys_addr_t paddr, size_t size,
+ 		enum dma_data_direction dir)
  {
- 	struct _parisc_agp_info *info = &parisc_agp_info;
- 
-+	/* force fdc ops to be visible to IOMMU */
-+	asm_io_sync();
-+
- 	writeq(info->gart_base | ilog2(info->gart_size), info->ioc_regs+IOC_PCOM);
- 	readq(info->ioc_regs+IOC_PCOM);	/* flush */
- }
-@@ -158,6 +161,7 @@ parisc_agp_insert_memory(struct agp_memory *mem, off_t pg_start, int type)
- 			info->gatt[j] =
- 				parisc_agp_mask_memory(agp_bridge,
- 					paddr, type);
-+			asm_io_fdc(&info->gatt[j]);
- 		}
- 	}
- 
-@@ -191,7 +195,16 @@ static unsigned long
- parisc_agp_mask_memory(struct agp_bridge_data *bridge, dma_addr_t addr,
- 		       int type)
- {
--	return SBA_PDIR_VALID_BIT | addr;
-+	unsigned ci;			/* coherent index */
-+	dma_addr_t pa;
-+
-+	pa = addr & IOVP_MASK;
-+	asm("lci 0(%1), %0" : "=r" (ci) : "r" (phys_to_virt(pa)));
-+
-+	pa |= (ci >> PAGE_SHIFT) & 0xff;/* move CI (8 bits) into lowest byte */
-+	pa |= SBA_PDIR_VALID_BIT;	/* set "valid" bit */
-+
-+	return cpu_to_le64(pa);
++	/*
++	 * fdc: The data cache line is written back to memory, if and only if
++	 * it is dirty, and then invalidated from the data cache.
++	 */
+ 	flush_kernel_dcache_range((unsigned long)phys_to_virt(paddr), size);
  }
  
- static void
+ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+ 		enum dma_data_direction dir)
+ {
+-	flush_kernel_dcache_range((unsigned long)phys_to_virt(paddr), size);
++	unsigned long addr = (unsigned long) phys_to_virt(paddr);
++
++	switch (dir) {
++	case DMA_TO_DEVICE:
++	case DMA_BIDIRECTIONAL:
++		flush_kernel_dcache_range(addr, size);
++		return;
++	case DMA_FROM_DEVICE:
++		purge_kernel_dcache_range_asm(addr, addr + size);
++		return;
++	default:
++		BUG();
++	}
+ }
 -- 
 2.39.2
 
