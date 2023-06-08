@@ -2,168 +2,136 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF55DC7EE2C
-	for <linux-parisc@archiver.kernel.org>; Tue,  6 Jun 2023 18:22:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48440C8300C
+	for <linux-parisc@archiver.kernel.org>; Thu,  8 Jun 2023 07:04:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238519AbjFFSWT (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 6 Jun 2023 14:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
+        id S235255AbjFHHEh (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 8 Jun 2023 03:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238431AbjFFSWQ (ORCPT
+        with ESMTP id S235193AbjFHHE3 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 6 Jun 2023 14:22:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA00F170A;
-        Tue,  6 Jun 2023 11:22:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4586963696;
-        Tue,  6 Jun 2023 18:22:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A236EC433A8;
-        Tue,  6 Jun 2023 18:22:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686075733;
-        bh=08bgDTu6K2r14VqmkEIMfCPJQ/ZZrnAx7Zh60inB9tQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PvVbLJcYr9sEPc4KvXnz7da5hnzjz64447Y1vyViBiCb+fl59qj0pvbLDlkg7Wuob
-         rzrnBjSOFtiQecuq+LZ/SRRxmzgXLdbIbqyyYrcYGhY29RsiV56QlreCUSnVm+stVt
-         UoVEGKhBSdT54YRh1gXdKSmvd62cZB1711kSzDIW8D76YUK3gBLlfz43UtqujOAa4M
-         WNIOBkfcw2WKv0IUzEzdSsuoiqNT0iAk+aytnzF0p5Ex5Qs+2o2gd4vHHiQKTwquZM
-         rFReB/rrpz7owlp/MdxR2Mp3uAIDm8MwdFNdtC8Gq4wlspi7VJYfgsGIf9GhxSZs3/
-         0v9cbIwE3cmiA==
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2b1a4250b07so75710911fa.3;
-        Tue, 06 Jun 2023 11:22:13 -0700 (PDT)
-X-Gm-Message-State: AC+VfDzCXm5+70Ovpz7W746cGaUigh8vo5Bs482Vva0c0k6BOaC8cWYw
-        xXE/STitpg+B5AXPalqdCtTYAhMWQ+XDi+gPtfw=
-X-Google-Smtp-Source: ACHHUZ5bLSr3tA3IB8xCjeC0rEYdnEDeq7vmc1y/QuS5oHjyhnnuqZDpSw2PwmODz4CMTnRxT8zG59Qp1zLSa+hdG70=
-X-Received: by 2002:a2e:82d0:0:b0:2b0:297c:cbdf with SMTP id
- n16-20020a2e82d0000000b002b0297ccbdfmr1546782ljh.1.1686075731505; Tue, 06 Jun
- 2023 11:22:11 -0700 (PDT)
+        Thu, 8 Jun 2023 03:04:29 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 40B8826B9;
+        Thu,  8 Jun 2023 00:04:18 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8Dx_+twfYFkNXIAAA--.1855S3;
+        Thu, 08 Jun 2023 15:04:16 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxC8ptfYFk49MGAA--.13616S3;
+        Thu, 08 Jun 2023 15:04:14 +0800 (CST)
+Subject: Re: [RFC PATCH] asm-generic: Unify uapi bitsperlong.h
+To:     Arnd Bergmann <arnd@arndb.de>
+References: <1683615903-10862-1-git-send-email-yangtiezhu@loongson.cn>
+ <b9624545-2c80-49a1-ac3c-39264a591f7b@app.fastmail.com>
+Cc:     linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        x86@kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <76d3be65-91df-7969-5303-38231a7df926@loongson.cn>
+Date:   Thu, 8 Jun 2023 15:04:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-References: <20230601101257.530867-1-rppt@kernel.org> <ZHjDU/mxE+cugpLj@FVFF77S0Q05N.cambridge.arm.com>
- <ZHjgIH3aX9dCvVZc@moria.home.lan> <ZHm3zUUbwqlsZBBF@FVFF77S0Q05N>
- <20230605092040.GB3460@kernel.org> <ZH20XkD74prrdN4u@FVFF77S0Q05N>
-In-Reply-To: <ZH20XkD74prrdN4u@FVFF77S0Q05N>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 6 Jun 2023 11:21:59 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7ntn_HpVWdGK_hYVd3zsPEFToBNfmtt0m6K8SwfxJ66Q@mail.gmail.com>
-Message-ID: <CAPhsuW7ntn_HpVWdGK_hYVd3zsPEFToBNfmtt0m6K8SwfxJ66Q@mail.gmail.com>
-Subject: Re: [PATCH 00/13] mm: jit/text allocator
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-        netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <b9624545-2c80-49a1-ac3c-39264a591f7b@app.fastmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8BxC8ptfYFk49MGAA--.13616S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxXw1UJry5Ww1rXr47ZrW8AFc_yoW5Ww1UpF
+        47Jw12gF4qkr1ftrn7Gw47Za45Jwn3Ka1ak39agryxZFW5Wry7trZF9rWagFykXrW8tF4q
+        vrZ8tryjkay8AagCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUmlb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
+        wI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxV
+        AFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+        zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr
+        1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+        CwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+        nIWIevJa73UjIFyTuYvjxUc9mRUUUUU
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Mon, Jun 5, 2023 at 3:09=E2=80=AFAM Mark Rutland <mark.rutland@arm.com> =
-wrote:
+Hi all,
 
-[...]
-
-> > > > Can you give more detail on what parameters you need? If the only e=
-xtra
-> > > > parameter is just "does this allocation need to live close to kerne=
-l
-> > > > text", that's not that big of a deal.
-> > >
-> > > My thinking was that we at least need the start + end for each caller=
-. That
-> > > might be it, tbh.
-> >
-> > Do you mean that modules will have something like
-> >
-> >       jit_text_alloc(size, MODULES_START, MODULES_END);
-> >
-> > and kprobes will have
-> >
-> >       jit_text_alloc(size, KPROBES_START, KPROBES_END);
-> > ?
+On 05/09/2023 05:37 PM, Arnd Bergmann wrote:
+> On Tue, May 9, 2023, at 09:05, Tiezhu Yang wrote:
+>> Now we specify the minimal version of GCC as 5.1 and Clang/LLVM as 11.0.0
+>> in Documentation/process/changes.rst, __CHAR_BIT__ and __SIZEOF_LONG__ are
+>> usable, just define __BITS_PER_LONG as (__CHAR_BIT__ * __SIZEOF_LONG__) in
+>> asm-generic uapi bitsperlong.h, simpler, works everywhere.
+>>
+>> Remove all the arch specific uapi bitsperlong.h which will be generated as
+>> arch/*/include/generated/uapi/asm/bitsperlong.h.
+>>
+>> Suggested-by: Xi Ruoyao <xry111@xry111.site>
+>> Link:
+>> https://lore.kernel.org/all/d3e255e4746de44c9903c4433616d44ffcf18d1b.camel@xry111.site/
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 >
-> Yes.
-
-How about we start with two APIs:
-     jit_text_alloc(size);
-     jit_text_alloc_range(size, start, end);
-
-AFAICT, arm64 is the only arch that requires the latter API. And TBH, I am
-not quite convinced it is needed.
-
+> I originally introduced the bitsperlong.h header, and I'd love to
+> see it removed if it's no longer needed. Your patch certainly
+> seems like it does this well.
 >
-> > It sill can be achieved with a single jit_alloc_arch_params(), just by
-> > adding enum jit_type parameter to jit_text_alloc().
+> There is one minor obstacle to this, which is that the compiler
+> requirements for uapi headers are not the same as for kernel
+> internal code. In particular, the uapi headers may be included
+> by user space code that is built with an older compiler version,
+> or with a compiler that is not gcc or clang.
 >
-> That feels backwards to me; it centralizes a bunch of information about
-> distinct users to be able to shove that into a static array, when the cal=
-lsites
-> can pass that information.
-
-I think we only two type of users: module and everything else (ftrace, kpro=
-be,
-bpf stuff). The key differences are:
-
-  1. module uses text and data; while everything else only uses text.
-  2. module code is generated by the compiler, and thus has stronger
-  requirements in address ranges; everything else are generated via some
-  JIT or manual written assembly, so they are more flexible with address
-  ranges (in JIT, we can avoid using instructions that requires a specific
-  address range).
-
-The next question is, can we have the two types of users share the same
-address ranges? If not, we can reserve the preferred range for modules,
-and let everything else use the other range. I don't see reasons to further
-separate users in the "everything else" group.
-
+> I think we are completely safe on the architectures that were
+> added since the linux-3.x days (arm64, riscv, csky, openrisc,
+> loongarch, nios2, and hexagon), but for the older ones there
+> is a regression risk. Especially on targets that are not that
+> actively maintained (sparc, alpha, ia64, sh, ...) there is
+> a good chance that users are stuck on ancient toolchains.
 >
-> What's *actually* common after separating out the ranges? Is it just the
-> permissions?
-
-I believe permission is the key, as we need the hardware to enforce
-permission.
-
+> It's probably also a safe assumption that anyone with an older
+> libc version won't be using the latest kernel headers, so
+> I think we can still do this across architectures if both
+> glibc and musl already require a compiler that is new enough,
+> or alternatively if we know that the kernel headers require
+> a new compiler for other reasons and nobody has complained.
 >
-> If we want this to be able to share allocations and so on, why can't we d=
-o this
-> like a kmem_cache, and have the callsite pass a pointer to the allocator =
-data?
-> That would make it easy for callsites to share an allocator or use a dist=
-inct
-> one.
+> For glibc, it looks the minimum compiler version was raised
+> from gcc-5 to gcc-8 four years ago, so we should be fine.
+>
+> In musl, the documentation states that at least gcc-3.4 or
+> clang-3.2 are required, which probably predate the
+> __SIZEOF_LONG__ macro. On the other hand, musl was only
+> released in 2011, and building musl itself explicitly
+> does not require kernel uapi headers, so this may not
+> be too critical.
+>
+> There is also uClibc, but I could not find any minimum
+> supported compiler version for that. Most commonly, this
+> one is used for cross-build environments, so it's also
+> less likely to have libc/gcc/headers being wildly out of
+> sync. Not sure.
+>
+>       Arnd
+>
+> [1] https://sourceware.org/pipermail/libc-alpha/2019-January/101010.html
+>
 
-Sharing among different call sites will give us more benefit (in TLB
-misses rate,
-etc.). For example, a 2MB page may host text of two kernel modules, 4 kprob=
-es,
-6 ftrace trampolines, and 10 BPF programs. All of these only require one en=
-try
-in the iTLB.
+Thanks Arnd for the detailed reply.
+Any more comments? What should I do in the next step?
 
 Thanks,
-Song
+Tiezhu
+
