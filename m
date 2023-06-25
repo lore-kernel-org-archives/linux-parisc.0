@@ -2,150 +2,226 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB8F0C001DD
-	for <linux-parisc@archiver.kernel.org>; Sat, 24 Jun 2023 14:22:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3C06C001DB
+	for <linux-parisc@archiver.kernel.org>; Sun, 25 Jun 2023 16:15:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbjFXOWV (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 24 Jun 2023 10:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
+        id S230461AbjFYQPS (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 25 Jun 2023 12:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjFXOWU (ORCPT
+        with ESMTP id S230434AbjFYQPR (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 24 Jun 2023 10:22:20 -0400
-Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979561BDB;
-        Sat, 24 Jun 2023 07:22:18 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9D1445801DE;
-        Sat, 24 Jun 2023 10:22:17 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Sat, 24 Jun 2023 10:22:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1687616537; x=1687623737; bh=Ih
-        z6/bi511oP4d526TPPtM1blBZt4arV1NypQDvLup8=; b=Owr1gNHl98uY/LqghJ
-        ew6TAsiUgTWjuGMsxDEW7dPPnLV3e7dQ48EjTdP5xHC8mtn8gOYupnCSHk4hfivP
-        2548A0+ELQQlya9a+Jj0JkYOlxNPXvbMtrvZE4ZYuMEg0oeEVRQxH3fZk7dq7fcR
-        K2FnnRvxLC2ctHogIIPsu5AzKYi/b1l8LHXlg+nhxQKDQbQ2GgNgOE7o0SLx/lJl
-        ZJl/F2RHs+ZN1HfuzBUUYja0J54XdNJ5XYphhB2SZMV3SOmTcHA6JZT0U9/SAmVC
-        9c8VJBDM16nnBrphov+n9ifuK0VIrDEcUy1gZSuUHvkasNoYZlMz0wEqqeUYovQg
-        985w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1687616537; x=1687623737; bh=Ihz6/bi511oP4
-        d526TPPtM1blBZt4arV1NypQDvLup8=; b=VK5TgDjVEpiEaunZZwRRAQPsTnjFp
-        zkoDEEdhdFioqudleRGZjNuek0JsRnk3YrU4OgaJsTS63QgF8QOtf7vg2z1azqmX
-        zbJgS5KJT8RVEJGWIcWXoccJV7DsEUPIM7fQrw314Non4B0AcKCTS2tiu4ftIj8G
-        sBy+JyOj8lBXvLnjyDAYLzzz21cS9Rw6GZ1k8qjXXnVcAj+7YV4car/+OJ2Hz1Vy
-        XzKWDBO3QquHdDPcc9ZnIK0trCu+0GLImpYfYIOCCwLguVtAkJf4TryNcTfPhMob
-        qjIlOfgux2mxV3SnTy++07Z7K6tSNSgFgk6q7BXZ1w+17nZskwCf6fCwA==
-X-ME-Sender: <xms:GPyWZCp4xCyzgIT7Kv57_S9Fj_YrOyXXtQi7KxbKTITt5sPxujuEgA>
-    <xme:GPyWZAoCSw5-QOKYgYL1kqq0dPmclQVYtInH9cHAwaW4i2eRqwCURn45oRtWD_RQc
-    xQUs-Q4Qr9LCBw-SYo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgeegjedgjeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:GPyWZHMyXf5Kvsllp2a13R-ZdsUa5Eyn9zm8e_TevTvdOPqjcW5nlQ>
-    <xmx:GPyWZB456YmIlexKtameEvfzxT6jb_S5LP8U4ZZ8x8ftCJgDf8Imbw>
-    <xmx:GPyWZB4KiilRGFPdEeCPRk6Xvib-UQo3Rc6SHJIcWlgnWs25oEFPvQ>
-    <xmx:GfyWZDvcJNvUjndis2HwHYCG9wl31VYvNLjRzs3Fi5XOZJ7a0ROd8w>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B8029B60086; Sat, 24 Jun 2023 10:22:16 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-499-gf27bbf33e2-fm-20230619.001-gf27bbf33
-Mime-Version: 1.0
-Message-Id: <d9ffc44c-c4ae-4f01-bc0b-ee5359a24a0a@app.fastmail.com>
-In-Reply-To: <d4156e51-102f-36b4-e42c-938268b4b608@roeck-us.net>
-References: <20230417125651.25126-18-tzimmermann@suse.de>
- <c525adc9-6623-4660-8718-e0c9311563b8@roeck-us.net>
- <55130a50-d129-4336-99ce-3be4229b1c7d@app.fastmail.com>
- <d4156e51-102f-36b4-e42c-938268b4b608@roeck-us.net>
-Date:   Sat, 24 Jun 2023 16:21:47 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Guenter Roeck" <linux@roeck-us.net>,
-        "Thomas Zimmermann" <tzimmermann@suse.de>
-Cc:     "Daniel Vetter" <daniel.vetter@ffwll.ch>,
-        "Helge Deller" <deller@gmx.de>,
-        "Javier Martinez Canillas" <javierm@redhat.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
-        sparclinux@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [v3,17/19] arch/sparc: Implement fb_is_primary_device() in source file
-Content-Type: text/plain
+        Sun, 25 Jun 2023 12:15:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BB01A5;
+        Sun, 25 Jun 2023 09:15:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0961B60C00;
+        Sun, 25 Jun 2023 16:15:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E463C433C8;
+        Sun, 25 Jun 2023 16:15:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1687709714;
+        bh=4/ubcrsJvqhBH/vtuVerDOnT8cLh0Z8x9NdrY0vOnlQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WstfenfqrQraRy6ufCoglL05809oMSEcRfUfndB4rQcusE2zI6TcMHkeBnayI84XA
+         LeozoS1GxcgX6ngSkoBmbS3qtRRxpB4XJfcJ0UBAlF7QFxeCg91BLDI10maMfpngYE
+         GUM0fRwCgV10clhNpI2PaQ4gob7CHex19G8gRldqPBuUpM78fGkBpM0UXT8ixelGSU
+         z1J5NhvB3QyMnCUu0HFkwD1i+NEXK0yL9AmrFlsQbZjM/QMXh/KkJhf0b8d0tCsjR9
+         O2Kt+FWy9X6r90AuucdbQ5DKiCYwwvRks6UN7t6Eai/BXzXsbKQsTn9de+dLQqBnA/
+         HFT91PEpPBRoA==
+Date:   Sun, 25 Jun 2023 19:14:17 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Song Liu <song@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        netdev@vger.kernel.org, sparclinux@vger.kernel.org,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [PATCH v2 02/12] mm: introduce execmem_text_alloc() and
+ jit_text_alloc()
+Message-ID: <20230625161417.GK52412@kernel.org>
+References: <20230616085038.4121892-1-rppt@kernel.org>
+ <20230616085038.4121892-3-rppt@kernel.org>
+ <f9a7eebe-d36e-4587-b99d-35d4edefdd14@app.fastmail.com>
+ <20230618080027.GA52412@kernel.org>
+ <a17c65c6-863f-4026-9c6f-a04b659e9ab4@app.fastmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a17c65c6-863f-4026-9c6f-a04b659e9ab4@app.fastmail.com>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Sat, Jun 24, 2023, at 15:26, Guenter Roeck wrote:
-> On 6/24/23 02:27, Arnd Bergmann wrote:
->> On Sat, Jun 24, 2023, at 03:55, Guenter Roeck wrote:
->>>
->>> On Mon, Apr 17, 2023 at 02:56:49PM +0200, Thomas Zimmermann wrote:
->>>> Other architectures implment fb_is_primary_device() in a source
->>>> file. Do the same on sparc. No functional changes, but allows to
->>>> remove several include statement from <asm/fb.h>.
->>>>
->>>> v2:
->>>> 	* don't include <asm/prom.h> in header file
->>>>
->>>> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
->>>> Cc: "David S. Miller" <davem@davemloft.net>
->>>
->>> This patch results (or appears to result) in the following build error
->>> when trying to build sparc64:allmodconfig.
->>>
->>> Error log:
->>> <stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
->>> WARNING: modpost: drivers/cpufreq/sparc-us2e-cpufreq: section mismatch
->>> in reference: cpufreq_us2e_driver+0x20 (section: .data) ->
->>> us2e_freq_cpu_init (section: .init.text)
->>> WARNING: modpost: drivers/cpufreq/sparc-us3-cpufreq: section mismatch
->>> in reference: cpufreq_us3_driver+0x20 (section: .data) ->
->>> us3_freq_cpu_init (section: .init.text)
->>> ERROR: modpost: "__xchg_called_with_bad_pointer" [lib/atomic64_test.ko]
->>> undefined!
->> 
->> These all look like old bugs that would be trivially fixed if
->> anyone cared about sparc.
->> 
->
-> Odd argument, given that this _is_ a sparc patch. Those may be old
-> bugs, but at least in 6.4-rc7 sparc64:allmodconfig does at least compile.
+On Mon, Jun 19, 2023 at 10:09:02AM -0700, Andy Lutomirski wrote:
+> 
+> On Sun, Jun 18, 2023, at 1:00 AM, Mike Rapoport wrote:
+> > On Sat, Jun 17, 2023 at 01:38:29PM -0700, Andy Lutomirski wrote:
+> >> On Fri, Jun 16, 2023, at 1:50 AM, Mike Rapoport wrote:
+> >> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> >> >
+> >> > module_alloc() is used everywhere as a mean to allocate memory for code.
+> >> >
+> >> > Beside being semantically wrong, this unnecessarily ties all subsystems
+> >> > that need to allocate code, such as ftrace, kprobes and BPF to modules
+> >> > and puts the burden of code allocation to the modules code.
+> >> >
+> >> > Several architectures override module_alloc() because of various
+> >> > constraints where the executable memory can be located and this causes
+> >> > additional obstacles for improvements of code allocation.
+> >> >
+> >> > Start splitting code allocation from modules by introducing
+> >> > execmem_text_alloc(), execmem_free(), jit_text_alloc(), jit_free() APIs.
+> >> >
+> >> > Initially, execmem_text_alloc() and jit_text_alloc() are wrappers for
+> >> > module_alloc() and execmem_free() and jit_free() are replacements of
+> >> > module_memfree() to allow updating all call sites to use the new APIs.
+> >> >
+> >> > The intention semantics for new allocation APIs:
+> >> >
+> >> > * execmem_text_alloc() should be used to allocate memory that must reside
+> >> >   close to the kernel image, like loadable kernel modules and generated
+> >> >   code that is restricted by relative addressing.
+> >> >
+> >> > * jit_text_alloc() should be used to allocate memory for generated code
+> >> >   when there are no restrictions for the code placement. For
+> >> >   architectures that require that any code is within certain distance
+> >> >   from the kernel image, jit_text_alloc() will be essentially aliased to
+> >> >   execmem_text_alloc().
+> >> >
+> >> 
+> >> Is there anything in this series to help users do the appropriate
+> >> synchronization when the actually populate the allocated memory with
+> >> code?  See here, for example:
+> >
+> > This series only factors out the executable allocations from modules and
+> > puts them in a central place.
+> > Anything else would go on top after this lands.
+> 
+> Hmm.
+> 
+> On the one hand, there's nothing wrong with factoring out common code. On
+> the other hand, this is probably the right time to at least start
+> thinking about synchronization, at least to the extent that it might make
+> us want to change this API.  (I'm not at all saying that this series
+> should require changes -- I'm just saying that this is a good time to
+> think about how this should work.)
+> 
+> The current APIs, *and* the proposed jit_text_alloc() API, don't actually
+> look like the one think in the Linux ecosystem that actually
+> intelligently and efficiently maps new text into an address space:
+> mmap().
+> 
+> On x86, you can mmap() an existing file full of executable code PROT_EXEC
+> and jump to it with minimal synchronization (just the standard implicit
+> ordering in the kernel that populates the pages before setting up the
+> PTEs and whatever user synchronization is needed to avoid jumping into
+> the mapping before mmap() finishes).  It works across CPUs, and the only
+> possible way userspace can screw it up (for a read-only mapping of
+> read-only text, anyway) is to jump to the mapping too early, in which
+> case userspace gets a page fault.  Incoherence is impossible, and no one
+> needs to "serialize" (in the SDM sense).
+> 
+> I think the same sequence (from userspace's perspective) works on other
+> architectures, too, although I think more cache management is needed on
+> the kernel's end.  As far as I know, no Linux SMP architecture needs an
+> IPI to map executable text into usermode, but I could easily be wrong.
+> (IIRC RISC-V has very developer-unfriendly icache management, but I don't
+> remember the details.)
+> 
+> Of course, using ptrace or any other FOLL_FORCE to modify text on x86 is
+> rather fraught, and I bet many things do it wrong when userspace is
+> multithreaded.  But not in production because it's mostly not used in
+> production.)
+> 
+> But jit_text_alloc() can't do this, because the order of operations
+> doesn't match.  With jit_text_alloc(), the executable mapping shows up
+> before the text is populated, so there is no atomic change from not-there
+> to populated-and-executable.  Which means that there is an opportunity
+> for CPUs, speculatively or otherwise, to start filling various caches
+> with intermediate states of the text, which means that various
+> architectures (even x86!) may need serialization.
+> 
+> For eBPF- and module- like use cases, where JITting/code gen is quite
+> coarse-grained, perhaps something vaguely like:
+> 
+> jit_text_alloc() -> returns a handle and an executable virtual address,
+> but does *not* map it there
+> jit_text_write() -> write to that handle
+> jit_text_map() -> map it and synchronize if needed (no sync needed on
+> x86, I think)
+> 
+> could be more efficient and/or safer.
+> 
+> (Modules could use this too.  Getting alternatives right might take some
+> fiddling, because off the top of my head, this doesn't match how it works
+> now.)
+> 
+> To make alternatives easier, this could work, maybe (haven't fully
+> thought it through):
+> 
+> jit_text_alloc()
+> jit_text_map_rw_inplace() -> map at the target address, but RW, !X
+> 
+> write the text and apply alternatives
+> 
+> jit_text_finalize() -> change from RW to RX *and synchronize*
+> 
+> jit_text_finalize() would either need to wait for RCU (possibly extra
+> heavy weight RCU to get "serialization") or send an IPI.
 
-The first three are non-fatal warnings even with CONFIG_WERROR=y, I'm
-sure they have been there for years. I don't immediately see what
-caused the __xchg_called_with_bad_pointer error, but it does not
-look related to the fbdev patch. I would guess that this is a second
-regression that happened to come in at the same time.
+This essentially how modules work now. The memory is allocated RW, written
+and updated with alternatives and then made ROX in the end with set_memory
+APIs.
 
-> Sure, I can stop build testing it if that is where things are going.
+The issue with not having the memory mapped X when it's written is that we
+cannot use large pages to map it. One of the goals is to have executable
+memory mapped with large pages and make code allocator able to divide that
+page among several callers.
 
-I think we clearly want to fix the fbdev regression you found, and
-maybe bisect the atomic64_test as well to see if that was caused by
-a recent patch to get it into a working state again.
+So the idea was that jit_text_alloc() will have a cache of large pages
+mapped ROX, will allocate memory from those caches and there will be
+jit_update() that uses text poking for writing to that memory.
 
-Regarding whether to continue build testing: if every kernel build
-warns about a missing syscall for almost four years (clone3 was
-added in 5.3 and requires a minimal review to hook it up to asm
-code), it shows that the architecture is seriously neglected
-already.
+Upon allocation of a large page to increase the cache, that large page will
+be "invalidated" by filling it with breakpoint instructions (e.g int3 on
+x86)
 
-     Arnd
+To improve the performance of this process, we can write to !X copy and
+then text_poke it to the actual address in one go. This will require some
+changes to get the alternatives right.
+
+-- 
+Sincerely yours,
+Mike.
