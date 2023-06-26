@@ -2,232 +2,253 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63728EB64DD
-	for <linux-parisc@archiver.kernel.org>; Mon, 26 Jun 2023 13:02:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF1FAC001DE
+	for <linux-parisc@archiver.kernel.org>; Mon, 26 Jun 2023 16:14:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbjFZNCO (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 26 Jun 2023 09:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
+        id S230482AbjFZQOf (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 26 Jun 2023 12:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231263AbjFZNCJ (ORCPT
+        with ESMTP id S230021AbjFZQO2 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 26 Jun 2023 09:02:09 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 482ECD2;
-        Mon, 26 Jun 2023 06:02:04 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF2D62F4;
-        Mon, 26 Jun 2023 06:02:47 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.23.38])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14E543F64C;
-        Mon, 26 Jun 2023 06:01:57 -0700 (PDT)
-Date:   Mon, 26 Jun 2023 14:01:55 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Mike Rapoport <rppt@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Song Liu <song@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-        netdev@vger.kernel.org, sparclinux@vger.kernel.org,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [PATCH v2 02/12] mm: introduce execmem_text_alloc() and
- jit_text_alloc()
-Message-ID: <ZJmMQ62fW7RO5W2O@FVFF77S0Q05N>
-References: <20230616085038.4121892-1-rppt@kernel.org>
- <20230616085038.4121892-3-rppt@kernel.org>
- <f9a7eebe-d36e-4587-b99d-35d4edefdd14@app.fastmail.com>
- <20230618080027.GA52412@kernel.org>
- <a17c65c6-863f-4026-9c6f-a04b659e9ab4@app.fastmail.com>
+        Mon, 26 Jun 2023 12:14:28 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A0910EA;
+        Mon, 26 Jun 2023 09:14:25 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35QBZUmP018106;
+        Mon, 26 Jun 2023 16:14:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2023-03-30; bh=OiB5s3stXpg5sNJ7GH1oar2b9BAnXvOVsmLMSoajXcM=;
+ b=aNhIQzN80Fu3aGwKMg35mipiZfQ5mDVUYkhedcfBH+YQax6newEJbYdB6rRlNmIJHH4/
+ KxFiSNCBr9OrsLhOwHLhS1wXZp7XM2xgWtDGPo3C4IaLk2dR5GUtB38Db6TIZ6ePySfW
+ SAxdablAn/SIC3+wBJHOhIUfI4iQTDdCjv+JSx+WfXGLh8schiGrlNYI/Pbak813uN4V
+ giPvG0zmV+sGn96GEjd0vFruqHwHqD14mLizjKJiK/iagdU845W/sj052bhpiaNgULn6
+ 6andP5dDKiY5ZpRi2fIBpG7PrbN+mxMbs9zti/3G2okhisyr2BwWA0XCexJgXszRL0y3 yg== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3rdrhck419-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Jun 2023 16:14:00 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 35QFBAY6005113;
+        Mon, 26 Jun 2023 16:13:57 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3rdpx9a8yw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Jun 2023 16:13:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YCYifwDy8tQEp/iYP50/6Zi4eOmJOWM5+8EdoWGU61DQzReOxaPJaCVuenNWMNwUwTIA41urub6cO8i2z+kqIhiCnFXEAbo9DOCoIM85L7FfC3/SmJ8Sjk2T6Z05T6Uli2E31b/MfryAp+0vj8Sky1X7juMY631QZax4u5S0UFdpKh1JtO8/fDLx5KcAetfLfEoNZJOA97o2LjvdKumH6d5BlupAoNMYtJ/UlE53TqjvohcndRkcj9Qz3396hHO5rwOo65wrooD1b2iYlIf1YVsoyfBDSbCP0On5h3W+xNgA8gTb+g15i+wCTDcLFUyZX3sdEA2lJkXrLsxeawFm7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OiB5s3stXpg5sNJ7GH1oar2b9BAnXvOVsmLMSoajXcM=;
+ b=Fu4hnvD2cwMwmDovDgYHiE6JZyfBxNLzBnGAUdDyax5siXtzaLwSm/im5s66f+Eo/Re3T9/UYawPc3T6qMkgvclrf0af/fQx0PhzOBWBhy1vneMWJJAm73v7N3CxDsOcQx4XxbHCNAdI2sdgrSI7oryqVzGyxx4GTN7GMXwB3FCVZiDDrY+5DVmQJXgT2sy/eomO52iEqKvGhtEPHtWV17KOsaz+oPzPU0Isk/MoU+/iLWtA/zNmVEORoxT10GG+kNHeypffvTg/lpqZpITf5LScFxQs0GLtjPanvqzaS2NrvbseSdX/EumNkr6pENgFssQc5ajP/JdRteG/XygaRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OiB5s3stXpg5sNJ7GH1oar2b9BAnXvOVsmLMSoajXcM=;
+ b=OkDviKNjVdADLdAmaJY1p7MFXViu70w18wYo13vrZ6IqyRCVFKnbeKUaSdNWsaef008sbYBuVtTnk2uS8tmRWH284Jjz4wo5JTm9lyiEjt8PK4Ocb7a8n70AlyAy2M+VEZrBQUH7sxZChutYN3Q7jXM3aYVE0g9mW1dJo6vWsCM=
+Received: from CO1PR10MB4531.namprd10.prod.outlook.com (2603:10b6:303:6c::22)
+ by CH0PR10MB7440.namprd10.prod.outlook.com (2603:10b6:610:18c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.24; Mon, 26 Jun
+ 2023 16:13:53 +0000
+Received: from CO1PR10MB4531.namprd10.prod.outlook.com
+ ([fe80::8b8f:b4b1:bb78:b048]) by CO1PR10MB4531.namprd10.prod.outlook.com
+ ([fe80::8b8f:b4b1:bb78:b048%5]) with mapi id 15.20.6521.024; Mon, 26 Jun 2023
+ 16:13:53 +0000
+From:   Eric DeVolder <eric.devolder@oracle.com>
+To:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        chenhuacai@kernel.org, geert@linux-m68k.org,
+        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org
+Cc:     kernel@xen0n.name, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com, hpa@zytor.com,
+        keescook@chromium.org, paulmck@kernel.org, peterz@infradead.org,
+        frederic@kernel.org, akpm@linux-foundation.org, ardb@kernel.org,
+        samitolvanen@google.com, juerg.haefliger@canonical.com,
+        arnd@arndb.de, rmk+kernel@armlinux.org.uk,
+        linus.walleij@linaro.org, sebastian.reichel@collabora.com,
+        rppt@kernel.org, kirill.shutemov@linux.intel.com,
+        anshuman.khandual@arm.com, ziy@nvidia.com, masahiroy@kernel.org,
+        ndesaulniers@google.com, mhiramat@kernel.org, ojeda@kernel.org,
+        thunder.leizhen@huawei.com, xin3.li@intel.com, tj@kernel.org,
+        gregkh@linuxfoundation.org, tsi@tuyoix.net, bhe@redhat.com,
+        hbathini@linux.ibm.com, sourabhjain@linux.ibm.com,
+        eric.devolder@oracle.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com
+Subject: [PATCH v3 04/13] ia64/kexec: refactor for kernel/Kconfig.kexec
+Date:   Mon, 26 Jun 2023 12:13:23 -0400
+Message-Id: <20230626161332.183214-5-eric.devolder@oracle.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20230626161332.183214-1-eric.devolder@oracle.com>
+References: <20230626161332.183214-1-eric.devolder@oracle.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SA1PR05CA0021.namprd05.prod.outlook.com
+ (2603:10b6:806:2d2::21) To CO1PR10MB4531.namprd10.prod.outlook.com
+ (2603:10b6:303:6c::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a17c65c6-863f-4026-9c6f-a04b659e9ab4@app.fastmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4531:EE_|CH0PR10MB7440:EE_
+X-MS-Office365-Filtering-Correlation-Id: 82b5833b-04d9-4993-a0d2-08db766055b1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jvVHyRjV4BdsbwjaZ9F4rVnIDOgH5wKbrmljnry3DMeN4kemNKF7RsQKLdaHUOFz+aYDyOuKqePGkRl/8GBuGtjEVzh1H5ew3L/RgfeDtKKkWGrby/s6/1h/ukaW9C5EA3tSUY1VHtR4FAiXyXpm23Lqo+K/sWJp3vcmqlVPqsDLERFEgNBCisgYab8te0zI8MDsfYBjAFHo/7d+HxzTbQFqbu3eTmjBMQ4vMafGmAl8MRTtj0ht+0uV4owIKRMHg6azxQjgdkkOo/7D9p35Qy9m/CKHvuVpOTANxg5OOlQckU4cV3OAfXQLsHGI+yKn8ETQ14+f1k53msBKEA05DFs7M6oUmspirHT1TpECIZXtLnYYS5+FYRXYXXeypnI8Wx2onq3iPOnbYGHqiAd50v0YhPy5AK66S4ccwXeM8Nqf82A+CNmKrBjV+2p4FqxqWpYOg0raPvNdhxPRbSDoWfs+OZAOGORxqmUmyizJiDRAyNCC/kb/biNv1AWGF1n1mqSacSQ/yetDfP4BnWajfxyQwOJgXa+NgP6joGCVzn80LWBbxEwaXPmEag+ALteCfekoX566E76BakVDOeSEgD2Yf9HiHU6IL/o7xKkcKno=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4531.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(396003)(39860400002)(136003)(346002)(376002)(451199021)(6666004)(6486002)(478600001)(83380400001)(2616005)(86362001)(66476007)(107886003)(1076003)(6506007)(26005)(186003)(2906002)(6512007)(66556008)(921005)(36756003)(4326008)(7366002)(66946007)(7416002)(316002)(8936002)(7406005)(38100700002)(8676002)(41300700001)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?d3SHYjFWuOB6TI0doy6Rh67oVYNybQ8Pgm4DaVi5lL4ZcYtNR4DCqwoJkcqS?=
+ =?us-ascii?Q?9DNf31H0cXA6dTh002PoXhecaBfQ0F3uuna3/mmg+twx/w1ersS1LKBv8io6?=
+ =?us-ascii?Q?pymSmXcueaEl5Dg5+Jp4pEZHEdS4SI0PyhKFUhAOQKvRtD73GKl9rxeO793g?=
+ =?us-ascii?Q?bK0aB+CR+RSs3vVp6kE2y1XnLGMdXhxmM2ARz2nUGb5c18qytWVZN79zArBI?=
+ =?us-ascii?Q?UXdXcVs/o/YYXm5zyMpfo5bIm6I/IMCPCul2W6P2PzYMxYrgmZ4PTRQfVSpx?=
+ =?us-ascii?Q?PHPrLkdsWMWwsfb74TRmV00zFINLEDW7hCR2DFUyOhykB+frdoe29FXLM1cz?=
+ =?us-ascii?Q?WqkRElm+LX060La1MbcQkNv172Du8YKAYsADlRG7joh51ajDxhxr7LmzaZg4?=
+ =?us-ascii?Q?usdpe1kuuvPWXXyn/mYSMhhQLJxz5xt7UndW07RhDEQE2AWOClR1lMeK/TNh?=
+ =?us-ascii?Q?GaQfURIilXSBEilxdGpCnLvAbUecI+AoshbDrKGm9iglPxFQRRr/btgljwMf?=
+ =?us-ascii?Q?oKxKorq9OyavhlWuDT8duJcUrPBftdAAYRJ9qUZKU5P3i1ZZ936IH+Hk7uRA?=
+ =?us-ascii?Q?gA9ih1B++zjIgGTEdFcnl8hDM5pLSrHjOxdhjz5B9A7h2B9n6nPJWzgXPCmJ?=
+ =?us-ascii?Q?Zcw4AthN49S+3+haYHfQN2USoT14SbglDPkbfflWi4kPF9H3lKHZKaNml8Rk?=
+ =?us-ascii?Q?S7E7DZNL9d/UBmBP/hfv3qFtUhD/q4sW8FHqXl6MYrJj/H61n2MKzVW3A5SE?=
+ =?us-ascii?Q?Vqc8QZZgF2DeggVQexGvbcpQmAEJcMi3DHZ7RE7BJPBAwrkBcgDBBks+sU4o?=
+ =?us-ascii?Q?h+ebk4jfAyTe3matPCrhLRnkWA4YAOg3t/B2mn/Z6wfPHC7cbPfLxRNQLKQJ?=
+ =?us-ascii?Q?7tGxhUMneG4YskASAUInLLI89t34Xl62hfUc8uRRCHSp8A/L2i2WinIy1zML?=
+ =?us-ascii?Q?R71ivfvcSww34jVhs5VhScuf/m80hQRcvUw0rUNK5aoOUH4AhO68vssVYrxh?=
+ =?us-ascii?Q?CqURs/lI0KvnTmvfvQZ0FNcaUZp6m9cMlZ88PnaSC5D8O6xtNz+E/SfQ4MKs?=
+ =?us-ascii?Q?U/x1hTOPlqK4GzeB9/ChoLPX5hIslqAUrVQGH2Ta2UhrqXpkc1/MUQuTZ63M?=
+ =?us-ascii?Q?ioPW6ne/RrBywEqXFwGvZuTms7EBgkko4fHX+nukihHGeJlL54sX5z80Ryem?=
+ =?us-ascii?Q?lzLtE25mIUIInAPaQyo92XHfSduVZNfovricuqIBZaju7ltxi5ZPptgY5ORt?=
+ =?us-ascii?Q?QmlINO7WorVFNdMZFuM8mHIJC3KXabhysRztFyon5u1afP3/MBZF+amxJqL+?=
+ =?us-ascii?Q?kKhFP1hy4gU0hvf6JQ3gQfbjJRMRVIN2DWX9ZKCiATBDlZX4lVQbwlYWLgU5?=
+ =?us-ascii?Q?4oRrN1jc3rwZ8NDYkyIdao3+2CfGawlGhsKzb0Ol1jHZSz3lfIR6W0G3gigq?=
+ =?us-ascii?Q?bF24HvcZdsZ4nSvm73lnACiuVHXiC2W07O79UJFbo9dP2fXX0uIqXURGVliL?=
+ =?us-ascii?Q?izi6NPj3zc60UdEfSHrKkhl/cCzHOUQv9wEtL7vF8D3AntnARN+zxpNa7Hew?=
+ =?us-ascii?Q?H8gI8puszuH+j3KdfnSEtWYKaQXGEzJHc9DW7xd7yX7uVnskQRW/uHZ4I0/o?=
+ =?us-ascii?Q?yw=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 2
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?PBmP0+ap+XafEBra8ToWqkLmijIFmzgbH8s2QGqeJH2H49MQi8qu1ZSSPL6q?=
+ =?us-ascii?Q?8hUci7c/eDh0Dhv+BvfIE5ISGZhnwbrnayfi/WRAlEpj1FU3qiIJrVqa/05Y?=
+ =?us-ascii?Q?pYkQNwUXSJoGRUT67bxKITfAjAwmoelE5ivYw2PVD56pt7otn3bXmh6LDvP/?=
+ =?us-ascii?Q?PePlsvu/tmWJgDJYxA8fUaot31MSNpgJYxRJB3V0n7QJVrDSptCfRvJjYFnt?=
+ =?us-ascii?Q?XWLAA76bTm8jUKUbLnZa8YncqHWtOV6jT5CWEiK7kI7kPyCEC+7wHUbwiQav?=
+ =?us-ascii?Q?FCvI1lgCAJsh/wOh6QhbyJ/1hw2N2l99bNzW9nvdfKNQpNw3CmBqLYSI143V?=
+ =?us-ascii?Q?92+gbEZyKT1M3BXohpsdn9XqyjpbNVR39rG4qEGqYbvz1ysKZ6gNZr0rLuFM?=
+ =?us-ascii?Q?6UWUF7okoPUlt3etfQ6W5pH8eV1o3JoJ7XHVAG8r7eWTeKheENVXL0ztn06l?=
+ =?us-ascii?Q?mGcqp+ijCfdDdT1wseDsn/hcBqkyAKyx/QB1qAWi18Wh4WR48j99+AjrPzWi?=
+ =?us-ascii?Q?wBEA0O+X6vKIhPVfkDutNm99AmJkCIwkB39zGRNDkScX8qLrFXnlGNMXq/cZ?=
+ =?us-ascii?Q?HSGEMt0MuxDZq2ySD+s56zhAltnv3gsLyIIMLVWPXBicB3cPpt78ua0iOs0W?=
+ =?us-ascii?Q?6JzN3zPFkfr0PmLawajqYMTOptF3y6tO84WNJanIG9npUweF6F6jrpLv68ye?=
+ =?us-ascii?Q?Q6z4i4T77z/sFLzsKfSgn8/nd936rewbZNZWu0f10eA+nh2wERDKge8ElbXK?=
+ =?us-ascii?Q?PgTGdHUfJF9P549OpyZotnVVszWQUEMOkyLlvqjXalWY6CtkT0AGQeTkCkiE?=
+ =?us-ascii?Q?1NVKeF+vBAP9FjIHfd4ZrhC2THxRTPDVKO/pAPYIMBvukY41xoH7yhBBzUBc?=
+ =?us-ascii?Q?AE5q8lKbn7y5S5Msx8me+G3RfL0YRmWPr0+McJ5x3YgUJ0fJfQeOtypJgcJS?=
+ =?us-ascii?Q?B+cGM1N4S0jjRwfAsvDDyphtDNf42QQkVo2GlCPUSJEA3qg6k/Gyx2BpJ5wC?=
+ =?us-ascii?Q?ckkI7mdQf4zpTLK8eNjbWSRZrLgu0h55qcevICHPzmPeytmNPY/cA2yBvhha?=
+ =?us-ascii?Q?1HWVAD3pXyeRW+u4Pe4ei8bcvPOIMf5Ftu4Z7oOM5VnxowMK8Ikd6iQ0cg43?=
+ =?us-ascii?Q?/fR0RQ86MjTwiWLKgoWqkwJd2I9ZB9ZDYA+1NK3RBZ7pAvZWOhwcOMxzGi4x?=
+ =?us-ascii?Q?wFzHVHv0GUqhUVreFrfrwkPImt3ZxGZMOY5DfsaN3D3aDMwIED5IJbsTkybC?=
+ =?us-ascii?Q?P/Ql0N1HXCc2HR+x7cuSmZ1lOkW6KNv/JvZ0OckZyt15au2jSW9OK8PYYWl6?=
+ =?us-ascii?Q?oszhymEzYMhKFugNiLy3T7ss8bSTDEmDFj08f+jv6AoxOPBb4pOxOl6eD6Yw?=
+ =?us-ascii?Q?+WYoc74CNIjKu9F6RNypP6Cx6lYEjRY3xPsBxWMKHNVYa3upW77WXS56dSKM?=
+ =?us-ascii?Q?6TGz/0Xxyv57yLuPWjl4TeEhKbFq90mZN8gTRJxQpYpBsF7O3Z7jCb/9LgtX?=
+ =?us-ascii?Q?F5nfWyAegl3IsF6v7q9GwJ9IIoZKx2JEn1GZ2pL5z5w4mcqSybcrQputtrAn?=
+ =?us-ascii?Q?MA3g9Pn8Er0GHTmE/xxHQEOTXOS0kfqnLpFbgnulT13M7y4Wo9z1e3PBNi9j?=
+ =?us-ascii?Q?jK6CQ0gM+LFDfDa8A9zOROTt2CZ+xsj+o5tgfu9BPc8QkhjAld2euCUjAQMj?=
+ =?us-ascii?Q?NffasRQDVS4Bm0123yz5yWUUIl0nq8cRfdsRfhj8wIx/bsstzeu26IVUvuQI?=
+ =?us-ascii?Q?p0BZIt42+uEa6Bg1Q/nxLpPqm5hpw6NQbzpRYjsAeMsIXWg3bptCuyfpp3ft?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-1: K+o+AvJ06t/N5YWw1T7PLJoRUafzF8lvRDDb3qx88ZjPPrdH55egN9VNqTdTuVHFw572wVdZbi8MEWY6Z5ksNISW1+qufJXdfS46TKj6b6lta710ho+iS7TZRjBpz/+WTZWAl0+x7WA+5vQXBioduEw5KPuOPUEy4vTB1NZKVtWFDfX24dSnUY2EBuq8iBUCRNfrkOm70ooldvmizTl+rksHx7onTCpWQ/I/H6rId0SGspHHsLfgnDYPBMbgsLdR9XYAFUPJI/8sg0Qp5BKg60GxsM/lOCtNkAlE9lRnPQHgwJ36CI/C21ClKKNpwQKkfJq9uNV7SQFGiPMIqusN0Tt9waomd4Ww9o5vm0Frn5D6UlEnDdg/qQxkM4LNaPKeVW8afuKtH/bjnoLuB3S4lwrhg8IeJyni36hPgh7Hd4lJvGszpKk5+c1H0JAmTKAprXkEp4S3eJTX9A==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82b5833b-04d9-4993-a0d2-08db766055b1
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4531.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2023 16:13:53.1007
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qhNI66SGQEghdJVMRBpdAKRqDY1q1wwofkET5QQowJBNwQSshQ5EaprNf7Ec8OZLXxs7LuNng2VCdY7xbecj1L0l0vYoPlacrU7SHcsN9mg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB7440
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-06-26_14,2023-06-26_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ mlxlogscore=999 bulkscore=0 spamscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
+ definitions=main-2306260148
+X-Proofpoint-GUID: S4V0BR597Zu5INy4_iH1-ezJygRTNEIX
+X-Proofpoint-ORIG-GUID: S4V0BR597Zu5INy4_iH1-ezJygRTNEIX
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Mon, Jun 19, 2023 at 10:09:02AM -0700, Andy Lutomirski wrote:
-> On Sun, Jun 18, 2023, at 1:00 AM, Mike Rapoport wrote:
-> > On Sat, Jun 17, 2023 at 01:38:29PM -0700, Andy Lutomirski wrote:
-> >> On Fri, Jun 16, 2023, at 1:50 AM, Mike Rapoport wrote:
-> >> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> >> >
-> >> > module_alloc() is used everywhere as a mean to allocate memory for code.
-> >> >
-> >> > Beside being semantically wrong, this unnecessarily ties all subsystems
-> >> > that need to allocate code, such as ftrace, kprobes and BPF to modules
-> >> > and puts the burden of code allocation to the modules code.
-> >> >
-> >> > Several architectures override module_alloc() because of various
-> >> > constraints where the executable memory can be located and this causes
-> >> > additional obstacles for improvements of code allocation.
-> >> >
-> >> > Start splitting code allocation from modules by introducing
-> >> > execmem_text_alloc(), execmem_free(), jit_text_alloc(), jit_free() APIs.
-> >> >
-> >> > Initially, execmem_text_alloc() and jit_text_alloc() are wrappers for
-> >> > module_alloc() and execmem_free() and jit_free() are replacements of
-> >> > module_memfree() to allow updating all call sites to use the new APIs.
-> >> >
-> >> > The intention semantics for new allocation APIs:
-> >> >
-> >> > * execmem_text_alloc() should be used to allocate memory that must reside
-> >> >   close to the kernel image, like loadable kernel modules and generated
-> >> >   code that is restricted by relative addressing.
-> >> >
-> >> > * jit_text_alloc() should be used to allocate memory for generated code
-> >> >   when there are no restrictions for the code placement. For
-> >> >   architectures that require that any code is within certain distance
-> >> >   from the kernel image, jit_text_alloc() will be essentially aliased to
-> >> >   execmem_text_alloc().
-> >> >
-> >> 
-> >> Is there anything in this series to help users do the appropriate
-> >> synchronization when the actually populate the allocated memory with
-> >> code?  See here, for example:
-> >
-> > This series only factors out the executable allocations from modules and
-> > puts them in a central place.
-> > Anything else would go on top after this lands.
-> 
-> Hmm.
-> 
-> On the one hand, there's nothing wrong with factoring out common code. On the
-> other hand, this is probably the right time to at least start thinking about
-> synchronization, at least to the extent that it might make us want to change
-> this API.  (I'm not at all saying that this series should require changes --
-> I'm just saying that this is a good time to think about how this should
-> work.)
-> 
-> The current APIs, *and* the proposed jit_text_alloc() API, don't actually
-> look like the one think in the Linux ecosystem that actually intelligently
-> and efficiently maps new text into an address space: mmap().
-> 
-> On x86, you can mmap() an existing file full of executable code PROT_EXEC and
-> jump to it with minimal synchronization (just the standard implicit ordering
-> in the kernel that populates the pages before setting up the PTEs and
-> whatever user synchronization is needed to avoid jumping into the mapping
-> before mmap() finishes).  It works across CPUs, and the only possible way
-> userspace can screw it up (for a read-only mapping of read-only text, anyway)
-> is to jump to the mapping too early, in which case userspace gets a page
-> fault.  Incoherence is impossible, and no one needs to "serialize" (in the
-> SDM sense).
-> 
-> I think the same sequence (from userspace's perspective) works on other
-> architectures, too, although I think more cache management is needed on the
-> kernel's end.  As far as I know, no Linux SMP architecture needs an IPI to
-> map executable text into usermode, but I could easily be wrong.  (IIRC RISC-V
-> has very developer-unfriendly icache management, but I don't remember the
-> details.)
+The kexec and crash kernel options are provided in the common
+kernel/Kconfig.kexec. Utilize the common options and provide
+the ARCH_SUPPORTS_ and ARCH_SELECTS_ entries to recreate the
+equivalent set of KEXEC and CRASH options.
 
-That's my understanding too, with a couple of details:
+Signed-off-by: Eric DeVolder <eric.devolder@oracle.com>
+---
+ arch/ia64/Kconfig | 28 +++++-----------------------
+ 1 file changed, 5 insertions(+), 23 deletions(-)
 
-1) After the copy we perform and complete all the data + instruction cache
-   maintenance *before* marking the mapping as executable.
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index 21fa63ce5ffc..df54a038e6da 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -360,31 +360,13 @@ config IA64_HP_AML_NFW
+ 	  the "force" module parameter, e.g., with the "aml_nfw.force"
+ 	  kernel command line option.
+ 
+-config KEXEC
+-	bool "kexec system call"
+-	depends on !SMP || HOTPLUG_CPU
+-	select KEXEC_CORE
+-	help
+-	  kexec is a system call that implements the ability to shutdown your
+-	  current kernel, and to start another kernel.  It is like a reboot
+-	  but it is independent of the system firmware.   And like a reboot
+-	  you can start any kernel with it, not just Linux.
+-
+-	  The name comes from the similarity to the exec system call.
+-
+-	  It is an ongoing process to be certain the hardware in a machine
+-	  is properly shutdown, so do not be surprised if this code does not
+-	  initially work for you.  As of this writing the exact hardware
+-	  interface is strongly in flux, so no good recommendation can be
+-	  made.
++endmenu
+ 
+-config CRASH_DUMP
+-	  bool "kernel crash dumps"
+-	  depends on IA64_MCA_RECOVERY && (!SMP || HOTPLUG_CPU)
+-	  help
+-	    Generate crash dump after being started by kexec.
++config ARCH_SUPPORTS_KEXEC
++	def_bool !SMP || HOTPLUG_CPU
+ 
+-endmenu
++config ARCH_SUPPORTS_CRASH_DUMP
++	def_bool IA64_MCA_RECOVERY && (!SMP || HOTPLUG_CPU)
+ 
+ menu "Power management and ACPI options"
+ 
+-- 
+2.31.1
 
-2) Even *after* the mapping is marked executable, a thread could take a
-   spurious fault on an instruction fetch for the new instructions. One way to
-   think about this is that the CPU attempted to speculate the instructions
-   earlier, saw that the mapping was faulting, and placed a "generate a fault
-   here" operation into its pipeline to generate that later.
-
-   The CPU pipeline/OoO-engine/whatever is effectively a transient cache for
-   operations in-flight which is only ever "invalidated" by a
-   context-synchronization-event (akin to an x86 serializing effect).
-
-   We're only guarnateed to have a new instruction fetch (from the I-cache into
-   the CPU pipeline) after the next context synchronization event (akin to an x86
-   serializing effect), and luckily out exception entry/exit is architecturally
-   guarnateed to provide that (unless we explicitly opt out via a control bit).
-
-I know we're a bit lax with that today: I think we omit the
-context-synchronization-event when enabling ftrace callsites, and worse, for
-static keys. Those are both on my TODO list of nasty problems that require
-careful auditing...
-
-> Of course, using ptrace or any other FOLL_FORCE to modify text on x86 is
-> rather fraught, and I bet many things do it wrong when userspace is
-> multithreaded.  But not in production because it's mostly not used in
-> production.)
-
-I suspect uprobes needs a look too...
-
-I'll need to go dig into all that a bit before I have more of an opinion on the
-shape of the API.
-
-Thanks,
-Mark.
-
-> But jit_text_alloc() can't do this, because the order of operations doesn't
-> match.  With jit_text_alloc(), the executable mapping shows up before the
-> text is populated, so there is no atomic change from not-there to
-> populated-and-executable.  Which means that there is an opportunity for CPUs,
-> speculatively or otherwise, to start filling various caches with intermediate
-> states of the text, which means that various architectures (even x86!) may
-> need serialization.
-> 
-> For eBPF- and module- like use cases, where JITting/code gen is quite
-> coarse-grained, perhaps something vaguely like:
-> 
-> jit_text_alloc() -> returns a handle and an executable virtual address, but does *not* map it there
-> jit_text_write() -> write to that handle
-> jit_text_map() -> map it and synchronize if needed (no sync needed on x86, I think)
-> 
-> could be more efficient and/or safer.
-> 
-> (Modules could use this too.  Getting alternatives right might take some
-> fiddling, because off the top of my head, this doesn't match how it works
-> now.)
-> 
-> To make alternatives easier, this could work, maybe (haven't fully thought it through):
-> 
-> jit_text_alloc()
-> jit_text_map_rw_inplace() -> map at the target address, but RW, !X
-> 
-> write the text and apply alternatives
-> 
-> jit_text_finalize() -> change from RW to RX *and synchronize*
-> 
-> jit_text_finalize() would either need to wait for RCU (possibly extra heavy
-> weight RCU to get "serialization") or send an IPI.
-> 
-> This is slower than the alloc, write, map solution, but allows alternatives
-> to be applied at the final address.
-> 
-> 
-> Even fancier variants where the writing is some using something like
-> use_temporary_mm() might even make sense.
-> 
-> 
-> To what extent does performance matter for the various users?  module loading
-> is slow, and I don't think we care that much.  eBPF loaded is not super fast,
-> and we care to a limited extent.  I *think* the bcachefs use case needs to be
-> very fast, but I'm not sure it can be fast and supportable.
-> 
-> Anyway, food for thought.
-> 
