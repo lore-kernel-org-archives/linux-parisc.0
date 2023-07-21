@@ -2,204 +2,250 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A90FC04A6A
-	for <linux-parisc@archiver.kernel.org>; Fri, 21 Jul 2023 15:24:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94B1EEB64DC
+	for <linux-parisc@archiver.kernel.org>; Fri, 21 Jul 2023 15:36:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbjGUPYs (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 21 Jul 2023 11:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
+        id S231186AbjGUPgG (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 21 Jul 2023 11:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbjGUPYn (ORCPT
+        with ESMTP id S232036AbjGUPgC (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:24:43 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD9C30DF;
-        Fri, 21 Jul 2023 08:24:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1689953074; x=1690557874; i=deller@gmx.de;
- bh=dc9kWra9ypygI1Is19IALpuSbGOBe3lX2QdPVOp/v9s=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=kEGesIdm30Ffy2+8IJH8B0kNiqfLnoJ+El+teymShR95a9ipVPFKB+E2Qwb6DK5cVb/0+lc
- FyApxSS3xTXNLLJ9KjGo41qua6lbYoaOZPllvmuHVqrlpct+DxKB/WAAkMA/kUfE6BiQg83E7
- Kt0xCn7D1Dg5/RGzfnKkZnoowLQJIhZ6DpRCpPvu3i0ORKXajtStORMk204iRnwwEOtQaBrfR
- 5ILLpsrzJi9BUL4l5js+UB2VVLjKKI7Oj5y/6hbw/fwH6tvLLeAJGG1ac7DUEJ1x6B06zd+vZ
- HCLB+K5h5pESlt/NnZPqx+ov+fNtVY2h4ly398YBGMBg/lUPdsZQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from p100.fritz.box ([94.134.144.189]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N6bjy-1pqLbI0UhS-0185JI; Fri, 21
- Jul 2023 17:24:34 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, linux-ia64@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>, linux-parisc@vger.kernel.org
-Cc:     Helge Deller <deller@gmx.de>,
-        matoro <matoro_mailinglist_kernel@matoro.tk>
-Subject: [PATCH 1/2] io_uring: Fix io_uring mmap() by using architecture-provided get_unmapped_area()
-Date:   Fri, 21 Jul 2023 17:24:31 +0200
-Message-ID: <20230721152432.196382-2-deller@gmx.de>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230721152432.196382-1-deller@gmx.de>
-References: <20230721152432.196382-1-deller@gmx.de>
+        Fri, 21 Jul 2023 11:36:02 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0793D30E7;
+        Fri, 21 Jul 2023 08:36:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689953761; x=1721489761;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=6Wqod9LTZW2Bae8goPs3VGBb2s/oZouTBylKg04HChQ=;
+  b=U5cNaUbBoPzoLmdLaSh8Uy+KwTAod2dhhXZAiNkRBsxhzgGMc26vdLSj
+   3xAwZn15qMyfeaDBGi+soP/rIOZ7H3gVNZk1+O65n9upLbLxy5Q9xogoF
+   u/Yd+DQfxeMl1W9dQST0ClBqRtVrZLQ8N+7Ng7yiOSzzObCb7GJk39j7B
+   PsSgTDxXasNTyJ8BvFPv/kcy0DBfLZN5TIxw/Ht1U7L+ufNsydWP6q9cu
+   3I2Bi///6Qeykbjmh0/sWZlU6PXWPzu6cxQOVyUhgpt4zRQyE93twfEwJ
+   eohBpRbPV+hdDjPle+Wok/q99M9B6QZ/ToHNIx02W5rnIWXAEOKA9NqZa
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="430841318"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="430841318"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 08:36:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="728146347"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="728146347"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga007.fm.intel.com with ESMTP; 21 Jul 2023 08:35:59 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 21 Jul 2023 08:35:58 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Fri, 21 Jul 2023 08:35:58 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 21 Jul 2023 08:35:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nixad+aHsy+0My+Xu/F057YpyG8EQ8HSZZ36dlaXpV2xZ66pvdj1lVx8WLKMxU4/gTkcV94SN/8ObTtD/s6OSkd/fmA6f9JZxLV+1F3VIcKRnygioGwYxj6Ni9paO/SJwFkGTio+3K1aiDOIEDywo+0JT80BXfBUgKiDK6bt55aRgdWTtF3KW5330elK5L8gnv13pOaXs21Q12CQaFHCuctNU/5vC9Cv9PvtplXnIxOFsuvZZZOrhEv8G28B+fGXNRjFvQcrMYpiPlggVpQh6x+XKwlEb+w8R38JtqMVgGb1bQoMomjyD1mhXpFikaOU4SmGzxVvZHPNA56GosXnMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6nB3G3yjQ/X6UocWtw9I576wS3BrLgDQdwl3SFgCc84=;
+ b=TIq12PYVC/Qk6ubeDRAr/QQYTSdwJ/V+e9NV36/tpB3G8+MCRAzW8R9PYgSLrGkFt8PggnxAlOczN62hlsVL4tY20Yj7o+cljS7HDSTX/CcQRXhdXs7HTwcjrLipcqSOehRP+1K9UGrhr6WSRET+xwJOJ7+myg1y3fR7UsxCwI4FiPxCKuociKBSeFIkZ2ig0Ke+O/H3wCtAkdWoKteZqeXxcKQESmzmNTsiCVbSqtuqdVZb53+37VW3cjKlmUU/EdQmO+t6pUINaMu8yOKHSmhu3eK8aaEVGFFt3l9feS/vv9Vv6PNATgIQQ7lObfcEuCDyTsWf8QXF+/QhBkArNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by CH3PR11MB8210.namprd11.prod.outlook.com (2603:10b6:610:163::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28; Fri, 21 Jul
+ 2023 15:35:53 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a%7]) with mapi id 15.20.6609.026; Fri, 21 Jul 2023
+ 15:35:52 +0000
+Message-ID: <1b402c0c-1beb-d93f-ff6d-955350995ca3@intel.com>
+Date:   Fri, 21 Jul 2023 17:34:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] tracing: Have all levels of checks prevent recursion
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Jiri Kosina" <jikos@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        <linux-csky@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+        <live-patching@vger.kernel.org>,
+        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Guo Ren <guoren@kernel.org>, Jakub Kicinski <kuba@kernel.org>
+References: <20211015110035.14813389@gandalf.local.home>
+ <20211015161702.GF174703@worktop.programming.kicks-ass.net>
+ <20211015133504.6c0a9fcc@gandalf.local.home>
+ <20211015135806.72d1af23@gandalf.local.home>
+ <20211015180429.GK174703@worktop.programming.kicks-ass.net>
+ <20211015142033.72605b47@gandalf.local.home>
+ <20211015142541.4badd8a9@gandalf.local.home>
+Content-Language: en-US
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20211015142541.4badd8a9@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0178.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b4::6) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:kzPNfBubwIAm6jIU5x6btA4ZDwGK76xM124wZLXWVQgpeipS7tt
- V6B0QnlOj4xGHa+h/F4yPu/XeG+TU0Q2XC1Hz2ibjmbbI+pAF1c1TkXstQ7vVLyiRY/o6bi
- DWisgLSUiKjHQwT/v5ZR8gyaQ1R1OflBcQtMIGqQJmDE33Ka4u/iZLzzr7TsmjOT8rmL7yb
- htP5pUPZLpy1sRSm/rIDw==
-UI-OutboundReport: notjunk:1;M01:P0:9tu16ombaCA=;2zqAQ/W++1GcM2Vdx2AGC1WGpMb
- TLOz/kD34B/esUBUKS4B8S3SXoo3ekfNnZ7Utq/KVd+gLPdtz6GRsVhdJVyNYo8ZiLmVtf04q
- R78ojvTz5Gji0Q1blkEy+EYN6DwuIWq5yQUWAKskLx4YJh9N76YWGQ+eGawjltTC218rBq0Cu
- K6QBBYIKTTmIbkgSL4XuCT6npkm++tiUiY/SCAZWd49R5oF0+ZqRPTQIRiiKwrMfAPBwAe3SG
- xlAyXgKFyvhwmBY/2vXnr+98Yr3N1uzUuMq2T8Tx2sCl/uL0dDlWSlx5qbCchkShiCHfpsGWS
- k/wSAqtFSpdDgZCLEv8rrb65rsv+q7tUzPgrypBB64IKuOSmuYrM1cvKx98HDo+FtEQFzP4Zd
- YzgknjaQgF3uN2wWnu+vg96QIBDZ9tYSTJ3QOIIQ3jW4OEq0aFeayjIyxsm+KX2ba0Z9AOyM+
- VnVMoFiCDjMdbMRb7Mw2kmpeWYAb+mZrfwn+1knB1SP1RlOqLtGEntvslo7quxNZOjDuhNTAr
- 3bjqYnnPDVPyvPxcpRY+xJiDjj9yLXiXjdWvA+ygbB43SZimIDbDxznSO+I7dwAAOa4uqYRU0
- ZJKJYZ11uniRHeMwDL9NAsRFNKpP5mv+cZkjad9/yXSVagmXEULI2EkIrOYwKEZyM82bHz3OX
- 9vqXk+9/6KtweWwC/r0kk3xQBR5xbbpb+Yp2V9m9sW4d6Bap00Gj/sZfPUS8ZbPgadyZuIAbh
- +ALE9N/GC1QgmUnaignDPsRx+3y5TiB0IBazpb+BjZjxLUv8mY5WTuMqVG2z/6UCeJUf/8S6y
- +etfQkNiyM01J0UuDNRwZz/VkHaxK0e3w4xqqWcQ86Ap0G6FATB0X9MDy0xCMBNbYzq/xkGjB
- 8a35hL/ABjMc/IAUMH5q4H/NuQpVa+OD3U+hkN2YP6AqIiw9uSaPT6l6OzqppmVj0mGqlcl4a
- NFtUug==
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|CH3PR11MB8210:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5ad375fe-aea6-49cf-8af8-08db8a002ab0
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qIaxNZbB4YwGV27vEsszD2dWKg/d0iNiIqrs68njlcIzZZiURS97XLHLbaoz5J3zkbt3TPF/csMjKMulwDUmPqYfTGMB15m+KxY8P5nBjZcm4Zz+6xv9T1pXiDVUM//yYPo+lBLVun5PAsFkKrtqpz5MHhlEADhQzXZVGcVWS+p93D2Vq4y2qc01Zb9CPb32scnqjspnD/VXWCIHn6wTRSPgPl3p1WIZmjqTiE3vO3aWHfWqSbfsjOFuEoh2IYdka5pzu5w6VaMnYJNmytm73hc0Bz0FK0uS1gROCH9FQHcA4oP1i41mX0t4KGgXIs0Q4xAo6n4cEQC0mX2WqDVk2tgqJYd9aR7LJ4r/GlA1+oxOw3ch3L7NLh+6iOj99pYV2rUURTUiPoacBzKzWtSV+r30w/3jPhO4aAOi9rTv3S0RWpkWp+daObZSK61Sk/P+PLhvzSVJaRe9QSoqsA8aASGxLTIpKaFOCb6S/7hFN+NBz2M/kzKNw/+SIGwfcG6FBynkCdMQoWTskO0c4/xURD/WAHpgoPwKdy2sKnC1xUW8F/+ehsRmjIps1PV9rQpCVxhScfmRgTRJmuXVLv9zol8+fLxYItiiMWrITkX5J69COK7cSAvAJlM0i4B3SDwfwE6Ci0V3GdWYwqwd9jMe6w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(366004)(39860400002)(136003)(346002)(376002)(451199021)(186003)(6506007)(478600001)(26005)(31686004)(66476007)(66946007)(4326008)(316002)(41300700001)(66556008)(86362001)(966005)(7406005)(7416002)(8936002)(8676002)(54906003)(6666004)(6512007)(110136005)(6486002)(5660300002)(31696002)(36756003)(2616005)(82960400001)(83380400001)(2906002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UCt4Nm9ROURHN2ZEc1V6Rks4eG5TOVY5SmcwN0pKU25pZGwraUxFaUdrMGlM?=
+ =?utf-8?B?WU1TYWNhOE1jNVVKRmRTMzNyZU1vaU1ZTFlwb2ltZStZd3lnLzVBWm9NWFBB?=
+ =?utf-8?B?TTNSVmFFNjRGNDJpcnZYMUgvejkyVW12dmxZK2VzNDZDT1p4MytWNmE0RVdh?=
+ =?utf-8?B?b2lDQUZFdDVkZ0pHV3ZKRUFiTDJXKzNHaWtUSWlvWDVRb1AvSk4xdTBaYkRL?=
+ =?utf-8?B?blFLT0dSL2lCRzhiMG45WXhway9CT2l1Umx4Nkg1MERZQ1c4cUVnaC9WWVZK?=
+ =?utf-8?B?clRWSG5hZXhTVWNmTWdTdnBVZ2UySkplSGlMNk1zMUFWMkVvSlBHNzZTdlBw?=
+ =?utf-8?B?bENWNE5ockpyYm5qTmFVK29JaVpvejkxVExsMmdoNEwyQmg2SS9zdERlckxF?=
+ =?utf-8?B?dFFHc2NpaG93OWlBMjVIdGh2c2FNRUJsa1EyYmp4bkZGN3REVjdYK2pqd2JI?=
+ =?utf-8?B?Q1ovd2hHYXYvVFlYUzRJN3ZJM2hqS0VLS3ZjZkU3bjhxUXBEUTJvRjZXdnVZ?=
+ =?utf-8?B?ekJsVFZYaUJJNjl1ZjNOUWsxZThnZWlPMTl5MkVZOG5BNTZEZU5QbDJVKzRI?=
+ =?utf-8?B?WFMzQS9IZEUyRExFQ0xGMi92SFBOQ0VrSFcrNEJSRjMzTEpPaThTc3EwbXNE?=
+ =?utf-8?B?ZjZhc0RhQ0JiV0p6SlFudDFKbmE2QllwT0pXWGJkeEFJSXY2Z2krY1NTa0Mr?=
+ =?utf-8?B?QzcweXZOMEs1L0ZwQXNid0hRNnI5YUhYOHNvcG9PVGdmVzhWYWMvYXVteEgx?=
+ =?utf-8?B?YmhhMkEwOUh6eUtrUmkzdjBXSFQ1MmtkOUxUV0xJbFBPUzhiYjBSdmhvazdP?=
+ =?utf-8?B?WWttUDdPaVA4V3k0YkwxdGgxdUVyUmRXWEpPelBVMjExTHcvaXF6OGN4bUly?=
+ =?utf-8?B?QTArSGF1eXV3SVRpZGZDYkNOUndrenR6cEtCbDVwTjVycWRiWW9wOUtkUFFC?=
+ =?utf-8?B?OHFQeE5kbHVPQlFDdmxSZUZrOHJNNlI3YTR3VHl2TmhsQkR4aUNZdE01ekJO?=
+ =?utf-8?B?aERqR0drRU50T281THYxV2diMGxxNWZuNWJrZGtZN1FPMkZSWXNSZlp6MUR2?=
+ =?utf-8?B?YWhQRkpYZ3J6RnNsTlNteGI1L0NyQi9VbEt6SFhseFRmMzNGdHgzSHFRYzZV?=
+ =?utf-8?B?MWhFSEYvQ0FlQUZUczl0VEd4OHFIVFpGdDBKN1QzU25tR3pFdThIOGhiM1FT?=
+ =?utf-8?B?cDUveVJ5anB0dXFUcVk0ZllMSnVZKzdEZVU3U0tGdHBXa1kyekRaekg0dHU0?=
+ =?utf-8?B?OGMxaGFWa0JIbGlhbFhuanlRRnp0Ym5EVUNJVzhlOGo3aC8ybllzMWxraTJO?=
+ =?utf-8?B?OWxEbmFCSVp6aHNaTVlGajNvckR1WVdzaEVYenNvS0ZLZEkzNWFmN1BsS0Zo?=
+ =?utf-8?B?Nys5UWoyeFBhKyt2VHY2bUpnYzBhUzNCVlBsMVozVmNyUlVxa05XVHE1SVZk?=
+ =?utf-8?B?RkVrajdOSmlUSjNQYjFaOU81MUV1eDQ0aXU5ZmNtTGtjVDQrUGYzYXU2NmN0?=
+ =?utf-8?B?SHkrNTc1S3RXOU9aZ1FDekgwUEg0dUtvVmVUeTFjQXQ2L0RsN01jN293OUZq?=
+ =?utf-8?B?NFNuWXhOOGhUMzU4VlhEcFhoQXdCM1FKWlFNbkpSb3lhNGhPakZ1dlNmZGdu?=
+ =?utf-8?B?MTVvWkhBWVdvWjR6QW5ya2V0bXM0dlhUdjFlVXUvNnZ5MTV6emJoQjhzSFZK?=
+ =?utf-8?B?aVFZNHlLNk5IRnpOZmRyREVCRDkwbUpLamwvcFA3OWxxVkRwWEpzeStONFY2?=
+ =?utf-8?B?UVdGSXVFdlVmc1pvRWM1ZmhXQ3Q0bHNMUzZidlU0UEpJLzhMNUVnNXB6YjFU?=
+ =?utf-8?B?TGRLVzllcHpEQWxPZGhzNlMxWkxyWSsyNURvaGt6ZFVtZTNGbGpoR3hXRHdE?=
+ =?utf-8?B?V3VXYjdXenhPeE9tMzBmZ29OWVhlOHdWT2xVcStrZ3p2OSt5UFVzVit0enFN?=
+ =?utf-8?B?cm9DMWVWRGlmWlNwYVZJWmFjakVhTXIvRGZ0dXVaTkRCSDE3VGxXd0NlYjlH?=
+ =?utf-8?B?T3JmMjJzK2xKWHlCZ3JBZWQrM2JYNTJtdUtYTStZbTU1dVZ2U2xURHE3OWUw?=
+ =?utf-8?B?UzF0M0RGM1FqRUNXSmFJZGRrOTAzSEpUV1NNNllQT2gzemhqdGIyc0FkdUdF?=
+ =?utf-8?B?ZE1qR2ZLTkFjMTRpMWo5RmRQajdzUnNkNmg0d0lWOU5iTkg0MytEbG42SVY4?=
+ =?utf-8?B?OHc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ad375fe-aea6-49cf-8af8-08db8a002ab0
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 15:35:52.7272
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tviXYHacr2sryYgwYX++sQOxqmA3Py3ugXyNwYZz1V8qqnsY6AEkhIxQ+X6y77X4u2nPCPCVJyiI7em+fTmvvDH44siSUn2inF2vYxtjbAU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8210
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-The io_uring testcase is broken on IA-64 since commit d808459b2e31
-("io_uring: Adjust mapping wrt architecture aliasing requirements").
+From: Steven Rostedt <rostedt@goodmis.org>
+Date: Fri, 15 Oct 2021 14:25:41 -0400
 
-The reason is, that this commit introduced an own architecture
-independend get_unmapped_area() search algorithm which finds on IA-64 a
-memory region which is outside of the regular memory region used for
-shared userspace mappings and which can't be used on that platform
-due to aliasing.
+Sorry for such a necroposting :z
+Just wanted to know if this is a bug, so that I could send a fix, or
+intended behaviour.
 
-To avoid similar problems on IA-64 and other platforms in the future,
-it's better to switch back to the architecture-provided
-get_unmapped_area() function and adjust the needed input parameters
-before the call. Beside fixing the issue, the function now becomes
-easier to understand and maintain.
+> On Fri, 15 Oct 2021 14:20:33 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+>>> I think having one copy of that in a header is better than having 3
+>>> copies. But yes, something along them lines.  
+>>
+>> I was just about to ask you about this patch ;-)
+> 
+> Except it doesn't build :-p (need to move the inlined function down a bit)
+> 
+> diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+> index 4d244e295e85..b32e3dabe28b 100644
+> --- a/include/linux/preempt.h
+> +++ b/include/linux/preempt.h
+> @@ -77,6 +77,27 @@
+>  /* preempt_count() and related functions, depends on PREEMPT_NEED_RESCHED */
+>  #include <asm/preempt.h>
+>  
+> +/**
+> + * interrupt_context_level - return interrupt context level
+> + *
+> + * Returns the current interrupt context level.
+> + *  0 - normal context
+> + *  1 - softirq context
+> + *  2 - hardirq context
+> + *  3 - NMI context
+> + */
+> +static __always_inline unsigned char interrupt_context_level(void)
+> +{
+> +	unsigned long pc = preempt_count();
+> +	unsigned char level = 0;
+> +
+> +	level += !!(pc & (NMI_MASK));
+> +	level += !!(pc & (NMI_MASK | HARDIRQ_MASK));
+> +	level += !!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET));
 
-This patch has been successfully tested with the io_uring testcase on
-physical x86-64, ppc64le, IA-64 and PA-RISC machines. On PA-RISC the LTP
-mmmap testcases did not report any regressions.
+This doesn't take into account that we can switch the context manually
+via local_bh_disable() / local_irq_save() etc. During the testing of the
+separate issue[0], I've found that the function returns 1 in both just
+softirq and softirq under local_irq_save().
+Is this intended? Shouldn't that be
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: Jens Axboe <axboe@kernel.dk>
-Reported-by: matoro <matoro_mailinglist_kernel@matoro.tk>
-Fixes: d808459b2e31 ("io_uring: Adjust mapping wrt architecture aliasing r=
-equirements")
-=2D--
- arch/parisc/kernel/sys_parisc.c | 15 ++++++++----
- io_uring/io_uring.c             | 42 +++++++++++++--------------------
- 2 files changed, 27 insertions(+), 30 deletions(-)
+	level += !!(pc & (NMI_MASK));
+	level += !!(pc * (NMI_MASK | HARDIRQ_MASK)) || irqs_disabled();
+	level += !!(pc * (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)) ||
+		 in_atomic();
 
-diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_pari=
-sc.c
-index 39acccabf2ed..465b7cb9d44f 100644
-=2D-- a/arch/parisc/kernel/sys_parisc.c
-+++ b/arch/parisc/kernel/sys_parisc.c
-@@ -26,12 +26,17 @@
- #include <linux/compat.h>
+?
+Otherwise, the result it returns is not really "context level".
 
- /*
-- * Construct an artificial page offset for the mapping based on the physi=
-cal
-+ * Construct an artificial page offset for the mapping based on the virtu=
-al
-  * address of the kernel file mapping variable.
-+ * If filp is zero the calculated pgoff value aliases the memory of the g=
-iven
-+ * address. This is useful for io_uring where the mapping shall alias a k=
-ernel
-+ * address and a userspace adress where both the kernel and the userspace
-+ * access the same memory region.
-  */
--#define GET_FILP_PGOFF(filp)		\
--	(filp ? (((unsigned long) filp->f_mapping) >> 8)	\
--		 & ((SHM_COLOUR-1) >> PAGE_SHIFT) : 0UL)
-+#define GET_FILP_PGOFF(filp, addr)		\
-+	((filp ? (((unsigned long) filp->f_mapping) >> 8)	\
-+		 & ((SHM_COLOUR-1) >> PAGE_SHIFT) : 0UL)	\
-+	  + (addr >> PAGE_SHIFT))
+> +
+> +	return level;
+> +}
+> +
+[0]
+https://lore.kernel.org/netdev/b3884ff9-d903-948d-797a-1830a39b1e71@intel.com
 
- static unsigned long shared_align_offset(unsigned long filp_pgoff,
- 					 unsigned long pgoff)
-@@ -111,7 +116,7 @@ static unsigned long arch_get_unmapped_area_common(str=
-uct file *filp,
- 	do_color_align =3D 0;
- 	if (filp || (flags & MAP_SHARED))
- 		do_color_align =3D 1;
--	filp_pgoff =3D GET_FILP_PGOFF(filp);
-+	filp_pgoff =3D GET_FILP_PGOFF(filp, addr);
-
- 	if (flags & MAP_FIXED) {
- 		/* Even MAP_FIXED mappings must reside within TASK_SIZE */
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index 3bca7a79efda..227e50aa9af0 100644
-=2D-- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -3398,8 +3398,6 @@ static unsigned long io_uring_mmu_get_unmapped_area(=
-struct file *filp,
- 			unsigned long addr, unsigned long len,
- 			unsigned long pgoff, unsigned long flags)
- {
--	const unsigned long mmap_end =3D arch_get_mmap_end(addr, len, flags);
--	struct vm_unmapped_area_info info;
- 	void *ptr;
-
- 	/*
-@@ -3414,32 +3412,26 @@ static unsigned long io_uring_mmu_get_unmapped_are=
-a(struct file *filp,
- 	if (IS_ERR(ptr))
- 		return -ENOMEM;
-
--	info.flags =3D VM_UNMAPPED_AREA_TOPDOWN;
--	info.length =3D len;
--	info.low_limit =3D max(PAGE_SIZE, mmap_min_addr);
--	info.high_limit =3D arch_get_mmap_base(addr, current->mm->mmap_base);
-+	/*
-+	 * Some architectures have strong cache aliasing requirements.
-+	 * For such architectures we need a coherent mapping which aliases
-+	 * kernel memory *and* userspace memory. To achieve that:
-+	 * - use a NULL file pointer to reference physical memory, and
-+	 * - use the kernel virtual address of the shared io_uring context
-+	 *   (instead of the userspace-provided address, which has to be 0UL
-+	 *   anyway).
-+	 * For architectures without such aliasing requirements, the
-+	 * architecture will return any suitable mapping because addr is 0.
-+	 */
-+	filp =3D NULL;
-+	flags |=3D MAP_SHARED;
-+	pgoff =3D 0;	/* has been translated to ptr above */
- #ifdef SHM_COLOUR
--	info.align_mask =3D PAGE_MASK & (SHM_COLOUR - 1UL);
-+	addr =3D (uintptr_t) ptr;
- #else
--	info.align_mask =3D PAGE_MASK & (SHMLBA - 1UL);
-+	addr =3D 0UL;
- #endif
--	info.align_offset =3D (unsigned long) ptr;
--
--	/*
--	 * A failed mmap() very likely causes application failure,
--	 * so fall back to the bottom-up function here. This scenario
--	 * can happen with large stack limits and large mmap()
--	 * allocations.
--	 */
--	addr =3D vm_unmapped_area(&info);
--	if (offset_in_page(addr)) {
--		info.flags =3D 0;
--		info.low_limit =3D TASK_UNMAPPED_BASE;
--		info.high_limit =3D mmap_end;
--		addr =3D vm_unmapped_area(&info);
--	}
--
--	return addr;
-+	return current->mm->get_unmapped_area(filp, addr, len, pgoff, flags);
- }
-
- #else /* !CONFIG_MMU */
-=2D-
-2.41.0
-
+Thanks,
+Olek
