@@ -2,31 +2,31 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5283C5ACA0
-	for <linux-parisc@archiver.kernel.org>; Thu, 17 Aug 2023 16:09:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75D38C61DB2
+	for <linux-parisc@archiver.kernel.org>; Thu, 17 Aug 2023 16:09:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353479AbjHQQI1 (ORCPT
+        id S1353471AbjHQQI1 (ORCPT
         <rfc822;linux-parisc@archiver.kernel.org>);
         Thu, 17 Aug 2023 12:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353486AbjHQQIB (ORCPT
+        with ESMTP id S1353483AbjHQQIB (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
         Thu, 17 Aug 2023 12:08:01 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B98E35B1
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9B53599
         for <linux-parisc@vger.kernel.org>; Thu, 17 Aug 2023 09:07:56 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:d85a:258d:2c59:b44])
-        by xavier.telenet-ops.be with bizsmtp
-        id ag7i2A0024QHFyo01g7imV; Thu, 17 Aug 2023 18:07:54 +0200
+        by baptiste.telenet-ops.be with bizsmtp
+        id ag7i2A0074QHFyo01g7ivj; Thu, 17 Aug 2023 18:07:55 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qWfX4-000uIh-Ba;
-        Thu, 17 Aug 2023 18:07:41 +0200
+        id 1qWfX4-000uJ4-GF;
+        Thu, 17 Aug 2023 18:07:42 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qWfXB-007YEe-Q2;
+        id 1qWfXB-007YF1-VZ;
         Thu, 17 Aug 2023 18:07:41 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Russell King <linux@armlinux.org.uk>,
@@ -45,9 +45,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
         linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/9] ARM: Remove <asm/ide.h>
-Date:   Thu, 17 Aug 2023 18:07:32 +0200
-Message-Id: <e53f0f8da1607856028d941e7ac8646aa2abc555.1692288018.git.geert@linux-m68k.org>
+Subject: [PATCH 7/9] ata: pata_falcon: Remove #include <asm/ide.h>
+Date:   Thu, 17 Aug 2023 18:07:38 +0200
+Message-Id: <1147903ba2f9c5e5e840d8b3c2d05b6eafc78340.1692288018.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1692288018.git.geert@linux-m68k.org>
 References: <cover.1692288018.git.geert@linux-m68k.org>
@@ -57,45 +57,25 @@ Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-As of commit b7fb14d3ac63117e ("ide: remove the legacy ide driver") in
-v5.14, there are no more generic users of <asm/ide.h>.
+The Atari Falcon PATA driver does not need anything from <asm/ide.h>.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/arm/include/asm/ide.h | 24 ------------------------
- 1 file changed, 24 deletions(-)
- delete mode 100644 arch/arm/include/asm/ide.h
+ drivers/ata/pata_falcon.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/include/asm/ide.h b/arch/arm/include/asm/ide.h
-deleted file mode 100644
-index a81e0b0d6747aa2f..0000000000000000
---- a/arch/arm/include/asm/ide.h
-+++ /dev/null
-@@ -1,24 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- *  arch/arm/include/asm/ide.h
-- *
-- *  Copyright (C) 1994-1996  Linus Torvalds & authors
-- */
--
--/*
-- *  This file contains the ARM architecture specific IDE code.
-- */
--
--#ifndef __ASMARM_IDE_H
--#define __ASMARM_IDE_H
--
--#ifdef __KERNEL__
--
--#define __ide_mm_insw(port,addr,len)	readsw(port,addr,len)
--#define __ide_mm_insl(port,addr,len)	readsl(port,addr,len)
--#define __ide_mm_outsw(port,addr,len)	writesw(port,addr,len)
--#define __ide_mm_outsl(port,addr,len)	writesl(port,addr,len)
--
--#endif /* __KERNEL__ */
--
--#endif /* __ASMARM_IDE_H */
+diff --git a/drivers/ata/pata_falcon.c b/drivers/ata/pata_falcon.c
+index 996516e64f13504e..0904232e5e0c4c8c 100644
+--- a/drivers/ata/pata_falcon.c
++++ b/drivers/ata/pata_falcon.c
+@@ -28,7 +28,6 @@
+ #include <asm/atarihw.h>
+ #include <asm/atariints.h>
+ #include <asm/atari_stdma.h>
+-#include <asm/ide.h>
+ 
+ #define DRV_NAME "pata_falcon"
+ #define DRV_VERSION "0.1.0"
 -- 
 2.34.1
 
