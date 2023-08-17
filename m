@@ -2,47 +2,45 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCC0EC678DF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C611C678DD
 	for <linux-parisc@archiver.kernel.org>; Thu, 17 Aug 2023 21:46:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355406AbjHQVpc (ORCPT
-        <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 17 Aug 2023 17:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
+        id S237139AbjHQVpb (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 17 Aug 2023 17:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355431AbjHQVpP (ORCPT
+        with ESMTP id S1355413AbjHQVpI (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 17 Aug 2023 17:45:15 -0400
+        Thu, 17 Aug 2023 17:45:08 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FFDE4F
-        for <linux-parisc@vger.kernel.org>; Thu, 17 Aug 2023 14:45:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CB3E4F
+        for <linux-parisc@vger.kernel.org>; Thu, 17 Aug 2023 14:45:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B53AC6441B
-        for <linux-parisc@vger.kernel.org>; Thu, 17 Aug 2023 21:45:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72408C433C7;
-        Thu, 17 Aug 2023 21:45:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8748F6327A
+        for <linux-parisc@vger.kernel.org>; Thu, 17 Aug 2023 21:45:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37DEFC433C8;
+        Thu, 17 Aug 2023 21:45:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692308713;
-        bh=UQGbIwFzgYixJPgdfmufpeK2ES1cy5Py6XrJ+9HLaB4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jrpcrd8FHjlXK3P8PquymaNijcmjl1mzzI5aJWeRdopLNddWGHZ6P4hE08WsB/Y/E
-         16c4NQZu53CyaffAnXmSnlirjiRCXlG+H7wRDd5RpgK+oGC8nabuwi4uga8PlgBOA+
-         c6tMmpruEJpF4czxAmYk5YSLACmkSw7VOAuBIiYsEVo67xTdvJa+v73V9+90yQI9o4
-         4JJUobgWaCN+RCCjgGZXz5uRMM2jLswrsPU16UkBF6RZwOSNpCnKfUokMCN8hHGs2k
-         Ty+OS8Cxoz5TKTAF5CKf3xfszqNLr8SeMl1JPcH/kX52kGFhej+CuD+soN0Eru8vvR
-         OPb/Cd4YoB0AQ==
+        s=k20201202; t=1692308706;
+        bh=LK/UEqDgVmZrzlN54Lt5lIYVrIJlV5OM8Fj8hGwjYMY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jGLi07xuRi50R4dE5fCFyaesoz1rjpQskcDcS7nFVJfojTZbu3IX9anIqBJGOfpS5
+         igEjtthp1JtfxVNcJ9XeTu7FmCddRv541vyfs8zixOUcIyGcEBNgL7N6jheLLIPauU
+         l+Jo9Brl1GeR0Zl+/WompjY2VXnyIKmuwwHOAK0Jzxk9UUy6WAL3aPrgpzgGJcOJ1L
+         7751RB0kdVkyCRJpRQAuQfW0jmChDT0mWw36zOH5SKErYYvhtx+UY1MKWVBOFQLQVk
+         UWl7UGkzO65KFCdRXdg09prBntFuOeaMN6yv7kq6xLEsLZ1hx1KSPQxEelPY4Xg5/M
+         0gcWi0DMGQxFA==
 From:   deller@kernel.org
 To:     linux-parisc@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>
-Subject: [PATCH 5/5] parisc: Wire up eBPF code
-Date:   Thu, 17 Aug 2023 23:45:02 +0200
-Message-ID: <20230817214503.108660-6-deller@kernel.org>
+Subject: [PATCH 0/5] parisc: Add natie eBPF JIT compiler for parisc
+Date:   Thu, 17 Aug 2023 23:44:57 +0200
+Message-ID: <20230817214503.108660-1-deller@kernel.org>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230817214503.108660-1-deller@kernel.org>
-References: <20230817214503.108660-1-deller@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -51,36 +49,36 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Helge Deller <deller@gmx.de>
 
-Signed-off-by: Helge Deller <deller@gmx.de>
----
- arch/parisc/Kbuild  | 2 +-
- arch/parisc/Kconfig | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+A first patch series to support eBPF natively on parisc,
+for 32- and 64-bit kernels.
+Tested with the in-kernel eBPF testsuite (CONFIG_TEST_BPF).
 
-diff --git a/arch/parisc/Kbuild b/arch/parisc/Kbuild
-index a6d3b280ba0c..749b195f2894 100644
---- a/arch/parisc/Kbuild
-+++ b/arch/parisc/Kbuild
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-y	+= mm/ kernel/ math-emu/
-+obj-y	+= mm/ kernel/ math-emu/ net/
- 
- # for cleaning
- subdir- += boot
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 4cb46d5c64a2..f79ea09b94ab 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -56,6 +56,8 @@ config PARISC
- 	select HAVE_ARCH_KFENCE
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_TRACEHOOK
-+	select HAVE_EBPF_JIT
-+	select ARCH_WANT_DEFAULT_BPF_JIT
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
- 	select GENERIC_SCHED_CLOCK
+Please test!
+
+Helge
+
+Helge Deller (5):
+  parisc: Add 32-bit eBPF JIT compiler
+  parisc: Add 64-bit eBPF JIT compiler
+  parisc: Add eBPF JIT compiler glue code and Makefile
+  parisc: Fix comment on Elf64 Function descriptor
+  parisc: Wire up eBPF code
+
+ arch/parisc/Kbuild               |    2 +-
+ arch/parisc/Kconfig              |    2 +
+ arch/parisc/include/asm/elf.h    |    3 +-
+ arch/parisc/net/Makefile         |    9 +
+ arch/parisc/net/bpf_jit.h        |  479 +++++++++
+ arch/parisc/net/bpf_jit_comp32.c | 1615 ++++++++++++++++++++++++++++++
+ arch/parisc/net/bpf_jit_comp64.c | 1209 ++++++++++++++++++++++
+ arch/parisc/net/bpf_jit_core.c   |  207 ++++
+ 8 files changed, 3523 insertions(+), 3 deletions(-)
+ create mode 100644 arch/parisc/net/Makefile
+ create mode 100644 arch/parisc/net/bpf_jit.h
+ create mode 100644 arch/parisc/net/bpf_jit_comp32.c
+ create mode 100644 arch/parisc/net/bpf_jit_comp64.c
+ create mode 100644 arch/parisc/net/bpf_jit_core.c
+
 -- 
 2.41.0
 
