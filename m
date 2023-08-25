@@ -2,44 +2,46 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95479C71133
-	for <linux-parisc@archiver.kernel.org>; Fri, 25 Aug 2023 18:10:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD183C71134
+	for <linux-parisc@archiver.kernel.org>; Fri, 25 Aug 2023 18:10:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbjHYSJl (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 25 Aug 2023 14:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
+        id S229987AbjHYSKP (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 25 Aug 2023 14:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbjHYSJe (ORCPT
+        with ESMTP id S231384AbjHYSJh (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 25 Aug 2023 14:09:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49032685;
-        Fri, 25 Aug 2023 11:09:32 -0700 (PDT)
+        Fri, 25 Aug 2023 14:09:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C162697
+        for <linux-parisc@vger.kernel.org>; Fri, 25 Aug 2023 11:09:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 56B6A65B6C;
-        Fri, 25 Aug 2023 18:09:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9700C433C7;
-        Fri, 25 Aug 2023 18:09:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D8F2362EF6
+        for <linux-parisc@vger.kernel.org>; Fri, 25 Aug 2023 18:09:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92CC4C433C7;
+        Fri, 25 Aug 2023 18:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692986971;
-        bh=3h9/Ebs5p7iL789VesMcGrC+4uZ9dac5SCMwKpEeJYE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ei4axnRTcr7SO6lIMlrfzm3ZwcNZzLOtxWj7MeDBZQoHhNfH93V7C4ytEJqbqKug+
-         7Yt3I1r6yMx3uRMmcX0Kr+kNw2kplOS6HGwTOB6ElUmKGda18oZD8wRGk7W4XvHnsy
-         hW1uqI37KOwAY+7LB1dEbJKgaqQHpLsFAkU0iMOD6kI+6Qc7ZqPslbxi6fHDqA4H91
-         Sr+jq7NF/9Hy1H4LOxmjLmW+xXoMd8J+LQpWf2j520Y9+4gSdwmq6ayP+4aWUGE2aZ
-         qV0oc0DPhhOXMTmScwaaObDNvtxBkZynjSf6VjFaQtcWS+aROtOR3G1l1eCcr1Kd4T
-         rl17WdLEF5Uiw==
+        s=k20201202; t=1692986974;
+        bh=xgm/x5DZjeMhOokXjeVgLv46+HcSvagI+IK/gwFko90=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jd6CNgYombcVbNV/WcOa93Aazo3Uq333wmdEOe1NL54Zqj9sQF49HLEK4IU+t4pIV
+         bVO01x4+Z9U4Qhfg+5RpGXv0+FxU4+Bhr4jvtXp7DS8Be/SGX8P+ZMsySw05CKCLvf
+         /DDSTmDUsWDWSocD4OWX9FGBimtsAK280cyon817FaQHvYqksDeMmCsVP8xtE2JRkj
+         7K1uLTwgbvD6aiFq+fR8/Gsn7fGAkAX4yFTyhuFBGJ52fo7qIgQPH3i1HXic6EQLRi
+         uQuVuI+Vq6LQKFFzlnb+BZ2kwHkALk96nIknk/Vv/eIhPY0L4FbB2fqN5QXZLJOdot
+         TuqMjgoqJcr1w==
 From:   deller@kernel.org
 To:     linux-parisc@vger.kernel.org
-Cc:     Helge Deller <deller@gmx.de>, stable@vger.kernel.org
-Subject: [PATCH 1/3] parisc: led: Reduce CPU overhead for disk & lan LED computation
-Date:   Fri, 25 Aug 2023 20:09:26 +0200
-Message-ID: <20230825180928.205499-1-deller@kernel.org>
+Cc:     Helge Deller <deller@gmx.de>
+Subject: [PATCH 3/3] parisc: chassis: Do not overwrite LCD display
+Date:   Fri, 25 Aug 2023 20:09:28 +0200
+Message-ID: <20230825180928.205499-3-deller@kernel.org>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230825180928.205499-1-deller@kernel.org>
+References: <20230825180928.205499-1-deller@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -48,46 +50,40 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Helge Deller <deller@gmx.de>
 
-Older PA-RISC machines have LEDs which show the disk- and LAN-activity.
-The computation is done in software and takes quite some time, e.g. on a
-J6500 this may take up to 60% time of one CPU if the machine is loaded
-via network traffic.
+If we have the LCD/LED driver and tell PDC about a status change
+of the system, PDC will usually overwrite the contents on the LCD.
 
-Since most people don't care about the LEDs, start with LEDs disabled and
-just show a CPU heartbeat LED. The disk and LAN LEDs can be turned on
-manually via /proc/pdc/led.
+To avoid that, just write the LCD string again via the LCD driver.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: <stable@vger.kernel.org>
 ---
- drivers/parisc/led.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/parisc/kernel/pdc_chassis.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/parisc/led.c b/drivers/parisc/led.c
-index 8bdc5e043831..765f19608f60 100644
---- a/drivers/parisc/led.c
-+++ b/drivers/parisc/led.c
-@@ -56,8 +56,8 @@
- static int led_type __read_mostly = -1;
- static unsigned char lastleds;	/* LED state from most recent update */
- static unsigned int led_heartbeat __read_mostly = 1;
--static unsigned int led_diskio    __read_mostly = 1;
--static unsigned int led_lanrxtx   __read_mostly = 1;
-+static unsigned int led_diskio    __read_mostly;
-+static unsigned int led_lanrxtx   __read_mostly;
- static char lcd_text[32]          __read_mostly;
- static char lcd_text_default[32]  __read_mostly;
- static int  lcd_no_led_support    __read_mostly = 0; /* KittyHawk doesn't support LED on its LCD */
-@@ -589,6 +589,9 @@ int __init register_led_driver(int model, unsigned long cmd_reg, unsigned long d
- 		return 1;
- 	}
- 	
-+	pr_info("LED: Enable disk and LAN activity LEDs "
-+		"via /proc/pdc/led\n");
+diff --git a/arch/parisc/kernel/pdc_chassis.c b/arch/parisc/kernel/pdc_chassis.c
+index 0a9d7008ef2a..d477d0177c2f 100644
+--- a/arch/parisc/kernel/pdc_chassis.c
++++ b/arch/parisc/kernel/pdc_chassis.c
+@@ -31,6 +31,7 @@
+ #include <asm/processor.h>
+ #include <asm/pdc.h>
+ #include <asm/pdcpat.h>
++#include <asm/led.h>
+ 
+ #define PDC_CHASSIS_VER	"0.05"
+ 
+@@ -234,6 +235,11 @@ int pdc_chassis_send_status(int message)
+ 		} else retval = -1;
+ #endif /* CONFIG_64BIT */
+ 	}	/* if (pdc_chassis_enabled) */
 +
- 	/* mark the LCD/LED driver now as initialized and 
- 	 * register to the reboot notifier chain */
- 	initialized++;
++	/* if system has LCD display, update current string */
++	if (retval != -1 && IS_ENABLED(CONFIG_CHASSIS_LCD_LED))
++		lcd_print(NULL);
++
+ #endif /* CONFIG_PDC_CHASSIS */
+ 	return retval;
+ }
 -- 
 2.41.0
 
