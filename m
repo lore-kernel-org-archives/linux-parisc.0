@@ -2,31 +2,31 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A827ACD3425
-	for <linux-parisc@archiver.kernel.org>; Mon, 18 Sep 2023 07:32:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB97ACD13D1
+	for <linux-parisc@archiver.kernel.org>; Mon, 18 Sep 2023 07:32:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240321AbjIRHcD (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Mon, 18 Sep 2023 03:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
+        id S240461AbjIRHc2 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 18 Sep 2023 03:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240322AbjIRHbi (ORCPT
+        with ESMTP id S240385AbjIRHb4 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Mon, 18 Sep 2023 03:31:38 -0400
+        Mon, 18 Sep 2023 03:31:56 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DEB138;
-        Mon, 18 Sep 2023 00:31:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3F8CC433BF;
-        Mon, 18 Sep 2023 07:31:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D8118C;
+        Mon, 18 Sep 2023 00:31:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5155AC433B7;
+        Mon, 18 Sep 2023 07:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695022283;
-        bh=uhUpg7LkgDj87OPKWv+2ZQQTqeXwsgqGQfVhMMOlf6I=;
+        s=k20201202; t=1695022302;
+        bh=35ZlmvV7rKqwzQaOmbBijH380/EeVtPirZbGWiToTW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QwbKIwCmsi/m+QIPzGWyDvn+Tk81CaEzaNlQaj1OrbfY6aH7VjNTOMfyqPjfbO3ZI
-         IrekkL8ga776lr+J3x8Ygyh2wVMU8QELU6aweeJeBpGEbBfrtJxHf+rNjrvDsHVs7+
-         6bm1TS2tPNGOkx/h7R28N2r8hennFfDFz6aE6FuiYGkO4GZPqz8JGrUJkS1iup7wLd
-         Isg0JWVRjOAmJTjw/rUuKi838+cqznX9dO82PejgtCEzU2RQuKCDDPVyOOKasyX6kb
-         8fpNnivohYt0YSrYt8tzLAAtD+1zq8pRlzkl8JhZ7kRPGcY2/LRuqibiB20CPobXX4
-         xLjJAnEDRG4hQ==
+        b=d2NNM60PB58jmuhS2dGN8NLbq1KB4ygYvRR0t6DZZJS7qBVZpROHao20O2uQV3bli
+         0QvXp0s5+eLFeJhc/w10Fn3KC9lksq3uhoYzEZC5CWp+6gjai+j/d0a89/bBUhyjJy
+         FfXXBFOSn88hPGWgJbSxUtSr8ULAUympoyAWJKP5uJmt4lykdt9r5kJb2u9np9CG9l
+         pAU2vChu/4/QGlbV5wO6V/EhzFjCpLIlsY1oLhcdgzQ+bitYphtILzsTup5ZLrX357
+         OmssgGZ5JmBAamSicGtU177ClYYdO2+YHkslBuFOroSFhEYDOcBWDp8NAr0VRv3fiX
+         mkBw/0g11HpDQ==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -60,9 +60,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
         netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v3 07/13] arm64, execmem: extend execmem_params for generated code allocations
-Date:   Mon, 18 Sep 2023 10:29:49 +0300
-Message-Id: <20230918072955.2507221-8-rppt@kernel.org>
+Subject: [PATCH v3 09/13] powerpc: extend execmem_params for kprobes allocations
+Date:   Mon, 18 Sep 2023 10:29:51 +0300
+Message-Id: <20230918072955.2507221-10-rppt@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230918072955.2507221-1-rppt@kernel.org>
 References: <20230918072955.2507221-1-rppt@kernel.org>
@@ -74,91 +74,75 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-The memory allocations for kprobes and BPF on arm64 can be placed
-anywhere in vmalloc address space and currently this is implemented with
-overrides of alloc_insn_page() and bpf_jit_alloc_exec() in arm64.
+powerpc overrides kprobes::alloc_insn_page() to remove writable
+permissions when STRICT_MODULE_RWX is on.
 
-Define EXECMEM_KPROBES and EXECMEM_BPF ranges in arm64::execmem_params and
-drop overrides of alloc_insn_page() and bpf_jit_alloc_exec().
+Add definition of EXECMEM_KRPOBES to execmem_params to allow using the
+generic kprobes::alloc_insn_page() with the desired permissions.
+
+As powerpc uses breakpoint instructions to inject kprobes, it does not
+need to constrain kprobe allocations to the modules area and can use the
+entire vmalloc address space.
 
 Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 ---
- arch/arm64/kernel/module.c         | 13 +++++++++++++
- arch/arm64/kernel/probes/kprobes.c |  7 -------
- arch/arm64/net/bpf_jit_comp.c      | 11 -----------
- 3 files changed, 13 insertions(+), 18 deletions(-)
+ arch/powerpc/kernel/kprobes.c | 14 --------------
+ arch/powerpc/kernel/module.c  | 11 +++++++++++
+ 2 files changed, 11 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
-index cd6320de1c54..d27db168d2a2 100644
---- a/arch/arm64/kernel/module.c
-+++ b/arch/arm64/kernel/module.c
-@@ -116,6 +116,16 @@ static struct execmem_params execmem_params __ro_after_init = {
- 			.flags = EXECMEM_KASAN_SHADOW,
- 			.alignment = MODULE_ALIGN,
- 		},
-+		[EXECMEM_KPROBES] = {
-+			.start = VMALLOC_START,
-+			.end = VMALLOC_END,
-+			.alignment = 1,
-+		},
-+		[EXECMEM_BPF] = {
-+			.start = VMALLOC_START,
-+			.end = VMALLOC_END,
-+			.alignment = 1,
-+		},
- 	},
- };
- 
-@@ -140,6 +150,9 @@ struct execmem_params __init *execmem_arch_params(void)
- 		r->end = module_plt_base + SZ_2G;
- 	}
- 
-+	execmem_params.ranges[EXECMEM_KPROBES].pgprot = PAGE_KERNEL_ROX;
-+	execmem_params.ranges[EXECMEM_BPF].pgprot = PAGE_KERNEL;
-+
- 	return &execmem_params;
- }
- 
-diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-index 70b91a8c6bb3..6fccedd02b2a 100644
---- a/arch/arm64/kernel/probes/kprobes.c
-+++ b/arch/arm64/kernel/probes/kprobes.c
-@@ -129,13 +129,6 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
- 	return 0;
+diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+index 62228c7072a2..14c5ddec3056 100644
+--- a/arch/powerpc/kernel/kprobes.c
++++ b/arch/powerpc/kernel/kprobes.c
+@@ -126,20 +126,6 @@ kprobe_opcode_t *arch_adjust_kprobe_addr(unsigned long addr, unsigned long offse
+ 	return (kprobe_opcode_t *)(addr + offset);
  }
  
 -void *alloc_insn_page(void)
 -{
--	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
--			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
--			NUMA_NO_NODE, __builtin_return_address(0));
+-	void *page;
+-
+-	page = execmem_text_alloc(EXECMEM_KPROBES, PAGE_SIZE);
+-	if (!page)
+-		return NULL;
+-
+-	if (strict_module_rwx_enabled())
+-		set_memory_rox((unsigned long)page, 1);
+-
+-	return page;
 -}
 -
- /* arm kprobe: install breakpoint in text */
- void __kprobes arch_arm_kprobe(struct kprobe *p)
+ int arch_prepare_kprobe(struct kprobe *p)
  {
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 150d1c6543f7..3a7590f828d1 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -1687,17 +1687,6 @@ u64 bpf_jit_alloc_exec_limit(void)
- 	return VMALLOC_END - VMALLOC_START;
- }
+ 	int ret = 0;
+diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
+index 824d9541a310..bf2c62aef628 100644
+--- a/arch/powerpc/kernel/module.c
++++ b/arch/powerpc/kernel/module.c
+@@ -95,6 +95,9 @@ static struct execmem_params execmem_params __ro_after_init = {
+ 		[EXECMEM_DEFAULT] = {
+ 			.alignment = 1,
+ 		},
++		[EXECMEM_KPROBES] = {
++			.alignment = 1,
++		},
+ 		[EXECMEM_MODULE_DATA] = {
+ 			.alignment = 1,
+ 		},
+@@ -135,5 +138,13 @@ struct execmem_params __init *execmem_arch_params(void)
  
--void *bpf_jit_alloc_exec(unsigned long size)
--{
--	/* Memory is intended to be executable, reset the pointer tag. */
--	return kasan_reset_tag(vmalloc(size));
--}
--
--void bpf_jit_free_exec(void *addr)
--{
--	return vfree(addr);
--}
--
- /* Indicate the JIT backend supports mixing bpf2bpf and tailcalls. */
- bool bpf_jit_supports_subprog_tailcalls(void)
- {
+ 	range->pgprot = prot;
+ 
++	execmem_params.ranges[EXECMEM_KPROBES].start = VMALLOC_START;
++	execmem_params.ranges[EXECMEM_KPROBES].start = VMALLOC_END;
++
++	if (strict_module_rwx_enabled())
++		execmem_params.ranges[EXECMEM_KPROBES].pgprot = PAGE_KERNEL_ROX;
++	else
++		execmem_params.ranges[EXECMEM_KPROBES].pgprot = PAGE_KERNEL_EXEC;
++
+ 	return &execmem_params;
+ }
 -- 
 2.39.2
 
