@@ -2,69 +2,141 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD3CACD37B3
-	for <linux-parisc@archiver.kernel.org>; Sun, 17 Sep 2023 06:11:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C28A6CD37B0
+	for <linux-parisc@archiver.kernel.org>; Mon, 18 Sep 2023 07:31:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234201AbjIQGL0 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 17 Sep 2023 02:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        id S240003AbjIRHao (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 18 Sep 2023 03:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbjIQGLA (ORCPT
+        with ESMTP id S240329AbjIRHak (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 17 Sep 2023 02:11:00 -0400
+        Mon, 18 Sep 2023 03:30:40 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE5113E;
-        Sat, 16 Sep 2023 23:10:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3396FC433C7;
-        Sun, 17 Sep 2023 06:10:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1694931054;
-        bh=JyvYGLdb8BIcaE9svmQ+0s9rrC3nDZAE3iwY4+nnvU8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ozJuRew/hURbGLEz/9HsHn/MrUr7gGBlsirFxecZQUU07YvGd+Gco8FPD/ywCbjUa
-         NxGls4aIN57FIkGyA1TulgZMqk3fA0uRePo/bSDTzPXqrBQs2iJ+FiAvf04/H+6Qmn
-         c+sscAv5aRP2paUGhBVZxQ0u5DTZNRsXNUkIuEgk=
-Date:   Sun, 17 Sep 2023 08:10:52 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Helge Deller <deller@gmx.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        stable <stable@vger.kernel.org>, Sasha Levin <sashal@kernel.org>,
-        Linux PARISC <linux-parisc@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Michael Labiuk <michael.labiuk@virtuozzo.com>,
-        Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>
-Subject: Re: Possible 6.5 regression: Huge values for "commited memory"
-Message-ID: <2023091742-static-unedited-b414@gregkh>
-References: <1694366957@msgid.manchmal.in-ulm.de>
- <ZQWUzwiKWLk79qbp@debian.me>
- <CAHk-=wh29JJSVGyJM7ubxOs51-Nxp6YnmU9Bw1gdOk3rrQ_0mg@mail.gmail.com>
- <CAHk-=wjrEjaUw3oFVEYpF=AWAwrSM3sQTQHuPfFjFdQsvQxHeg@mail.gmail.com>
- <3ee4b922-7686-ec20-f280-48c06bff09cf@gmx.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA38C19A;
+        Mon, 18 Sep 2023 00:30:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55C0EC43397;
+        Mon, 18 Sep 2023 07:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695022224;
+        bh=KSPIxmcvM6pw+gN3UxNfSb/hLNccmDr75av1M8zdRQI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=n1BsBmpfW3QKK3NJROVE3ZzVUFsmFfDjPKEBn27xuClR0kSquHorXzHaU80koKHjq
+         oZZubDbrJshf2OzAsSW/lYZeiCxCVkNHUyRKf0J25B3oyQqT68RZdj7eYC/N0Cta3F
+         s7s8WnXGl08TzUW7RJcoZTxms2v0q/MjRq68IGaI1IRBqPpLAZ6vaNChPkgshwIF5h
+         3KnstVmy4jP0LDvFd3KogmLI2XFZUpl0AY5gcnG4Aq2Zy+SxUhV393i/W7f5/3shGG
+         k9UrFYiH9x7//wdEvOIFolwWa2pPRCHkauyGN/FXYwMai04Ht7kCMou6e5Iw71dZtp
+         HuRwsr2VE4kwA==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Song Liu <song@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: [PATCH v3 01/13] nios2: define virtual address space for modules
+Date:   Mon, 18 Sep 2023 10:29:43 +0300
+Message-Id: <20230918072955.2507221-2-rppt@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230918072955.2507221-1-rppt@kernel.org>
+References: <20230918072955.2507221-1-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3ee4b922-7686-ec20-f280-48c06bff09cf@gmx.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Sun, Sep 17, 2023 at 07:02:50AM +0200, Helge Deller wrote:
-> Greg & Sasha,
-> 
-> can you please queue-up this upstream patch for kernel v6.5-stable ?
-> 
-> commit 3cec50490969afd4a76ccee441f747d869ccff77
-> Author: Linus Torvalds <torvalds@linux-foundation.org>
-> Date:   Sat Sep 16 12:31:42 2023 -0700
-> 
->     vm: fix move_vma() memory accounting being off
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-Now queued up, thanks.
+nios2 uses kmalloc() to implement module_alloc() because CALL26/PCREL26
+cannot reach all of vmalloc address space.
 
-greg k-h
+Define module space as 32MiB below the kernel base and switch nios2 to
+use vmalloc for module allocations.
+
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
+Acked-by: Song Liu <song@kernel.org>
+Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+---
+ arch/nios2/include/asm/pgtable.h |  5 ++++-
+ arch/nios2/kernel/module.c       | 19 ++++---------------
+ 2 files changed, 8 insertions(+), 16 deletions(-)
+
+diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pgtable.h
+index 5144506dfa69..d2fb42fb6db8 100644
+--- a/arch/nios2/include/asm/pgtable.h
++++ b/arch/nios2/include/asm/pgtable.h
+@@ -25,7 +25,10 @@
+ #include <asm-generic/pgtable-nopmd.h>
+ 
+ #define VMALLOC_START		CONFIG_NIOS2_KERNEL_MMU_REGION_BASE
+-#define VMALLOC_END		(CONFIG_NIOS2_KERNEL_REGION_BASE - 1)
++#define VMALLOC_END		(CONFIG_NIOS2_KERNEL_REGION_BASE - SZ_32M - 1)
++
++#define MODULES_VADDR		(CONFIG_NIOS2_KERNEL_REGION_BASE - SZ_32M)
++#define MODULES_END		(CONFIG_NIOS2_KERNEL_REGION_BASE - 1)
+ 
+ struct mm_struct;
+ 
+diff --git a/arch/nios2/kernel/module.c b/arch/nios2/kernel/module.c
+index 76e0a42d6e36..9c97b7513853 100644
+--- a/arch/nios2/kernel/module.c
++++ b/arch/nios2/kernel/module.c
+@@ -21,23 +21,12 @@
+ 
+ #include <asm/cacheflush.h>
+ 
+-/*
+- * Modules should NOT be allocated with kmalloc for (obvious) reasons.
+- * But we do it for now to avoid relocation issues. CALL26/PCREL26 cannot reach
+- * from 0x80000000 (vmalloc area) to 0xc00000000 (kernel) (kmalloc returns
+- * addresses in 0xc0000000)
+- */
+ void *module_alloc(unsigned long size)
+ {
+-	if (size == 0)
+-		return NULL;
+-	return kmalloc(size, GFP_KERNEL);
+-}
+-
+-/* Free memory returned from module_alloc */
+-void module_memfree(void *module_region)
+-{
+-	kfree(module_region);
++	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
++				    GFP_KERNEL, PAGE_KERNEL_EXEC,
++				    VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
++				    __builtin_return_address(0));
+ }
+ 
+ int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
+-- 
+2.39.2
+
