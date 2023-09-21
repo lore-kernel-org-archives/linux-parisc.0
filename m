@@ -2,130 +2,122 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A204DE7D0AB
-	for <linux-parisc@archiver.kernel.org>; Thu, 21 Sep 2023 21:13:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F4F8E7D0B3
+	for <linux-parisc@archiver.kernel.org>; Thu, 21 Sep 2023 21:20:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbjIUVNM (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 21 Sep 2023 17:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
+        id S232718AbjIUVUy (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 21 Sep 2023 17:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbjIUVMv (ORCPT
+        with ESMTP id S232801AbjIUVOw (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:12:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631B1A9E8;
-        Thu, 21 Sep 2023 10:07:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DD95C611AA;
-        Thu, 21 Sep 2023 16:30:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1695313828;
-        bh=Snl0TDHOoq+PcJkslOz6yzyz3jV/ILGMNVGDPT3ALVI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Sy+EhpEKmklRoXizWavrDSv+mOOfZ2nUh7nbNkMhlDLbnh4hSgBtM2DfmKEv4UzUL
-         Pv6q7E7wnTnnSz2jaiJSSK97ktzV1tSKKpfyQ3VEqmLQ/I+fVqkhoc6rt2Al+4iGM9
-         C9VSqdRkP4rrRuEL9YXgvk8jJTKJGqA4Ygoc1IFE=
-Date:   Thu, 21 Sep 2023 09:30:26 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        SeongJae Park <sj@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Peter Xu <peterx@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v1 0/8] Fix set_huge_pte_at() panic on arm64
-Message-Id: <20230921093026.230b2991be551093e397f462@linux-foundation.org>
-In-Reply-To: <20230921162007.1630149-1-ryan.roberts@arm.com>
-References: <20230921162007.1630149-1-ryan.roberts@arm.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Thu, 21 Sep 2023 17:14:52 -0400
+Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com [64.147.123.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FEA7EF5;
+        Thu, 21 Sep 2023 10:10:52 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailnew.west.internal (Postfix) with ESMTP id 0FCFB2B00167;
+        Thu, 21 Sep 2023 08:27:35 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Thu, 21 Sep 2023 08:27:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695299255; x=1695306455; bh=Xq
+        U4+PADbmN/YvqQXLrRCGcZ07y18plfxqgBBJgIpjw=; b=Xdx4hQsTzl4c24llIz
+        192HiWdE2r0Z17h7hha/5B+uybwHOw+lHySp5dgSFIyremltJv6BupWCCE7vqAtS
+        DUduuni5p7SDjaoxP7Y0c3dI1L3DDC96hM3q6xwLck95D6CeqCmsxrkKZ6Zgv2mQ
+        ih8pZz4GlPyAEKT2EByi/sbL53k7F9MpaztW3ubpkI67GluVKqoEgJAoZkJac6xf
+        L40yx+zPXQSonM/qQqXr+/44QEGY/LW3tmoWxfCIXGmvbDY8YlzEj56Y1t4Q3Ooi
+        aLhMW+mRkUenODaIJ7pTKXCN8HhFkJ2SLPpatk0e1cLMSpNqYk1QxmquZjzyFqfT
+        dFiw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695299255; x=1695306455; bh=XqU4+PADbmN/Y
+        vqQXLrRCGcZ07y18plfxqgBBJgIpjw=; b=AsHXnvbTE0NoKn8UR1wNiZEQ0Izgl
+        oJ1le/svDXQKmB5iunzfl757K0xMqaKgwpjVCaw2UuP2Vt2mi2RMkN55AQsiD+0o
+        /NGYpK0Q1N3N8f+y8hlvcaJaEnVYzzUXulTecLj6OPE2kfCABIE81WZlt/TQWRym
+        a3YS2kb9o3UDiIqmT6Muw7WaDcpWDjOLS4FEg9ERk6Zsv5Hp/uVcGqvfRusPbRxs
+        /TkNZpWQa1QyBFLzjTES+Opz/HvajxF5Bnwti4DvpslyUHWi81WsLXmneMghKGmm
+        5uLl0cSZ1BQNDmkjOK4WmcBmk5Rvp6jy4BVNblrnY0nqT6NYPATO7irCQ==
+X-ME-Sender: <xms:tzYMZUXcSuZhEjYsCWLs0tRkqLt6ojmPoMPl4a4ip4r-sgw8vTC6og>
+    <xme:tzYMZYnjV322WYYdSTMoXm4rPGFrj126uFz03pQ5jZLRtclncn1Vn2e5IKuSknQur
+    nwLBT-aUOiRNbskyLQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedgheduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:tzYMZYZPhdycibP7W_ddmUBtLn0YGUONRmMTwUtOUl4FxP4TbdnjHQ>
+    <xmx:tzYMZTWsoHJEmyjcJspV67bM8725seq0dG7wF9ka6iwdPlA97rgN6Q>
+    <xmx:tzYMZem0QBzUTaJpXkKhVHcTIdTE5qwySok6bADpAf29P4FWOrLpBA>
+    <xmx:tzYMZdec6437asUuro7oN_lGHpAgzzqxstK0csnQRsD1an1TXXRMnjq-9-g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0F24AB60089; Thu, 21 Sep 2023 08:27:34 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
+MIME-Version: 1.0
+Message-Id: <c4a96578-b27c-44fa-82ef-1c5bf43b972a@app.fastmail.com>
+In-Reply-To: <20230921110424.215592-4-bhe@redhat.com>
+References: <20230921110424.215592-1-bhe@redhat.com>
+ <20230921110424.215592-4-bhe@redhat.com>
+Date:   Thu, 21 Sep 2023 08:27:14 -0400
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Baoquan He" <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Linux-Arch <linux-arch@vger.kernel.org>, linux-mm@kvack.org,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Jiaxun Yang" <jiaxun.yang@flygoat.com>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Luis Chamberlain" <mcgrof@kernel.org>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Florian Fainelli" <f.fainelli@gmail.com>,
+        "Helge Deller" <deller@gmx.de>, linux-alpha@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH v5 3/4] arch/*/io.h: remove ioremap_uc in some architectures
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Thu, 21 Sep 2023 17:19:59 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
+On Thu, Sep 21, 2023, at 07:04, Baoquan He wrote:
+> ioremap_uc() is only meaningful on old x86-32 systems with the PAT
+> extension, and on ia64 with its slightly unconventional ioremap()
+> behavior. So remove the ioremap_uc() definition in architecutures
+> other than x86 and ia64. These architectures all have asm-generic/io.h
+> included and will have the default ioremap_uc() definition which
+> returns NULL.
+>
+> This changes the existing behaviour, while no need to worry about
+> any breakage because in the only callsite of ioremap_uc(), code
+> has been adjusted to eliminate the impact. Please see
+> atyfb_setup_generic() of drivers/video/fbdev/aty/atyfb_base.c.
+>
+> If any new invocation of ioremap_uc() need be added, please consider
+> using ioremap() intead or adding a ARCH specific version if necessary.
+>
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+> Acked-by: Helge Deller <deller@gmx.de>  # parisc
+> Cc: linux-alpha@vger.kernel.org
+> Cc: linux-hexagon@vger.kernel.org
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: sparclinux@vger.kernel.org
 
-> Hi All,
-> 
-> This series fixes a bug in arm64's implementation of set_huge_pte_at(), which
-> can result in an unprivileged user causing a kernel panic. The problem was
-> triggered when running the new uffd poison mm selftest for HUGETLB memory. This
-> test (and the uffd poison feature) was merged for v6.6-rc1. However, upon
-> inspection there are multiple other pre-existing paths that can trigger this
-> bug.
-> 
-> Ideally, I'd like to get this fix in for v6.6 if possible? And I guess it should
-> be backported too, given there are call sites where this can theoretically
-> happen that pre-date v6.6-rc1 (I've cc'ed stable@vger.kernel.org).
-
-This gets you a naggygram from Greg.  The way to request a backport is
-to add cc:stable to all the changelogs.  I'll make that change to my copy.
-
-
-> Ryan Roberts (8):
->   parisc: hugetlb: Convert set_huge_pte_at() to take vma
->   powerpc: hugetlb: Convert set_huge_pte_at() to take vma
->   riscv: hugetlb: Convert set_huge_pte_at() to take vma
->   s390: hugetlb: Convert set_huge_pte_at() to take vma
->   sparc: hugetlb: Convert set_huge_pte_at() to take vma
->   mm: hugetlb: Convert set_huge_pte_at() to take vma
->   arm64: hugetlb: Convert set_huge_pte_at() to take vma
->   arm64: hugetlb: Fix set_huge_pte_at() to work with all swap entries
-> 
->  arch/arm64/include/asm/hugetlb.h              |  2 +-
->  arch/arm64/mm/hugetlbpage.c                   | 22 ++++----------
->  arch/parisc/include/asm/hugetlb.h             |  2 +-
->  arch/parisc/mm/hugetlbpage.c                  |  4 +--
->  .../include/asm/nohash/32/hugetlb-8xx.h       |  3 +-
->  arch/powerpc/mm/book3s64/hugetlbpage.c        |  2 +-
->  arch/powerpc/mm/book3s64/radix_hugetlbpage.c  |  2 +-
->  arch/powerpc/mm/nohash/8xx.c                  |  2 +-
->  arch/powerpc/mm/pgtable.c                     |  7 ++++-
->  arch/riscv/include/asm/hugetlb.h              |  2 +-
->  arch/riscv/mm/hugetlbpage.c                   |  3 +-
->  arch/s390/include/asm/hugetlb.h               |  8 +++--
->  arch/s390/mm/hugetlbpage.c                    |  8 ++++-
->  arch/sparc/include/asm/hugetlb.h              |  8 +++--
->  arch/sparc/mm/hugetlbpage.c                   |  8 ++++-
->  include/asm-generic/hugetlb.h                 |  6 ++--
->  include/linux/hugetlb.h                       |  6 ++--
->  mm/damon/vaddr.c                              |  2 +-
->  mm/hugetlb.c                                  | 30 +++++++++----------
->  mm/migrate.c                                  |  2 +-
->  mm/rmap.c                                     | 10 +++----
->  mm/vmalloc.c                                  |  5 +++-
->  22 files changed, 80 insertions(+), 64 deletions(-)
-
-Looks scary but it's actually a fairly modest patchset.  It could
-easily be all rolled into a single patch for ease of backporting. 
-Maybe Greg has an opinion?
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
