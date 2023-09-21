@@ -2,89 +2,57 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EFF3E7D0A2
-	for <linux-parisc@archiver.kernel.org>; Thu, 21 Sep 2023 19:41:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 233F0E7D0A7
+	for <linux-parisc@archiver.kernel.org>; Thu, 21 Sep 2023 20:00:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbjIUTlU (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Thu, 21 Sep 2023 15:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
+        id S229909AbjIUUA7 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Thu, 21 Sep 2023 16:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjIUTlT (ORCPT
+        with ESMTP id S231483AbjIUUA0 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Thu, 21 Sep 2023 15:41:19 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE3B19E;
-        Thu, 21 Sep 2023 12:41:12 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qjFad-0002mp-KL; Thu, 21 Sep 2023 11:03:15 +0200
-Message-ID: <e3647a0a-e946-44e3-90b2-f02aec69d1c0@leemhuis.info>
-Date:   Thu, 21 Sep 2023 11:03:14 +0200
+        Thu, 21 Sep 2023 16:00:26 -0400
+X-Greylist: delayed 4163 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Sep 2023 11:24:41 PDT
+Received: from manchmal.in-ulm.de (manchmal.in-ulm.de [217.10.9.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384A5D434E;
+        Thu, 21 Sep 2023 11:24:40 -0700 (PDT)
+Date:   Thu, 21 Sep 2023 09:09:19 +0200
+From:   Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Labiuk <michael.labiuk@virtuozzo.com>,
+        Linux PARISC <linux-parisc@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: Re: Possible 6.5 regression: Huge values for "commited memory"
+Message-ID: <1695279990@msgid.manchmal.in-ulm.de>
+References: <1694366957@msgid.manchmal.in-ulm.de>
+ <ZQWUzwiKWLk79qbp@debian.me>
+ <CAHk-=wh29JJSVGyJM7ubxOs51-Nxp6YnmU9Bw1gdOk3rrQ_0mg@mail.gmail.com>
+ <CAHk-=wjrEjaUw3oFVEYpF=AWAwrSM3sQTQHuPfFjFdQsvQxHeg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] lockdep: Fix static memory detection even more
-Content-Language: en-US, de-DE
-From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-To:     Guenter Roeck <linux@roeck-us.net>, Helge Deller <deller@gmx.de>
-Cc:     linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
-          Linux regressions mailing list 
-          <regressions@lists.linux.dev>
-References: <ZNep5EcYskP9HtGD@p100>
- <b7526bf6-886f-457a-beba-84ae9f75bc77@roeck-us.net>
- <f8ca4666-1a64-49fe-afa7-47e72c82ef9e@leemhuis.info>
-In-Reply-To: <f8ca4666-1a64-49fe-afa7-47e72c82ef9e@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1695325272;3f254ce9;
-X-HE-SMSGID: 1qjFad-0002mp-KL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjrEjaUw3oFVEYpF=AWAwrSM3sQTQHuPfFjFdQsvQxHeg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-[TLDR: This mail in primarily relevant for Linux regression tracking. A
-change or fix related to the regression discussed in this thread was
-posted or applied, but it did not use a Closes: tag to point to the
-report, as Linus and the documentation call for. Things happen, no
-worries -- but now the regression tracking bot needs to be told manually
-about the fix. See link in footer if these mails annoy you.]
+[
+    A tad late in the party, I know. The box I had encoutered this isn't
+    quite on 24/7, and reproduction took some time.
+]
 
-On 10.09.23 13:20, Linux regression tracking #adding (Thorsten Leemhuis)
-wrote:
-> On 03.09.23 21:36, Guenter Roeck wrote:
->>
->> On Sat, Aug 12, 2023 at 05:48:52PM +0200, Helge Deller wrote:
->>> On the parisc architecture, lockdep reports for all static objects which
->>> are in the __initdata section (e.g. "setup_done" in devtmpfs,
->>> "kthreadd_done" in init/main.c) this warning:
->>>
->>> 	INFO: trying to register non-static key.
->>>
->> [...]
->>> Signed-off-by: Helge Deller <deller@gmx.de>
->>> Fixes: bac59d18c701 ("x86/setup: Fix static memory detection")
->>
->> On loongarch, this patch results in the following backtrace.
->> [...]> # first bad commit: [0a6b58c5cd0dfd7961e725212f0fc8dfc5d96195]
-> lockdep: fix static memory detection even more
-> 
-> Thanks for the report. To be sure the issue doesn't fall through the
-> cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-> tracking bot:
-> 
-> #regzbot ^introduced 0a6b58c5cd0dfd7961e725212f0fc8dfc5d961
-> #regzbot title lockdep: backtrace on loongarch
-> #regzbot ignore-activity
+Linus Torvalds wrote...
 
-Fix fow in next (as 68ffa230daa0d35b7cce476098433d763d5fd42f)
+> I haven't pushed it out (because it would be lovely to get a
+> "Tested-by" for it, and that will make the commit ID change), but I'll
+> probably do so later today, with or without confirmation, because it
+> does seem to be the problem.
 
-#regzbot fix: LoongArch: Fix lockdep static memory detection
-#regzbot ignore-activity
+Confirmed this solves the issue here, too. Tested on 6.6-rc2.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+    Christoph
