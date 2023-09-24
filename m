@@ -2,41 +2,40 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E965CE7A8A
-	for <linux-parisc@archiver.kernel.org>; Sun, 24 Sep 2023 13:24:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7FC8CE7A8F
+	for <linux-parisc@archiver.kernel.org>; Sun, 24 Sep 2023 13:25:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbjIXNYG (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 24 Sep 2023 09:24:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34522 "EHLO
+        id S229973AbjIXNZe (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 24 Sep 2023 09:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbjIXNXs (ORCPT
+        with ESMTP id S230264AbjIXNYa (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:23:48 -0400
+        Sun, 24 Sep 2023 09:24:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BE155A5;
-        Sun, 24 Sep 2023 06:20:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C026C43397;
-        Sun, 24 Sep 2023 13:20:42 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EDE5580;
+        Sun, 24 Sep 2023 06:20:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DB60C4339A;
+        Sun, 24 Sep 2023 13:20:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561643;
-        bh=OTE0OTbb8GhgTkY+kGlP6RqkSIA+gOgD7lqkw3P/ZDs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=phvATmBHmaAVtwe4p3R651g0zc9lhrKXMtVzsRXzmZ8S692lAb+WHtj9xvpj5HJq/
-         6xtUJDjzRyHHR0Z5YbqjUaMP11qE6RrxF34ypxq0371qx0LAFr1xe1Np/zn6/VR055
-         HhUuvieinvZjCIKNeczvb6Eud+oOuT5RodqlU4QAAvlFD34kJBK+60zVkuj9B4WioN
-         A6DHOElX8tdBUzomgWm6AEdcVOxfpmGxvm7iEduDsmVEhg8HH/VbHJiCyLOIpH7ZL8
-         mpD5DxrWUibGzrVS3fFQjnB494+s1ZeO6YN49mU31tj0rq13AvloXOPS5FPCwp24S/
-         Sy3NCyTX57Y4g==
+        s=k20201202; t=1695561636;
+        bh=5o/7+bfcajmYC3wkUtOI5QGvaYZc3ylWHck73AYKVYc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ue//2ZzLJHbx+T+SgRdyTg8F5F915pxDKXimYm7dX+KSvh0rGiDnn7x7yavQ3wHjy
+         iT1M/QpNqOwgZKxxhzDvX/CO+SKvDI8aBYthl3gjdftdEEw/aOgjgTfIHaE4k5g0Xw
+         lyLMNNzrg0oLob9Bz1cc7PznwQrZhaC7nRV5CufwSDEgmZaZ9tifeuLf9S0Sp4KXHR
+         h5boTxaS+CnAQ0LMKC4VjwNXz3WrlHgpurA1fbErcL/Y83KzDfOtZ4cllqyaJZwX8K
+         9gAI3d6IcgiM2MEp/1ebhFLlQBoEpPmv58YmqW7kBfUsXep+S+knvJSA6WKNgAfV3/
+         P3pcYT4if1SDA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 4/7] parisc: irq: Make irq_stack_union static to avoid sparse warning
-Date:   Sun, 24 Sep 2023 09:20:28 -0400
-Message-Id: <20230924132033.1276920-4-sashal@kernel.org>
+        James.Bottomley@HansenPartnership.com, airlied@redhat.com,
+        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 4.19 1/7] parisc: sba: Fix compile warning wrt list of SBA devices
+Date:   Sun, 24 Sep 2023 09:20:25 -0400
+Message-Id: <20230924132033.1276920-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230924132033.1276920-1-sashal@kernel.org>
-References: <20230924132033.1276920-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -48,27 +47,46 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Helge Deller <deller@gmx.de>
 
-[ Upstream commit b1bef1388c427cdad7331a9c8eb4ebbbe5b954b0 ]
+[ Upstream commit eb3255ee8f6f4691471a28fbf22db5e8901116cd ]
+
+Fix this makecheck warning:
+drivers/parisc/sba_iommu.c:98:19: warning: symbol 'sba_list'
+	was not declared. Should it be static?
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/kernel/irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/parisc/include/asm/ropes.h | 3 +++
+ drivers/char/agp/parisc-agp.c   | 2 --
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index c152c30c2d06d..11c1505775f87 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -392,7 +392,7 @@ union irq_stack_union {
- 	volatile unsigned int lock[1];
+diff --git a/arch/parisc/include/asm/ropes.h b/arch/parisc/include/asm/ropes.h
+index 8e51c775c80a6..62399c7ea94a1 100644
+--- a/arch/parisc/include/asm/ropes.h
++++ b/arch/parisc/include/asm/ropes.h
+@@ -86,6 +86,9 @@ struct sba_device {
+ 	struct ioc		ioc[MAX_IOC];
  };
  
--DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
-+static DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
- 		.slock = { 1,1,1,1 },
- 	};
- #endif
++/* list of SBA's in system, see drivers/parisc/sba_iommu.c */
++extern struct sba_device *sba_list;
++
+ #define ASTRO_RUNWAY_PORT	0x582
+ #define IKE_MERCED_PORT		0x803
+ #define REO_MERCED_PORT		0x804
+diff --git a/drivers/char/agp/parisc-agp.c b/drivers/char/agp/parisc-agp.c
+index 1d5510cb6db4e..1962ff624b7c5 100644
+--- a/drivers/char/agp/parisc-agp.c
++++ b/drivers/char/agp/parisc-agp.c
+@@ -385,8 +385,6 @@ find_quicksilver(struct device *dev, void *data)
+ static int __init
+ parisc_agp_init(void)
+ {
+-	extern struct sba_device *sba_list;
+-
+ 	int err = -1;
+ 	struct parisc_device *sba = NULL, *lba = NULL;
+ 	struct lba_device *lbadev = NULL;
 -- 
 2.40.1
 
