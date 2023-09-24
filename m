@@ -2,45 +2,47 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58D28CE7A92
-	for <linux-parisc@archiver.kernel.org>; Sun, 24 Sep 2023 13:25:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA335CE7A88
+	for <linux-parisc@archiver.kernel.org>; Sun, 24 Sep 2023 13:27:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbjIXNZf (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 24 Sep 2023 09:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34254 "EHLO
+        id S231127AbjIXN1M (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 24 Sep 2023 09:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbjIXNYp (ORCPT
+        with ESMTP id S231156AbjIXN1A (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:24:45 -0400
+        Sun, 24 Sep 2023 09:27:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48EF659ED;
-        Sun, 24 Sep 2023 06:20:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 361BFC433C7;
-        Sun, 24 Sep 2023 13:20:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2FB26B6;
+        Sun, 24 Sep 2023 06:20:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E426C433AD;
+        Sun, 24 Sep 2023 13:20:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561654;
-        bh=9KF0fi7Qe4SXj5sAMqCnS3R32AdSZNyzqrHcEAZ2XVo=;
+        s=k20201202; t=1695561640;
+        bh=0JBoW82sAVisLUsxaax3heE9JWG7x0RJLebL2mFRSlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YEHjQfyqc1DDVQmOso3BhwXhmlvwFwccowvI9ivmyC6JuU/npT9q0YTUP6Gj6lU6d
-         Y74EJojnLaLdiS73b3LYEoP/1hyUtRuCuBeZGEfq6UmGslvJ4lumJWVTMfTJBiQuC3
-         QhWezAusV0Gj/amxzXtp5k5SN9mMCCLVxp+1u25+sm6Zcb9cGhz2D3hFLzDI1HUugH
-         pNi4SNJ2CwCowemkPeX3MGsT04uERXjHizd4hCEY9t+7eJvgeAGAEUne8B3MdYC0fO
-         VecVGACfV1lGyKH+QFUGdjWStRyIBNqOEnvvsNmj/IDhRubDXoXytpjKjqyZNessqm
-         C+vVvqITg9K5g==
+        b=H6IXMMHBTXjNrrciuIvYUBnzHgyIpM0Kk+LA5x9o/hR5olp8iCOPbEpytpTc8Sm4d
+         GZj0bcyDutJue2uFYpDTF4doAA8bJYA1RWlUN+byAKm2Y322yGm8EGUvHlujSRScka
+         WjHEN3WbGVN8r127FMs8w21b3EidDNr5AI+WpzZLRQi+BCgBXaAvx6gpOAPWqBtRLw
+         w103lF4445obK5mAHcMldUzAWwnoGbEFzRStMOow7dvBG0zxX0T6drZ/2QSJnjh7ng
+         bhx/7rNbO51b7cM+Tx3t/UOkyt6CkhoXEWeA5dO/B1tvOWGdWqu6/vgkEUwufzqtIT
+         e7XiF9KqZyrlw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 2/6] parisc: iosapic.c: Fix sparse warnings
-Date:   Sun, 24 Sep 2023 09:20:45 -0400
-Message-Id: <20230924132050.1277021-2-sashal@kernel.org>
+        James.Bottomley@HansenPartnership.com, hdegoede@redhat.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 3/7] parisc: drivers: Fix sparse warning
+Date:   Sun, 24 Sep 2023 09:20:27 -0400
+Message-Id: <20230924132033.1276920-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230924132050.1277021-1-sashal@kernel.org>
-References: <20230924132050.1277021-1-sashal@kernel.org>
+In-Reply-To: <20230924132033.1276920-1-sashal@kernel.org>
+References: <20230924132033.1276920-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.326
+X-stable-base: Linux 4.19.295
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
@@ -48,46 +50,31 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Helge Deller <deller@gmx.de>
 
-[ Upstream commit 927c6c8aa27c284a799b8c18784e37d3373af908 ]
+[ Upstream commit b137b9d60b8add5620a06c687a71ce18776730b0 ]
+
+Fix "warning: directive in macro's argument list" warning.
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/parisc/iosapic.c         | 4 ++--
- drivers/parisc/iosapic_private.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ arch/parisc/kernel/drivers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
-index eb9137faccf74..4cc08d13b82fa 100644
---- a/drivers/parisc/iosapic.c
-+++ b/drivers/parisc/iosapic.c
-@@ -216,9 +216,9 @@ static inline void iosapic_write(void __iomem *iosapic, unsigned int reg, u32 va
+diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
+index 01a2ed59d2f2a..94037c8512f78 100644
+--- a/arch/parisc/kernel/drivers.c
++++ b/arch/parisc/kernel/drivers.c
+@@ -903,9 +903,9 @@ static __init void qemu_header(void)
+ 	pr_info("#define PARISC_MODEL \"%s\"\n\n",
+ 			boot_cpu_data.pdc.sys_model_name);
  
- static DEFINE_SPINLOCK(iosapic_lock);
++	#define p ((unsigned long *)&boot_cpu_data.pdc.model)
+ 	pr_info("#define PARISC_PDC_MODEL 0x%lx, 0x%lx, 0x%lx, "
+ 		"0x%lx, 0x%lx, 0x%lx, 0x%lx, 0x%lx, 0x%lx\n\n",
+-	#define p ((unsigned long *)&boot_cpu_data.pdc.model)
+ 		p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8]);
+ 	#undef p
  
--static inline void iosapic_eoi(void __iomem *addr, unsigned int data)
-+static inline void iosapic_eoi(__le32 __iomem *addr, __le32 data)
- {
--	__raw_writel(data, addr);
-+	__raw_writel((__force u32)data, addr);
- }
- 
- /*
-diff --git a/drivers/parisc/iosapic_private.h b/drivers/parisc/iosapic_private.h
-index 6e05e30a2450a..7a928c03d5201 100644
---- a/drivers/parisc/iosapic_private.h
-+++ b/drivers/parisc/iosapic_private.h
-@@ -132,8 +132,8 @@ struct iosapic_irt {
- struct vector_info {
- 	struct iosapic_info *iosapic;	/* I/O SAPIC this vector is on */
- 	struct irt_entry *irte;		/* IRT entry */
--	u32 __iomem *eoi_addr;		/* precalculate EOI reg address */
--	u32	eoi_data;		/* IA64: ?       PA: swapped txn_data */
-+	__le32 __iomem *eoi_addr;	/* precalculate EOI reg address */
-+	__le32	eoi_data;		/* IA64: ?       PA: swapped txn_data */
- 	int	txn_irq;		/* virtual IRQ number for processor */
- 	ulong	txn_addr;		/* IA64: id_eid  PA: partial HPA */
- 	u32	txn_data;		/* CPU interrupt bit */
 -- 
 2.40.1
 
