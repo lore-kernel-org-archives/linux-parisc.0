@@ -2,44 +2,44 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B7EACE7A88
-	for <linux-parisc@archiver.kernel.org>; Sun, 24 Sep 2023 13:32:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DEDCCE7A8A
+	for <linux-parisc@archiver.kernel.org>; Sun, 24 Sep 2023 13:32:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbjIXNcL (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 24 Sep 2023 09:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
+        id S231267AbjIXNcT (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 24 Sep 2023 09:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbjIXNbp (ORCPT
+        with ESMTP id S231311AbjIXNbq (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:31:45 -0400
+        Sun, 24 Sep 2023 09:31:46 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C0B59E0;
-        Sun, 24 Sep 2023 06:20:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5BBFC433D9;
-        Sun, 24 Sep 2023 13:20:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC16F3A87;
+        Sun, 24 Sep 2023 06:19:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B45FC433C7;
+        Sun, 24 Sep 2023 13:18:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561653;
-        bh=5o/7+bfcajmYC3wkUtOI5QGvaYZc3ylWHck73AYKVYc=;
+        s=k20201202; t=1695561540;
+        bh=/0DxeFclJanmHoVCa2JuctmAc4IoTLcES89kTw6xPoU=;
         h=From:To:Cc:Subject:Date:From;
-        b=LV+UBdL2LcR9Cq4vM9BvEnGPIPKrTj1FsL2r1sIIAExtlJ/xrrdP6wsBxaoMPdi5O
-         5eBks6SmdzelPYwXeQ5Rj85NWifByt5vLILDQ0lhxzvcpUq3jVYJY1SPzU0vQZjZm5
-         kCdBgBpBF9m3M/NHB9qGHXqjzBKHyttDncDWwfjexOfjAnV4a7gjaz97P4F2Fy9NoM
-         p0NdoPNO1r3Cn5JHbMJOvcvlAVzFIDLtGsinXQlChCAMi9OmWaqaT1Te4XbwBQJuJ5
-         1+8gSv/Bwgq1uVbjf28fr9rfRRqmQcW78YtGdsTSry0rpp40I36jC6HoiwttDV1Vj4
-         zhGHwxuqfR/sQ==
+        b=psCznLbE00vO5iBzy3hah1OTK/41um+QTYPmgHjCMtdCslsyeCvkxvUiz/tb2PUPL
+         DZ/PNzR+0oQmzz7gpnLXJIVJMbd4MEYNlecpqvOndNoTA6WT/H85/LjpsKF6xiQW0l
+         Zhi/2tuBiap1JFjZSRLBHHvUB8c5PynkQWKIm+I2le3PmWleMwizyZ4X+yUWjD3ofK
+         pBx6HiKUIBE9mQmNyQX4t1Qai4AUa8TSKQEpi+j4akU8Rkq3GbwaiwCcxZ/8gl6on8
+         v+udwmEhOHRyqwlAGfnu2tDvrnBS7IIDrwc1vrkYv9JT837B37mA6zdVkZPBS1tzDJ
+         BvxZqW2Y2Mdfw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
         James.Bottomley@HansenPartnership.com, airlied@redhat.com,
         linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 4.14 1/6] parisc: sba: Fix compile warning wrt list of SBA devices
-Date:   Sun, 24 Sep 2023 09:20:44 -0400
-Message-Id: <20230924132050.1277021-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 01/18] parisc: sba: Fix compile warning wrt list of SBA devices
+Date:   Sun, 24 Sep 2023 09:18:38 -0400
+Message-Id: <20230924131857.1276330-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.326
+X-stable-base: Linux 5.15.133
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
@@ -75,10 +75,10 @@ index 8e51c775c80a6..62399c7ea94a1 100644
  #define IKE_MERCED_PORT		0x803
  #define REO_MERCED_PORT		0x804
 diff --git a/drivers/char/agp/parisc-agp.c b/drivers/char/agp/parisc-agp.c
-index 1d5510cb6db4e..1962ff624b7c5 100644
+index 514f9f287a781..c6f181702b9a7 100644
 --- a/drivers/char/agp/parisc-agp.c
 +++ b/drivers/char/agp/parisc-agp.c
-@@ -385,8 +385,6 @@ find_quicksilver(struct device *dev, void *data)
+@@ -394,8 +394,6 @@ find_quicksilver(struct device *dev, void *data)
  static int __init
  parisc_agp_init(void)
  {
