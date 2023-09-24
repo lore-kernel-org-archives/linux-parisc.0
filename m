@@ -2,44 +2,45 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DEDCCE7A8A
-	for <linux-parisc@archiver.kernel.org>; Sun, 24 Sep 2023 13:32:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42F69CE7A8A
+	for <linux-parisc@archiver.kernel.org>; Sun, 24 Sep 2023 13:32:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbjIXNcT (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 24 Sep 2023 09:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
+        id S231792AbjIXNce (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 24 Sep 2023 09:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbjIXNbq (ORCPT
+        with ESMTP id S230526AbjIXNcF (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:31:46 -0400
+        Sun, 24 Sep 2023 09:32:05 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC16F3A87;
-        Sun, 24 Sep 2023 06:19:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B45FC433C7;
-        Sun, 24 Sep 2023 13:18:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D382B5B84;
+        Sun, 24 Sep 2023 06:20:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3B68C433BB;
+        Sun, 24 Sep 2023 13:20:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561540;
-        bh=/0DxeFclJanmHoVCa2JuctmAc4IoTLcES89kTw6xPoU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=psCznLbE00vO5iBzy3hah1OTK/41um+QTYPmgHjCMtdCslsyeCvkxvUiz/tb2PUPL
-         DZ/PNzR+0oQmzz7gpnLXJIVJMbd4MEYNlecpqvOndNoTA6WT/H85/LjpsKF6xiQW0l
-         Zhi/2tuBiap1JFjZSRLBHHvUB8c5PynkQWKIm+I2le3PmWleMwizyZ4X+yUWjD3ofK
-         pBx6HiKUIBE9mQmNyQX4t1Qai4AUa8TSKQEpi+j4akU8Rkq3GbwaiwCcxZ/8gl6on8
-         v+udwmEhOHRyqwlAGfnu2tDvrnBS7IIDrwc1vrkYv9JT837B37mA6zdVkZPBS1tzDJ
-         BvxZqW2Y2Mdfw==
+        s=k20201202; t=1695561657;
+        bh=OTE0OTbb8GhgTkY+kGlP6RqkSIA+gOgD7lqkw3P/ZDs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WO1XzPLOrMHZaujN0/nhz6hYFntKt/kqBycxM+RQh+sxmv/swHUHEXpSHFca+D3IZ
+         kBaEbH3vV+e5q9fRdyb0A0wQ+HC1/crMmvf9Y2Rlaj4ymYVH0nslZqyTfOzJKAIZHE
+         Zv+zDTO4n5PocZL+qzV9u6faBc8rDh9DmHjA5OqaaWJpEbExfzRPgUW7INkK5ZcY9d
+         i03vMNF2ZFe1VndHUVr2Wkn1ba3l97mHIF4dbDAIH1fSSkHTO4x6OM8V2oFiDcTPn6
+         DOISke5Vhk8Tt7HP8cDKwK+YxG7SdO2zcr5YGXkYq6smdiPa13NF3k6bRYxDMZN5bo
+         CFuhFxXUqFSIA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
-        James.Bottomley@HansenPartnership.com, airlied@redhat.com,
-        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.15 01/18] parisc: sba: Fix compile warning wrt list of SBA devices
-Date:   Sun, 24 Sep 2023 09:18:38 -0400
-Message-Id: <20230924131857.1276330-1-sashal@kernel.org>
+        James.Bottomley@HansenPartnership.com, linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 3/6] parisc: irq: Make irq_stack_union static to avoid sparse warning
+Date:   Sun, 24 Sep 2023 09:20:46 -0400
+Message-Id: <20230924132050.1277021-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230924132050.1277021-1-sashal@kernel.org>
+References: <20230924132050.1277021-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.133
+X-stable-base: Linux 4.14.326
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
@@ -47,46 +48,27 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 
 From: Helge Deller <deller@gmx.de>
 
-[ Upstream commit eb3255ee8f6f4691471a28fbf22db5e8901116cd ]
-
-Fix this makecheck warning:
-drivers/parisc/sba_iommu.c:98:19: warning: symbol 'sba_list'
-	was not declared. Should it be static?
+[ Upstream commit b1bef1388c427cdad7331a9c8eb4ebbbe5b954b0 ]
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/include/asm/ropes.h | 3 +++
- drivers/char/agp/parisc-agp.c   | 2 --
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ arch/parisc/kernel/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/parisc/include/asm/ropes.h b/arch/parisc/include/asm/ropes.h
-index 8e51c775c80a6..62399c7ea94a1 100644
---- a/arch/parisc/include/asm/ropes.h
-+++ b/arch/parisc/include/asm/ropes.h
-@@ -86,6 +86,9 @@ struct sba_device {
- 	struct ioc		ioc[MAX_IOC];
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index c152c30c2d06d..11c1505775f87 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -392,7 +392,7 @@ union irq_stack_union {
+ 	volatile unsigned int lock[1];
  };
  
-+/* list of SBA's in system, see drivers/parisc/sba_iommu.c */
-+extern struct sba_device *sba_list;
-+
- #define ASTRO_RUNWAY_PORT	0x582
- #define IKE_MERCED_PORT		0x803
- #define REO_MERCED_PORT		0x804
-diff --git a/drivers/char/agp/parisc-agp.c b/drivers/char/agp/parisc-agp.c
-index 514f9f287a781..c6f181702b9a7 100644
---- a/drivers/char/agp/parisc-agp.c
-+++ b/drivers/char/agp/parisc-agp.c
-@@ -394,8 +394,6 @@ find_quicksilver(struct device *dev, void *data)
- static int __init
- parisc_agp_init(void)
- {
--	extern struct sba_device *sba_list;
--
- 	int err = -1;
- 	struct parisc_device *sba = NULL, *lba = NULL;
- 	struct lba_device *lbadev = NULL;
+-DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
++static DEFINE_PER_CPU(union irq_stack_union, irq_stack_union) = {
+ 		.slock = { 1,1,1,1 },
+ 	};
+ #endif
 -- 
 2.40.1
 
