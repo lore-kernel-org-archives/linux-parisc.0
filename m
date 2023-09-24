@@ -2,47 +2,47 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA335CE7A88
-	for <linux-parisc@archiver.kernel.org>; Sun, 24 Sep 2023 13:27:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C30A3CE7A8B
+	for <linux-parisc@archiver.kernel.org>; Sun, 24 Sep 2023 13:28:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbjIXN1M (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sun, 24 Sep 2023 09:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
+        id S229943AbjIXN3C (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Sun, 24 Sep 2023 09:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231156AbjIXN1A (ORCPT
+        with ESMTP id S230211AbjIXN24 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sun, 24 Sep 2023 09:27:00 -0400
+        Sun, 24 Sep 2023 09:28:56 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2FB26B6;
-        Sun, 24 Sep 2023 06:20:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E426C433AD;
-        Sun, 24 Sep 2023 13:20:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2264E1729;
+        Sun, 24 Sep 2023 06:19:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 958D5C433CA;
+        Sun, 24 Sep 2023 13:19:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695561640;
-        bh=0JBoW82sAVisLUsxaax3heE9JWG7x0RJLebL2mFRSlE=;
+        s=k20201202; t=1695561544;
+        bh=NGS+/VCSQQPfJZf3Zd6iCTKHQBKn8OO27Irst0AL6TY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H6IXMMHBTXjNrrciuIvYUBnzHgyIpM0Kk+LA5x9o/hR5olp8iCOPbEpytpTc8Sm4d
-         GZj0bcyDutJue2uFYpDTF4doAA8bJYA1RWlUN+byAKm2Y322yGm8EGUvHlujSRScka
-         WjHEN3WbGVN8r127FMs8w21b3EidDNr5AI+WpzZLRQi+BCgBXaAvx6gpOAPWqBtRLw
-         w103lF4445obK5mAHcMldUzAWwnoGbEFzRStMOow7dvBG0zxX0T6drZ/2QSJnjh7ng
-         bhx/7rNbO51b7cM+Tx3t/UOkyt6CkhoXEWeA5dO/B1tvOWGdWqu6/vgkEUwufzqtIT
-         e7XiF9KqZyrlw==
+        b=GEDLtekyjpZZE1fjn6wJJMgrYPS91EDI0npCC5FVVFse1QjGHLtQfICtmHpCpastK
+         e4AC1V7gLwTR1obxXWWNGeQktuUzCRAGefTtxzPWplJOCMevgp6SGFDwI3weV8luBY
+         EQWDfoFQJEwme8ellPnoOMZIMs4XT9wfEwAgv7NebTUnn4ZHsCrtHO8C6XMLuTHHgr
+         pyD6Dj3zMAg5FmcwRs+AueaSBBw+r/egg5Fu3Ji7S0oY4LyQMuv/smK4XVlSgFH1C1
+         8Y84gRatJ0roLV8mqXMNTITqKCTeLbNjIwUr2uoDjy3Iry61rm4puUblTBvr7DjKne
+         olcA/Qo3iQtJg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>,
         James.Bottomley@HansenPartnership.com, hdegoede@redhat.com,
         gregkh@linuxfoundation.org, rafael@kernel.org,
         linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 3/7] parisc: drivers: Fix sparse warning
-Date:   Sun, 24 Sep 2023 09:20:27 -0400
-Message-Id: <20230924132033.1276920-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 03/18] parisc: drivers: Fix sparse warning
+Date:   Sun, 24 Sep 2023 09:18:40 -0400
+Message-Id: <20230924131857.1276330-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230924132033.1276920-1-sashal@kernel.org>
-References: <20230924132033.1276920-1-sashal@kernel.org>
+In-Reply-To: <20230924131857.1276330-1-sashal@kernel.org>
+References: <20230924131857.1276330-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.295
+X-stable-base: Linux 5.15.133
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
@@ -61,10 +61,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
-index 01a2ed59d2f2a..94037c8512f78 100644
+index e7ee0c0c91d35..8f12b9f318ae6 100644
 --- a/arch/parisc/kernel/drivers.c
 +++ b/arch/parisc/kernel/drivers.c
-@@ -903,9 +903,9 @@ static __init void qemu_header(void)
+@@ -924,9 +924,9 @@ static __init void qemu_header(void)
  	pr_info("#define PARISC_MODEL \"%s\"\n\n",
  			boot_cpu_data.pdc.sys_model_name);
  
