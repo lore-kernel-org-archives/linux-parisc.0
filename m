@@ -2,344 +2,268 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61E4BC001E0
-	for <linux-parisc@archiver.kernel.org>; Sat, 21 Oct 2023 20:32:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7430AC25B4A
+	for <linux-parisc@archiver.kernel.org>; Mon, 23 Oct 2023 17:14:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbjJUUcz (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Sat, 21 Oct 2023 16:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
+        id S230044AbjJWROd (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Mon, 23 Oct 2023 13:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJUUcy (ORCPT
+        with ESMTP id S229452AbjJWROc (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Sat, 21 Oct 2023 16:32:54 -0400
-Received: from dellerweb.de (dellerweb.de [173.249.48.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDCAC9
-        for <linux-parisc@vger.kernel.org>; Sat, 21 Oct 2023 13:32:51 -0700 (PDT)
-Received: from mx3210.localdomain (unknown [142.126.114.79])
-        by dellerweb.de (Postfix) with ESMTPSA id 3F32C1600195;
-        Sat, 21 Oct 2023 22:32:46 +0200 (CEST)
-Received: by mx3210.localdomain (Postfix, from userid 1000)
-        id ED43522011C; Sat, 21 Oct 2023 20:32:43 +0000 (UTC)
-Date:   Sat, 21 Oct 2023 20:32:43 +0000
-From:   John David Anglin <dave@parisc-linux.org>
-To:     linux-parisc@vger.kernel.org
-Cc:     Helge Deller <deller@gmx.de>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Subject: Re: [PATCH v3] parisc: Add nop instructions after TLB inserts
-Message-ID: <ZTQ1a22wN0BPulfE@mx3210.localdomain>
-References: <ZTLnw6cIVbPovI5l@mx3210.localdomain>
+        Mon, 23 Oct 2023 13:14:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08BBF94;
+        Mon, 23 Oct 2023 10:14:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43161C433C9;
+        Mon, 23 Oct 2023 17:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698081270;
+        bh=Ja8s9hHWNsMl9rR/A2vkVRwGBByDHecu9TUfTmLK5O0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MeuEwtvuDFO5yp5iwwuVEJNzg9RfG0g2iSphmorTs1YHktZPSgAIBmOgSnoaQJdHm
+         nUlWIMj2sV40TRQksuLqdyoEUZOrZ4YgskSrGgA2/nhb9IFL78IFLLm5ChkY8qJxOI
+         XvSk9ecB7rzX1Id68w7pVTn+QD7K44RzxoL0JXDRTA8j3sh2U4yTDlfwo97LvPAH00
+         RUnsGssWWAdudZuWTwU1hLYa0ovrTsWm97cFrfjCEL0C5VQBb75ldMMm5wnopS8rdo
+         ma5otrvqzXBMC9YyKDYNnhopzPnGbtq133bDGxB7c+u2v5Gw+ZIgVNda5UvccMxt+p
+         Sq/U+bn87cRzw==
+Date:   Mon, 23 Oct 2023 18:14:20 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Song Liu <song@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v3 04/13] mm/execmem, arch: convert remaining overrides
+ of module_alloc to execmem
+Message-ID: <20231023171420.GA4041@willie-the-truck>
+References: <20230918072955.2507221-1-rppt@kernel.org>
+ <20230918072955.2507221-5-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wZbC24IxgILFtDcJ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZTLnw6cIVbPovI5l@mx3210.localdomain>
+In-Reply-To: <20230918072955.2507221-5-rppt@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
+Hi Mike,
 
---wZbC24IxgILFtDcJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 18, 2023 at 10:29:46AM +0300, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> Extend execmem parameters to accommodate more complex overrides of
+> module_alloc() by architectures.
+> 
+> This includes specification of a fallback range required by arm, arm64
+> and powerpc and support for allocation of KASAN shadow required by
+> arm64, s390 and x86.
+> 
+> The core implementation of execmem_alloc() takes care of suppressing
+> warnings when the initial allocation fails but there is a fallback range
+> defined.
+> 
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> ---
+>  arch/arm/kernel/module.c     | 38 ++++++++++++---------
+>  arch/arm64/kernel/module.c   | 57 ++++++++++++++------------------
+>  arch/powerpc/kernel/module.c | 52 ++++++++++++++---------------
+>  arch/s390/kernel/module.c    | 52 +++++++++++------------------
+>  arch/x86/kernel/module.c     | 64 +++++++++++-------------------------
+>  include/linux/execmem.h      | 14 ++++++++
+>  mm/execmem.c                 | 43 ++++++++++++++++++++++--
+>  7 files changed, 167 insertions(+), 153 deletions(-)
 
-Backport for v6.1.59.
+[...]
 
-Signed-off-by: John David Anglin <dave.anglin@bell.net>
----
+> diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+> index dd851297596e..cd6320de1c54 100644
+> --- a/arch/arm64/kernel/module.c
+> +++ b/arch/arm64/kernel/module.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/random.h>
+>  #include <linux/scs.h>
+>  #include <linux/vmalloc.h>
+> +#include <linux/execmem.h>
+>  
+>  #include <asm/alternative.h>
+>  #include <asm/insn.h>
+> @@ -108,46 +109,38 @@ static int __init module_init_limits(void)
+>  
+>  	return 0;
+>  }
+> -subsys_initcall(module_init_limits);
+>  
+> -void *module_alloc(unsigned long size)
+> +static struct execmem_params execmem_params __ro_after_init = {
+> +	.ranges = {
+> +		[EXECMEM_DEFAULT] = {
+> +			.flags = EXECMEM_KASAN_SHADOW,
+> +			.alignment = MODULE_ALIGN,
+> +		},
+> +	},
+> +};
+> +
+> +struct execmem_params __init *execmem_arch_params(void)
+>  {
+> -	void *p = NULL;
+> +	struct execmem_range *r = &execmem_params.ranges[EXECMEM_DEFAULT];
+>  
+> -	/*
+> -	 * Where possible, prefer to allocate within direct branch range of the
+> -	 * kernel such that no PLTs are necessary.
+> -	 */
 
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index 0e5ebfe8d9d2..4e4787a73b65 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -35,6 +35,24 @@
- 	.level 2.0
- #endif
-=20
-+/*
-+ * We need seven instructions after a TLB insert for it to take effect.
-+ * The PA8800/PA8900 processors are an exception and need 12 instructions.
-+ * The RFI changes both IAOQ_Back and IAOQ_Front, so it counts as one.
-+ */
-+#ifdef CONFIG_64BIT
-+#define NUM_PIPELINE_INSNS    12
-+#else
-+#define NUM_PIPELINE_INSNS    7
-+#endif
-+
-+	/* Insert num nops */
-+	.macro	insert_nops num
-+	.rept \num
-+	nop
-+	.endr
-+	.endm
-+
- 	/* Get aligned page_table_lock address for this mm from cr28/tr4 */
- 	.macro  get_ptl reg
- 	mfctl	%cr28,\reg
-@@ -414,26 +432,23 @@
- 3:
- 	.endm
-=20
--	/* Release page_table_lock without reloading lock address.
-+	/* Release page_table_lock if for user space.
- 	   Note that the values in the register spc are limited to
- 	   NR_SPACE_IDS (262144). Thus, the stw instruction always
- 	   stores a nonzero value even when register spc is 64 bits.
- 	   We use an ordered store to ensure all prior accesses are
--	   performed prior to releasing the lock. */
--	.macro		ptl_unlock0	spc,tmp
--#ifdef CONFIG_TLB_PTLOCK
--98:	or,COND(=3D)	%r0,\spc,%r0
--	stw,ma		\spc,0(\tmp)
--99:	ALTERNATIVE(98b, 99b, ALT_COND_NO_SMP, INSN_NOP)
--#endif
--	.endm
--
--	/* Release page_table_lock. */
--	.macro		ptl_unlock1	spc,tmp
-+	   performed prior to releasing the lock. Note stw may not
-+	   be executed, so we provide one extra nop when
-+	   CONFIG_TLB_PTLOCK is defined.*/
-+	.macro		ptl_unlock	spc,tmp
- #ifdef CONFIG_TLB_PTLOCK
- 98:	get_ptl		\tmp
--	ptl_unlock0	\spc,\tmp
-+	or,COND(=3D)	%r0,\spc,%r0
-+	stw,ma		\spc,0(\tmp)
- 99:	ALTERNATIVE(98b, 99b, ALT_COND_NO_SMP, INSN_NOP)
-+	insert_nops	NUM_PIPELINE_INSNS - 3
-+#else
-+	insert_nops	NUM_PIPELINE_INSNS - 1
- #endif
- 	.endm
-=20
-@@ -1125,7 +1140,7 @@ dtlb_miss_20w:
- =09
- 	idtlbt          pte,prot
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1134,6 +1149,7 @@ dtlb_check_alias_20w:
-=20
- 	idtlbt          pte,prot
-=20
-+	insert_nops	NUM_PIPELINE_INSNS - 1
- 	rfir
- 	nop
-=20
-@@ -1151,7 +1167,7 @@ nadtlb_miss_20w:
-=20
- 	idtlbt          pte,prot
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1160,6 +1176,7 @@ nadtlb_check_alias_20w:
-=20
- 	idtlbt          pte,prot
-=20
-+	insert_nops	NUM_PIPELINE_INSNS - 1
- 	rfir
- 	nop
-=20
-@@ -1185,7 +1202,7 @@ dtlb_miss_11:
-=20
- 	mtsp		t1, %sr1	/* Restore sr1 */
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1195,6 +1212,7 @@ dtlb_check_alias_11:
- 	idtlba          pte,(va)
- 	idtlbp          prot,(va)
-=20
-+	insert_nops	NUM_PIPELINE_INSNS - 1
- 	rfir
- 	nop
-=20
-@@ -1218,7 +1236,7 @@ nadtlb_miss_11:
-=20
- 	mtsp		t1, %sr1	/* Restore sr1 */
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1228,6 +1246,7 @@ nadtlb_check_alias_11:
- 	idtlba          pte,(va)
- 	idtlbp          prot,(va)
-=20
-+	insert_nops	NUM_PIPELINE_INSNS - 1
- 	rfir
- 	nop
-=20
-@@ -1247,7 +1266,7 @@ dtlb_miss_20:
-=20
- 	idtlbt          pte,prot
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1256,6 +1275,7 @@ dtlb_check_alias_20:
- =09
- 	idtlbt          pte,prot
-=20
-+	insert_nops	NUM_PIPELINE_INSNS - 1
- 	rfir
- 	nop
-=20
-@@ -1275,7 +1295,7 @@ nadtlb_miss_20:
- =09
- 	idtlbt		pte,prot
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1284,6 +1304,7 @@ nadtlb_check_alias_20:
-=20
- 	idtlbt          pte,prot
-=20
-+	insert_nops	NUM_PIPELINE_INSNS - 1
- 	rfir
- 	nop
-=20
-@@ -1320,7 +1341,7 @@ itlb_miss_20w:
- =09
- 	iitlbt          pte,prot
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1344,7 +1365,7 @@ naitlb_miss_20w:
-=20
- 	iitlbt          pte,prot
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1353,6 +1374,7 @@ naitlb_check_alias_20w:
-=20
- 	iitlbt		pte,prot
-=20
-+	insert_nops	NUM_PIPELINE_INSNS - 1
- 	rfir
- 	nop
-=20
-@@ -1378,7 +1400,7 @@ itlb_miss_11:
-=20
- 	mtsp		t1, %sr1	/* Restore sr1 */
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1402,7 +1424,7 @@ naitlb_miss_11:
-=20
- 	mtsp		t1, %sr1	/* Restore sr1 */
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1412,6 +1434,7 @@ naitlb_check_alias_11:
- 	iitlba          pte,(%sr0, va)
- 	iitlbp          prot,(%sr0, va)
-=20
-+	insert_nops	NUM_PIPELINE_INSNS - 1
- 	rfir
- 	nop
-=20
-@@ -1432,7 +1455,7 @@ itlb_miss_20:
-=20
- 	iitlbt          pte,prot
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1452,7 +1475,7 @@ naitlb_miss_20:
-=20
- 	iitlbt          pte,prot
-=20
--	ptl_unlock1	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1461,6 +1484,7 @@ naitlb_check_alias_20:
-=20
- 	iitlbt          pte,prot
-=20
-+	insert_nops	NUM_PIPELINE_INSNS - 1
- 	rfir
- 	nop
-=20
-@@ -1482,7 +1506,7 @@ dbit_trap_20w:
- 	=09
- 	idtlbt          pte,prot
-=20
--	ptl_unlock0	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
- #else
-@@ -1508,7 +1532,7 @@ dbit_trap_11:
-=20
- 	mtsp            t1, %sr1     /* Restore sr1 */
-=20
--	ptl_unlock0	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
-=20
-@@ -1528,7 +1552,7 @@ dbit_trap_20:
- =09
- 	idtlbt		pte,prot
-=20
--	ptl_unlock0	spc,t0
-+	ptl_unlock	spc,t0
- 	rfir
- 	nop
- #endif
+Why are you removing this comment? I think you could just move it next
+to the part where we set a 128MiB range.
 
---wZbC24IxgILFtDcJ
-Content-Type: application/pgp-signature; name="signature.asc"
+> -	if (module_direct_base) {
+> -		p = __vmalloc_node_range(size, MODULE_ALIGN,
+> -					 module_direct_base,
+> -					 module_direct_base + SZ_128M,
+> -					 GFP_KERNEL | __GFP_NOWARN,
+> -					 PAGE_KERNEL, 0, NUMA_NO_NODE,
+> -					 __builtin_return_address(0));
+> -	}
+> +	module_init_limits();
 
------BEGIN PGP SIGNATURE-----
+Hmm, this used to be run from subsys_initcall(), but now you're running
+it _really_ early, before random_init(), so randomization of the module
+space is no longer going to be very random if we don't have early entropy
+from the firmware or the CPU, which is likely to be the case on most SoCs.
 
-iQIzBAABCAAdFiEEnRzl+6e9+DTrEhyEXb/Nrl8ZTfEFAmU0NWMACgkQXb/Nrl8Z
-TfHf8A/8C6zR86r81qOPNVzOey8L/Dx6ExW9suLs7u07m1iMJziIstmIImGVB8nS
-fD97DJDCxiDu7kkddtVbqq18vl5ZxGMRWzTvq8TU6cbsSEBtr9baBKiBmi/6w3gF
-hS8+GIMl4mr066SBGe1v49KK8G29lBPgtOeT8UP4giOXxpIQ1p1fQlRsSk3abBUA
-nocf49anTBPpRmBXiXd5PjiO/2tm/owQbABiQcKNWV/i7y/R8cf1ebyZVpfmRzbM
-V77+C7xIV2mngAJptnPS7iTnHihxveO45WjZikxgVX6JjNYO1/VsYD2mNENvOWmR
-TpXKWyaNjyYLyNscHEtCxsT7rwH6iloIQxbJoVbOTtbPNzFjKiMisOC26QCWwSue
-KtgeaRSDppo/B+psngw7ZNmJF5oRmGG5iirIIXDZSDTsm8wC8C3BiMoDLbEzqEN0
-0HwWd+wur+SRc+DV8Jlyb5d40v+ifxcUxrvbaKknTP7PPu6ozmM8gKZW9Kc9LBkK
-/Qkxga/KVPbMnuljTMJTRYpvnwbweD5BwDDujx6yevVI3XHFSGf0EOpgCTwhfYmJ
-SPdFe2dEdsDh5qYHJ4gT6fHHTLdXTW7sV2tNQopTtLWgjUc0wBcBPMvgNUidCFEe
-/3e4O8fpMlye1NesVRs5aytJ9q0r7I1BFBrnhlyo2kq99hEJG9o=
-=Ug95
------END PGP SIGNATURE-----
+>  
+> -	if (!p && module_plt_base) {
+> -		p = __vmalloc_node_range(size, MODULE_ALIGN,
+> -					 module_plt_base,
+> -					 module_plt_base + SZ_2G,
+> -					 GFP_KERNEL | __GFP_NOWARN,
+> -					 PAGE_KERNEL, 0, NUMA_NO_NODE,
+> -					 __builtin_return_address(0));
+> -	}
+> +	r->pgprot = PAGE_KERNEL;
+>  
+> -	if (!p) {
+> -		pr_warn_ratelimited("%s: unable to allocate memory\n",
+> -				    __func__);
+> -	}
+> +	if (module_direct_base) {
+> +		r->start = module_direct_base;
+> +		r->end = module_direct_base + SZ_128M;
+>  
+> -	if (p && (kasan_alloc_module_shadow(p, size, GFP_KERNEL) < 0)) {
+> -		vfree(p);
+> -		return NULL;
+> +		if (module_plt_base) {
+> +			r->fallback_start = module_plt_base;
+> +			r->fallback_end = module_plt_base + SZ_2G;
+> +		}
+> +	} else if (module_plt_base) {
+> +		r->start = module_plt_base;
+> +		r->end = module_plt_base + SZ_2G;
+>  	}
+>  
+> -	/* Memory is intended to be executable, reset the pointer tag. */
+> -	return kasan_reset_tag(p);
+> +	return &execmem_params;
+>  }
+>  
+>  enum aarch64_reloc_op {
 
---wZbC24IxgILFtDcJ--
+[...]
+
+> diff --git a/include/linux/execmem.h b/include/linux/execmem.h
+> index 44e213625053..806ad1a0088d 100644
+> --- a/include/linux/execmem.h
+> +++ b/include/linux/execmem.h
+> @@ -32,19 +32,33 @@ enum execmem_type {
+>  	EXECMEM_TYPE_MAX,
+>  };
+>  
+> +/**
+> + * enum execmem_module_flags - options for executable memory allocations
+> + * @EXECMEM_KASAN_SHADOW:	allocate kasan shadow
+> + */
+> +enum execmem_range_flags {
+> +	EXECMEM_KASAN_SHADOW	= (1 << 0),
+> +};
+> +
+>  /**
+>   * struct execmem_range - definition of a memory range suitable for code and
+>   *			  related data allocations
+>   * @start:	address space start
+>   * @end:	address space end (inclusive)
+> + * @fallback_start:	start of the range for fallback allocations
+> + * @fallback_end:	end of the range for fallback allocations (inclusive)
+>   * @pgprot:	permissions for memory in this address space
+>   * @alignment:	alignment required for text allocations
+> + * @flags:	options for memory allocations for this range
+>   */
+>  struct execmem_range {
+>  	unsigned long   start;
+>  	unsigned long   end;
+> +	unsigned long   fallback_start;
+> +	unsigned long   fallback_end;
+>  	pgprot_t        pgprot;
+>  	unsigned int	alignment;
+> +	enum execmem_range_flags flags;
+>  };
+>  
+>  /**
+> diff --git a/mm/execmem.c b/mm/execmem.c
+> index f25a5e064886..a8c2f44d0133 100644
+> --- a/mm/execmem.c
+> +++ b/mm/execmem.c
+> @@ -11,12 +11,46 @@ static void *execmem_alloc(size_t size, struct execmem_range *range)
+>  {
+>  	unsigned long start = range->start;
+>  	unsigned long end = range->end;
+> +	unsigned long fallback_start = range->fallback_start;
+> +	unsigned long fallback_end = range->fallback_end;
+>  	unsigned int align = range->alignment;
+>  	pgprot_t pgprot = range->pgprot;
+> +	bool kasan = range->flags & EXECMEM_KASAN_SHADOW;
+> +	unsigned long vm_flags  = VM_FLUSH_RESET_PERMS;
+> +	bool fallback  = !!fallback_start;
+> +	gfp_t gfp_flags = GFP_KERNEL;
+> +	void *p;
+>  
+> -	return __vmalloc_node_range(size, align, start, end,
+> -				   GFP_KERNEL, pgprot, VM_FLUSH_RESET_PERMS,
+> -				   NUMA_NO_NODE, __builtin_return_address(0));
+> +	if (PAGE_ALIGN(size) > (end - start))
+> +		return NULL;
+> +
+> +	if (kasan)
+> +		vm_flags |= VM_DEFER_KMEMLEAK;
+
+Hmm, I don't think we passed this before on arm64, should we have done?
+
+Will
