@@ -2,131 +2,108 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EF78C25B71
-	for <linux-parisc@archiver.kernel.org>; Tue, 24 Oct 2023 15:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3309C25B48
+	for <linux-parisc@archiver.kernel.org>; Tue, 24 Oct 2023 15:43:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343931AbjJXPaZ (ORCPT
-        <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 24 Oct 2023 11:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47514 "EHLO
+        id S234736AbjJXPnC (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 24 Oct 2023 11:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343898AbjJXP35 (ORCPT
+        with ESMTP id S234241AbjJXPnB (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:29:57 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1472D52;
-        Tue, 24 Oct 2023 08:18:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
-        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
-        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=NNfCkWmd5LT0BAlRMwpLRo9og9wq6dyC/LO+q6jD+yw=; b=pyT8sDn3D1Na/0O83HIphO1Ygc
-        l6elglC6TwBupkx3TMPL6MHhd2AQ13+rYybnm0Z2pPCaFUuxwj82HJY+JIzqfk8mGsLNkv610UyCO
-        Mu8peZB3jHlW2munKziOBEfKGZwJcPj8n/tN4OL3S9fexilLt0PcraVsNGn/RbnYJMs6Gx+A/yVsV
-        8Yb4sXGt74xXlYc6UEszKMH3by5XWusgwOTbCfqzHtABHHLYkGpXAcRtU6UgpuhZrNXk2EdBkqfEC
-        gZrnaaFcBiIzZgVdZDiJT4aZixMrV3HtPxI0LxbVPyNoi1yiCfbQ6QuP6izPgBwNqRCmtL8esPEGk
-        gnU6KdQw==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:44458 helo=rmk-PC.armlinux.org.uk)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <rmk@armlinux.org.uk>)
-        id 1qvJBE-0004VZ-1a;
-        Tue, 24 Oct 2023 16:18:52 +0100
-Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-        id 1qvJBF-00AqRw-Us; Tue, 24 Oct 2023 16:18:54 +0100
-In-Reply-To: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
-References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
-From:   Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        Tue, 24 Oct 2023 11:43:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D4BA3;
+        Tue, 24 Oct 2023 08:42:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698162179; x=1729698179;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TR0MsODDCDld/9hD7QPnERhiZ/gxH5leUiM0oaDfwbI=;
+  b=mwVzgn+5pw/LzBLPCXjnMT/FmEnuYa0rlpvb2Q/bvSJS41OQI5FFi5m7
+   30Lm3rSBC9e0FfQpUeRG6c4qMqv/ZMSuzsCqpWt4b5+xTtvF8Zsm7ssby
+   YgV3UmamB4JuZScqA1oKNb2B206VpyeclqpO+jogJuoPDqoZIfw7W6AkR
+   9hGojjKAu8Ul8lM/oIXXNscpb3UGxu51TYb6J1EqFAoBMqq47awDljmGU
+   vwaTo20gJnJPUHvMl3/gZrmAnsc9w/9RcmEUEScs17NH84qaAH6qGl/2P
+   GL6EcdsuJmwYSoo/jDkY1Dv8aDjRjYivDOiRxu53hnDwmC9nDjRjJHQPe
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="389946496"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="389946496"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 08:36:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="1089891583"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="1089891583"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 08:32:44 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qvJOa-00000008Jsh-3eUI;
+        Tue, 24 Oct 2023 18:32:40 +0300
+Date:   Tue, 24 Oct 2023 18:32:40 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Russell King <rmk+kernel@armlinux.org.uk>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
         linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
         x86@kernel.org, linux-csky@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
         Jean-Philippe Brucker <jean-philippe@linaro.org>,
         jianyong.wu@arm.com, justin.he@arm.com,
         James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 32/39] irqchip/gic-v3: Don't return errors from
- gic_acpi_match_gicc()
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 38/39] cpumask: Add enabled cpumask for present CPUs that
+ can be brought online
+Message-ID: <ZTfjmM3nmeh+D5w/@smile.fi.intel.com>
+References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+ <E1qvJBk-00AqSW-R8@rmk-PC.armlinux.org.uk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1qvJBF-00AqRw-Us@rmk-PC.armlinux.org.uk>
-Sender: Russell King <rmk@armlinux.org.uk>
-Date:   Tue, 24 Oct 2023 16:18:53 +0100
+In-Reply-To: <E1qvJBk-00AqSW-R8@rmk-PC.armlinux.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-From: James Morse <james.morse@arm.com>
+On Tue, Oct 24, 2023 at 04:19:24PM +0100, Russell King wrote:
+> From: James Morse <james.morse@arm.com>
+> 
+> The 'offline' file in sysfs shows all offline CPUs, including those
+> that aren't present. User-space is expected to remove not-present CPUs
+> from this list to learn which CPUs could be brought online.
+> 
+> CPUs can be present but not-enabled. These CPUs can't be brought online
+> until the firmware policy changes, which comes with an ACPI notification
+> that will register the CPUs.
+> 
+> With only the offline and present files, user-space is unable to
+> determine which CPUs it can try to bring online. Add a new CPU mask
+> that shows this based on all the registered CPUs.
 
-gic_acpi_match_gicc() is only called via gic_acpi_count_gicr_regions().
-It should only count the number of enabled redistributors, but it
-also tries to sanity check the GICC entry, currently returning an
-error if the Enabled bit is set, but the gicr_base_address is zero.
+...
 
-Adding support for the online-capable bit to the sanity check
-complicates it, for no benefit. The existing check implicitly
-depends on gic_acpi_count_gicr_regions() previous failing to find
-any GICR regions (as it is valid to have gicr_base_address of zero if
-the redistributors are described via a GICR entry).
+> +static ssize_t print_cpus_enabled(struct device *dev,
+> +				  struct device_attribute *attr, char *buf)
+> +{
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(cpu_enabled_mask));
+> +}
+> +static DEVICE_ATTR(enabled, 0444, print_cpus_enabled, NULL);
 
-Instead of complicating the check, remove it. Failures that happen
-at this point cause the irqchip not to register, meaning no irqs
-can be requested. The kernel grinds to a panic() pretty quickly.
+Hmm... DEVICE_ATTR_RO() ?
 
-Without the check, MADT tables that exhibit this problem are still
-caught by gic_populate_rdist(), which helpfully also prints what
-went wrong:
-| CPU4: mpidr 100 has no re-distributor!
-
-Signed-off-by: James Morse <james.morse@arm.com>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
----
- drivers/irqchip/irq-gic-v3.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index d50d9414f471..e787e7bbb5a2 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -2428,21 +2428,15 @@ static int __init gic_acpi_match_gicc(union acpi_subtable_headers *header,
- 
- 	/*
- 	 * If GICC is enabled and has valid gicr base address, then it means
--	 * GICR base is presented via GICC
-+	 * GICR base is presented via GICC. The redistributor is only known to
-+	 * be accessible if the GICC is marked as enabled. If this bit is not
-+	 * set, we'd need to add the redistributor at runtime, which isn't
-+	 * supported.
- 	 */
--	if (acpi_gicc_is_usable(gicc) && gicc->gicr_base_address) {
-+	if (gicc->flags & ACPI_MADT_ENABLED && gicc->gicr_base_address)
- 		acpi_data.enabled_rdists++;
--		return 0;
--	}
- 
--	/*
--	 * It's perfectly valid firmware can pass disabled GICC entry, driver
--	 * should not treat as errors, skip the entry instead of probe fail.
--	 */
--	if (!acpi_gicc_is_usable(gicc))
--		return 0;
--
--	return -ENODEV;
-+	return 0;
- }
- 
- static int __init gic_acpi_count_gicr_regions(void)
 -- 
-2.30.2
+With Best Regards,
+Andy Shevchenko
+
 
