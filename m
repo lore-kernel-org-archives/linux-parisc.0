@@ -2,137 +2,77 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50E6DC4167D
-	for <linux-parisc@archiver.kernel.org>; Wed, 15 Nov 2023 00:58:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91737C07548
+	for <linux-parisc@archiver.kernel.org>; Wed, 15 Nov 2023 03:58:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234259AbjKOA6n (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 14 Nov 2023 19:58:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50900 "EHLO
+        id S234358AbjKOD6h (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 14 Nov 2023 22:58:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbjKOA6m (ORCPT
+        with ESMTP id S234435AbjKOD6f (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 14 Nov 2023 19:58:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D499BD9
-        for <linux-parisc@vger.kernel.org>; Tue, 14 Nov 2023 16:58:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700009919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3zlBf98ARjkQaX/S5kQ5snEY5GoQGl3AvBs2Ts5bz28=;
-        b=D7gv3iwWzBs5hW7BlLr3b6lknGnEetVYVp8nxoNELl76g3XUFhGwX5LzDLaGWbx/BVp3ja
-        tRvKb4fDdSdfE43R9dxGSKmflKtjj1NEga8g+WcWjmdSt+FyQL23987RRMoRlGPRFTGQed
-        QXXB8d07zr7wrzFVsLAmZZUuvIOyTKI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-561-MZ5tl1akPnSAAv4ds1nyfQ-1; Tue, 14 Nov 2023 19:58:35 -0500
-X-MC-Unique: MZ5tl1akPnSAAv4ds1nyfQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8873B185A781;
-        Wed, 15 Nov 2023 00:58:34 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D1C892166B26;
-        Wed, 15 Nov 2023 00:58:33 +0000 (UTC)
-Date:   Wed, 15 Nov 2023 08:58:30 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org
-Subject: Re: [PATCH 1/7] kexec_file: add kexec_file flag to control debug
- printing
-Message-ID: <ZVQXthHraBBVeNy2@MiWiFi-R3L-srv>
-References: <20231114153253.241262-1-bhe@redhat.com>
- <20231114153253.241262-2-bhe@redhat.com>
- <1e7863ec4e4ab10b84fd0e64f30f8464d2e484a3.camel@perches.com>
+        Tue, 14 Nov 2023 22:58:35 -0500
+Received: from ns3154000.ip-51-89-173.eu (ns3154000.ip-51-89-173.eu [51.89.173.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8B3109
+        for <linux-parisc@vger.kernel.org>; Tue, 14 Nov 2023 19:58:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=corptia.com
+        ; s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID
+        :Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=AuFOzWEY1p4B/ao4HYur+KTak9IfXFRGw/OWFKPeT54=; b=G3ck4D8z1TDyOE36VE0MZBz1Mg
+        Y55FzkvAMK7sCTFhDIbxJjAm0HFUJud6ExPMw9hVTwCOIXvE02wNqjsldBxgy6XzJENMQez6dH1D2
+        liva5vD1qmZGjxnlXX2Gv6z2/qcPu1JJqZKQOcq/J+gsA8lRy6OBSp0EPEHoK4RL6BdtNELWL8ofO
+        EO5kpro8nEVVAhz9eTz8PVmFogVow0AiNp5aRvdVtO+v4yq+IquII2Xe+HwYQXMtBqHRDXXKSEoK6
+        EGz1pu7HrSwqCWB+O3HtJ2o5njLIGhhTvLwWl4qpbSuUVJikBu303fPGxipnE2oEJ8a0X3SPRGju4
+        t9MwY0qQ==;
+Received: from [46.183.223.78] (port=53739 helo=corptia.com)
+        by ns3154000.ip-51-89-173.eu with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96.2)
+        (envelope-from <jobs@corptia.com>)
+        id 1r1Ck8-0006Ld-0j
+        for linux-parisc@vger.kernel.org;
+        Thu, 09 Nov 2023 21:39:15 +0000
+Reply-To: projects@adnoc-suppplier.com
+From:   Abu Dhabi National Oil Company <jobs@corptia.com>
+To:     linux-parisc@vger.kernel.org
+Subject: VENDORS EOI
+Date:   09 Nov 2023 23:39:14 +0200
+Message-ID: <20231109233914.3EC66AB18DF64517@corptia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1e7863ec4e4ab10b84fd0e64f30f8464d2e484a3.camel@perches.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - ns3154000.ip-51-89-173.eu
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - corptia.com
+X-Get-Message-Sender-Via: ns3154000.ip-51-89-173.eu: authenticated_id: jobs@corptia.com
+X-Authenticated-Sender: ns3154000.ip-51-89-173.eu: jobs@corptia.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 11/14/23 at 08:03am, Joe Perches wrote:
-> On Tue, 2023-11-14 at 23:32 +0800, Baoquan He wrote:
-> > When specifying 'kexec -c -d', kexec_load interface will print loading
-> > information, e.g the regions where kernel/initrd/purgatory/cmdline
-> > are put, the memmap passed to 2nd kernel taken as system RAM ranges,
-> > and printing all contents of struct kexec_segment, etc. These are
-> > very helpful for analyzing or positioning what's happening when
-> > kexec/kdump itself failed. The debugging printing for kexec_load
-> > interface is made in user space utility kexec-tools.
-> > 
-> > Whereas, with kexec_file_load interface, 'kexec -s -d' print nothing.
-> > Because kexec_file code is mostly implemented in kernel space, and the
-> > debugging printing functionality is missed. It's not convenient when
-> > debugging kexec/kdump loading and jumping with kexec_file_load
-> > interface.
-> > 
-> > Now add KEXEC_FILE_DEBUG to kexec_file flag to control the debugging
-> > message printing. And add global variable kexec_file_dbg_print and
-> > macro kexec_dprintk() to facilitate the printing.
-> > 
-> > This is a preparation, later kexec_dprintk() will be used to replace the
-> > existing pr_debug(). Once 'kexec -s -d' is specified, it will print out
-> > kexec/kdump loading information. If '-d' is not specified, it regresses
-> > to pr_debug().
-> 
-> Not quite as pr_debug is completely eliminated with
-> zero object size when DEBUG is not #defined.
-> 
-> Now the object size will be larger and contain the
-> formats in .text.
 
-Ah, I didn't realize that. Thanks for telling. I didn't take pr_info()
-and pr_debug because I want to avoid printing the pr_fmt() string in
-each file.
+Greetings of the day,
 
-> 
-> []
-> > diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-> []
-> > @@ -264,6 +264,18 @@ arch_kexec_apply_relocations(struct purgatory_info *pi, Elf_Shdr *section,
-> >  	return -ENOEXEC;
-> >  }
-> >  #endif
-> > +
-> > +extern bool kexec_file_dbg_print;
-> > +
-> > +#define kexec_dprintk(fmt, args...)			\
-> > +	do {						\
-> > +		if (kexec_file_dbg_print)		\
-> > +			printk(KERN_INFO fmt, ##args);	\
-> > +		else					\
-> > +			printk(KERN_DEBUG fmt, ##args);	\
-> > +	} while (0)
-> > +
-> > +
-> 
-> I don't know how many of these printks exist and if
-> overall object size matters but using
+We are inviting your esteemed company for vendor registration and=20
+intending partners for Abu Dhabi National Oil Company (ADNOC)
+2023/2024 projects.
 
-Not too much because they are spread in different arch.
-> 
-> #define kexec_dprintkfmt, ...)					\
-> 	printk("%s" fmt,					\
-> 	       kexec_file_dbg_print ? KERN_INFO : KERN_DEBUG,	\
-> 	       ##__VA_ARGS__)
-> 
-> should reduce overall object size by eliminating the
-> mostly duplicated format in .text which differs only
-> by the KERN_<PREFIX>
+These projects are open for all companies around the world, if=20
+you have intention to participate in the process, please confirm=20
+your interest by asking for Vendor Questionnaire and EOI.
 
-Sure, the new one looks great to me, I will update code to take it.
-Thanks a lot for your great suggestion.
+We appreciate your interest in this invitation, and look forward=20
+to your early response.
 
-Thanks
-Baoquan
-
+Kind Regards,
+Mr. Mohamed Ghazi B.
+Senior Project Manager
+projects@adnoc-suppplier.com
