@@ -2,141 +2,124 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB2FAC4332F
-	for <linux-parisc@archiver.kernel.org>; Fri, 10 Nov 2023 20:39:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1021C4167D
+	for <linux-parisc@archiver.kernel.org>; Fri, 10 Nov 2023 21:11:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbjKJUjM (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 10 Nov 2023 15:39:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
+        id S229674AbjKJVL2 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 10 Nov 2023 16:11:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjKJUjL (ORCPT
+        with ESMTP id S229464AbjKJVL1 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:39:11 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D511727
-        for <linux-parisc@vger.kernel.org>; Fri, 10 Nov 2023 12:39:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1699648729; x=1700253529; i=deller@gmx.de;
-        bh=JJCnm826L0tcD/jpUWJ3M0u9IRwj+0BFOLxcnpoLyqc=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=A2e3UZcyXbAawNIdsq0AJ/AhiFZP4KA3+CmLxGm/SykXXUTmqwvgJGkEydHsYQud
-         TClMJL6LIbkh2m32+xXRQj54fb3aM2ge2rMa2R6LyzVaUkqxZNTvwB7biry9sDJG9
-         W3gu+IO0MGV0yLYJj6t+HvG6phIWs3/3xVqlzCTyOPC/rEM6rfvn8L5AYrjCLSyxE
-         JcgJQTe40uxFfA47MzIUXOuiG7JHryjLsY2CfeikxwUvBc00qBOoj6Rx9AzSDmd2X
-         E2v/NAu58HSwfzOj53rSkEHll6vPGli2CzT5OP4qQ0sv9zjLZk9sCwDPwfLPdCuCY
-         0AMhDn7EfxqGUGrpNA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.152.22]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MXXuH-1qtfde2avn-00YyJp; Fri, 10
- Nov 2023 21:38:49 +0100
-Message-ID: <cf75a1e4-c269-4530-b3aa-b02a81597acb@gmx.de>
-Date:   Fri, 10 Nov 2023 21:38:49 +0100
+        Fri, 10 Nov 2023 16:11:27 -0500
+X-Greylist: delayed 160 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 10 Nov 2023 13:11:23 PST
+Received: from cmx-mtlrgo002.bell.net (mta-mtl-005.bell.net [209.71.208.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F839F
+        for <linux-parisc@vger.kernel.org>; Fri, 10 Nov 2023 13:11:23 -0800 (PST)
+X-RG-CM-BuS: 0
+X-RG-CM-SC: 0
+X-RG-CM: Clean
+X-Originating-IP: [142.126.114.79]
+X-RG-Env-Sender: dave.anglin@bell.net
+X-RG-Rigid: 654551F3010AB57D
+X-CM-Envelope: MS4xfGzleZZLR+U/rOwyLqMB2CCmZBrGpNQXvkOndk0Zy2lJs2dHOECHsQCZ6a6cxu88f99PzcB9HSnnJsQ80P6TQyk2R7dtkX4Tg24EGLqRVykxnGWewTB4
+ HRpTpObbHFv19Xdbss896IYaHaNXgmwQmJLySlTgE2psAS9bgY3mX4Z4nYHk907BOHCptxnSiKUltEq9rMowIkGpRuXNv1xgl8wBjB2HdmNI8zpDisF7EpV4
+ pNKK5GV9SYS2Xh8MD961hVu4g+b8m65l0ZMpbWEioqxdfMiyyNKLbqBg5k4bnwbmehwhoIBaWNn/OQcPpQkyNw==
+X-CM-Analysis: v=2.4 cv=QbcFAuXv c=1 sm=1 tr=0 ts=654e9bd1
+ a=qwLmA0wx3TwW38sY+xTbUA==:117 a=qwLmA0wx3TwW38sY+xTbUA==:17
+ a=IkcTkHD0fZMA:10 a=FBHGMhGWAAAA:8 a=XSEkhQwihgWcc6KkVVEA:9 a=QEXdDO2ut3YA:10
+ a=9gvnlMMaQFpL9xblJ6ne:22
+Received: from [192.168.2.49] (142.126.114.79) by cmx-mtlrgo002.bell.net (5.8.814) (authenticated as dave.anglin@bell.net)
+        id 654551F3010AB57D; Fri, 10 Nov 2023 16:08:33 -0500
+Message-ID: <b0a524df-9dab-4038-981f-33fc69043c1c@bell.net>
+Date:   Fri, 10 Nov 2023 16:08:34 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: prctl call wrongly succeeds on HPPA?
 Content-Language: en-US
-To:     John David Anglin <dave.anglin@bell.net>,
-        Sam James <sam@gentoo.org>
+To:     Helge Deller <deller@gmx.de>, Sam James <sam@gentoo.org>
 Cc:     "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
 References: <87lebjz9z6.fsf@gentoo.org> <875y2jro9a.fsf@gentoo.org>
  <0fec2446-a523-486f-9df7-4c6af9e2e0e3@gmx.de>
  <7409ec05-7a28-45fe-9604-519de5ae934e@bell.net>
-From:   Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <7409ec05-7a28-45fe-9604-519de5ae934e@bell.net>
+ <cf75a1e4-c269-4530-b3aa-b02a81597acb@gmx.de>
+From:   John David Anglin <dave.anglin@bell.net>
+Autocrypt: addr=dave.anglin@bell.net; keydata=
+ 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
+ T70V9SSrl2hiw38vRzsl
+In-Reply-To: <cf75a1e4-c269-4530-b3aa-b02a81597acb@gmx.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:V3Ri6GIKD7G1/+pp1XL1T0rZZ9cdzl1M+4VYJSh84SYEgnd7D+T
- 99yB1C2ZLtXImmPndXRDwjZ1fIpWIHs/yWYY6jo1NowcoTGx3rcBYfonOrwkvq7GaUXKb4m
- snApnARZyG2XbmFPXAKZxtKTXKJfdraIAQeKdYnV6e5ew/l2vTPGtxwgq/DVpk2XQ4JeDKr
- zwaSfXuey5wPgFiKo/zFw==
-UI-OutboundReport: notjunk:1;M01:P0:9IBsRGCG3EQ=;omKV9ikbJSRPJNH0uI8TAmxP9WJ
- 8nAfrg/QV2ptLZFF+R+7xpBY/k3HputbUP+dCBtrV59Mk+/c/DLJS+ynUWmeXz9/35jq/NRti
- k7JAbukt5VtmvmRqkZ76WW59jTBNDTOXbat8dzC2RsKO2OLW1v+ycJaJSuBllYbXWp9gGl9K8
- oc5zTqqnXaLQkL+NNQs/PL1Y2IVSoCU/MrdSUv15m1Dl+GmS+lOMvrif61jHUQTEnRRMEsi/j
- yuR33YbcukNXEWN2Su0phFopQYGLCX8bvE+Rm/IaXDYDdz0yC0CnQ4uoI0jxczlCWSzwPGLYx
- 62rystqmZj+AMHDSTszyulI9/2CnBEjzkKUK4zdVykb7HDtNUyyE17af54Vj4e4tU93LeGTDX
- IiY033JQNXF/h3VnQykWjUCZ63GWLsAJmU26Cb8A/ntNfMaVvIal49/2FryHxa8bjV1jfbjPA
- QtAIIgXN1M84sJDhhe4zwMQuGueR/vXe8xKoPIl0/b9lEPvhoYREXZvczAi5pwaml6ydhximZ
- 9xB9zhgUv0w0Bvcn2GFkfSklqJjGZs+5Gyc92MMBy5aDHPxXB5m6q9MEnKsRf82fDPCjFf8Ot
- dn+S21xsXqWNELADkLsH4FnS54c3wTPwQwFfletL6lO3h4HkCrcVzntZZq8iP/oC+OkZkdTXD
- BPYE6CUm9G8/g7k3JALFbPlmRgFkNbca81WHm96tyw26mUCXfeTftW8TuIIRCGpze2lrLhFzP
- m2Lv+a4ju1MGObmPUinQxdIm3fb1MJ9lkO8B50y3vGOlwrtDufVBiDtcwib5jASExX8sKL5tU
- U9y+WQgVK27KtLGx54iQuuunkOf3eI7rkwaE2v5vmlWcCDxH8/AKgqefZBY5xZmQKA/vHUAn3
- WcwBK3UK9HFVSgSvICTy3cJPUYgEnB2dP0A+1zCuQq41g4btXfmNEuQy53mh4rpDMvbSWHhjZ
- VP/hf+AtmnJHoMlUupCusMEVAgQ=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On 11/10/23 21:12, John David Anglin wrote:
-> On 2023-11-10 3:01 p.m., Helge Deller wrote:
->>>> On=C2=A0HPPA,=C2=A0we=C2=A0still=C2=A0need=C2=A0executable=C2=A0stack=
-s,=C2=A0so=C2=A0this=C2=A0option=C2=A0doesn't=C2=A0work
->>>> and=C2=A0leads=C2=A0to=C2=A0a=C2=A0segfault=C2=A0on=C2=A0boot.
->>
->> For=C2=A0kernel=C2=A0we=C2=A0don't=C2=A0need=C2=A0it=C2=A0any=C2=A0long=
-er.
->> But=C2=A0there=C2=A0might=C2=A0be=C2=A0dependencies=C2=A0on=C2=A0glibc=
-=C2=A0version=C2=A0and/or=C2=A0combination.
->> So,=C2=A0I've=C2=A0currently=C2=A0lost=C2=A0overview=C2=A0if=C2=A0we=C2=
-=A0still=C2=A0need=C2=A0executable=C2=A0stacks...
-> FWIW, I recently changed gcc-14 to enable GNU stack notes and fixed a bu=
-g in the
-> 32-bit PA 2.0 trampoline template.=C2=A0 All execute stack tests in glib=
-c now pass with gcc-14.
+On 2023-11-10 3:38 p.m., Helge Deller wrote:
+> On 11/10/23 21:12, John David Anglin wrote:
+>> On 2023-11-10 3:01 p.m., Helge Deller wrote:
+>>>>> On HPPA, we still need executable stacks, so this option doesn't work
+>>>>> and leads to a segfault on boot.
+>>>
+>>> For kernel we don't need it any longer.
+>>> But there might be dependencies on glibc version and/or combination.
+>>> So, I've currently lost overview if we still need executable stacks...
+>> FWIW, I recently changed gcc-14 to enable GNU stack notes and fixed a bug in the
+>> 32-bit PA 2.0 trampoline template.  All execute stack tests in glibc now pass with gcc-14.
+>
+> Yes, I saw your commits.
+> So, any code compiled with >= gcc-14 should be fine with non-writeable stacks?
+Not exactly.  An executable stack is still needed for nested functions.  They are still called
+via a stack trampoline.  The GNU stack note indicates whether an object needs an executable
+stack or not.  These notes are collected by linker.  The glibc loader determines whether to setup
+an executable stack or not.
+> It would be easier if it would be a glibc dependency (for distribution maintainers)...
+I'm not aware of any glibc dependency...
 
-Yes, I saw your commits.
-So, any code compiled with >=3D gcc-14 should be fine with non-writeable s=
-tacks?
-It would be easier if it would be a glibc dependency (for distribution mai=
-ntainers)...
+I think once gcc-14 becomes the default compiler, we will have to enable GNU stack notes in
+previous gcc versions.  We will still have executable stacks until everything is rebuilt.
 
-> gdb still needs a fix in unwind code.
+Dave
 
-Ok.
+-- 
+John David Anglin  dave.anglin@bell.net
 
-Helge
