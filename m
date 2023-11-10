@@ -2,136 +2,398 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3159FC4332F
-	for <linux-parisc@archiver.kernel.org>; Fri, 10 Nov 2023 20:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E58D0C4167B
+	for <linux-parisc@archiver.kernel.org>; Fri, 10 Nov 2023 20:26:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbjKJUZ6 (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
-        Fri, 10 Nov 2023 15:25:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
+        id S1345296AbjKJU0c (ORCPT
+        <rfc822;linux-parisc@archiver.kernel.org>);
+        Fri, 10 Nov 2023 15:26:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234845AbjKJUZ4 (ORCPT
+        with ESMTP id S230222AbjKJU01 (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:25:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC943D64
-        for <linux-parisc@vger.kernel.org>; Fri, 10 Nov 2023 12:25:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 386FDC433C9;
-        Fri, 10 Nov 2023 20:25:51 +0000 (UTC)
-Date:   Fri, 10 Nov 2023 21:25:48 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     Sam James <sam@gentoo.org>, qemu-devel@nongnu.org
-Cc:     Helge Deller <deller@gmx.de>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        joey.gouly@arm.com
-Subject: Re: prctl call wrongly succeeds on HPPA?
-Message-ID: <ZU6RzDKaDXHAwosp@p100>
-References: <87lebjz9z6.fsf@gentoo.org>
- <875y2jro9a.fsf@gentoo.org>
- <0fec2446-a523-486f-9df7-4c6af9e2e0e3@gmx.de>
- <87zfzl8ix3.fsf@gentoo.org>
+        Fri, 10 Nov 2023 15:26:27 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3CD6A28106;
+        Fri, 10 Nov 2023 02:17:12 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7229C1691;
+        Fri, 10 Nov 2023 02:17:56 -0800 (PST)
+Received: from [192.168.4.21] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2EC783F6C4;
+        Fri, 10 Nov 2023 02:16:58 -0800 (PST)
+Message-ID: <8288a2e5-afa3-462a-9470-0b010e4bc5bc@arm.com>
+Date:   Fri, 10 Nov 2023 10:16:46 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zfzl8ix3.fsf@gentoo.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 15/22] arch: vdso: consolidate gettime prototypes
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Guo Ren <guoren@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Geoff Levand <geoff@infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Helge Deller <deller@gmx.de>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Timur Tabi <timur@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+References: <20231108125843.3806765-1-arnd@kernel.org>
+ <20231108125843.3806765-16-arnd@kernel.org>
+Content-Language: en-US
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+In-Reply-To: <20231108125843.3806765-16-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-* Sam James <sam@gentoo.org>:
-> 
-> Helge Deller <deller@gmx.de> writes:
-> 
-> > On 11/3/23 13:53, Sam James wrote:
-> >> Sam James <sam@gentoo.org> writes:
-> >>> I recently hit an issue with systemd-254 which tries to use the new
-> >>> prctl(PR_SET_MDWE) for systemd's MemoryDenyWriteExecute functionality.
-> >
-> > Is this still a problem?
-> 
-> Yes. When I get time, I will play with Dave's changes to allow using
-> non-exeuctable stacks, but for now, it is broken until I can test these
-> (thanks dave for working on that, and helge for the kernel side).
-> 
-> >
-> >>> On HPPA, we still need executable stacks, so this option doesn't work
-> >>> and leads to a segfault on boot.
-> >
-> > For kernel we don't need it any longer.
-> > But there might be dependencies on glibc version and/or combination.
-> > So, I've currently lost overview if we still need executable stacks...
-> >
-> 
-> I don't remember which kernel version either.. I think it was last year
-> that you finished off all the DSO bits.
+Hi Arnd,
 
-Kernel 5.18+ should be OK:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=df24e1783e6e0eb3dc0e3ba5a8df3bb0cc537408
-
-> I had to configure binutils with --enable-default-execstack=no for it to
-> work in addition to Dave's GCC patches. But I did not test systemd yet...
+On 11/8/23 12:58, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> (sorry, I know this is equally vague.)
+> The VDSO functions are defined as globals in the kernel sources but intended
+> to be called from userspace, so there is no need to declare them in a kernel
+> side header.
 > 
-> >>> Should this call be succeeeding on HPPA, or should we reject it for
-> >>> now until we have things wired up?
-> >>>
-> >>> Reported to systemd at https://github.com/systemd/systemd/issues/29775.
-> >>
-> >> Lennart has made clear (and I don't think I disagree) that he considers
-> >> this squarely a kernel bug.
-> >
-> > I've read the various bug reports and looked at the kernel commits regarding, e.g.
-> >
-> > commit b507808ebce23561d4ff8c2aa1fb949fe402bc61
-> > Author: Joey Gouly <joey.gouly@arm.com>
-> > Date:   Thu Jan 19 16:03:43 2023 +0000
-> >
-> >     mm: implement memory-deny-write-execute as a prctl
-> >
-> > but what is prctl(PR_SET_MDWE, PR_MDWE*, 0, 0)... expected to return on parisc?
-> > EINVAL? ENOTSUP?
+> Without a prototype, this now causes warnings such as
 > 
-> Maybe we can ask Joey or the ARM people what they expect the semantics
-> to be.
+> arch/mips/vdso/vgettimeofday.c:14:5: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]
+> arch/mips/vdso/vgettimeofday.c:28:5: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]
+> arch/mips/vdso/vgettimeofday.c:36:5: error: no previous prototype for '__vdso_clock_getres' [-Werror=missing-prototypes]
+> arch/mips/vdso/vgettimeofday.c:42:5: error: no previous prototype for '__vdso_clock_gettime64' [-Werror=missing-prototypes]
+> arch/sparc/vdso/vclock_gettime.c:254:1: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]
+> arch/sparc/vdso/vclock_gettime.c:282:1: error: no previous prototype for '__vdso_clock_gettime_stick' [-Werror=missing-prototypes]
+> arch/sparc/vdso/vclock_gettime.c:307:1: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]
+> arch/sparc/vdso/vclock_gettime.c:343:1: error: no previous prototype for '__vdso_gettimeofday_stick' [-Werror=missing-prototypes]
+> 
+> Most architectures have already added workarounds for these by adding
+> declarations somewhere, but since these are all compatible, we should
+> really just have one copy, with an #ifdef check for the 32-bit vs
+> 64-bit variant and use that everywhere.
+> 
 
-Looking at https://fossies.org/linux/systemd/src/core/execute.c
- 1636
- 1637         /* use prctl() if kernel supports it (6.3) */
- 1638         r = prctl(PR_SET_MDWE, PR_MDWE_REFUSE_EXEC_GAIN, 0, 0, 0);
- 1639         if (r == 0) {
- 1640                 log_unit_debug(u, "Enabled MemoryDenyWriteExecute= with PR_SET_MDWE");
- 1641                 return 0;
- 1642         }
- 1643         if (r < 0 && errno != EINVAL)
- 1644                 return log_unit_debug_errno(u, errno, "Failed to enable MemoryDenyWriteExecute= with PR_SET_MDWE: %m");
- 1645         /* else use seccomp */
- 1646         log_unit_debug(u, "Kernel doesn't support PR_SET_MDWE: falling back to seccomp");
- 1647
- 1648         if (skip_seccomp_unavailable(u, "MemoryDenyWriteExecute="))
- 1649                 return 0;
- 1650
- 1651         return seccomp_memory_deny_write_execute();
- 1652 }
+I agree, it is a good idea to have a single header for this purpose.
 
-it seems this patch/hack might at least not report success:
+> Unfortunately, the sparc version is currently incompatible since
+> that never added support for __vdso_clock_gettime64() in 32-bit
+> userland. For the moment, I'm leaving this one out, as I can't
+> easily test it and it requires a larger rework.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 420d9cb9cc8e..fe4f2162457c 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -2384,6 +2384,10 @@ static inline int prctl_set_mdwe(unsigned long bits, unsigned long arg3,
- {
- 	unsigned long current_bits;
- 
-+	/* parisc still needs a writeable stack for older glibc versions */
-+	if (IS_ENABLED(CONFIG_PARISC))
-+		return -EINVAL;
-+
- 	if (arg3 || arg4 || arg5)
- 		return -EINVAL;
- 
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-A test would be good though, esp. since I don't know what the seccomp()
-functions are doing then.
+> ---
+>  arch/arm/include/asm/vdso.h              |  5 -----
+>  arch/arm/vdso/vgettimeofday.c            |  1 +
+>  arch/arm64/kernel/vdso32/vgettimeofday.c |  1 +
+>  arch/csky/kernel/vdso/vgettimeofday.c    | 11 +----------
+>  arch/loongarch/vdso/vgettimeofday.c      |  7 +------
+>  arch/mips/vdso/vgettimeofday.c           |  1 +
+>  arch/riscv/kernel/vdso/vgettimeofday.c   |  7 +------
+>  arch/x86/entry/vdso/vclock_gettime.c     | 10 +---------
+>  arch/x86/include/asm/vdso/gettimeofday.h |  2 --
+>  arch/x86/um/vdso/um_vdso.c               |  1 +
+>  include/vdso/gettime.h                   | 23 +++++++++++++++++++++++
+>  11 files changed, 31 insertions(+), 38 deletions(-)
+>  create mode 100644 include/vdso/gettime.h
+> 
+> diff --git a/arch/arm/include/asm/vdso.h b/arch/arm/include/asm/vdso.h
+> index 422c3afa806a..5b85889f82ee 100644
+> --- a/arch/arm/include/asm/vdso.h
+> +++ b/arch/arm/include/asm/vdso.h
+> @@ -24,11 +24,6 @@ static inline void arm_install_vdso(struct mm_struct *mm, unsigned long addr)
+>  
+>  #endif /* CONFIG_VDSO */
+>  
+> -int __vdso_clock_gettime(clockid_t clock, struct old_timespec32 *ts);
+> -int __vdso_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts);
+> -int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
+> -int __vdso_clock_getres(clockid_t clock_id, struct old_timespec32 *res);
+> -
+>  #endif /* __ASSEMBLY__ */
+>  
+>  #endif /* __KERNEL__ */
+> diff --git a/arch/arm/vdso/vgettimeofday.c b/arch/arm/vdso/vgettimeofday.c
+> index a003beacac76..3554aa35f1ba 100644
+> --- a/arch/arm/vdso/vgettimeofday.c
+> +++ b/arch/arm/vdso/vgettimeofday.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/types.h>
+>  #include <asm/vdso.h>
+>  #include <asm/unwind.h>
+> +#include <vdso/gettime.h>
+>  
+>  int __vdso_clock_gettime(clockid_t clock,
+>  			 struct old_timespec32 *ts)
+> diff --git a/arch/arm64/kernel/vdso32/vgettimeofday.c b/arch/arm64/kernel/vdso32/vgettimeofday.c
+> index 5acff29c5991..e23c7f4ef26b 100644
+> --- a/arch/arm64/kernel/vdso32/vgettimeofday.c
+> +++ b/arch/arm64/kernel/vdso32/vgettimeofday.c
+> @@ -5,6 +5,7 @@
+>   * Copyright (C) 2018 ARM Limited
+>   *
+>   */
+> +#include <vdso/gettime.h>
+>  
+>  int __vdso_clock_gettime(clockid_t clock,
+>  			 struct old_timespec32 *ts)
+> diff --git a/arch/csky/kernel/vdso/vgettimeofday.c b/arch/csky/kernel/vdso/vgettimeofday.c
+> index c4831145eed5..55af30e83752 100644
+> --- a/arch/csky/kernel/vdso/vgettimeofday.c
+> +++ b/arch/csky/kernel/vdso/vgettimeofday.c
+> @@ -2,36 +2,27 @@
+>  
+>  #include <linux/time.h>
+>  #include <linux/types.h>
+> +#include <vdso/gettime.h>
+>  
+>  extern
+> -int __vdso_clock_gettime(clockid_t clock,
+> -			 struct old_timespec32 *ts);
+>  int __vdso_clock_gettime(clockid_t clock,
+>  			 struct old_timespec32 *ts)
+>  {
+>  	return __cvdso_clock_gettime32(clock, ts);
+>  }
+>  
+> -int __vdso_clock_gettime64(clockid_t clock,
+> -			   struct __kernel_timespec *ts);
+>  int __vdso_clock_gettime64(clockid_t clock,
+>  			   struct __kernel_timespec *ts)
+>  {
+>  	return __cvdso_clock_gettime(clock, ts);
+>  }
+>  
+> -extern
+> -int __vdso_gettimeofday(struct __kernel_old_timeval *tv,
+> -			struct timezone *tz);
+>  int __vdso_gettimeofday(struct __kernel_old_timeval *tv,
+>  			struct timezone *tz)
+>  {
+>  	return __cvdso_gettimeofday(tv, tz);
+>  }
+>  
+> -extern
+> -int __vdso_clock_getres(clockid_t clock_id,
+> -			struct old_timespec32 *res);
+>  int __vdso_clock_getres(clockid_t clock_id,
+>  			struct old_timespec32 *res)
+>  {
+> diff --git a/arch/loongarch/vdso/vgettimeofday.c b/arch/loongarch/vdso/vgettimeofday.c
+> index 8f22863bd7ea..0885c1f3a89d 100644
+> --- a/arch/loongarch/vdso/vgettimeofday.c
+> +++ b/arch/loongarch/vdso/vgettimeofday.c
+> @@ -5,23 +5,18 @@
+>   * Copyright (C) 2020-2022 Loongson Technology Corporation Limited
+>   */
+>  #include <linux/types.h>
+> +#include <vdso/gettime.h>
+>  
+> -extern
+> -int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
+>  int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts)
+>  {
+>  	return __cvdso_clock_gettime(clock, ts);
+>  }
+>  
+> -extern
+> -int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
+>  int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz)
+>  {
+>  	return __cvdso_gettimeofday(tv, tz);
+>  }
+>  
+> -extern
+> -int __vdso_clock_getres(clockid_t clock_id, struct __kernel_timespec *res);
+>  int __vdso_clock_getres(clockid_t clock_id, struct __kernel_timespec *res)
+>  {
+>  	return __cvdso_clock_getres(clock_id, res);
+> diff --git a/arch/mips/vdso/vgettimeofday.c b/arch/mips/vdso/vgettimeofday.c
+> index 6b83b6376a4b..604afea3f336 100644
+> --- a/arch/mips/vdso/vgettimeofday.c
+> +++ b/arch/mips/vdso/vgettimeofday.c
+> @@ -9,6 +9,7 @@
+>   */
+>  #include <linux/time.h>
+>  #include <linux/types.h>
+> +#include <vdso/gettime.h>
+>  
+>  #if _MIPS_SIM != _MIPS_SIM_ABI64
+>  int __vdso_clock_gettime(clockid_t clock,
+> diff --git a/arch/riscv/kernel/vdso/vgettimeofday.c b/arch/riscv/kernel/vdso/vgettimeofday.c
+> index cc0d80699c31..b35057802584 100644
+> --- a/arch/riscv/kernel/vdso/vgettimeofday.c
+> +++ b/arch/riscv/kernel/vdso/vgettimeofday.c
+> @@ -8,23 +8,18 @@
+>  
+>  #include <linux/time.h>
+>  #include <linux/types.h>
+> +#include <vdso/gettime.h>
+>  
+> -extern
+> -int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
+>  int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts)
+>  {
+>  	return __cvdso_clock_gettime(clock, ts);
+>  }
+>  
+> -extern
+> -int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
+>  int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz)
+>  {
+>  	return __cvdso_gettimeofday(tv, tz);
+>  }
+>  
+> -extern
+> -int __vdso_clock_getres(clockid_t clock_id, struct __kernel_timespec *res);
+>  int __vdso_clock_getres(clockid_t clock_id, struct __kernel_timespec *res)
+>  {
+>  	return __cvdso_clock_getres(clock_id, res);
+> diff --git a/arch/x86/entry/vdso/vclock_gettime.c b/arch/x86/entry/vdso/vclock_gettime.c
+> index 7d70935b6758..0debc194bd78 100644
+> --- a/arch/x86/entry/vdso/vclock_gettime.c
+> +++ b/arch/x86/entry/vdso/vclock_gettime.c
+> @@ -11,12 +11,10 @@
+>  #include <linux/time.h>
+>  #include <linux/kernel.h>
+>  #include <linux/types.h>
+> +#include <vdso/gettime.h>
+>  
+>  #include "../../../../lib/vdso/gettimeofday.c"
+>  
+> -extern int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
+> -extern __kernel_old_time_t __vdso_time(__kernel_old_time_t *t);
+> -
+>  int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz)
+>  {
+>  	return __cvdso_gettimeofday(tv, tz);
+> @@ -35,9 +33,6 @@ __kernel_old_time_t time(__kernel_old_time_t *t)	__attribute__((weak, alias("__v
+>  
+>  #if defined(CONFIG_X86_64) && !defined(BUILD_VDSO32_64)
+>  /* both 64-bit and x32 use these */
+> -extern int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
+> -extern int __vdso_clock_getres(clockid_t clock, struct __kernel_timespec *res);
+> -
+>  int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts)
+>  {
+>  	return __cvdso_clock_gettime(clock, ts);
+> @@ -56,9 +51,6 @@ int clock_getres(clockid_t, struct __kernel_timespec *)
+>  
+>  #else
+>  /* i386 only */
+> -extern int __vdso_clock_gettime(clockid_t clock, struct old_timespec32 *ts);
+> -extern int __vdso_clock_getres(clockid_t clock, struct old_timespec32 *res);
+> -
+>  int __vdso_clock_gettime(clockid_t clock, struct old_timespec32 *ts)
+>  {
+>  	return __cvdso_clock_gettime32(clock, ts);
+> diff --git a/arch/x86/include/asm/vdso/gettimeofday.h b/arch/x86/include/asm/vdso/gettimeofday.h
+> index c81858d903dc..a46edb0e0cf7 100644
+> --- a/arch/x86/include/asm/vdso/gettimeofday.h
+> +++ b/arch/x86/include/asm/vdso/gettimeofday.h
+> @@ -337,8 +337,6 @@ u64 vdso_calc_delta(u64 cycles, u64 last, u64 mask, u32 mult)
+>  }
+>  #define vdso_calc_delta vdso_calc_delta
+>  
+> -int __vdso_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts);
+> -
+>  #endif /* !__ASSEMBLY__ */
+>  
+>  #endif /* __ASM_VDSO_GETTIMEOFDAY_H */
+> diff --git a/arch/x86/um/vdso/um_vdso.c b/arch/x86/um/vdso/um_vdso.c
+> index ff0f3b4b6c45..63768dd347ce 100644
+> --- a/arch/x86/um/vdso/um_vdso.c
+> +++ b/arch/x86/um/vdso/um_vdso.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/time.h>
+>  #include <linux/getcpu.h>
+>  #include <asm/unistd.h>
+> +#include <vdso/gettime.h>
+>  
+>  int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
+>  {
+> diff --git a/include/vdso/gettime.h b/include/vdso/gettime.h
+> new file mode 100644
+> index 000000000000..c50d152e7b3e
+> --- /dev/null
+> +++ b/include/vdso/gettime.h
+> @@ -0,0 +1,23 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _VDSO_GETTIME_H
+> +#define _VDSO_GETTIME_H
+> +
+> +#include <linux/types.h>
+> +
+> +struct __kernel_timespec;
+> +struct timezone;
+> +
+> +#if !defined(CONFIG_64BIT) || defined(BUILD_VDSO32_64)
+> +struct old_timespec32;
+> +int __vdso_clock_getres(clockid_t clock, struct old_timespec32 *res);
+> +int __vdso_clock_gettime(clockid_t clock, struct old_timespec32 *ts);
+> +#else
+> +int __vdso_clock_getres(clockid_t clock, struct __kernel_timespec *res);
+> +int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
+> +#endif
+> +
+> +__kernel_old_time_t __vdso_time(__kernel_old_time_t *t);
+> +int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
+> +int __vdso_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts);
+> +
+> +#endif
 
-Helge
+-- 
+Regards,
+Vincenzo
