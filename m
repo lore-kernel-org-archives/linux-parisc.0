@@ -2,114 +2,125 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 633B3C4167B
-	for <linux-parisc@archiver.kernel.org>; Tue, 14 Nov 2023 16:09:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D22DC46CC7
+	for <linux-parisc@archiver.kernel.org>; Tue, 14 Nov 2023 23:17:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233779AbjKNQJZ convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-parisc@archiver.kernel.org>);
-        Tue, 14 Nov 2023 11:09:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36414 "EHLO
+        id S234004AbjKNXRu (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        Tue, 14 Nov 2023 18:17:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbjKNQJY (ORCPT
+        with ESMTP id S230162AbjKNXRt (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 14 Nov 2023 11:09:24 -0500
-X-Greylist: delayed 355 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Nov 2023 08:09:21 PST
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC2712C
-        for <linux-parisc@vger.kernel.org>; Tue, 14 Nov 2023 08:09:21 -0800 (PST)
-Received: from omf17.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay09.hostedemail.com (Postfix) with ESMTP id 5849480ADD;
-        Tue, 14 Nov 2023 16:03:24 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id B79FD17;
-        Tue, 14 Nov 2023 16:03:19 +0000 (UTC)
-Message-ID: <1e7863ec4e4ab10b84fd0e64f30f8464d2e484a3.camel@perches.com>
-Subject: Re: [PATCH 1/7] kexec_file: add kexec_file flag to control debug
- printing
-From:   Joe Perches <joe@perches.com>
-To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org
-Date:   Tue, 14 Nov 2023 08:03:17 -0800
-In-Reply-To: <20231114153253.241262-2-bhe@redhat.com>
-References: <20231114153253.241262-1-bhe@redhat.com>
-         <20231114153253.241262-2-bhe@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Rspamd-Queue-Id: B79FD17
-X-Rspamd-Server: rspamout06
-X-Stat-Signature: hfguyu43qitk9i95uumxmjn7sq3qxaae
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+TPCSBX5eIBtFS7cutbFXyyoB+lO2Ea1A=
-X-HE-Tag: 1699977799-197779
-X-HE-Meta: U2FsdGVkX199MxvfdP2OiWMaMCgnF+zen3H+uDaMOt+eo18KFoigVkpo/j1mPnNdRxZsnaKbc/2TMWhhtZ1WYbE4xnaRnZ9D8ImVTw0nNbwHPVmM8K50LsJ54PlQr2IROfdWLMnnNPpRHRTXWI450/26vHlRs47bJHW69JfdozUlDgILIKSRfePjUbHAIXoIKr9/NzIpcA6QdsnzFrKhA8GVb/HExMWgTm+7q60/jyGC6TQFrwo3I1762UXDKC1ld2/TBOn7K4fNFKAezne04n/qoyaeJN2h75PDcDpXFrJm8izGV0wc97AWTmYxsKdc
+        Tue, 14 Nov 2023 18:17:49 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A2CD6;
+        Tue, 14 Nov 2023 15:17:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BDD5C433C8;
+        Tue, 14 Nov 2023 23:17:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1700003866;
+        bh=KB3X/TgdZDL/2SrctEZtbC9ABrG1q5tejZewZjojaG0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=I2FtgASHqT0NQ8pvMyoHDKY0L776FVzQEP+8MaG5h3awzZ83eZZkVJ5tDMyqMY0jb
+         uNf09+vkik6GFj+3lMsunyHL6E+r2LTs8yQweYL9C7/V0/hHwRijTrIX+w/vU+Tbus
+         VWm/hOguMarPwLXKltXgnv9nM3o8N2knOblTYH/4=
+Date:   Tue, 14 Nov 2023 15:17:45 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, ebiederm@xmission.com,
+        takahiro.akashi@linaro.org
+Subject: Re: [PATCH 1/2] resource: add walk_system_ram_res_rev()
+Message-Id: <20231114151745.e77ed504b3fce325f54ec08e@linux-foundation.org>
+In-Reply-To: <20231114091658.228030-2-bhe@redhat.com>
+References: <20231114091658.228030-1-bhe@redhat.com>
+        <20231114091658.228030-2-bhe@redhat.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-parisc.vger.kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 
-On Tue, 2023-11-14 at 23:32 +0800, Baoquan He wrote:
-> When specifying 'kexec -c -d', kexec_load interface will print loading
-> information, e.g the regions where kernel/initrd/purgatory/cmdline
-> are put, the memmap passed to 2nd kernel taken as system RAM ranges,
-> and printing all contents of struct kexec_segment, etc. These are
-> very helpful for analyzing or positioning what's happening when
-> kexec/kdump itself failed. The debugging printing for kexec_load
-> interface is made in user space utility kexec-tools.
+On Tue, 14 Nov 2023 17:16:57 +0800 Baoquan He <bhe@redhat.com> wrote:
+
+> This function, being a variant of walk_system_ram_res() introduced in
+> commit 8c86e70acead ("resource: provide new functions to walk through
+> resources"), walks through a list of all the resources of System RAM
+> in reversed order, i.e., from higher to lower.
 > 
-> Whereas, with kexec_file_load interface, 'kexec -s -d' print nothing.
-> Because kexec_file code is mostly implemented in kernel space, and the
-> debugging printing functionality is missed. It's not convenient when
-> debugging kexec/kdump loading and jumping with kexec_file_load
-> interface.
-> 
-> Now add KEXEC_FILE_DEBUG to kexec_file flag to control the debugging
-> message printing. And add global variable kexec_file_dbg_print and
-> macro kexec_dprintk() to facilitate the printing.
-> 
-> This is a preparation, later kexec_dprintk() will be used to replace the
-> existing pr_debug(). Once 'kexec -s -d' is specified, it will print out
-> kexec/kdump loading information. If '-d' is not specified, it regresses
-> to pr_debug().
-
-Not quite as pr_debug is completely eliminated with
-zero object size when DEBUG is not #defined.
-
-Now the object size will be larger and contain the
-formats in .text.
-
-[]
-> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-[]
-> @@ -264,6 +264,18 @@ arch_kexec_apply_relocations(struct purgatory_info *pi, Elf_Shdr *section,
->  	return -ENOEXEC;
->  }
->  #endif
+> It will be used in kexec_file code to load kernel, initrd etc when
+> preparing kexec reboot.
+>
+> ...
+>
+> +/*
+> + * This function, being a variant of walk_system_ram_res(), calls the @func
+> + * callback against all memory ranges of type System RAM which are marked as
+> + * IORESOURCE_SYSTEM_RAM and IORESOUCE_BUSY in reversed order, i.e., from
+> + * higher to lower.
+> + */
+> +int walk_system_ram_res_rev(u64 start, u64 end, void *arg,
+> +				int (*func)(struct resource *, void *))
+> +{
+> +	struct resource res, *rams;
+> +	int rams_size = 16, i;
+> +	unsigned long flags;
+> +	int ret = -1;
 > +
-> +extern bool kexec_file_dbg_print;
+> +	/* create a list */
+> +	rams = kvcalloc(rams_size, sizeof(struct resource), GFP_KERNEL);
+> +	if (!rams)
+> +		return ret;
 > +
-> +#define kexec_dprintk(fmt, args...)			\
-> +	do {						\
-> +		if (kexec_file_dbg_print)		\
-> +			printk(KERN_INFO fmt, ##args);	\
-> +		else					\
-> +			printk(KERN_DEBUG fmt, ##args);	\
-> +	} while (0)
+> +	flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+> +	i = 0;
+> +	while ((start < end) &&
+> +		(!find_next_iomem_res(start, end, flags, IORES_DESC_NONE, &res))) {
+> +		if (i >= rams_size) {
+> +			/* re-alloc */
+> +			struct resource *rams_new;
+> +			int rams_new_size;
 > +
+> +			rams_new_size = rams_size + 16;
+> +			rams_new = kvcalloc(rams_new_size, sizeof(struct resource),
+> +					    GFP_KERNEL);
+
+kvrealloc()?
+
+> +			if (!rams_new)
+> +				goto out;
 > +
-
-I don't know how many of these printks exist and if
-overall object size matters but using
-
-#define kexec_dprintkfmt, ...)					\
-	printk("%s" fmt,					\
-	       kexec_file_dbg_print ? KERN_INFO : KERN_DEBUG,	\
-	       ##__VA_ARGS__)
-
-should reduce overall object size by eliminating the
-mostly duplicated format in .text which differs only
-by the KERN_<PREFIX>
-
-
+> +			memcpy(rams_new, rams,
+> +					sizeof(struct resource) * rams_size);
+> +			kvfree(rams);
+> +			rams = rams_new;
+> +			rams_size = rams_new_size;
+> +		}
+> +
+> +		rams[i].start = res.start;
+> +		rams[i++].end = res.end;
+> +
+> +		start = res.end + 1;
+> +	}
+> +
+> +	/* go reverse */
+> +	for (i--; i >= 0; i--) {
+> +		ret = (*func)(&rams[i], arg);
+> +		if (ret)
+> +			break;
+> +	}
+> +
+> +out:
+> +	kvfree(rams);
+> +	return ret;
+> +}
+> +
+>  /*
+>   * This function calls the @func callback against all memory ranges, which
+>   * are ranges marked as IORESOURCE_MEM and IORESOUCE_BUSY.
+> -- 
+> 2.41.0
