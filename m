@@ -2,52 +2,52 @@ Return-Path: <linux-parisc-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8A6FC41535
-	for <linux-parisc@archiver.kernel.org>; Tue, 14 Nov 2023 15:33:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DF61C4332F
+	for <linux-parisc@archiver.kernel.org>; Tue, 14 Nov 2023 15:33:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233728AbjKNPds (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
+        id S233730AbjKNPds (ORCPT <rfc822;linux-parisc@archiver.kernel.org>);
         Tue, 14 Nov 2023 10:33:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233726AbjKNPdp (ORCPT
+        with ESMTP id S233677AbjKNPdo (ORCPT
         <rfc822;linux-parisc@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:33:45 -0500
+        Tue, 14 Nov 2023 10:33:44 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC7F1BE
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC8E1B6
         for <linux-parisc@vger.kernel.org>; Tue, 14 Nov 2023 07:33:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699976016;
+        s=mimecast20190719; t=1699976015;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ddYSvqzlkNogyoNHz/ZYeptUXFMRcqTi26tdLDKHB50=;
-        b=XIg6AkLijLDj7SkKOjyed+Auk+OXzbE/83lKHKzO/sKN4dKML4F4KpG7z3l76pnDZkvT15
-        H2Pzlke4Oznc2iJoQuCByP8CJ3PrF8wk/KI3B9ziqKziX9yhs/vkSuPdfcNLz85cgMNel1
-        nP84t8eZFxgozdu48/jsy6KXejMH+j4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-539-pAIkPdirOI-3O8elS13Yww-1; Tue,
- 14 Nov 2023 10:33:30 -0500
-X-MC-Unique: pAIkPdirOI-3O8elS13Yww-1
+        bh=Kb4+DII7/6KHxSjJBHtbYVb2dsfK5cLaIKA4IYKpJm4=;
+        b=IGg7JL94VJAw/CBO2qkYWbgYTGzw8EJsZELF5TyvMR7MhFv1TmhPZMp4va0A/hdJ4UOkzG
+        P7gdivQjbWTFw/Z/GRW7/0v3hD6nNl6lVGrOEuZudk5ScPItVwojhu6ZWwbEO8e4fyBbwg
+        cocAUT2DpJX3CCFGLroWk+/k0lOFJRU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-341-olRfaV0IOx2JxEGyaN4nSw-1; Tue, 14 Nov 2023 10:33:30 -0500
+X-MC-Unique: olRfaV0IOx2JxEGyaN4nSw-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 43FF838143BC;
-        Tue, 14 Nov 2023 15:33:22 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BC12310499B7;
+        Tue, 14 Nov 2023 15:33:14 +0000 (UTC)
 Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1B0F11C060B5;
-        Tue, 14 Nov 2023 15:33:18 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9EDAE1C060B0;
+        Tue, 14 Nov 2023 15:33:11 +0000 (UTC)
 From:   Baoquan He <bhe@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     kexec@lists.infradead.org, x86@kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
         linux-parisc@vger.kernel.org, Baoquan He <bhe@redhat.com>
-Subject: [PATCH 6/7] kexec_file, power: print out debugging message if required
-Date:   Tue, 14 Nov 2023 23:32:52 +0800
-Message-ID: <20231114153253.241262-7-bhe@redhat.com>
+Subject: [PATCH 4/7] kexec_file, arm64: print out debugging message if required
+Date:   Tue, 14 Nov 2023 23:32:50 +0800
+Message-ID: <20231114153253.241262-5-bhe@redhat.com>
 In-Reply-To: <20231114153253.241262-1-bhe@redhat.com>
 References: <20231114153253.241262-1-bhe@redhat.com>
 MIME-Version: 1.0
@@ -61,110 +61,93 @@ X-Mailing-List: linux-parisc@vger.kernel.org
 Replace pr_debug() with the newly added kexec_dprintk() in kexec_file
 loading related codes.
 
+And also remove the kimage->segment[] printing because the generic code
+has done the printing.
+
 Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
- arch/powerpc/kexec/elf_64.c       |  8 ++++----
- arch/powerpc/kexec/file_load_64.c | 14 +++++++-------
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ arch/arm64/kernel/kexec_image.c        |  2 +-
+ arch/arm64/kernel/machine_kexec.c      | 24 ++++++------------------
+ arch/arm64/kernel/machine_kexec_file.c |  6 +++---
+ 3 files changed, 10 insertions(+), 22 deletions(-)
 
-diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
-index eeb258002d1e..904016cf89ea 100644
---- a/arch/powerpc/kexec/elf_64.c
-+++ b/arch/powerpc/kexec/elf_64.c
-@@ -59,7 +59,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
- 	if (ret)
- 		goto out;
+diff --git a/arch/arm64/kernel/kexec_image.c b/arch/arm64/kernel/kexec_image.c
+index 636be6715155..df71965178f5 100644
+--- a/arch/arm64/kernel/kexec_image.c
++++ b/arch/arm64/kernel/kexec_image.c
+@@ -122,7 +122,7 @@ static void *image_load(struct kimage *image,
+ 	kernel_segment->memsz -= text_offset;
+ 	image->start = kernel_segment->mem;
  
--	pr_debug("Loaded the kernel at 0x%lx\n", kernel_load_addr);
-+	kexec_dprintk("Loaded the kernel at 0x%lx\n", kernel_load_addr);
+-	pr_debug("Loaded kernel at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
++	kexec_dprintk("Loaded kernel at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
+ 				kernel_segment->mem, kbuf.bufsz,
+ 				kernel_segment->memsz);
  
- 	ret = kexec_load_purgatory(image, &pbuf);
- 	if (ret) {
-@@ -67,7 +67,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
- 		goto out;
+diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+index 078910db77a4..efd4e03b95d3 100644
+--- a/arch/arm64/kernel/machine_kexec.c
++++ b/arch/arm64/kernel/machine_kexec.c
+@@ -34,24 +34,12 @@ static void _kexec_image_info(const char *func, int line,
+ {
+ 	unsigned long i;
+ 
+-	pr_debug("%s:%d:\n", func, line);
+-	pr_debug("  kexec kimage info:\n");
+-	pr_debug("    type:        %d\n", kimage->type);
+-	pr_debug("    start:       %lx\n", kimage->start);
+-	pr_debug("    head:        %lx\n", kimage->head);
+-	pr_debug("    nr_segments: %lu\n", kimage->nr_segments);
+-	pr_debug("    dtb_mem: %pa\n", &kimage->arch.dtb_mem);
+-	pr_debug("    kern_reloc: %pa\n", &kimage->arch.kern_reloc);
+-	pr_debug("    el2_vectors: %pa\n", &kimage->arch.el2_vectors);
+-
+-	for (i = 0; i < kimage->nr_segments; i++) {
+-		pr_debug("      segment[%lu]: %016lx - %016lx, 0x%lx bytes, %lu pages\n",
+-			i,
+-			kimage->segment[i].mem,
+-			kimage->segment[i].mem + kimage->segment[i].memsz,
+-			kimage->segment[i].memsz,
+-			kimage->segment[i].memsz /  PAGE_SIZE);
+-	}
++	kexec_dprintk("%s:%d:\n", func, line);
++	kexec_dprintk("  kexec kimage info:\n");
++	kexec_dprintk("    type:        %d\n", kimage->type);
++	kexec_dprintk("    head:        %lx\n", kimage->head);
++	kexec_dprintk("    kern_reloc: %pa\n", &kimage->arch.kern_reloc);
++	kexec_dprintk("    el2_vectors: %pa\n", &kimage->arch.el2_vectors);
+ }
+ 
+ void machine_kexec_cleanup(struct kimage *kimage)
+diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
+index a11a6e14ba89..9f82401d99f4 100644
+--- a/arch/arm64/kernel/machine_kexec_file.c
++++ b/arch/arm64/kernel/machine_kexec_file.c
+@@ -127,7 +127,7 @@ int load_other_segments(struct kimage *image,
+ 		image->elf_load_addr = kbuf.mem;
+ 		image->elf_headers_sz = headers_sz;
+ 
+-		pr_debug("Loaded elf core header at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
++		kexec_dprintk("Loaded elf core header at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
+ 			 image->elf_load_addr, kbuf.bufsz, kbuf.memsz);
  	}
  
--	pr_debug("Loaded purgatory at 0x%lx\n", pbuf.mem);
-+	kexec_dprintk("Loaded purgatory at 0x%lx\n", pbuf.mem);
- 
- 	/* Load additional segments needed for panic kernel */
- 	if (image->type == KEXEC_TYPE_CRASH) {
-@@ -99,7 +99,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
- 			goto out;
+@@ -148,7 +148,7 @@ int load_other_segments(struct kimage *image,
+ 			goto out_err;
  		initrd_load_addr = kbuf.mem;
  
--		pr_debug("Loaded initrd at 0x%lx\n", initrd_load_addr);
-+		kexec_dprintk("Loaded initrd at 0x%lx\n", initrd_load_addr);
+-		pr_debug("Loaded initrd at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
++		kexec_dprintk("Loaded initrd at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
+ 				initrd_load_addr, kbuf.bufsz, kbuf.memsz);
  	}
  
- 	fdt = of_kexec_alloc_and_setup_fdt(image, initrd_load_addr,
-@@ -132,7 +132,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
+@@ -179,7 +179,7 @@ int load_other_segments(struct kimage *image,
+ 	image->arch.dtb = dtb;
+ 	image->arch.dtb_mem = kbuf.mem;
  
- 	fdt_load_addr = kbuf.mem;
- 
--	pr_debug("Loaded device tree at 0x%lx\n", fdt_load_addr);
-+	kexec_dprintk("Loaded device tree at 0x%lx\n", fdt_load_addr);
- 
- 	slave_code = elf_info.buffer + elf_info.proghdrs[0].p_offset;
- 	ret = setup_purgatory_ppc64(image, slave_code, fdt, kernel_load_addr,
-diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
-index 961a6dd67365..45089f53f875 100644
---- a/arch/powerpc/kexec/file_load_64.c
-+++ b/arch/powerpc/kexec/file_load_64.c
-@@ -577,7 +577,7 @@ static int add_usable_mem_property(void *fdt, struct device_node *dn,
- 		       NODE_PATH_LEN, dn);
- 		return -EOVERFLOW;
- 	}
--	pr_debug("Memory node path: %s\n", path);
-+	kexec_dprintk("Memory node path: %s\n", path);
- 
- 	/* Now that we know the path, find its offset in kdump kernel's fdt */
- 	node = fdt_path_offset(fdt, path);
-@@ -590,8 +590,8 @@ static int add_usable_mem_property(void *fdt, struct device_node *dn,
- 	/* Get the address & size cells */
- 	n_mem_addr_cells = of_n_addr_cells(dn);
- 	n_mem_size_cells = of_n_size_cells(dn);
--	pr_debug("address cells: %d, size cells: %d\n", n_mem_addr_cells,
--		 n_mem_size_cells);
-+	kexec_dprintk("address cells: %d, size cells: %d\n", n_mem_addr_cells,
-+		      n_mem_size_cells);
- 
- 	um_info->idx  = 0;
- 	if (!check_realloc_usable_mem(um_info, 2)) {
-@@ -664,7 +664,7 @@ static int update_usable_mem_fdt(void *fdt, struct crash_mem *usable_mem)
- 
- 	node = fdt_path_offset(fdt, "/ibm,dynamic-reconfiguration-memory");
- 	if (node == -FDT_ERR_NOTFOUND)
--		pr_debug("No dynamic reconfiguration memory found\n");
-+		kexec_dprintk("No dynamic reconfiguration memory found\n");
- 	else if (node < 0) {
- 		pr_err("Malformed device tree: error reading /ibm,dynamic-reconfiguration-memory.\n");
- 		return -EINVAL;
-@@ -776,7 +776,7 @@ static void update_backup_region_phdr(struct kimage *image, Elf64_Ehdr *ehdr)
- 	for (i = 0; i < ehdr->e_phnum; i++) {
- 		if (phdr->p_paddr == BACKUP_SRC_START) {
- 			phdr->p_offset = image->arch.backup_start;
--			pr_debug("Backup region offset updated to 0x%lx\n",
-+			kexec_dprintk("Backup region offset updated to 0x%lx\n",
- 				 image->arch.backup_start);
- 			return;
- 		}
-@@ -850,7 +850,7 @@ int load_crashdump_segments_ppc64(struct kimage *image,
- 		pr_err("Failed to load backup segment\n");
- 		return ret;
- 	}
--	pr_debug("Loaded the backup region at 0x%lx\n", kbuf->mem);
-+	kexec_dprintk("Loaded the backup region at 0x%lx\n", kbuf->mem);
- 
- 	/* Load elfcorehdr segment - to export crashing kernel's vmcore */
- 	ret = load_elfcorehdr_segment(image, kbuf);
-@@ -858,7 +858,7 @@ int load_crashdump_segments_ppc64(struct kimage *image,
- 		pr_err("Failed to load elfcorehdr segment\n");
- 		return ret;
- 	}
--	pr_debug("Loaded elf core header at 0x%lx, bufsz=0x%lx memsz=0x%lx\n",
-+	kexec_dprintk("Loaded elf core header at 0x%lx, bufsz=0x%lx memsz=0x%lx\n",
- 		 image->elf_load_addr, kbuf->bufsz, kbuf->memsz);
+-	pr_debug("Loaded dtb at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
++	kexec_dprintk("Loaded dtb at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
+ 			kbuf.mem, kbuf.bufsz, kbuf.memsz);
  
  	return 0;
 -- 
