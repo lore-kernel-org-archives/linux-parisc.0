@@ -1,118 +1,141 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F0D134A5
-	for <linux-parisc@vger.kernel.org>; Wed,  7 Feb 2024 02:43:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982C91DFD9;
+	Thu,  8 Feb 2024 01:26:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.156.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707273835; cv=none; b=jCQkVu+UIPimylNJnlvJFzRjTckV3r+KKk4ncOUWiuyEvzDRJwgpLbfp3wOdH/PFMDI6gysI6ywXmqEeuYL+YBa0W8xKyjCV1VMws0onAu/+A73td4Ogbaoz4fbws6m6D9qrrpvcwINRwBR8DadoyxMppjbw6ZuGiXZrrjpE2/M=
+	t=1707355597; cv=none; b=fCSdHHTF6NyoPPAVnXbCH2M1nn/F3HDIRMclelOx+W1hQhLZ8i3cb2/lHOXtdyz0DoTjYiZp8GFiUmbvbTcaZdt0k/SaRke7qRkZ0PYu/eqMvmyqK/UyJwOP2iDVVvixrv6vbBVSHYFbZvhhLk7x08goPeOylcf/xY5PWP0PPL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707273835; c=relaxed/simple;
-	bh=4B82qo8Sra5FqC3ZdeZ48eBeifUhmce8Y0r5LXEDVqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R5rbZTm14nB0RjFNtYwcCoaljJHdXOMkvBDTeBpfypBvRCF+bol3P6S4n7r3GwGX6qZscNPew6Wevrs8HIeVHwffH1cUZn3d8GLsN+fXbQcsF1YqzHKEDBgcSQtyp5+3Vy3jdcSAy8R+ofo3BFk7L70UHK6MbBgScI/AhukpN9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W40yGT0U; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1707355597; c=relaxed/simple;
+	bh=ug8BB4J+brYFbiC3nrhWpCBaYptY56PfygpljvCrZgg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tl9EQyMf4IymLttnFhW7XVTmjZdSzIbc/H/+zNFm79BSOTbJf89M0r9393UsAd1I2kz5eL6InIQL/o1yWDLvGuBxJI8ZT4dQkzvYK2/Gj4OFgqHkJ4ygOAz4dlM4KR2ijpDw9YlkM1LMGGcKpPv/MpO90dun8NI8Z3X+nE+xFBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net; spf=pass smtp.mailfrom=bewilderbeest.net; dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b=ONjRy3aH; arc=none smtp.client-ip=71.19.156.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bewilderbeest.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W40yGT0U"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707273832;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=q9uy8JfuiX9GAB1I6VKmhXzbFtCYc2bS0xm9r9QbDYg=;
-	b=W40yGT0UxnN97bcDFHDd5jKXgDrpeDl3VSU+CtSRZyfiHGzHFcRHS7zORDcckdu581OUPZ
-	RSFU0gcSxrXo9Os+VqIERXL4igaBoC402+IrPq/S/0+rj0ZI50A390JvCFn0p7ESVSfBPk
-	2mLsBiLbvtbrnQ7333DDxToIpzrcUP4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-648-RleiTtKfM-K1OkCe_p_gRw-1; Tue, 06 Feb 2024 21:43:47 -0500
-X-MC-Unique: RleiTtKfM-K1OkCe_p_gRw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b="ONjRy3aH"
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:712b:6300::2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8362F83B86C;
-	Wed,  7 Feb 2024 02:43:46 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.6])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 44A062026D06;
-	Wed,  7 Feb 2024 02:43:40 +0000 (UTC)
-Date: Wed, 7 Feb 2024 10:43:37 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Mikulas Patocka <mpatocka@redhat.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-	Sagi Grimberg <sagi@grimberg.me>, Hannes Reinecke <hare@suse.de>,
-	Mark Wunderlich <mark.wunderlich@intel.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	John David Anglin <dave.anglin@bell.net>,
-	linux-block@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: Re: [PATCH] block: use the __packed attribute only on architectures
- where it is efficient
-Message-ID: <ZcLuWUNRZadJr0tQ@fedora>
-References: <78172b8-74bc-1177-6ac7-7a7e7a44d18@redhat.com>
- <ZcI/o7Ky7dzSLK25@fedora>
- <9651b7f-2dc5-efd7-77ca-455b4925f17b@redhat.com>
+	(Authenticated sender: zev)
+	by thorn.bewilderbeest.net (Postfix) with ESMTPSA id ED594D98;
+	Wed,  7 Feb 2024 17:26:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+	s=thorn; t=1707355589;
+	bh=3HS5yhO/DTt8/grju8Sqzw88K9FEC/162WIjUF71ihQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ONjRy3aHpvhgvdr/qZopPFDDk9gJT0Cc5cn1ptSvy4EpaL5K7ZCgYTwrWu+Pty3Wb
+	 FZJfZ784SCOysGyooOeqod7rgLZS9cjuzJ3WNFHtv5+CQyU9dcdZEKM4TWtPfJaG3N
+	 eFGWY8+D/ROgtTNbHFzNbcJwhr2E3vXpCERbyNMI=
+From: Zev Weiss <zev@bewilderbeest.net>
+To: Helge Deller <deller@gmx.de>,
+	linux-parisc@vger.kernel.org,
+	Florent Revest <revest@chromium.org>
+Cc: Zev Weiss <zev@bewilderbeest.net>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	"Mike Rapoport (IBM)" <rppt@kernel.org>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Yang Shi <yang@os.amperecomputing.com>,
+	Stefan Roesch <shr@devkernel.io>,
+	Oleg Nesterov <oleg@redhat.com>,
+	David Hildenbrand <david@redhat.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	openbmc@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	Sam James <sam@gentoo.org>,
+	stable@vger.kernel.org
+Subject: [PATCH 1/2] prctl: Generalize PR_SET_MDWE support check to be per-arch
+Date: Wed,  7 Feb 2024 17:26:19 -0800
+Message-ID: <20240208012620.32604-5-zev@bewilderbeest.net>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240208012620.32604-4-zev@bewilderbeest.net>
+References: <20240208012620.32604-4-zev@bewilderbeest.net>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9651b7f-2dc5-efd7-77ca-455b4925f17b@redhat.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 06, 2024 at 07:31:26PM +0100, Mikulas Patocka wrote:
-> 
-> 
-> On Tue, 6 Feb 2024, Ming Lei wrote:
-> 
-> > On Tue, Feb 06, 2024 at 12:14:14PM +0100, Mikulas Patocka wrote:
-> > > The __packed macro (expanding to __attribute__((__packed__))) specifies
-> > > that the structure has an alignment of 1. Therefore, it may be arbitrarily
-> > > misaligned. On architectures that don't have hardware support for
-> > > unaligned accesses, gcc generates very inefficient code that accesses the
-> > > structure fields byte-by-byte and assembles the result using shifts and
-> > > ors.
-> > > 
-> > > For example, on PA-RISC, this function is compiled to 23 instructions with
-> > > the __packed attribute and only 2 instructions without the __packed
-> > > attribute.
-> > 
-> > Can you share user visible effects in this way? such as IOPS or CPU
-> > utilization effect when running typical workload on null_blk or NVMe.
-> 
-> The patch reduces total kernel size by 4096 bytes. The parisc machine 
-> doesn't have PCIe, so I can't test it with NVMe :)
+There exist systems other than PARISC where MDWE may not be feasible
+to support; rather than cluttering up the generic code with additional
+arch-specific logic let's add a generic function for checking MDWE
+support and allow each arch to override it as needed.
 
-You can run test over null-blk, which is enough to cover this report or change,
-given this patch is marked as "Fixes: ", we need to understand what it fixes.
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+Cc: <stable@vger.kernel.org> # v6.3+
+---
+ arch/parisc/include/asm/mman.h | 14 ++++++++++++++
+ include/linux/mman.h           |  8 ++++++++
+ kernel/sys.c                   |  7 +++++--
+ 3 files changed, 27 insertions(+), 2 deletions(-)
+ create mode 100644 arch/parisc/include/asm/mman.h
 
-> 
-> > CPU is supposed to be super fast if the data is in single L1 cacheline,
-> > but removing '__packed' may introduce one extra L1 cacheline load for
-> > bio.
-> 
-> Saving the intruction cache is also important. Removing the __packed 
-> keyword increases the bio structure size by 8 bytes - that is, L1 data 
-> cache consumption will be increased with the probability 8/64. And it 
-> reduces L1 instruction cache consumption by 84 bytes - that is one or two 
-> cachelines.
-
-Yes.
-
-But the two kinds of caches have different properties, such as:
-
-- instruction cache has lower miss rate
-- instruction cache is read only
-
-so I'd suggest to provide null-blk test result at least.
-
-
-Thanks,
-Ming
+diff --git a/arch/parisc/include/asm/mman.h b/arch/parisc/include/asm/mman.h
+new file mode 100644
+index 000000000000..47c5a1991d10
+--- /dev/null
++++ b/arch/parisc/include/asm/mman.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ASM_MMAN_H__
++#define __ASM_MMAN_H__
++
++#include <uapi/asm/mman.h>
++
++/* PARISC cannot allow mdwe as it needs writable stacks */
++static inline bool arch_memory_deny_write_exec_supported(void)
++{
++	return false;
++}
++#define arch_memory_deny_write_exec_supported arch_memory_deny_write_exec_supported
++
++#endif /* __ASM_MMAN_H__ */
+diff --git a/include/linux/mman.h b/include/linux/mman.h
+index dc7048824be8..bcb201ab7a41 100644
+--- a/include/linux/mman.h
++++ b/include/linux/mman.h
+@@ -162,6 +162,14 @@ calc_vm_flag_bits(unsigned long flags)
+ 
+ unsigned long vm_commit_limit(void);
+ 
++#ifndef arch_memory_deny_write_exec_supported
++static inline bool arch_memory_deny_write_exec_supported(void)
++{
++	return true;
++}
++#define arch_memory_deny_write_exec_supported arch_memory_deny_write_exec_supported
++#endif
++
+ /*
+  * Denies creating a writable executable mapping or gaining executable permissions.
+  *
+diff --git a/kernel/sys.c b/kernel/sys.c
+index e219fcfa112d..8d4bd24fa555 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -2394,8 +2394,11 @@ static inline int prctl_set_mdwe(unsigned long bits, unsigned long arg3,
+ 	if (bits & PR_MDWE_NO_INHERIT && !(bits & PR_MDWE_REFUSE_EXEC_GAIN))
+ 		return -EINVAL;
+ 
+-	/* PARISC cannot allow mdwe as it needs writable stacks */
+-	if (IS_ENABLED(CONFIG_PARISC))
++	/*
++	 * EOPNOTSUPP might be more appropriate here in principle, but
++	 * existing userspace depends on EINVAL specifically.
++	 */
++	if (!arch_memory_deny_write_exec_supported())
+ 		return -EINVAL;
+ 
+ 	current_bits = get_current_mdwe();
+-- 
+2.43.0
 
