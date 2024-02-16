@@ -1,159 +1,151 @@
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C444817551;
-	Fri, 16 Feb 2024 06:58:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD89C12E78;
+	Fri, 16 Feb 2024 07:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708066730; cv=none; b=ahDoekM+MRAOu/GN39nA7zFLB+/HL8eC3SyN5bidm+/sQkUpDLeoczt4b/KhHTGhL3yObIL+0a/Mi/qZu8+/8ULEWsCOyaCZ2GLPvuvZ5yZ9vZKKzt4YuEqIkyZGZyd25dgBMoe9gHxqHZFGk2hRN1GbWAk7+teSslICoa78U88=
+	t=1708068801; cv=none; b=LJW/CIS8FI2aevGKYyTp6NYo9bC8YpM181zs0PWfQJ4h26sdfBQ4TvdduwOn4v/4A2CPvY4YiEdsqS18OoF4tAbiT0Sc2EvVWWtp6G973udGUdJGhcvxb/wt2vwQoizvSk/CCAFstniQaoz9SOQLFXC+re+8JiXGXKkltTDqtM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708066730; c=relaxed/simple;
-	bh=P6j6+1DMW+2nUeGjSEWM6OnZa73ovhFYv3veacBwZq0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AGV36SZxRlCYOO6gptM0kSkwF+0IojcJNhIvESnu/MTfki45K064sFSuN8YtH4g7tvh0pxkgWlM2mkATeBVoO54lFIQxRFVvE4avr7ZLSTMNrKEHDCfBNSbcZ3cF3miC8KNPS81ijFL64ijKJ9GrvTP+KwF2NwqUNpbQhswUi1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iIDit2tV; arc=none smtp.client-ip=209.85.216.50
+	s=arc-20240116; t=1708068801; c=relaxed/simple;
+	bh=JrFYOs2FPwXmy1/XqxjA+hM8SVuG/+lRE4KuH28UyIQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m+lkVy0ySrJWHDPUnzTEz8sLHwLwX8njaJhxxiZX1bXuYIOQmkfTZK+ahE4U6K+lHJVFdKxoU1/hsj6ufHderuz2QPn9Iohb4/MxWot/+oHlYxD+Yk4pmNyeZoyk7/lrSoc4BsWj03geYlcDx97xkQhaqGAFKZjmbTmX43ehay4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GojglAen; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iIDit2tV"
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2906bcae4feso241819a91.3;
-        Thu, 15 Feb 2024 22:58:48 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GojglAen"
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d94b222a3aso16570005ad.2;
+        Thu, 15 Feb 2024 23:33:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708066728; x=1708671528; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=65Y20pAH9KRtgAYGxuwGuiTjTfNVvBPLnCGbqb5FxCk=;
-        b=iIDit2tV5AnDc+KWyNWngVgta5xDpN2SPRkTNwJ3hUNTzDmijgKqlCjKSOb6Q7Jfo3
-         IoTyMX5L4IP72WyrcTwdorNiAExy1ifxh41bGt1mCZn9bTRRnC82hTCxzHh8HUlSrz4o
-         KE/OW0SBshyoP6xvHALIyM6aJZ7K0uDlv5QnGAWS5LSL1H3Z0qyLdHzmachc2jX2N+Uv
-         KedgdBY1pUK3d5nEdYieximIFsJ0IlmBUu+7z92RxYQiZctbZZ6e4FhJV7FMKKSXHWI7
-         FcWUlOUhLrn1bmvx045dxHQfWt9AHKn5EjjjAEO/IDNzxBHpsN7+UsERiKfoTDYAaaUO
-         F+oQ==
+        d=gmail.com; s=20230601; t=1708068799; x=1708673599; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=CMrR5jQVO31f2C7rY/OyhbWryGnGfhcw/HWvAL8HISw=;
+        b=GojglAenlNi0EnQJb3tIkM/u89ntEnEhLAGtRAOxrR/YorRBL2r//5aiEIKpuOaB2m
+         1JA48yUCxAGeqPEeOh9BzNHROV+UDuw6b4EFvBv5f5gOPuG+2kPmvVzZco88MeyEYA/Z
+         YOm4VA69fySIMuFADHHV+937tVWa3HZFDeqkNzR9tIHv1pbJNS+hL/IR5kMU6z4k19KY
+         1kinCRBD2A5kUWPTDq/R6rPS5qDpK4Zcg6QETvL/UK2fLazHXj0nkXnV4br7IFOAfrXu
+         0OMQ4NZ+DE2/S+1sc3ZBZLwjAHeS5Q6s6oYdhSWWH7SZ22+SKKfkKg8D4wJruKSc3v11
+         nIbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708066728; x=1708671528;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=65Y20pAH9KRtgAYGxuwGuiTjTfNVvBPLnCGbqb5FxCk=;
-        b=UsxidajonZH1W1cWkyvf/AiRSD/iXVUNOtKbHm1nRwaI34QjtSYAsAmEXrepqs5POP
-         4x1DmA10+SpOSMejWMZvgsItcKa3ILmz0G0KIrxuK55rg1g21OqzdovDEojjQbF2xh2R
-         sqiqUMZMJpEUUeOD3ynmGvBkQ1rppd6+j9N4znaBMmuycYlLlukCaT4VQP3gbP9li9TO
-         DBU3mZ5IINSHRnypJfJ/Y77BTR+ImIuxpy9hbbIcbfGTK+BnYqs6yUKaTBO1N3DsFeKy
-         nDCxw9TuCDKoTb7i1fHdC73hWXlr4p9rWbIKwP1uFO5FhdIbBzesNO0Tp6Y3EUOOVgGs
-         dP0w==
-X-Forwarded-Encrypted: i=1; AJvYcCXGh6rJblraYXB8Uq6Y1AfI8T81y8yd0c4tnRUYbyO4vlv6uB2yb300C541nAvEHqmySetjy+rkEahC3DAEnOKdR1uB3qOal5/jHoq7XNnfR4nZBVZTJshLtZzPlJnxhgkbrH7VPtwijNAn
-X-Gm-Message-State: AOJu0Yz5pCQ1uqOBjDwa146DQ0ieMx1YZ+PqNhj5SPy9z9C4pBSr9+ED
-	OpFCLkKsJkTGx8c3msJ3uhylVxiCA+VLWHuFETqtkD815jafQefn
-X-Google-Smtp-Source: AGHT+IHIh71AizHTobQTAL/8XelAtKO6OAZ26d0Ggbs+Fg7dEzVMmysY5lPDz2q8Fi6bUsHSiQ7U5w==
-X-Received: by 2002:a17:90a:fd0a:b0:297:a5e:c15 with SMTP id cv10-20020a17090afd0a00b002970a5e0c15mr3884344pjb.6.1708066727999;
-        Thu, 15 Feb 2024 22:58:47 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id hg6-20020a17090b300600b00296b57ac914sm2525943pjb.38.2024.02.15.22.58.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 22:58:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708068799; x=1708673599;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CMrR5jQVO31f2C7rY/OyhbWryGnGfhcw/HWvAL8HISw=;
+        b=RAYoNZA/omPU+TJZIEgyoQ+QDZ6pGy+Sl9bx8hKrTJdLSU8jgTVP8D5aeiaS/q0SOo
+         p7TOB2dmtTsBA1uVMJ1TQEhQ9AvOZ/jNl3pvgWpywNT9U7/qjDQFKzEtvc7sgvaGKSnv
+         2Hg7MGvIzX6mSewPqHPaKGrx/n++n6Y7hm8676/5hRwgaNeD7C3LbAfW5xNfqlnTaAOh
+         Y2VgNwoCAyUkAMiWDFQitAWYnWx5MZFcDa4gycOTDhKfyCsMgfzg8Z/AOLqScVqzh/iH
+         XeQ33MJSYHQLTnjd63VCyYhvd8xhXct4y/OFOY/HsZjUeQu9SmXQmlch5ITBv4hvQy9G
+         eCzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUt7d9P/9S0aFggW9rYhvzDoW+RTEogK2K+lnAWDua8emgx5tYQZnAWib2oZLz6iIdXrMK9d6UivaAbZR3R7dQ8nz3877ORF//kN3Kc
+X-Gm-Message-State: AOJu0YzYyJqLjlucmZETBsVhuTzgkG9QQTnjtcuBFUxl6KKA/OWbYc5Q
+	X8wRBxQf16EZVXW7EhMvaf3EQGrvZXz1Gav7pbGVewfVhQRxE9EC
+X-Google-Smtp-Source: AGHT+IFr+SagVtSO4PmH1xd1WdlIdpB5MqwREa//fHVExHaysAvSPd55ite6cpQYSsFOtL+XMQw1TQ==
+X-Received: by 2002:a17:902:d4c3:b0:1d9:a647:5566 with SMTP id o3-20020a170902d4c300b001d9a6475566mr4766249plg.4.1708068799003;
+        Thu, 15 Feb 2024 23:33:19 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r10-20020a1709028bca00b001db7d3276fbsm2367607plo.27.2024.02.15.23.33.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 23:33:17 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <ac107edb-74fd-46fa-8687-110d8db07aac@roeck-us.net>
-Date: Thu, 15 Feb 2024 22:58:46 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] parisc/unaligned: Rewrite 64-bit inline assembly of emulate_ldd()
+Date: Thu, 15 Feb 2024 23:33:15 -0800
+Message-Id: <20240216073315.3801833-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Content-Language: en-US
-To: Helge Deller <deller@gmx.de>
-Cc: Charlie Jenkins <charlie@rivosinc.com>,
- David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Parisc List <linux-parisc@vger.kernel.org>, Al Viro
- <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
-References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
- <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
- <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net> <Zc1pSi59aDOnqz++@ghost>
- <cb4e358b-3fd0-4ca4-bf53-9cc379087304@roeck-us.net>
- <25f108d1-827f-4a18-bee4-4105fbd45974@gmx.de>
- <b8065a61-f5eb-4ec5-a9af-6d6bcdf1ee9b@roeck-us.net>
- <7b207808-10e7-44b0-9a9f-253e2349011d@gmx.de>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <7b207808-10e7-44b0-9a9f-253e2349011d@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi Helge,
+Convert to use real temp variables instead of clobbering processor
+registers. This aligns the 64-bit inline assembly code with the 32-bit
+assembly code which was rewritten with commit 427c1073a2a1
+("parisc/unaligned: Rewrite 32-bit inline assembly of emulate_ldd()").
 
-On 2/15/24 23:31, Helge Deller wrote:
-> On 2/16/24 06:25, Guenter Roeck wrote:
->> On Fri, Feb 16, 2024 at 06:54:55AM +0100, Helge Deller wrote:
->>>
->>> Can you please give a pointer to this test code?
->>> I'm happy to try it on real hardware.
->>>
->> See below.
-> 
-> Testcase runs OK on physical machine:
-> 
-> #### carry64 aligned, expect 1 -> 1
-> #### carry64 unaligned 4, expect 1 -> 1
-> #### carry64 unaligned 2, expect 1 -> 1
-> #### carry32 aligned, expect 1 -> 1
-> #### carry64 unaligned, expect 1 -> 1
-> #### carry64 aligned, expect 0 -> 0
-> #### carry64 unaligned 4, expect 0 -> 0
-> #### carry64 unaligned 2, expect 0 -> 0
-> #### carry32 aligned, expect 0 -> 0
-> #### carry32 unaligned, expect 0 -> 0
->      ok 6 test_bad_carry
-> 
+While at it, fix comment in 32-bit rewrite code. Temporary variables are
+now used for both 32-bit and 64-bit code, so move their declarations
+to the function header.
 
-thanks a lot for the confirmation.
+No functional change intended.
 
-Guenter
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+Implemented while analyzing a bug. I am not really sure of it is worth
+the effort, but I figured that I might as well submit it.
+
+ arch/parisc/kernel/unaligned.c | 29 +++++++++++++----------------
+ 1 file changed, 13 insertions(+), 16 deletions(-)
+
+diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unaligned.c
+index c520e551a165..622c7b549fb8 100644
+--- a/arch/parisc/kernel/unaligned.c
++++ b/arch/parisc/kernel/unaligned.c
+@@ -169,7 +169,8 @@ static int emulate_ldw(struct pt_regs *regs, int toreg, int flop)
+ static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
+ {
+ 	unsigned long saddr = regs->ior;
+-	__u64 val = 0;
++	unsigned long shift;
++	__u64 val = 0, temp1;
+ 	ASM_EXCEPTIONTABLE_VAR(ret);
+ 
+ 	DPRINTF("load " RFMT ":" RFMT " to r%d for 8 bytes\n", 
+@@ -180,25 +181,22 @@ static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
+ 
+ #ifdef CONFIG_64BIT
+ 	__asm__ __volatile__  (
+-"	depd,z	%3,60,3,%%r19\n"		/* r19=(ofs&7)*8 */
+-"	mtsp	%4, %%sr1\n"
+-"	depd	%%r0,63,3,%3\n"
+-"1:	ldd	0(%%sr1,%3),%0\n"
+-"2:	ldd	8(%%sr1,%3),%%r20\n"
+-"	subi	64,%%r19,%%r19\n"
+-"	mtsar	%%r19\n"
+-"	shrpd	%0,%%r20,%%sar,%0\n"
++"	depd,z	%4,60,3,%2\n"		/* shift=(ofs&7)*8 */
++"	mtsp	%5, %%sr1\n"
++"	depd	%%r0,63,3,%4\n"
++"1:	ldd	0(%%sr1,%4),%0\n"
++"2:	ldd	8(%%sr1,%4),%3\n"
++"	subi	64,%2,%2\n"
++"	mtsar	%2\n"
++"	shrpd	%0,%3,%%sar,%0\n"
+ "3:	\n"
+ 	ASM_EXCEPTIONTABLE_ENTRY_EFAULT(1b, 3b, "%1")
+ 	ASM_EXCEPTIONTABLE_ENTRY_EFAULT(2b, 3b, "%1")
+-	: "=r" (val), "+r" (ret)
+-	: "0" (val), "r" (saddr), "r" (regs->isr)
+-	: "r19", "r20" );
++	: "+r" (val), "+r" (ret), "=&r" (shift), "=&r" (temp1)
++	: "r" (saddr), "r" (regs->isr) );
+ #else
+-    {
+-	unsigned long shift, temp1;
+ 	__asm__ __volatile__  (
+-"	zdep	%2,29,2,%3\n"		/* r19=(ofs&3)*8 */
++"	zdep	%2,29,2,%3\n"		/* shift=(ofs&3)*8 */
+ "	mtsp	%5, %%sr1\n"
+ "	dep	%%r0,31,2,%2\n"
+ "1:	ldw	0(%%sr1,%2),%0\n"
+@@ -214,7 +212,6 @@ static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
+ 	ASM_EXCEPTIONTABLE_ENTRY_EFAULT(3b, 4b, "%1")
+ 	: "+r" (val), "+r" (ret), "+r" (saddr), "=&r" (shift), "=&r" (temp1)
+ 	: "r" (regs->isr) );
+-    }
+ #endif
+ 
+ 	DPRINTF("val = 0x%llx\n", val);
+-- 
+2.39.2
 
