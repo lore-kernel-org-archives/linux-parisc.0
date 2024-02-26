@@ -1,143 +1,278 @@
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0126716427;
-	Sun, 25 Feb 2024 15:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126092594;
+	Mon, 26 Feb 2024 02:09:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708876692; cv=none; b=NpcwEXvnB+jMDiWzhQkIaPf+KLrglkQDojbA5Cmc6qxtJUsGwHynKxU39IM77Lv1v8CdIswiKl619SpSn8G9L1KpxKBLr5eneJYqQVSJqZsgyXj9Zg6JTchSKtbYBSFGOL7bhY+fGZoN7fjqs55x11JaC205C6SdP2I1x8fXC2k=
+	t=1708913394; cv=none; b=sQBEAA7aHxzpETMVj7cGHmZNxYAZ7wic2oVKeE7GvYkPcHHspNMZZnyH3GnNiUBgeiMNTxLUb0IhPsEe1gcFdj/AOjQ+mBvurbOqVyT7iDPNBlU3sXIrBfDD3f7ipJz12ZcNdWz2MMmEdv35T85dElYbitQ+JNw/vxoPo41gYHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708876692; c=relaxed/simple;
-	bh=fxntaAlaNoORGg4Yti1Rnj8spJy2frmT6XkMpzimGD8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RLtxHBWahub+vG+F33iV2aisY0Bkr8Qr98dkX52wfBCqqZv43w1Y+SsxWVbjnAZGbYJxiEehPLQ6Dxyf6+HX09oGom3MDTeG4M8mUGPVhrd0VaulD6HF9wMTK3ZaldpWPkPHw9C6iSFWJXPUO9jCNlZgokMMaGrGSAxaO6LnLHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kEGNttgS; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1708913394; c=relaxed/simple;
+	bh=YyGVL3DTq1NGBUlNTsaZWPygzXSkQqFhl2iQhk+tfEY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=c553JtUG4dRlYuh0R37nrqz1BoGijG/VX7lf5Nts466/M6zI/Y7rIjZ83cgJ3debh5gJpJjyQ1cVnKDXPBux1L6VHv6IyoI7+wMt6jKMyQi4kl/FQUwtvaN38JWIYcbOtkHWm9vF/hZ/746W8CfA+cMPz+cK0Fty81jcXHZif6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=e7C+sckm; arc=none smtp.client-ip=115.124.30.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kEGNttgS"
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d42e7ab8a9so1442406a12.3;
-        Sun, 25 Feb 2024 07:58:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708876690; x=1709481490; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=kF6rP2xfdv/6N4QkVaNiBDdDiZRDh2pGQVheDyIMBTM=;
-        b=kEGNttgSTp/mZUm+T73GSH6KdsR/BirEVT/3ddf/RMmGDQmxD2mUkurinyOagbQAsW
-         zkx4OtlbwTMJ/DxNF1GBXKeM/iJj0MqoZ22C40cdLXQqM8gWnIC0diRjiWwmCbaoKKCE
-         oRXjZhZA6iDtRhHBzLlLritFswkCldCUfMQm0PkvQ8TfTYcGbvwh/wGNHMeOnSIEFngX
-         hPROJIq+CBjEmLgl+6NUJQvYU9E8i35yb6+gM0f42ylmbssI5n8l3DVSl8ugAatdwX6R
-         BFAHBM5qAIMannVKhWKX5zWnhOpT2ExrqMrS2xk9MdRXb7ODD9Bla6v7EY78H7+duNKV
-         yqtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708876690; x=1709481490;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kF6rP2xfdv/6N4QkVaNiBDdDiZRDh2pGQVheDyIMBTM=;
-        b=SenwULutjJ4jsrX+1iFhXIzXcTdWLkoTeMYe1oKTJoeBi/o4Oo3RtDfi5pV2GDYHMf
-         BuSk0aUcSDGeDbYyg+xFKsdF5pqbQ9Qh2rd2r2+R0YZuLeJMlSBmKhCkjDSfpKG0kX3q
-         W6gFtmrWoW326wSXcQBhMXaKry7vGyt1+vUrPjDWZvVCSkwaJ05nzOlgCT1e5nLUsPxL
-         bxsl/FirXl37K2B1/sMwl1wBPReNAahpdR5I+GBJoAT85eXYWa7NGep2UR7HU3wBWvID
-         XnR7Zi0tB8RXPkbbwIqB1sjhVVSTqhwIHpUeXa1xiBXXQ9H/DVP4iSAsnZbvzLsbj156
-         iA+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXV0Li8+TfrM46ov23k7XskZVd1W5jiffX7W9ahMKd+V9yUAyV+tA1nPet30g7xM7N2MBzjtdT3sOt+gE4LVTqzv3YguhNk8+ewZnPG
-X-Gm-Message-State: AOJu0YwZEGRSz5AEdNaNrSgCZGsFpi26W66gJBKEUFYR9Br/UwtU1dIJ
-	EPWqp/1bTE1sqEgCstwdya/er/oJgJJd/VYbGxVbj+hdzXqm5gENldMoN33i
-X-Google-Smtp-Source: AGHT+IHLyvt6vXzjVu0opxn5tBHuKnJs9NvsjCEGqYT4SAWxzhRzMpNG9AxsobFPXXwejbTpPlZdMw==
-X-Received: by 2002:a05:6a00:3d10:b0:6e4:e0d1:2c6a with SMTP id lo16-20020a056a003d1000b006e4e0d12c6amr4913248pfb.31.1708876690195;
-        Sun, 25 Feb 2024 07:58:10 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y7-20020a62ce07000000b006e45c823660sm2603089pfg.122.2024.02.25.07.58.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Feb 2024 07:58:09 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <b6337a96-e434-4a72-a196-2d758f4d431c@roeck-us.net>
-Date: Sun, 25 Feb 2024 07:58:07 -0800
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="e7C+sckm"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708913389; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=nB7HiCRDXz45RwbXKMqlhFZOk/rJjNAZ2WqhNw3OoCA=;
+	b=e7C+sckmKLf+f0jICPzR7oVe64iEcXVFcs6Bx2R/L8oHCWuEX7UqMdeACQt3fzcvxHPPw1LP71bB3gSsL3pJkIPOGvIQgDSntTQ7X03QX7JXXuIQCbWZJpXhNTXJtbVYg93b0IpEba1l7PHaj5RJSoTbgQqO/kQtHcKbEdlQXtM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W1A1Ha7_1708913385;
+Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W1A1Ha7_1708913385)
+          by smtp.aliyun-inc.com;
+          Mon, 26 Feb 2024 10:09:47 +0800
+From: Bitao Hu <yaoma@linux.alibaba.com>
+To: dianders@chromium.org,
+	tglx@linutronix.de,
+	liusong@linux.alibaba.com,
+	akpm@linux-foundation.org,
+	pmladek@suse.com,
+	kernelfans@gmail.com,
+	deller@gmx.de,
+	npiggin@gmail.com,
+	tsbogend@alpha.franken.de,
+	James.Bottomley@HansenPartnership.com,
+	jan.kiszka@siemens.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	yaoma@linux.alibaba.com
+Subject: [PATCHv10 1/4] watchdog/softlockup: low-overhead detection of interrupt storm
+Date: Mon, 26 Feb 2024 10:09:36 +0800
+Message-Id: <20240226020939.45264-2-yaoma@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+In-Reply-To: <20240226020939.45264-1-yaoma@linux.alibaba.com>
+References: <20240226020939.45264-1-yaoma@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-Content-Language: en-US
-To: Charlie Jenkins <charlie@rivosinc.com>,
- David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Parisc List <linux-parisc@vger.kernel.org>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Arnd Bergmann <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>
-References: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2/23/24 14:11, Charlie Jenkins wrote:
-> The test cases for ip_fast_csum and csum_ipv6_magic were not properly
-> aligning the IP header, which were causing failures on architectures
-> that do not support misaligned accesses like some ARM platforms. To
-> solve this, align the data along (14 + NET_IP_ALIGN) bytes which is the
-> standard alignment of an IP header and must be supported by the
-> architecture.
-> 
-> Furthermore, all architectures except the m68k pad "struct
-> csum_ipv6_magic_data" to 44 bits. To make compatible with the m68k,
-> manually pad this structure to 44 bits.
-> 
-> Fixes: 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and ip_fast_csum")
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+The following softlockup is caused by interrupt storm, but it cannot be
+identified from the call tree. Because the call tree is just a snapshot
+and doesn't fully capture the behavior of the CPU during the soft lockup.
+  watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+  ...
+  Call trace:
+    __do_softirq+0xa0/0x37c
+    __irq_exit_rcu+0x108/0x140
+    irq_exit+0x14/0x20
+    __handle_domain_irq+0x84/0xe0
+    gic_handle_irq+0x80/0x108
+    el0_irq_naked+0x50/0x58
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Therefore，I think it is necessary to report CPU utilization during the
+softlockup_thresh period (report once every sample_period, for a total
+of 5 reportings), like this:
+  watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+  CPU#28 Utilization every 4s during lockup:
+    #1: 0% system, 0% softirq, 100% hardirq, 0% idle
+    #2: 0% system, 0% softirq, 100% hardirq, 0% idle
+    #3: 0% system, 0% softirq, 100% hardirq, 0% idle
+    #4: 0% system, 0% softirq, 100% hardirq, 0% idle
+    #5: 0% system, 0% softirq, 100% hardirq, 0% idle
+  ...
+
+This would be helpful in determining whether an interrupt storm has
+occurred or in identifying the cause of the softlockup. The criteria for
+determination are as follows:
+  a. If the hardirq utilization is high, then interrupt storm should be
+  considered and the root cause cannot be determined from the call tree.
+  b. If the softirq utilization is high, then we could analyze the call
+  tree but it may cannot reflect the root cause.
+  c. If the system utilization is high, then we could analyze the root
+  cause from the call tree.
+
+The mechanism requires a considerable amount of global storage space
+when configured for the maximum number of CPUs. Therefore, adding a
+SOFTLOCKUP_DETECTOR_INTR_STORM Kconfig knob that defaults to "yes"
+if the max number of CPUs is <= 128.
+
+Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Liu Song <liusong@linux.alibaba.com>
+---
+ kernel/watchdog.c | 98 ++++++++++++++++++++++++++++++++++++++++++++++-
+ lib/Kconfig.debug | 13 +++++++
+ 2 files changed, 110 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 81a8862295d6..69e72d7e461d 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -16,6 +16,8 @@
+ #include <linux/cpu.h>
+ #include <linux/nmi.h>
+ #include <linux/init.h>
++#include <linux/kernel_stat.h>
++#include <linux/math64.h>
+ #include <linux/module.h>
+ #include <linux/sysctl.h>
+ #include <linux/tick.h>
+@@ -35,6 +37,8 @@ static DEFINE_MUTEX(watchdog_mutex);
+ # define WATCHDOG_HARDLOCKUP_DEFAULT	0
+ #endif
+ 
++#define NUM_SAMPLE_PERIODS	5
++
+ unsigned long __read_mostly watchdog_enabled;
+ int __read_mostly watchdog_user_enabled = 1;
+ static int __read_mostly watchdog_hardlockup_user_enabled = WATCHDOG_HARDLOCKUP_DEFAULT;
+@@ -333,6 +337,95 @@ __setup("watchdog_thresh=", watchdog_thresh_setup);
+ 
+ static void __lockup_detector_cleanup(void);
+ 
++#ifdef CONFIG_SOFTLOCKUP_DETECTOR_INTR_STORM
++enum stats_per_group {
++	STATS_SYSTEM,
++	STATS_SOFTIRQ,
++	STATS_HARDIRQ,
++	STATS_IDLE,
++	NUM_STATS_PER_GROUP,
++};
++
++static const enum cpu_usage_stat tracked_stats[NUM_STATS_PER_GROUP] = {
++	CPUTIME_SYSTEM,
++	CPUTIME_SOFTIRQ,
++	CPUTIME_IRQ,
++	CPUTIME_IDLE,
++};
++
++static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
++static DEFINE_PER_CPU(u8, cpustat_util[NUM_SAMPLE_PERIODS][NUM_STATS_PER_GROUP]);
++static DEFINE_PER_CPU(u8, cpustat_tail);
++
++/*
++ * We don't need nanosecond resolution. A granularity of 16ms is
++ * sufficient for our precision, allowing us to use u16 to store
++ * cpustats, which will roll over roughly every ~1000 seconds.
++ * 2^24 ~= 16 * 10^6
++ */
++static u16 get_16bit_precision(u64 data_ns)
++{
++	return data_ns >> 24LL; /* 2^24ns ~= 16.8ms */
++}
++
++static void update_cpustat(void)
++{
++	int i;
++	u8 util;
++	u16 old_stat, new_stat;
++	struct kernel_cpustat kcpustat;
++	u64 *cpustat = kcpustat.cpustat;
++	u8 tail = __this_cpu_read(cpustat_tail);
++	u16 sample_period_16 = get_16bit_precision(sample_period);
++
++	kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
++
++	for (i = 0; i < NUM_STATS_PER_GROUP; i++) {
++		old_stat = __this_cpu_read(cpustat_old[i]);
++		new_stat = get_16bit_precision(cpustat[tracked_stats[i]]);
++		util = DIV_ROUND_UP(100 * (new_stat - old_stat), sample_period_16);
++		__this_cpu_write(cpustat_util[tail][i], util);
++		__this_cpu_write(cpustat_old[i], new_stat);
++	}
++
++	__this_cpu_write(cpustat_tail, (tail + 1) % NUM_SAMPLE_PERIODS);
++}
++
++static void print_cpustat(void)
++{
++	int i, group;
++	u8 tail = __this_cpu_read(cpustat_tail);
++	u64 sample_period_second = sample_period;
++
++	do_div(sample_period_second, NSEC_PER_SEC);
++
++	/*
++	 * We do not want the "watchdog: " prefix on every line,
++	 * hence we use "printk" instead of "pr_crit".
++	 */
++	printk(KERN_CRIT "CPU#%d Utilization every %llus during lockup:\n",
++	       smp_processor_id(), sample_period_second);
++
++	for (i = 0; i < NUM_SAMPLE_PERIODS; i++) {
++		group = (tail + i) % NUM_SAMPLE_PERIODS;
++		printk(KERN_CRIT "\t#%d: %3u%% system,\t%3u%% softirq,\t"
++			"%3u%% hardirq,\t%3u%% idle\n", i + 1,
++			__this_cpu_read(cpustat_util[group][STATS_SYSTEM]),
++			__this_cpu_read(cpustat_util[group][STATS_SOFTIRQ]),
++			__this_cpu_read(cpustat_util[group][STATS_HARDIRQ]),
++			__this_cpu_read(cpustat_util[group][STATS_IDLE]));
++	}
++}
++
++static void report_cpu_status(void)
++{
++	print_cpustat();
++}
++#else
++static inline void update_cpustat(void) { }
++static inline void report_cpu_status(void) { }
++#endif
++
+ /*
+  * Hard-lockup warnings should be triggered after just a few seconds. Soft-
+  * lockups can have false positives under extreme conditions. So we generally
+@@ -364,7 +457,7 @@ static void set_sample_period(void)
+ 	 * and hard thresholds) to increment before the
+ 	 * hardlockup detector generates a warning
+ 	 */
+-	sample_period = get_softlockup_thresh() * ((u64)NSEC_PER_SEC / 5);
++	sample_period = get_softlockup_thresh() * ((u64)NSEC_PER_SEC / NUM_SAMPLE_PERIODS);
+ 	watchdog_update_hrtimer_threshold(sample_period);
+ }
+ 
+@@ -504,6 +597,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+ 	 */
+ 	period_ts = READ_ONCE(*this_cpu_ptr(&watchdog_report_ts));
+ 
++	update_cpustat();
++
+ 	/* Reset the interval when touched by known problematic code. */
+ 	if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
+ 		if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
+@@ -539,6 +634,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+ 		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
+ 			smp_processor_id(), duration,
+ 			current->comm, task_pid_nr(current));
++		report_cpu_status();
+ 		print_modules();
+ 		print_irqtrace_events(current);
+ 		if (regs)
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 975a07f9f1cc..49f652674bd8 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1029,6 +1029,19 @@ config SOFTLOCKUP_DETECTOR
+ 	  chance to run.  The current stack trace is displayed upon
+ 	  detection and the system will stay locked up.
+ 
++config SOFTLOCKUP_DETECTOR_INTR_STORM
++	bool "Detect Interrupt Storm in Soft Lockups"
++	depends on SOFTLOCKUP_DETECTOR && IRQ_TIME_ACCOUNTING
++	default y if NR_CPUS <= 128
++	help
++	  Say Y here to enable the kernel to detect interrupt storm
++	  during "soft lockups".
++
++	  "soft lockups" can be caused by a variety of reasons. If one is
++	  caused by an interrupt storm, then the storming interrupts will not
++	  be on the callstack. To detect this case, it is necessary to report
++	  the CPU stats and the interrupt counts during the "soft lockups".
++
+ config BOOTPARAM_SOFTLOCKUP_PANIC
+ 	bool "Panic (Reboot) On Soft Lockups"
+ 	depends on SOFTLOCKUP_DETECTOR
+-- 
+2.37.1 (Apple Git-137.1)
 
