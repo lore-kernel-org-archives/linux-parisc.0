@@ -1,182 +1,174 @@
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B8C4D112;
-	Sat, 30 Mar 2024 22:48:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74DD1495F0
+	for <linux-parisc@vger.kernel.org>; Mon,  1 Apr 2024 16:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711838921; cv=none; b=BrCe7ja6twGU/xs9Qde3NkUl9p92ssurFuuXBrbQmpcFiHUE6H679qVJjAS7jrlkGKYbIOtxYCrO0BpmpPHiHBTTSLSVTOYkVYqogpYWS/W+7ag+qEYEy8d6fzVf1nulamiWi2tXubRIlwa03hjKVHH0ClCDZbiYx/AoDjbWvVI=
+	t=1711989719; cv=none; b=WujDcTtAciGijngRuzE4sllA2+JF6nD35z9uYpGJkou3XZ/R34HRYoFEUd1fJT356DM4/vMmcL/G6V2bfgVdPaUxdAnIaTthtl85/V7eDSf4p4Gkz7LsAMD5iJ/NQejQGuGRd15E7mnBdb8j4qfesOD3IPFxvlQ4y0sxNT1hFhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711838921; c=relaxed/simple;
-	bh=nZvZp5iVGS/YVvrrJP/uzuMOEoN9MH70qBqhK0FtKOA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DLSonyECEg1KxIWdpmuW07tKYe33oeoyhBNXZrYdbMPfAumJBO4mAJ8EzUUr9Op9kK50yjat20titkDrSJ0/+imm5B2U6EHX49N+OVrhYvvr3FASwnMYE4IdCthwV+gFRHxHVGC70zDefSNYJOt6Ge0Sohv/9KjAGJHJ+4TCUoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=MfSZ27V8; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+	s=arc-20240116; t=1711989719; c=relaxed/simple;
+	bh=/qz+y5YC2iKyofjEybG266txkeP8b0dMGw22Spe7v0g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qeoZskPiZhQnNbxxgyYJ4+bw6gp1kPLHPyl2H82SooNU6rBM8DqfRXmH/WHRNAcPZRZeoJ0MmThXPuCHNT4axyef8YdjWTWIJIQMo3Zj7KFFqZl9lgmHXQL1o323GOlPBUhbIbl2p2U5xdr0bJfFCfQFYEcgUGwdTfIP+aNaVyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=n3zGUtc4; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="MfSZ27V8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1711838910; x=1712443710; i=deller@gmx.de;
-	bh=/Mt6nYANl4Xr3V8zbXMCo1R9WsKVDkl65m/Lo6OXj40=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=MfSZ27V8drmz/Lpk5/1fAHKoViN530embUOcNqMctbMrMi8LYk9yZaTBfr2tdG6R
-	 4XQzqXjih8p9TCPiCrokU2aFZuZ/oHzxcNiSHa+yEdWX8huWk5PtUTqyiYEFqZeJa
-	 cOhKF2lv7V6KcyPw07St+KlDJeTHbQEA+841oM5tg6m3imxPvVLlgC12Rs5T/gEuk
-	 ysGzKZ9vOiFcqd0CDFfWohMEDZhJCUy0Uc+yzIw4xxNnbvKi96FW5lKgCMOdd0qfL
-	 WBy1sweaGOztjnnWSLsC8QhxbQkGmsRDCXXQru8/W6AG5nv6ZFnhnbny9UOCLTDGN
-	 gp92zAmBuzhreFw8Yg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([89.244.187.169]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MJVDM-1s6B300MKO-00JpRR; Sat, 30
- Mar 2024 23:48:30 +0100
-Message-ID: <d44941c6-c310-45f9-b2a5-c8b5c0d05a3a@gmx.de>
-Date: Sat, 30 Mar 2024 23:48:29 +0100
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="n3zGUtc4"
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-78a2093cd44so311507085a.0
+        for <linux-parisc@vger.kernel.org>; Mon, 01 Apr 2024 09:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711989715; x=1712594515; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tm96Do3HD9Ni1RnQFtInuSgt43w6ZXYVK1hdTCMkucA=;
+        b=n3zGUtc43hdlJzS0vlsQ9zojO+o3JLCLP8Knau9xVG4w1cEG3LDkcIOuLYNp7sjGZu
+         I6vsz97YHQfSNd2A2IkpSq/LDUaZlmsjbdbwPZAUceHgfbmZRQNDMPO084xoAjzzr0eY
+         JiYn+MiR591GvCKF+1tRNonooMpwCei0XARJA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711989715; x=1712594515;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tm96Do3HD9Ni1RnQFtInuSgt43w6ZXYVK1hdTCMkucA=;
+        b=lKSFyKSy7tu08B6uhJux8TWMEVnb/Emha2upmMv/7JNEDXr4Q6PCCpwZZb3fks6dV5
+         ALgLOYpg0yNsNoMJhe7c7un54H5vueVrRgx+Br+BF0G8Gz9cqUuE7WMHdMFtbYAXBXjS
+         QR4biL6X90KRM6YtCBL69lJd+4cQaQSSBm8io20sWFNNjJAnYuEFK0aYDIwnzlvOw9Ix
+         lADlU+NPqshaIYmACE1V4QNPrUZzHlxhSe5SheHclGdYPtrF2nL9/dRlIUcR7wt+7AD+
+         EYU0nGTluxOL6pzNcQ8orRGioaNwDEPkHFdg566pjXBVwPe1ydMXh/XrD0TZUj7rHXM6
+         3+5A==
+X-Forwarded-Encrypted: i=1; AJvYcCXNTt49HYGePwyY16Fdcr0kXUIk0nQaYadoRTkGA1pRy2eK7LfJcbjZmtobc6DWhEjmNyYliv00vN4FuSnpjgwOwOmEdSAkfOoHUcs/
+X-Gm-Message-State: AOJu0YyNCcIySb8Xq3pxJKQsDXurJZI3oiYIgVrRmZK708dnzDcAR6gX
+	CNq+euIHo71ArcnQ3wb9eORj82tMXbatYVv0yupv8L5TrBY/O15w1WA+kpcOpiLfYi+sDxqD/RU
+	=
+X-Google-Smtp-Source: AGHT+IG4qiFGEvTo5Kjk2qyJqLd57eU+PTk71Lx0x+tpr6iqTXZRuChJ8AzT+OftRAMHwJE2+pJ/kw==
+X-Received: by 2002:a05:620a:1223:b0:78a:26d6:72c0 with SMTP id v3-20020a05620a122300b0078a26d672c0mr11513587qkj.18.1711989714891;
+        Mon, 01 Apr 2024 09:41:54 -0700 (PDT)
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com. [209.85.160.169])
+        by smtp.gmail.com with ESMTPSA id a12-20020a05620a102c00b0078a68148b72sm3559156qkk.57.2024.04.01.09.41.53
+        for <linux-parisc@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Apr 2024 09:41:53 -0700 (PDT)
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-432d55b0fa9so499001cf.1
+        for <linux-parisc@vger.kernel.org>; Mon, 01 Apr 2024 09:41:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX7JomonUMM48tHmTZF1d0xdgu9hB2rJcsFKkCZsMxO6Ktdo5yd9HZnv/ijcJ4MQbksxEW47ODv09lclwgRAG8fz6IFU/ZT9KO8P3nT
+X-Received: by 2002:a05:622a:5a89:b0:431:4e0b:d675 with SMTP id
+ fz9-20020a05622a5a8900b004314e0bd675mr1027105qtb.18.1711989713017; Mon, 01
+ Apr 2024 09:41:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] parisc: fix vdso Makefiles slightly
-To: Masahiro Yamada <masahiroy@kernel.org>,
- "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
- linux-parisc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-References: <20240330100849.426874-1-masahiroy@kernel.org>
- <20240330100849.426874-2-masahiroy@kernel.org>
-Content-Language: en-US
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- xsFNBF3Ia3MBEAD3nmWzMgQByYAWnb9cNqspnkb2GLVKzhoH2QD4eRpyDLA/3smlClbeKkWT
- HLnjgkbPFDmcmCz5V0Wv1mKYRClAHPCIBIJgyICqqUZo2qGmKstUx3pFAiztlXBANpRECgwJ
- r+8w6mkccOM9GhoPU0vMaD/UVJcJQzvrxVHO8EHS36aUkjKd6cOpdVbCt3qx8cEhCmaFEO6u
- CL+k5AZQoABbFQEBocZE1/lSYzaHkcHrjn4cQjc3CffXnUVYwlo8EYOtAHgMDC39s9a7S90L
- 69l6G73lYBD/Br5lnDPlG6dKfGFZZpQ1h8/x+Qz366Ojfq9MuuRJg7ZQpe6foiOtqwKym/zV
- dVvSdOOc5sHSpfwu5+BVAAyBd6hw4NddlAQUjHSRs3zJ9OfrEx2d3mIfXZ7+pMhZ7qX0Axlq
- Lq+B5cfLpzkPAgKn11tfXFxP+hcPHIts0bnDz4EEp+HraW+oRCH2m57Y9zhcJTOJaLw4YpTY
- GRUlF076vZ2Hz/xMEvIJddRGId7UXZgH9a32NDf+BUjWEZvFt1wFSW1r7zb7oGCwZMy2LI/G
- aHQv/N0NeFMd28z+deyxd0k1CGefHJuJcOJDVtcE1rGQ43aDhWSpXvXKDj42vFD2We6uIo9D
- 1VNre2+uAxFzqqf026H6cH8hin9Vnx7p3uq3Dka/Y/qmRFnKVQARAQABzRxIZWxnZSBEZWxs
- ZXIgPGRlbGxlckBnbXguZGU+wsGRBBMBCAA7AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
- FiEERUSCKCzZENvvPSX4Pl89BKeiRgMFAl3J1zsCGQEACgkQPl89BKeiRgNK7xAAg6kJTPje
- uBm9PJTUxXaoaLJFXbYdSPfXhqX/BI9Xi2VzhwC2nSmizdFbeobQBTtRIz5LPhjk95t11q0s
- uP5htzNISPpwxiYZGKrNnXfcPlziI2bUtlz4ke34cLK6MIl1kbS0/kJBxhiXyvyTWk2JmkMi
- REjR84lCMAoJd1OM9XGFOg94BT5aLlEKFcld9qj7B4UFpma8RbRUpUWdo0omAEgrnhaKJwV8
- qt0ULaF/kyP5qbI8iA2PAvIjq73dA4LNKdMFPG7Rw8yITQ1Vi0DlDgDT2RLvKxEQC0o3C6O4
- iQq7qamsThLK0JSDRdLDnq6Phv+Yahd7sDMYuk3gIdoyczRkXzncWAYq7XTWl7nZYBVXG1D8
- gkdclsnHzEKpTQIzn/rGyZshsjL4pxVUIpw/vdfx8oNRLKj7iduf11g2kFP71e9v2PP94ik3
- Xi9oszP+fP770J0B8QM8w745BrcQm41SsILjArK+5mMHrYhM4ZFN7aipK3UXDNs3vjN+t0zi
- qErzlrxXtsX4J6nqjs/mF9frVkpv7OTAzj7pjFHv0Bu8pRm4AyW6Y5/H6jOup6nkJdP/AFDu
- 5ImdlA0jhr3iLk9s9WnjBUHyMYu+HD7qR3yhX6uWxg2oB2FWVMRLXbPEt2hRGq09rVQS7DBy
- dbZgPwou7pD8MTfQhGmDJFKm2jvOwU0EXchrcwEQAOsDQjdtPeaRt8EP2pc8tG+g9eiiX9Sh
- rX87SLSeKF6uHpEJ3VbhafIU6A7hy7RcIJnQz0hEUdXjH774B8YD3JKnAtfAyuIU2/rOGa/v
- UN4BY6U6TVIOv9piVQByBthGQh4YHhePSKtPzK9Pv/6rd8H3IWnJK/dXiUDQllkedrENXrZp
- eLUjhyp94ooo9XqRl44YqlsrSUh+BzW7wqwfmu26UjmAzIZYVCPCq5IjD96QrhLf6naY6En3
- ++tqCAWPkqKvWfRdXPOz4GK08uhcBp3jZHTVkcbo5qahVpv8Y8mzOvSIAxnIjb+cklVxjyY9
- dVlrhfKiK5L+zA2fWUreVBqLs1SjfHm5OGuQ2qqzVcMYJGH/uisJn22VXB1c48yYyGv2HUN5
- lC1JHQUV9734I5cczA2Gfo27nTHy3zANj4hy+s/q1adzvn7hMokU7OehwKrNXafFfwWVK3OG
- 1dSjWtgIv5KJi1XZk5TV6JlPZSqj4D8pUwIx3KSp0cD7xTEZATRfc47Yc+cyKcXG034tNEAc
- xZNTR1kMi9njdxc1wzM9T6pspTtA0vuD3ee94Dg+nDrH1As24uwfFLguiILPzpl0kLaPYYgB
- wumlL2nGcB6RVRRFMiAS5uOTEk+sJ/tRiQwO3K8vmaECaNJRfJC7weH+jww1Dzo0f1TP6rUa
- fTBRABEBAAHCwXYEGAEIACAWIQRFRIIoLNkQ2+89Jfg+Xz0Ep6JGAwUCXchrcwIbDAAKCRA+
- Xz0Ep6JGAxtdEAC54NQMBwjUNqBNCMsh6WrwQwbg9tkJw718QHPw43gKFSxFIYzdBzD/YMPH
- l+2fFiefvmI4uNDjlyCITGSM+T6b8cA7YAKvZhzJyJSS7pRzsIKGjhk7zADL1+PJei9p9idy
- RbmFKo0dAL+ac0t/EZULHGPuIiavWLgwYLVoUEBwz86ZtEtVmDmEsj8ryWw75ZIarNDhV74s
- BdM2ffUJk3+vWe25BPcJiaZkTuFt+xt2CdbvpZv3IPrEkp9GAKof2hHdFCRKMtgxBo8Kao6p
- Ws/Vv68FusAi94ySuZT3fp1xGWWf5+1jX4ylC//w0Rj85QihTpA2MylORUNFvH0MRJx4mlFk
- XN6G+5jIIJhG46LUucQ28+VyEDNcGL3tarnkw8ngEhAbnvMJ2RTx8vGh7PssKaGzAUmNNZiG
- MB4mPKqvDZ02j1wp7vthQcOEg08z1+XHXb8ZZKST7yTVa5P89JymGE8CBGdQaAXnqYK3/yWf
- FwRDcGV6nxanxZGKEkSHHOm8jHwvQWvPP73pvuPBEPtKGLzbgd7OOcGZWtq2hNC6cRtsRdDx
- 4TAGMCz4j238m+2mdbdhRh3iBnWT5yPFfnv/2IjFAk+sdix1Mrr+LIDF++kiekeq0yUpDdc4
- ExBy2xf6dd+tuFFBp3/VDN4U0UfG4QJ2fg19zE5Z8dS4jGIbLg==
-In-Reply-To: <20240330100849.426874-2-masahiroy@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20240306125208.71803-1-yaoma@linux.alibaba.com>
+ <20240306125208.71803-5-yaoma@linux.alibaba.com> <87zfuofzld.ffs@tglx> <6109a3e3-ca88-4a4d-86c5-c4eb0d7f6f9c@linux.alibaba.com>
+In-Reply-To: <6109a3e3-ca88-4a4d-86c5-c4eb0d7f6f9c@linux.alibaba.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 1 Apr 2024 09:41:38 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Xr8-rzANK8oKyEZpk1FZ2dy5HqBXKpk3O29PhG1fRowg@mail.gmail.com>
+Message-ID: <CAD=FV=Xr8-rzANK8oKyEZpk1FZ2dy5HqBXKpk3O29PhG1fRowg@mail.gmail.com>
+Subject: Re: [PATCHv12 4/4] watchdog/softlockup: report the most frequent interrupts
+To: Bitao Hu <yaoma@linux.alibaba.com>, Thomas Gleixner <tglx@linutronix.de>, pmladek@suse.com
+Cc: liusong@linux.alibaba.com, akpm@linux-foundation.org, kernelfans@gmail.com, 
+	deller@gmx.de, npiggin@gmail.com, tsbogend@alpha.franken.de, 
+	James.Bottomley@hansenpartnership.com, jan.kiszka@siemens.com, 
+	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RA/Im6kEwrO2BkqPd/i6TY1F6iBR5Py1zL/MECaWFF9uiIhlpwK
- cM+mGOj7EGosyvr/4v6m5ozIfgz0Bq/q1t57IrKMG7KqqIdyzflStiUaS2XxEdCHhkyMy3I
- PKSB0xa1/KdoAuHvf99oQBZCP5/5Qli3/9waQ+Eqhj/FLlTMFTE0OsD0F8kahe72C8DluD0
- eb+D9s27c9C+BBY1fE9ZQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Qq/VHLVuGDE=;nZOphKQ4b2+/n7tTR1GdpEh4QbT
- ys5juvALIMnJspKzCFnzWeMfJNuuleLf8yp3XexTwCxmS+Mv96biQbZyCZ8z9ob8NkgK5IJox
- 2OLzTFJHjngW4LbsoXf3RGQ8yI6K0FHxa44iGZtGabi7X726yBWl5gbP2YLVYKwqcBJEfAqu0
- rV8MUMzVD/F6mfhB0a75YjdivCP5DkEeYmW+vgL5wCaR/O1mn1aOS7YAxDjong/rU74ten1+5
- xDlilWf9qt1a5mIHeFPCCXvTfVmePWXFAEjH2MmGQwoD4arCbs0y8eHHm317rw7vJ5iylUXXz
- nw23ns9F5eFacoW0CKV+w3ys4rC+JSR4+n/bLrginUJ5NKz6CcxCf9VhcfEJ1vXebJtI5BDxi
- OAiEs5gQi95DXpJZ5cOHO10qGDnItt9ulDlAb4/Yxtuz75Ir5NHtbkOalhAm4dZVFCMZc2qct
- wMs+3RFTVsj1Ek+RthZxmSBncY72xTUSfIDLyQ0Kj6e3iGwtXWDtCGRtpc90o1BlDS569rSZJ
- PxR0EYs5D/NAh29uPosoAOaRuAK5VE2ilEn/y3rpR6i28isIzWUvvVyPlshjnVLa8zkJDz7zw
- KUUEamW9qTKAS+M+fkrBBVKag9fU9uOCK6bwHEki/ps473VE0oMnoJvRuzeUIDrCc7Kn65ap5
- vSQOz4+F1nRZlSua3sN6SHe/w6veY0nhjTIFZfDFn2psnRLOU10lLyAByd+QNY+4i6b9N/SSU
- wTO9NEmXHJaW1tdfS0WHkX/4mCBqnA4O12Ttch/tAKeqKAdzhQIvwGoTWca/PLsVJ7zwwjhKF
- bk/QQRDx0INIalGXjOSlh5HDfHDP3HxMufWZdKUerVGgY=
 
-On 3/30/24 11:08, Masahiro Yamada wrote:
-> vdso32.lds and vdso64.lds are generated files. Prefix them with $(obj)/
-> instead of $(src)/.
->
-> They are generated as prerequisites of others. Add them to 'targets'
-> instead of 'extra-y'.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Hi,
 
-Acked-by: Helge Deller <deller@gmx.de>
+On Mon, Mar 25, 2024 at 2:48=E2=80=AFAM Bitao Hu <yaoma@linux.alibaba.com> =
+wrote:
+>
+> Hi, Thomas
+>
+> On 2024/3/24 04:43, Thomas Gleixner wrote:
+> > On Wed, Mar 06 2024 at 20:52, Bitao Hu wrote:
+> >> +    if (__this_cpu_read(snapshot_taken)) {
+> >> +            for_each_active_irq(i) {
+> >> +                    count =3D kstat_get_irq_since_snapshot(i);
+> >> +                    tabulate_irq_count(irq_counts_sorted, i, count, N=
+UM_HARDIRQ_REPORT);
+> >> +            }
+> >> +
+> >> +            /*
+> >> +             * We do not want the "watchdog: " prefix on every line,
+> >> +             * hence we use "printk" instead of "pr_crit".
+> >> +             */
+> >
+> > You are not providing any justification why the prefix is not
+> > wanted. Just saying 'We do not want' does not cut it and who is 'We'. I
+> > certainly not.
+> >
+> > I really disagree because the prefixes are very useful for searching lo=
+g
+> > files. So not having it makes it harder to filter out for no reason.
+> >
+>
+>
+> Regarding the use of printk() instead of pr_crit(), I have had a
+> discussion with Liu Song and Douglas in PATCHv1:
+> https://lore.kernel.org/all/CAD=3DFV=3DWEEQeKX=3Dec3Gr-8CKs2K0MaWN3V0-0yO=
+suret0qcB_AA@mail.gmail.com/
+>
+> Please allow me to elaborate on my reasoning. The purpose of the
+> report_cpu_status() function I implemented is similar to that of
+> print_modules(), show_regs(), and dump_stack(). These functions are
+> designed to assist in analyzing the causes of a soft lockup, rather
+> than to report that a soft lockup has occurred. Therefore, I think
+> that adding the "watchdog: " prefix to every line is redundant and
+> not concise. Besides, the existing pr_emerg() in the watchdog.c file
+> is already sufficient for searching useful information in the logs.
+> The information I added, along with the call tree and other data, is
+> located near the line with the "watchdog: " prefix.
+>
+> Are the two reasons I've provided reasonable?
 
-Helge
+FWIW I don't feel super strongly about this, but I'm leaning towards
+agreeing with Bitao. The sample output from the commit message looks
+like this:
 
-> ---
->
->   arch/parisc/kernel/vdso32/Makefile | 4 ++--
->   arch/parisc/kernel/vdso64/Makefile | 4 ++--
->   2 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/parisc/kernel/vdso32/Makefile b/arch/parisc/kernel/vds=
-o32/Makefile
-> index e45d46bf46a2..f15367f77d49 100644
-> --- a/arch/parisc/kernel/vdso32/Makefile
-> +++ b/arch/parisc/kernel/vdso32/Makefile
-> @@ -19,14 +19,14 @@ KBUILD_CFLAGS +=3D -DBUILD_VDSO -DDISABLE_BRANCH_PRO=
-FILING
->   VDSO_LIBGCC :=3D $(shell $(CROSS32CC) -print-libgcc-file-name)
->
->   obj-y +=3D vdso32_wrapper.o
-> -extra-y +=3D vdso32.lds
-> +targets +=3D vdso32.lds
->   CPPFLAGS_vdso32.lds +=3D -P -C  #  -U$(ARCH)
->
->   $(obj)/vdso32_wrapper.o : $(obj)/vdso32.so FORCE
->
->   # Force dependency (incbin is bad)
->   # link rule for the .so file, .lds has to be first
-> -$(obj)/vdso32.so: $(src)/vdso32.lds $(obj-vdso32) $(VDSO_LIBGCC) FORCE
-> +$(obj)/vdso32.so: $(obj)/vdso32.lds $(obj-vdso32) $(VDSO_LIBGCC) FORCE
->   	$(call if_changed,vdso32ld)
->
->   # assembly rules for the .S files
-> diff --git a/arch/parisc/kernel/vdso64/Makefile b/arch/parisc/kernel/vds=
-o64/Makefile
-> index f3d6045793f4..25eb9a95422c 100644
-> --- a/arch/parisc/kernel/vdso64/Makefile
-> +++ b/arch/parisc/kernel/vdso64/Makefile
-> @@ -19,14 +19,14 @@ KBUILD_CFLAGS +=3D -DBUILD_VDSO -DDISABLE_BRANCH_PRO=
-FILING
->   VDSO_LIBGCC :=3D $(shell $(CC) -print-libgcc-file-name)
->
->   obj-y +=3D vdso64_wrapper.o
-> -extra-y +=3D vdso64.lds
-> +targets +=3D vdso64.lds
->   CPPFLAGS_vdso64.lds +=3D -P -C -U$(ARCH)
->
->   $(obj)/vdso64_wrapper.o : $(obj)/vdso64.so FORCE
->
->   # Force dependency (incbin is bad)
->   # link rule for the .so file, .lds has to be first
-> -$(obj)/vdso64.so: $(src)/vdso64.lds $(obj-vdso64) $(VDSO_LIBGCC) FORCE
-> +$(obj)/vdso64.so: $(obj)/vdso64.lds $(obj-vdso64) $(VDSO_LIBGCC) FORCE
->   	$(call if_changed,vdso64ld)
->
->   # assembly rules for the .S files
+[  638.870231] watchdog: BUG: soft lockup - CPU#9 stuck for 26s! [swapper/9=
+:0]
+[  638.870825] CPU#9 Utilization every 4s during lockup:
+[  638.871194]  #1:   0% system,          0% softirq,   100% hardirq,
+   0% idle
+[  638.871652]  #2:   0% system,          0% softirq,   100% hardirq,
+   0% idle
+[  638.872107]  #3:   0% system,          0% softirq,   100% hardirq,
+   0% idle
+[  638.872563]  #4:   0% system,          0% softirq,   100% hardirq,
+   0% idle
+[  638.873018]  #5:   0% system,          0% softirq,   100% hardirq,
+   0% idle
+[  638.873494] CPU#9 Detect HardIRQ Time exceeds 50%. Most frequent HardIRQ=
+s:
+[  638.873994]  #1: 330945      irq#7
+[  638.874236]  #2: 31          irq#82
+[  638.874493]  #3: 10          irq#10
+[  638.874744]  #4: 2           irq#89
+[  638.874992]  #5: 1           irq#102
 
+...and in my mind the "watchdog: BUG: soft lockup - CPU#9 stuck for
+26s! [swapper/9:0]" line is enough to grep through the dmesg. Having
+all the following lines start with "watchdog:" feels like overkill to
+me, but if you feel strongly that they should then it wouldn't bother
+me too much for them all to have the "watchdog:" prefix.
+
+Could you clarify how strongly you feel about this and whether Bitao
+should spin a v13?
+
+I believe that this is the only point of contention on the patch
+series right now and otherwise it could be ready to land. I know in
+the past Petr has wanted ample time to comment though perhaps the fact
+that it's been ~1 month is enough. Petr: do you have anything that
+needs saying before this patch series lands?
+
+Thanks!
+
+-Doug
