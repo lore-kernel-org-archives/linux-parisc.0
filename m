@@ -1,55 +1,55 @@
 Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD377E792
-	for <linux-parisc@vger.kernel.org>; Tue, 30 Jul 2024 02:26:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3441167D80
+	for <linux-parisc@vger.kernel.org>; Tue, 30 Jul 2024 02:26:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722306403; cv=none; b=M24aDYVDphDfWjKr/JdEf9AzO4ehKGGav4bFXrbnJai1xT+JXk+t4+VB9Ggdoysx3QH9lGR22Vsdvozschnk7lQnz6+IQYwd1elu8vE2GkFVN4g0JyUdJii+LqKhkan5gbFO2c4HS5phJejzavVvO1leP4x1Bh06T4AcZ+AuDqM=
+	t=1722306408; cv=none; b=BTFDlerg3FZ/ydR1HyHnIdudUdDdz+V4uWQMh2Skdi83FGHDF+4DlkJUp7ChxgfPY1svsSnTcjmDyFEvr0kcd6FafcDyrAtfXXmtCq+WpLGsQtBvwjnYE2rOcm55XCmV0GV5/ee2IXBKgrvZfA4IDlI5/wK5fGl6gW/JaB0MnrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722306403; c=relaxed/simple;
-	bh=EujhD2n1Ke7lPZKkibOLBAZurseJRlXkSsBCc47I7oE=;
+	s=arc-20240116; t=1722306408; c=relaxed/simple;
+	bh=4kJPHMJ76FvefE0GqYHLKMFP5c6RzcViz5hXMktspOY=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=nZHJJRIrE1X6xFY2VzGVg5gGQ5l9KelPw+Eh+oZ33cu8eSk4Fh5/U4TpkL1BVFRhTnA6lc1nNABU/NwGaEcz1Eynbx92MHfenu+Z2+OqPgWl++jgsgoHQFBeMLijcO3Aqhz8PRHeETNFAdoZdapkF9pKoaAD/aSk5Kgz0vWqbgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PMiBfkyB; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=DJ54B1ttiU5S3fy3GQD1ihDdKgeNkE1e9SRUbRI+5hSJQMbmkJjzDmpj5yqrhLkAsrYzRB5zHBvKNLpyjCt7/bCvxygeTOlfqHpoL4Nf/fLKfqqTjIKXNBulnyJYertFh5rJuZbRwqqWdn1RGOkcC40pf5QfwqmrMBOOd30B9qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=laPoQFi1; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PMiBfkyB"
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-e0b8fa94718so1995926276.0
-        for <linux-parisc@vger.kernel.org>; Mon, 29 Jul 2024 19:26:39 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="laPoQFi1"
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-e087ed145caso4860133276.3
+        for <linux-parisc@vger.kernel.org>; Mon, 29 Jul 2024 19:26:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1722306399; x=1722911199; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1722306402; x=1722911202; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qpjJDC2/7eGvs2TUXo8T6/AXlUgH8srqN9C/rVg09l8=;
-        b=PMiBfkyBoM++DGBz1g4NuSQnzPasJvL6kbjQziLAoPgtfrChbOkv2KnLHBoA9X2o1K
-         h69ROOhwNEiBrsJWA3ATMuYT/e/Tu7BhTJihT5Cn8U/ZZTNjQ1mGwK40YzVZ9FCfI5vt
-         l7IaEpnL+sJ0QElLc0gEH3++hSFLGj4NhdvTNpoIRTJ4nWdITQV93jybGCoMI2GTQmvG
-         6Cm3+aIApcPGLnH47QtitQP/w78Di0s1Ufsgss+mj+74dIpgoWap79E3/kpB55ItB+Q5
-         HAilTjS/4inOrx8WDBKdLAEuaaaDZN5fCmV3QxA2NoM/56A9qWcphMcLMJuy2xtj416d
-         Cpkg==
+        bh=RVgVAwEbK91T31gJ65ZM2x1AQGIvT2aPhvgMdxVqe2A=;
+        b=laPoQFi1FosMvBpcIi6vfHSE/EtUOHKmRUsFs+x75SvTF9A3KGRVhjoX8fqmulUiBk
+         9ivK/ZROB8l7nkLpfZcGJx5NioyALlYKCyrSt8Cg+05VxGJkAb6aV9+mZAgz17okwNlT
+         AbXffFqwSGbhUwKl59JOxcdUM4IUPbKg6oXZa726hV6QQoB+3btR2Nd+VIDt0tQC2PYo
+         iXW4Fr0NRStzmIPxjQ1/GKJIGLAg+h4quhekBXEzVwhahJ8s/vz6z/O3yFDwGgTbU013
+         r1DMFO2hIZNSL6Pk8VxAdY/yCoTsSBP0V3ovT8aJf9FK7gl51EzePKXo0lp/nV/4Qh+l
+         Z+aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722306399; x=1722911199;
+        d=1e100.net; s=20230601; t=1722306402; x=1722911202;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qpjJDC2/7eGvs2TUXo8T6/AXlUgH8srqN9C/rVg09l8=;
-        b=cGCkxNPxMGOaLpi/Lo6hySEVuPIWKUi6NuDHL3Eq4wkzU8dGMx6NIYY8X+KAhHShDz
-         AhLPKElKWbCb1Mcv2MT/8vsQNUQhKs7JXyROUn1ZJPVy6SZSNua2MQGttN3PdahPJIHJ
-         TJrgOydslR2uOMUoQfvroKznUTabYD+dc3nYmYh+jJtNXbCtv2JeRiK7pCcxMsAWl/r+
-         Ig8CvBROH2Wc5U3tS2FqWvSFSXrxevxuOFGgHCCdlgS2PyRMVt9TOZFZqj8AaK57Yms/
-         2OWpoG3fi9JM1juzNSITQvcy2O73btkikOe0E/gy5ee3MzJQZfs48Vhhpp7yAQz+Ah+Y
-         Q+Eg==
-X-Forwarded-Encrypted: i=1; AJvYcCVXmmf84b/dbAj/wlFKnAixv4L85AVVc7UmqKaNLKnSDU7PnFgaOh+jhtCAjm2O1cwj0vdiHWQcoo6BhqkSgwXs51yDFUR/GyEUEeUS
-X-Gm-Message-State: AOJu0YxglT0nkdXDnxukzrGGQhie1Pkkwwk2LU8AgB9mGEGXemXyo3pv
-	Pd0CotiL82G0jdG06+GgCzfmUNA1YCK4nbUSTsw8djD8KKbPvUkP469DlvThVwx66TUpP1vubbV
-	JgGhlX/qv0eVGXcxps020DQ==
-X-Google-Smtp-Source: AGHT+IHxQctUGKYgd5oy7kYkF4T9KZlsamRVSF7Lno+W8mdbELZDi6ZWUht6vp6IR2OIsIspamJFWs+eE7Qt6tSYEw==
+        bh=RVgVAwEbK91T31gJ65ZM2x1AQGIvT2aPhvgMdxVqe2A=;
+        b=J69IAGEcO95ZyQMffhUOPyorJHTqiP1t4PDrz6LeMllDJYbuRqwLNB1ROAfHkocMo7
+         oFoq16JzWsYSEVGX356aybRU1bb/r54Z5YP/O1te9hF6qLEKqq+oMoFPFIKSSBx0ysv1
+         31SlKi4qLx2MGFl3kknEnZguH5ggGy1vYKlltoD1TTW5BqkaBa6mQzAHAnWvqWIS9bxY
+         15r6dBOwakJ+CmBpmzspH/1zR72buEg7E4wVLEvKJciTozmrwXhFuozSKVLO7a/iptgG
+         JJYNLJ5q5VDpp+D0icd6lLy00Oxu5eBa6N3ldgZgi6mzkB+GBmSCliOu/BrmOF2+zBf/
+         1oOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQprF+4awN4lkO3jCuYvQ0cUVKN/PhCJEDm6KWFP7tItBpi15dFK/SRzrfoTQGMq07fJpfurAkZm2xaD6mmhtTqhE+vd6uSGMTezHj
+X-Gm-Message-State: AOJu0Yzi7kfi9SacB2bhM5Iydx7HHWSLgwf+X44LSyJ0k/npUrWVhgqB
+	zt3RyYO5aIQKLo6r76yg8LEMv01XCBQcWSmTe6Bpay5Uq9MUn368hEtXAP+BMy6+V0sz5dcp46j
+	ImXxxq2rkkblc3Lh0CKNjcQ==
+X-Google-Smtp-Source: AGHT+IHDNLQ0363U4yeK1tiu5inlSozcd02wUqqvhGQ7mxPjHrWnKrHQDhB8yO+9fzvoJGDuknNFYc4tiFLMBts+Ww==
 X-Received: from almasrymina.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4bc5])
- (user=almasrymina job=sendgmr) by 2002:a05:6902:154d:b0:e03:589b:cbe1 with
- SMTP id 3f1490d57ef6-e0b545431eamr671930276.7.1722306398655; Mon, 29 Jul 2024
- 19:26:38 -0700 (PDT)
-Date: Tue, 30 Jul 2024 02:26:09 +0000
+ (user=almasrymina job=sendgmr) by 2002:a05:6902:c12:b0:e05:fc91:8935 with
+ SMTP id 3f1490d57ef6-e0b54404a86mr819076276.3.1722306402331; Mon, 29 Jul 2024
+ 19:26:42 -0700 (PDT)
+Date: Tue, 30 Jul 2024 02:26:11 +0000
 In-Reply-To: <20240730022623.98909-1-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
@@ -59,8 +59,8 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240730022623.98909-1-almasrymina@google.com>
 X-Mailer: git-send-email 2.46.0.rc1.232.g9752f9e123-goog
-Message-ID: <20240730022623.98909-6-almasrymina@google.com>
-Subject: [PATCH net-next v17 05/14] page_pool: move dmaddr helpers to .c file
+Message-ID: <20240730022623.98909-8-almasrymina@google.com>
+Subject: [PATCH net-next v17 07/14] memory-provider: dmabuf devmem memory provider
 From: Mina Almasry <almasrymina@google.com>
 To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
@@ -87,110 +87,465 @@ Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.ne
 	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
 	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
 	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
+	Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-These helpers are used for setup and init of buffers, and their
-implementation need not be static inline in the header file.
+Implement a memory provider that allocates dmabuf devmem in the form of
+net_iov.
 
-Moving the implementation to the .c file allows us to hide netmem
-implementation details in internal header files rather than the public
-file.
+The provider receives a reference to the struct netdev_dmabuf_binding
+via the pool->mp_priv pointer. The driver needs to set this pointer for
+the provider in the net_iov.
 
+The provider obtains a reference on the netdev_dmabuf_binding which
+guarantees the binding and the underlying mapping remains alive until
+the provider is destroyed.
+
+Usage of PP_FLAG_DMA_MAP is required for this memory provide such that
+the page_pool can provide the driver with the dma-addrs of the devmem.
+
+Support for PP_FLAG_DMA_SYNC_DEV is omitted for simplicity & p.order !=
+0.
+
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
 Signed-off-by: Mina Almasry <almasrymina@google.com>
+Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
 
 ---
- include/net/page_pool/helpers.h | 30 ++----------------------------
- net/core/page_pool.c            | 31 +++++++++++++++++++++++++++++++
- 2 files changed, 33 insertions(+), 28 deletions(-)
 
-diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-index 2b43a893c619d..8f27ecc00bb16 100644
---- a/include/net/page_pool/helpers.h
-+++ b/include/net/page_pool/helpers.h
-@@ -399,17 +399,7 @@ static inline void page_pool_free_va(struct page_pool *pool, void *va,
- 	page_pool_put_page(pool, virt_to_head_page(va), -1, allow_direct);
- }
- 
--static inline dma_addr_t page_pool_get_dma_addr_netmem(netmem_ref netmem)
--{
--	struct page *page = netmem_to_page(netmem);
--
--	dma_addr_t ret = page->dma_addr;
--
--	if (PAGE_POOL_32BIT_ARCH_WITH_64BIT_DMA)
--		ret <<= PAGE_SHIFT;
--
--	return ret;
--}
-+dma_addr_t page_pool_get_dma_addr_netmem(netmem_ref netmem);
- 
- /**
-  * page_pool_get_dma_addr() - Retrieve the stored DMA address.
-@@ -423,23 +413,7 @@ static inline dma_addr_t page_pool_get_dma_addr(const struct page *page)
- 	return page_pool_get_dma_addr_netmem(page_to_netmem((struct page *)page));
- }
- 
--static inline bool page_pool_set_dma_addr_netmem(netmem_ref netmem,
--						 dma_addr_t addr)
--{
--	struct page *page = netmem_to_page(netmem);
--
--	if (PAGE_POOL_32BIT_ARCH_WITH_64BIT_DMA) {
--		page->dma_addr = addr >> PAGE_SHIFT;
--
--		/* We assume page alignment to shave off bottom bits,
--		 * if this "compression" doesn't work we need to drop.
--		 */
--		return addr != (dma_addr_t)page->dma_addr << PAGE_SHIFT;
--	}
--
--	page->dma_addr = addr;
--	return false;
--}
-+bool page_pool_set_dma_addr_netmem(netmem_ref netmem, dma_addr_t addr);
- 
- /**
-  * page_pool_dma_sync_for_cpu - sync Rx page for CPU after it's written by HW
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 2abe6e919224d..a032f731d4146 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -1099,3 +1099,34 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
- 	}
- }
- EXPORT_SYMBOL(page_pool_update_nid);
+v17:
+- Use ASSERT_RTNL (Jakub)
+
+v16:
+- Add DEBUG_NET_WARN_ON_ONCE(!rtnl_is_locked()), to catch cases if
+  page_pool_init without rtnl_locking when the queue is provided. In
+  this case, the queue configuration may be changed while we're initing
+  the page_pool, which could be a race.
+
+v13:
+- Return on warning (Pavel).
+- Fixed pool->recycle_stats not being freed on error (Pavel).
+- Applied reviewed-by from Pavel.
+
+v11:
+- Rebase to not use the ops. (Christoph)
+
+v8:
+- Use skb_frag_size instead of frag->bv_len to fix patch-by-patch build
+  error
+
+v6:
+- refactor new memory provider functions into net/core/devmem.c (Pavel)
+
+v2:
+- Disable devmem for p.order != 0
+
+v1:
+- static_branch check in page_is_page_pool_iov() (Willem & Paolo).
+- PP_DEVMEM -> PP_IOV (David).
+- Require PP_FLAG_DMA_MAP (Jakub).
+
+---
+ include/net/mp_dmabuf_devmem.h |  44 ++++++++++++++
+ include/net/netmem.h           |  15 +++++
+ include/net/page_pool/types.h  |   2 +
+ net/core/devmem.c              |  78 +++++++++++++++++++++++++
+ net/core/page_pool.c           | 102 ++++++++++++++++++++++++---------
+ net/core/page_pool_priv.h      |   3 +
+ 6 files changed, 218 insertions(+), 26 deletions(-)
+ create mode 100644 include/net/mp_dmabuf_devmem.h
+
+diff --git a/include/net/mp_dmabuf_devmem.h b/include/net/mp_dmabuf_devmem.h
+new file mode 100644
+index 0000000000000..300a2356eed00
+--- /dev/null
++++ b/include/net/mp_dmabuf_devmem.h
+@@ -0,0 +1,44 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Dmabuf device memory provider.
++ *
++ * Authors:	Mina Almasry <almasrymina@google.com>
++ *
++ */
++#ifndef _NET_MP_DMABUF_DEVMEM_H
++#define _NET_MP_DMABUF_DEVMEM_H
 +
-+dma_addr_t page_pool_get_dma_addr_netmem(netmem_ref netmem)
++#include <net/netmem.h>
++
++#if defined(CONFIG_DMA_SHARED_BUFFER) && defined(CONFIG_GENERIC_ALLOCATOR)
++int mp_dmabuf_devmem_init(struct page_pool *pool);
++
++netmem_ref mp_dmabuf_devmem_alloc_netmems(struct page_pool *pool, gfp_t gfp);
++
++void mp_dmabuf_devmem_destroy(struct page_pool *pool);
++
++bool mp_dmabuf_devmem_release_page(struct page_pool *pool, netmem_ref netmem);
++#else
++static inline int mp_dmabuf_devmem_init(struct page_pool *pool)
 +{
-+	struct page *page = netmem_to_page(netmem);
-+
-+	dma_addr_t ret = page->dma_addr;
-+
-+	if (PAGE_POOL_32BIT_ARCH_WITH_64BIT_DMA)
-+		ret <<= PAGE_SHIFT;
-+
-+	return ret;
++	return -EOPNOTSUPP;
 +}
-+EXPORT_SYMBOL(page_pool_get_dma_addr_netmem);
 +
-+bool page_pool_set_dma_addr_netmem(netmem_ref netmem, dma_addr_t addr)
++static inline netmem_ref mp_dmabuf_devmem_alloc_netmems(struct page_pool *pool,
++							gfp_t gfp)
 +{
-+	struct page *page = netmem_to_page(netmem);
++	return 0;
++}
 +
-+	if (PAGE_POOL_32BIT_ARCH_WITH_64BIT_DMA) {
-+		page->dma_addr = addr >> PAGE_SHIFT;
++static inline void mp_dmabuf_devmem_destroy(struct page_pool *pool)
++{
++}
 +
-+		/* We assume page alignment to shave off bottom bits,
-+		 * if this "compression" doesn't work we need to drop.
-+		 */
-+		return addr != (dma_addr_t)page->dma_addr << PAGE_SHIFT;
-+	}
-+
-+	page->dma_addr = addr;
++static inline bool mp_dmabuf_devmem_release_page(struct page_pool *pool,
++						 netmem_ref netmem)
++{
 +	return false;
 +}
-+EXPORT_SYMBOL(page_pool_set_dma_addr_netmem);
++#endif
++
++#endif /* _NET_MP_DMABUF_DEVMEM_H */
+diff --git a/include/net/netmem.h b/include/net/netmem.h
+index 99531780e53af..34dd146f9e940 100644
+--- a/include/net/netmem.h
++++ b/include/net/netmem.h
+@@ -100,6 +100,21 @@ static inline struct page *netmem_to_page(netmem_ref netmem)
+ 	return (__force struct page *)netmem;
+ }
+ 
++static inline struct net_iov *netmem_to_net_iov(netmem_ref netmem)
++{
++	if (netmem_is_net_iov(netmem))
++		return (struct net_iov *)((__force unsigned long)netmem &
++					  ~NET_IOV);
++
++	DEBUG_NET_WARN_ON_ONCE(true);
++	return NULL;
++}
++
++static inline netmem_ref net_iov_to_netmem(struct net_iov *niov)
++{
++	return (__force netmem_ref)((unsigned long)niov | NET_IOV);
++}
++
+ static inline netmem_ref page_to_netmem(struct page *page)
+ {
+ 	return (__force netmem_ref)page;
+diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
+index 4afd6dd56351a..e01ccb42e582f 100644
+--- a/include/net/page_pool/types.h
++++ b/include/net/page_pool/types.h
+@@ -52,6 +52,7 @@ struct pp_alloc_cache {
+  * @nid:	NUMA node id to allocate from pages from
+  * @dev:	device, for DMA pre-mapping purposes
+  * @napi:	NAPI which is the sole consumer of pages, otherwise NULL
++ * @queue:	struct netdev_rx_queue this page_pool is being created for.
+  * @dma_dir:	DMA mapping direction
+  * @max_len:	max DMA sync memory size for PP_FLAG_DMA_SYNC_DEV
+  * @offset:	DMA sync address offset for PP_FLAG_DMA_SYNC_DEV
+@@ -66,6 +67,7 @@ struct page_pool_params {
+ 		int		nid;
+ 		struct device	*dev;
+ 		struct napi_struct *napi;
++		struct netdev_rx_queue *queue;
+ 		enum dma_data_direction dma_dir;
+ 		unsigned int	max_len;
+ 		unsigned int	offset;
+diff --git a/net/core/devmem.c b/net/core/devmem.c
+index befff59a2ee64..f8e78907c6c68 100644
+--- a/net/core/devmem.c
++++ b/net/core/devmem.c
+@@ -17,8 +17,11 @@
+ #include <linux/genalloc.h>
+ #include <linux/dma-buf.h>
+ #include <net/devmem.h>
++#include <net/mp_dmabuf_devmem.h>
+ #include <net/netdev_queues.h>
+ 
++#include "page_pool_priv.h"
++
+ /* Device memory support */
+ 
+ #if defined(CONFIG_DMA_SHARED_BUFFER) && defined(CONFIG_GENERIC_ALLOCATOR)
+@@ -297,4 +300,79 @@ void dev_dmabuf_uninstall(struct net_device *dev)
+ 					xa_erase(&binding->bound_rxqs, xa_idx);
+ 	}
+ }
++
++/*** "Dmabuf devmem memory provider" ***/
++
++int mp_dmabuf_devmem_init(struct page_pool *pool)
++{
++	struct net_devmem_dmabuf_binding *binding = pool->mp_priv;
++
++	if (!binding)
++		return -EINVAL;
++
++	if (!pool->dma_map)
++		return -EOPNOTSUPP;
++
++	if (pool->dma_sync)
++		return -EOPNOTSUPP;
++
++	if (pool->p.order != 0)
++		return -E2BIG;
++
++	net_devmem_dmabuf_binding_get(binding);
++	return 0;
++}
++
++netmem_ref mp_dmabuf_devmem_alloc_netmems(struct page_pool *pool, gfp_t gfp)
++{
++	struct net_devmem_dmabuf_binding *binding = pool->mp_priv;
++	netmem_ref netmem;
++	struct net_iov *niov;
++	dma_addr_t dma_addr;
++
++	niov = net_devmem_alloc_dmabuf(binding);
++	if (!niov)
++		return 0;
++
++	dma_addr = net_devmem_get_dma_addr(niov);
++
++	netmem = net_iov_to_netmem(niov);
++
++	page_pool_set_pp_info(pool, netmem);
++
++	if (page_pool_set_dma_addr_netmem(netmem, dma_addr))
++		goto err_free;
++
++	pool->pages_state_hold_cnt++;
++	trace_page_pool_state_hold(pool, netmem, pool->pages_state_hold_cnt);
++	return netmem;
++
++err_free:
++	net_devmem_free_dmabuf(niov);
++	return 0;
++}
++
++void mp_dmabuf_devmem_destroy(struct page_pool *pool)
++{
++	struct net_devmem_dmabuf_binding *binding = pool->mp_priv;
++
++	net_devmem_dmabuf_binding_put(binding);
++}
++
++bool mp_dmabuf_devmem_release_page(struct page_pool *pool, netmem_ref netmem)
++{
++	if (WARN_ON_ONCE(!netmem_is_net_iov(netmem)))
++		return false;
++
++	if (WARN_ON_ONCE(atomic_long_read(netmem_get_pp_ref_count_ref(netmem)) !=
++		     1))
++		return false;
++
++	page_pool_clear_pp_info(netmem);
++
++	net_devmem_free_dmabuf(netmem_to_net_iov(netmem));
++
++	/* We don't want the page pool put_page()ing our net_iovs. */
++	return false;
++}
+ #endif
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index c5c303746d494..b70f779cb7856 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -13,6 +13,7 @@
+ 
+ #include <net/page_pool/helpers.h>
+ #include <net/xdp.h>
++#include <net/netdev_rx_queue.h>
+ 
+ #include <linux/dma-direction.h>
+ #include <linux/dma-mapping.h>
+@@ -21,6 +22,9 @@
+ #include <linux/poison.h>
+ #include <linux/ethtool.h>
+ #include <linux/netdevice.h>
++#include <linux/genalloc.h>
++#include <net/devmem.h>
++#include <net/mp_dmabuf_devmem.h>
+ 
+ #include <trace/events/page_pool.h>
+ 
+@@ -28,6 +32,7 @@
+ #include "netmem_priv.h"
+ 
+ DEFINE_STATIC_KEY_FALSE(page_pool_mem_providers);
++EXPORT_SYMBOL(page_pool_mem_providers);
+ 
+ #define DEFER_TIME (msecs_to_jiffies(1000))
+ #define DEFER_WARN_INTERVAL (60 * HZ)
+@@ -190,6 +195,7 @@ static int page_pool_init(struct page_pool *pool,
+ 			  int cpuid)
+ {
+ 	unsigned int ring_qsize = 1024; /* Default */
++	int err;
+ 
+ 	page_pool_struct_check();
+ 
+@@ -271,7 +277,35 @@ static int page_pool_init(struct page_pool *pool,
+ 	if (pool->dma_map)
+ 		get_device(pool->p.dev);
+ 
++	if (pool->p.queue) {
++		/* We rely on rtnl_lock()ing to make sure netdev_rx_queue
++		 * configuration doesn't change while we're initializing the
++		 * page_pool.
++		 */
++		ASSERT_RTNL();
++		pool->mp_priv = pool->p.queue->mp_params.mp_priv;
++	}
++
++	if (pool->mp_priv) {
++		err = mp_dmabuf_devmem_init(pool);
++		if (err) {
++			pr_warn("%s() mem-provider init failed %d\n", __func__,
++				err);
++			goto free_ptr_ring;
++		}
++
++		static_branch_inc(&page_pool_mem_providers);
++	}
++
+ 	return 0;
++
++free_ptr_ring:
++	ptr_ring_cleanup(&pool->ring, NULL);
++#ifdef CONFIG_PAGE_POOL_STATS
++	if (!pool->system)
++		free_percpu(pool->recycle_stats);
++#endif
++	return err;
+ }
+ 
+ static void page_pool_uninit(struct page_pool *pool)
+@@ -455,28 +489,6 @@ static bool page_pool_dma_map(struct page_pool *pool, netmem_ref netmem)
+ 	return false;
+ }
+ 
+-static void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
+-{
+-	netmem_set_pp(netmem, pool);
+-	netmem_or_pp_magic(netmem, PP_SIGNATURE);
+-
+-	/* Ensuring all pages have been split into one fragment initially:
+-	 * page_pool_set_pp_info() is only called once for every page when it
+-	 * is allocated from the page allocator and page_pool_fragment_page()
+-	 * is dirtying the same cache line as the page->pp_magic above, so
+-	 * the overhead is negligible.
+-	 */
+-	page_pool_fragment_netmem(netmem, 1);
+-	if (pool->has_init_callback)
+-		pool->slow.init_callback(netmem, pool->slow.init_arg);
+-}
+-
+-static void page_pool_clear_pp_info(netmem_ref netmem)
+-{
+-	netmem_clear_pp_magic(netmem);
+-	netmem_set_pp(netmem, NULL);
+-}
+-
+ static struct page *__page_pool_alloc_page_order(struct page_pool *pool,
+ 						 gfp_t gfp)
+ {
+@@ -572,7 +584,10 @@ netmem_ref page_pool_alloc_netmem(struct page_pool *pool, gfp_t gfp)
+ 		return netmem;
+ 
+ 	/* Slow-path: cache empty, do real allocation */
+-	netmem = __page_pool_alloc_pages_slow(pool, gfp);
++	if (static_branch_unlikely(&page_pool_mem_providers) && pool->mp_priv)
++		netmem = mp_dmabuf_devmem_alloc_netmems(pool, gfp);
++	else
++		netmem = __page_pool_alloc_pages_slow(pool, gfp);
+ 	return netmem;
+ }
+ EXPORT_SYMBOL(page_pool_alloc_netmem);
+@@ -608,6 +623,28 @@ s32 page_pool_inflight(const struct page_pool *pool, bool strict)
+ 	return inflight;
+ }
+ 
++void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
++{
++	netmem_set_pp(netmem, pool);
++	netmem_or_pp_magic(netmem, PP_SIGNATURE);
++
++	/* Ensuring all pages have been split into one fragment initially:
++	 * page_pool_set_pp_info() is only called once for every page when it
++	 * is allocated from the page allocator and page_pool_fragment_page()
++	 * is dirtying the same cache line as the page->pp_magic above, so
++	 * the overhead is negligible.
++	 */
++	page_pool_fragment_netmem(netmem, 1);
++	if (pool->has_init_callback)
++		pool->slow.init_callback(netmem, pool->slow.init_arg);
++}
++
++void page_pool_clear_pp_info(netmem_ref netmem)
++{
++	netmem_clear_pp_magic(netmem);
++	netmem_set_pp(netmem, NULL);
++}
++
+ static __always_inline void __page_pool_release_page_dma(struct page_pool *pool,
+ 							 netmem_ref netmem)
+ {
+@@ -636,8 +673,13 @@ static __always_inline void __page_pool_release_page_dma(struct page_pool *pool,
+ void page_pool_return_page(struct page_pool *pool, netmem_ref netmem)
+ {
+ 	int count;
++	bool put;
+ 
+-	__page_pool_release_page_dma(pool, netmem);
++	put = true;
++	if (static_branch_unlikely(&page_pool_mem_providers) && pool->mp_priv)
++		put = mp_dmabuf_devmem_release_page(pool, netmem);
++	else
++		__page_pool_release_page_dma(pool, netmem);
+ 
+ 	/* This may be the last page returned, releasing the pool, so
+ 	 * it is not safe to reference pool afterwards.
+@@ -645,8 +687,10 @@ void page_pool_return_page(struct page_pool *pool, netmem_ref netmem)
+ 	count = atomic_inc_return_relaxed(&pool->pages_state_release_cnt);
+ 	trace_page_pool_state_release(pool, netmem, count);
+ 
+-	page_pool_clear_pp_info(netmem);
+-	put_page(netmem_to_page(netmem));
++	if (put) {
++		page_pool_clear_pp_info(netmem);
++		put_page(netmem_to_page(netmem));
++	}
+ 	/* An optimization would be to call __free_pages(page, pool->p.order)
+ 	 * knowing page is not part of page-cache (thus avoiding a
+ 	 * __page_cache_release() call).
+@@ -965,6 +1009,12 @@ static void __page_pool_destroy(struct page_pool *pool)
+ 
+ 	page_pool_unlist(pool);
+ 	page_pool_uninit(pool);
++
++	if (pool->mp_priv) {
++		mp_dmabuf_devmem_destroy(pool);
++		static_branch_dec(&page_pool_mem_providers);
++	}
++
+ 	kfree(pool);
+ }
+ 
+diff --git a/net/core/page_pool_priv.h b/net/core/page_pool_priv.h
+index 90665d40f1eb7..e5b019ab0b735 100644
+--- a/net/core/page_pool_priv.h
++++ b/net/core/page_pool_priv.h
+@@ -9,4 +9,7 @@ int page_pool_list(struct page_pool *pool);
+ void page_pool_detached(struct page_pool *pool);
+ void page_pool_unlist(struct page_pool *pool);
+ 
++void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem);
++void page_pool_clear_pp_info(netmem_ref netmem);
++
+ #endif
 -- 
 2.46.0.rc1.232.g9752f9e123-goog
 
