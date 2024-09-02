@@ -1,109 +1,108 @@
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A7142052
-	for <linux-parisc@vger.kernel.org>; Mon,  2 Sep 2024 05:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B285714A611;
+	Mon,  2 Sep 2024 06:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725255112; cv=none; b=DAjZwaG1oO0xWUMUTg50NawwNUplZhloyOFS/pSNRHNynLa7NdMXLJK0FobEilfXsuqjigGE6JdgD9xOiD0SMqnOIpF+o8E33MgfqXiXcAXS8V0FW7rXuIovJbgFHKUz/+frZflWOjTj+CkiXNC3/yeh9PE1wKegV0tFntNJ3qM=
+	t=1725257980; cv=none; b=Xndu++EaWJxCtMd55mFFFlYoytdjxTHjZ7hCywiam7HXcBposXpjum6UD19GpBGLdOnC6R5XYtBXSkjdiFu3shwhQ2Knl59mgnOH8k1N8OZj+Fl++CMGSabeskJMuyasD08Y5LvweNPKVTysxOS0N1y2Vn+HeExU92ksNtlIDU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725255112; c=relaxed/simple;
-	bh=p7pV+OekQRanLYGDkHAzPVIoQUeenJaMBzGXbvR4lNw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AmBjgmZfabxQg6luqBFn7qLLK6jZmR5U27Vv76LsbAPucoGgfa5EIU/2UB6Pvv/CRkCgJWpNQsi0xjuRv1QGmuci8kVgStKyqszw6K6T9GcfDABmVbpVeW7EzFVQnOH7SaDWx8QSyw27vblQbwPO1zuZ96BsaGCpr5TPCr0Cw84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=yI2jV3VA; arc=none smtp.client-ip=209.85.210.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="yI2jV3VA"
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-70f6b9a1716so132148a34.1
-        for <linux-parisc@vger.kernel.org>; Sun, 01 Sep 2024 22:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1725255107; x=1725859907; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dcARxruAP0vzhVrIv4mZE+MUS7Q/ymIzQKM3BTvM2Fg=;
-        b=yI2jV3VASmzs8rFu0R7i7/aVcG13SLaVSBX4ouMg0JZcVxlniLgP2QI20NdomGgINx
-         yhNrERDM238EorFwfOhrojkbftDYOFHo9alsjzzYh1ddFzgqiztsyAcb9+xn4qMBmVCX
-         dRYdpFvxsSrfmHaQ6hQxeGYw1CxmVX8Did31ejFfoi720lu6UFxuWcr7vlp5teGL/4UR
-         QqjMz/0XrF/m93pdOv4J8UtHyiz7y9vycaCX/HnjS/j/u29XP8MB18oU7Rv6hMMjnrKE
-         94jb2MzbTF7AkHrGPQQkH+admxyQZdij8kJJ46mMh62aQtXulTcXrDYSUQDAQO0rUs4y
-         o8lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725255107; x=1725859907;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dcARxruAP0vzhVrIv4mZE+MUS7Q/ymIzQKM3BTvM2Fg=;
-        b=jnHGUDtp8jA80WeYxJdEmjOBFdq0d6UXMyPC58hLggBvf8fRSgZ5nnO1dCvHA8ZNQt
-         66ttxSzzWj2LvPjyeo67ECVpaiF/e67la+/0l1RpdjZVPSu8Bm/j9e2R9RtgiILZcCK2
-         aGO2f7GdDujsoCeqeWeIKftH41BIhLKh7m766Cm5fr99g2hnc0vY4MI2SHzod4ens3n/
-         zibbdD/JKDpK7LfBCpYptic7Zrz6zwatZ103A/gqpeDVuyIiBKC5nYRuMUTw6kmuNjDZ
-         SxagzgJVTELhuUhmNAly3LTbOXXc+073NLW93WWbyJr+k9+xq3kUY3aLBE2zV/ug+Ckf
-         S6MA==
-X-Forwarded-Encrypted: i=1; AJvYcCUyekQKb58PUM2wenmhZYuri/6/gB2yhCjoby6j+g7xq0ZHolxrLuqr4rYti5vThMg75r0dVVulMM7ULCM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFbl/MJeQFVjF2Baxz/5TuqGWFkwAAQZ+ly+SLnLIClLyc1uGk
-	ec5RpIZrRbIhZPLXdAYesRQiIGGnJuLCctirzXM6fSiLSUai+RDKf7YZS45cRLQ=
-X-Google-Smtp-Source: AGHT+IG4O9VSEnbCHyMlef62PC66eJmk+Wcfg7k+VoUwjggysZcp2Zp81AWYRWJzYn+qz65dfh/WPA==
-X-Received: by 2002:a05:6871:b09:b0:26c:78ce:b0cc with SMTP id 586e51a60fabf-277b0dd215bmr5158894fac.8.1725255107434;
-        Sun, 01 Sep 2024 22:31:47 -0700 (PDT)
-Received: from telecaster.hsd1.wa.comcast.net ([2601:602:8980:9170::901f])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-715e55a692fsm6076279b3a.60.2024.09.01.22.31.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Sep 2024 22:31:46 -0700 (PDT)
-From: Omar Sandoval <osandov@osandov.com>
-To: linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Christoph Hellwig <hch@lst.de>,
-	x86@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-um@lists.infradead.org,
-	kernel-team@fb.com
-Subject: [PATCH 0/2] mm: make copy_to_kernel_nofault() not fault on user addresses
-Date: Sun,  1 Sep 2024 22:31:27 -0700
-Message-ID: <cover.1725223574.git.osandov@fb.com>
-X-Mailer: git-send-email 2.46.0
+	s=arc-20240116; t=1725257980; c=relaxed/simple;
+	bh=67XBHzOk5D5qjbAgaxjj54HcSeehB3J7Kc4PFUNyQKs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gwfu891kicOMmitB5BzQtST+pAM5p/2z8eotA+D+exhMyx7k4f9Poh857fJ6qgsSTKwlznI8fTVSDvUwiUaagaTq7yfS05dhD7xLvMe8X8UFhk1q4H+o/rZNKe6xVgPODVCdI5oifooichf96NzGZKkAUGnS7Z8kf1Atz6J4u0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+	by localhost (Postfix) with ESMTP id 4Wxz9y3zggz9sSN;
+	Mon,  2 Sep 2024 08:19:34 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id oh9ReoBVOWjB; Mon,  2 Sep 2024 08:19:34 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase2.c-s.fr (Postfix) with ESMTP id 4Wxz9y2zjLz9sSH;
+	Mon,  2 Sep 2024 08:19:34 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 50A268B76C;
+	Mon,  2 Sep 2024 08:19:34 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id gAfIussLeGez; Mon,  2 Sep 2024 08:19:34 +0200 (CEST)
+Received: from [192.168.234.158] (PO19952.IDSI0.si.c-s.fr [192.168.234.158])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id B2F1A8B763;
+	Mon,  2 Sep 2024 08:19:33 +0200 (CEST)
+Message-ID: <5fa50d78-6764-4f99-87b3-7bd7edbeea5a@csgroup.eu>
+Date: Mon, 2 Sep 2024 08:19:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] mm: make copy_to_kernel_nofault() not fault on user
+ addresses
+To: Omar Sandoval <osandov@osandov.com>, linux-mm@kvack.org,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Christoph Hellwig <hch@lst.de>, x86@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-um@lists.infradead.org, kernel-team@fb.com
+References: <cover.1725223574.git.osandov@fb.com>
+Content-Language: fr-FR
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1725223574.git.osandov@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Omar Sandoval <osandov@fb.com>
 
-Hi,
 
-I hit a case where copy_to_kernel_nofault() will fault (lol): if the
-destination address is in userspace and x86 Supervisor Mode Access
-Prevention is enabled. Patch 2 has the details and the fix. Patch 1
-renames a helper function so that its use in patch 2 makes more sense.
-If the rename is too intrusive, I can drop it.
+Le 02/09/2024 à 07:31, Omar Sandoval a écrit :
+> [Vous ne recevez pas souvent de courriers de osandov@osandov.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
+> 
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> Hi,
+> 
+> I hit a case where copy_to_kernel_nofault() will fault (lol): if the
+> destination address is in userspace and x86 Supervisor Mode Access
+> Prevention is enabled. Patch 2 has the details and the fix. Patch 1
+> renames a helper function so that its use in patch 2 makes more sense.
+> If the rename is too intrusive, I can drop it.
 
-Thanks,
-Omar
+The name of the function is "copy_to_kernel". If the destination is a 
+user address, it is not a copy to kernel but a copy to user and you 
+already have the function copy_to_user() for that. copy_to_user() 
+properly handles SMAP.
 
-Omar Sandoval (2):
-  mm: rename copy_from_kernel_nofault_allowed() to
-    copy_kernel_nofault_allowed()
-  mm: make copy_to_kernel_nofault() not fault on user addresses
+Christophe
 
- arch/arm/mm/fault.c         |  2 +-
- arch/loongarch/mm/maccess.c |  2 +-
- arch/mips/mm/maccess.c      |  2 +-
- arch/parisc/lib/memcpy.c    |  2 +-
- arch/powerpc/mm/maccess.c   |  2 +-
- arch/um/kernel/maccess.c    |  2 +-
- arch/x86/mm/maccess.c       |  4 ++--
- include/linux/uaccess.h     |  2 +-
- mm/maccess.c                | 10 ++++++----
- 9 files changed, 15 insertions(+), 13 deletions(-)
 
--- 
-2.46.0
-
+> 
+> Thanks,
+> Omar
+> 
+> Omar Sandoval (2):
+>    mm: rename copy_from_kernel_nofault_allowed() to
+>      copy_kernel_nofault_allowed()
+>    mm: make copy_to_kernel_nofault() not fault on user addresses
+> 
+>   arch/arm/mm/fault.c         |  2 +-
+>   arch/loongarch/mm/maccess.c |  2 +-
+>   arch/mips/mm/maccess.c      |  2 +-
+>   arch/parisc/lib/memcpy.c    |  2 +-
+>   arch/powerpc/mm/maccess.c   |  2 +-
+>   arch/um/kernel/maccess.c    |  2 +-
+>   arch/x86/mm/maccess.c       |  4 ++--
+>   include/linux/uaccess.h     |  2 +-
+>   mm/maccess.c                | 10 ++++++----
+>   9 files changed, 15 insertions(+), 13 deletions(-)
+> 
+> --
+> 2.46.0
+> 
+> 
