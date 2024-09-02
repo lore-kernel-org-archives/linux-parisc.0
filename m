@@ -1,57 +1,55 @@
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4AF152E12
-	for <linux-parisc@vger.kernel.org>; Mon,  2 Sep 2024 05:31:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A7142052
+	for <linux-parisc@vger.kernel.org>; Mon,  2 Sep 2024 05:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725255112; cv=none; b=QFmBB+1TA/Gx7MOOm/HB+KX3FXKHKIDaFrJXPZmnTS9el0p908twZ9Nenua0tw9XCFZisaF5u7Fn3++PnsYucRN+sKFt+8L9dm7am2Y6k6LDNvUnMZVN3pebXWFMLywJdxvFegeFGvMVn7Ovk315B1lVpc0Ya0FW+ztzfpLLTNw=
+	t=1725255112; cv=none; b=DAjZwaG1oO0xWUMUTg50NawwNUplZhloyOFS/pSNRHNynLa7NdMXLJK0FobEilfXsuqjigGE6JdgD9xOiD0SMqnOIpF+o8E33MgfqXiXcAXS8V0FW7rXuIovJbgFHKUz/+frZflWOjTj+CkiXNC3/yeh9PE1wKegV0tFntNJ3qM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725255112; c=relaxed/simple;
-	bh=5Rn0V/8ZeyYgBzK2mBBk0Pm1r5gB+gcHQhhVn4FRMRo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E2xvJj1A+cOvqi6xQZKxm1UoLTQ5jTA5+nJivPaPg23do+2Jyl1yyCtbO1FN9N+v5wEmWDEnkpzo7o9JcrhvAdtlAHc68krkYNTNksWyVFlosJJxXDaPWlcN2mkC+FdE5Tn1GbqnF8vYVxgcp5SBSH18nrWm08MyIjrvqXuZzso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=2D0Ml+dk; arc=none smtp.client-ip=209.85.210.174
+	bh=p7pV+OekQRanLYGDkHAzPVIoQUeenJaMBzGXbvR4lNw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AmBjgmZfabxQg6luqBFn7qLLK6jZmR5U27Vv76LsbAPucoGgfa5EIU/2UB6Pvv/CRkCgJWpNQsi0xjuRv1QGmuci8kVgStKyqszw6K6T9GcfDABmVbpVeW7EzFVQnOH7SaDWx8QSyw27vblQbwPO1zuZ96BsaGCpr5TPCr0Cw84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=yI2jV3VA; arc=none smtp.client-ip=209.85.210.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="2D0Ml+dk"
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-71446767885so457214b3a.1
-        for <linux-parisc@vger.kernel.org>; Sun, 01 Sep 2024 22:31:50 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="yI2jV3VA"
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-70f6b9a1716so132148a34.1
+        for <linux-parisc@vger.kernel.org>; Sun, 01 Sep 2024 22:31:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1725255110; x=1725859910; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uGf5OeNLuW8N0+HtKDB4O6h1a0pvH1iiorPowhbhX1k=;
-        b=2D0Ml+dkq/DLdZfyf8z6OsA//JqUWTwoVJpU3mW59VXnPFck0+teG68fOLHeeEYYYU
-         PJYyK3cVu+3Qa3M3at6kuUY68xkjEfB3SMcmHCn0I8ulsTARqQxcsR8LyC9fz2HK6ZbR
-         VznN166LlcyBJB0ZsrKq9zPfUgfZRNErBCpMzPkSLmgUTRXU/7OZKyEeurx+q3z9gAFt
-         25LptJbrrgFDVv9NvVijHvLckv9LKNFHOjdgsWZLzZhjqJioDGbo3htf/mC5tG76FbXm
-         KhNz+h3fLovPlrDU1niixrOjBIXpwg6MfIQ16OngdaSwAem4PyYveV1zXLyd9FqvQcF9
-         dW8g==
+        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1725255107; x=1725859907; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dcARxruAP0vzhVrIv4mZE+MUS7Q/ymIzQKM3BTvM2Fg=;
+        b=yI2jV3VASmzs8rFu0R7i7/aVcG13SLaVSBX4ouMg0JZcVxlniLgP2QI20NdomGgINx
+         yhNrERDM238EorFwfOhrojkbftDYOFHo9alsjzzYh1ddFzgqiztsyAcb9+xn4qMBmVCX
+         dRYdpFvxsSrfmHaQ6hQxeGYw1CxmVX8Did31ejFfoi720lu6UFxuWcr7vlp5teGL/4UR
+         QqjMz/0XrF/m93pdOv4J8UtHyiz7y9vycaCX/HnjS/j/u29XP8MB18oU7Rv6hMMjnrKE
+         94jb2MzbTF7AkHrGPQQkH+admxyQZdij8kJJ46mMh62aQtXulTcXrDYSUQDAQO0rUs4y
+         o8lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725255110; x=1725859910;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uGf5OeNLuW8N0+HtKDB4O6h1a0pvH1iiorPowhbhX1k=;
-        b=GaWo/t46tgex+fkTSm4uDUF/M8W+VB1UHprrKqNi2PYPcydh1UCo0ILxpbzZAdWkdi
-         BKn6C47K4PX5U5kE2fVuMP+yJDnsdndQg0eiPNI+ThIC6dRdX7PfoKZ4YvbmH/OWAYNS
-         bbzfPICbYc/PTsCHeQrWcGcnPm+NaLFNDc1/RGUIzso1+7ijZ5RtjYGTQHeaYkIcoEq+
-         hERpmnLbulewaqP6UGrpykG4R4nlXm8FRPtXC7oIMRTulQvwp+5ItdM2ma+mJ3KKRC+S
-         B9QOizYksNkup0UA18DPV1lsORUEynmYupWLvUbC90C+kw7yA4AbO1sUPEzZH8H8ItaO
-         G7sg==
-X-Forwarded-Encrypted: i=1; AJvYcCVDsWXlGohJB+vXpK14UWL4Kj583eEpV0zkcetuiLAgNDDZmdSLudt1HR7c6X8RaVlce7+dMhTL4fYxZ1M=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yze6ea3ZY4AsE9O6RPVZykFikkOp1OncrMp6oKdb0H5ZLOWcuLn
-	5lwgIq/ralpsSdmYnJTILegkR1O25lI7A3oTCbp9m/UDPWwl8CPvACTE+gCv5HA=
-X-Google-Smtp-Source: AGHT+IHSXT1zDdfdFgGYC0SrD/pcgNSgiiEyyPyOddsLA1njvCrWFZrUbt+epCA0PEHogZAdapDSkA==
-X-Received: by 2002:a05:6a00:2d18:b0:70d:2289:4c55 with SMTP id d2e1a72fcca58-717307cbc90mr5477602b3a.5.1725255109933;
-        Sun, 01 Sep 2024 22:31:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1725255107; x=1725859907;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dcARxruAP0vzhVrIv4mZE+MUS7Q/ymIzQKM3BTvM2Fg=;
+        b=jnHGUDtp8jA80WeYxJdEmjOBFdq0d6UXMyPC58hLggBvf8fRSgZ5nnO1dCvHA8ZNQt
+         66ttxSzzWj2LvPjyeo67ECVpaiF/e67la+/0l1RpdjZVPSu8Bm/j9e2R9RtgiILZcCK2
+         aGO2f7GdDujsoCeqeWeIKftH41BIhLKh7m766Cm5fr99g2hnc0vY4MI2SHzod4ens3n/
+         zibbdD/JKDpK7LfBCpYptic7Zrz6zwatZ103A/gqpeDVuyIiBKC5nYRuMUTw6kmuNjDZ
+         SxagzgJVTELhuUhmNAly3LTbOXXc+073NLW93WWbyJr+k9+xq3kUY3aLBE2zV/ug+Ckf
+         S6MA==
+X-Forwarded-Encrypted: i=1; AJvYcCUyekQKb58PUM2wenmhZYuri/6/gB2yhCjoby6j+g7xq0ZHolxrLuqr4rYti5vThMg75r0dVVulMM7ULCM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFbl/MJeQFVjF2Baxz/5TuqGWFkwAAQZ+ly+SLnLIClLyc1uGk
+	ec5RpIZrRbIhZPLXdAYesRQiIGGnJuLCctirzXM6fSiLSUai+RDKf7YZS45cRLQ=
+X-Google-Smtp-Source: AGHT+IG4O9VSEnbCHyMlef62PC66eJmk+Wcfg7k+VoUwjggysZcp2Zp81AWYRWJzYn+qz65dfh/WPA==
+X-Received: by 2002:a05:6871:b09:b0:26c:78ce:b0cc with SMTP id 586e51a60fabf-277b0dd215bmr5158894fac.8.1725255107434;
+        Sun, 01 Sep 2024 22:31:47 -0700 (PDT)
 Received: from telecaster.hsd1.wa.comcast.net ([2601:602:8980:9170::901f])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-715e55a692fsm6076279b3a.60.2024.09.01.22.31.48
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-715e55a692fsm6076279b3a.60.2024.09.01.22.31.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Sep 2024 22:31:49 -0700 (PDT)
+        Sun, 01 Sep 2024 22:31:46 -0700 (PDT)
 From: Omar Sandoval <osandov@osandov.com>
 To: linux-mm@kvack.org,
 	Andrew Morton <akpm@linux-foundation.org>
@@ -65,12 +63,10 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-um@lists.infradead.org,
 	kernel-team@fb.com
-Subject: [PATCH 2/2] mm: make copy_to_kernel_nofault() not fault on user addresses
-Date: Sun,  1 Sep 2024 22:31:29 -0700
-Message-ID: <f0e171cbae576758d9387cee374dd65088e75b07.1725223574.git.osandov@fb.com>
+Subject: [PATCH 0/2] mm: make copy_to_kernel_nofault() not fault on user addresses
+Date: Sun,  1 Sep 2024 22:31:27 -0700
+Message-ID: <cover.1725223574.git.osandov@fb.com>
 X-Mailer: git-send-email 2.46.0
-In-Reply-To: <cover.1725223574.git.osandov@fb.com>
-References: <cover.1725223574.git.osandov@fb.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -81,95 +77,33 @@ Content-Transfer-Encoding: 8bit
 
 From: Omar Sandoval <osandov@fb.com>
 
-I found that on x86, copy_to_kernel_nofault() still faults on addresses
-outside of the kernel address range (including NULL):
+Hi,
 
-  # echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc
-  # echo g > /proc/sysrq-trigger
-  ...
-  [15]kdb> mm 0 1234
-  [   94.652476] BUG: kernel NULL pointer dereference, address: 0000000000000000
-  [   94.652481] #PF: supervisor write access in kernel mode
-  [   94.652483] #PF: error_code(0x0002) - not-present page
-  [   94.652485] PGD 0 P4D 0
-  [   94.652489] Oops: Oops: 0002 [#1] PREEMPT SMP PTI
-  [   94.652493] CPU: 15 UID: 0 PID: 619 Comm: bash Not tainted 6.11.0-rc6 #11
-  [   94.652497] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-  [   94.652498] RIP: 0010:copy_to_kernel_nofault+0x1c/0x90
-  [   94.652505] Code: 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f 1f 00 65 48 8b 0d 14 9d 72 4c 83 81 04 1b 00 00 01 48 83 fa 07 76 18 48 8b 06 <48> 89 07 48 83 ea 08 48 83 c7 08 48 83 c6 08 48 83 fa 07 77 e8 48
-  [   94.652507] RSP: 0018:ffffa4a640b1fa48 EFLAGS: 00010002
-  [   94.652509] RAX: 00000000000004d2 RBX: 0000000000000003 RCX: ffff8a8251020000
-  [   94.652510] RDX: 0000000000000008 RSI: ffffa4a640b1fa68 RDI: 0000000000000000
-  [   94.652512] RBP: 0000000000000000 R08: ffffa4a640b1f9f0 R09: ffffa4a640b1f9f8
-  [   94.652513] R10: 000000000000000a R11: f000000000000000 R12: 0000000000000000
-  [   94.652515] R13: 00000000000004d2 R14: 0000000000000000 R15: ffff8a8251020000
-  [   94.652518] FS:  00007fa9c15f6b80(0000) GS:ffff8a895f7c0000(0000) knlGS:0000000000000000
-  [   94.652520] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [   94.652521] CR2: 0000000000000000 CR3: 000000010ff72004 CR4: 0000000000770ef0
-  [   94.652522] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [   94.652523] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [   94.652524] PKRU: 55555554
-  [   94.652525] Call Trace:
-  [   94.652528]  <TASK>
-  [   94.652534]  ? __die+0x24/0x70
-  [   94.652538]  ? page_fault_oops+0x15a/0x480
-  [   94.652543]  ? kdb_msg_write.part.0+0x3e/0xb0
-  [   94.652547]  ? vkdb_printf+0x1a6/0x8b0
-  [   94.652550]  ? exc_page_fault+0x72/0x160
-  [   94.652555]  ? asm_exc_page_fault+0x26/0x30
-  [   94.652564]  ? copy_to_kernel_nofault+0x1c/0x90
-  [   94.652566]  kdb_putarea_size+0x15/0x80
-  [   94.652570]  kdb_putword+0x72/0xc0
-  [   94.652573]  kdb_mm+0xdc/0x130
-  [   94.652576]  kdb_parse+0x2b7/0x6c0
-  [   94.652578]  ? kdb_getstr+0x40a/0x910
-  [   94.652581]  kdb_main_loop+0x4a0/0xa40
-  [   94.652584]  ? module_event+0x10/0x10
-  [   94.652590]  kdb_stub+0x1ae/0x3f0
-  [   94.652594]  kgdb_cpu_enter+0x2a8/0x5f0
-  [   94.652599]  kgdb_handle_exception+0xbd/0x100
-  [   94.652605]  __kgdb_notify+0x30/0xd0
-  [   94.652610]  kgdb_notify+0x15/0x30
-  [   94.652612]  notifier_call_chain+0x5b/0xd0
-  [   94.652618]  notify_die+0x53/0x80
-  [   94.652622]  exc_int3+0xf9/0x130
-  [   94.652626]  asm_exc_int3+0x39/0x40
+I hit a case where copy_to_kernel_nofault() will fault (lol): if the
+destination address is in userspace and x86 Supervisor Mode Access
+Prevention is enabled. Patch 2 has the details and the fix. Patch 1
+renames a helper function so that its use in patch 2 makes more sense.
+If the rename is too intrusive, I can drop it.
 
-Note that copy_to_kernel_nofault() uses pagefault_disable(), but it
-still faults. This is because with Supervisor Mode Access Prevention
-(SMAP) enabled, do_user_addr_fault() Oopses on a fault for a user
-address from kernel space _before_ checking faulthandler_disabled().
+Thanks,
+Omar
 
-copy_from_kernel_nofault() avoids this by checking that the address is
-in the kernel before doing the actual memory access. Do the same in
-copy_to_kernel_nofault() so that we get an error as expected:
+Omar Sandoval (2):
+  mm: rename copy_from_kernel_nofault_allowed() to
+    copy_kernel_nofault_allowed()
+  mm: make copy_to_kernel_nofault() not fault on user addresses
 
-  # echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc
-  # echo g > /proc/sysrq-trigger
-  ...
-  [17]kdb> mm 0 1234
-  kdb_putarea_size: Bad address 0x0
-  diag: -21: Invalid address
+ arch/arm/mm/fault.c         |  2 +-
+ arch/loongarch/mm/maccess.c |  2 +-
+ arch/mips/mm/maccess.c      |  2 +-
+ arch/parisc/lib/memcpy.c    |  2 +-
+ arch/powerpc/mm/maccess.c   |  2 +-
+ arch/um/kernel/maccess.c    |  2 +-
+ arch/x86/mm/maccess.c       |  4 ++--
+ include/linux/uaccess.h     |  2 +-
+ mm/maccess.c                | 10 ++++++----
+ 9 files changed, 15 insertions(+), 13 deletions(-)
 
-Signed-off-by: Omar Sandoval <osandov@fb.com>
----
- mm/maccess.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 72e9c03ea37f..d67dee51a1cc 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -61,6 +61,9 @@ long copy_to_kernel_nofault(void *dst, const void *src, size_t size)
- 	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
- 		align = (unsigned long)dst | (unsigned long)src;
- 
-+	if (!copy_kernel_nofault_allowed(dst, size))
-+		return -ERANGE;
-+
- 	pagefault_disable();
- 	if (!(align & 7))
- 		copy_to_kernel_nofault_loop(dst, src, size, u64, Efault);
 -- 
 2.46.0
 
