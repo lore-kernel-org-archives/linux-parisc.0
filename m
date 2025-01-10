@@ -1,55 +1,55 @@
 Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C1221D003
-	for <linux-parisc@vger.kernel.org>; Fri, 10 Jan 2025 18:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CC3A21C175
+	for <linux-parisc@vger.kernel.org>; Fri, 10 Jan 2025 18:41:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736534487; cv=none; b=dd/a9zwCXlQxuWHzFzQ9R0KUJYeos7FY65Vs6DttiVbhugvtr/qEQlc5xT2HTJA6ig8Hrg4cO68FncvAuGOXPOM1Yiz8WJDJWED9rNinkev0XJ4zjPuekmkG+jIQrGXlcPPz205U7ddGy5/JYzAj7cf+Q4Ig+eoGs7sLZi5tl20=
+	t=1736534495; cv=none; b=iIR73a0GskrLjk0o5xlICOLhulGTb+nfSfHOVuZGdJTffCtPrlmml/ABu1z/UaSuxiCEC6asrezMYTX5ZH+2tQWnXMKSc2G/rAxQ5uWoVNKKwbEzmGViGmpwX+PsqSqIO7qt11wlWxc7Dsqtm9Uv+Qq6/4pvP/q8mokYZptLPh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736534487; c=relaxed/simple;
-	bh=/mfc3OXZKkMfjutCKVHn2IBTQNtJN2eL6dFZpIMjD6c=;
+	s=arc-20240116; t=1736534495; c=relaxed/simple;
+	bh=ZTZcWQBF8tUo+J/JUKmX7ofVEYD/oEfP//Lw5p3vMVE=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=qDo0n/uei7Yv9VyKafgJnw776YZhVZvzxX1RLog1afJfcBqyPzfX6VdZ+6ju8mbg90iZBUQo9407XMHV0s2+1QvoTPlbGT8sgVWt7zzUKwUtrpXywIoFeM38dFCnrYJ6n1nVm9Q1/z4Hzm5H9VDdP8FsVBIxr/wxCWw1ym9g9zM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=daSPyeIy; arc=none smtp.client-ip=209.85.128.74
+	 To:Cc:Content-Type; b=ZpIOmgq5FIPox2umMCKK1NbM2Y1MQXW971sD3Tz+MfA26aSJ5j8alBZTE3lVOqQ4efANjYinmICVqfTn5zwrP8z5XWrmDgIsB/95nDKb8qr9JAXZkVCZ8taefC37cLoySozTnnWvdS7xeo0qX83fAo8qmsomBHaFFud/YZkGDaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rN5YQ4Qg; arc=none smtp.client-ip=209.85.128.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="daSPyeIy"
-Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-436248d1240so11542645e9.0
-        for <linux-parisc@vger.kernel.org>; Fri, 10 Jan 2025 10:41:08 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rN5YQ4Qg"
+Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-43582d49dacso16414215e9.2
+        for <linux-parisc@vger.kernel.org>; Fri, 10 Jan 2025 10:41:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736534464; x=1737139264; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1736534475; x=1737139275; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NdZ1cQRVb5G6t/AzbRzOJmiK1PmEXn2j4H5pJNPFFDE=;
-        b=daSPyeIyBPIsSgowHXYJtgHj6XtYA3XMkLR6T0xN8aDtbXLKHuzkLA5toAKySqpg3Y
-         fVylXdVKxN72v3IuLI7U+KDKYYJ+rHhV0G/eXzLoM+KWXRma6vBd7W3ziBv2xzluXsRq
-         IbXLyeJxNI19q9sQFxZMFfhNJSZmkx8xYskG33g/Uj4Bg5SSV9cRx9+0JZGgPv4s2220
-         s06GRgWySEj4pt4EnIV9RQfyKRGq0pOChMy1Y0DgqjK3Yk3LDIH4A3SJ0kJDyWfvUMR1
-         B1lE1NsZHvfcL7Y3uJK6ymU/vRhfMUICIgPFZNJw2Rab8spYVyhykzjxMXNdBoq0vtQc
-         ihpg==
+        bh=DqQy0/uo7rp5xt5hxwNN280PfwFL6RX7EFGPCdWY0es=;
+        b=rN5YQ4Qgxne0RHdvEWxSnVWuekoLjrSgQpBMyjzlbrZYm1LmGg03rDRNufoGUgrqm1
+         fRjnJsRo1w7eHCzSXj/ofLjpXz7q/v85GiJkPwg3IvDMvefS2fIGQzD5bW6VBiKviLbO
+         87+Wrmprat2mQXyZjSWVadja9OF6qD1bXpO4ip73dKrL+K3EAHnaA+XbztJKV8wDoLON
+         kcfkxi0KRxH81TX31k3jtBEx+ylXA2d/tEqiEY55nTCW+7RKk5wNZbT1mqLmIsaWEQgn
+         GECj3ff34jj4uN41yAzH+erWgR/dDYYb5GbUFspw5BeL/Ys7QkcazE3NWX4+YNgn+7Cl
+         M3ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736534464; x=1737139264;
+        d=1e100.net; s=20230601; t=1736534475; x=1737139275;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NdZ1cQRVb5G6t/AzbRzOJmiK1PmEXn2j4H5pJNPFFDE=;
-        b=P4J/sD8bOgEibL0CuXLcqAzWvwh/MFGhVwA8GvQjk91clRkKR6Q0y4O5tf7jd9EZ7w
-         /WOYDIrgt3yUghTUaryDqmsCYaTbpluAedfqH7I4tBjuvByoppolCdG9RJhTKkRFN8XM
-         bTwYDWoGohOvaFFxjqV9+pBsL5oqId3kuamYXo5T5eOiHzFfQ4HjFeiuuo+5tIF9FJps
-         AuBG7Kl5BeFkPuBrP1Y+NznCkR1rYaNiKkT9YIGaVv5khwflR+qq8KdfW6DSs8LWHS3O
-         /GW5ZGUF8oSahF2pQEHb5aWDNmfGCzOyf8ult1FZV46HlAbhCVBBYsvhKLsnQGahCfcU
-         mn5w==
-X-Forwarded-Encrypted: i=1; AJvYcCWPhbDSs4/jnArnBrry1wwu34pRsF+nEhhPBM2pE4KehqAAXDGw0u9js0d3Ix86R8MSQ0kQTuCOWAPCEcU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YywoQojbc1EyBFtQakQsx4ySFS+7q9i9qPIMlWqhxeL/IpjQ3sF
-	RlEYe+YCi3nMDYHl+WXdLOP6UoXvcbHn+RFehWgkVrSvLtnXZnegezt4bkhj+hA90Q66zsYDQI/
-	cIKhvv8qrzA==
-X-Google-Smtp-Source: AGHT+IHOqPqFuZt9UmOoUeA2JDIFLsGLn/JF5TCYjoXI0XK4RQVEWWzyMiwW2MB3CIHY3dySJS8wD0E+4CgsAA==
-X-Received: from wmgg11.prod.google.com ([2002:a05:600d:b:b0:434:ff52:1c7])
+        bh=DqQy0/uo7rp5xt5hxwNN280PfwFL6RX7EFGPCdWY0es=;
+        b=oYVoXAaSKqLMF/E6t3f1AbRdtinGHKCAR08F8BDZFBI7HWhn4Zm2eToVclEfU59do2
+         uzJOUdeEuDMgpDtaH9hKK+4asQQlE6PXbNACmrQXhINoMyN8779/l+E90zh3o+hFtPLH
+         keqyCEpTbFXG08moBnMd6AEpdiWwYrKWgXcI9tiaG+u2dtP37Uux2WndrrjMR+9yuGPK
+         T5ZteuQcvRoXMUZqGJ/Odabj4QmtaqSEvgsEtY1lF311Ygo5Ab6oRGtEHAqsRqHwvy8j
+         hwQ/JQfmILk5Bn+tZpEgGv1BVqWuQY4xbOHUMlwnwX9vlp0H6ywzUPPlwErXFEhg7n68
+         fV6A==
+X-Forwarded-Encrypted: i=1; AJvYcCVtle9Lz80UtGU2pp9S5g/BgRaArKcXQtQkjQfvKeJGZyYrN+5niGjy7zFbvyfIBH8Kt9zYD8wuS5tNVHU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGpY/TVCG/jGkEjTmznhS8NON7tC4rFI+gTNlK4H0QhJ2trQ7t
+	rGKwqaV+3NMT5B1hzye1VAXI0RNn6XpwhQ/Zs+ac1R+LAA5fYb6I6pAwTkeHIKWAnqSJcs38e1f
+	WnqdfrtPAWw==
+X-Google-Smtp-Source: AGHT+IEHMyjAf4Ii6uANDaoYyo5ZkF+D1/fwKOgm4kaaSXfegc+L5vVxTYn6WIEloGlJDmt93RFbSdb2jTZqKA==
+X-Received: from wmbjt19.prod.google.com ([2002:a05:600c:5693:b0:435:4bd2:1dcd])
  (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:4ed3:b0:434:f7e3:bfbd with SMTP id 5b1f17b1804b1-436e26dda8cmr98320145e9.23.1736534463780;
- Fri, 10 Jan 2025 10:41:03 -0800 (PST)
-Date: Fri, 10 Jan 2025 18:40:34 +0000
+ 2002:a05:600c:4e44:b0:434:e9ee:c3d with SMTP id 5b1f17b1804b1-436e27070b1mr106983675e9.20.1736534474969;
+ Fri, 10 Jan 2025 10:41:14 -0800 (PST)
+Date: Fri, 10 Jan 2025 18:40:39 +0000
 In-Reply-To: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
@@ -59,9 +59,8 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 X-Mailer: b4 0.15-dev
-Message-ID: <20250110-asi-rfc-v2-v2-8-8419288bc805@google.com>
-Subject: [PATCH RFC v2 08/29] mm: asi: Avoid warning from NMI userspace
- accesses in ASI context
+Message-ID: <20250110-asi-rfc-v2-v2-13-8419288bc805@google.com>
+Subject: [PATCH RFC v2 13/29] mm: Add __PAGEFLAG_FALSE
 From: Brendan Jackman <jackmanb@google.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
@@ -112,73 +111,42 @@ Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
 	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
 	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
 	kvm@vger.kernel.org, linux-efi@vger.kernel.org, 
-	Brendan Jackman <jackmanb@google.com>, Junaid Shahid <junaids@google.com>, 
-	Yosry Ahmed <yosryahmed@google.com>
+	Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="utf-8"
 
-nmi_uaccess_okay() emits a warning if current CR3 != mm->pgd.
-Limit the warning to only when ASI is not active.
+__PAGEFLAG_FALSE is a non-atomic equivalent of PAGEFLAG_FALSE.
 
-Co-developed-by: Junaid Shahid <junaids@google.com>
-Signed-off-by: Junaid Shahid <junaids@google.com>
-Co-developed-by: Yosry Ahmed <yosryahmed@google.com>
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Checkpatch-args: --ignore=COMPLEX_MACRO
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- arch/x86/mm/tlb.c | 26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
+ include/linux/page-flags.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index b2a13fdab0c6454c1d9d4e3338801f3402da4191..c41e083c5b5281684be79ad0391c1a5fc7b0c493 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -1340,6 +1340,22 @@ void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
- 	put_cpu();
- }
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index cc839e4365c18223e68c35efd0f67e7650708e8b..7ee9a0edc6d21708fc93dfa8913dc1ae9478dee3 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -484,6 +484,10 @@ static inline int Page##uname(const struct page *page) { return 0; }
+ FOLIO_SET_FLAG_NOOP(lname)						\
+ static inline void SetPage##uname(struct page *page) {  }
  
-+static inline bool cr3_matches_current_mm(void)
-+{
-+	struct asi *asi = asi_get_current();
-+	pgd_t *pgd_asi = asi_pgd(asi);
-+	pgd_t *pgd_cr3;
++#define __SETPAGEFLAG_NOOP(uname, lname)					\
++static inline void __folio_set_##lname(struct folio *folio) { }		\
++static inline void __SetPage##uname(struct page *page) {  }
 +
-+	/*
-+	 * Prevent read_cr3_pa -> [NMI, asi_exit] -> asi_get_current,
-+	 * otherwise we might find CR3 pointing to the ASI PGD but not
-+	 * find a current ASI domain.
-+	 */
-+	barrier();
-+	pgd_cr3 = __va(read_cr3_pa());
-+	return pgd_cr3 == current->mm->pgd || pgd_cr3 == pgd_asi;
-+}
+ #define CLEARPAGEFLAG_NOOP(uname, lname)				\
+ FOLIO_CLEAR_FLAG_NOOP(lname)						\
+ static inline void ClearPage##uname(struct page *page) {  }
+@@ -506,6 +510,9 @@ static inline int TestClearPage##uname(struct page *page) { return 0; }
+ #define TESTSCFLAG_FALSE(uname, lname)					\
+ 	TESTSETFLAG_FALSE(uname, lname) TESTCLEARFLAG_FALSE(uname, lname)
+ 
++#define __PAGEFLAG_FALSE(uname, lname) TESTPAGEFLAG_FALSE(uname, lname)		\
++	__SETPAGEFLAG_NOOP(uname, lname) __CLEARPAGEFLAG_NOOP(uname, lname)
 +
- /*
-  * Blindly accessing user memory from NMI context can be dangerous
-  * if we're in the middle of switching the current user task or
-@@ -1355,10 +1371,10 @@ bool nmi_uaccess_okay(void)
- 	VM_WARN_ON_ONCE(!loaded_mm);
- 
- 	/*
--	 * The condition we want to check is
--	 * current_mm->pgd == __va(read_cr3_pa()).  This may be slow, though,
--	 * if we're running in a VM with shadow paging, and nmi_uaccess_okay()
--	 * is supposed to be reasonably fast.
-+	 * The condition we want to check that CR3 points to either
-+	 * current_mm->pgd or an appropriate ASI PGD. Reading CR3 may be slow,
-+	 * though, if we're running in a VM with shadow paging, and
-+	 * nmi_uaccess_okay() is supposed to be reasonably fast.
- 	 *
- 	 * Instead, we check the almost equivalent but somewhat conservative
- 	 * condition below, and we rely on the fact that switch_mm_irqs_off()
-@@ -1367,7 +1383,7 @@ bool nmi_uaccess_okay(void)
- 	if (loaded_mm != current_mm)
- 		return false;
- 
--	VM_WARN_ON_ONCE(current_mm->pgd != __va(read_cr3_pa()));
-+	VM_WARN_ON_ONCE(!cr3_matches_current_mm());
- 
- 	return true;
- }
+ __PAGEFLAG(Locked, locked, PF_NO_TAIL)
+ FOLIO_FLAG(waiters, FOLIO_HEAD_PAGE)
+ FOLIO_FLAG(referenced, FOLIO_HEAD_PAGE)
 
 -- 
 2.47.1.613.gc27f4b7a9f-goog
