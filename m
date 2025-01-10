@@ -1,55 +1,55 @@
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+Received: from mail-lf1-f73.google.com (mail-lf1-f73.google.com [209.85.167.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097352253FF
-	for <linux-parisc@vger.kernel.org>; Fri, 10 Jan 2025 18:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB6E28DB0E
+	for <linux-parisc@vger.kernel.org>; Fri, 10 Jan 2025 18:46:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736534547; cv=none; b=hY+8VxzCqURjPLddHtZC4AQEtbgrAFT2Uni2rylfBzKrmlQpLppans6LkpT9DIMuHOCazPXE1X0If6m9Xe3Pzr6lLN5NA+gtVtKGRYLtTKnzwzKZymLHQS5NuizjCIyN3Vk9O9MPW2e7QI3bkoRy4mPwT4tMtcwBNV1DrykQ/pc=
+	t=1736534816; cv=none; b=UHKovsVL1QO4K6YyaKZ/cZrakcsrkLdDTIETZD6P7mZuHnNnrVtetDwgHXNwbpiJroA7HCnv5S08X9KerBCrYq3VF8Us25iy2EElaUbr6/STGQxfDWd+2CI37ghKogy9G7Jbif5OIta6SFvBl0K6DD3Wgic667kqLTlqKaI9bIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736534547; c=relaxed/simple;
-	bh=grUiPSYSTM6ChkvRHUtI259QuAZLs69ifkTxsxb8DH0=;
+	s=arc-20240116; t=1736534816; c=relaxed/simple;
+	bh=gGBo/k79fltK/LiW8yEcfC3C6FkuDBayaBiJeug/v8c=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=U0KP29KKpk63jOwmqHBr11fqyBBi1tr3zT7smNSEtQTrg1Yl+qO4ilq0eUdcXsnxBzyPmLEneaH31QQQdk79HlzrWLBqqFes/3Tde4AFFuMe7vOEagBl1lW0jGxVDAiMaiTK8mbTti45nGRCLIOvCU0+/DO9rHOyD25vw/0HglY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jPSNrYrl; arc=none smtp.client-ip=209.85.128.73
+	 To:Cc:Content-Type; b=JSsHX/OFBthJ0JD8mfi3PXL/1p/inJH5IbZEgA8oI1pIFq7R6c39HoZTiQfku5F6MD9q2/LDBc0UJWPhNpSeZewhfgqaiKoWOK095GfvJpUqKcxMMSRFhydXRlL9UMu7cl4moNZXUw1UTiLhoF4vfH/5VGl/x52jnTsFqYdPQfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aAuwYjkP; arc=none smtp.client-ip=209.85.167.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jPSNrYrl"
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-4362f893bfaso12711795e9.1
-        for <linux-parisc@vger.kernel.org>; Fri, 10 Jan 2025 10:41:32 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aAuwYjkP"
+Received: by mail-lf1-f73.google.com with SMTP id 2adb3069b0e04-5400e88b7a4so1811653e87.3
+        for <linux-parisc@vger.kernel.org>; Fri, 10 Jan 2025 10:46:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736534489; x=1737139289; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1736534813; x=1737139613; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lgAtsH7tF25YqHAENGvYLMvhBopdecMcg5W9s6t9Qm4=;
-        b=jPSNrYrl7m4sEbINchbPyJH0zkt7TPzr1VUx8iMrzYag9mmHclvO58cCt3cAm8eozj
-         kD77/P5Rsr8LLmY3c2VFMhDrQ+VnfNe1hyL29gEM0Kyf/nqcN/zv7swGGdZ4UI2xU9No
-         mrdH2o2O5V2Fl8j5e1aDbHt9lD2d5VPuEWNWFDDE/s7BsM2HED8amVxzPyZcFgDPHmVm
-         9AqCHcA/FHLUaJ3WLLSmxBF1FoEJVgYnF0FnihRUVfo+tjkRXjxiC80NPWmXufoZKtl3
-         8H8t2cNRnoNutG44qImfoLOIiTSr7Kc0HX3SflQDxcJHF9UlccVsZ5pRye8F6sty/Zgq
-         Lr+w==
+        bh=49F9KmkByYRspQkaSYzsGBFq+GnQYA+RnfOGnAD1TNs=;
+        b=aAuwYjkPXRsQGBjRUE9wOqIKWx803RZKLPLeFjC0tYX3cmLVsk7KwVokFzEtu2Unpx
+         +Rx/5QCuv4+Np6jm+IrS2ErMCNPaBHRZn6O0gcMU0KOf5+MUj0yo93xVdyFW0WdoY7yE
+         shIrwuPVoPK7xmPvKU2SEwVXPK6QKW+keA/0cparmxf/yNAEmFOvsaO9sJO53jSRVatq
+         nwEwFlTPvOdDZSOBfilZyKwlag8C8gY3TYASJYEeuaiZdacHq/8mf9Z4fsEX3MN7F+yh
+         0MykYjxCfmjh4z2gPkEcbNIVZMnn98KTp6PMY2gDJQfdiOw3Ki0kEtFx/ewsA+N9XFmX
+         8IOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736534489; x=1737139289;
+        d=1e100.net; s=20230601; t=1736534813; x=1737139613;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lgAtsH7tF25YqHAENGvYLMvhBopdecMcg5W9s6t9Qm4=;
-        b=aRLjUt8mJiLe44lxU81muKa3YM1Zn/ziBqd2R2sCOSHsFk+Z6JBNYwi0IH3yzqgiTj
-         K/f10RrBJxaISq4uTZlcdxtUd0F832Xv21DWXGQE0HFq1bBMpY7H3K+IPZrWTkdJtMvN
-         6sv6WddGKr1TGNoHRKoMYbhFGzDFCwwpZefdu+RwTlKyzfHo1COcq6sh5nmi6XnZIbcm
-         Tw5Ll5yYzWRs2pEJEFNB1k/kK9jbFYzxypbXDS0RTdk0TkT6JPGVEofzGVkvCgk9tnSH
-         mXjsYqlzUt6WrCKSwla4U3jiTRBSA50L0WTjPPR1ljHVudBl7gZFQMEEm7ZndvZZlkxC
-         vv0g==
-X-Forwarded-Encrypted: i=1; AJvYcCXqVwbkuKg73KtdyVWk8/eZYB0g5dr/s22IsPApUtoJZal5paRox2JDuowTHpZBD0I6UJOQr9wU4u21/Aw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDdWzMuBd9QnMvWyDUrPs1eakVKV4WeFaWf710L/pTAu+FWSD3
-	Lr7fQpJy7G/I2ggXNKdXlXdBUW2E4DPwPreid5KtYPk5bg9kt4uyq/d6VCyrKc/CDBSIUZFz6Oa
-	MAf/Rxil6bA==
-X-Google-Smtp-Source: AGHT+IFeKlzdEnxlsx468YN6J+lzj2fJ2REIK9m1LE7fZOV2UV2JrR/PAzf48/PWmJ/jsXO7ZyblIN12CqtAPQ==
-X-Received: from wmqa17.prod.google.com ([2002:a05:600c:3491:b0:434:fa72:f1bf])
+        bh=49F9KmkByYRspQkaSYzsGBFq+GnQYA+RnfOGnAD1TNs=;
+        b=fcKxpvBvrVkjWo6KZOsKEmGSDiTrdKZeKXczyeFSsPimCPOsu976U3dFCN6dobtk03
+         0FlgQHAVXHY3eFB3GIo9TDIFaaS8QW8Qs3arwd1GeOp8HgRHzJUb0Jq9QP08I1Op2XsM
+         o45b2+5C0C9909yVPNHXAEbXz5QdgpsKCn2SNiHhOXaY5HAPq6TcuOQ84DeNo45JO4DR
+         j/HjNmh93mOoyCiYf8Unp3S2Cma3jb5n8brQoGdi7pFCD1t+BYpI70GcHSOksj/ZQZxO
+         cHeoy5Y/Q7gnPlCMX/t3qj0UO0AvVQNb/LycODNgXkaG/xmZ0OG6T0qHN40lkDswru6u
+         rJpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVaG+4JVnptnKtDWG+h49MVkblC1L/H5YBjp7L7M5LoVlUqV6r8MzEst9/pR0eFx995T3pIdVP++cXN6xc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzfPbZoFxcr4B3oN3GNAuLashZPvilr+OJiiOM3U8LlAshI7Ax3
+	w2jhrdmilYWIiGsLUCg8jh1z+HkVaaB5wZFXaIV9UrPzVHbKtfSXVtGz10oFBaXfxuuhBAwWWpk
+	vblXFGfyq8Q==
+X-Google-Smtp-Source: AGHT+IFKWz0raFavEVPdqLi0m3c/SgK/uJNRKjAz6M2EuA2Ei6coxzOA0we1XFhGSIskVPMsumh+r4On/rf0kg==
+X-Received: from wmrn35.prod.google.com ([2002:a05:600c:5023:b0:434:f2eb:aa72])
  (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:4586:b0:434:9e1d:7626 with SMTP id 5b1f17b1804b1-436e26f4b91mr97248925e9.25.1736534488470;
- Fri, 10 Jan 2025 10:41:28 -0800 (PST)
-Date: Fri, 10 Jan 2025 18:40:45 +0000
+ 2002:a05:600c:1d07:b0:434:fa73:a907 with SMTP id 5b1f17b1804b1-436e269a5f5mr112362055e9.13.1736534508901;
+ Fri, 10 Jan 2025 10:41:48 -0800 (PST)
+Date: Fri, 10 Jan 2025 18:40:54 +0000
 In-Reply-To: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
@@ -59,8 +59,8 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 X-Mailer: b4 0.15-dev
-Message-ID: <20250110-asi-rfc-v2-v2-19-8419288bc805@google.com>
-Subject: [PATCH RFC v2 19/29] mm: asi: Stabilize CR3 in switch_mm_irqs_off()
+Message-ID: <20250110-asi-rfc-v2-v2-28-8419288bc805@google.com>
+Subject: [PATCH RFC v2 28/29] x86/pti: Disable PTI when ASI is on
 From: Brendan Jackman <jackmanb@google.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
@@ -114,31 +114,95 @@ Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
 	Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="utf-8"
 
-An ASI-restricted CR3 is unstable as interrupts can cause ASI-exits.
-Although we already unconditionally ASI-exit during context-switch, and
-before returning from the VM-run path, it's still possible to reach
-switch_mm_irqs_off() in a restricted context, because KVM code updates
-static keys, which requires using a temporary mm.
+Now that ASI has support for sandboxing userspace, although userspace
+now has much more mapped than it would under KPTI, in theory none of
+that data is important to protect.
+
+Note that one particular impact of this is it makes locally defeating
+KASLR easier. I don't think this is a great loss given [1] etc.
+
+Why do we pass in an argument instead of just having
+pti_check_boottime_disable() check boot_cpu_has(X86_FEATURE_ASI)? Just
+for clarity: I wanted it to be at least _sort of_ visible that it would
+break if you reordered asi_check_boottime_disable() afterwards.
+
+[1]:  https://gruss.cc/files/prefetch.pdf
+      and https://dl.acm.org/doi/pdf/10.1145/3623652.3623669
 
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- arch/x86/mm/tlb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/include/asm/pti.h |  6 ++++--
+ arch/x86/mm/init.c         |  2 +-
+ arch/x86/mm/pti.c          | 14 +++++++++++++-
+ 3 files changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index c55733e144c7538ce7f97b74ea2b1b9c22497c32..ce5598f96ea7a84dc0e8623022ab5bfbba401b48 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -546,6 +546,9 @@ void switch_mm_irqs_off(struct mm_struct *unused, struct mm_struct *next,
- 	bool need_flush;
- 	u16 new_asid;
+diff --git a/arch/x86/include/asm/pti.h b/arch/x86/include/asm/pti.h
+index ab167c96b9ab474b33d778453db0bb550f42b0ac..79b9ba927db9b76ac3cc72cdda6f8b5fc413d352 100644
+--- a/arch/x86/include/asm/pti.h
++++ b/arch/x86/include/asm/pti.h
+@@ -3,12 +3,14 @@
+ #define _ASM_X86_PTI_H
+ #ifndef __ASSEMBLY__
  
-+	/* Stabilize CR3, before reading or writing CR3 */
-+	asi_exit();
++#include <linux/types.h>
 +
- 	/* We don't want flush_tlb_func() to run concurrently with us. */
- 	if (IS_ENABLED(CONFIG_PROVE_LOCKING))
- 		WARN_ON_ONCE(!irqs_disabled());
+ #ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
+ extern void pti_init(void);
+-extern void pti_check_boottime_disable(void);
++extern void pti_check_boottime_disable(bool asi_enabled);
+ extern void pti_finalize(void);
+ #else
+-static inline void pti_check_boottime_disable(void) { }
++static inline void pti_check_boottime_disable(bool asi_enabled) { }
+ #endif
+ 
+ #endif /* __ASSEMBLY__ */
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index ded3a47f2a9c1f554824d4ad19f3b48bce271274..4ccf6d60705652805342abefc5e71cd00c563207 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -754,8 +754,8 @@ void __init init_mem_mapping(void)
+ {
+ 	unsigned long end;
+ 
+-	pti_check_boottime_disable();
+ 	asi_check_boottime_disable();
++	pti_check_boottime_disable(boot_cpu_has(X86_FEATURE_ASI));
+ 	probe_page_size_mask();
+ 	setup_pcid();
+ 
+diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
+index 851ec8f1363a8b389ea4579cc68bf3300a4df27c..b7132080d3c9b6962a0252383190335e171bafa6 100644
+--- a/arch/x86/mm/pti.c
++++ b/arch/x86/mm/pti.c
+@@ -76,7 +76,7 @@ static enum pti_mode {
+ 	PTI_FORCE_ON
+ } pti_mode;
+ 
+-void __init pti_check_boottime_disable(void)
++void __init pti_check_boottime_disable(bool asi_enabled)
+ {
+ 	if (hypervisor_is_type(X86_HYPER_XEN_PV)) {
+ 		pti_mode = PTI_FORCE_OFF;
+@@ -91,6 +91,18 @@ void __init pti_check_boottime_disable(void)
+ 		return;
+ 	}
+ 
++	if (asi_enabled) {
++		/*
++		 * Having both ASI and PTI enabled is not a totally ridiculous
++		 * thing to do; if you want ASI but you are not confident in the
++		 * sensitivity annotations then it provides useful
++		 * defence-in-depth. But, the implementation doesn't support it.
++		 */
++		if (pti_mode != PTI_FORCE_OFF)
++			pti_print_if_insecure("disabled by ASI");
++		return;
++	}
++
+ 	if (pti_mode == PTI_FORCE_ON)
+ 		pti_print_if_secure("force enabled on command line.");
+ 
 
 -- 
 2.47.1.613.gc27f4b7a9f-goog
