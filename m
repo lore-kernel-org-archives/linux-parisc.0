@@ -1,28 +1,28 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD0B325DD0B;
-	Tue, 11 Mar 2025 15:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53A025D918;
+	Tue, 11 Mar 2025 15:22:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741705564; cv=none; b=ThZqjI7TD82qh2nkm5HG9MkFxjtLrO3FJQacQa5uqGIA9kNmC0SGCPnD+PS8lHSd3KL0ASJlURgv6UVdomKoBxH3b9Qu1pxbNdlAlftyyrqr0F9NIrJQqJa/4vj3ctZm3dwEwz8N+1X++lpE6Aid/NUNfnRp7uQI57FKX2eqmkY=
+	t=1741706567; cv=none; b=HcceRTFUoNq0HfHK/uMPOHwJn7qutqFtCcwLs1E0/3GWGiJaVvgXwm/28FY3o+EJe9bPwbxIU9Gpr1roXpev1L5r78VRmmcfsLlHkF0jPk2meXSSsN/IRNqNeEP5bbgkasfzENKLp7ktZiQJHSPChHrkXiLR0h6NaJA5J2BYd3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741705564; c=relaxed/simple;
-	bh=teU+hXn+Myk6jvRF7qkBDarMFZ6al5Sl9daMvda9Ukc=;
+	s=arc-20240116; t=1741706567; c=relaxed/simple;
+	bh=jfMEqxbgBdGVFnDs5yBPsyLQMCEa4P3jCJ3E8KJALXM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DbXqlgnrJi3oxDyZWYNrioZxlngFKvPtB16soV7olAJ/QaiVARTiFCL92dQEl3aJ1gvykcIJVV0Gqe0SPKWerejLpGwfSmnOkWjwKEtW952Oi1nQrd1IlxZ4x0gb2gRXgQRd7hwqRgL9fM11QvglMfLsEAurhoCvMxT/9WgHDwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=oBaIM/Bq; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=sKzI74h8KY4Bsv+fIOeKyC88l6A6XJtLr0tf/2NS8zTiyu4XTqj8QpUH7PdH9X5Idtdz/c3Xi/xL0Ndi8CG7bPYXYPgE5B/H0H6MynjDBj/IZyatO1amQB7j0+eZch7pfetDkt31RLoBm5sP4AmFYR/8VdRzdVzRDJSI1tvrMOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=sqczCio5; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="oBaIM/Bq"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09A29C4CEEA;
-	Tue, 11 Mar 2025 15:06:04 +0000 (UTC)
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="sqczCio5"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 211B0C4CEE9;
+	Tue, 11 Mar 2025 15:22:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1741705564;
-	bh=teU+hXn+Myk6jvRF7qkBDarMFZ6al5Sl9daMvda9Ukc=;
+	s=korg; t=1741706567;
+	bh=jfMEqxbgBdGVFnDs5yBPsyLQMCEa4P3jCJ3E8KJALXM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oBaIM/Bqfh8/3MNUYVgxrIQJEhr6ZPeS/8BCrv5G8DdiayVywmIXTJkn3lDUoqxmj
-	 6aX6/T6KHlZSvrLWCxCEqBK5qan1qguUumpD6WriYfqMGhYKZV8hqSWJGyxW/yxriR
-	 Z4t6MvD1DXxlaQGpnFhBVM9cg4JtTijjp9QflCoE=
+	b=sqczCio5r9m2UZMc3/94eL8/4pL5AZylZtpcmriDK3TwQDOpZNIHZ5uoA+uuoXwjW
+	 GxXyIwryu94tXGKJU6V4Vgk05yqx/UEoO8dw9Af6Fg1H4DOShfV2Vl9YQ8auvPlG3d
+	 mHHH+ujbGLo9aG5YkFuNwkRtSEXVsn6YpakBLGOU=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -42,12 +42,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	Petr Pavlu <petr.pavlu@suse.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 059/328] module: Extend the preempt disabled section in dereference_symbol_descriptor().
-Date: Tue, 11 Mar 2025 15:57:09 +0100
-Message-ID: <20250311145717.241367846@linuxfoundation.org>
+Subject: [PATCH 5.10 093/462] module: Extend the preempt disabled section in dereference_symbol_descriptor().
+Date: Tue, 11 Mar 2025 15:55:59 +0100
+Message-ID: <20250311145802.027766156@linuxfoundation.org>
 X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250311145714.865727435@linuxfoundation.org>
-References: <20250311145714.865727435@linuxfoundation.org>
+In-Reply-To: <20250311145758.343076290@linuxfoundation.org>
+References: <20250311145758.343076290@linuxfoundation.org>
 User-Agent: quilt/0.68
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -59,7 +59,7 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-5.4-stable review patch.  If anyone has any objections, please let me know.
+5.10-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -98,7 +98,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
-index 1f96ce2b47df1..d84b677c728a9 100644
+index 430f1cefbb9e1..ea2eb5fe83a3c 100644
 --- a/include/linux/kallsyms.h
 +++ b/include/linux/kallsyms.h
 @@ -63,10 +63,10 @@ static inline void *dereference_symbol_descriptor(void *ptr)
