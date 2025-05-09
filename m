@@ -1,37 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D862918CD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC7D2918EA;
 	Fri,  9 May 2025 12:55:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746795306; cv=none; b=j3HXn1cSYExo8tchWQWcOCWuVdEsBtd4OSHyL2JFssgRxE+GxFVw6j5lYV4lw11DXt2CZVIOoZbRwmdq+ud6Am2QXWTz5DC1Vg3Vi0Lslid6Az6+qWvLrX3Ar3deEUUh5ZbqzptmSWGvpoiqQ0Mup4gdiW6U8RnEXO+AUf6Ot54=
+	t=1746795307; cv=none; b=HqezKgZF4ixUOXZakrIa5nE9Is0u7eViwvLfWF9kOD5NRRPHHpjId85nzriUaeJxaVRJD7LVBrHAraCqINRnzrnVXVv33NK822KTLEI+38tsy7qzJYuJfqE8Z6dI74OLjQt+raw17ufdstXWLqD1RHIfrpVzhN1XixWj1o4ahQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746795306; c=relaxed/simple;
-	bh=g7LsXDd+j505V+MKQpG5RDYoahnYOKgJjZC/QSb5FNw=;
+	s=arc-20240116; t=1746795307; c=relaxed/simple;
+	bh=bpddqMKPTBhFpPzB7Q4vEETp0NRXruc3g0KF10Cik6o=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=uedX5XRsgk8EwMTgYNpkYceUrE8QZ14lgn7uq4l2VT/oIV2ptRhXyudu1zadDDkBzLLGWf+cViSOeyAr9W6O9l1WvOi0Y4AJ82JM10dXAC4VHg7fbD/782+lkqcAilXjjZPZLoRivBADscGAcD5VPhOeRXYhF9ojA2LvKDiaGs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AZos1YGS; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=azA/puNYAtt1/jjmNLOZhjbHTp1dbhOtFrIc5FP1CE7GTwP99C+n58A4UEWVXgcaWKS5JHuxPQ1KITyNyXWG4DmHd7G4epRHKsyyhfn7Flh2Cigq+J+l75UY24wtttNPUvYnf98av3exoTuGye3CWkKWElLkLE6N0TpN+XP1sfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ajj8qhEm; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AZos1YGS"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0B7ABC116C6;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ajj8qhEm"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3C3A3C4CEFA;
 	Fri,  9 May 2025 12:55:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1746795306;
-	bh=g7LsXDd+j505V+MKQpG5RDYoahnYOKgJjZC/QSb5FNw=;
+	bh=bpddqMKPTBhFpPzB7Q4vEETp0NRXruc3g0KF10Cik6o=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=AZos1YGSXt9UXSVIeC+gyN74Etce15A3NaBIuLDesNCwSOo8s0bEHwUU7oROdtf0n
-	 9HNQ7vhkC/1gkzBpfxg5tdCsy+6Z0fe9pgo5KGojPunL/cCbQ3ZcQ1EV9IsrZq0xBf
-	 SlePsaI7NgcgmhNKzIKwKXu7QrWh9AdvBxtte1MF3wn7WUBxFU8La9kaKH60ytbnuN
-	 R42jbaUt8pZVtpywz35pSPIf815RgDJ162w7DwLKl0+kvM2ZXGTLhV0uRRCXEJsajO
-	 +OcahojoTwqT7CXL4rpDUKZBhR1lxB/BJSbelppvDVoglsfj1mBey7V0UdaDqXQ1T0
-	 AHDQ5F/dS7JKA==
+	b=ajj8qhEmlMpoR5/avhBe2jrdSrQXeAB9ii7yTmnNAi2HxvhyZ/ddvZx9v/zgsm+qR
+	 x/6NmcSSABKOl86PhMa8dZ7MPzb+Qdj5TA3vsfP0hP9gUE+dC+7SPpBXk8dcbyoo6S
+	 ciTGpSy4aI2riNpJ0MDYkxFuJGzUYzX9ocl3d2gwBVXRrPFHsi3voOtHwRoc/dwKdv
+	 tMVpmqe0xhDSDqT6SbQp/FI57/y2lFXJi9mYl+FKHZyLbsnwFH3PlxLETlopG/ZO1A
+	 GZWYqIMH1f/XRgfmYgcK1S2z+YD56bm8iy4aPVhoR6pb7uUykVNAqOk0s2iYNjkter
+	 0fqjdrv3JFPcQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01925C3ABCC;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31513C3ABCC;
 	Fri,  9 May 2025 12:55:06 +0000 (UTC)
 From: Joel Granados <joel.granados@kernel.org>
-Date: Fri, 09 May 2025 14:54:10 +0200
-Subject: [PATCH 06/12] fork: mv threads-max into kernel/fork.c
+Date: Fri, 09 May 2025 14:54:13 +0200
+Subject: [PATCH 09/12] sysctl: move cad_pid into kernel/pid.c
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -40,7 +40,7 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250509-jag-mv_ctltables_iter2-v1-6-d0ad83f5f4c3@kernel.org>
+Message-Id: <20250509-jag-mv_ctltables_iter2-v1-9-d0ad83f5f4c3@kernel.org>
 References: <20250509-jag-mv_ctltables_iter2-v1-0-d0ad83f5f4c3@kernel.org>
 In-Reply-To: <20250509-jag-mv_ctltables_iter2-v1-0-d0ad83f5f4c3@kernel.org>
 To: Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, 
@@ -66,26 +66,27 @@ Cc: linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-parisc@vger.kernel.org, linux-serial@vger.kernel.org, 
  Joel Granados <joel.granados@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2440;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3106;
  i=joel.granados@kernel.org; h=from:subject:message-id;
- bh=g7LsXDd+j505V+MKQpG5RDYoahnYOKgJjZC/QSb5FNw=;
- b=owJ4nAHtARL+kA0DAAoBupfNUreWQU8ByyZiAGgd+yQ/uWK/HG1C61w82jo0nQJAkZrwNaRTQ
- Kzdwz6TUJcOyIkBswQAAQoAHRYhBK5HCVcl5jElzssnkLqXzVK3lkFPBQJoHfskAAoJELqXzVK3
- lkFP5gcMAIFO2d6rVgT6EKcTmTnIIh5UBVX/xKxmcuUTXSbrkCQUFpfo23HIWCeg8lL9+/SmVc/
- wMQuryABzQbKLqJgYFC1QWq55hJcvP+tU2PTyZkeJC/OVtzsTZQ/ekzJOYDMD5OXR7RA7MNpiHw
- DWGtslYalBKnX4v/OZwXHpjwxW7ypE8DnYYz6VIp/aCFYqJydkFGyJZfbvlzKl+mHZoVO2Mrs4i
- SmNFu7CS2gpbq2cBPi1pnre4gHOjRveT+FIx/NZOc1ttqqym6PVJsSQpnUGcTJwXZbwHWsFGhbj
- 4u9+eNLUJC4qoDTTYLnroNX83r/N6o5QnbPCBWjuV3fKNVL21qaJnCrONdHewkNLIcIBCc/7Ojb
- k12NIcmQoGPLGzmePG67PgJZq04KQsxm0xdPTiQAyBfhB5up3+XiLPdyLFmALcDrr286yquKuuc
- Rbpu1HJEE6D/X+MWIPZsfT0K9KaTNq1tWG/NTJIcpSunVpPbn0ioZqiTeHwnwZDJdA4QNjcWEC7
- d8=
+ bh=bpddqMKPTBhFpPzB7Q4vEETp0NRXruc3g0KF10Cik6o=;
+ b=kA0DAAoBupfNUreWQU8ByyZiAGgd+yWiielUUZACujyl8jOrulsz1fYpBCHwtYK+YtZFw5/za
+ 4kBswQAAQoAHRYhBK5HCVcl5jElzssnkLqXzVK3lkFPBQJoHfslAAoJELqXzVK3lkFPcdoL/3K0
+ M/MaJWC4QAeabx7/KfG9il1+qnbzwuXO3ZCy8VPeYq7BERSFODTJupA9U4Z73cuYJIgvWD3BqdB
+ gZyPD5wrmFGrb5goKkjtmXJPSgMbNxzbmCZpHvchlkgWMiaj6qBnR2uAAN04BoIq1k85sKnfJnu
+ z3jzXB4uMIL4DI/G5vOMvAgHYJWk5sTwmcgQtlBeWJiBqLkCy2N4sbbykzpmo6yuRFnbSpAqM/b
+ cktCdto61a4CS97jv7kPB74xmO1gwruMUVHP99OfSZhmD+E7SzLcs5MhkitLftMov3hnHn8rRI6
+ Q7tLo4fW5pWjdSFMN8TsJVyzBzLDNZ5TlfzZnhu+6sfP7Y4+HttHcwwUjU9xQ1n4eUu8m/d/mQP
+ K+86JrrX2uB9A42mQ35aFapsPmvU+M1ygWLhiKmFw19vTgXGgXLIXCIu7BUufcxh8yarQ2A21BL
+ sECoALsl2QU5r2tYvYZeNJzCvFYFnbHoB0fihlJgx4hPhpaTJgKzEb+IysjQ==
 X-Developer-Key: i=joel.granados@kernel.org; a=openpgp;
  fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
 X-Endpoint-Received: by B4 Relay for joel.granados@kernel.org/default with
  auth_id=239
 
-make sysctl_max_threads static as it no longer needs to be exported into
-sysctl.c.
+Move cad_pid as well as supporting function proc_do_cad_pid into
+kernel/pic.c. Replaced call to __do_proc_dointvec with proc_dointvec
+inside proc_do_cad_pid which requires the copy of the ctl_table to
+handle the temp value.
 
 This is part of a greater effort to move ctl tables into their
 respective subsystems which will reduce the merge conflicts in
@@ -93,76 +94,109 @@ kernel/sysctl.c.
 
 Signed-off-by: Joel Granados <joel.granados@kernel.org>
 ---
- include/linux/sysctl.h |  3 ---
- kernel/fork.c          | 20 +++++++++++++++++++-
- kernel/sysctl.c        |  7 -------
- 3 files changed, 19 insertions(+), 11 deletions(-)
+ kernel/pid.c    | 32 ++++++++++++++++++++++++++++++++
+ kernel/sysctl.c | 31 -------------------------------
+ 2 files changed, 32 insertions(+), 31 deletions(-)
 
-diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-index ae762eabb7c9715e973356cadafbaaea3f20c7e9..30bcbc59d12d2f4cec7545e7ee3f5ea5f0eefbd7 100644
---- a/include/linux/sysctl.h
-+++ b/include/linux/sysctl.h
-@@ -284,7 +284,4 @@ static inline bool sysctl_is_alias(char *param)
- }
- #endif /* CONFIG_SYSCTL */
+diff --git a/kernel/pid.c b/kernel/pid.c
+index 4ac2ce46817fdefff8888681bb5ca3f2676e8add..bc87ba08ae8b7c67f3457b31309b56b5d90f8c52 100644
+--- a/kernel/pid.c
++++ b/kernel/pid.c
+@@ -717,6 +717,29 @@ static struct ctl_table_root pid_table_root = {
+ 	.set_ownership	= pid_table_root_set_ownership,
+ };
  
--int sysctl_max_threads(const struct ctl_table *table, int write, void *buffer,
--		size_t *lenp, loff_t *ppos);
--
- #endif /* _LINUX_SYSCTL_H */
-diff --git a/kernel/fork.c b/kernel/fork.c
-index c4b26cd8998b8e7b2b516e0bb0b1d4676ff644dc..ed39064b86c25849c4b21cf99ac68dded05038b3 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -3470,7 +3470,7 @@ int unshare_files(void)
- 	return 0;
- }
- 
--int sysctl_max_threads(const struct ctl_table *table, int write,
-+static int sysctl_max_threads(const struct ctl_table *table, int write,
- 		       void *buffer, size_t *lenp, loff_t *ppos)
- {
- 	struct ctl_table t;
-@@ -3492,3 +3492,21 @@ int sysctl_max_threads(const struct ctl_table *table, int write,
- 
- 	return 0;
- }
-+
-+static const struct ctl_table fork_sysctl_table[] = {
-+	{
-+		.procname	= "threads-max",
-+		.data		= NULL,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= sysctl_max_threads,
-+	},
-+};
-+
-+static int __init init_fork_sysctl(void)
++static int proc_do_cad_pid(const struct ctl_table *table, int write, void *buffer,
++		size_t *lenp, loff_t *ppos)
 +{
-+	register_sysctl_init("kernel", fork_sysctl_table);
++	struct pid *new_pid;
++	pid_t tmp_pid;
++	int r;
++	struct ctl_table tmp_table = *table;
++
++	tmp_pid = pid_vnr(cad_pid);
++	tmp_table.data = &tmp_pid;
++
++	r = proc_dointvec(&tmp_table, write, buffer, lenp, ppos);
++	if (r || !write)
++		return r;
++
++	new_pid = find_get_pid(tmp_pid);
++	if (!new_pid)
++		return -ESRCH;
++
++	put_pid(xchg(&cad_pid, new_pid));
 +	return 0;
 +}
 +
-+subsys_initcall(init_fork_sysctl);
+ static const struct ctl_table pid_table[] = {
+ 	{
+ 		.procname	= "pid_max",
+@@ -727,6 +750,15 @@ static const struct ctl_table pid_table[] = {
+ 		.extra1		= &pid_max_min,
+ 		.extra2		= &pid_max_max,
+ 	},
++#ifdef CONFIG_PROC_SYSCTL
++	{
++		.procname	= "cad_pid",
++		.data		= NULL,
++		.maxlen		= sizeof(int),
++		.mode		= 0600,
++		.proc_handler	= proc_do_cad_pid,
++	},
++#endif
+ };
+ #endif
+ 
 diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 718140251972b797f5aa5a056de40e8856805eed..febf328054aa5a7b2462a256598f86f5ded87c90 100644
+index 9d8db9cef11122993d850ab5c753e3da1cbfb5cc..d5bebdd02cd4f1def7d9dd2b85454a9022b600b7 100644
 --- a/kernel/sysctl.c
 +++ b/kernel/sysctl.c
-@@ -1630,13 +1630,6 @@ static const struct ctl_table kern_table[] = {
- 		.proc_handler	= proc_do_cad_pid,
+@@ -1224,28 +1224,6 @@ int proc_dointvec_ms_jiffies(const struct ctl_table *table, int write, void *buf
+ 				do_proc_dointvec_ms_jiffies_conv, NULL);
+ }
+ 
+-static int proc_do_cad_pid(const struct ctl_table *table, int write, void *buffer,
+-		size_t *lenp, loff_t *ppos)
+-{
+-	struct pid *new_pid;
+-	pid_t tmp;
+-	int r;
+-
+-	tmp = pid_vnr(cad_pid);
+-
+-	r = __do_proc_dointvec(&tmp, table, write, buffer,
+-			       lenp, ppos, NULL, NULL);
+-	if (r || !write)
+-		return r;
+-
+-	new_pid = find_get_pid(tmp);
+-	if (!new_pid)
+-		return -ESRCH;
+-
+-	put_pid(xchg(&cad_pid, new_pid));
+-	return 0;
+-}
+-
+ /**
+  * proc_do_large_bitmap - read/write from/to a large bitmap
+  * @table: the sysctl table
+@@ -1541,15 +1519,6 @@ static const struct ctl_table kern_table[] = {
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dostring,
  	},
- #endif
+-#endif
+-#ifdef CONFIG_PROC_SYSCTL
 -	{
--		.procname	= "threads-max",
+-		.procname	= "cad_pid",
 -		.data		= NULL,
--		.maxlen		= sizeof(int),
--		.mode		= 0644,
--		.proc_handler	= sysctl_max_threads,
+-		.maxlen		= sizeof (int),
+-		.mode		= 0600,
+-		.proc_handler	= proc_do_cad_pid,
 -	},
+ #endif
  	{
  		.procname	= "overflowuid",
- 		.data		= &overflowuid,
 
 -- 
 2.47.2
