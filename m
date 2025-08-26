@@ -1,28 +1,28 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19958223338;
-	Tue, 26 Aug 2025 14:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95DEA352FD9;
+	Tue, 26 Aug 2025 14:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756217976; cv=none; b=Frq/8hW1CsRQYL6R07Y0Rskzha6/Cea8LDxoMluM6Jmw7V/5DKc0WCokL4DpUElLHZzc+AdioEbmWQfFMNsFmounVNxnh2mO92x1KO00GZCcbRrb7GFo4hvP4IY6V6mzrYo+FIoJ3DMaiMqL0gxiIBed7f1OyPSbUK/nchPd6MM=
+	t=1756219167; cv=none; b=a2sUy2eTiS7DA2/veVtGJC0I43ymUeOTQmHoA/gZ+v4FGFFAIDHnc6pU+z3Zase6xFt4lei3Y9Efm7iRh+CFC41/vCS3HRkvwG7CkaB1YMiYRKWXV6xjjjXZZaELvGA887+psXb0qFVC1ly0QyuPGnqYuNHlRIZno55lK+rqW/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756217976; c=relaxed/simple;
-	bh=go3AzjVbv6MRKBiY6KYTphkt6TB9GXG7pUQPsi8jCkc=;
+	s=arc-20240116; t=1756219167; c=relaxed/simple;
+	bh=xuqdUlLD7tnOdj/e0qjbCN1vwSWp9UGMpwcJ0YedjY8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R/5CIheGIqCflezWSjqLOeky6ylrA9WvQWByGtb1tPEPgISBwMsZfhBMQnME3Uh9TwQmm8kljNbJVEYz7jkhnW1tFeRli3yoAbN0SQ9VdqnqabSzQQfd+lPyj5YCRmn1PSML8iThFUo4F0LFdunm7OPhr+PZmhasyJUig1hy0/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=h4Nzb+wP; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=F4tbmHASVXJ88z1QHlaodNwUiobNAxmaXiYBWU26srMCfng98sTGj9GmrrTrxcRFlRDSuGChq9+zquktltAINk1Cz2aeLm6aEaqJFoFJ+6gFyDUAISt8EerV6shwC0xtFBLlPuFx5eePlgg47Htnwd21J2OPyMQiDzs+FrWl62s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=jeWzgX3Y; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="h4Nzb+wP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AD9DC113CF;
-	Tue, 26 Aug 2025 14:19:35 +0000 (UTC)
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="jeWzgX3Y"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19A07C4CEF1;
+	Tue, 26 Aug 2025 14:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1756217976;
-	bh=go3AzjVbv6MRKBiY6KYTphkt6TB9GXG7pUQPsi8jCkc=;
+	s=korg; t=1756219167;
+	bh=xuqdUlLD7tnOdj/e0qjbCN1vwSWp9UGMpwcJ0YedjY8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=h4Nzb+wPwVg33cZt5EGec7XQJEfljqUsW5hyAXchv3+AGdNTcGgBNpYHI8a6t57BD
-	 czGofjJm5xnJyEjSIy6onyHgmdyxJw01UPtW1W+AMr3FIdcXUZFppkoLwq+cyOulko
-	 wN+I2udy4mzf72W17KjxiJFAymgHGQQItSUkk6mA=
+	b=jeWzgX3YOPRfQ7CRw46iTcqCV9t0SszICg1uG9rFGMnhxL+yVDwSAv1UtSDaCi9Rf
+	 MuYHCusC81IEPGTFoUR2BTJhrOqoko67RAH6N7a5fssoMMEbWhaRfMRvNCpNRWvNFV
+	 OJCMvyoMWvFljbfx9VDOqxWe1oLibYFMp65hIx0Q=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -32,12 +32,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
 	Helge Deller <deller@gmx.de>,
 	linux-parisc@vger.kernel.org
-Subject: [PATCH 5.10 347/523] parisc: Makefile: fix a typo in palo.conf
-Date: Tue, 26 Aug 2025 13:09:17 +0200
-Message-ID: <20250826110933.027297519@linuxfoundation.org>
+Subject: [PATCH 5.4 278/403] parisc: Makefile: fix a typo in palo.conf
+Date: Tue, 26 Aug 2025 13:10:04 +0200
+Message-ID: <20250826110914.477838065@linuxfoundation.org>
 X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250826110924.562212281@linuxfoundation.org>
-References: <20250826110924.562212281@linuxfoundation.org>
+In-Reply-To: <20250826110905.607690791@linuxfoundation.org>
+References: <20250826110905.607690791@linuxfoundation.org>
 User-Agent: quilt/0.68
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -49,7 +49,7 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-5.10-stable review patch.  If anyone has any objections, please let me know.
+5.4-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -74,7 +74,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/arch/parisc/Makefile
 +++ b/arch/parisc/Makefile
-@@ -141,7 +141,7 @@ palo lifimage: vmlinuz
+@@ -134,7 +134,7 @@ palo lifimage: vmlinuz
  	fi
  	@if test ! -f "$(PALOCONF)"; then \
  		cp $(srctree)/arch/parisc/defpalo.conf $(objtree)/palo.conf; \
