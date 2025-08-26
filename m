@@ -1,88 +1,119 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22045196C7C;
-	Tue, 26 Aug 2025 13:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293DC2FC870;
+	Tue, 26 Aug 2025 13:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756214909; cv=none; b=n5wgfF6J4cujDWt8HXZGvewuueCR7q7ZLv+ZWtFVsCUNyHVSqlFh4bkMJ2+kytkU4TwLJ8ii7Xpw7Ag9y4wBOxJzK0PTHRogAMTy2kBuiG+4hZgJc97Y3Nm3NWbyuRlZpdzuS05L4hvqcPWClXKb/QyDgMuU8oVPyelk3S+olCA=
+	t=1756214943; cv=none; b=u/y4WqKv7XLONbVqDYhkYvV8rOg/7PzL9PG2pwPnTEe7O1ozGyknLGZfDXRgSas8l9RSCK7sFzvgU45VtG8N6LafSiSVCv9QEv2DHBILG0P65a7MVzKlx065GUtU1UWC9aR96wUZtlvi5OvmAWisRFt/63VzRG3EGydKrifbmjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756214909; c=relaxed/simple;
-	bh=NJcANyMcr7nj4qtqahjWMFURurftgHdlcxPZSeOIKPA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LW+PR9i6YueqOW8uymEDvkJSBnZik1yeH7ScKi8CKLU9xU4p86/1BYP87G5sD1upw7nzQE0OICwjdkwrt/f1ig2hz9/rAZCT6ihc9HlMTYM54o+kI2FXCvuPM7yT57E8cmlPFQFBuYVY6rsdNh7wtonSIaDf523qgZ9KncNVvnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=YDt9k/ld; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1756214943; c=relaxed/simple;
+	bh=WONqwahE1t7tG5WMekP4ROtP2MyOMiDAgeptG1B8c8o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lploF48lp9sPxoOKG16xmtPhNIWwi2kt+e+WZEi/zlAlxF+jN5Geu6w1nrmHmnZ67Bd535t3YlrffKNmzlPc1Oq1IAnSbvknZsFeOsVg2J00+i3ZN6o+9v+4UuIzAuvzZdn4GJHyyiXkNZFFQ/BXacw7ocPUPWAwxUerBayvqFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O1UNRZ3G; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YDt9k/ld"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E4A8C4CEF1;
-	Tue, 26 Aug 2025 13:28:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1756214908;
-	bh=NJcANyMcr7nj4qtqahjWMFURurftgHdlcxPZSeOIKPA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YDt9k/ldfhOzCX1XZhM8KMMc8s7NJlOQfWG3A+6Kao6BNtV+mu8aqCflbzx6nzACd
-	 FTHphXSecUycTvd61ao74PA8Llq+m8lBCRJucf2HVapRtoJxPrF42n2vmj5Gvq5epz
-	 ZgKBwufOkD6o5Dkmq5rBhSl+bJb7GJq0SqO4HsYw=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Randy Dunlap <rdunlap@infradead.org>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	linux-parisc@vger.kernel.org
-Subject: [PATCH 6.1 314/482] parisc: Makefile: explain that 64BIT requires both 32-bit and 64-bit compilers
-Date: Tue, 26 Aug 2025 13:09:27 +0200
-Message-ID: <20250826110938.561541011@linuxfoundation.org>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250826110930.769259449@linuxfoundation.org>
-References: <20250826110930.769259449@linuxfoundation.org>
-User-Agent: quilt/0.68
-X-stable: review
-X-Patchwork-Hint: ignore
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O1UNRZ3G"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1756214942; x=1787750942;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WONqwahE1t7tG5WMekP4ROtP2MyOMiDAgeptG1B8c8o=;
+  b=O1UNRZ3GyLduNWTUh2VNNDsL/t8ugLRojJh9ACrB5lSAFx1pUoaG5Bdw
+   VoNOQRVJgcUDYvB977oUiGgUbI2wA4TQF+i3F5QmGhNi2ofvglaXVaU7u
+   wLiBLd5RtnuwwzpIW0QuAl+42QE1pSIuDNV6TcczeBvFHVjjmjVegW7ve
+   +y0/iSZguAR8RLqsPUBh9YOVqpMqI0vZkeNkSCBMf/A6wDOZ+N9Bhefm6
+   x8/4X/qdYVE+Fb8FDzj7POlu0gJZLmhezVRJvmIufgcg3M+0GQnw7umgf
+   QRGSGuJNReK/zTmUPZuPBFV1k7yvY5DFuX0MllCBoq6/4f4zUm5PkXSCy
+   Q==;
+X-CSE-ConnectionGUID: Lz6IfiNEQh+KIFFDQJzPWw==
+X-CSE-MsgGUID: 2JOhRU85RgCO5c6dQAMTPA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11534"; a="57649656"
+X-IronPort-AV: E=Sophos;i="6.18,214,1751266800"; 
+   d="scan'208";a="57649656"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2025 06:29:01 -0700
+X-CSE-ConnectionGUID: yZ/HNeJPSH+ByFL3yfAtLw==
+X-CSE-MsgGUID: 3/+Gz3kfTi6VujhV0pZ9kw==
+X-ExtLoop1: 1
+Received: from smile.fi.intel.com ([10.237.72.52])
+  by fmviesa003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2025 06:28:54 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.98.2)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1uqtjF-00000008mqQ-2YXp;
+	Tue, 26 Aug 2025 16:28:49 +0300
+Date: Tue, 26 Aug 2025 16:28:49 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Helge Deller <deller@gmx.de>, Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Fourier <fourier.thomas@gmail.com>,
+	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>, Ian Molton <spyro@f2s.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Denis Efremov <efremov@linux.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 0/3] floppy: A couple of cleanups
+Message-ID: <aK22kUhlxlyvVLax@smile.fi.intel.com>
+References: <20250825163545.39303-1-andriy.shevchenko@linux.intel.com>
+ <175615490112.25116.3742797696959119744.b4-ty@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <175615490112.25116.3742797696959119744.b4-ty@kernel.dk>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-6.1-stable review patch.  If anyone has any objections, please let me know.
+On Mon, Aug 25, 2025 at 02:48:21PM -0600, Jens Axboe wrote:
+> On Mon, 25 Aug 2025 18:32:54 +0200, Andy Shevchenko wrote:
+> > There are a few places in architecture code for the floppy driver
+> > that may be cleaned up. Do it so.
+> > 
+> > Assumed to route via Andrew Morton's tree as floppy is basically orphaned.
+> > 
+> > Changelog v2:
+> > - combined separate patches sent earlier into a series
+> > - added tags (Helge, Geert)
+> > - fixed typo in the commit message (Geert)
 
-------------------
+[...]
 
-From: Randy Dunlap <rdunlap@infradead.org>
+> Applied, thanks!
 
-commit 305ab0a748c52eeaeb01d8cff6408842d19e5cb5 upstream.
+Ah, thanks! It's good to know you can take (and actually did that) them.
 
-For building a 64-bit kernel, both 32-bit and 64-bit VDSO binaries
-are built, so both 32-bit and 64-bit compilers (and tools) should be
-in the PATH environment variable.
+> [1/3] floppy: Remove unused CROSS_64KB() macro from arch/ code
+>       commit: d74968780bf287958e2815be5f088dd6c7b7aa19
+> [2/3] floppy: Replace custom SZ_64K constant
+>       commit: 8e7ee0f6fa33934373c1c37e8cfb71cff2acea09
+> [3/3] floppy: Sort headers alphabetically
+>       commit: d4399e6eb27a803b73d17fe984448a823b4d3a30
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: stable@vger.kernel.org # v5.3+
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/parisc/Makefile |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -39,7 +39,9 @@ endif
- 
- export LD_BFD
- 
--# Set default 32 bits cross compilers for vdso
-+# Set default 32 bits cross compilers for vdso.
-+# This means that for 64BIT, both the 64-bit tools and the 32-bit tools
-+# need to be in the path.
- CC_ARCHES_32 = hppa hppa2.0 hppa1.1
- CC_SUFFIXES  = linux linux-gnu unknown-linux-gnu suse-linux
- CROSS32_COMPILE := $(call cc-cross-prefix, \
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
