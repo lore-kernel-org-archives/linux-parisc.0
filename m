@@ -1,98 +1,134 @@
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+Received: from fout-b6-smtp.messagingengine.com (fout-b6-smtp.messagingengine.com [202.12.124.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81778287507;
-	Mon, 20 Oct 2025 16:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97762F5301;
+	Mon, 20 Oct 2025 22:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760977661; cv=none; b=Vfo2Y1Fmfz7fOnvVg8rVrYrXoHpdZexXl0TwphoShEQWXdC17L7rpHlQEYG0KSGYXh9Tq1wNhB9AObCb8IfrjikzXHTCrNcKUEf5U/NF2PKzoBaXJ3HEwqUbxVvkK6X7fnaW1sgWc0TWMBjq3fTv8IxnSXYtOiF31upZ3UG0K/U=
+	t=1760999758; cv=none; b=U8HnKLloM8hX3cJUvOHHMKi8eLA2FWxufqsLRdyVp3MAn12RUNm4o9ZsljGvu5imVJbFB5hLWWJUZtrgGxws5NZNSPeCpvZIWvKGWyIb/smaArTQ9BT2Ue2OUYBEMkeK86qk5hnxRmR30mO065W8BRc9TgiZNLorgv16pZf0Dj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760977661; c=relaxed/simple;
-	bh=Vabp+0+S/4DTZ4v4reVqmI30Vzed+Tmcb8OyEwtERHU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=eOCJC56yTlk4gvSx/S2H2H15BW7sOpQLrub95K/gCinAZu4g2xwL7hrnz9txWJUAYun9vQ8S0JfjymHXT+g1rkQOZQUUC9sr6mtEXP9U0V06tKfTGfWdOhDkboq8JaJhs1VWmou7RviuUDchmb1pT813T4xQGPYf4UGh35K5g2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=KX6ZcktJ; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+	s=arc-20240116; t=1760999758; c=relaxed/simple;
+	bh=z7VO9YALcMuks9K3N5YvpPrFdoIjEl3cTk4Y51zyFiY=;
+	h=Message-ID:From:Subject:Date:To:Cc; b=CrrO+PadM8jhLwYlkSP+ueHg3bh4ur6sOKyxhMknxqYpGQABiQ/GDuKnW9wyEtE3wh3gpJLO8OfGUAeT7qp/EfoAx9aoxwEeHp19wk43Yrcb4KN9AXYTDQmjDRArIN+iVM6Qu3ofWUFjyeolGhIoP+8O9j5dHz3LEUeXa3/6hRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=D8lrsUcd; arc=none smtp.client-ip=202.12.124.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="KX6ZcktJ"
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20251020162737euoutp01a7ea5ea3a3593576d6931ec88825e51e~wP9lezYs81013510135euoutp01e;
-	Mon, 20 Oct 2025 16:27:37 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20251020162737euoutp01a7ea5ea3a3593576d6931ec88825e51e~wP9lezYs81013510135euoutp01e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1760977657;
-	bh=e1+m70MIpIyLz0CgkjVmG+Zs9EMNilUICX9qZOez4wM=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=KX6ZcktJJB15hpYlnrrgQKN5QMQizY7xdPAAhwp/El6wk7EM1ZJ6O6Pj837PofyJ0
-	 migBg+i6L8vxe8bZ5F9hMcPUSOwsRbNZdnHxT7YLQRx589Age6y9jtnUV7j+rxCbcf
-	 lscFl8Zw2Bwk6HlnV8xYW2UgmAXjN9fs/Wr5RS2Y=
-Received: from eusmtip2.samsung.com (unknown [203.254.199.222]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20251020162736eucas1p1ef138572570fd17f7ba8cf6e6bc78ba6~wP9lIhm7s0044200442eucas1p1L;
-	Mon, 20 Oct 2025 16:27:36 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20251020162733eusmtip2068f969d861135995e1cd515194afc64~wP9hxNWHW2552125521eusmtip2Y;
-	Mon, 20 Oct 2025 16:27:33 +0000 (GMT)
-Message-ID: <4a47088d-6542-45f2-917b-c91f7dd1eb1a@samsung.com>
-Date: Mon, 20 Oct 2025 18:27:32 +0200
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="D8lrsUcd"
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfout.stl.internal (Postfix) with ESMTP id 4A5321D0016B;
+	Mon, 20 Oct 2025 18:35:54 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Mon, 20 Oct 2025 18:35:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1760999754; x=1761086154; bh=WbKJEdG21clYm0wc8Wne2Sbd+OXB
+	PgwJrowUTp5Q/E8=; b=D8lrsUcdgdbChRnbqU8+J4ul97nvFi37TYAhVROEGFGF
+	zZ/iyiYLXPekaF2cIeNXWefZ8ao/ga9awnqpPYSsfmiQH4gDo6fMomtfi1CnPyHZ
+	o4pBooZ1/PaScmU2vqjn3ghpvzNb4JQGUdoBL3xLmZ5WKgrmipnrGjq4OZg2qYCt
+	RgunsNxw2eYDsN1iU6ozWCn+ZbM0JaVK7VViNNUfOSumlksjLatSntCPjpDDgnWD
+	l4Vf6Nmn99I1UYfyYMVFs2JSe3iSBVsJ8eMnO+p3Z+tREmv5Q8azMzyVapO91cLb
+	R9lPjCoq0bviv8eS7H/i08DES+1/raU/jxCIoa5J1g==
+X-ME-Sender: <xms:Sbn2aPFwXyDWB6rBB6_MmTCNsuua4ZSGUBL6YQFAe8bDHVQCWw18Kg>
+    <xme:Sbn2aIRbjO1rEYuSkAXZ9X6108oosFsXj09nZMIdm7vCumsLnMs3XDEZLdgZiuQ8c
+    j7wJj4uRdwkEW8IdI0Se99wnVoC2_IecFEzNj000NzKAK6fM3nDycM>
+X-ME-Received: <xmr:Sbn2aHQrjdceZiUFsqKygDBsNtdBGDxtqV3R9Tu7hA1xaanHJPrXa_igYDgJlI7pNEju3lo4xhDImkgreBhnepmK0xu_xITPLMQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddufeeltdefucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepkffhufffvfevsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghinhcu
+    oehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpe
+    duvedtieevfedvffetudehteeihedtkefhkeeivdelvddtheekteeiueduudefueenucff
+    ohhmrghinhepudejrddqnhgvfienucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggp
+    rhgtphhtthhopedujedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepjhgrmhgvsh
+    drsghothhtohhmlhgvhieshhgrnhhsvghnphgrrhhtnhgvrhhshhhiphdrtghomhdprhgt
+    phhtthhopeguvghllhgvrhesghhmgidruggvpdhrtghpthhtohepphgvthgvrhiisehinh
+    hfrhgruggvrggurdhorhhgpdhrtghpthhtohepfihilhhlsehkvghrnhgvlhdrohhrghdp
+    rhgtphhtthhopegrkhhpmheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtg
+    hpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrrhhnuges
+    rghrnhgusgdruggvpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpth
+    htohepsghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhm
+X-ME-Proxy: <xmx:Sbn2aDeRu2WihSf1EEsDccScZ7aFH2Xos4Uk6YS0MenxQ_4A0z8ogQ>
+    <xmx:Sbn2aDfxx3IXMPtbxY-3lJ6xYA5x_i2XNs-Bh6bB_w90LV0VOV690w>
+    <xmx:Sbn2aB-6tS8KPC6okonTAsWKEmtMbNrDIIZ_vJwG3L4_9nB8UC-2fA>
+    <xmx:Sbn2aLM4y1Y4jCZ2w-yqSgD3WYuyzvi6zPRahZDxwpV-xZzoV3gMKQ>
+    <xmx:Srn2aIDyCR_ZROGkcgoSk6sDlJMCCRQSH6uKa3KcBkTKenGfFi_TY_HY>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 20 Oct 2025 18:35:51 -0400 (EDT)
+Message-ID: <cover.1760999284.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [RFC v4 0/5] Align atomic storage
+Date: Tue, 21 Oct 2025 09:28:04 +1100
+To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+    Helge Deller <deller@gmx.de>,
+    Peter Zijlstra <peterz@infradead.org>,
+    Will Deacon <will@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+    Andrii Nakryiko <andrii@kernel.org>,
+    Arnd Bergmann <arnd@arndb.de>,
+    Alexei Starovoitov <ast@kernel.org>,
+    Boqun Feng <boqun.feng@gmail.com>,
+    bpf@vger.kernel.org,
+    Daniel Borkmann <daniel@iogearbox.net>,
+    Geert Uytterhoeven <geert@linux-m68k.org>,
+    linux-arch@vger.kernel.org,
+    linux-kernel@vger.kernel.org,
+    linux-m68k@vger.kernel.org,
+    linux-parisc@vger.kernel.org,
+    Mark Rutland <mark.rutland@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Betterbird (Windows)
-Subject: Re: [PATCH v5 00/14] Remove DMA map_page/map_resource and their
- unmap callbacks
-To: Leon Romanovsky <leon@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Russell King <linux@armlinux.org.uk>, Juergen Gross <jgross@suse.com>,
-	Stefano Stabellini <sstabellini@kernel.org>, Oleksandr Tyshchenko
-	<oleksandr_tyshchenko@epam.com>, Richard Henderson
-	<richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, Thomas
-	Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
-	<James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman
-	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
-	<christophe.leroy@csgroup.eu>, Geoff Levand <geoff@infradead.org>, "David S.
- Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, Thomas
-	Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav
-	Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc: iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, xen-devel@lists.xenproject.org,
-	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	sparclinux@vger.kernel.org, Magnus Lindholm <linmag7@gmail.com>, Jason
-	Gunthorpe <jgg@ziepe.ca>
-Content-Language: en-US
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20251015-remove-map-page-v5-0-3bbfe3a25cdf@kernel.org>
-Content-Transfer-Encoding: 7bit
-X-CMS-MailID: 20251020162736eucas1p1ef138572570fd17f7ba8cf6e6bc78ba6
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20251015091313eucas1p2426ae40b579d7f3b4f29b46e0e788c0d
-X-EPHeader: CA
-X-CMS-RootMailID: 20251015091313eucas1p2426ae40b579d7f3b4f29b46e0e788c0d
-References: <CGME20251015091313eucas1p2426ae40b579d7f3b4f29b46e0e788c0d@eucas1p2.samsung.com>
-	<20251015-remove-map-page-v5-0-3bbfe3a25cdf@kernel.org>
 
-Dear All,
+This series adds the __aligned attribute to atomic_t and atomic64_t
+definitions in include/asm-generic.
 
-On 15.10.2025 11:12, Leon Romanovsky wrote:
-> This series is a combination of previous two steps [1, 2] to reduce
-> number of accesses to struct page in the code "below" DMA layer.
->
-> In this series, the DMA .map_page/.map_resource/.unmap_page/.unmap_resource
-> callbacks are converted to newly introduced .map_phys/.unmap_phys interfaces.
+It also adds Kconfig options to enable a new runtime warning to help
+reveal misaligned atomic accesses on platforms which don't trap that.
 
-I would like to have some acks from respective arch maintainers before 
-applying this patchset.
+This patch series is a Request For Comments because the alignment
+change is a time/space tradeoff. Its costs and benefits are expected
+to vary across platforms and workloads. More measurements are needed.
 
-Best regards
+---
+
+Changed since v3:
+ - Rebased on v6.17.
+ - New patch to resolve header dependency issue on parisc.
+ - Dropped documentation patch.
+
+Changed since v2:
+ - Specify natural alignment for atomic64_t.
+ - CONFIG_DEBUG_ATOMIC checks for natural alignment again.
+ - New patch to add weakened alignment check.
+ - New patch for explicit alignment in BPF header.
+
+---
+
+Finn Thain (4):
+  bpf: Explicitly align bpf_res_spin_lock
+  parisc: Drop linux/kernel.h include from asm/bug.h header
+  atomic: Specify alignment for atomic_t and atomic64_t
+  atomic: Add option for weaker alignment check
+
+Peter Zijlstra (1):
+  atomic: Add alignment check to instrumented atomic operations
+
+ arch/parisc/include/asm/bug.h    |  2 --
+ include/asm-generic/atomic64.h   |  2 +-
+ include/asm-generic/rqspinlock.h |  2 +-
+ include/linux/instrumented.h     | 15 +++++++++++++++
+ include/linux/types.h            |  2 +-
+ kernel/bpf/rqspinlock.c          |  1 -
+ lib/Kconfig.debug                | 18 ++++++++++++++++++
+ 7 files changed, 36 insertions(+), 6 deletions(-)
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.49.1
 
