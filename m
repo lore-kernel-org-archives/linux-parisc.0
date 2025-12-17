@@ -1,63 +1,91 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599A11DFE22;
-	Sun,  7 Dec 2025 00:30:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97EBE33D4FC
+	for <linux-parisc@vger.kernel.org>; Wed, 17 Dec 2025 09:46:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765067406; cv=none; b=X8aJmd6bBN7a2auJgKJcNl3bsA+iTBRJrd1/hxRXibnR8w+lxVN0OV9xgqVLbQ1HXSAxiZQqqwj1UUH75uZQ478kBGw/gPrHwSErPA0yG3O4mWWELPpkLcnbFP/RvLLPGKHNNfCShCmwDgVzF7xvDXHbUnfFjldNX6reSz1F74I=
+	t=1765964822; cv=none; b=ooyIgu5lrydVi7Z5ZAPyfO377v7UW2gAvoKdJnzwIE/5MSV5k98uu2P3mzpxUCYPiJkw3s/coHXFp6+TyeRfiDHZGzjQrxHWnLky4DsB3SyZYzr8i3SbQ+1VBxhAUIFv7S5CwU/Z8h/AYmIwVEquiMI76RgBF57CwwhmyNgtKQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765067406; c=relaxed/simple;
-	bh=BehhbUYKFUXF0F2HaT8t6MPhySJRTR/bSDoV/wVqBuo=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=t3uadUevHGLhlWm4NYt+kwHav7OpRhdFORbZ4UGL7Xunago3tlY9sv49VxpB71AYWcg6d99nz076UVFdLKG61JugmkQJFszhDonQIT9CuErhVt/29rkPXz/woQc4V0/6/MF+RRsTs8VKqmYdp2O8QNectrWhk9f2RN94Uh9fi3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e2FZcPhk; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1765964822; c=relaxed/simple;
+	bh=JhxM1xZytB9dQTFt30KTFN8eef9XC2zTXIh3BIBrr74=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=iXKz1JHColWM+NVSz/QL+XFafhw8i5dCRTfNPODM1c8Ak/mC0bQzdIqzBWiSaGsJXVBhSyZjBYeTp3VjjBdxrNzq4vsffzNL4xOKyFNxvYutIathra7H1yXefXMBRzX/LTtwFH4SoXYX5kMd7lpv6yK+PwwZFr5do5YZOoseFTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ly15AwCg; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e2FZcPhk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABCC1C4CEF5;
-	Sun,  7 Dec 2025 00:30:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765067405;
-	bh=BehhbUYKFUXF0F2HaT8t6MPhySJRTR/bSDoV/wVqBuo=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=e2FZcPhkRn8oMoMk8Ii+P77i0JPQy3EiT4iP50pfwZVVDagTqVQT4RtWlLC1SDht6
-	 p/fIL8HezLKeae/h0qDQ+XSz+iXk7b8jwwt6g5ctBwvEsWBZ11MnoPd9epClZOVx0e
-	 6AkQKuN12W3eIzsvXiFD9Q5oUs7Wl6oYhA4yKlY6NKaecpoHXAIYJyvJ3oBvDjgNJy
-	 tX1OuDUvinxT7du+hjVSsjFM7o/2IRzRdY9AbQT3/kPOxNg3P7Dtcn/V91EN6nDhw2
-	 qW50pF1bUVQyDAaI/C37Piaz7pqFELfEuA9vx/10lGOPks05ch8jc9cy6Jr1vSJ6Y6
-	 nVQW5/WvCkclw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B579F3808200;
-	Sun,  7 Dec 2025 00:27:03 +0000 (UTC)
-Subject: Re: [GIT PULL] parisc architecture fixes and updates for v6.19-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <aTSdXEYJFuhxMltf@p100>
-References: <aTSdXEYJFuhxMltf@p100>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <aTSdXEYJFuhxMltf@p100>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.19-rc1
-X-PR-Tracked-Commit-Id: dca7da244349eef4d78527cafc0bf80816b261f5
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 50471f8b7371c95c72c168eb45e4f42f1514fd5e
-Message-Id: <176506722219.2244723.16870759143766873657.pr-tracker-bot@kernel.org>
-Date: Sun, 07 Dec 2025 00:27:02 +0000
-To: Helge Deller <deller@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, James Bottomley <James.Bottomley@hansenpartnership.com>, John David Anglin <dave.anglin@bell.net>, Sven Schnelle <svens@stackframe.org>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ly15AwCg"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1765964817;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bw+1Lau4jkXgNGH1w/oSy1pnIcM7wv7myPLVDHR+sFs=;
+	b=ly15AwCgeTCvVgfKEAGM4N6+Qr/3bm4QCI+29u9WGu6pcYXwgBs1OKy52f7HilHkjkHMPR
+	sHiouE4YFfRjE5AAkAK/J8ELyx11QzPsbKV6xCapoiF96UFCkEGY/h6yJrWtaXJGp1y3sT
+	pxSpzXa0XWo0t7W7DaurMYa8P4nGSAc=
+From: Qi Zheng <qi.zheng@linux.dev>
+To: will@kernel.org,
+	aneesh.kumar@kernel.org,
+	npiggin@gmail.com,
+	peterz@infradead.org,
+	dev.jain@arm.com,
+	akpm@linux-foundation.org,
+	david@kernel.org,
+	ioworker0@gmail.com,
+	linmag7@gmail.com
+Cc: linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-alpha@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 1/7] mm: change mm/pt_reclaim.c to use asm/tlb.h instead of asm-generic/tlb.h
+Date: Wed, 17 Dec 2025 17:45:42 +0800
+Message-ID: <67a0725081c82cdc2debce6cbdb9273412039553.1765963770.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <cover.1765963770.git.zhengqi.arch@bytedance.com>
+References: <cover.1765963770.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-The pull request you sent on Sat, 6 Dec 2025 22:17:16 +0100:
+From: Qi Zheng <zhengqi.arch@bytedance.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.19-rc1
+Generally, the asm/tlb.h will include asm-generic/tlb.h, so change
+mm/pt_reclaim.c to use asm/tlb.h instead of asm-generic/tlb.h. This is a
+preparation for enabling CONFIG_PT_RECLAIM on other architectures, such as
+alpha.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/50471f8b7371c95c72c168eb45e4f42f1514fd5e
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Acked-by: David Hildenbrand (Red Hat) <david@kernel.org>
+---
+ mm/pt_reclaim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you!
-
+diff --git a/mm/pt_reclaim.c b/mm/pt_reclaim.c
+index 0d9cfbf4fe5d8..46771cfff8239 100644
+--- a/mm/pt_reclaim.c
++++ b/mm/pt_reclaim.c
+@@ -2,7 +2,7 @@
+ #include <linux/hugetlb.h>
+ #include <linux/pgalloc.h>
+ 
+-#include <asm-generic/tlb.h>
++#include <asm/tlb.h>
+ 
+ #include "internal.h"
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.20.1
+
