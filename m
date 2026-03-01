@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DED30B514;
-	Sun,  1 Mar 2026 01:54:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85AD02C08AD;
+	Sun,  1 Mar 2026 02:03:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772330042; cv=none; b=CLwIMrVtyV7L6T76b/OV88jatCmB8oUvWnZPwidqI0Q5refqlMOcbRuSMGMilCzIXgq8fhW0bxOwqaEYC/u0B7fYMWiBpjqs0XXEug8JfNe7qyokXr3Y2ZFcX2KeVkXU9Oe7ROl8b3nzzdn1PGOFs7fXy1/PKwyrAVTQzlDZpp4=
+	t=1772330629; cv=none; b=rb45gHunHCxsZK0P3Y1FOdMHSj3DtuPRuSDRbA/BvE8hzvXyjil8JDXDUGGqUnlbyOTTPFOLNYXIIpq7K4oZmjD4Npd3qTsHsgKzhUbLQ3YSqt/I+Su8jHvy6IPbtBnwadf5xzKDeDLzQgxGmu3PkCJ9ijhhJLx5urhvvC2E5fE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772330042; c=relaxed/simple;
-	bh=Eqlh5XZILYmEfF31pZ7euyGMJtcuPfM9/j4OUurLkq0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dMC1SZH2i9joZElFXlZS/hk71y0Y4S9FTEdd8hhbmdqz9NvJbUioh7ps7j4QUw9PTnDtIlR4dxLUm8HbG2AIEbS3IyvY1RjZ8gELA2rvBvHLBsxhAJkaWNR91fMz2fvgow3jdHni7qSausfFAOS27GzPP/PBhLESCQ8k/+vmuWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oTqZFmJZ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1772330629; c=relaxed/simple;
+	bh=L0960m72NnIWVCruNmRwFmFJT+Ql0lIQBjfJvxICOEI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pCKoMp3Zs3NCovRqbLtBSjZ5aZ/AqIQIHwP2id7AE2pngFnEH4J4na0RZ26D875awquxbndDeRaYxR1b5NNEohUfHorbVh1ZoEnePIO5ZRTcLCfUafNGS604v5ux7O+geefys+G6h4V42OrNHtCkj3Wgt07Cwva2jIuIUwOH9eE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dnf7i1NI; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oTqZFmJZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71BF0C19421;
-	Sun,  1 Mar 2026 01:54:01 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dnf7i1NI"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8378C19421;
+	Sun,  1 Mar 2026 02:03:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772330042;
-	bh=Eqlh5XZILYmEfF31pZ7euyGMJtcuPfM9/j4OUurLkq0=;
+	s=k20201202; t=1772330629;
+	bh=L0960m72NnIWVCruNmRwFmFJT+Ql0lIQBjfJvxICOEI=;
 	h=From:To:Cc:Subject:Date:From;
-	b=oTqZFmJZbXXHdHjtOkkRFx1oD5YuuFo6wInJcF/V4qGw3nZyFk9WgqBDiUd7HKP53
-	 nR/9qB7CN0r2CFb4I1MnWwuGyQe4XL+AwCNpj2BZeh0UhzQALRaN//SXRAkzxl6nud
-	 HQCUgx1osH2b5bqBuWJFckk5EBpWOmPivKJvYrwhHwxlCG6FFX/aEjyCjnKqLEKBQq
-	 CkDaxWxAmIptlgrZWDrrPgZDnGHVfMVD3wwx3RIHKp1n1JX2MnUAo1Q9FDVd5E0xZv
-	 A2zXqz0LE2AhfRNgjNSONsionBViQHzo7YhC8mptAT8v5k9q073ub2zjARVyFOFfa2
-	 b4uVWNR3XuU0w==
+	b=Dnf7i1NIDiBotp8ztL7UE1pvVVWhDPw6zQBsZLydo0bLZZ4ehUJBBdoGR1b+RoTtj
+	 Wb6W5QrihfG46ChMUWLkTbkX1wcApzrs0L6VI5YKkqviQNkVOEmYHvRO7JXYIynED0
+	 ArgSEKAXzBIdKUi7+osTJu1RycJ+GFqQgqjL89sx0s6CJck7+cGWNhoUwWREn4svm2
+	 CuneyBEqKn+rmmdCPalR1HBtp9pDDXYGqPUZBd8IsImULqK6tJll5RWgIus3tC+7f2
+	 2ldeRinl/w9wmBVBKY1bL7Omuo8In+lFAzDGkC1yMW6CMZhgdnKfQwXDzCBT++6BVs
+	 bimX35jCzeXeg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
 	lihaoxiang@isrc.iscas.ac.cn
 Cc: Helge Deller <deller@gmx.de>,
 	linux-parisc@vger.kernel.org
-Subject: FAILED: Patch "parisc: kernel: replace kfree() with put_device() in create_tree_node()" failed to apply to 5.15-stable tree
-Date: Sat, 28 Feb 2026 20:54:00 -0500
-Message-ID: <20260301015400.1720903-1-sashal@kernel.org>
+Subject: FAILED: Patch "parisc: kernel: replace kfree() with put_device() in create_tree_node()" failed to apply to 5.10-stable tree
+Date: Sat, 28 Feb 2026 21:03:47 -0500
+Message-ID: <20260301020347.1731933-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
@@ -44,7 +44,7 @@ X-Patchwork-Hint: ignore
 X-stable: review
 Content-Transfer-Encoding: 8bit
 
-The patch below does not apply to the 5.15-stable tree.
+The patch below does not apply to the 5.10-stable tree.
 If someone wants it applied there, or to any other stable or longterm
 tree, then please email the backport, including the original git commit
 id to <stable@vger.kernel.org>.
