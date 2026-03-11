@@ -1,71 +1,161 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2490A3B3889;
-	Wed, 11 Mar 2026 07:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8734B2FE575
+	for <linux-parisc@vger.kernel.org>; Wed, 11 Mar 2026 13:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773215893; cv=none; b=rBK+VM+LJ32Ptcjc2jae2eLKiVB6bg/swIfkBMN6Ka23VLD/kdhCGRWT+WP46df29hhvW5RPlAVAaZPMR+yHgTvZjXPpwAY/XrQXGTYGePODMV5/C53RXuzHg0T10+CsInAZNngSyTIab+0t3/zoKWBJT11eJKNbJ8NjmGIVIfc=
+	t=1773234746; cv=none; b=ayOG/BDXX6pHYfO656LcXm0D8iCxVdi32i426ZktT923pM7pETNc0IEpNOEeeu6ECqDW0jMY3XCf38l8CmFzZYB2GBlC/+KVGnWadfhZTTAOO3kOk6o8n0xuqvj52IXXOUCV+NcLVVJSHZMGgJGPCDEIGCubIt8nwsfXCsQrOpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773215893; c=relaxed/simple;
-	bh=3K7vMw03oz0BFzEe+j4Kj47QGw1QUbwb06CQqUbXbuk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=pPmeGg/+gJcl3/qms8kkCn13CzsrXLB9XzOhhcjXh5f0Panyr8X3GtyV7zz/surOwHHO0jFfhqxWO+QqHZShv2Vxzd0KEVQ2SzzlP3L6yaU9dMPSgST7W8075al25lRg+odNZ18luZrCBZs/abHunyKQF1t/YCw0f7+tk73Ovuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ITcS1kE+; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1773234746; c=relaxed/simple;
+	bh=klNijv9VeZCuILMMNUP4dkrWpUjGN6TZWVyYSOEH0mc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AdFHE9MXl2RTFq7iil5LYK88lUP22U7IojY1BNw4/6qTwl4YvxxuGimhkoUkHY8LiCwnRKasqZrgXuGABn0Fg0QYyKkKfDk49nGfqmphEtvhIUF3QMF46ELu8v2l10YABXKgU2SZ89dXF17P00g/mYdH2qUS4MFplm407nx9a9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Ii2aVCaU; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SPbAAUrM; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Ii2aVCaU; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SPbAAUrM; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ITcS1kE+"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BA67C4CEF7;
-	Wed, 11 Mar 2026 07:58:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773215892;
-	bh=3K7vMw03oz0BFzEe+j4Kj47QGw1QUbwb06CQqUbXbuk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ITcS1kE+RN1+ZQCWICGs3eTNpUYsDSRDphm2j0ic+mHygpTlIk7EA6LtN86dj8Uy4
-	 8s/Esa2ElHxjpkbiB6JHpZYIE/dtosPJSDeyX25bw5zyDvqIWy80ty9+v8P/9QEGH0
-	 nxxqb6Fvsj6wMf/XAzPPs3UrqxOhQp0FJIiaX/p3kjXu8NevObDsGd3V9lYwIsm2NP
-	 RTdDhCh/n3+p+I3qMcKYdPLwEed37fippN5cyov9Hn1Mczr796hgehaFxTh9FG7PVo
-	 HWR+MkZdW10QHHFPZnEWz+DkVM5Kfpp/uGazWMbIw8QMIIlVRA9uiBMTKAjuEZsYRr
-	 dptIx3GHjjiWg==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Borislav Petkov <bp@alien8.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, "Paul E. McKenney"
- <paulmck@kernel.org>, John Stultz <jstultz@google.com>, Waiman Long
- <longman@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Daniel
- Lezcano <daniel.lezcano@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
- x86@kernel.org, "Gautham R. Shenoy" <gautham.shenoy@amd.com>, Jiri Wiesner
- <jwiesner@suse.de>, Daniel J Blueman <daniel@quora.org>, Scott Hamilton
- <scott.hamilton@eviden.com>, Helge Deller <deller@gmx.de>,
- linux-parisc@vger.kernel.org, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Ii2aVCaU";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SPbAAUrM";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Ii2aVCaU";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SPbAAUrM"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DEA4B4D357;
+	Wed, 11 Mar 2026 13:12:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1773234742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eEsFilC8x48DoYuD12G2GruYm9kvDHinwy2SB11tyPg=;
+	b=Ii2aVCaUmi3FKr3X1uFYBKWtVqH/u2MhksnWvTYo4mfnsy0s5DZKKn79tE3EgeHO35iUSN
+	M+QM43lnmKuedhpKTXcEHA0kmxvBKHYe3jPwJBbt/hzICdNUHKwKAuvEddCCuRWKmWEcOe
+	K6X7vOV2W4G6Uq9bC8yiAFjkNs0G6zg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773234742;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eEsFilC8x48DoYuD12G2GruYm9kvDHinwy2SB11tyPg=;
+	b=SPbAAUrMfx1e5rCaZ+MNJgpVHh8CYQrgYxS3wFutxGvDXUlc2Bkpyj5DruoO24Fn/PVxLd
+	tDTDfoBtsf0rr+Bg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Ii2aVCaU;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=SPbAAUrM
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1773234742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eEsFilC8x48DoYuD12G2GruYm9kvDHinwy2SB11tyPg=;
+	b=Ii2aVCaUmi3FKr3X1uFYBKWtVqH/u2MhksnWvTYo4mfnsy0s5DZKKn79tE3EgeHO35iUSN
+	M+QM43lnmKuedhpKTXcEHA0kmxvBKHYe3jPwJBbt/hzICdNUHKwKAuvEddCCuRWKmWEcOe
+	K6X7vOV2W4G6Uq9bC8yiAFjkNs0G6zg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773234742;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eEsFilC8x48DoYuD12G2GruYm9kvDHinwy2SB11tyPg=;
+	b=SPbAAUrMfx1e5rCaZ+MNJgpVHh8CYQrgYxS3wFutxGvDXUlc2Bkpyj5DruoO24Fn/PVxLd
+	tDTDfoBtsf0rr+Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CF8853FA27;
+	Wed, 11 Mar 2026 13:12:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tHyiMjZqsWljRgAAD6G6ig
+	(envelope-from <jwiesner@suse.de>); Wed, 11 Mar 2026 13:12:22 +0000
+Received: by incl.suse.cz (Postfix, from userid 1000)
+	id 3A023FE189; Wed, 11 Mar 2026 14:12:22 +0100 (CET)
+Date: Wed, 11 Mar 2026 14:12:22 +0100
+From: Jiri Wiesner <jwiesner@suse.de>
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	John Stultz <jstultz@google.com>, Waiman Long <longman@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Stephen Boyd <sboyd@kernel.org>, x86@kernel.org,
+	"Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+	Daniel J Blueman <daniel@quora.org>,
+	Scott Hamilton <scott.hamilton@eviden.com>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org
 Subject: Re: [patch 5/5] clocksource: Rewrite watchdog code completely
-In-Reply-To: <20260309154317.GPaa7qlRzYcQY1dBU3@fat_crate.local>
+Message-ID: <abFqNsVLKmhc6aLY@incl>
 References: <20260123230651.688818373@kernel.org>
  <20260123231521.926490888@kernel.org>
- <20260309154317.GPaa7qlRzYcQY1dBU3@fat_crate.local>
-Date: Wed, 11 Mar 2026 08:58:09 +0100
-Message-ID: <87pl5are5q.ffs@tglx>
+ <aZ87wpdHJ5vajYoL@incl>
+ <87y0k21vro.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y0k21vro.ffs@tglx>
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_ENVRCPT(0.00)[gmx.de];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,google.com,redhat.com,infradead.org,linaro.org,amd.com,quora.org,eviden.com,gmx.de,alpha.franken.de];
+	RCVD_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.de:email];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Queue-Id: DEA4B4D357
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
+X-Spam-Level: 
 
-On Mon, Mar 09 2026 at 16:43, Borislav Petkov wrote:
-> On Sat, Jan 24, 2026 at 12:18:01AM +0100, Thomas Gleixner wrote:
-> The overall thing sounds good to me, I haven't done any indepth review but
-> from a cursory look, it looks nice.
->
-> Testing looks good too on one machine so
->
-> Tested-by: Borislav Petkov (AMD) <bp@alien8.de>
->
-> I say, let's queue it now so that it can get wider testing.
+On Sun, Mar 08, 2026 at 11:05:31AM +0100, Thomas Gleixner wrote:
+> On Wed, Feb 25 2026 at 19:13, Jiri Wiesner wrote:
+> > On Sat, Jan 24, 2026 at 12:18:01AM +0100, Thomas Gleixner wrote:
+> >> To address this and bring back sanity to the watchdog, rewrite the code
+> >> completely with a different approach:
+> >> 
+> >>   1) Restrict the validation against a reference clocksource to the boot
+> >>      CPU, which is usually the CPU/Socket closest to the legacy block which
+> >>      contains the reference source (HPET/ACPI-PM timer).
+> >
+> > The UEFI picks the boot CPU so the kernel does not have control over
+> > that. On the other hand, I think the CPU that is connected to the
+> > southbridge chip (by DMI or PCIe) will be selected in the majority of
+> > UEFI implementations.
+> 
+> Picking a remote node CPU would be insane, but yes BIOSes are insane by
+> definition.
 
-I'll wait for Daniel to report back from his 1920 CPU monstrosity and do
-that then.
-
-Thanks
-
-        tglx
+Yes, I was mostly just being paranoid. Please include:
+Reviewed-by: Jiri Wiesner <jwiesner@suse.de>
+in the next version of the patchset.
+-- 
+Jiri Wiesner
+SUSE Labs
