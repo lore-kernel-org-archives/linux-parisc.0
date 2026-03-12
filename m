@@ -1,161 +1,119 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8734B2FE575
-	for <linux-parisc@vger.kernel.org>; Wed, 11 Mar 2026 13:12:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12C03BE649;
+	Thu, 12 Mar 2026 12:10:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773234746; cv=none; b=ayOG/BDXX6pHYfO656LcXm0D8iCxVdi32i426ZktT923pM7pETNc0IEpNOEeeu6ECqDW0jMY3XCf38l8CmFzZYB2GBlC/+KVGnWadfhZTTAOO3kOk6o8n0xuqvj52IXXOUCV+NcLVVJSHZMGgJGPCDEIGCubIt8nwsfXCsQrOpM=
+	t=1773317437; cv=none; b=WejTnyH7jTEvQUJnmkDzUwX7NmzCdmiriexXfRZ9uaZ9VPC3rilkYgpuB7zeQDy8ieAdtGxuMTiUph0LWgSDxq5J0XiKEK8gRSEH4samEwvFCRgHA2sKnH8oND6IX9PP4WBJayYQ2aokiQ1aVKqb9J1g9lnUK4DluUhUyZ+Gv0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773234746; c=relaxed/simple;
-	bh=klNijv9VeZCuILMMNUP4dkrWpUjGN6TZWVyYSOEH0mc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AdFHE9MXl2RTFq7iil5LYK88lUP22U7IojY1BNw4/6qTwl4YvxxuGimhkoUkHY8LiCwnRKasqZrgXuGABn0Fg0QYyKkKfDk49nGfqmphEtvhIUF3QMF46ELu8v2l10YABXKgU2SZ89dXF17P00g/mYdH2qUS4MFplm407nx9a9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Ii2aVCaU; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SPbAAUrM; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Ii2aVCaU; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SPbAAUrM; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+	s=arc-20240116; t=1773317437; c=relaxed/simple;
+	bh=nQuXQCfJ/SfXG9YfnkL7myftheQ9u5GoCmA3GEgvOX4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JjJIE8EilaZhXsmXS2O1fZDTKwrl8iiVOg2xTe0LTOO8EfIVkMHQHpPpa8eCd4TaIp+pS9UmsiA8MGIVIJH3TbLl0tKflKHut/8XVoWb6rrILrmkqYiicXDK0k7SCl+V+qVMUddvzVl9Vm0n1y+7ETXWqXA5uE5POUSLpif4ghA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kzp5oTip; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Ii2aVCaU";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SPbAAUrM";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Ii2aVCaU";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SPbAAUrM"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DEA4B4D357;
-	Wed, 11 Mar 2026 13:12:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1773234742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eEsFilC8x48DoYuD12G2GruYm9kvDHinwy2SB11tyPg=;
-	b=Ii2aVCaUmi3FKr3X1uFYBKWtVqH/u2MhksnWvTYo4mfnsy0s5DZKKn79tE3EgeHO35iUSN
-	M+QM43lnmKuedhpKTXcEHA0kmxvBKHYe3jPwJBbt/hzICdNUHKwKAuvEddCCuRWKmWEcOe
-	K6X7vOV2W4G6Uq9bC8yiAFjkNs0G6zg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1773234742;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eEsFilC8x48DoYuD12G2GruYm9kvDHinwy2SB11tyPg=;
-	b=SPbAAUrMfx1e5rCaZ+MNJgpVHh8CYQrgYxS3wFutxGvDXUlc2Bkpyj5DruoO24Fn/PVxLd
-	tDTDfoBtsf0rr+Bg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Ii2aVCaU;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=SPbAAUrM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1773234742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eEsFilC8x48DoYuD12G2GruYm9kvDHinwy2SB11tyPg=;
-	b=Ii2aVCaUmi3FKr3X1uFYBKWtVqH/u2MhksnWvTYo4mfnsy0s5DZKKn79tE3EgeHO35iUSN
-	M+QM43lnmKuedhpKTXcEHA0kmxvBKHYe3jPwJBbt/hzICdNUHKwKAuvEddCCuRWKmWEcOe
-	K6X7vOV2W4G6Uq9bC8yiAFjkNs0G6zg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1773234742;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eEsFilC8x48DoYuD12G2GruYm9kvDHinwy2SB11tyPg=;
-	b=SPbAAUrMfx1e5rCaZ+MNJgpVHh8CYQrgYxS3wFutxGvDXUlc2Bkpyj5DruoO24Fn/PVxLd
-	tDTDfoBtsf0rr+Bg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CF8853FA27;
-	Wed, 11 Mar 2026 13:12:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tHyiMjZqsWljRgAAD6G6ig
-	(envelope-from <jwiesner@suse.de>); Wed, 11 Mar 2026 13:12:22 +0000
-Received: by incl.suse.cz (Postfix, from userid 1000)
-	id 3A023FE189; Wed, 11 Mar 2026 14:12:22 +0100 (CET)
-Date: Wed, 11 Mar 2026 14:12:22 +0100
-From: Jiri Wiesner <jwiesner@suse.de>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	John Stultz <jstultz@google.com>, Waiman Long <longman@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Stephen Boyd <sboyd@kernel.org>, x86@kernel.org,
-	"Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-	Daniel J Blueman <daniel@quora.org>,
-	Scott Hamilton <scott.hamilton@eviden.com>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org
-Subject: Re: [patch 5/5] clocksource: Rewrite watchdog code completely
-Message-ID: <abFqNsVLKmhc6aLY@incl>
-References: <20260123230651.688818373@kernel.org>
- <20260123231521.926490888@kernel.org>
- <aZ87wpdHJ5vajYoL@incl>
- <87y0k21vro.ffs@tglx>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kzp5oTip"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8DBDC4CEF7;
+	Thu, 12 Mar 2026 12:10:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773317436;
+	bh=nQuXQCfJ/SfXG9YfnkL7myftheQ9u5GoCmA3GEgvOX4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=kzp5oTipiNOs9fmIBpi1nmmSuQ4uLVNq08LPCSch8yiIeOkyJ8Az9MBCTybE7cm5d
+	 AMxfwpohLYKZvdRcwY6FVWNb1PtjdZE3EgpeQC628X0efwh2wRrw0LhWn9yaxAQfpf
+	 w6ZUYG6LkLltn75gOmO38N55qeVwus4Wr+Sb10hyo0888DrxKRH5rYKA32g+xfcRRS
+	 vWwOBuST+wlsK+dHrf7tH4G3ruupinYIHv4ZCjmtIer0Zb+wbl+bwIETcNIuNLPGvg
+	 W1154YFBZI0Xw+DtOH34QkYfcH3Ndv6eraBdM09caT66SnioiGB/fgmwobzxV3sXLI
+	 1S2FtYnyjdp3A==
+From: Nicolas Schier <nsc@kernel.org>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nsc@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Kees Cook <kees@kernel.org>,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	loongarch@lists.linux.dev,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: Re: [PATCH 0/2] kbuild: Switch from '-fms-extensions' to '-fms-anonymous-structs' when available
+Date: Thu, 12 Mar 2026 13:08:48 +0100
+Message-ID: <177331711843.39835.18126183139184363231.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20260223-fms-anonymous-structs-v1-0-8ee406d3c36c@kernel.org>
+References: <20260223-fms-anonymous-structs-v1-0-8ee406d3c36c@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y0k21vro.ffs@tglx>
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FREEMAIL_ENVRCPT(0.00)[gmx.de];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,google.com,redhat.com,infradead.org,linaro.org,amd.com,quora.org,eviden.com,gmx.de,alpha.franken.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.de:email];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: DEA4B4D357
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
-X-Spam-Level: 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Sun, Mar 08, 2026 at 11:05:31AM +0100, Thomas Gleixner wrote:
-> On Wed, Feb 25 2026 at 19:13, Jiri Wiesner wrote:
-> > On Sat, Jan 24, 2026 at 12:18:01AM +0100, Thomas Gleixner wrote:
-> >> To address this and bring back sanity to the watchdog, rewrite the code
-> >> completely with a different approach:
-> >> 
-> >>   1) Restrict the validation against a reference clocksource to the boot
-> >>      CPU, which is usually the CPU/Socket closest to the legacy block which
-> >>      contains the reference source (HPET/ACPI-PM timer).
-> >
-> > The UEFI picks the boot CPU so the kernel does not have control over
-> > that. On the other hand, I think the CPU that is connected to the
-> > southbridge chip (by DMI or PCIe) will be selected in the majority of
-> > UEFI implementations.
+On Mon, 23 Feb 2026 12:10:27 -0700, Nathan Chancellor wrote:
+> The kernel enabled '-fms-extensions' in commit c4781dc3d1cf ("Kbuild:
+> enable -fms-extensions") in 6.19 to gain access to a Microsoft
+> (originally Plan 9) extension around including a tagged structure/union
+> anonymously in an other structure/union. Since then, Clang 23.0.0
+> (current main) has added a flag to enable only that extension, rather
+> than all Microsoft extensions, '-fms-anonymous-structs' [1]. Using this
+> narrower compiler option would have avoided the build error fixed by
+> commit a6773e6932cb ("jfs: Rename _inline to avoid conflict with clang's
+> '-fms-extensions'"). While these errors are not expected to be common,
+> using the narrower option when available has no drawbacks because the
+> kernel only cares about this extension in '-fms-extensions', no others.
+> While this could result in build errors for folks using
+> '-fms-anonymous-structs' if a developer uses another extension in
+> '-fms-extensions' (either intentionally or unintentionally), flagging
+> these uses for further scrutiny seems worthwhile.
 > 
-> Picking a remote node CPU would be insane, but yes BIOSes are insane by
-> definition.
+> [...]
 
-Yes, I was mostly just being paranoid. Please include:
-Reviewed-by: Jiri Wiesner <jwiesner@suse.de>
-in the next version of the patchset.
+Applied to kbuild/kbuild-next.git (kbuild-next), thanks!
+
+[1/2] kbuild: Consolidate C dialect options
+      https://git.kernel.org/kbuild/c/ec4c2827
+[2/2] kbuild: Use '-fms-anonymous-structs' if it is available
+      https://git.kernel.org/kbuild/c/0d3fccf6
+
+Please look out for regression or issue reports or other follow up
+comments, as they may result in the patch/series getting dropped,
+reverted or modified (e.g. trailers).
+
+Acks from arch maintainers are still welcome!
+
+Best regards,
 -- 
-Jiri Wiesner
-SUSE Labs
+Nicolas
+
