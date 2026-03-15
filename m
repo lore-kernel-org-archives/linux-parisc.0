@@ -1,119 +1,177 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12C03BE649;
-	Thu, 12 Mar 2026 12:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773317437; cv=none; b=WejTnyH7jTEvQUJnmkDzUwX7NmzCdmiriexXfRZ9uaZ9VPC3rilkYgpuB7zeQDy8ieAdtGxuMTiUph0LWgSDxq5J0XiKEK8gRSEH4samEwvFCRgHA2sKnH8oND6IX9PP4WBJayYQ2aokiQ1aVKqb9J1g9lnUK4DluUhUyZ+Gv0s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773317437; c=relaxed/simple;
-	bh=nQuXQCfJ/SfXG9YfnkL7myftheQ9u5GoCmA3GEgvOX4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JjJIE8EilaZhXsmXS2O1fZDTKwrl8iiVOg2xTe0LTOO8EfIVkMHQHpPpa8eCd4TaIp+pS9UmsiA8MGIVIJH3TbLl0tKflKHut/8XVoWb6rrILrmkqYiicXDK0k7SCl+V+qVMUddvzVl9Vm0n1y+7ETXWqXA5uE5POUSLpif4ghA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kzp5oTip; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCD5369239
+	for <linux-parisc@vger.kernel.org>; Sun, 15 Mar 2026 14:59:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.180
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773586783; cv=pass; b=jpfN9q2PXajNF2rDqKW4tF1UsdPQWrrFckxCXldiQ+MgNtE/hX1BVpq5G+oNxVsyaHp2jCXN05qhHNjyNhp6SA4ApyiFOQXZB8OOhz9zkrFVL7THgNd2rHSDBjIg2Bed1Pu1s2bKfSQigC8Sd/CZ6mKKgIwHZpP83vAoda1G+bg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773586783; c=relaxed/simple;
+	bh=cmAzdK8mJM/CEflDkCR6g0diVGaH9lYiVEHzSDqkev8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TXNsmzHoatAW3htI3VG57BZD6VznuZ4iVWPui77kv+A3R36lczdiJOZXY/JZYEMW65zcSEi7B0d5Dg57rT1dRkCd5/NHicjKHfqgEVGeU1qj05O1Mxet94a3vRonO72bBF1N2yyuHps4nKs7JYCUq6zdCFDr7Ih7iEoTkQI/+Mc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=quora.org; spf=pass smtp.mailfrom=quora.org; dkim=pass (1024-bit key) header.d=quora.org header.i=@quora.org header.b=jC8I11ww; arc=pass smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=quora.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quora.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kzp5oTip"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8DBDC4CEF7;
-	Thu, 12 Mar 2026 12:10:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773317436;
-	bh=nQuXQCfJ/SfXG9YfnkL7myftheQ9u5GoCmA3GEgvOX4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kzp5oTipiNOs9fmIBpi1nmmSuQ4uLVNq08LPCSch8yiIeOkyJ8Az9MBCTybE7cm5d
-	 AMxfwpohLYKZvdRcwY6FVWNb1PtjdZE3EgpeQC628X0efwh2wRrw0LhWn9yaxAQfpf
-	 w6ZUYG6LkLltn75gOmO38N55qeVwus4Wr+Sb10hyo0888DrxKRH5rYKA32g+xfcRRS
-	 vWwOBuST+wlsK+dHrf7tH4G3ruupinYIHv4ZCjmtIer0Zb+wbl+bwIETcNIuNLPGvg
-	 W1154YFBZI0Xw+DtOH34QkYfcH3Ndv6eraBdM09caT66SnioiGB/fgmwobzxV3sXLI
-	 1S2FtYnyjdp3A==
-From: Nicolas Schier <nsc@kernel.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Nicolas Schier <nsc@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Kees Cook <kees@kernel.org>,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	loongarch@lists.linux.dev,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org,
-	linux-efi@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH 0/2] kbuild: Switch from '-fms-extensions' to '-fms-anonymous-structs' when available
-Date: Thu, 12 Mar 2026 13:08:48 +0100
-Message-ID: <177331711843.39835.18126183139184363231.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260223-fms-anonymous-structs-v1-0-8ee406d3c36c@kernel.org>
-References: <20260223-fms-anonymous-structs-v1-0-8ee406d3c36c@kernel.org>
+	dkim=pass (1024-bit key) header.d=quora.org header.i=@quora.org header.b="jC8I11ww"
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2a871daa98fso28321515ad.1
+        for <linux-parisc@vger.kernel.org>; Sun, 15 Mar 2026 07:59:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1773586782; cv=none;
+        d=google.com; s=arc-20240605;
+        b=M34cB8JgerY6oWqbSeLAmbnHrXyEh+YsiixE1pKSbnliPkKF00R+39kTY7C10ILKCa
+         p6wLa3KsdivSzKMoUquBRlqn16mLvl0HI63tsaPuaNAhC614TtPiWssnpphuQrizoHMD
+         ifswl49BNnJ0N/5kwISiYV6LAiDkugF+AKvaZH0tbdrlDIFV31gdgzBvhl21FS0l4F0l
+         pSvWi8KnJRdcuJccvBExsoCAbs9JhL2w4iJOBh4lrQA2jta3hN62B728Qsrx0cqfoQ+t
+         r/wWZ7Dg/G+ae8mFON3+wJXanRQK+qrTEtOqM32Pq+L41114grLKL1DyKEi7ebNy8mGu
+         jW0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=k2bgQXdn651hknnodZ1KyTxVyFIgCPV9YrQpZ4c7Bqs=;
+        fh=4eD/bLw5V6QbGumyHJFP+Y3RJFF/tqSU2Q/ROfagolg=;
+        b=A6cL3GDIZ48mwLFB2bdXMQih2tohZ0Tq8TUlXCRF62yjoqb1KRNYFBGag2Z0YpQdIP
+         MhuyXPulI+tE51l/OE9OuKqWID7FuKJBvUcyMAvditvYRiMkp3SsBS19eFxlO5W30fD1
+         FJtB9RFolWIVXPzSJiUU9PtWOyhnreGLT1iRBi12acGZNGY8hyqusMIYhwQah9gBv+B3
+         xnJ5CgYd6YpnBEewW9i8k6Rn1jPtzlVzHeVPwg3A6yvtAGSdt6TI/JAAUFPexGnMxImT
+         u6rJg5MqJIEsszHtKiRMu2xZ4kdHr/CogN6HDO+BSEEOtAv2NVAt1NiyICAIhnNLSIft
+         KCXA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=quora.org; s=google; t=1773586782; x=1774191582; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=k2bgQXdn651hknnodZ1KyTxVyFIgCPV9YrQpZ4c7Bqs=;
+        b=jC8I11wwdDhXFFLiLxS2yYqWQewdJKEDu3VYBhnMh2Hpo4c8FyogwA5754BQ2ohOMW
+         2CviQ6ahUEm9MXjHr3fqZzWAP5HpPakU/RJ52yCK299HU3u6bDwWLcHTOCsCoFB8kfjL
+         /1CmhMM+hRg0XMIAL9mAYHW9nlKy1ec+ItMf0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1773586782; x=1774191582;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k2bgQXdn651hknnodZ1KyTxVyFIgCPV9YrQpZ4c7Bqs=;
+        b=azibRvFkeyIKWDfEwQsWNSWwEOedtzWyxjD0qg3qFz25KXlCEra6uNo2rg0jwvMJa7
+         xOcpLu6bAbVGoSTthK3YbfVjoa0wwBH9IAFyMFHotzLqHQ3H6Fdobi+LwqRO7+/1u0QE
+         73bYHvmRwb0IJoK+u1kXzRzec2lBACw8rwq9JADoIVfMn2sWNsFph091vljIlOdOO4f1
+         8TwFiZEgYT8I5nXO3fW1D49OH2dnHfne6nlbY0zWx5yfTFumCWB1n4tulfRDc8IqkVML
+         R60qvhNtGJOUCKJIbGKvPu0FSkOHpZSCFztzG+Q8A2hPOKrwrfyaOp5s6BdUan4QL2IO
+         FSAA==
+X-Forwarded-Encrypted: i=1; AJvYcCVXCC8mTmNA2Gc/Ti+INKZlSIGMfPCznvXkHqjcsuWI+LlFkWvk5c2zJETv/OJ3ROoIWg2MSIQKg7l47C8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5YHdwckne/O4vdMpiIaj5lY7X1QCLh5o9Sak8UnTPws+9eYSx
+	01qXqYvzsaIfIbEHZi7vLavP6CYEpaPrGW9f3czN9p4bz23l7KPDOtLSPAYvqd+z+kt5ian/Bmg
+	wnvSqEsNrLVFcpVARrzWmVBcW8B/XXdQnJz3QpOZXJw==
+X-Gm-Gg: ATEYQzydoWLOgeVLDxp+YWdPOGWJyjsQiV9a8vYM4ZYCu19Qi+f8k9OF/jWFmeE3FkE
+	cA7qHXSMYHJl6ZAbHis9UZRNrCpzyBycgPDMQA9Gyvk0MhWfGI9+lhyrDPnmwUvFtxGFYRmW/mp
+	exGUHqpyqY611FulzsJLWs0bV3L4mY4vt8EXbpA/303ZwFh3BTLwPoY2/JWltWx8gNIn6Ty7/xc
+	SjuRPaE6k6ZOWwKP1gr9x/Q7LC8uCFKmz2725SsKtlnxDKDLsQ184F5NUF6ykbkphmQgsbLhmuH
+	+qwmJlbXNeLDe59dGKztvXNLMHAi+UdsIOZSRwzXnPoYsRoBsNXGygMaqRVHCkrFATJZcdJKBAJ
+	nl5y9mQnsG3KdMTA4Gqaq2oSZmEagU6NJ8mkA3rweZVUpTRhsR0eEnG2/Ydd7GOG4kb5WcDqCAR
+	jILtlm2WQWvcPOR878Du+tjzd3XGX9DmFb1yzv5WCehIAnsXTDlCNLogA+UHs=
+X-Received: by 2002:a17:903:230a:b0:2ae:45b3:b688 with SMTP id
+ d9443c01a7336-2aecac5fa42mr109937075ad.45.1773586782009; Sun, 15 Mar 2026
+ 07:59:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20260123230651.688818373@kernel.org> <20260123231521.926490888@kernel.org>
+ <CAMVG2ssXZKmw-YTKB5=CvhEofKeyEfaBCDZbyzfUcm2+P5rQsQ@mail.gmail.com>
+ <87jywvfkrs.ffs@tglx> <CAMVG2ssvadzUUoZw9xdYdZ4T5Sz+xdcQnXmU2NkR0N_yqieT=w@mail.gmail.com>
+ <87ms0zva5i.ffs@tglx>
+In-Reply-To: <87ms0zva5i.ffs@tglx>
+From: Daniel J Blueman <daniel@quora.org>
+Date: Sun, 15 Mar 2026 22:59:30 +0800
+X-Gm-Features: AaiRm50I31eSF6801si99Y9EY7I9YjebUnwNHs2sMp21MNTfjKnyIHR7axGJPKI
+Message-ID: <CAMVG2st0c7zoh-OYom_UwSA7WPDfRuM7f9gmt4pzU=Ap1Bm9Rw@mail.gmail.com>
+Subject: Re: [patch 5/5] clocksource: Rewrite watchdog code completely
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	John Stultz <jstultz@google.com>, Waiman Long <longman@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Stephen Boyd <sboyd@kernel.org>, x86@kernel.org, 
+	"Gautham R. Shenoy" <gautham.shenoy@amd.com>, Jiri Wiesner <jwiesner@suse.de>, Helge Deller <deller@gmx.de>, 
+	linux-parisc@vger.kernel.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	linux-mips@vger.kernel.org, Scott Hamilton <scott.hamilton@bull.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 23 Feb 2026 12:10:27 -0700, Nathan Chancellor wrote:
-> The kernel enabled '-fms-extensions' in commit c4781dc3d1cf ("Kbuild:
-> enable -fms-extensions") in 6.19 to gain access to a Microsoft
-> (originally Plan 9) extension around including a tagged structure/union
-> anonymously in an other structure/union. Since then, Clang 23.0.0
-> (current main) has added a flag to enable only that extension, rather
-> than all Microsoft extensions, '-fms-anonymous-structs' [1]. Using this
-> narrower compiler option would have avoided the build error fixed by
-> commit a6773e6932cb ("jfs: Rename _inline to avoid conflict with clang's
-> '-fms-extensions'"). While these errors are not expected to be common,
-> using the narrower option when available has no drawbacks because the
-> kernel only cares about this extension in '-fms-extensions', no others.
-> While this could result in build errors for folks using
-> '-fms-anonymous-structs' if a developer uses another extension in
-> '-fms-extensions' (either intentionally or unintentionally), flagging
-> these uses for further scrutiny seems worthwhile.
-> 
-> [...]
+On Mon, 23 Feb 2026 at 21:53, Thomas Gleixner <tglx@kernel.org> wrote:
+>
+> On Sun, Feb 15 2026 at 20:18, Daniel J Blueman wrote:
+> > On Mon, 2 Feb 2026 at 19:27, Thomas Gleixner <tglx@kernel.org> wrote:
+> > Good step forward! We can also reduce remote cacheline invalidation by
+> > putting 'seq' into the cacheline after 'cpu_ts' by reordering:
+>
+> Good point.
+>
+> > With that said, with your latest change on the 1920 thread setup,
+> > WATCHDOG_READOUT_MAX_US 1000 is still needed to avoid timeouts during
+> > the previous adverse workload, however some timeouts are still seen
+> > during massive parallel process teardowns.
+> >
+> > To limit overhead, perhaps it is sufficient to set the timeout to
+> > 100us, avoid retries (as the hardware thread may continue to be busy
+> > and will be rechecked later anyway), and log timeouts at the debug
+> > level if at all.
+>
+> Something like the below should work even with 50us. I left the print at
+> INFO level for now. We can either change it to pr_info_once() or to
+> debug as you said.
 
-Applied to kbuild/kbuild-next.git (kbuild-next), thanks!
+My apologies for the delays!
 
-[1/2] kbuild: Consolidate C dialect options
-      https://git.kernel.org/kbuild/c/ec4c2827
-[2/2] kbuild: Use '-fms-anonymous-structs' if it is available
-      https://git.kernel.org/kbuild/c/0d3fccf6
+Comparing the execution time of the existing mainline
+clocksource_watchdog() to the proposed approach, there isn't
+significant additional overhead [1], which is excellent.
 
-Please look out for regression or issue reports or other follow up
-comments, as they may result in the patch/series getting dropped,
-reverted or modified (e.g. trailers).
+With that said, on the 16 socket (1920 thread) setup, we see most
+remote calls end up timing out with WATCHDOG_READOUT_MAX_US at 50,
+leading to excessive logging. pr_info_once() would be a good approach
+to avoid the spam, however I still feel we should use a higher
+(250-500us?) timeout to keep the mechanism effective.
 
-Acks from arch maintainers are still welcome!
+I also feel if a remote hardware thread is seen to timeout, retrying
+has a high likelyhood of timing out also, so it may be cheaper in the
+bigger picture to not retry. Sensitivity could be increased by walking
+threads in socket order (S0T0 ... S15T0 S0T1 ... S15T1 ...). These two
+items are my only concerns.
 
-Best regards,
+Thanks and great work,
+  Dan
+
+-- [1]
+
+# bpftrace -e 'kprobe:clocksource_watchdog { @start[tid] = nsecs; }
+kretprobe:clocksource_watchdog /@start[tid]/ {
+  @lat_us = hist((nsecs - @start[tid]) / 1000);
+  delete(@start[tid]);}'
+
+Mainline idle:
+[16, 32)       2.9% |@                                                   |
+[32, 64)      96.0% |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[64, 128)      0.8% |                                                    |
+[128, 256)     0.4% |                                                    |
+
+Proposed idle:
+[32, 64)       0.0% |                                                    |
+[64, 128)      0.1% |                                                    |
+[128, 256)    99.6% |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[256, 512)     0.2% |                                                    |
+
+Mainline loaded:
+[8, 16)        0.2% |                                                    |
+[16, 32)      82.7% |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[32, 64)      17.0% |@@@@@@@@@@                                          |
+[64, 128)      0.1% |                                                    |
+[128, 256)     0.0% |                                                    |
+
+Proposed loaded:
+[16, 32)       6.2% |@@@                                                 |
+[32, 64)      93.8% |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[64, 128)      0.0% |                                                    |
 -- 
-Nicolas
-
+Daniel J Blueman
