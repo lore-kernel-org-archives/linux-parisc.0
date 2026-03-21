@@ -1,68 +1,68 @@
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2DB27B327
-	for <linux-parisc@vger.kernel.org>; Sat, 21 Mar 2026 05:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44F2346FA6
+	for <linux-parisc@vger.kernel.org>; Sat, 21 Mar 2026 05:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774069876; cv=none; b=j+4ves5B4sX4wlWZWB4fvLIialQovVHjKCo7cr0RXvYZWGbqepoYeAboZLOQd/bn3zaEgvfZuBitQre+rAEGldTdwNosY7Tcr/jICG4jPiGXayM5gWtLR3tZQHTZv0AzngO5Ri9pCXA9oOTDBoJwwnJfkm3QK+rMe3GPgQ2m7Ms=
+	t=1774070397; cv=none; b=ipnxSjXMQy+MSZsQaYJZC3jEfUHTHx3EtsS6nXDwjBOTprRzJbv7aMChwrVvhg/izK66+Tc2U52Yjtzh8t65g4KRAruiPAKeE990Wmb0Tx3u64xEYFSL5kWnw0qOVxiD7OUZZq9DKx2diy5L//DWaMjXD7gQS6l2W+l7OhIO1VY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774069876; c=relaxed/simple;
-	bh=qVwlCu1WIXntn26q1kvsy4ns7XCLQh3LUnFd91zRr48=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=LqcNqDnkjPZRBJ53IHQwk40kfNzkfmwo6oiIIJF9HcyFr9ITGRC13VbwaxmCdVCBPOleC+HOtsUuVVa+YRFolf4aP9RUUhwsSJsJloRJjkcXuSvQ457XeTKWgzyjzEEW5Adq6ed870Y8QRSD/d1+VvLi4rtS5wA7O/3wm+0oNFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OLe7OxhB; arc=none smtp.client-ip=209.85.215.178
+	s=arc-20240116; t=1774070397; c=relaxed/simple;
+	bh=GBqnSW9uq89sCfuA0J6JSy8lRk9vTD0tsuanrzAodm0=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=nWj1J4/vUTxqSXxwU3qWJsA9o1P7rG8Mq5N0yzlfZXmx3B7LeZCYAazBmQ3SBfLDLPIhln3BoI00C+CUKAlC5ZJhmgktFVTgiHLOh9g0+wh5n6GXsmt7jSs/1kNe+hX3WK4NUMnHnzXd78/fqOibpe942hc6TSarXK9JOrmXXFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NiWmc/3g; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OLe7OxhB"
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-c7412b07f22so1590111a12.0
-        for <linux-parisc@vger.kernel.org>; Fri, 20 Mar 2026 22:11:13 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NiWmc/3g"
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2aaf43014d0so16300075ad.2
+        for <linux-parisc@vger.kernel.org>; Fri, 20 Mar 2026 22:19:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1774069873; x=1774674673; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1774070395; x=1774675195; darn=vger.kernel.org;
         h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=7QxDv7wA5vy2wx/iALi99txiEfbwQ3ENlpnWZYhHz0A=;
-        b=OLe7OxhBzFwMPIltVknpGrXU9DN7TZFVr3dJDvog+FEKXYmG+fHE2bFbgoZCuFCuw2
-         0eJIPaT+MwpkQBDn5zFbJSu9h2HQa0J7qzB1ZsadIyJ8Bau/FOCcW7WsotI/JazwbOwC
-         Liacvp0OhfIMtoPN1/bsxA1AetNrt12rxXcHel3gly35cWWZocy2wqHD4vswnXxER4SK
-         TKXch+jKp5VDm59qDJg8ua+0OqFS8JstiSXF1Pwy5A8Zcue6JB5wdTTc5OSZOMyh9cCw
-         BYWG4YhdCWoTZ4G1qzRqr0iGs0BgB00W7fAJFkySqVoTIt3dNWFPgkagFcG568A1/AfF
-         xj/g==
+        bh=N5slH90cGMNQaJ/nUAO66vR2HM7xhu3omBUy3YIB1Mo=;
+        b=NiWmc/3g78YJ3IIOQKmn6Kw0P2JnH5XPXN8IGFgqB38AEiQjp39KqmoZwYkmt+95ll
+         vikpnSOFcMpbj3rsbfQq6BC2xgnlo5c8d8nr7iuPfHxqMKffbt97tJZz7SbyxXmFtbyU
+         /Tz9PQeAJ1W/CjxmbMGKqGiCJAEH7xTXWoJyWVyWZgsFixVDXhZaKpghttKAc8NO6ZA6
+         U8/fG3+LS2SbdS29Z9Akr0LnK00hsGBnRNExnuWFLFhLlxY9G/dDi7qkkuMa6PAW8vB/
+         FmJ70tr2Va5oZZUuX/qO6ZUZWbjAkzMEYy8FwaPKC6msAmsr5c8FO9isD5voU//faGif
+         pPIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774069873; x=1774674673;
+        d=1e100.net; s=20251104; t=1774070395; x=1774675195;
         h=references:message-id:date:in-reply-to:subject:cc:to:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7QxDv7wA5vy2wx/iALi99txiEfbwQ3ENlpnWZYhHz0A=;
-        b=qotGIJk3B6WYxpWJVRa/60dKRbPI7+yUZbU2TcJLI08VwrPyf2kTKhDDksjgq09SdA
-         VH0OAxQKu9yS7+cjm7GhHw5TkWNA5tlpv8tvzu4fhELRcqTaPykF1pcu4JCSHQfClbS4
-         DhyxDQqHSKq7LdqIuk1rIPPTkI39V6ArYBcRj07qTE9dtEoMxKvFEWLg/x97JB7aO7KG
-         o6o+zOtKHJVeUw4S6W49npIIHkVxz0xOo2AkRTAnM2ghykOjcpqPdtoHyTd2mNqvMeaL
-         +7iz0VXblWjnzT1JUtbmqFG9NiCxxTlGT6IIYYl2qG8moDfzDT4Yzbg1cYl9KLM2OI6j
-         YRuA==
-X-Forwarded-Encrypted: i=1; AJvYcCWAv0EIDXcqWlNQKm7HBiNj++HxmBF8EAzYssK76SytByop8YYkU89HiD41lBOScqFUwGKHzQKD5OQYHPo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDEaYE/8ik5m/1EWYe0KKw7Pr92sobkRs4MiuSlrhTIeUHEBVg
-	n+rPNVQ3WBWbG8Qdzv0ww2wyqtY2Krci5aCvNT7dk1vbDHol+Zw9B3c7
-X-Gm-Gg: ATEYQzxMvuk66JpY3JFUxtlPiwzKt6sP1OFs8m51IhJ10CvwchRzKTlun225yY5qQme
-	EWYR0SvWqodYDwi8yOeDupkgsj+6Enii7f4lWBx4XDuxfhifCXQ6pLcqVip4Mw7nu0A/HLB9hqi
-	UObQ5YhyYPDkukRMd7H1TEY9xttB0SrUINctX+CFH/JHWQVcrPZeM3ot1Wdk3zzGNewWOwhEc7/
-	fNTz3cQNlMQnSlD/sH1j/V/yv05FEVx4m2yW0NjWQtjA0JR8ZmoFnehA0QYjx52p7geJeQ6dOoE
-	TCdYXQTeAWitV/JmPY8YAznEop/32FU/dALe6iLT36FbNqzVoudhNVg0uo1sLMGZf/C7hQ/Q806
-	HpMmgoMVBBt2TgV6m3Wz1MbYDF+SL/WJzIwfImdY4zpMkoLC6Eekee6Mn1mkwsxeQqpxCRMCUkv
-	9zVA60tJOZxEQnehHinpEueg==
-X-Received: by 2002:a05:6a21:4cca:b0:39b:9c3a:f54f with SMTP id adf61e73a8af0-39bb25e7511mr8216718637.32.1774069873215;
-        Fri, 20 Mar 2026 22:11:13 -0700 (PDT)
+        bh=N5slH90cGMNQaJ/nUAO66vR2HM7xhu3omBUy3YIB1Mo=;
+        b=WyTkRMbkFbLfDIJy/dFbCeGtgWnRZJ8LyqkAIAEc6vLoRienYxKhKZ4QdBX2NTFOpm
+         O21EDzCiAcniIquIpeNA+otKxMrpss0GFR4w1HxZNEFRdeAnNBkE2sfWspr3awxBJm6t
+         6NeomIFPEBkC7yuXMrTgRVfAUhwBwEtxTKA5mNSO6j9mj3OzlizZCbMnTgyuDQLinNd/
+         ai1e+wzda4rZZjGzTJ4lWT12Gm/8hkdCMzkY7SWPO57T03IDhLwy4UHJtgSBT40Pv09A
+         ej4p4ANu7PtjcVdufQpiDtct7CTxAzC9Uxrzvt6pLMfyMUSMt5Mdlj9zC6lNiw1HKdU2
+         6Pew==
+X-Forwarded-Encrypted: i=1; AJvYcCULvDV+bQ20jRxtGdCsem5+dur/ilm+6GMoiYGFjGkip/u90ZE0rS6dlA6aF1utUYelPs/OOa7gcPmaqnQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1G5PlpukLIbiMSBD+J5wNrJfrX5pLfwWc+HRi2oR3lOI85uJ1
+	CDCqPWUQyNphjx7jIIPPKV387BcLfLo+vv0Knvufd1SlChi7awb5AdRG
+X-Gm-Gg: ATEYQzzBwf7ziCI8nPuNrxYkpCe+g0gCkcpASzOmox3+X+ylhTkH/FyOXLkQhx9S4dO
+	sHwgFbPPMOQEIAJxEKzAxO8QZhw0XAUJsLwTBJD4/joG0gXM5VkUjCUvTK3/H4x8FGsLoEOVckF
+	WfsVHTXr4BBrxS+apZMNhq5qZOGM8aBLqbuKUKOV4bYmUQ4kxiyw7um5HqN3PoYDAyFxZL3kjUH
+	M9beZsBLQXBzNMs8wGvZYiDTxBjmAUkVfcv/xC0IGNf/VgQixSx20o2sa6qrNqUne/vBifT4UMc
+	CHULJW0/lp15EM83o0jznNDRv8DGPDLuNb9KA0kthFxK2s5vYXJA/v6bIFazGM9/P3MlxRRkGrV
+	OszbcN/65SJ1vrLJofLa6b95NvK/16RamF6FUIk/REh8f5GoqLGUT0ARfoKEDP7obNsUnGHVmYy
+	dF5QEX5+hvAAooXuGUxRCYig==
+X-Received: by 2002:a17:903:191:b0:2ae:c984:6d72 with SMTP id d9443c01a7336-2b08271e23fmr57382855ad.22.1774070395090;
+        Fri, 20 Mar 2026 22:19:55 -0700 (PDT)
 Received: from pve-server ([49.205.216.49])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c743a939af0sm2729778a12.16.2026.03.20.22.11.07
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b0836955dbsm52944385ad.72.2026.03.20.22.19.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Mar 2026 22:11:12 -0700 (PDT)
+        Fri, 20 Mar 2026 22:19:54 -0700 (PDT)
 From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org, david@kernel.org
 Cc: ljs@kernel.org, Liam.Howlett@oracle.com, vbabka@kernel.org, rppt@kernel.org, surenb@google.com, mhocko@suse.com, baolin.wang@linux.alibaba.com, linux-arm-kernel@lists.infradead.org, x86@kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, open <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] mm: change to return bool for ptep_test_and_clear_young()
-In-Reply-To: <3fa94c3c89fd93fe22c8cb59967f064787d686aa.1773890510.git.baolin.wang@linux.alibaba.com>
-Date: Fri, 20 Mar 2026 11:27:48 +0530
-Message-ID: <ikarxctf.ritesh.list@gmail.com>
-References: <cover.1773890510.git.baolin.wang@linux.alibaba.com> <3fa94c3c89fd93fe22c8cb59967f064787d686aa.1773890510.git.baolin.wang@linux.alibaba.com>
+Subject: Re: [PATCH 2/6] mm: change to return bool for ptep_clear_flush_young()/clear_flush_young_ptes()
+In-Reply-To: <5d24b34d8b7860dc2188408b3fa530193bcc5caa.1773890510.git.baolin.wang@linux.alibaba.com>
+Date: Sat, 21 Mar 2026 10:48:41 +0530
+Message-ID: <fr5tyd3i.ritesh.list@gmail.com>
+References: <cover.1773890510.git.baolin.wang@linux.alibaba.com> <5d24b34d8b7860dc2188408b3fa530193bcc5caa.1773890510.git.baolin.wang@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -71,27 +71,25 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 
 Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-> Callers use ptep_test_and_clear_young() to clear the young flag and check
-> whether it was set. Change the return type to bool to make the intention
-> clearer.
+> The ptep_clear_flush_young() and clear_flush_young_ptes() are used to clear
+> the young flag and flush the TLB, returning whether the young flag was set.
+> Change the return type to bool to make the intention clearer.
 >
-
-Right I checked all callers of ptep_test_and_clear_young(). I agree, we
-only need bool here. 
-
 > Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 > ---
->  arch/arm64/include/asm/pgtable.h             |  8 ++++----
+>  arch/arm64/include/asm/pgtable.h             | 15 +++++++--------
 >  arch/arm64/mm/contpte.c                      |  4 ++--
->  arch/microblaze/include/asm/pgtable.h        |  2 +-
->  arch/parisc/include/asm/pgtable.h            |  6 +++---
->  arch/powerpc/include/asm/book3s/32/pgtable.h |  4 ++--
->  arch/powerpc/include/asm/book3s/64/pgtable.h |  6 +++---
->  arch/powerpc/include/asm/nohash/pgtable.h    |  4 ++--
+>  arch/parisc/include/asm/pgtable.h            |  2 +-
+>  arch/parisc/kernel/cache.c                   |  8 ++++----
+>  arch/powerpc/include/asm/nohash/64/pgtable.h |  2 +-
+>  arch/riscv/include/asm/pgtable.h             |  4 ++--
+>  arch/s390/include/asm/pgtable.h              |  4 ++--
+>  arch/x86/include/asm/pgtable.h               |  4 ++--
+>  arch/x86/mm/pgtable.c                        |  4 ++--
+>  include/linux/pgtable.h                      |  8 ++++----
+>  mm/pgtable-generic.c                         |  7 ++++---
+>  11 files changed, 31 insertions(+), 31 deletions(-)
 
-I looked at it because of powerpc changes, but ended up looking into all
-call sites anyways. So overall it LGTM (and I agree that we can remove
-the unnecessary externs from function declarations)
-
-With that please feel free to add:
+LGTM. Please feel free to add:
 Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+
