@@ -1,119 +1,109 @@
-Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B85F536C580;
-	Sat, 21 Mar 2026 10:59:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.243.244.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FC0264A9D
+	for <linux-parisc@vger.kernel.org>; Sat, 21 Mar 2026 11:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774090789; cv=none; b=m5tHP+sEh1HWn9o0IiTlwdSCO0neUxRKWH6ZyW1Vf6U9zctdlF+xIQvkv/EUdzEzsH7xSAy3WXgsjLa3ns5j8m5sp6tzg7Ujn2I+XPAFJ4gNdw7xyMvCvDs4Byt+ASGP2nko7z402G6ulumB1rNPqAgOc8KWue5c7KVfnlvatp8=
+	t=1774092710; cv=none; b=Iy1hLmHoCESpVBQYZyQBdcupqw/Pd8uJ0M/8YJwGjSRsYxJ0cqb4OGz8mudh5QyFfXXuM2Poq1nAztmOGVzphLlf8zQLx1Rl44sTxniLZcn0tzhzVyZYPctPiLoaalbvG4rQnYY0yOdciAXBrUIq3Ik73YPq+qtG0/lp43rBwFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774090789; c=relaxed/simple;
-	bh=3UgqNQ42lR5cq0uC55hMUlkeoMqzP9dj6FDzBJrr9Wg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=f3/Ngul7zTyLJXyw+yhVTqccGULL/yvkV2ktttsReUBX4Q+IkxibEkm2A0uOtgk1Ofn32+EqKyWCwNillFOpQO6DSD3Dmg/U6JzOuxS+FMQxUGeP7HXIv8Qnzilzl5ZWnDYX8Y2GCvymVgDf5Aqsz8uU0CFwRs5ljyGt2DUBc8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=smail.nju.edu.cn; spf=pass smtp.mailfrom=smail.nju.edu.cn; dkim=pass (1024-bit key) header.d=smail.nju.edu.cn header.i=@smail.nju.edu.cn header.b=Y9eKCTTJ; arc=none smtp.client-ip=54.243.244.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=smail.nju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smail.nju.edu.cn
+	s=arc-20240116; t=1774092710; c=relaxed/simple;
+	bh=O9pB72vrBX8PrJJAn3TXWDHDCz+2eycvV9Yxy00dM1Y=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=S82FDtLuO1HwpEe7u4uzamdEiAJITN/17HDPnz7ld2LNe8Kof0ygRTDP3hxjlLIKjjoyenubeHrOQG1QGgTMZ0hFMZHot3HFaLJaM0KGZefA5BbRyjDjyh9VH1CBQBuWT/s5kHh13z7TdedAfY+/yh1puLXW8ZK+YYmTNXoMX5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j1uueidt; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=smail.nju.edu.cn header.i=@smail.nju.edu.cn header.b="Y9eKCTTJ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=smail.nju.edu.cn;
-	s=iohv2404; t=1774090715;
-	bh=bflqnp4x2z6IX52KdLDsCHau4gR8g7bcTPnoMNKyqtM=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version;
-	b=Y9eKCTTJigyLG0lKiUioLwbgJDY+KfeyVD5pceeAomG7cxoATPM2iyq/fnxa6c/1H
-	 hCv5Ja3Y9LIXd1JWbWWYFQmd75JhTFyQ4oyrqKlODnaTCSvto3qQcYeJIM6FTauwW6
-	 UCJzDzCvZGYKN3e5lB3skqownce0PYqKXNIGTvS8=
-X-QQ-mid: esmtpgz11t1774090713t62fc5879
-X-QQ-Originating-IP: Iqo1rUFTUZDXDtMl1PsfIsVE7IIJZzmK0ii5+p0dBiU=
-Received: from localhost.localdomain ( [116.172.93.199])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Sat, 21 Mar 2026 18:58:31 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 7075167151808501822
-EX-QQ-RecipientCnt: 9
-From: Kexin Sun <kexinsun@smail.nju.edu.cn>
-To: James.Bottomley@HansenPartnership.com,
-	deller@gmx.de,
-	linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: julia.lawall@inria.fr,
-	xutong.ma@inria.fr,
-	kexinsun@smail.nju.edu.cn,
-	yunbolyu@smu.edu.sg,
-	ratnadiraw@smu.edu.sg
-Subject: [PATCH] parisc: update outdated comments for renamed ccio_alloc_consistent()
-Date: Sat, 21 Mar 2026 18:58:31 +0800
-Message-Id: <20260321105831.7293-1-kexinsun@smail.nju.edu.cn>
-X-Mailer: git-send-email 2.25.1
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j1uueidt"
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-824c9da9928so2841384b3a.3
+        for <linux-parisc@vger.kernel.org>; Sat, 21 Mar 2026 04:31:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1774092709; x=1774697509; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YYdBjs3g/NRwIzC77+RdwYjMCfy82DXerPQVEC+RqG4=;
+        b=j1uueidtzn9z2lFeOSZj9NmrsqJ0hCPPVymRzyiABvRf/QdMSmifG7TdntIqqnU1Aq
+         /YzW/DU0ryT2C2qRNhAdEYIBRH0+lX4jd81nw4LSgWkMNTzk5DXkeLHrBnznU7jq0Iwb
+         UufqkGuu2z00vHl2Qg73bF3psD1FpMEWLPj+lohncShyY1o4xiT7YKDEJl02WSG5Pjtw
+         MhesvvMY6H974EIaXBpCLmK4JyZ6IOW4OXvAgY4RiSYoabLNXUpUjBdEAgFMARCMP3sV
+         xGAarDuxBqQMAYiRtbd64t9vr482pFzXaGI6exFR0mc1du13zmM8RG8c4vPpyJtGs7Hp
+         T1vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774092709; x=1774697509;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YYdBjs3g/NRwIzC77+RdwYjMCfy82DXerPQVEC+RqG4=;
+        b=jgethl7qDm8D7ONpzYZuiKkaoCAcfjYGFHjo1SY82WfuAd84cWlizYCJVqqZE/ZpZB
+         tBFtMViDVo8HRs3n6RvHjM+Mh725Uxt2priq1vA8p9bfUxd/mnGF3b6/jgMIk/jPLv8r
+         w2mvtxw51pEM8zQT6lVvemjp1IksiEAHvlDsb4J7/PA1BHEry8qKfXq0Yxhuw2siBnzp
+         cOSEtG6vXRZmztaBWvp/KfL5sJDshHtjqNzK5HrkrX/bxC81lx+W1OfGhZAvNJJEY69n
+         Ii/ONhn0COh0vxQtI6QfPsqpyAEAq+cFKNJb5pDy9ZBKrSA6WjErIyfEQOONORXd7Z3f
+         zp5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXXS6A90vg/1Ps6SktiPtqRMNtOsej17I3d8oGACosDW4eseq0umY6E/wKpi+1KG9e05yib0tsfCR38WsQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxbaillWDQ4WRZ48smXqehMmPC/x7H8y/v6ynAdsFUC1my9Cr+5
+	NSghEW78QFitjFTX9w7ktgoJb27dagKHFLX4OOtn4F7relnNjHxe9c1g
+X-Gm-Gg: ATEYQzyn2Bk/PAMMfRLdTWnLGC7sfYO6HSJoSNdOScbvkS+H1kn5ZFW+KYANf8WOIem
+	eyVE3ADVbJDE2CIMybWSWmEdLbyRz80vvGWuMv/Q/g2vgKNxPcPsnFdHUtMVHBE9AHbeCj8JKkP
+	9xPAK3VRiGlMCk9+zKq7tV/cTFLKKxDXGn60wXqmQzpUyxxFWILjPx7i7qcmBb4vuenSU5PR/Kk
+	vl6F5rZ7UOWQ0pbudzytSWx2L9Em3RszKnxHH1DrMxG2luWFIgHLOVPZxHSDEpQ+EF17dfERsGC
+	92hwG2iLQpQZ49AIOtjF/sM0uTvIfpzi6T3GyU+Q+JpSZvdzAteVr4Nv/cws3567G+CqiPcTNnG
+	rg7MazHhcmi9eIWCjSY8KS+jXUVFEbBrFF6sZ66o6/FKxh6G/focTMqQLc7zqZEr8rJtcIwh4pl
+	iElYZCgk8meC+zKHN+S1+t7w==
+X-Received: by 2002:aa7:9e8b:0:b0:82c:21af:a7bf with SMTP id d2e1a72fcca58-82c21afa908mr2465482b3a.13.1774092708761;
+        Sat, 21 Mar 2026 04:31:48 -0700 (PDT)
+Received: from pve-server ([49.205.216.49])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82b04220d9asm4159044b3a.60.2026.03.21.04.31.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Mar 2026 04:31:48 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org, david@kernel.org
+Cc: ljs@kernel.org, Liam.Howlett@oracle.com, vbabka@kernel.org, rppt@kernel.org, surenb@google.com, mhocko@suse.com, baolin.wang@linux.alibaba.com, linux-arm-kernel@lists.infradead.org, x86@kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, open <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] change young flag check functions to return bool
+In-Reply-To: <cover.1773890510.git.baolin.wang@linux.alibaba.com>
+Date: Sat, 21 Mar 2026 11:01:56 +0530
+Message-ID: <bjghychf.ritesh.list@gmail.com>
+References: <cover.1773890510.git.baolin.wang@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: esmtpgz:smail.nju.edu.cn:qybglogicsvrgz:qybglogicsvrgz5b-0
-X-QQ-XMAILINFO: NhQ9hXNievYajX+4QCgC5AXOOYqc6w+lSk8izD63EFGLaL2ZBkb7Yzke
-	t89ESciaFZBlcbAynsCurRxf0+kb9KPHBFC8Kq4AGCRzw/Jnw9PR9VzRLoGbFA0nWFb4f+I
-	/IQyaXPVNpfYP1IU728JH47Ef4mbKOweCg4/eWQ59KwXih/zjX4BMK7zUutQE2jSCUlGXkx
-	Z/cAZB0njk0ljT5YCtUGFuL/C+uBHUtnLhPBjggbOGexAF4rtJKaT9AsTjfR5Lw2TbSt6A8
-	mo1XlrY1Whx0JCJWqqTB1Hn9BzpjVM6Aa14nYvg8BWUsqIwy8XUnP3Z1SQz06YRohA83gkH
-	IajCTpznC4eY5KvJ53OU3iMWapUbSwt0FourZC/sdysHWo5bkZVeu7Q3z1Aefh44Dp1Ky0h
-	x7XErZLxdaEe9+z9d0mMh17kgDSR5iF/5+RbvvrtOUKCGHrmrzyq00rSbakDvYAqlJjfXYr
-	Uf1pHpsO6FnEHNl6BTN5r/bZwiCx8ocd4p2xG3fHdLtEK263krfaufXb0kD6IHguMZXZbD3
-	5vMnrzUBqZvKTA53Xwm7J258lR5jf9QSnc1L14re4nBhDlHZ05qn8K3b8AvVT/QnJlQnU4+
-	XgZBDzjgniL8Q5Jml2YMqHMJPCfFYjoutYb3RQCDd0VErEPKgI1zVRNqSBJm7IoQso59HqQ
-	1qftdmksYI0XFiOVlw2KbGv8d4URJ1VMLWXuinyJX6DaxkbOgu7z6dUjMPmQPg8TzpvM5n7
-	fsewQi6Y5wMG/xtzztZUo0aW+SdYwYzB/xkFnp2yoU4kRFclaPAF7I6j/QPr1cUeWmtWzXJ
-	ZcAUj6K9GFePamGTGcaRw+Kg/vtu3LJ1fslhClOuLUVZbNH2y7KpEzC3zX6p62FodNEAHZd
-	tPpIXRK/pgT9RsupIIyGy18+LNSxk4capjedSRysGuyS1W5+AUCEySfiV+aUsr/DlYjmdrb
-	cqDfJQyuxMnrHKdEp63P2Rc0tgTMx5V8clkqRs6KEop5RroiG8lLr/DPJQi+wMqZVWSuWcm
-	4kTxosZ97v7tZ+KRHfTA1kZtBGGOo97aofCZMof/jchJP+umePmT4/xzeKl3ECw3Emfnss1
-	f5X0ADv3t7HbWFG8VHmmjiqz6TOpKDlRw==
-X-QQ-XMRINFO: Mp0Kj//9VHAxzExpfF+O8yhSrljjwrznVg==
-X-QQ-RECHKSPAM: 0
 
-The function ccio_alloc_consistent() was renamed to
-ccio_alloc() by commit 79387179e2e4 ("parisc: convert to
-dma_map_ops").  Update the three stale references in
-ccio-dma.c.
+Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-Also replace the obsolete PCI_DMA_TODEVICE constant name
-with DMA_TO_DEVICE in a nearby comment to match the code.
+> This is a cleanup patchset to change all young flag check functions to
+> return bool, as discussed with David in the previous thread[1]. Since
+> callers only care about whether the young flag was set, returning bool
+> makes the intention clearer. No functional changes intended.
+>
+> Ran mm selftests on Arm64 and x86 machines, and no issues were found.
+>
+> Note that I only CC'd the arch mailing lists to avoid disturbing too
+> many people.
+>
+> [1] https://lore.kernel.org/all/d172d6bf-c60c-4cf5-9da9-f30de38cdfed@kernel.org/
+>
+> Baolin Wang (6):
+>   mm: change to return bool for ptep_test_and_clear_young()
+>   mm: change to return bool for
+>     ptep_clear_flush_young()/clear_flush_young_ptes()
+>   mm: change to return bool for pmdp_test_and_clear_young()
+>   mm: change to return bool for pmdp_clear_flush_young()
+>   mm: change to return bool for pudp_test_and_clear_young()
+>   mm: change to return bool for the MMU notifier's young flag check
+>
+>  arch/arm64/include/asm/pgtable.h             | 29 ++++----
+>  arch/arm64/mm/contpte.c                      |  8 +--
+>  arch/microblaze/include/asm/pgtable.h        |  2 +-
+>  arch/parisc/include/asm/pgtable.h            |  8 +--
+>  arch/parisc/kernel/cache.c                   |  8 +--
+>  arch/powerpc/include/asm/book3s/32/pgtable.h |  4 +-
+>  arch/powerpc/include/asm/book3s/64/pgtable.h | 26 +++----
+>  arch/powerpc/include/asm/nohash/64/pgtable.h |  2 +-
+>  arch/powerpc/include/asm/nohash/pgtable.h    |  4 +-
+>  arch/powerpc/mm/book3s64/pgtable.c           |  8 +--
 
-Assisted-by: unnamed:deepseek-v3.2 coccinelle
-Signed-off-by: Kexin Sun <kexinsun@smail.nju.edu.cn>
----
- drivers/parisc/ccio-dma.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I did compile and boot test on powerpc with various configs and overall
+it looks good.
 
-diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index d5b95e63c24e..dc1b6d11f9ab 100644
---- a/drivers/parisc/ccio-dma.c
-+++ b/drivers/parisc/ccio-dma.c
-@@ -503,8 +503,8 @@ typedef unsigned long space_t;
- 
- 
- /*
--** Use direction (ie PCI_DMA_TODEVICE) to pick hint.
--** ccio_alloc_consistent() depends on this to get SAFE_DMA
-+** Use direction (ie DMA_TO_DEVICE) to pick hint.
-+** ccio_alloc() depends on this to get SAFE_DMA
- ** when it passes in BIDIRECTIONAL flag.
- */
- static u32 hint_lookup[] = {
-@@ -865,8 +865,8 @@ ccio_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle, gfp_t flag,
-  * ccio_free - Free a consistent DMA mapping.
-  * @dev: The PCI device.
-  * @size: The length of the DMA region.
-- * @cpu_addr: The cpu address returned from the ccio_alloc_consistent.
-- * @dma_handle: The device address returned from the ccio_alloc_consistent.
-+ * @cpu_addr: The cpu address returned from ccio_alloc().
-+ * @dma_handle: The device address returned from ccio_alloc().
-  * @attrs: attributes
-  *
-  * This function implements the pci_free_consistent function.
--- 
-2.25.1
-
+-ritesh
