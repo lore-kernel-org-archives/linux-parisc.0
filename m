@@ -1,110 +1,156 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25F03947B9;
-	Mon, 23 Mar 2026 11:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F56C37BE6B;
+	Tue, 24 Mar 2026 16:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774266276; cv=none; b=IpOAyOs0W9RzNYX1HcrzPFnON1ch5BD/YxEXk2AVHN8fdfejjSscjpZf5jv8otE6cjhS+BX8orFr1EJIuscl355o5kchVtncRBWFqSOK8CuCPqJlVN3mJSYkmij5IPvCmkna4+cWF37IU7U7N9uV59Zw+nBRQiEUcQaN4KkSDLI=
+	t=1774371509; cv=none; b=Fdr/D0xLF3Ja6EjiiZ7NTK97HpVX04tDKHpmgIKzxfiWqRHAFCtv1GXfuQqnjT/H9mtPmO+HPCIY/xqn4dMlaU2uR7GwIQqh+jhI4vyNGPWjMjL+eK8p+a/0ufguEVY9QpSBM0l02fYuzyBbAzPEapfKv0V/nhKJy+2PYY3Az1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774266276; c=relaxed/simple;
-	bh=aXd296Lm46/RWsbI4I1OOM2FgVG5HdKEPdtKxCcKiSg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KaItbg3pNpaZhj1Z0GAnQIf0MosoEVsRYYRQX+8WbOtXNyXOVXAjpAbKGYADx0Igs73NAKhXzLBqAU9jSTLH2mArAPyUzO313pCnQYfjvcEoRs1MfDMIn3aJQD8trMHT3eF40Vo6gMaGAIHTKWIDM5Nexwm022YqzYizO+o4SfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gR/RCY7x; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1774371509; c=relaxed/simple;
+	bh=AVKqbcBAH58YtvbtTvUhV6tMedua8892v/x7yCDldr8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=U0vw+pusbKAm23CIdPa0XRLwuYI67n6kbZgzsVmiXhEqcGuWkoavWEklCL3p71LYeZ03fd/ZkoW+r8OSPTPS/RwjZnPwGDaMQ5I46Oo33LsmZtgn/zZLnmYmDxX6HL2naijhTNXH+dA6E2dhh+6/crCbikcbk6kPfJ3A6EhzJDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R8JWN8wR; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gR/RCY7x"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 622CAC4CEF7;
-	Mon, 23 Mar 2026 11:44:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774266276;
-	bh=aXd296Lm46/RWsbI4I1OOM2FgVG5HdKEPdtKxCcKiSg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gR/RCY7xEISChh9Lrf9qGuhPEZS19LykvA5um6hJZDCEVVMpMFmEesD49v4VS0VeX
-	 7tvtxyMDQ8xUKY4iIhm3sU/C9WMRUdj6Z81Mw6hUi1GQnRCuXsZFys+7kWnJiM8LcH
-	 8qIODBP67hQ9u9z4blHsBR/iyNhx3ikj0My0HbCKCwAfCv1CzXTou3L+pTZAo5icZX
-	 O7F1SyOoy3ailgv1X6DwqsvZtE5mFHC/I3tpfFNVdXE7iSSWu4p62HgxDdHbQH+JxZ
-	 xHniVseYGTA81Swnq7Ya3s5cLs7Yq1ml1dSxfQYULHCaMrleKub1aY5HyQ6V3LTinA
-	 /L+uZAmg1tcww==
-From: Christian Brauner <brauner@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	x86@kernel.org,
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R8JWN8wR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1774371507; x=1805907507;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AVKqbcBAH58YtvbtTvUhV6tMedua8892v/x7yCDldr8=;
+  b=R8JWN8wR3mMZgajMDJfTk7tF2WeGZPt8s1lVqLa4U34eHcwFVrzd8yWD
+   QP4zMpT+Le9rT6/MxT8XVQUGK34+w4hWoXnechYNxg8bS4bUzvAsYrWmy
+   KSs2OjfSWlxarirO1fc3C/bHvZx6a3cy0YUJpP2VqR/vplMLTcsUAUtpY
+   hvCeUGyzd3DilI58UcA7ad9s4QmK4HumRSSoh3NiHKewHTASjNgDYv4SZ
+   t8AhPEMy+SOnYZxUTATVy+W4yD8/Y3XjGoT4dBC06Kg1NnuC01A91LC4m
+   d4EPiD0Srp8qjgpGdZk+ZauiVmICQXoIoTqyeBlMaeskmVzNSSZ3PUaMM
+   Q==;
+X-CSE-ConnectionGUID: FmR9B8xUQV2VisUKgez5WA==
+X-CSE-MsgGUID: tl/rrci+RRSHChXkrnOI1g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11739"; a="86471499"
+X-IronPort-AV: E=Sophos;i="6.23,138,1770624000"; 
+   d="scan'208";a="86471499"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2026 09:58:25 -0700
+X-CSE-ConnectionGUID: aesm43ZmRSeKftw4Z5hIbQ==
+X-CSE-MsgGUID: C08Qc1D5Q9Gv1bbEQjAQVQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,138,1770624000"; 
+   d="scan'208";a="224421853"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.217])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2026 09:58:15 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: linux-pci@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	linux-alpha@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
+	linux-m68k@lists.linux-m68k.org,
 	linux-mips@vger.kernel.org,
 	linux-parisc@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org,
-	sparclinux@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: fix architecture-specific compat_ftruncate64 implementations
-Date: Mon, 23 Mar 2026 12:44:08 +0100
-Message-ID: <20260323-pocht-abberufen-825ffe02281f@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260323070205.2939118-1-hch@lst.de>
-References: <20260323070205.2939118-1-hch@lst.de>
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	Russell King <linux@armlinux.org.uk>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Chris Zankel <chris@zankel.net>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 00/10] PCI: Improve head free space usage
+Date: Tue, 24 Mar 2026 18:56:23 +0200
+Message-Id: <20260324165633.4583-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2179; i=brauner@kernel.org; h=from:subject:message-id; bh=aXd296Lm46/RWsbI4I1OOM2FgVG5HdKEPdtKxCcKiSg=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQeVJ/Ny96b4PNJrzr+9NOiA/8+bLx4YW3lMTVfacWzS 0yOhLLad5SyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzkwDmGf1plEULnTrzd+kq7 uMavcddW/zt2IduMvmY9VrKaK9Qs58Lw3/Gk5+XnL/zeeZz4yxfF98j+tsyNy3aT8znSj9yckRz wkh0A
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On Mon, 23 Mar 2026 08:01:43 +0100, Christoph Hellwig wrote:
-> this series fixes a really old bug found by code inspection, where the
-> architecture-specific 32-bit compat ftruncate64 implementations enforce
-> the non-LFS file size limit unless opened with O_LARGEFILE.
-> 
-> Diffstat:
->  arch/arm64/kernel/sys32.c       |    2 +-
->  arch/mips/kernel/linux32.c      |    2 +-
->  arch/parisc/kernel/sys_parisc.c |    4 ++--
->  arch/powerpc/kernel/sys_ppc32.c |    2 +-
->  arch/sparc/kernel/sys_sparc32.c |    2 +-
->  arch/x86/kernel/sys_ia32.c      |    3 ++-
->  fs/internal.h                   |    3 +--
->  fs/open.c                       |   40 +++++++++++++++++++---------------------
->  include/linux/syscalls.h        |   16 +++-------------
->  io_uring/truncate.c             |    2 +-
->  10 files changed, 32 insertions(+), 44 deletions(-)
-> 
-> [...]
+Hi all,
 
-VFS CI: https://github.com/linux-fsdevel/vfs/actions/runs/23425735066
+This series attempts to take advantage of free head space (the free
+space before the aligned start address) in order to generally produce a
+tighter packing of the resources/bridge windows.
 
-  x86_64 (gcc, debian, ovl-fstests)  pass
-  x86_64 (gcc, debian, selftests)    pass
-  x86_64 (gcc, debian, xfstests)     pass
-  x86_64 (gcc, fedora, ovl-fstests)  pass
-  x86_64 (gcc, fedora, selftests)    pass
-  x86_64 (gcc, fedora, xfstests)     pass
+The recent changes to the resource fitting algorithm caused resource
+allocation failures in some cases where a bridge window that is sized
+to be gapless could no longer be assigned. The previous algorithm left
+a huge gaps which allowed it to place the remainder (non-aligning part
+of the size) before the start address of used for the gapless fit,
+whereas the new gapless approach always had to place the remainder
+after the aligning part of the resources. There is not always space
+for the remainder triggering those failures (e.g., when the aligning
+part must be placed at the top of the window).
 
----
+This series attempts to allow placing the remainder once again before
+the aligning part, but now without leaving huge gaps to retain the
+benefits of the gapless bridge windows. The approach is somewhat hacky
+but should work thanks to PCI resources fundamentally consisting only
+power-of-two atoms.
 
-Applied to the vfs-7.1.misc branch of the vfs/vfs.git tree.
-Patches in the vfs-7.1.misc branch should appear in linux-next soon.
+There maybe cases where architecture would not want to do such
+relocation. This series adds the relocation to arch
+pcibios_align_resource() functions to allow all of them taking
+advantage of the better resource packing but if somebody objects doing
+this relocation for a particular arch, I can remove it, please just let
+me know (this relocation doesn't seem critical unless there are
+regressions).
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+Ilpo Järvinen (10):
+  resource: Add __resource_contains_unbound() for internal contains
+    checks
+  resource: Pass full extent of empty space to resource_alignf CB
+  resource: Rename 'tmp' variable to 'full_avail'
+  ARM/PCI: Remove unnecessary second application of align
+  am68k/PCI: Remove unnecessary second application of align
+  MIPS: PCI: Remove unnecessary second application of align
+  parisc/PCI: Cleanup align handling
+  PCI: Rename window_alignment() to pci_min_window_alignment()
+  PCI: Align head space better
+  PCI: Fix alignment calculation for resource size larger than align
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+ arch/alpha/kernel/pci.c          |  1 +
+ arch/arm/kernel/bios32.c         |  9 ++++---
+ arch/m68k/kernel/pcibios.c       |  8 +++++--
+ arch/mips/pci/pci-generic.c      |  8 ++++---
+ arch/mips/pci/pci-legacy.c       |  3 +++
+ arch/parisc/kernel/pci.c         | 17 ++++++++------
+ arch/powerpc/kernel/pci-common.c |  6 ++++-
+ arch/s390/pci/pci.c              |  1 +
+ arch/sh/drivers/pci/pci.c        |  6 ++++-
+ arch/x86/pci/i386.c              |  5 +++-
+ arch/xtensa/kernel/pci.c         |  3 +++
+ drivers/pci/pci.h                |  3 +++
+ drivers/pci/setup-bus.c          | 15 ++++++++----
+ drivers/pci/setup-res.c          | 40 +++++++++++++++++++++++++++++++-
+ drivers/pcmcia/rsrc_nonstatic.c  |  3 ++-
+ include/linux/ioport.h           | 22 +++++++++++++++---
+ include/linux/pci.h              | 12 +++++++---
+ kernel/resource.c                | 33 +++++++++++++-------------
+ 18 files changed, 149 insertions(+), 46 deletions(-)
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-7.1.misc
+base-commit: 6de23f81a5e08be8fbf5e8d7e9febc72a5b5f27f
+-- 
+2.39.5
 
-[1/3] fs: fix archiecture-specific compat_ftruncate64
-      https://git.kernel.org/vfs/vfs/c/e43dce8a0bc0
-[2/3] fs: pass on FTRUNCATE_* flags to do_truncate
-      https://git.kernel.org/vfs/vfs/c/0924f6b80d4a
-[3/3] fs: remove do_sys_truncate
-      https://git.kernel.org/vfs/vfs/c/e8767a3134ca
