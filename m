@@ -1,168 +1,114 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A443AA1B2;
-	Fri, 27 Mar 2026 10:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EEB73E716B;
+	Fri, 27 Mar 2026 13:28:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774607354; cv=none; b=keG8S0eKOtsDy0M2UMRN9cCH5OcCbjOkusojCHtgdeKcW9FhoH+u0IPEBCsJqhHaAv7amQ9xRm2zpXgk/+9+fSyfA4TzzY/NuPwhj+n/DSykYbUyTunllF5QF5vzAQYZQjuRoVllfnAwPsr+yX6KVyp6JdEV1ZixPBetu9pYYeY=
+	t=1774618092; cv=none; b=JHdFQp3Hi4J36Gw3PpwH9LQoo7cmYn5yXFYBIcnRXlkZALy76rxtyezd5I/h1JBt71M3hWTuqno+3yspPUodaxThokhyVO6BsTylv141lRpNh/6z+Ft7Ch9Gd0Dk7nurpsKN49G6q1aYzpNsI6Jpu1XAryxrv33OkF/dSekbAWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774607354; c=relaxed/simple;
-	bh=AQrZsYS87uRLSAUzR2yt6e8HOvPMEsktxMC+0rqw0oY=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=nVuYhg6gY5IMwE6tnlqy3yOoA4E2e+6tsyvnzitFBWc03tx1m2so0L45gAxs8Zxl1htN/84Xhr/YxkkpcsfiaD8d361Cf0Y3qlcWJ8tyr7BV1N+GDH5FpD7d1TrGotUtEoLjDsijTUnJx6ZXbBSUx3FxUSGSvKEnY6dvn/TuKW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SX0nzWlZ; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1774618092; c=relaxed/simple;
+	bh=r/tUcr+DkmKRuSoOmSbqzMlOOVTDeN+O6HtHU+Chplw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ukwMerjOf4sPOfFQ8J51D0TA/ZfBUqwoAT0QXqvJnSmtRieco3Qr5rnqx9QLNtJD67VD1KtDEvpQmJDVhT41Rtfw2CjRQjysLgHEyeY8KGEQH9ra2F80RJfhwerld+mJBE5c8gHsxtJZooC2sTBWpLkLGa+molqZCYuEdpTGUIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tgrKpze0; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SX0nzWlZ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774607353; x=1806143353;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=AQrZsYS87uRLSAUzR2yt6e8HOvPMEsktxMC+0rqw0oY=;
-  b=SX0nzWlZIY0Lg4fyXJy1hem2uUevSvI1nbx91bp0jZYYqRr93GaLksaE
-   L6XLJWuLACGbs/Obo0LLfiusLKSxmX5HOfj2BR/OfzI5RUmPnAEbJxWGx
-   H8arvWKQ7iOn+koxe3/GEJt4fFT8S6HWH9xg10wBXdgqPJanVKkEt1Qyx
-   /7B2xb2jl7faADXEGMBpdI28tH79/++kh/ol8X0TPBLWYG1sA2mCqBcZa
-   QJQsSA1iMaFdyaMsTkz2wpp39pZGfRPODNn6QqAM5cXjkgXj8CJ1e7gn9
-   0Li0W7WV2EDfk6lWNjEzVO4kFjsRIUYdrV6xXvg6gkCesf5RAzv+5UkW8
-   Q==;
-X-CSE-ConnectionGUID: +KbLwjXESSqMmEPH1Yg2iA==
-X-CSE-MsgGUID: k3BStIGXSgiyo9+iueWvgA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11741"; a="93259306"
-X-IronPort-AV: E=Sophos;i="6.23,144,1770624000"; 
-   d="scan'208";a="93259306"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2026 03:29:11 -0700
-X-CSE-ConnectionGUID: tBARr7F7SaCXrVZYlacT+g==
-X-CSE-MsgGUID: 6iZuzsYWQBOngO/GpRvA3A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,144,1770624000"; 
-   d="scan'208";a="263218208"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.186])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2026 03:29:01 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 27 Mar 2026 12:28:56 +0200 (EET)
-To: Bjorn Helgaas <helgaas@kernel.org>
-cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
-    Guenter Roeck <linux@roeck-us.net>, linux-alpha@vger.kernel.org, 
-    linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, 
-    linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-    linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-    linux-sh@vger.kernel.org, Russell King <linux@armlinux.org.uk>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-    Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, 
-    Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-    Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-    "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, 
-    Max Filippov <jcmvbkbc@gmail.com>, 
-    Madhavan Srinivasan <maddy@linux.ibm.com>, 
-    Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-    John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-    LKML <linux-kernel@vger.kernel.org>, Xifer <xiferdev@gmail.com>
-Subject: Re: [PATCH 00/10] PCI: Improve head free space usage
-In-Reply-To: <20260326192520.GA1337681@bhelgaas>
-Message-ID: <7207cde7-d47e-f79c-afe9-9b1daa79140c@linux.intel.com>
-References: <20260326192520.GA1337681@bhelgaas>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tgrKpze0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FE8BC2BCB1;
+	Fri, 27 Mar 2026 13:28:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774618091;
+	bh=r/tUcr+DkmKRuSoOmSbqzMlOOVTDeN+O6HtHU+Chplw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=tgrKpze0AXBEQbD7udKzYR1/j6AEhWlQrKBma1DiYfButx4464/hyCJcpP+ANo9Ap
+	 by/AS0qYxcLqBUSypREH+SHXOKATURaX0us8v4dfKQqXxPoButyOG+KhsuWNRvIeUu
+	 OT9CiE1BJhUnl6+SEPyLb7rKdCHDRBxPXMjA0DrJamezzubk415mrPedbFHfjZqGzC
+	 WAikLjxtn6QB+XzNf1gAfc3zcEHDvFYphLENXO0NWxG/whC/a3SsCFy4iU7xdizwV+
+	 Fd9Nkb17vBj+XSEUZMAIgu5KYakuf0xy9AC3zv8wEWxsEuZC8T/dDcIgvobE8Ac+JG
+	 PHIaX9JpLlSeA==
+Message-ID: <2266e9af-ce5b-401a-8364-0fe2fc3d68a6@kernel.org>
+Date: Fri, 27 Mar 2026 14:28:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-307680389-1774607336=:1037"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/6] change young flag check functions to return bool
+To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org
+Cc: ljs@kernel.org, Liam.Howlett@oracle.com, vbabka@kernel.org,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+ linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ kvm@vger.kernel.org, open <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
+References: <cover.1774075004.git.baolin.wang@linux.alibaba.com>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <cover.1774075004.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 3/21/26 07:42, Baolin Wang wrote:
+> This is a cleanup patchset to change all young flag check functions to
+> return bool, as discussed with David in the previous thread[1]. Since
+> callers only care about whether the young flag was set, returning bool
+> makes the intention clearer. No functional changes intended.
+> 
+> Ran mm selftests on Arm64 and x86 machines, and no issues were found.
 
---8323328-307680389-1774607336=:1037
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Thanks!
 
-On Thu, 26 Mar 2026, Bjorn Helgaas wrote:
+For the whole series:
 
-> [+cc Xifer; thanks very much for reporting and testing!]
->=20
-> On Tue, Mar 24, 2026 at 06:56:23PM +0200, Ilpo J=C3=A4rvinen wrote:
-> > Hi all,
-> >=20
-> > This series attempts to take advantage of free head space (the free
-> > space before the aligned start address) in order to generally produce a
-> > tighter packing of the resources/bridge windows.
-> >=20
-> > The recent changes to the resource fitting algorithm caused resource
-> > allocation failures in some cases where a bridge window that is sized
-> > to be gapless could no longer be assigned. The previous algorithm left
-> > a huge gaps which allowed it to place the remainder (non-aligning part
-> > of the size) before the start address of used for the gapless fit,
-> > whereas the new gapless approach always had to place the remainder
-> > after the aligning part of the resources. There is not always space
-> > for the remainder triggering those failures (e.g., when the aligning
-> > part must be placed at the top of the window).
-> >=20
-> > This series attempts to allow placing the remainder once again before
-> > the aligning part, but now without leaving huge gaps to retain the
-> > benefits of the gapless bridge windows. The approach is somewhat hacky
-> > but should work thanks to PCI resources fundamentally consisting only
-> > power-of-two atoms.
-> >=20
-> > There maybe cases where architecture would not want to do such
-> > relocation. This series adds the relocation to arch
-> > pcibios_align_resource() functions to allow all of them taking
-> > advantage of the better resource packing but if somebody objects doing
-> > this relocation for a particular arch, I can remove it, please just let
-> > me know (this relocation doesn't seem critical unless there are
-> > regressions).
-> >=20
-> > Ilpo J=C3=A4rvinen (10):
-> >   resource: Add __resource_contains_unbound() for internal contains
-> >     checks
-> >   resource: Pass full extent of empty space to resource_alignf CB
-> >   resource: Rename 'tmp' variable to 'full_avail'
-> >   ARM/PCI: Remove unnecessary second application of align
-> >   am68k/PCI: Remove unnecessary second application of align
-> >   MIPS: PCI: Remove unnecessary second application of align
-> >   parisc/PCI: Cleanup align handling
-> >   PCI: Rename window_alignment() to pci_min_window_alignment()
-> >   PCI: Align head space better
-> >   PCI: Fix alignment calculation for resource size larger than align
-> >=20
-> >  arch/alpha/kernel/pci.c          |  1 +
-> >  arch/arm/kernel/bios32.c         |  9 ++++---
-> >  arch/m68k/kernel/pcibios.c       |  8 +++++--
-> >  arch/mips/pci/pci-generic.c      |  8 ++++---
-> >  arch/mips/pci/pci-legacy.c       |  3 +++
-> >  arch/parisc/kernel/pci.c         | 17 ++++++++------
-> >  arch/powerpc/kernel/pci-common.c |  6 ++++-
-> >  arch/s390/pci/pci.c              |  1 +
-> >  arch/sh/drivers/pci/pci.c        |  6 ++++-
-> >  arch/x86/pci/i386.c              |  5 +++-
-> >  arch/xtensa/kernel/pci.c         |  3 +++
-> >  drivers/pci/pci.h                |  3 +++
-> >  drivers/pci/setup-bus.c          | 15 ++++++++----
-> >  drivers/pci/setup-res.c          | 40 +++++++++++++++++++++++++++++++-
-> >  drivers/pcmcia/rsrc_nonstatic.c  |  3 ++-
-> >  include/linux/ioport.h           | 22 +++++++++++++++---
-> >  include/linux/pci.h              | 12 +++++++---
-> >  kernel/resource.c                | 33 +++++++++++++-------------
-> >  18 files changed, 149 insertions(+), 46 deletions(-)
->=20
-> I added Xifer's tested-by, fixed the "am68k" and missing "if"
-> typos, and applied these to pci/resource for v7.1.
->=20
-> Ilpo, if you post a v2 with more changes, I'll update to it.  I
-> applied the series now to get a head start on 0-day building and into
-> next.
+Acked-by: David Hildenbrand (Arm) <david@kernel.org>
 
-Thanks.
+-- 
+Cheers,
 
-I don't have anything in addition to those.
-
---=20
- i.
-
---8323328-307680389-1774607336=:1037--
+David
