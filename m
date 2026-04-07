@@ -1,68 +1,89 @@
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97872D7BF;
-	Mon,  6 Apr 2026 21:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2F91EA7CE;
+	Tue,  7 Apr 2026 02:10:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775509591; cv=none; b=RD3RBg/MrYDgVHx6OSOPEjx26i2elapJ9NMN+EU3SgP8bpKCzo//dyxJUIM9DdlpXa7a+VPRiheazRCnetlY6SSB8qDgIlZSmIJxd+AW7OoHvkoFaAiaqb7zoV8R2MCXuVl15AQLXsFqmQoHhoEhcye3099HLck+0jONvUix0zg=
+	t=1775527832; cv=none; b=LFCZ8pdFEniNvcP61BuVEbZ6Fxjm4We+gB4uGgQkOZEHjv7DsEUREKzQE1ao/InRojAQk70hNz3ttYaDDzPz8X2lyXSKtvxFKiHVDB3mWiLouAzQnfgWQe9UAwGDYR9QUQ9nWOWu/VBWCDpfYlJbYmbzG2sISsJFvwoq4EISu+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775509591; c=relaxed/simple;
-	bh=DBPQkykKpyykik2wF66jpe+ADxHYBWftToCvGrT2iks=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BXamwKAZE/9v1zVC0Wp3N/nqnF/KtfJzZVmcj5A2Tg+Kd7irOYONlrqNWBKDQoE8Jk4jpCXtxyUjhYDTHh3o0nEQRs6ndwoEIFPZombE1Cg65aeGkzJgZjcQbI3Wgq8ywrMZ0qO+fNHweFRglNgSB61eA6I+8GeEohVBxiTUIeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=mdiou6Ir; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+	s=arc-20240116; t=1775527832; c=relaxed/simple;
+	bh=NUrupb/CF97DyehgDM1bR3YngtCbCXQcoCVeKQ2GbB4=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=aJOQ1vr0uyhNqg2EcdN/RZRMVak633DM7lBB/UMTw5PiqjEpSGhyUHHHS/U4S/v9xLT9or9GW4e1n78isfAnUL36Vc4nN1/1FBmjcSLdLcsQYzLo9UBi7mFv42rdsgF3cbPVABB03ouN3gTi4L/q27LMRgObfcNQu07vPU4gyo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s2wlu8lJ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="mdiou6Ir"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=1Gh5qcKn1qFsJPdPfZbAQh2/exE2jTdSdEoiGwgogcY=; b=mdiou6Irko9BLgr1KcxD6o3rmy
-	66EGiEboO6I/FNX1ib8xMz5Q3CEEjlbmKKZwO0Asr8+SCqCjYCr5uNJ4RCu4ikq5mS9824XI0G90D
-	4zHPRgP+oUk0lbRlte72kxyqQDaJT9VLSUassVfX/KTYenGO4NUq9yRU5a3Pbj4Zk8tUbr8Mup3IA
-	/xGiIMMc5IHp+dEm3e9WL/ZRqxMMLKNRPZcoe8dWbOvobkuLjzLI+pzm+DVOSjk/HuwTxJkGvrT0W
-	l+6kWcwFqx9VmuCxF7EE6mSYqgYAEaA5hry3UgzbFsU3zVLBKlAgFdj7kSEHXQIEUM78Z+duLFLL5
-	qfm0kyCg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1w9rD0-0000000Eyju-3egv;
-	Mon, 06 Apr 2026 21:10:10 +0000
-Date: Mon, 6 Apr 2026 22:10:10 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Helge Deller <deller@gmx.de>
-Cc: Helge Deller <deller@kernel.org>, linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>
-Subject: Re: [RFC] [PATCH] Fix warning at fs/dcache.c:430 dentry_free
-Message-ID: <20260406211010.GC3836593@ZenIV>
-References: <adQO8B0rkR2ftusI@p100>
- <20260406200733.GZ3836593@ZenIV>
- <20260406202829.GA3836593@ZenIV>
- <0e4a8cef-2a64-4392-a5ba-f9f57de48f8c@gmx.de>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s2wlu8lJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDB12C4CEF7;
+	Tue,  7 Apr 2026 02:10:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775527832;
+	bh=NUrupb/CF97DyehgDM1bR3YngtCbCXQcoCVeKQ2GbB4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=s2wlu8lJlZOw0FDnuFEbb1GIYBBpLFRmBCOwF42KTyNk+9QKJhFGELVg47XWRSkUp
+	 VCwBD9vMkxe0JrC3ionEMbNtZ7rcN4qYPiL842Bqon5zJlQS/4MGH42pP0wgzJnulc
+	 qUY5dxPpk3U5LtvBnHO5cajhh2Toib8iE/1nK3kqWegr6V6WDqPDANtSlJcNcvZKrt
+	 n0BxwclZpplISYN2ZWCorIbmg1+cjijdgDztRpFvfYbKVDh3gm5qTz0uKnaMUUOBlL
+	 BLtNwSE51BS7xdRHIoxvwGsTft8alJ6kvE2VZF7s/XEPVVMsiAQXfWcVv3i6HT/PJj
+	 cp0Z8SZ36lTUg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CCB83809A28;
+	Tue,  7 Apr 2026 02:10:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e4a8cef-2a64-4392-a5ba-f9f57de48f8c@gmx.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2] eth: remove the driver for acenic / tigon1&2
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177552781030.3342975.4848886248762600181.git-patchwork-notify@kernel.org>
+Date: Tue, 07 Apr 2026 02:10:10 +0000
+References: <20260403220501.2263835-1-kuba@kernel.org>
+In-Reply-To: <20260403220501.2263835-1-kuba@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+ pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org,
+ jes@trained-monkey.org, gregkh@linuxfoundation.org, helgaas@kernel.org,
+ chenhuacai@kernel.org, kernel@xen0n.name, tsbogend@alpha.franken.de,
+ James.Bottomley@HansenPartnership.com, deller@gmx.de, maddy@linux.ibm.com,
+ mpe@ellerman.id.au, npiggin@gmail.com, chleroy@kernel.org, hca@linux.ibm.com,
+ gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+ svens@linux.ibm.com, ebiggers@google.com, ardb@kernel.org, tiwai@suse.de,
+ tytso@mit.edu, enelsonmoore@gmail.com, martin.petersen@oracle.com,
+ jirislaby@kernel.org, geert@linux-m68k.org, vineethr@linux.ibm.com,
+ lirongqing@baidu.com, kshk@linux.ibm.com, vadim.fedorenko@linux.dev,
+ wangruikang@iscas.ac.cn, dong100@mucse.com, hkallweit1@gmail.com,
+ kees@kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org
 
-On Mon, Apr 06, 2026 at 10:43:57PM +0200, Helge Deller wrote:
+Hello:
 
-> > BTW, could you reproduce it on viro/vfs.git #work.dcache-busy-wait?  It's possible
-> > that changes in there might accidentally fix that, and if they did it would narrow
-> > the things down a lot.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri,  3 Apr 2026 15:05:01 -0700 you wrote:
+> The entire git history for this driver looks like tree-wide
+> and automated cleanups. There's even more coming now with
+> AI, so let's try to delete it instead.
 > 
-> Ok, will try.
-> Please note that building kernel/ installing / running dpkg build takes hours & days,
-> so it may take quite some time until I come back here....
+> Acked-by: Jes Sorensen <jes@trained-monkey.org>
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> 
+> [...]
 
-Which kernel(s) had that been reproduced on, BTW?
+Here is the summary with links:
+  - [net-next,v2] eth: remove the driver for acenic / tigon1&2
+    https://git.kernel.org/netdev/net-next/c/e6b7e1a10cba
 
-Incidentally, can that be reproduced on any of qemu-based setups?  And do you need
-to build the kernel natively?  Debian kernels can be cross-built, after all...
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
