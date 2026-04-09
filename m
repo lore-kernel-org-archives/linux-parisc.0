@@ -1,371 +1,132 @@
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3632B3C3442;
-	Thu,  9 Apr 2026 11:55:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4063A7F69
+	for <linux-parisc@vger.kernel.org>; Thu,  9 Apr 2026 12:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775735734; cv=none; b=Fiogt6nq9ygMW7c8qSFafGqHut48/gV5dJL4bI82r4F064fJ2IuyI+A6QCPr1Vg7mXIIlrb22vLAjWU8e6NvNfFW85E2w/2n3sbmfpsdhr4ShPgrJdG8i+rOAEkofRRD+G0ngAuMd5oezY1vUMKh9Y4t/Lu7QoNnikMtm96lmts=
+	t=1775739424; cv=none; b=BNrwIVmVrcWGVJ3ZJCH/BYOW4GGSyysQaIguy4pd/tnX/LbnanHnBHrAisrAmV3tDlNYpsYaHaBifjsywWwF3TkGDK6rD2kdZTaIOa8od+nFiFO9yDwAaF7eiooQ73i07Q0RWBNuAVDm+oHZidhf0HBUAUSCRLg2CuzzRb1pWxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775735734; c=relaxed/simple;
-	bh=GMerjpEn7CfH4kZ+kiHoTIMgVyc4+PNLFUleyZnwfdI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=B+8MJoq5ckatXJjgBa9g7jcdQqvV+VrkimvADSaI6CdJrwzhRwhcHSdePItGINnEcWoH4eVA7X+pnPHB9q5qg7D+0joJkTIpOFS4ObYt2zHpFhrc9+Hum0DFIiTkkPlKbfchXVCWaKB6u9YQRu1DcmaReix510PgHvuYsl3LqdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=JlpkheDb; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+	s=arc-20240116; t=1775739424; c=relaxed/simple;
+	bh=8N+L1gz4eOCtCLR2SD6m9/UInh24I1S3iZOo1q0YSvA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=c1AThmhWeHGtP/zMEKBNZcYr5ZyMVw91PhHClvT08oYHTijjvNcxjdaXNupZ3J9BOI7ZZgIgs+YpI8Qe65KU4vo97HCDxkWZjTroWFoaigTnaBpezSzue9kqfrg2TpXB40DEkTlrOpJD0+8jypMKot9vMxS1dc8o3YU0k99PPgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Or/VJgUS; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="JlpkheDb"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1775735729;
-	bh=GMerjpEn7CfH4kZ+kiHoTIMgVyc4+PNLFUleyZnwfdI=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=JlpkheDbzZBYAFuNkdDLAr+8gV22V34wyOD59K/UHF82lASBnRQwetm9yHGW4t2eK
-	 sY+Ae0JXJdDo+QCTTRV1T4ru8sodumzkHMSEYhKavz5KxFqYgiyPkGL5hY9QXfMm54
-	 TNcq1bahG3bbM5vZtpI7NJICXudcygLNiCpHtqLM=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Thu, 09 Apr 2026 13:54:31 +0200
-Subject: [PATCH v4 2/2] tools/nolibc: add support for 32-bit parisc
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Or/VJgUS"
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-48374014a77so11616795e9.3
+        for <linux-parisc@vger.kernel.org>; Thu, 09 Apr 2026 05:57:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1775739420; x=1776344220; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:cc:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Zi5resqMRI4nHDxaylhlSh5hJPIr3A88NHSW9enHb70=;
+        b=Or/VJgUSW/LPFab1O4g/scRr2sf5yp6vXEpcO2aivqL/wpMw/HHz68y9JzFeUsBXWB
+         SQsgmZiV3jwtGYvjdtav+cRAvDAbxlOubmtQGC68hdEjh57obeii5XQf1HUBIGTEPuJf
+         i/8mRY8yi3XiYvDaJdIgMJY2qYeYzA9yMkPegaurzb2ph8ALe7UcZIRfXgRCZ55rJ8MA
+         pnBLeVt3HKbWv17C3+b8JMrT4aQAxrqiRZuoZOhG+zxGPcFfgx2UXdZJ0+PNgDWWUchZ
+         vsPceb4UTFYeoPEDMB6TfLVdKWrsf2+UInLdD0jgMrYfDcod16tK6NEgZfSTDdAQOA2v
+         hzyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775739420; x=1776344220;
+        h=content-transfer-encoding:in-reply-to:from:cc:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Zi5resqMRI4nHDxaylhlSh5hJPIr3A88NHSW9enHb70=;
+        b=E+lG+LGn/9qwBzqDOWpB1hS8YRtzwCkLLum6Q/lj6/kMBmcKPuzWQ1xWMqD3tw0V1p
+         tqKvcv69iGbAYlol169J8i1WHVcYhhl+/QvMrX/4KtbG27viUEyNa+faIyZGXywR0+OK
+         CwKDaBpj87IWGbtrvv9SEiRGafDkiOzRfgdEcMaBXKA4sjUDI4CgSOpKgJtuWZ8BceKV
+         JGdOR6GPO5xynhGZo/SsHb/jvU4Zb0vst/cVIP1LWW322g0/GUS9ungSH3GFXovSL/4b
+         IgSmM2BLnAFCE5Byl7L1QojyNeEkHvObAfUDg2ha5KQIrGPy+wiV94YTBWE5Gi9es4do
+         AW3w==
+X-Forwarded-Encrypted: i=1; AJvYcCXH48hup7bmwKsItdhPl+Gf+8ySLRgouYUVHtbjVlLZcNDBMqr2dCg0Va7xsodWaOmpM5sI15r/sEnb2yo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5StOnONy7PnCIv9K83jYrfxTQxu0xRx7A3rRDOnEKtYpQJOVr
+	+wITkH3pPcMFYafeT8YMMQGDC5pXdKdqSeLrpOEZjLOZKxp3NzQl2veQIxV4/N6fOuU=
+X-Gm-Gg: AeBDieuqV800WNTWx/i/xkditvmIZtEynkup8w7wWaMGhhJMptquKMg3VE9kMH4SSVz
+	fw1MXxr9c3Y9NfVNt/ye5KoPakxyht3G0Dtpw+TSLxGxD90Mpakj9wv03be9rfkWLUk8hiJb4eV
+	h+9pfcjEZUHnETMF+vMXgC1mm706cpNWN8ctE07p6GMidZmuRmJYQrf/r8Iv4jn2QV0Lr6dbcwF
+	/zBTnYHK+YZwpcVmzbqqNaBP/FwJDpsBxh+aG+wwB1KmvQKqtDdVoRPGgBWP0PLqNsZrbG/Dx8e
+	1lkxkX6ooAQVEVGH8G08A3vFaYhn7XqIw7t95D48ysNEuL2wr6D5Ci26fvxjIoFWaGW1xJJDkPo
+	cQoWLeGsos+DPv6BHmh5cXkRZRt0tw59WAlVXduhj6jca/ZJy0xUl8pvvawO90mR2Faw0DPiEeq
+	+mqqyEM4ZidPLf3MvG8Jm9L10+1rvBQua1Hj4vHDC0jlHX
+X-Received: by 2002:a05:600c:3f08:b0:485:40db:d40c with SMTP id 5b1f17b1804b1-488996d2323mr417321415e9.3.1775739420375;
+        Thu, 09 Apr 2026 05:57:00 -0700 (PDT)
+Received: from [10.100.51.209] (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43d1e2a7223sm63022433f8f.5.2026.04.09.05.56.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Apr 2026 05:57:00 -0700 (PDT)
+Message-ID: <8ea1cb60-7112-479d-8e05-62506dd0d54e@suse.com>
+Date: Thu, 9 Apr 2026 14:56:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20260409-nolibc-hppa-v4-2-24e5f31a0233@weissschuh.net>
-References: <20260409-nolibc-hppa-v4-0-24e5f31a0233@weissschuh.net>
-In-Reply-To: <20260409-nolibc-hppa-v4-0-24e5f31a0233@weissschuh.net>
-To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, Willy Tarreau <w@1wt.eu>
-Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.15.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1775735729; l=14781;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=GMerjpEn7CfH4kZ+kiHoTIMgVyc4+PNLFUleyZnwfdI=;
- b=nIzPoRHM2wDkQ6h0yiqH83CQd3xsXnVK9TorSGYdgGHXTg9Z2tqZj9ZvJ+8FIhAXLG9u13iLU
- 3Lyro2lGN4mCSVUUUe8EIyc3Y3Jm7XQ8VKdW2ok/vRharXbK7a1mVhM
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] module.lds.S: Fix modules on 32-bit parisc
+ architecture
+To: Helge Deller <deller@kernel.org>
+References: <adVukQYvRuuC5F-K@p100>
+Content-Language: en-US
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
+ Daniel Gomez <da.gomez@kernel.org>, Sami Tolvanen <samitolvanen@google.com>,
+ Aaron Tomlin <atomlin@atomlin.com>, linux-modules@vger.kernel.org
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <adVukQYvRuuC5F-K@p100>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Extend nolibc to target the 32-bit parisc architecture.
-64-bit is not yet supported.
+On 4/7/26 10:52 PM, Helge Deller wrote:
+> On the 32-bit parisc architecture, we always used the
+> -ffunction-sections compiler option to tell the compiler to put the
+> functions into seperate text sections. This is necessary, otherwise
+> "big" kernel modules like ext4 or ipv6 fail to load because some
+> branches won't be able to reach their stubs.
+> 
+> Commit 1ba9f8979426 ("vmlinux.lds: Unify TEXT_MAIN, DATA_MAIN, and related
+> macros") broke this for parisc because all text sections will get
+> unconditionally merged now.
+> 
+> Introduce the ARCH_WANTS_MODULES_TEXT_SECTIONS config option which
+> avoids the text section merge for modules, and fix this issue by
+> enabling this option by default for 32-bit parisc.
+> 
+> v2: Introduce and use ARCH_WANTS_MODULES_TEXT_SECTIONS option
+> 
+> Fixes: 1ba9f8979426 ("vmlinux.lds: Unify TEXT_MAIN, DATA_MAIN, and related macros")
+> Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+> Cc: stable@vger.kernel.org # v6.19+
+> Suggested-by: Sami Tolvanen <samitolvanen@google.com>
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 102ddbd4298e..78abb8be1e63 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -1128,6 +1128,13 @@ config ARCH_WANTS_MODULES_DATA_IN_VMALLOC
+>  	  For architectures like powerpc/32 which have constraints on module
+>  	  allocation and need to allocate module data outside of module area.
+>  
+> +config ARCH_WANTS_MODULES_TEXT_SECTIONS
+> +	bool
+> +	help
+> +	  For architectures like 32-bit parisc which require that functions in
+> +	  modules have to keep code in own text sections (-ffuntion-sections)
+> +	  and to avoid merging all text into one big text section,
+> +
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- tools/include/nolibc/Makefile                  |   2 +-
- tools/include/nolibc/arch-parisc.h             | 179 +++++++++++++++++++++++++
- tools/include/nolibc/arch.h                    |   2 +
- tools/testing/selftests/nolibc/Makefile.nolibc |   6 +
- tools/testing/selftests/nolibc/run-tests.sh    |   8 +-
- 5 files changed, 195 insertions(+), 2 deletions(-)
+Typos: '-ffuntion-sections' -> '-ffunction-sections' and ',' -> '.'
 
-diff --git a/tools/include/nolibc/Makefile b/tools/include/nolibc/Makefile
-index 7455097cff69..81187126bf93 100644
---- a/tools/include/nolibc/Makefile
-+++ b/tools/include/nolibc/Makefile
-@@ -17,7 +17,7 @@ endif
- # it defaults to this nolibc directory.
- OUTPUT ?= $(CURDIR)/
- 
--architectures := arm arm64 loongarch m68k mips powerpc riscv s390 sh sparc x86
-+architectures := arm arm64 loongarch m68k mips parisc powerpc riscv s390 sh sparc x86
- arch_files := arch.h $(addsuffix .h, $(addprefix arch-, $(architectures)))
- all_files := \
- 		byteswap.h \
-diff --git a/tools/include/nolibc/arch-parisc.h b/tools/include/nolibc/arch-parisc.h
-new file mode 100644
-index 000000000000..4f1f091c5d27
---- /dev/null
-+++ b/tools/include/nolibc/arch-parisc.h
-@@ -0,0 +1,179 @@
-+/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
-+/*
-+ * parisc/hppa (32-bit) specific definitions for NOLIBC
-+ * Copyright (C) 2026 Thomas Weißschuh <linux@weissschuh.net>
-+ */
-+
-+#ifndef _NOLIBC_ARCH_PARISC_H
-+#define _NOLIBC_ARCH_PARISC_H
-+
-+#if defined(__LP64__)
-+#error 64-bit not supported
-+#endif
-+
-+#include "compiler.h"
-+#include "crt.h"
-+
-+/* Syscalls for parisc :
-+ *   - syscall number is passed in r20
-+ *   - arguments are in r26 to r21
-+ *   - the system call is performed by calling "ble 0x100(%sr2, %r0)",
-+ *     the instruction after that is in the delay slot and executed before
-+ *     the jump to 0x100 actually happens, use it to load the syscall number
-+ *   - syscall return comes in r28
-+ *   - the arguments are cast to long and assigned into the target
-+ *     registers which are then simply passed as registers to the asm code,
-+ *     so that we don't have to experience issues with register constraints.
-+ */
-+
-+#define _NOLIBC_SYSCALL_CLOBBERLIST \
-+	"memory", "%r1", "%r2", "%r4", "%r20", "%r29", "%r31"
-+
-+#define __nolibc_syscall0(num)                                                \
-+({                                                                            \
-+	register long _ret __asm__ ("r28");                                   \
-+									      \
-+	__asm__ volatile (                                                    \
-+		"ble 0x100(%%sr2, %%r0)\n\t"                                  \
-+		"ldi %1, %%r20\n\t"                                           \
-+		: "=r"(_ret)                                                  \
-+		: "i"(num)                                                    \
-+		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
-+	);                                                                    \
-+	_ret;                                                                 \
-+})
-+
-+#define __nolibc_syscall1(num, arg1)                                          \
-+({                                                                            \
-+	register long _ret __asm__ ("r28");                                   \
-+	register long _arg1 __asm__ ("r26") = (long)(arg1);		      \
-+									      \
-+	__asm__ volatile (                                                    \
-+		"ble 0x100(%%sr2, %%r0)\n\t"                                  \
-+		"ldi %2, %%r20\n\t"                                           \
-+		: "=r"(_ret),                                                 \
-+		  "+r"(_arg1)                                                 \
-+		: "i"(num)                                                    \
-+		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
-+	);                                                                    \
-+	_ret;                                                                 \
-+})
-+
-+#define __nolibc_syscall2(num, arg1, arg2)                                    \
-+({                                                                            \
-+	register long _ret __asm__ ("r28");                                   \
-+	register long _arg1 __asm__ ("r26") = (long)(arg1);		      \
-+	register long _arg2 __asm__ ("r25") = (long)(arg2);		      \
-+									      \
-+	__asm__ volatile (                                                    \
-+		"ble 0x100(%%sr2, %%r0)\n\t"                                  \
-+		"ldi %3, %%r20\n\t"                                           \
-+		: "=r"(_ret),                                                 \
-+		  "+r"(_arg1), "+r"(_arg2)                                    \
-+		: "i"(num)                                                    \
-+		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
-+	);                                                                    \
-+	_ret;                                                                 \
-+})
-+
-+#define __nolibc_syscall3(num, arg1, arg2, arg3)                              \
-+({                                                                            \
-+	register long _ret __asm__ ("r28");                                   \
-+	register long _arg1 __asm__ ("r26") = (long)(arg1);		      \
-+	register long _arg2 __asm__ ("r25") = (long)(arg2);		      \
-+	register long _arg3 __asm__ ("r24") = (long)(arg3);		      \
-+									      \
-+	__asm__ volatile (                                                    \
-+		"ble 0x100(%%sr2, %%r0)\n\t"                                  \
-+		"ldi %4, %%r20\n\t"                                           \
-+		: "=r"(_ret),                                                 \
-+		  "+r"(_arg1), "+r"(_arg2), "+r"(_arg3)                       \
-+		: "i"(num)                                                    \
-+		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
-+	);                                                                    \
-+	_ret;                                                                 \
-+})
-+
-+#define __nolibc_syscall4(num, arg1, arg2, arg3, arg4)                        \
-+({                                                                            \
-+	register long _ret __asm__ ("r28");                                   \
-+	register long _arg1 __asm__ ("r26") = (long)(arg1);		      \
-+	register long _arg2 __asm__ ("r25") = (long)(arg2);		      \
-+	register long _arg3 __asm__ ("r24") = (long)(arg3);		      \
-+	register long _arg4 __asm__ ("r23") = (long)(arg4);		      \
-+									      \
-+	__asm__ volatile (                                                    \
-+		"ble 0x100(%%sr2, %%r0)\n\t"                                  \
-+		"ldi %5, %%r20\n\t"                                           \
-+		: "=r"(_ret),                                                 \
-+		  "+r"(_arg1), "+r"(_arg2), "+r"(_arg3), "+r"(_arg4)          \
-+		: "i"(num)                                                    \
-+		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
-+	);                                                                    \
-+	_ret;                                                                 \
-+})
-+
-+#define __nolibc_syscall5(num, arg1, arg2, arg3, arg4, arg5)                  \
-+({                                                                            \
-+	register long _ret __asm__ ("r28");                                   \
-+	register long _arg1 __asm__ ("r26") = (long)(arg1);		      \
-+	register long _arg2 __asm__ ("r25") = (long)(arg2);		      \
-+	register long _arg3 __asm__ ("r24") = (long)(arg3);		      \
-+	register long _arg4 __asm__ ("r23") = (long)(arg4);		      \
-+	register long _arg5 __asm__ ("r22") = (long)(arg5);		      \
-+									      \
-+	__asm__ volatile (                                                    \
-+		"ble 0x100(%%sr2, %%r0)\n\t"                                  \
-+		"ldi %6, %%r20\n\t"                                           \
-+		: "=r"(_ret),                                                 \
-+		  "+r"(_arg1), "+r"(_arg2), "+r"(_arg3), "+r"(_arg4),         \
-+		  "+r"(_arg5)                                                 \
-+		: "i"(num)                                                    \
-+		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
-+	);                                                                    \
-+	_ret;                                                                 \
-+})
-+
-+#define __nolibc_syscall6(num, arg1, arg2, arg3, arg4, arg5, arg6)            \
-+({                                                                            \
-+	register long _ret __asm__ ("r28");                                   \
-+	register long _arg1 __asm__ ("r26") = (long)(arg1);		      \
-+	register long _arg2 __asm__ ("r25") = (long)(arg2);		      \
-+	register long _arg3 __asm__ ("r24") = (long)(arg3);		      \
-+	register long _arg4 __asm__ ("r23") = (long)(arg4);		      \
-+	register long _arg5 __asm__ ("r22") = (long)(arg5);		      \
-+	register long _arg6 __asm__ ("r21") = (long)(arg6);		      \
-+									      \
-+	__asm__ volatile (                                                    \
-+		"ble 0x100(%%sr2, %%r0)\n\t"                                  \
-+		"ldi %7, %%r20\n\t"                                           \
-+		: "=r"(_ret),                                                 \
-+		  "+r"(_arg1), "+r"(_arg2), "+r"(_arg3), "+r"(_arg4),         \
-+		  "+r"(_arg5), "+r"(_arg6)                                    \
-+		: "i"(num)                                                    \
-+		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
-+	);                                                                    \
-+	_ret;                                                                 \
-+})
-+
-+#ifndef NOLIBC_NO_RUNTIME
-+/* startup code */
-+void __attribute__((weak, noreturn)) __nolibc_entrypoint __no_stack_protector _start(void)
-+{
-+	__asm__ volatile (
-+		".import $global$\n"           /* Set up the dp register */
-+		"ldil L%$global$, %dp\n"
-+		"ldo R%$global$(%r27), %dp\n"
-+
-+		"b _start_c\n"                 /* Call _start_c, the load below is executed first */
-+
-+		"ldo -4(%r24), %r26\n"         /* The sp register is special on parisc.
-+						* r24 points to argv. Subtract 4 to get &argc.
-+						* Pass that as first argument to _start_c.
-+						*/
-+	);
-+	__nolibc_entrypoint_epilogue();
-+}
-+#endif /* NOLIBC_NO_RUNTIME */
-+
-+#endif /* _NOLIBC_ARCH_PARISC_H */
-diff --git a/tools/include/nolibc/arch.h b/tools/include/nolibc/arch.h
-index a3adaf433f2c..6dc45a78e972 100644
---- a/tools/include/nolibc/arch.h
-+++ b/tools/include/nolibc/arch.h
-@@ -28,6 +28,8 @@
- #include "arch-m68k.h"
- #elif defined(__sh__)
- #include "arch-sh.h"
-+#elif defined(__hppa__)
-+#include "arch-parisc.h"
- #else
- #error Unsupported Architecture
- #endif
-diff --git a/tools/testing/selftests/nolibc/Makefile.nolibc b/tools/testing/selftests/nolibc/Makefile.nolibc
-index f30bc68470cc..39816cbe782d 100644
---- a/tools/testing/selftests/nolibc/Makefile.nolibc
-+++ b/tools/testing/selftests/nolibc/Makefile.nolibc
-@@ -64,6 +64,7 @@ ARCH_s390x       = s390
- ARCH_sparc32     = sparc
- ARCH_sparc64     = sparc
- ARCH_sh4         = sh
-+ARCH_parisc32    = parisc
- ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
- 
- # kernel image names by architecture
-@@ -92,6 +93,7 @@ IMAGE_sparc32    = arch/sparc/boot/image
- IMAGE_sparc64    = arch/sparc/boot/image
- IMAGE_m68k       = vmlinux
- IMAGE_sh4        = arch/sh/boot/zImage
-+IMAGE_parisc32   = vmlinux
- IMAGE            = $(objtree)/$(IMAGE_$(XARCH))
- IMAGE_NAME       = $(notdir $(IMAGE))
- 
-@@ -121,6 +123,7 @@ DEFCONFIG_sparc32    = sparc32_defconfig
- DEFCONFIG_sparc64    = sparc64_defconfig
- DEFCONFIG_m68k       = virt_defconfig
- DEFCONFIG_sh4        = rts7751r2dplus_defconfig
-+DEFCONFIG_parisc32   = defconfig
- DEFCONFIG            = $(DEFCONFIG_$(XARCH))
- 
- EXTRACONFIG_x32       = -e CONFIG_X86_X32_ABI
-@@ -159,6 +162,7 @@ QEMU_ARCH_sparc32    = sparc
- QEMU_ARCH_sparc64    = sparc64
- QEMU_ARCH_m68k       = m68k
- QEMU_ARCH_sh4        = sh4
-+QEMU_ARCH_parisc32   = hppa
- QEMU_ARCH            = $(QEMU_ARCH_$(XARCH))
- 
- QEMU_ARCH_USER_ppc64le = ppc64le
-@@ -199,6 +203,7 @@ QEMU_ARGS_sparc32    = -M SS-5 -m 256M -append "console=ttyS0,115200 panic=-1 $(
- QEMU_ARGS_sparc64    = -M sun4u -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_m68k       = -M virt -append "console=ttyGF0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_sh4        = -M r2d -serial file:/dev/stdout -append "console=ttySC1,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-+QEMU_ARGS_parisc32   = -M B160L -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS            = -m 1G $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_BIOS) $(QEMU_ARGS_EXTRA)
- 
- # OUTPUT is only set when run from the main makefile, otherwise
-@@ -215,6 +220,7 @@ CFLAGS_i386 = $(call cc-option,-m32)
- CFLAGS_x32 = -mx32
- CFLAGS_arm = -marm
- CFLAGS_armthumb = -mthumb -march=armv6t2
-+CFLAGS_parisc32 = -mfast-indirect-calls
- CFLAGS_ppc = -m32 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
- CFLAGS_ppc64 = -m64 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
- CFLAGS_ppc64le = -m64 -mlittle-endian -mno-vsx $(call cc-option,-mabi=elfv2)
-diff --git a/tools/testing/selftests/nolibc/run-tests.sh b/tools/testing/selftests/nolibc/run-tests.sh
-index 3917cfb8fdc4..e64f95e8f984 100755
---- a/tools/testing/selftests/nolibc/run-tests.sh
-+++ b/tools/testing/selftests/nolibc/run-tests.sh
-@@ -28,6 +28,7 @@ all_archs=(
- 	sparc32 sparc64
- 	m68k
- 	sh4
-+	parisc32
- )
- archs="${all_archs[@]}"
- 
-@@ -116,6 +117,7 @@ crosstool_arch() {
- 	s390*) echo s390;;
- 	sparc*) echo sparc64;;
- 	x32*) echo x86_64;;
-+	parisc32) echo hppa;;
- 	*) echo "$1";;
- 	esac
- }
-@@ -173,6 +175,10 @@ test_arch() {
- 	fi
- 	MAKE=(make -f Makefile.nolibc -j"${nproc}" XARCH="${arch}" CROSS_COMPILE="${cross_compile}" LLVM="${llvm}" O="${build_dir}")
- 
-+	if [ "$arch" = "parisc32" ]; then
-+		MAKE+=("CROSS32CC=${cross_compile}gcc")
-+	fi
-+
- 	case "$test_mode" in
- 		'system')
- 			test_target=run
-@@ -185,7 +191,7 @@ test_arch() {
- 			exit 1
- 	esac
- 	printf '%-15s' "$arch:"
--	if [ "$arch" = "m68k" -o "$arch" = "sh4" ] && [ "$llvm" = "1" ]; then
-+	if [ "$arch" = "m68k" -o "$arch" = "sh4" -o "$arch" = "parisc32" ] && [ "$llvm" = "1" ]; then
- 		echo "Unsupported configuration"
- 		return
- 	fi
+Otherwise, this looks ok to me. Feel free to add:
+
+Reviewed-by: Petr Pavlu <petr.pavlu@suse.com>
 
 -- 
-2.53.0
-
+Thanks,
+Petr
