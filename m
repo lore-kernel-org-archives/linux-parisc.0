@@ -1,118 +1,78 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5449F3C73F8;
-	Fri, 10 Apr 2026 13:45:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574BE86329;
+	Fri, 10 Apr 2026 14:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775828758; cv=none; b=Xed/kDn67CI1+j7JwllnwA1P75x9IJiqzK3l5IhiRd1R3UVTDP8HsvILHxsVhzy3U/k3K56MXKWZTSkAO7184dAOVGaOJbWFwNroMg0TGY8fxMfW6oedxWgZ7b7IrAd2k4Zqz9rnZZSnA/DcaVcrf4e+SE8Ef0Ibz2GrYCqQB4I=
+	t=1775832238; cv=none; b=s/T973y8ylpCSzuKUTTEPt0ueK/2tqZuN9qzIKL5asWX6zbm0N4lA7HhBKiGPAPGakVeYbFiJ+WLt7PrbiBbOy6YlNiDQQAnzozjk/O7eFL3Tr1YtirPPhWQBOe/WZoA65UKqpApgdDM9uHNw8ifl8+uUVnnVXQJBuC0UNbkTiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775828758; c=relaxed/simple;
-	bh=XhwVNk7AmxnQFYYbofWW0xn2GGcCMLifpnTZm0hI0iw=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=UDfpEL6erpdFyhfTsT/TSVh30p3FeXj7qe9P2GAmSB12jWnHJBbPuFylcmFcGFNV0D6lpwzb0b7YFAzECmcuPxO9NgLjBRPEgpzNvDdbzv2Hypch8ROTB8IwA4JwL6Ss5wa2kySvZlwjhxWQD7W1jfiCyHvSMBxTX6A7hMxi/u0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YJ3HbNt9; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1775832238; c=relaxed/simple;
+	bh=Voqoe/SBjfC00sZXFStUwTcAzHx4Q+do243mfexnCt4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ghs4QBYFdIEjAf87BTdoYBAzWokyDcY8nFWcrhqJxfxp81fN7RPvRDNecOJOSYB/Siw/9NCACPfEIRzFZe377LisTAUwJ/Od61unVa0QlDpu1v+jgCTeMTxERknvExpmGAcpXaIv3mfeX8Y88ExUqVoEKBM+V1htBz0VidKfDjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNSq9jQf; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YJ3HbNt9"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1775828758; x=1807364758;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=XhwVNk7AmxnQFYYbofWW0xn2GGcCMLifpnTZm0hI0iw=;
-  b=YJ3HbNt9KqVB6c72n0p3I8tV+eLDZ8Pyvh5wkY5xQ80nLKZnDJVlBLVF
-   /hWAQZuWIDsV0WzZ3NafaV6PbRU1gbqE03bRNkaV148sKfbtEAW/igX0F
-   p3HosWplFkRdknQELLo40Q+VWWm6s0SkUOr9cB6gj0v7QrMlkl8j1EP6B
-   QEPe32p1VrBic6WVONIBTy+AhKGOcgJLSEVoXNFsHqpkeFVJRhKHh4Gpb
-   EprtxrG4CNlyH98+XlztwbJRkUni6GBzIuFoWPlIOvUPOQzONN1aV4owx
-   gK5Jt8h5EaRkh/0/onvfP49+HmHEo3oJPFp2j6q9ni6hd9s9zFXoDX4P+
-   Q==;
-X-CSE-ConnectionGUID: W3a5tcAAR4SmhhFO5OGbew==
-X-CSE-MsgGUID: NE2Q/sTERymqCkH53yD8ig==
-X-IronPort-AV: E=McAfee;i="6800,10657,11755"; a="88229167"
-X-IronPort-AV: E=Sophos;i="6.23,171,1770624000"; 
-   d="scan'208";a="88229167"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2026 06:45:56 -0700
-X-CSE-ConnectionGUID: 5EGNTPxSQP+GmiqHTb7hcA==
-X-CSE-MsgGUID: poU0WXXBR3aVBOf3UOJDiA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,171,1770624000"; 
-   d="scan'208";a="225932507"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.124.248.249]) ([10.124.248.249])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2026 06:45:46 -0700
-Message-ID: <9db9515b-08e8-47bd-aced-206ac183195a@linux.intel.com>
-Date: Fri, 10 Apr 2026 21:45:43 +0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNSq9jQf"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 901D0C2BC87;
+	Fri, 10 Apr 2026 14:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775832238;
+	bh=Voqoe/SBjfC00sZXFStUwTcAzHx4Q+do243mfexnCt4=;
+	h=Date:From:To:Cc:Subject:From;
+	b=lNSq9jQfVP4xrdNEqT6Hayhxn9fHQEXK2NOHhYr82UaBYsUbyygPxuOL8bKNnJ7+A
+	 jpccOgLCgJFVlH53fGgsRpleJmTA2kJ2BenxUfUVSPcK7iZK6pfzV2DcUPxsU9fkOL
+	 6yCfWTKr/XkQ46K2G8Spq7TGmeroVNmHW7jjkVrhV7Otwgp8pop37nWLxFcFdJGemn
+	 Adcwgmy8WA2YsmdyTEi4T4+t8MiXy1V0XmdLcQMuUked9HIX5p/aWmR8U/JN32HBVo
+	 fN+i7fxEVaVWrj1Mux+Og1J2MxpqvokR56URQ4ztFD3mM1JIuG/ZY70ltVSJQsVMEH
+	 3H9mmaBVXcDpw==
+Date: Fri, 10 Apr 2026 16:43:54 +0200
+From: Helge Deller <deller@kernel.org>
+To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>
+Cc: linux-parisc@vger.kernel.org
+Subject: [PATCH] net: Optimize flush calculation in inet_gro_receive()
+Message-ID: <adkMqgP6QeBPgqP9@p100>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, x86@kernel.org, iommu@lists.linux.dev,
- Arnd Bergmann <arnd@arndb.de>, Michael Grzeschik
- <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org,
- linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
- linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>,
- linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>,
- Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org,
- Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
- "Jason A. Donenfeld" <Jason@zx2c4.com>,
- Richard Henderson <richard.henderson@linaro.org>,
- linux-alpha@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org,
- Catalin Marinas <catalin.marinas@arm.com>,
- Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
- Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
- linux-openrisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
- linux-parisc@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
- linuxppc-dev@lists.ozlabs.org, Paul Walmsley <pjw@kernel.org>,
- linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>,
- linux-s390@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- sparclinux@vger.kernel.org
-Subject: Re: [patch 09/38] iommu/vt-d: Use sched_clock() instead of
- get_cycles()
-To: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20260410120044.031381086@kernel.org>
- <20260410120318.187521447@kernel.org>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20260410120318.187521447@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 4/10/2026 8:19 PM, Thomas Gleixner wrote:
-> Calculating the timeout from get_cycles() is a historical leftover without
-> any functional requirement.
-> 
-> Use ktime_get() instead.
+For the calculation of the flush variable, use the get_unaligned_xxx() helpers
+to access only relevant bits of the IP header.
 
-The subject line says "Use sched_clock() ...", but the implementation
-actually uses ktime_get(). Is it a typo or anything I misunderstood?
+Note: Since I don't know the network details, I'm not sure if "& ~IP_DF"
+(& ~0x4000) is correct, or if "& IP_OFFSET" (& 0x1FFF) should be used instead
+(which I believe would be more correct). Instead of possibly breaking things I
+left it as is, but maybe some expert can check?
 
-Other parts look good to me,
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-
-> 
-> Signed-off-by: Thomas Gleixner<tglx@kernel.org>
-> Cc:x86@kernel.org
-> Cc: Lu Baolu<baolu.lu@linux.intel.com>
-> Cc:iommu@lists.linux.dev
-> ---
->   arch/x86/include/asm/iommu.h |    3 ---
->   drivers/iommu/intel/dmar.c   |    4 ++--
->   drivers/iommu/intel/iommu.h  |    8 ++++++--
->   3 files changed, 8 insertions(+), 7 deletions(-)
-
-Thanks,
-baolu
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index c7731e300a44..58cad2687c2c 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -1479,7 +1479,7 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
+ 	struct sk_buff *p;
+ 	unsigned int hlen;
+ 	unsigned int off;
+-	int flush = 1;
++	u16 flush = 1;
+ 	int proto;
+ 
+ 	off = skb_gro_offset(skb);
+@@ -1504,7 +1504,8 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
+ 		goto out;
+ 
+ 	NAPI_GRO_CB(skb)->proto = proto;
+-	flush = (u16)((ntohl(*(__be32 *)iph) ^ skb_gro_len(skb)) | (ntohl(*(__be32 *)&iph->id) & ~IP_DF));
++	flush = (get_unaligned_be16(&iph->tot_len) ^ skb_gro_len(skb)) |
++	        (get_unaligned_be16(&iph->frag_off) & ~IP_DF);
+ 
+ 	list_for_each_entry(p, head, list) {
+ 		struct iphdr *iph2;
