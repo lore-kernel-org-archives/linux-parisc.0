@@ -1,78 +1,85 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574BE86329;
-	Fri, 10 Apr 2026 14:43:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 556043D88FC;
+	Fri, 10 Apr 2026 15:14:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775832238; cv=none; b=s/T973y8ylpCSzuKUTTEPt0ueK/2tqZuN9qzIKL5asWX6zbm0N4lA7HhBKiGPAPGakVeYbFiJ+WLt7PrbiBbOy6YlNiDQQAnzozjk/O7eFL3Tr1YtirPPhWQBOe/WZoA65UKqpApgdDM9uHNw8ifl8+uUVnnVXQJBuC0UNbkTiE=
+	t=1775834044; cv=none; b=gpgr7lzb9spY3gOIdofgYgwK0Kd6i0ZJPNyZgpAirXSmn/VjDcVjDXVZIXeJDOIDy8wCnYlsQ+tN/DSIc2bd05qaYN+EKsaKaW2PQ54kvnkMvR3PBOYnurqyqPFtWJ9255SgA7l4CCP1B0w0DmP49ZFsCHTVuhZ4aG8Pwl76RFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775832238; c=relaxed/simple;
-	bh=Voqoe/SBjfC00sZXFStUwTcAzHx4Q+do243mfexnCt4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ghs4QBYFdIEjAf87BTdoYBAzWokyDcY8nFWcrhqJxfxp81fN7RPvRDNecOJOSYB/Siw/9NCACPfEIRzFZe377LisTAUwJ/Od61unVa0QlDpu1v+jgCTeMTxERknvExpmGAcpXaIv3mfeX8Y88ExUqVoEKBM+V1htBz0VidKfDjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNSq9jQf; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1775834044; c=relaxed/simple;
+	bh=ZX44VkA/oGGdYrqGVtHG3BQ09eU0s5TAD8UsmKEvOJ4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AGz1vUoP8MTPzs+DH82yzUzCMeLVsUA8E9ihpsA94W30Pvzvmxpz6htpnzLWbOEQjfR1BZgD3Qw14EGnUUHYMqghdv4RAVArscyIJ+QCTikQ3yBG/ieYHQVo38XmP0V1Vr8v593YS5ziaQtFjMwPg3EwpOBmXFL/PBc/WQNcCPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DQRfv3hP; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNSq9jQf"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 901D0C2BC87;
-	Fri, 10 Apr 2026 14:43:56 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DQRfv3hP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CA7DC19421;
+	Fri, 10 Apr 2026 15:14:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775832238;
-	bh=Voqoe/SBjfC00sZXFStUwTcAzHx4Q+do243mfexnCt4=;
-	h=Date:From:To:Cc:Subject:From;
-	b=lNSq9jQfVP4xrdNEqT6Hayhxn9fHQEXK2NOHhYr82UaBYsUbyygPxuOL8bKNnJ7+A
-	 jpccOgLCgJFVlH53fGgsRpleJmTA2kJ2BenxUfUVSPcK7iZK6pfzV2DcUPxsU9fkOL
-	 6yCfWTKr/XkQ46K2G8Spq7TGmeroVNmHW7jjkVrhV7Otwgp8pop37nWLxFcFdJGemn
-	 Adcwgmy8WA2YsmdyTEi4T4+t8MiXy1V0XmdLcQMuUked9HIX5p/aWmR8U/JN32HBVo
-	 fN+i7fxEVaVWrj1Mux+Og1J2MxpqvokR56URQ4ztFD3mM1JIuG/ZY70ltVSJQsVMEH
-	 3H9mmaBVXcDpw==
-Date: Fri, 10 Apr 2026 16:43:54 +0200
-From: Helge Deller <deller@kernel.org>
-To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>
-Cc: linux-parisc@vger.kernel.org
-Subject: [PATCH] net: Optimize flush calculation in inet_gro_receive()
-Message-ID: <adkMqgP6QeBPgqP9@p100>
+	s=k20201202; t=1775834044;
+	bh=ZX44VkA/oGGdYrqGVtHG3BQ09eU0s5TAD8UsmKEvOJ4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=DQRfv3hPFw/TKa/ZakF0C/CvhlLPEsVqQv+2r4uwxdObvOGMMWr2s346gixb/wzYP
+	 kH3jI1VGrMbPCg8bbeliLsWsv0WorMVV9pr65pzZbqt3ANfLMAZ3WpCzHo7EbPC0aw
+	 sFqvG5W5Zh5Zl9hqpd/S10vk3SPDt4AvvXdP7MWFAVnJ1yy95RtrFN5r3P/n0YzraC
+	 K1ddeqgVvP6yW3cqrHOPD+5bbhJuKzxhUEtkBkREvZCz2D1PF358eBsZtX1OaLotF8
+	 mIrAdKqmlNIgawRmNAF5mT5jG8tytmCXBJPCuscrYjON8tMw7soKn19X1CoLhvhPBR
+	 sIA/Sxe0F1CKA==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Baolu Lu <baolu.lu@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: baolu.lu@linux.intel.com, x86@kernel.org, iommu@lists.linux.dev, Arnd
+ Bergmann <arnd@arndb.de>, Michael Grzeschik <m.grzeschik@pengutronix.de>,
+ netdev@vger.kernel.org, linux-wireless@vger.kernel.org, Herbert Xu
+ <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org, Vlastimil
+ Babka <vbabka@kernel.org>, linux-mm@kvack.org, David Woodhouse
+ <dwmw2@infradead.org>, Bernie Thompson <bernie@plugable.com>,
+ linux-fbdev@vger.kernel.org, Theodore Tso <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>,
+ Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, Andrey
+ Ryabinin <ryabinin.a.a@gmail.com>, Thomas Sailer
+ <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org, "Jason A.
+ Donenfeld" <Jason@zx2c4.com>, Richard Henderson
+ <richard.henderson@linaro.org>, linux-alpha@vger.kernel.org, Russell King
+ <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Catalin
+ Marinas <catalin.marinas@arm.com>, Huacai Chen <chenhuacai@kernel.org>,
+ loongarch@lists.linux.dev, Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-m68k@lists.linux-m68k.org, Dinh Nguyen <dinguyen@kernel.org>, Jonas
+ Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org, Helge Deller
+ <deller@gmx.de>, linux-parisc@vger.kernel.org, Michael Ellerman
+ <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, Paul Walmsley
+ <pjw@kernel.org>, linux-riscv@lists.infradead.org, Heiko Carstens
+ <hca@linux.ibm.com>, linux-s390@vger.kernel.org, "David S. Miller"
+ <davem@davemloft.net>, sparclinux@vger.kernel.org
+Subject: Re: [patch 09/38] iommu/vt-d: Use sched_clock() instead of
+ get_cycles()
+In-Reply-To: <9db9515b-08e8-47bd-aced-206ac183195a@linux.intel.com>
+References: <20260410120044.031381086@kernel.org>
+ <20260410120318.187521447@kernel.org>
+ <9db9515b-08e8-47bd-aced-206ac183195a@linux.intel.com>
+Date: Fri, 10 Apr 2026 17:14:00 +0200
+Message-ID: <87y0iuzw3r.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 
-For the calculation of the flush variable, use the get_unaligned_xxx() helpers
-to access only relevant bits of the IP header.
+On Fri, Apr 10 2026 at 21:45, Baolu Lu wrote:
+> On 4/10/2026 8:19 PM, Thomas Gleixner wrote:
+>> Calculating the timeout from get_cycles() is a historical leftover without
+>> any functional requirement.
+>> 
+>> Use ktime_get() instead.
+>
+> The subject line says "Use sched_clock() ...", but the implementation
+> actually uses ktime_get(). Is it a typo or anything I misunderstood?
 
-Note: Since I don't know the network details, I'm not sure if "& ~IP_DF"
-(& ~0x4000) is correct, or if "& IP_OFFSET" (& 0x1FFF) should be used instead
-(which I believe would be more correct). Instead of possibly breaking things I
-left it as is, but maybe some expert can check?
+Indeed. Leftover from an earlier version.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+Thanks,
 
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index c7731e300a44..58cad2687c2c 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -1479,7 +1479,7 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
- 	struct sk_buff *p;
- 	unsigned int hlen;
- 	unsigned int off;
--	int flush = 1;
-+	u16 flush = 1;
- 	int proto;
- 
- 	off = skb_gro_offset(skb);
-@@ -1504,7 +1504,8 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
- 		goto out;
- 
- 	NAPI_GRO_CB(skb)->proto = proto;
--	flush = (u16)((ntohl(*(__be32 *)iph) ^ skb_gro_len(skb)) | (ntohl(*(__be32 *)&iph->id) & ~IP_DF));
-+	flush = (get_unaligned_be16(&iph->tot_len) ^ skb_gro_len(skb)) |
-+	        (get_unaligned_be16(&iph->frag_off) & ~IP_DF);
- 
- 	list_for_each_entry(p, head, list) {
- 		struct iphdr *iph2;
+        tglx
