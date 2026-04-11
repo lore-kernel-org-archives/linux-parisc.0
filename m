@@ -1,186 +1,160 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EDCA3644D4;
-	Fri, 10 Apr 2026 20:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D62582D46CE
+	for <linux-parisc@vger.kernel.org>; Sat, 11 Apr 2026 05:20:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775854577; cv=none; b=bH7jc7dVXytGRnYXnh6WVrHbdsIUn4R8xe0iaJ44jH1+rjLc8a/Ixv8fHtRp16zTTbZB4AdPzfUZg5TvmwzB7Mj6pyjDiyFfnvMgIJwYSaYpA5YYJYmlRA6pgmGu5PF0hX5flRhx4wohLDI9uBH5Si2BKnF0zxvXT/SalN+7mEo=
+	t=1775884841; cv=none; b=oAKUnSI9O1rXDlNfIGWyJrN6tOQA03X+WM7DL21y9NFsbFUh/EaO7CMKWTYAfDLV0TE2JHTBhUr4wgjvCbk1GZ+vLakkCJnQsiICCB134Rt6UXggEduixune3oYETVakHtmwkFaf6gSVTtjzLZNEJY2vllSlIrT8AUJYs2AALJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775854577; c=relaxed/simple;
-	bh=Pl/TPuj3MEjAUAkiR6iNGQuG7vTK4etd1CQHextbc1Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=snYqKMd6ugFPpv8gls2Q/sbKonkUybU3qcbylL0/pn7+OFvJwwrz+MrVvlCatzSPX86y3bVLHTwb3WVhyN7wuFfPHaBCOwkwskmmNg01qFSZn7H9en1cZnJZ4Lmn7hXgaiQGlgb/xoMbPoa2OnRA3PNpH8bk23qysvpy5GP0KoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GQ142PFW; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1775884841; c=relaxed/simple;
+	bh=dEI8KgnxMpcND2cz4rgkT0UqCpVPs7EN2ADeUdIkbqk=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=A9M0Kst8/cIndwdsQyKHT9Qa/sylvBTpVJsRZG4kvfP9jCvkFGtKDQCyJ35xmp3adYVcfLBJ7IvYA0103C70yPBrc3cGgO20kYEtVMbJ/XyLGFtA7lidEZoZA2YRg2XwzOYLbw2g9FMgFQ6F+IU2YNZV8X2TTy9dYW76KX6A+2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=v4DfcXhL; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GQ142PFW"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2163C19421;
-	Fri, 10 Apr 2026 20:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775854576;
-	bh=Pl/TPuj3MEjAUAkiR6iNGQuG7vTK4etd1CQHextbc1Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=GQ142PFWFm6CPGgxzIstxv+Opw0b8SXuQ9OyBP6RDGrB9wMYrgGJRlAIcXmjiMiJQ
-	 uvHLzYRX996/8mwPCxIT6HNprAxZjHfiZYVGdKL2zkx4tDdEJ1Qjhj23YsuYeVWZUk
-	 qB897HhG8G4RkSYw8g0MDIEY8t5mxlaTJQ0hQJRlVPLc72Bfpv47WYQcen6mmTC6UB
-	 IDYz08Lq5Ox+catFPgX2TnERo0NsyMmc6D+DEo5bfEi3Zb8CozxsaaIUnftUYBffz4
-	 eRJ2pErWPmB+XVojMvRq9gH2C+KSLENGTN6u78aH1Po3BWHW2gKcN/A+CamqsNtu9t
-	 mhyolj1ID3OUA==
-From: Thomas Gleixner <tglx@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, Lu Baolu
- <baolu.lu@linux.intel.com>, iommu@lists.linux.dev, Michael Grzeschik
- <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org,
- linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
- linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>,
- linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>, Bernie Thompson
- <bernie@plugable.com>, linux-fbdev@vger.kernel.org, Theodore Tso
- <tytso@mit.edu>, linux-ext4@vger.kernel.org, Andrew Morton
- <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, Marco
- Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
- kasan-dev@googlegroups.com, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
- "Jason A. Donenfeld" <Jason@zx2c4.com>, Richard Henderson
- <richard.henderson@linaro.org>, linux-alpha@vger.kernel.org, Russell King
- <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Catalin
- Marinas <catalin.marinas@arm.com>, Huacai Chen <chenhuacai@kernel.org>,
- loongarch@lists.linux.dev, Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-m68k@lists.linux-m68k.org, Dinh Nguyen <dinguyen@kernel.org>, Jonas
- Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org, Helge Deller
- <deller@gmx.de>, linux-parisc@vger.kernel.org, Michael Ellerman
- <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, Paul Walmsley
- <pjw@kernel.org>, linux-riscv@lists.infradead.org, Heiko Carstens
- <hca@linux.ibm.com>, linux-s390@vger.kernel.org, "David S. Miller"
- <davem@davemloft.net>, sparclinux@vger.kernel.org
-Subject: [patch V1.1 11/38] misc: sgi-gru: Remove get_cycles() [ab]use
-In-Reply-To: <20260410120318.320727701@kernel.org>
-References: <20260410120044.031381086@kernel.org>
- <20260410120318.320727701@kernel.org>
-Date: Fri, 10 Apr 2026 22:56:11 +0200
-Message-ID: <87ik9yzg9g.ffs@tglx>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="v4DfcXhL"
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-35da1c703d1so3200438a91.1
+        for <linux-parisc@vger.kernel.org>; Fri, 10 Apr 2026 22:20:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1775884839; x=1776489639; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xN+2eW0fGvh2zhHI+wBBjFJBKYXrYij0/HarBXfBFqk=;
+        b=v4DfcXhLhXdInt+GnCSzw4V/APSGo+krC/uNTWGEIK7AocNzUKZCIgQcjlB6VMleTc
+         ssTnvnf9cLBlGdqOTtUxUyOKDe2pJkJ0E7ZcVAX7AB/wu13XgQKVbBWC2IpaqCCAiSxW
+         Sm2YW3An6FHjjUICfzGjS8RbCRWhO680RJ4yOSGktANzCQYE99Vs8DQXo4Nsu6Sjm0fj
+         r0Sy4Ot0nwOEBFSu/GWJ9k+QyHQYXuqKDK+Z1sbNDboHOcbRBRM3CecH5AGCUyHaGidx
+         vfCh9o1pWhTZSC7878Y5VAPcETiNpyLjcZAMzFP4mwB4gr2GLJrgtmOYTKOLIC3xh4p+
+         kcUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775884839; x=1776489639;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xN+2eW0fGvh2zhHI+wBBjFJBKYXrYij0/HarBXfBFqk=;
+        b=QR8D7q05+OJ/uVq1HFnvHunzo0aCE9CUCkO5zAdl6QXfEvfaY8q3Rbdz6G3yYmeynY
+         B+VvJ45AUna2ylWUsfEoOF81VmH9r9NpGTSoMzwjv2IdHUPdUw5JvkxkSGGOp3VXxHPU
+         +AZgbsIVDSz8d5uS6ciKOJwhic2IqH76FOKmFAGSh8brciTyU490Hz/eJ3YacwOxMLFe
+         iUAktu3mLCOtM/4bJ59IAFVtb6HtbvZgmuhdXuxEcR4DRoe1Vtnh7wV6mk9ByeK+bUA6
+         9gBGr5AogFn3aFiJiwbtLc+Onci/grPK1JUTvORm9pMfRusSjf4nuDy4W4+9eOt9t+bd
+         I1HA==
+X-Forwarded-Encrypted: i=1; AJvYcCXnM8osOqTwcHR/+Vj+74S+EMltV39VJHLPbf9rL7CiW151U+D+j+U5zhx951D08urAk/wJgm6/NvaQZ8w=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyd47cEOcTVKRbqUJ1zcU8KG8aWh1JnrQ9XYk5btl9feE6o9TKO
+	A3begf+RLwgQ8GaVNq27sXpobnznAc5QujtOCK4GQXLdYqC4pCV42gLSwL4LYY0X2S1sf1zKUR/
+	B4/SpKw==
+X-Received: from pgbca12.prod.google.com ([2002:a05:6a02:68c:b0:c73:9919:c4f8])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:2d07:b0:35d:a3b4:2f0d
+ with SMTP id 98e67ed59e1d1-35e4274e1damr5634715a91.6.1775884839107; Fri, 10
+ Apr 2026 22:20:39 -0700 (PDT)
+Date: Sat, 11 Apr 2026 05:19:35 +0000
+In-Reply-To: <adkMqgP6QeBPgqP9@p100>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+References: <adkMqgP6QeBPgqP9@p100>
+X-Mailer: git-send-email 2.53.0.1213.gd9a14994de-goog
+Message-ID: <20260411052037.2013228-1-kuniyu@google.com>
+Subject: Re: [PATCH] net: Optimize flush calculation in inet_gro_receive()
+From: Kuniyuki Iwashima <kuniyu@google.com>
+To: deller@kernel.org
+Cc: davem@davemloft.net, dsahern@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, netdev@vger.kernel.org, edumazet@google.com
+Content-Type: text/plain; charset="UTF-8"
 
-Calculating a timeout from get_cycles() is a historical leftover without
-any functional requirement.
+From: Helge Deller <deller@kernel.org>
+Date: Fri, 10 Apr 2026 16:43:54 +0200
+> For the calculation of the flush variable, use the get_unaligned_xxx() helpers
+> to access only relevant bits of the IP header.
+> 
+> Note: Since I don't know the network details, I'm not sure if "& ~IP_DF"
+> (& ~0x4000) is correct, or if "& IP_OFFSET" (& 0x1FFF) should be used instead
 
-Use ktime_get() instead.
+~IP_DF is correct (MF bit needs to be checked), see
 
-Signed-off-by: Thomas Gleixner <tglx@kernel.org>
----
-V2: Fix typo
----
- drivers/misc/sgi-gru/gruhandles.c   |   20 ++++++++------------
- drivers/misc/sgi-gru/grukservices.c |    3 ++-
- drivers/misc/sgi-gru/grutlbpurge.c  |    5 ++---
- 3 files changed, 12 insertions(+), 16 deletions(-)
+commit db8caf3dbc77599dc90f4ea0a803cd1d97116f30
+Author: Eric Dumazet <edumazet@google.com>
+Date:   Fri May 31 11:18:10 2013
 
---- a/drivers/misc/sgi-gru/gruhandles.c
-+++ b/drivers/misc/sgi-gru/gruhandles.c
-@@ -6,26 +6,22 @@
-  */
- 
- #include <linux/kernel.h>
-+#include <linux/timekeeping.h>
- #include "gru.h"
- #include "grulib.h"
- #include "grutables.h"
- 
--/* 10 sec */
- #include <linux/sync_core.h>
--#include <asm/tsc.h>
--#define GRU_OPERATION_TIMEOUT	((cycles_t) tsc_khz*10*1000)
--#define CLKS2NSEC(c)		((c) * 1000000 / tsc_khz)
-+
-+#define GRU_OPERATION_TIMEOUT_NSEC	(((ktime_t)10 * NSEC_PER_SEC))
- 
- /* Extract the status field from a kernel handle */
- #define GET_MSEG_HANDLE_STATUS(h)	(((*(unsigned long *)(h)) >> 16) & 3)
- 
- struct mcs_op_statistic mcs_op_statistics[mcsop_last];
- 
--static void update_mcs_stats(enum mcs_op op, unsigned long clks)
-+static void update_mcs_stats(enum mcs_op op, unsigned long nsec)
- {
--	unsigned long nsec;
--
--	nsec = CLKS2NSEC(clks);
- 	atomic_long_inc(&mcs_op_statistics[op].count);
- 	atomic_long_add(nsec, &mcs_op_statistics[op].total);
- 	if (mcs_op_statistics[op].max < nsec)
-@@ -58,21 +54,21 @@ static void report_instruction_timeout(v
- 
- static int wait_instruction_complete(void *h, enum mcs_op opc)
- {
-+	ktime_t start_time = ktime_get();
- 	int status;
--	unsigned long start_time = get_cycles();
- 
- 	while (1) {
- 		cpu_relax();
- 		status = GET_MSEG_HANDLE_STATUS(h);
- 		if (status != CCHSTATUS_ACTIVE)
- 			break;
--		if (GRU_OPERATION_TIMEOUT < (get_cycles() - start_time)) {
-+		if (GRU_OPERATION_TIMEOUT_NSEC < (ktime_get() - start_time)) {
- 			report_instruction_timeout(h);
--			start_time = get_cycles();
-+			start_time = ktime_get();
- 		}
- 	}
- 	if (gru_options & OPT_STATS)
--		update_mcs_stats(opc, get_cycles() - start_time);
-+		update_mcs_stats(opc, (unsigned long)(ktime_get() - start_time));
- 	return status;
- }
- 
---- a/drivers/misc/sgi-gru/grukservices.c
-+++ b/drivers/misc/sgi-gru/grukservices.c
-@@ -20,6 +20,7 @@
- #include <linux/uaccess.h>
- #include <linux/delay.h>
- #include <linux/export.h>
-+#include <linux/random.h>
- #include <asm/io_apic.h>
- #include "gru.h"
- #include "grulib.h"
-@@ -1106,7 +1107,7 @@ static int quicktest3(unsigned long arg)
- 	int ret = 0;
- 
- 	memset(buf2, 0, sizeof(buf2));
--	memset(buf1, get_cycles() & 255, sizeof(buf1));
-+	memset(buf1, get_random_u32() & 255, sizeof(buf1));
- 	gru_copy_gpa(uv_gpa(buf2), uv_gpa(buf1), BUFSIZE);
- 	if (memcmp(buf1, buf2, BUFSIZE)) {
- 		printk(KERN_DEBUG "GRU:%d quicktest3 error\n", smp_processor_id());
---- a/drivers/misc/sgi-gru/grutlbpurge.c
-+++ b/drivers/misc/sgi-gru/grutlbpurge.c
-@@ -22,13 +22,12 @@
- #include <linux/delay.h>
- #include <linux/timex.h>
- #include <linux/srcu.h>
-+#include <linux/random.h>
- #include <asm/processor.h>
- #include "gru.h"
- #include "grutables.h"
- #include <asm/uv/uv_hub.h>
- 
--#define gru_random()	get_cycles()
--
- /* ---------------------------------- TLB Invalidation functions --------
-  * get_tgh_handle
-  *
-@@ -49,7 +48,7 @@ static inline int get_off_blade_tgh(stru
- 	int n;
- 
- 	n = GRU_NUM_TGH - gru->gs_tgh_first_remote;
--	n = gru_random() % n;
-+	n = get_random_u32() % n;
- 	n += gru->gs_tgh_first_remote;
- 	return n;
- }
+    gro: should aggregate frames without DF
+
+
+> (which I believe would be more correct). Instead of possibly breaking things I
+> left it as is, but maybe some expert can check?
+> 
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> 
+> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+> index c7731e300a44..58cad2687c2c 100644
+> --- a/net/ipv4/af_inet.c
+> +++ b/net/ipv4/af_inet.c
+> @@ -1479,7 +1479,7 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
+>  	struct sk_buff *p;
+>  	unsigned int hlen;
+>  	unsigned int off;
+> -	int flush = 1;
+> +	u16 flush = 1;
+>  	int proto;
+>  
+>  	off = skb_gro_offset(skb);
+> @@ -1504,7 +1504,8 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
+>  		goto out;
+>  
+>  	NAPI_GRO_CB(skb)->proto = proto;
+> -	flush = (u16)((ntohl(*(__be32 *)iph) ^ skb_gro_len(skb)) | (ntohl(*(__be32 *)&iph->id) & ~IP_DF));
+> +	flush = (get_unaligned_be16(&iph->tot_len) ^ skb_gro_len(skb)) |
+> +	        (get_unaligned_be16(&iph->frag_off) & ~IP_DF);
+
+I think here we intentionally use 32-bit loads:
+
+commit 1075f3f65d0e0f49351b7d4310e9f94483972a51
+Author: Herbert Xu <herbert@gondor.apana.org.au>
+Date:   Tue May 26 18:50:29 2009
+
+    ipv4: Use 32-bit loads for ID and length in GRO
+
+
+Before your patch, 32-bit load + bswap are used while
+16-bit load + rol 8 after the change.
+
+I feel the 4-byte aligned load + bswap is faster than
+misaligned access + 8 times shift (Is this internally
+optimised like xchg for a single word size ?)
+
+Do you have some numbers ?
+
+
+Before:
+	flush = (u16)((ntohl(*(__be32 *)iph) ^ skb_gro_len(skb))
+mov    edx,DWORD PTR [rcx]
+bswap  edx
+	return skb->len - NAPI_GRO_CB(skb)->data_offset;
+mov    r8d,DWORD PTR [rsi+0x38]
+mov    r9d,DWORD PTR [rsi+0x70]
+sub    r9d,r8d
+xor    r9d,edx
+	| (ntohl(*(__be32 *)&iph->id) & ~IP_DF));
+mov    ebp,0xffbfffff
+and    ebp,DWORD PTR [rcx+0x4]
+bswap  ebp
+or     ebp,r9d
+
+
+After:
+	flush = (get_unaligned_be16(&iph->tot_len) ^ skb_gro_len(skb))
+movzx  edx,WORD PTR [rcx+0x2]
+rol    dx,0x8
+	return skb->len - NAPI_GRO_CB(skb)->data_offset;
+mov    r8d,DWORD PTR [rsi+0x38]
+mov    r9d,DWORD PTR [rsi+0x70]
+sub    r9d,r8d
+xor    r9d,edx
+	| (get_unaligned_be16(&iph->frag_off) & ~IP_DF);
+movzx  ebp,WORD PTR [rcx+0x6]
+and    ebp,0xffffffbf
+rol    bp,0x8
+or     ebp,r9d
