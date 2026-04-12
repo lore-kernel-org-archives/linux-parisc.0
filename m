@@ -1,190 +1,192 @@
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606F929D294
-	for <linux-parisc@vger.kernel.org>; Sat, 11 Apr 2026 12:10:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DFA931195B
+	for <linux-parisc@vger.kernel.org>; Sun, 12 Apr 2026 08:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775909404; cv=none; b=FtNpoHc/Qy8ampE1AiWLCVP6BQvW35DK5wxsHxg0hreXSx9gn9OzfMzHB+aS/2rXbBou+lbzaOE2hqbeGMgIeRmBkJAVtz6/MIXF8UTEYbm1+n1Y/27FQ8giwMhJsb+ppKBmas3MX47FuPPcSgmr68q0hpuBrhKOTMqa60LOn/U=
+	t=1775984199; cv=none; b=Egvb/P7R0RBrr/sFluC40fQg1qxpo1MwHlR/PKcggiF0gFTrUtqznw2ekML1Kp0RGTlAkHcZB2RJPWwP1W1WtcMK7aFFcqtfFPDBLRfszwbpDoglu8E8pqMN67rj9/D0J3McTbtugrw+xvBmPAe0boD7d5+Gc33Ob9Xay20vBls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775909404; c=relaxed/simple;
-	bh=4PPOUoWI/sGzynuL7aex65UKmPYBL2lt+b9RjgXNbBw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ipU5M2F/JT0hQGipOen0VrWpm6GtNS2Lc2YvH0eug2oqC2jde+hnrJLwbKvdgUczCsdPiViktjXLBTBpbOahqfT1zSRWYcKPjR1YpWEFwLyV00FoxT2dgYLJJ5tIiEzCMAsExg70vxwvKYK3goeKi5nNVx7gsM5ucsBHfmSBD7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ia8NIXWx; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1775984199; c=relaxed/simple;
+	bh=XZtsBYJ+xUzK/w66hhh7L4ep5/Nv3d9zyXSTiNiHtzQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nBob1VLEdl1atvMzGDs0etxC244oFJtMYX1AdWgnFihD+AU7zegupmZAjnW6yk8Pa0oXr+P+fvoPGSzBxbhbyptXAd3G69clAMaue5FC9LCNVY9Hh9qoIEcAOZoNYKmifZkdt++NpAeeKNnTcQmQ5owvfkSjLT7qbYWa0X7k/5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=rmk25eS0; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ia8NIXWx"
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-43d04fc3bf2so1691039f8f.3
-        for <linux-parisc@vger.kernel.org>; Sat, 11 Apr 2026 05:10:03 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rmk25eS0"
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4887ca8e529so21929965e9.0
+        for <linux-parisc@vger.kernel.org>; Sun, 12 Apr 2026 01:56:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775909402; x=1776514202; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nOqUKvzHbOtmysCumhKJ+ed6LDXdDC4PW3MeNbU0xPE=;
-        b=Ia8NIXWxzMhrLWN/g9dpcx3P8pRvNbMMBBwAK3GvrMCH2ZkS292qup0Fd9BhHXpB9k
-         7Vh9Lf0O/jKmLynljLcKbFJWjA+GxRwXNEBm0lYQasBcR+NwBUjAlEZtGUBnAggyECKb
-         QdiWpgBbnsGJ5HIuH6w95F6enKmSpNDe8ZNkcABzPwzo1iQnwpPJCSHoO9mUPH/bo/5R
-         COud8X4jWNWOVwoNQKT2obe6jOc6/NJE00x1i0GK+phyAZyzLWOaGGiaHUpp78qbcBSi
-         CRY4J2CATaSlhlMiAqPF+2aWrdXj6IKl4X1KZb2Y3Z0Lq31Iu1I4sUBYH9cq4KKLo68k
-         BIjw==
+        d=gmail.com; s=20251104; t=1775984196; x=1776588996; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EbDgrbrkQIZIzHMqS4zyFwb8jbE/7QCDRz8zhtNheE4=;
+        b=rmk25eS0pD3r1W6fBjCHCIGG+xosVecWiNg/3nfNyAKaxOqHC0aIxIp+bwKvPu9+1j
+         fAU2vugkDHatrG3Fzq7V9jewKzPcvw41odvofwZkis7b1Y4DeW1IWegwg5QbXQj7kCio
+         L+ztGdtDUlhH+iJPC48SIdv4mbiVxmA7Be8JQhGglK1VOqWIq1YR4dry10OotSVrXztE
+         o4/62vmfM6KQrUkxwd24yP/lrxDf8HyZquUshVzt2ycEVPZUv3y2nMTj7GvueTw7R7E/
+         WKG3HtUgcwPCHxCI4T+H5u0NML0HalT4/vA4x/F5vuumDuC+b3YDtjggzfClJhOrbI7r
+         R2bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775909402; x=1776514202;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=nOqUKvzHbOtmysCumhKJ+ed6LDXdDC4PW3MeNbU0xPE=;
-        b=cHH2Ju9pBI6KKMojHOtDrFzd/k++FDTscMHriucHlkaY59ix4tQEq8ex6+MeJ5iRg5
-         E63+bkyTa/i0YAJiQnmKt2eVfTwWEdCGbnxKjyj74CcDab+CPA2KiUwoJr2uhL0QLD9O
-         lWWDzFN7Cy8qomguEgxeRLcdi+uQDVAAlbeiow/7JFZmT/Pt12ClHLznkPJdTEN3BxJV
-         PvmxSXtDY/WQmxKnQH38e//LGGxo0QnCYXaHO8iBfjFOJNoRZuGR1OqtTnjgXM1kKM+j
-         5KF/4OQqhE8NgzXp6jKsTudnu5zqDjAZWU/xieEOBO0yUmBrAeFH9PGhOofhFMo2LBnC
-         nFZA==
-X-Forwarded-Encrypted: i=1; AJvYcCVhc6O2idWQg4yw7oJJ/aDfZhplX+prsUKPvUdUK33CcX0gsE5zv22fgI1I3UPVLjUFoiktJV3yX1TvTck=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxjP3NPV9ns6IgAI6gH/3ToOMfMI4q5WCVZB4MICTYuceiXNr9O
-	PMByqYz5aiWnECcnsumtDIiTy/s9rpF8j9R/Y4uyh4xJ9K6n9bO6CNQV
-X-Gm-Gg: AeBDiesUAX/QHmY3hcwDppIu12BS+TGnuLyuWpHu6ayirZV9Ayad96AtLqNxS2HTzfU
-	ioPD7ozvZ7nYZsiWeRaOuuzEVEkYrCiCLuu7xOxRpXINFY74E3Try0BSK24b5dgcdBKclFDMyaF
-	oLRsss1i64ocw3JjgIExkglB6pRfFccgtTWtRsBt4Jc75oN46UT5oI1MbxLuD+sqnuhOqVbkb9r
-	cUc7IIiYLI7nfTuXSRmAJwSOTDQfNgsbTIjUpGPuaXW3T7miOig5fwRwvLJoRXJXyj9u2mz/H47
-	ZO61mAZhhpGNOWmwtsBchKqDpQNj771qA9ZuNFpFLbtFaxaBWwTjgh4cau6NNe9PwElEiwpg0Qv
-	nseMcYKioU5ormd1yXFM6AlAkBJIwZvTPajOB+r15arYlp+csh9qUS8UG1Eq47AFtHJsFtFcUAm
-	75XQ2KThmUr49G7rJMANQntQdtx37SY5KwLgNaYy1LQ7B+CkimOM698V2MuWBxmS7ChK8My9RJW
-	H4=
-X-Received: by 2002:adf:fc12:0:b0:43d:6f0f:32fe with SMTP id ffacd0b85a97d-43d6f0f3403mr253339f8f.31.1775909401550;
-        Sat, 11 Apr 2026 05:10:01 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43d63e5c98fsm16293367f8f.35.2026.04.11.05.10.00
+        d=1e100.net; s=20251104; t=1775984196; x=1776588996;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EbDgrbrkQIZIzHMqS4zyFwb8jbE/7QCDRz8zhtNheE4=;
+        b=VV6JynMEc4wz9ZhiUXMv1QDQruo33o/0R+RANpBkrQrq2myO45TQYm7nc3e6xCIg4e
+         sWDx/vnjzHfZLTNdE2Wl3wHdOBp42bd5ZNeJsSzaoc5ZkXgF+CQPePXidWoU7NG2tZ9X
+         oLgUa5e8NyXrCoku1jVVxr7iUnn58OAVkYdK0L4SIL1rQkLWyJpsoqDMPZs2EcQ83iZC
+         3vnQyGrTLLxqTRrqHySkbqGASuaT/12tBozRZt4nCZjjsX80jYgmOivNk9OfYweWxqMx
+         AhjexdrPEgIDMEdXzmIbc0/HoSbMo8rKgf7u2rws2pz7GHAOGI1Ipbz90PrAyoyiJuVJ
+         FGHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXp+0ukavEe2KmyiOkwaKyUskvTP1SSifrtzBlsnE9MdDmlKvC0r4QmyhGNnQU+Lsv9dMOVpTtBtTr7goM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4m1gdGtCWsybNjdqWqtAHRxaAsyG7sbymBMmGJHUN++7TCFo6
+	DSfQQCQy63eUEN0Hf5OlMQbXtkyNiVlW74AYw5rtnKpW4OyqVnD2OhDJ
+X-Gm-Gg: AeBDietX9Y5K2YFyD/+P0al2qNB1lW6XDQWns/Kh9BoUoz2/F93yHa7QKyomrTYGgrN
+	KcXYwVWRS2OvsNZnFd8noooVq8lbWzvVxuk4mLE0KvlAM7C3z0SWZSZ1s9fwUj7RUvX6xgmNPyo
+	cNve9L3VVZfAYXzyHH/DPUqZspT8XJFkJXgvXh2K/3BXysSbs6BvZ2PfnC3Wy5cZ8+ZZJNlMXcL
+	mXI/v1KpXy45+2nCGprVhfA7u/oJkJ/npySciWzM7FoUflRokDthau4t4iEEOAvKA5VKSF9ukFx
+	wqVYSY2PWaxAfgIP60+BBvOKE/1KBYdsrso9yFH2IHNPYS3x1EVBBGH+zol/JLAa8k0MbS8GWEx
+	yUEXVOuMS9X6034mk5+yd89QyyoHatoWSeOA0PYayXI9YkDmO2U4tzoJ7TdGpM/hDK0kTqPPCS7
+	Hrg7/fsyw+l+URQurJ5nN3Vs0FchVnMamQCbpYsw8aoOQfOZ0esI/l3hRmsxVD9TUL9V087Lf4Z
+	KrTxw==
+X-Received: by 2002:a05:600c:698d:b0:487:22ad:403e with SMTP id 5b1f17b1804b1-488d6ac9ce5mr126951995e9.14.1775984195334;
+        Sun, 12 Apr 2026 01:56:35 -0700 (PDT)
+Received: from localhost (brnt-04-b2-v4wan-170138-cust2432.vm7.cable.virginm.net. [94.175.9.129])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488d532ed4dsm197923925e9.4.2026.04.12.01.56.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Apr 2026 05:10:01 -0700 (PDT)
-Date: Sat, 11 Apr 2026 13:09:58 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Kuniyuki Iwashima <kuniyu@google.com>
-Cc: deller@kernel.org, davem@davemloft.net, dsahern@kernel.org,
- linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
- netdev@vger.kernel.org, edumazet@google.com
-Subject: Re: [PATCH] net: Optimize flush calculation in inet_gro_receive()
-Message-ID: <20260411130958.70202bab@pumpkin>
-In-Reply-To: <20260411052037.2013228-1-kuniyu@google.com>
-References: <adkMqgP6QeBPgqP9@p100>
-	<20260411052037.2013228-1-kuniyu@google.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        Sun, 12 Apr 2026 01:56:34 -0700 (PDT)
+Date: Sun, 12 Apr 2026 09:56:33 +0100
+From: Stafford Horne <shorne@gmail.com>
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Jonas Bonn <jonas@southpole.se>,
+	linux-openrisc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	x86@kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
+	iommu@lists.linux.dev,
+	Michael Grzeschik <m.grzeschik@pengutronix.de>,
+	netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>,
+	linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>,
+	Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org,
+	Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>,
+	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	linux-alpha@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org, Dinh Nguyen <dinguyen@kernel.org>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	linuxppc-dev@lists.ozlabs.org, Paul Walmsley <pjw@kernel.org>,
+	linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>,
+	linux-s390@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	sparclinux@vger.kernel.org
+Subject: Re: [patch 30/38] openrisc: Select ARCH_HAS_RANDOM_ENTROPY
+Message-ID: <adteQSw8c65MtX5l@antec>
+References: <20260410120044.031381086@kernel.org>
+ <20260410120319.593798781@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260410120319.593798781@kernel.org>
 
-On Sat, 11 Apr 2026 05:19:35 +0000
-Kuniyuki Iwashima <kuniyu@google.com> wrote:
+On Fri, Apr 10, 2026 at 02:20:55PM +0200, Thomas Gleixner wrote:
+> The only remaining non-architecture usage of get_cycles() is to provide
+> random_get_entropy().
+> 
+> Switch openrisc over to the new scheme of selecting ARCH_HAS_RANDOM_ENTROPY
+> and providing random_get_entropy() in asm/random.h.
+> 
+> Add 'asm/timex.h' includes to the relevant files, so the global include can
+> be removed once all architectures are converted over.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+> Cc: Jonas Bonn <jonas@southpole.se>
+> Cc: linux-openrisc@vger.kernel.org
 
-> From: Helge Deller <deller@kernel.org>
-> Date: Fri, 10 Apr 2026 16:43:54 +0200
-> > For the calculation of the flush variable, use the get_unaligned_xxx() helpers
-> > to access only relevant bits of the IP header.
-> > 
-> > Note: Since I don't know the network details, I'm not sure if "& ~IP_DF"
-> > (& ~0x4000) is correct, or if "& IP_OFFSET" (& 0x1FFF) should be used instead  
-> 
-> ~IP_DF is correct (MF bit needs to be checked), see
-> 
-> commit db8caf3dbc77599dc90f4ea0a803cd1d97116f30
-> Author: Eric Dumazet <edumazet@google.com>
-> Date:   Fri May 31 11:18:10 2013
-> 
->     gro: should aggregate frames without DF
-> 
-> 
-> > (which I believe would be more correct). Instead of possibly breaking things I
-> > left it as is, but maybe some expert can check?
-> > 
-> > Signed-off-by: Helge Deller <deller@gmx.de>
-> > 
-> > diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-> > index c7731e300a44..58cad2687c2c 100644
-> > --- a/net/ipv4/af_inet.c
-> > +++ b/net/ipv4/af_inet.c
-> > @@ -1479,7 +1479,7 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
-> >  	struct sk_buff *p;
-> >  	unsigned int hlen;
-> >  	unsigned int off;
-> > -	int flush = 1;
-> > +	u16 flush = 1;
-> >  	int proto;
-> >  
-> >  	off = skb_gro_offset(skb);
-> > @@ -1504,7 +1504,8 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
-> >  		goto out;
-> >  
-> >  	NAPI_GRO_CB(skb)->proto = proto;
-> > -	flush = (u16)((ntohl(*(__be32 *)iph) ^ skb_gro_len(skb)) | (ntohl(*(__be32 *)&iph->id) & ~IP_DF));
-> > +	flush = (get_unaligned_be16(&iph->tot_len) ^ skb_gro_len(skb)) |
-> > +	        (get_unaligned_be16(&iph->frag_off) & ~IP_DF);  
-> 
-> I think here we intentionally use 32-bit loads:
-> 
-> commit 1075f3f65d0e0f49351b7d4310e9f94483972a51
-> Author: Herbert Xu <herbert@gondor.apana.org.au>
-> Date:   Tue May 26 18:50:29 2009
-> 
->     ipv4: Use 32-bit loads for ID and length in GRO
-> 
-> 
-> Before your patch, 32-bit load + bswap are used while
-> 16-bit load + rol 8 after the change.
-> 
-> I feel the 4-byte aligned load + bswap is faster than
-> misaligned access + 8 times shift (Is this internally
-> optimised like xchg for a single word size ?)
-> 
-> Do you have some numbers ?
+This looks good to me.
 
-Check on some architecture that doesn't support misaligned loads.
-Actually, aren't the accesses aligned??
-Also on ones without 32bit byteswap (some do have byteswapping
-memory reads).
+Acked-by: Stafford Horne <shorne@gmail.com>
 
-Also you may not want to change 'flush' to u16.
-On non-x86 it may force the compiler add extra masking instructions.
-
-	David
- 
+> ---
+>  arch/openrisc/Kconfig              |    1 +
+>  arch/openrisc/include/asm/random.h |   12 ++++++++++++
+>  arch/openrisc/include/asm/timex.h  |    5 -----
+>  arch/openrisc/lib/delay.c          |    1 +
+>  4 files changed, 14 insertions(+), 5 deletions(-)
+> 
+> --- a/arch/openrisc/Kconfig
+> +++ b/arch/openrisc/Kconfig
+> @@ -10,6 +10,7 @@ config OPENRISC
+>  	select ARCH_HAS_DELAY_TIMER
+>  	select ARCH_HAS_DMA_SET_UNCACHED
+>  	select ARCH_HAS_DMA_CLEAR_UNCACHED
+> +	select ARCH_HAS_RANDOM_ENTROPY
+>  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+>  	select GENERIC_BUILTIN_DTB
+>  	select COMMON_CLK
+> --- /dev/null
+> +++ b/arch/openrisc/include/asm/random.h
+> @@ -0,0 +1,12 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +#ifndef __ASM_OPENRISC_RANDOM_H
+> +#define __ASM_OPENRISC_RANDOM_H
+> +
+> +#include <asm/timex.h>
+> +
+> +static inline unsigned long random_get_entropy(void)
+> +{
+> +	return get_cycles();
+> +}
+> +
+> +#endif
+> --- a/arch/openrisc/include/asm/timex.h
+> +++ b/arch/openrisc/include/asm/timex.h
+> @@ -9,13 +9,9 @@
+>   * OpenRISC implementation:
+>   * Copyright (C) 2010-2011 Jonas Bonn <jonas@southpole.se>
+>   */
+> -
+>  #ifndef __ASM_OPENRISC_TIMEX_H
+>  #define __ASM_OPENRISC_TIMEX_H
+>  
+> -#define get_cycles get_cycles
+> -
+> -#include <asm-generic/timex.h>
+>  #include <asm/spr.h>
+>  #include <asm/spr_defs.h>
+>  
+> @@ -23,6 +19,5 @@ static inline cycles_t get_cycles(void)
+>  {
+>  	return mfspr(SPR_TTCR);
+>  }
+> -#define get_cycles get_cycles
+>  
+>  #endif
+> --- a/arch/openrisc/lib/delay.c
+> +++ b/arch/openrisc/lib/delay.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/init.h>
+>  
+>  #include <asm/param.h>
+> +#include <asm/timex.h>
+>  #include <asm/processor.h>
+>  
+>  bool delay_read_timer(unsigned long *timer_value)
 > 
 > 
-> Before:
-> 	flush = (u16)((ntohl(*(__be32 *)iph) ^ skb_gro_len(skb))
-> mov    edx,DWORD PTR [rcx]
-> bswap  edx
-> 	return skb->len - NAPI_GRO_CB(skb)->data_offset;
-> mov    r8d,DWORD PTR [rsi+0x38]
-> mov    r9d,DWORD PTR [rsi+0x70]
-> sub    r9d,r8d
-> xor    r9d,edx
-> 	| (ntohl(*(__be32 *)&iph->id) & ~IP_DF));
-> mov    ebp,0xffbfffff
-> and    ebp,DWORD PTR [rcx+0x4]
-> bswap  ebp
-> or     ebp,r9d
-> 
-> 
-> After:
-> 	flush = (get_unaligned_be16(&iph->tot_len) ^ skb_gro_len(skb))
-> movzx  edx,WORD PTR [rcx+0x2]
-> rol    dx,0x8
-> 	return skb->len - NAPI_GRO_CB(skb)->data_offset;
-> mov    r8d,DWORD PTR [rsi+0x38]
-> mov    r9d,DWORD PTR [rsi+0x70]
-> sub    r9d,r8d
-> xor    r9d,edx
-> 	| (get_unaligned_be16(&iph->frag_off) & ~IP_DF);
-> movzx  ebp,WORD PTR [rcx+0x6]
-> and    ebp,0xffffffbf
-> rol    bp,0x8
-> or     ebp,r9d
-> 
-
