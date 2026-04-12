@@ -1,192 +1,63 @@
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mta1.formilux.org (mta1.formilux.org [51.159.59.229])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DFA931195B
-	for <linux-parisc@vger.kernel.org>; Sun, 12 Apr 2026 08:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 544E1313543;
+	Sun, 12 Apr 2026 09:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.159.59.229
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775984199; cv=none; b=Egvb/P7R0RBrr/sFluC40fQg1qxpo1MwHlR/PKcggiF0gFTrUtqznw2ekML1Kp0RGTlAkHcZB2RJPWwP1W1WtcMK7aFFcqtfFPDBLRfszwbpDoglu8E8pqMN67rj9/D0J3McTbtugrw+xvBmPAe0boD7d5+Gc33Ob9Xay20vBls=
+	t=1775984844; cv=none; b=jeS7dKZhcHvjgIG29xJuiqqOzqD1VfFhGPbBbifRfj8ayMT1ZZF31WDTxR0UTX+0lOfcympsyo48+fxCca1XFFZiDibWpt0ODcRGSVoHsOuJDvlTJ9dw8ydMR0FVqD4Taklj61Nli5ygbw6VrOaldBtpeJIvxZ4CBM5u9/hBC6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775984199; c=relaxed/simple;
-	bh=XZtsBYJ+xUzK/w66hhh7L4ep5/Nv3d9zyXSTiNiHtzQ=;
+	s=arc-20240116; t=1775984844; c=relaxed/simple;
+	bh=6EafNJeQjkt9lbGKB1TtXzceN3ncohol3VH70I6+ZWU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nBob1VLEdl1atvMzGDs0etxC244oFJtMYX1AdWgnFihD+AU7zegupmZAjnW6yk8Pa0oXr+P+fvoPGSzBxbhbyptXAd3G69clAMaue5FC9LCNVY9Hh9qoIEcAOZoNYKmifZkdt++NpAeeKNnTcQmQ5owvfkSjLT7qbYWa0X7k/5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=rmk25eS0; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=DVfBGUltVJKLP+EG4CGyZelJkFsu7FFy1gvWiM+R5ZO1pTGqX17g+CGS3YpKNIMTORBufd3LU+b4x8sIFAskiWdtn4hEYCmDiyj9+suFGeijgam+OXXCreqsEGb8BprVrSsj0yK1+ege1Sty7ZT68FXqHi8o5HMHLY8x+bUVJTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; dkim=pass (1024-bit key) header.d=1wt.eu header.i=@1wt.eu header.b=qDVMkhvK; arc=none smtp.client-ip=51.159.59.229
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=1wt.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rmk25eS0"
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4887ca8e529so21929965e9.0
-        for <linux-parisc@vger.kernel.org>; Sun, 12 Apr 2026 01:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775984196; x=1776588996; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EbDgrbrkQIZIzHMqS4zyFwb8jbE/7QCDRz8zhtNheE4=;
-        b=rmk25eS0pD3r1W6fBjCHCIGG+xosVecWiNg/3nfNyAKaxOqHC0aIxIp+bwKvPu9+1j
-         fAU2vugkDHatrG3Fzq7V9jewKzPcvw41odvofwZkis7b1Y4DeW1IWegwg5QbXQj7kCio
-         L+ztGdtDUlhH+iJPC48SIdv4mbiVxmA7Be8JQhGglK1VOqWIq1YR4dry10OotSVrXztE
-         o4/62vmfM6KQrUkxwd24yP/lrxDf8HyZquUshVzt2ycEVPZUv3y2nMTj7GvueTw7R7E/
-         WKG3HtUgcwPCHxCI4T+H5u0NML0HalT4/vA4x/F5vuumDuC+b3YDtjggzfClJhOrbI7r
-         R2bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775984196; x=1776588996;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EbDgrbrkQIZIzHMqS4zyFwb8jbE/7QCDRz8zhtNheE4=;
-        b=VV6JynMEc4wz9ZhiUXMv1QDQruo33o/0R+RANpBkrQrq2myO45TQYm7nc3e6xCIg4e
-         sWDx/vnjzHfZLTNdE2Wl3wHdOBp42bd5ZNeJsSzaoc5ZkXgF+CQPePXidWoU7NG2tZ9X
-         oLgUa5e8NyXrCoku1jVVxr7iUnn58OAVkYdK0L4SIL1rQkLWyJpsoqDMPZs2EcQ83iZC
-         3vnQyGrTLLxqTRrqHySkbqGASuaT/12tBozRZt4nCZjjsX80jYgmOivNk9OfYweWxqMx
-         AhjexdrPEgIDMEdXzmIbc0/HoSbMo8rKgf7u2rws2pz7GHAOGI1Ipbz90PrAyoyiJuVJ
-         FGHg==
-X-Forwarded-Encrypted: i=1; AJvYcCXp+0ukavEe2KmyiOkwaKyUskvTP1SSifrtzBlsnE9MdDmlKvC0r4QmyhGNnQU+Lsv9dMOVpTtBtTr7goM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4m1gdGtCWsybNjdqWqtAHRxaAsyG7sbymBMmGJHUN++7TCFo6
-	DSfQQCQy63eUEN0Hf5OlMQbXtkyNiVlW74AYw5rtnKpW4OyqVnD2OhDJ
-X-Gm-Gg: AeBDietX9Y5K2YFyD/+P0al2qNB1lW6XDQWns/Kh9BoUoz2/F93yHa7QKyomrTYGgrN
-	KcXYwVWRS2OvsNZnFd8noooVq8lbWzvVxuk4mLE0KvlAM7C3z0SWZSZ1s9fwUj7RUvX6xgmNPyo
-	cNve9L3VVZfAYXzyHH/DPUqZspT8XJFkJXgvXh2K/3BXysSbs6BvZ2PfnC3Wy5cZ8+ZZJNlMXcL
-	mXI/v1KpXy45+2nCGprVhfA7u/oJkJ/npySciWzM7FoUflRokDthau4t4iEEOAvKA5VKSF9ukFx
-	wqVYSY2PWaxAfgIP60+BBvOKE/1KBYdsrso9yFH2IHNPYS3x1EVBBGH+zol/JLAa8k0MbS8GWEx
-	yUEXVOuMS9X6034mk5+yd89QyyoHatoWSeOA0PYayXI9YkDmO2U4tzoJ7TdGpM/hDK0kTqPPCS7
-	Hrg7/fsyw+l+URQurJ5nN3Vs0FchVnMamQCbpYsw8aoOQfOZ0esI/l3hRmsxVD9TUL9V087Lf4Z
-	KrTxw==
-X-Received: by 2002:a05:600c:698d:b0:487:22ad:403e with SMTP id 5b1f17b1804b1-488d6ac9ce5mr126951995e9.14.1775984195334;
-        Sun, 12 Apr 2026 01:56:35 -0700 (PDT)
-Received: from localhost (brnt-04-b2-v4wan-170138-cust2432.vm7.cable.virginm.net. [94.175.9.129])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488d532ed4dsm197923925e9.4.2026.04.12.01.56.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Apr 2026 01:56:34 -0700 (PDT)
-Date: Sun, 12 Apr 2026 09:56:33 +0100
-From: Stafford Horne <shorne@gmail.com>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Jonas Bonn <jonas@southpole.se>,
-	linux-openrisc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-	x86@kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
-	iommu@lists.linux.dev,
-	Michael Grzeschik <m.grzeschik@pengutronix.de>,
-	netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>,
-	linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>,
-	Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org,
-	Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>,
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	linux-alpha@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org, Dinh Nguyen <dinguyen@kernel.org>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	linuxppc-dev@lists.ozlabs.org, Paul Walmsley <pjw@kernel.org>,
-	linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>,
-	linux-s390@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	sparclinux@vger.kernel.org
-Subject: Re: [patch 30/38] openrisc: Select ARCH_HAS_RANDOM_ENTROPY
-Message-ID: <adteQSw8c65MtX5l@antec>
-References: <20260410120044.031381086@kernel.org>
- <20260410120319.593798781@kernel.org>
+	dkim=pass (1024-bit key) header.d=1wt.eu header.i=@1wt.eu header.b="qDVMkhvK"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=1wt.eu; s=mail;
+	t=1775984841; bh=jHKjjYLNXoE85s+6SLi4LMO1LBUxCkJcWzt53yawMo8=;
+	h=From:Message-ID:From;
+	b=qDVMkhvK1pO7Q36nZMFc4Gxf/VDFlwPY+yXyk/q1wOLwCkjEB7TW0y/l+KS1bFe1K
+	 6B6s/rnKR7I4gSESArhkFtL22/8F/D9L0z3QTnPkto4qIld2/DWB2l+1XwJTHswj9W
+	 Xjbs+jWKa2ar6ThF59cLOeMaRQG57sCf5t/NL1Gg=
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+	by mta1.formilux.org (Postfix) with ESMTP id A29EFC098A;
+	Sun, 12 Apr 2026 11:07:21 +0200 (CEST)
+Date: Sun, 12 Apr 2026 11:07:21 +0200
+From: Willy Tarreau <w@1wt.eu>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] tools/nolibc: add support for 32-bit parisc
+Message-ID: <adtgyfTihqLEX_6y@1wt.eu>
+References: <20260409-nolibc-hppa-v4-0-24e5f31a0233@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20260410120319.593798781@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260409-nolibc-hppa-v4-0-24e5f31a0233@weissschuh.net>
 
-On Fri, Apr 10, 2026 at 02:20:55PM +0200, Thomas Gleixner wrote:
-> The only remaining non-architecture usage of get_cycles() is to provide
-> random_get_entropy().
+On Thu, Apr 09, 2026 at 01:54:29PM +0200, Thomas Weiﬂschuh wrote:
+> Extend nolibc to target the 32-bit parisc architecture.
+> 64-bit is not yet supported.
 > 
-> Switch openrisc over to the new scheme of selecting ARCH_HAS_RANDOM_ENTROPY
-> and providing random_get_entropy() in asm/random.h.
+> Based on nolibc/for-next.
 > 
-> Add 'asm/timex.h' includes to the relevant files, so the global include can
-> be removed once all architectures are converted over.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> Cc: Jonas Bonn <jonas@southpole.se>
-> Cc: linux-openrisc@vger.kernel.org
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
 
-This looks good to me.
+I'm fine on the principle, but I defer it to Helge to validate the
+implementation (I've seen the 3 other versions and discussions). So
+if needed, that's an ack by me from the nolibc perspective, but of
+limited value here :-)
 
-Acked-by: Stafford Horne <shorne@gmail.com>
+Acked-by: Willy Tarreau <w@1wt.eu>
 
-> ---
->  arch/openrisc/Kconfig              |    1 +
->  arch/openrisc/include/asm/random.h |   12 ++++++++++++
->  arch/openrisc/include/asm/timex.h  |    5 -----
->  arch/openrisc/lib/delay.c          |    1 +
->  4 files changed, 14 insertions(+), 5 deletions(-)
-> 
-> --- a/arch/openrisc/Kconfig
-> +++ b/arch/openrisc/Kconfig
-> @@ -10,6 +10,7 @@ config OPENRISC
->  	select ARCH_HAS_DELAY_TIMER
->  	select ARCH_HAS_DMA_SET_UNCACHED
->  	select ARCH_HAS_DMA_CLEAR_UNCACHED
-> +	select ARCH_HAS_RANDOM_ENTROPY
->  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
->  	select GENERIC_BUILTIN_DTB
->  	select COMMON_CLK
-> --- /dev/null
-> +++ b/arch/openrisc/include/asm/random.h
-> @@ -0,0 +1,12 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +#ifndef __ASM_OPENRISC_RANDOM_H
-> +#define __ASM_OPENRISC_RANDOM_H
-> +
-> +#include <asm/timex.h>
-> +
-> +static inline unsigned long random_get_entropy(void)
-> +{
-> +	return get_cycles();
-> +}
-> +
-> +#endif
-> --- a/arch/openrisc/include/asm/timex.h
-> +++ b/arch/openrisc/include/asm/timex.h
-> @@ -9,13 +9,9 @@
->   * OpenRISC implementation:
->   * Copyright (C) 2010-2011 Jonas Bonn <jonas@southpole.se>
->   */
-> -
->  #ifndef __ASM_OPENRISC_TIMEX_H
->  #define __ASM_OPENRISC_TIMEX_H
->  
-> -#define get_cycles get_cycles
-> -
-> -#include <asm-generic/timex.h>
->  #include <asm/spr.h>
->  #include <asm/spr_defs.h>
->  
-> @@ -23,6 +19,5 @@ static inline cycles_t get_cycles(void)
->  {
->  	return mfspr(SPR_TTCR);
->  }
-> -#define get_cycles get_cycles
->  
->  #endif
-> --- a/arch/openrisc/lib/delay.c
-> +++ b/arch/openrisc/lib/delay.c
-> @@ -18,6 +18,7 @@
->  #include <linux/init.h>
->  
->  #include <asm/param.h>
-> +#include <asm/timex.h>
->  #include <asm/processor.h>
->  
->  bool delay_read_timer(unsigned long *timer_value)
-> 
-> 
+Willy
