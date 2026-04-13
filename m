@@ -1,134 +1,160 @@
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from flow-a4-smtp.messagingengine.com (flow-a4-smtp.messagingengine.com [103.168.172.139])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA7331F9AF
-	for <linux-parisc@vger.kernel.org>; Mon, 13 Apr 2026 15:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD1F3537FA;
+	Mon, 13 Apr 2026 19:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776094416; cv=none; b=QH3CRWFeS2WdEAsbu71I3YyfLtzo3FCSWB29bzaGTf2TEe2zHoGSFUfBE4pyh0iIKd4up2SZOVZWWXJgs4jCp5VeddNp4a1gW8Hgd7D5oTjtjIb3orm2DpxDnSpXj3xy8Mtkx0x3nHi0iLdwHWNjzz18k3gA7FDZJj5/AF/6+/I=
+	t=1776108701; cv=none; b=Wwv7ysAI3pZa7lDmJhUWwipeGdvAQG/VIJHrVKio0YixISKcp4kFNSwJuI+cF04dMmLnjN1bNEPjAkhySfUuWAhcnMaTFdQW1GsQGiGI9UDDxNJUYgMSU4d/m+xnPPgy4QL812kozcop5wedzTQxfknEW7TYLwA7uUfBdYGk1b0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776094416; c=relaxed/simple;
-	bh=iX4hzBFj2m2KZiJVUrG8vp2JMXC1uhBlllLkPM8W0L4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jqckXQuCiMOJVQTbylQ1eKoO3n+yyOpwf23vqLi1Sy8Imup3uh6SWVbzqaoToZd6HNVFTUXYlZhRGo7+/PxR+2ewoZqjwXd/Vz+PKZApxKPDJiG4itYMOtMpOGKk2P8hlfp0BnSCzxNaqVmgOALMaeT4CYx/CyIHA4jNE59I/Cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dPCS6XPj; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1776108701; c=relaxed/simple;
+	bh=WrrLF4ZuZDSSPdaipSZzrKXRH2qtrS74BAAAonCIRps=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=n7g1Yx5W6plpXKy+rkozQ6xEgTTaO1xCblNw3ix8fDOKnFfVL16O7SZh497soJj3f4zqp/zSWU+KxfR5iG2eT19N4YiEsFirX1mWgV9neXuPLaq+B1XzLfWKQzwRina3cMiqA4CdgmYDmme3QAv4sOaeHSA6ZSdvV11+Z0V8qUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=eBEb3+z4; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fK2XbJ97; arc=none smtp.client-ip=103.168.172.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dPCS6XPj"
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-488ba840146so44515305e9.1
-        for <linux-parisc@vger.kernel.org>; Mon, 13 Apr 2026 08:33:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776094414; x=1776699214; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9ShgF/BpsS7cAVnwA77xlwKbX+t0sp7V8xBcXlbEXIY=;
-        b=dPCS6XPjbAcd5lFxQIloBbLEIOj1qAEAy0Z1o1/7E2bSZBjOgmuZ9LWIqx8XtZJZY6
-         5E5vQeDiEHpmcTuRQZjvOSmFhzBJ2r/mpanb7foJJh4yQfmNDU107a/dT5eNTFD6Q87v
-         EHgYQVZXzoJ5Wwj0ZfVZScxkNgnT1+TMHQzqAC4zKc1QzexLFAexvcE6qr5QPi6eV9lm
-         qTfH0mc05A4ereysiVK+ek0S63hWdmJcJk3mLqX5lOqmOAJtrumPiknB41As6TypFLri
-         TFPmkObiZWzj6dmJbNt435FNpsl1n5fegAbkmdyLuKsxSidMajs2UtAGRloLMTCHSc3x
-         HyFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776094414; x=1776699214;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9ShgF/BpsS7cAVnwA77xlwKbX+t0sp7V8xBcXlbEXIY=;
-        b=mmPXztW7jKvjCjzM0KlcMpIjbWZbyW7b/VvxBKutEPgkVL3+uGsh+UlUwPPEYg4KTv
-         HreDgTMimIUM//WBHYqBmUUJwrCQrjdvSzwyCiy67dKCGIy/DMrA3x47G22Sa1FqUEuY
-         5XBIX9Epmy5uGirr/tlkH9kCaCbZAKbnxMPxULl6Kshv/Z8Say6flu+PbtjYXg29hDh+
-         zN5jfohh+HQq61j4KsiR06Q2kZrNYJ2yTnHSIT8dl7GZerBWDGxmoE0eQnHw7UZGb2Bk
-         ok6m0wiyYzjUnwktjyTp4bWm+wxcYs1bVDsnfmyy957e9ONc5YoD8fOcX5LwHkZdvSd9
-         r6uw==
-X-Forwarded-Encrypted: i=1; AFNElJ+533P4i49shvNymRbZGjnK/2FsPYi3S1OYIwYYbiutkNo/nSejDKdyZX+l+GcMlV01m+2wIWB9cawCo84=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyOdS2Hc2y7pb2eowSMCFhjAV5+Oe4hMpduA98WbBZaopM3vc3L
-	mwy6/qp+3qUS0a3uK8c83mUQh59G4NFr+M+5wCr0Ah7+P/Wiilb3Qn7J
-X-Gm-Gg: AeBDiesCEOvM/T2T3EPLRI/gxHJhvXqKGb07vCqMBiH49k/AXUX2tLPJ2aGjpMRI0u4
-	5Pk5348KP0S8S9LPRTQMKgJEryjqAx7a5XgrbVa5vbscl/PReBytSrgpJntj0ykBDAyXnhiqDvX
-	kY/rdHijZDgrRILrpDb7o24uyeqQoqYs6bO7de4Wnx/CIQe2giY6H2Xo4Y2FxNfZ9UkOEkJI9AO
-	PSfPdE4mONogGJAD2aRB3rfphusnRpcu5wrbMO4bha/8CDxloAqu9N3kJ9bRVy7+5b9iIY3S4L9
-	KSatzXtwsfj08ajsq9Mvh/aYKjePTX8FK6IA/W8OY41n0gStALmxOt/ezc+khyWGEI4KPmduEej
-	IXa3fTQPH3Zlk/aRX9dk7AcZn2klsNscEHWMS0idlCqiEctCTmeowhWIE8VlHmidD5WV5F+7qNp
-	c9kCHQ/oKQSTIN5X1HgkWtBxC78uY5X8kGLhsuiLyoS0/umTke7PkEGkM2CtQh/72fTih0ZVY=
-X-Received: by 2002:a05:600c:314b:b0:488:b241:2c5f with SMTP id 5b1f17b1804b1-488d687c076mr159606435e9.26.1776094413364;
-        Mon, 13 Apr 2026 08:33:33 -0700 (PDT)
-Received: from f (cst-prg-89-171.cust.vodafone.cz. [46.135.89.171])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488d684406bsm94248555e9.24.2026.04.13.08.33.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2026 08:33:31 -0700 (PDT)
-Date: Mon, 13 Apr 2026 17:33:21 +0200
-From: Mateusz Guzik <mjguzik@gmail.com>
-To: Huang Shijie <huangsj@hygon.cn>
-Cc: akpm@linux-foundation.org, viro@zeniv.linux.org.uk, brauner@kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org, muchun.song@linux.dev, 
-	osalvador@suse.de, linux-trace-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-parisc@vger.kernel.org, nvdimm@lists.linux.dev, 
-	zhongyuan@hygon.cn, fangbaoshun@hygon.cn, yingzhiwei@hygon.cn
-Subject: Re: [PATCH 0/3] mm: split the file's i_mmap tree for NUMA
-Message-ID: <76pfiwabdgsej6q2yxfh3efuqvsyg7mt7rvl5itzzjyhdrto5r@53viaxsackzv>
-References: <20260413062042.804-1-huangsj@hygon.cn>
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="eBEb3+z4";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fK2XbJ97"
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailflow.phl.internal (Postfix) with ESMTP id 9BAA81380415;
+	Mon, 13 Apr 2026 15:31:38 -0400 (EDT)
+Received: from phl-imap-02 ([10.202.2.81])
+  by phl-compute-04.internal (MEProxy); Mon, 13 Apr 2026 15:31:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1776108698;
+	 x=1776115898; bh=oF7+4SGRAImH9WMGSId2dJm+4RdrBt2YGrt25aFUZUA=; b=
+	eBEb3+z4uCJ5XpVJfmMDtd+Hz4pTmn4rIKoszU8vf+435LUmCEc3EJdi4K0/oVv8
+	C+yjXVYuraejFdA/rcQOSN6Zfi5pNlS43GslApllsudgHnK44npvkIwaUHWVTtuh
+	Dw/4I/j/UNeqyr1LQlKmH5vdXZciz/2GPqFtFHFDNoaInKEsvm7hwh9DYdVnGoah
+	lMAIbVhEjH95sryDmrUzci3AfaiCDHHYDZH3oXJ/R4+VlvsfKJPopXWx0JE7CxaE
+	ognvTjwa06PAMT31z/DBGKMGBcoGUsjb6Y3k+6cm618rMbyQ7yCpT6T6pE5XH3Hf
+	w2SGXNdq7Abx7TrcOF+CrA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1776108698; x=
+	1776115898; bh=oF7+4SGRAImH9WMGSId2dJm+4RdrBt2YGrt25aFUZUA=; b=f
+	K2XbJ97Y0jsbU1s6LswXOEcaT2AuIJQsZKTCiqB2bsDjsavXFxXjXN24HUjqmHPV
+	30lUfZzPVJ0GZrRSLZsyTrPlhAwj+oOp7rzHIcW4Q+ggBxcGWjNT+roTWJQkS80p
+	muhmPfZao8pyrAslQS6xE9YgbnnrpBmxpEViK0VuBn5kyHZfCSLFSApLiy8hZEkj
+	X3o7U4xt3roWjYEf/0QsKGiNqeP3myXk/e3+BEa4KYIE59wmYsrhudiDwV46CB5d
+	E8K4OFv0fHuOdK14nnUUxfff3rCPKj8vJw3X7p6M4i0BpN1E8RSwySIEaUf5sCqK
+	alHtK1Rc5jgsKIF8k3s0A==
+X-ME-Sender: <xms:l0TdaRMQ1ovC5UjXw9wB_riUJbJZBZQ47VcEC4ozPMlWVwTWyL-hPg>
+    <xme:l0Tdaey9qAPkMkkSsq5ZowyLiVSaVZg3Aabqq1QUbhdAX-Y8VC29U600TE9HTIGWj
+    W-h6ka_l-N0bKYGG_W-3bzXlHGY0ZcjcSbZR_zuoL-6Ds0X7Q55CQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdefledtkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkjghfufgtgfesthhqredtredtjeenucfhrhhomhepfdetrhhnugcu
+    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
+    hnpedvhfdvkeeuudevfffftefgvdevfedvleehvddvgeejvdefhedtgeegveehfeeljeen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnug
+    esrghrnhgusgdruggvpdhnsggprhgtphhtthhopeegkedpmhhouggvpehsmhhtphhouhht
+    pdhrtghpthhtohepthdrshgrihhlvghrsegrlhhumhhnihdrvghthhiirdgthhdprhgtph
+    htthhopegtrghtrghlihhnrdhmrghrihhnrghssegrrhhmrdgtohhmpdhrtghpthhtohep
+    lhhinhhugiesrghrmhhlihhnuhigrdhorhhgrdhukhdprhgtphhtthhopegurghvvghmse
+    gurghvvghmlhhofhhtrdhnvghtpdhrtghpthhtohepmhhpvgesvghllhgvrhhmrghnrdhi
+    ugdrrghupdhrtghpthhtoheprhihrggsihhnihhnrdgrrdgrsehgmhgrihhlrdgtohhmpd
+    hrtghpthhtohepuhhrvgiikhhisehgmhgrihhlrdgtohhmpdhrtghpthhtohepuggvlhhl
+    vghrsehgmhigrdguvgdprhgtphhtthhopehhvghrsggvrhhtsehgohhnughorhdrrghprg
+    hnrgdrohhrghdrrghu
+X-ME-Proxy: <xmx:l0TdaTelOssYXt15-FK9p6saYLM_nmrvIO6c-_F3ZyF6_xfZywmCYA>
+    <xmx:l0TdaUxOkh6ozfKMIVT4v_qdW_i5Tss0CLMqkf2F01TBmahdCnZo_w>
+    <xmx:l0TdaUWn-LdWx2_7oUHRu6zzNshE3wCLw-aFKzbUUXN26D6Q-_6vLw>
+    <xmx:l0TdacTwYVtUWJnf_Fdh14nt-sYvlNq7AaQbOTvOw2Uu221fQyzEjQ>
+    <xmx:mkTdaTH5uGiAlbaAI17-uSN6CKxYeQsdeWCm3ruscf_j0l2LK_Chakad>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 04818700069; Mon, 13 Apr 2026 15:31:35 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-ThreadId: AMdy4yCH1GcR
+Date: Mon, 13 Apr 2026 21:30:11 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "David Woodhouse" <dwmw2@infradead.org>,
+ "Thomas Gleixner" <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org, "Baolu Lu" <baolu.lu@linux.intel.com>,
+ iommu@lists.linux.dev, "Michael Grzeschik" <m.grzeschik@pengutronix.de>,
+ Netdev <netdev@vger.kernel.org>, linux-wireless@vger.kernel.org,
+ "Herbert Xu" <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org,
+ "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, linux-mm@kvack.org,
+ "Bernie Thompson" <bernie@plugable.com>, linux-fbdev@vger.kernel.org,
+ "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+ "Marco Elver" <elver@google.com>, "Dmitry Vyukov" <dvyukov@google.com>,
+ kasan-dev@googlegroups.com, "Andrey Ryabinin" <ryabinin.a.a@gmail.com>,
+ "Thomas Sailer" <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>,
+ "Richard Henderson" <richard.henderson@linaro.org>,
+ linux-alpha@vger.kernel.org, "Russell King" <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org,
+ "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Huacai Chen" <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ linux-m68k@lists.linux-m68k.org, "Dinh Nguyen" <dinguyen@kernel.org>,
+ "Jonas Bonn" <jonas@southpole.se>,
+ "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
+ "Helge Deller" <deller@gmx.de>, linux-parisc@vger.kernel.org,
+ "Michael Ellerman" <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
+ "Paul Walmsley" <pjw@kernel.org>, linux-riscv@lists.infradead.org,
+ "Heiko Carstens" <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+ "David S . Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+Message-Id: <07df88e5-208d-4aac-9668-a3b0c65ae529@app.fastmail.com>
+In-Reply-To: <7a48b636cb3146f4f7134c6d4fe42070ac2edb43.camel@infradead.org>
+References: <20260410120044.031381086@kernel.org>
+ <20260410120318.592237447@kernel.org>
+ <7a48b636cb3146f4f7134c6d4fe42070ac2edb43.camel@infradead.org>
+Subject: Re: [patch 15/38] ptp: ptp_vmclock: Replace get_cycles() usage
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260413062042.804-1-huangsj@hygon.cn>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 13, 2026 at 02:20:39PM +0800, Huang Shijie wrote:
->   In NUMA, there are maybe many NUMA nodes and many CPUs.
-> For example, a Hygon's server has 12 NUMA nodes, and 384 CPUs.
-> In the UnixBench tests, there is a test "execl" which tests
-> the execve system call.
-> 
->   When we test our server with "./Run -c 384 execl",
-> the test result is not good enough. The i_mmap locks contended heavily on
-> "libc.so" and "ld.so". For example, the i_mmap tree for "libc.so" can have 
-> over 6000 VMAs, all the VMAs can be in different NUMA mode.
-> The insert/remove operations do not run quickly enough.
-> 
-> patch 1 & patch 2 are try to hide the direct access of i_mmap.
-> patch 3 splits the i_mmap into sibling trees, and we can get better 
-> performance with this patch set:
->     we can get 77% performance improvement(10 times average)
-> 
+On Mon, Apr 13, 2026, at 17:33, David Woodhouse wrote:
+> On Fri, 2026-04-10 at 14:19 +0200, Thomas Gleixner wrote:
+>
+> ... depend on TSC_RELIABLE=C2=B9, since if the guest doesn't believe t=
+hat it
+> is, then the guest shouldn't be trying to use it as the basis for
+> precise timing.
+>
+> =C2=B9 (Or... one of the other zoo of TSC flags for the gradually redu=
+cing
+> brokenness over the years...)
 
-To my reading you kept the lock as-is and only distributed the protected
-state.
+It looks like this is sufficiently handled in the caller:
 
-While I don't doubt the improvement, I'm confident should you take a
-look at the profile you are going to find this still does not scale with
-rwsem being one of the problems (there are other global locks, some of
-which have experimental patches for).
+static int vmclock_get_crosststamp(struct vmclock_state *st,
+                                   struct ptp_system_timestamp *sts,
+                                   struct system_counterval_t *system_co=
+unter,
+                                   struct timespec64 *tspec)
+{
+....
+#ifdef CONFIG_X86
+        /*
+         * We'd expect the hypervisor to know this and to report the clo=
+ck
+         * status as VMCLOCK_STATUS_UNRELIABLE. But be paranoid.
+         */
+        if (check_tsc_unstable())
+                return -EINVAL;
+#endif
 
-Apart from that this does nothing to help high core systems which are
-all one node, which imo puts another question mark on this specific
-proposal.
+With 486 and ELAN out of the way, Winchip6 seems to be the only
+one without X86_FEATURE_TSC, so I think the next logical step would
+be to turn off Winchip6 as well and remove all X86_FEATURE_TSC
+and CONFIG_X86_TSC checks.
 
-Of course one may question whether a RB tree is the right choice here,
-it may be the lock-protected cost can go way down with merely a better
-data structure.
-
-Regardless of that, for actual scalability, there will be no way around
-decentralazing locking around this and partitioning per some core count
-(not just by numa awareness).
-
-Decentralizing locking is definitely possible, but I have not looked
-into specifics of how problematic it is. Best case scenario it will
-merely with separate locks. Worst case scenario something needs a fully
-stabilized state for traversal, in that case another rw lock can be
-slapped around this, creating locking order read lock -> per-subset
-write lock -- this will suffer scalability due to the read locking, but
-it will still scale drastically better as apart from that there will be
-no serialization. In this setting the problematic consumer will write
-lock the new thing to stabilize the state.
-
-So my non-maintainer opinion is that the patchset is not worth it as it
-fails to address anything for significantly more common and already
-affected setups.
-
-Have you looked into splitting the lock?
+      Arnd
