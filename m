@@ -1,212 +1,119 @@
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B212C08DC
-	for <linux-parisc@vger.kernel.org>; Tue, 14 Apr 2026 09:36:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776159399; cv=none; b=QgS5POUy4q+/CTtgSuQpb6KmfTU1XRcP0eiGBN/iee4rSqBZsOM8NqjzuaFn4BVoWGN11gbgqODwgyP/P2lqx+md5ZzCf/hMbFnZ0v4UwbiLMzXirizqrP2cxfwQmA/NPhSEMrQKC7MvyqW5SaCs38Y1gfycyZRP7DAs+jhbbMo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776159399; c=relaxed/simple;
-	bh=nzL0YYHEnSV/CtY6irVVvj4bmdP4UlYcFw9M5mHcvfU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fCqvBJ8cFNpCWheTvbxGtFdGYpz07CydaRWPVzqa9nmEZ3LgaLiCpu+2e1YqFO640uWvWvBu1kbCwhKYq3EXy8aJqrKidNbEnEb52/X5G8Gvz1P15Zw5PzJ9Pg8npOkErvZyNiggUAn8eplvTFVi4nqQrlFzVaewNPVtWg9b2zY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EWhOovV/; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0633CAE70
+	for <linux-parisc@vger.kernel.org>; Tue, 14 Apr 2026 09:58:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.177
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776160686; cv=pass; b=qjV1N46L/wGpaEBLItvj0dFjkW6OdQEghUPneqJwdJVdJ+GI4yVkx0KK5V+7esCQorCke/m6z+Bs02KjiLwb/RPtNzZcrquTUaQSuRAgkhr3bjnjP9k6A0lmWASo7/4wr1TD4BCi59QV1aOS63VVd/FvxC8bsJTnNB6A5uMJ8fw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776160686; c=relaxed/simple;
+	bh=9G4aNW0qSYXCAoZGlzimeLIoaqXuWiYpcS90B5BpCe0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XaooMCDDvuKCageZRm+EF5pcjbCKOEX0JyOAhwjpQEtT0sBbhxEkRZJ9XhCm6F+NT+SX7wyciC7fgwtNCYu0gn5QBZD+DBdouY6sJHiVuGvtW2g5+2HZqWjFtQ85RLl3ayrOjCQGae1xvdLnV+FeaebXLcQyVJ+p5xPDdSxDNTI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rsKyQ3fb; arc=pass smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EWhOovV/"
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-488a8ca4aadso62630385e9.3
-        for <linux-parisc@vger.kernel.org>; Tue, 14 Apr 2026 02:36:37 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rsKyQ3fb"
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-50d6ab4476eso56093381cf.2
+        for <linux-parisc@vger.kernel.org>; Tue, 14 Apr 2026 02:58:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776160684; cv=none;
+        d=google.com; s=arc-20240605;
+        b=YGArVOgS1tjqkKVVGTLTeS2sIIbudKdUGSpKmxwf5fJshoB9ZQmW13blSVWk5GJ+zL
+         /Fulx70GnnI2D2QnwVqDbGjXf0xrgTmtBiXQmUWszhLQF9ETb2Qqd0I091gwytExxALK
+         eRD2xEPtuIZ1TSZZdsYlz+60XyZUu6/7m1P7Q/a4zKkCSO+bPpJ+nXpsTM6V7Rg70mms
+         Pg1a3525rLSIg56rYUtxyj/4NRXEhP021vOCpXwrBGWlPvq/w7UJCqEROPugoWPoi/Pq
+         MsX3XebZ2HKk+jjBZeFqwcxjd90AEfP/nJhR8tWfaRIy8YdanghJWeIsuLl0oVkQMeTN
+         DMIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=Lt2L91R0t0j4a+adrKa4HTX+KJG0QWfVScgNiR2mXBA=;
+        fh=HQghW0zUS9u5WkudAHpiaej1WaY2KAbXBfYVI+zyLo8=;
+        b=j3SEvSkJrntRG/t/y9uBk8iHynYxEB2KUZyTj2Con34fjM3fHos4A/5gtArgyoGXir
+         F5G7xnlkupGurg+cajKwQ/h9fAx0oGpgF2BUgdJPG0Gy6HnqWqZa+XysxnmhdpK8bGVm
+         X9kABhNb9sPygg983c3AHV57YRok2vuwxePLIiuudfZLFtfVgngsxx4YtrqClwE37N8w
+         QiLbrkhe7SIc+ZfXW4lqVM+9tUGbsaivFRSHuZAao1VJCGizbUFqHubxLOD6vWVEckIQ
+         54tWmpvWmfeZQ2fIvIDwnvm6OppJ2BsGQ1dT0uVa60405ynzkC7XguTdewGpzVNWMrLl
+         W6HQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776159396; x=1776764196; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=google.com; s=20251104; t=1776160684; x=1776765484; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aISHfLM92ahZPcl51zWVvDvh3fGxj28STwPGxLZW/1Q=;
-        b=EWhOovV/TQkKgEEWxSOvqz9CFiuM7rfdN5wA0z654rBqxw8VIzUhAkri9Ef//u49L7
-         OakEJb6fGmO8OQi+apnsRHNorA69jYoLx9dloW2RKJGt5/0mSn+fiqHXtsE+BHO26y2h
-         cU+hY1nVSa8BWUgDZxCGxZ/THlSdQwLBTIIMxWwFSsHH9CXYD5HGEJvWbohKCsnMCqoB
-         KRI9sK6ZysfgsgQRlgiy+6Gt24BtE79oDRHV8mOne8HH7kAezIdFl+YFFLhbJYNkFtYM
-         5l0bcrLUeZbtva8vKITJ+L0xKvxAGuKN89L1z6CogxUyE9xvlt9FlP8FqX8Eh5J0NLNg
-         Vs4A==
+        bh=Lt2L91R0t0j4a+adrKa4HTX+KJG0QWfVScgNiR2mXBA=;
+        b=rsKyQ3fbbP8gNxAx7veUXSMDFp+lTdueolZ7ogKJj1W/BfO4COxVwBxhJwKOr3hVGf
+         NaCseoibiFNuhc+10wvrCWxgMQEvEWJTJ9Q7XnSIjapuAH4xKJKSzKOA0v2htfk2zmBu
+         So4pKEhI3ZdnnpXdUeTYEFCutOscA6e4COkRF1wzb5OQj0Zi+4gf6M1pGhGMXVykHug4
+         Djuu68FcYqUapF0+iALxCEaQNajaYf7ALOrSmdxANlXEJd5LOUuQCQpyQDr1/0NQNKc3
+         Rh5JswBLr2Du7deSD4AEFgE8cizQ4lwWpS+98MJxjRHrCO0o+KQo8f/3rViqPnIyNdOZ
+         gCJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776159396; x=1776764196;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20251104; t=1776160684; x=1776765484;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=aISHfLM92ahZPcl51zWVvDvh3fGxj28STwPGxLZW/1Q=;
-        b=OxfgXaEK80bPT+CoXgjtAC+yODRvlI+FeQKefElpBYQxDTkKLEkaQKSjFLRkNedkfV
-         FuBWNlT4Ax7aMjMk4RELMUGjDwXqNwXe0h2dx4Gx9AEXggwVfXV/ghpWHhNCKl18peXa
-         U8OXNZOLOkjNFSvXYf962jLhtgbsSNvKRvFFra7qo2U64U6qn2aQtWo9zDEU0itFbRwn
-         vXYO4xSrzgYzihvm0u7OZDvY0n3IqmtI4ujuRuNLezt99UEDGjLfwBwxRdcml/7jU2zj
-         Fn/KsEgHYanTCJoau2JJry9q010UjsZYCsr6K6rT3hDiZm06eAbexQOnuAhwfuFdEE3S
-         Hkew==
-X-Forwarded-Encrypted: i=1; AFNElJ/9L5ji6iBcDc8JtJPZ9w+97yw2WlR4HxTShX0X8BmGFCgpV9I97AKlByS3jTGXhpzqy97MbmHnuXUfSII=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzfdxsWkXBolwMymsQqNtCa5h5mFf4wgiifVai3RMMLXPI6/K5h
-	EABKYlp+gFm08r2mLPYMN0LjcsOqkDh8Qh2/afPIPWzDMygVasIwnDMI
-X-Gm-Gg: AeBDiesokzsJYosa5o9hGQXA74ow9IljQ5Sv6HulnujIB2YzyunTZ/FG5T2LYy6C0LR
-	1eA/FmRK662BbPRp7h6iSQZPv4J/gOZG9jzZg9U3TG00pK2+jkmZw3fLwQidgtpVtBFNOvU3XW0
-	39n6I+CTG28r5Xstn/R+ooVCR37zsQoWcThWIh8WtjGUSgAafiZamGQsWB5OpCtSYDMCO3of+AG
-	EebQDsXbxcTRXDGEGCSZ+/J/7so6f1lxHq39CmSup3jxRqQJzCm9NP2+AeOhEU0zl67S6NNTFgt
-	TMRhHtAgkVJsbyNCGYzKtnnS8551/RWNmtV7lr10CSdqf5zbp3mZ4X+u5kItsSs7DqI9PFPVpFW
-	SV09jnc/2ZDoNLrUDPI53SDqlauUwPoAzxihmtZiwwXwUnaOPPYYdwawkFVG77HOKE8Ip1eBkkJ
-	eFrbFa2Z9C03cdcTXREl91XYcgx8hmPkG8mqeqrKn82D0vB6MSFuozh+GWgrWYeg2xn6nKFcHcb
-	Dc=
-X-Received: by 2002:a5d:5d0b:0:b0:439:b55d:b0e5 with SMTP id ffacd0b85a97d-43d642a7a61mr25526086f8f.28.1776159395782;
-        Tue, 14 Apr 2026 02:36:35 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43d63dec27fsm38828992f8f.11.2026.04.14.02.36.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2026 02:36:35 -0700 (PDT)
-Date: Tue, 14 Apr 2026 10:36:33 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Helge Deller <deller@gmx.de>
-Cc: Kuniyuki Iwashima <kuniyu@google.com>, deller@kernel.org,
- davem@davemloft.net, dsahern@kernel.org, linux-kernel@vger.kernel.org,
- linux-parisc@vger.kernel.org, netdev@vger.kernel.org, edumazet@google.com
-Subject: Re: [PATCH] net: Optimize flush calculation in inet_gro_receive()
-Message-ID: <20260414103633.4d5fe92a@pumpkin>
-In-Reply-To: <49c05cd8-5ad0-4015-8f55-fed3416784bf@gmx.de>
-References: <adkMqgP6QeBPgqP9@p100>
-	<20260411052037.2013228-1-kuniyu@google.com>
-	<20260411130958.70202bab@pumpkin>
-	<49c05cd8-5ad0-4015-8f55-fed3416784bf@gmx.de>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        bh=Lt2L91R0t0j4a+adrKa4HTX+KJG0QWfVScgNiR2mXBA=;
+        b=nWEXGtkW/xbl8L1C6BXl6FMUi8DcJ4RiQ6pjsrd3syu7qi8fV2zJ6B8w9Gv4Py/zl6
+         YRon7XoPAes/43oKwHX1WUyLFMQc11T77JxPm/5hOKx9RNHvcBpgWOGJC2wtAbFAOfs9
+         0p0dIYDkn0pRXk8fLcw7v9BR2klNFfcLLp6+0+qnsWCtjMLaYQ+XSEnUDysDdc/gOu+d
+         6zZteQrhoUX1PVQ2IMjZb00q/TWmWZnZ8fJTSk2NB6pY3BGgfgXUcyp4jN2yJaG089mE
+         2mEr1y18OrAhwGYFp3+bAkN3KChNpqj4jjsNRuEX92c2NTAZZG1LG9Ipvvu0vh4Xo00s
+         oChg==
+X-Forwarded-Encrypted: i=1; AFNElJ+/QGKot9QsvIbIhNGRlkfl4pyB/qG3XI++b5Q+M9Zs05wTIuE4QeaszquoDLL6HPC1/3vE2sE/NzLCt/4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzwcb4sJ1OkcbvRFrfOTqiXn2qmKwPJU5o0u0r4JcNOlqs9KDGD
+	9gylsYtmnmadD27EJc4Gp656A70mqamdzKIdFSrQVAKGIqPJVOSGv+OIncrLscWc4FHr9iLAzLO
+	QIh3oklDidpCU2GSajDjLsU8NS0SNZK999OBLzEL8
+X-Gm-Gg: AeBDiev4qVFFixo8S7f+Ok76UrTGSv90AYPUvCa26lZFbT2bupqS1c1v91xH0yk8TCq
+	HyRSUiR3VBzt7YaNRp/dspyQt5woN+ggLBvmlBimcAAxvwz/KN8lRytEWAWVa4/q3xs4vnCtyhh
+	pR3UvoPHd6BKxZ6S9R1LzJHRY0xg5FKEAExIk/nm/0+MRCPKLbimErDCk2XwjaU0E2je2y8QVho
+	qJhjpRFprOLCNqysQCigMCqc9sWUVW5W2797OIBayDcF0yW+n3v+oEuHH4VwPUWHMo/mBYYKny8
+	1vxfic9QcnJgLJixJLTQf9z7rHib4cQfk6rRgpM8FcmckECN1CKp+JdLOuk7bJsAnjEM7OsJ/JW
+	2dKwU5eM=
+X-Received: by 2002:ac8:590a:0:b0:50b:4537:2e21 with SMTP id
+ d75a77b69052e-50dd5c10684mr241979191cf.45.1776160683955; Tue, 14 Apr 2026
+ 02:58:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <adkMqgP6QeBPgqP9@p100> <20260411052037.2013228-1-kuniyu@google.com>
+ <20260411130958.70202bab@pumpkin> <49c05cd8-5ad0-4015-8f55-fed3416784bf@gmx.de>
+ <20260414103633.4d5fe92a@pumpkin>
+In-Reply-To: <20260414103633.4d5fe92a@pumpkin>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 14 Apr 2026 02:57:52 -0700
+X-Gm-Features: AQROBzD2w-k7YonaYKfDIbemD_J7tzVfxbt-N8Q_GrDjDbdtgzVEkik3UF74vmc
+Message-ID: <CANn89iJv59ZEeaTCY28emRPr2LGAD42hukmLnYU-KfJJs052xQ@mail.gmail.com>
+Subject: Re: [PATCH] net: Optimize flush calculation in inet_gro_receive()
+To: David Laight <david.laight.linux@gmail.com>
+Cc: Helge Deller <deller@gmx.de>, Kuniyuki Iwashima <kuniyu@google.com>, deller@kernel.org, 
+	davem@davemloft.net, dsahern@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 14 Apr 2026 09:46:55 +0200
-Helge Deller <deller@gmx.de> wrote:
+On Tue, Apr 14, 2026 at 2:36=E2=80=AFAM David Laight
+<david.laight.linux@gmail.com> wrote:
 
-> Hi Kikuyu and David,
-...
-> >>> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-> >>> index c7731e300a44..58cad2687c2c 100644
-> >>> --- a/net/ipv4/af_inet.c
-> >>> +++ b/net/ipv4/af_inet.c
-> >>> @@ -1479,7 +1479,7 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
-> >>>   	struct sk_buff *p;
-> >>>   	unsigned int hlen;
-> >>>   	unsigned int off;
-> >>> -	int flush = 1;
-> >>> +	u16 flush = 1;
-> >>>   	int proto;
-> >>>   
-> >>>   	off = skb_gro_offset(skb);
-> >>> @@ -1504,7 +1504,8 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
-> >>>   		goto out;
-> >>>   
-> >>>   	NAPI_GRO_CB(skb)->proto = proto;
-> >>> -	flush = (u16)((ntohl(*(__be32 *)iph) ^ skb_gro_len(skb)) | (ntohl(*(__be32 *)&iph->id) & ~IP_DF));
-> >>> +	flush = (get_unaligned_be16(&iph->tot_len) ^ skb_gro_len(skb)) |
-> >>> +	        (get_unaligned_be16(&iph->frag_off) & ~IP_DF);  
-> >>
-> >> I think here we intentionally use 32-bit loads:
-> >>
-> >> commit 
-> >> Author: Herbert Xu <herbert@gondor.apana.org.au>
-> >> Date:   Tue May 26 18:50:29 2009
-> >>
-> >>      ipv4: Use 32-bit loads for ID and length in GRO  
-> 
-> I see, this patch is exactly the opposite of mine.
-> 
-> >> Before your patch, 32-bit load + bswap are used while
-> >> 16-bit load + rol 8 after the change.
-> >>
-> >> I feel the 4-byte aligned load + bswap is faster than
-> >> misaligned access + 8 times shift (Is this internally
-> >> optimised like xchg for a single word size ?)
-> >>
-> >> Do you have some numbers ?  
-> 
-> No, I don't have.
-> In the end it's very platform specific anyway.
->   
-> > Check on some architecture that doesn't support misaligned loads.
-> > Actually, aren't the accesses aligned??  
-> 
-> The reason why I touched this code at all, is because I got unaligned
-> accesses in that function on parisc.
-> But those unaligned accesses were triggered by parisc-specific
-> inline assembly, and not by this code here.
+> The network stack is supposed to ensure that all receive packets are
+> aligned to that IP header is on a 4-byte boundary.
+> This typically requires the ethernet receive buffer be 4n+2 aligned.
+> Unfortunately there is some ethernet hardware that requires 4n aligned
+> buffers (often on SoC devices with cpu that fault misaligned accesses).
+> (Just writing two bytes of garbage before the frame solves the issue.)
 
-The network stack is supposed to ensure that all receive packets are
-aligned to that IP header is on a 4-byte boundary.
-This typically requires the ethernet receive buffer be 4n+2 aligned.
-Unfortunately there is some ethernet hardware that requires 4n aligned
-buffers (often on SoC devices with cpu that fault misaligned accesses).
-(Just writing two bytes of garbage before the frame solves the issue.) 
+This is mostly true, but depends on NET_IP_ALIGN,
 
-> So, I believe those accesses here are aligned, and the get_unaligned_XX()
-> helpers make the code more readable, but are NOT necessary.
-> 
-> That said, I suggest to drop my patch.
-> It makes the code more readable, but probably will not improve speed.
+On x86, this constant was changed to 0 back in 2010.
 
-I think the purpose of the change was to use the hardware's 32bit
-byte-swapping memory loads rather than software swapping of the 
-16-bit items.
-That shaves off a few instructions - and they can be measurable
-in some of the network paths with specific workloads.
+commit ea812ca1b06113597adcd8e70c0f84a413d97544
+Author: Alexander Duyck <alexander.h.duyck@intel.com>
+Date:   Tue Jun 29 18:38:00 2010 +0000
 
-Remember, save 0.1% 100 times and the code runs 10% faster.
-Every little bit can make a difference.
-
-	David
-
-> 
-> Thanks for your help!
-> Helge
-> 
-> > Also on ones without 32bit byteswap (some do have byteswapping
-> > memory reads).
-> > 
-> > Also you may not want to change 'flush' to u16.
-> > On non-x86 it may force the compiler add extra masking instructions.
-> > 
-> > 	David
-> >     
-> >>
-> >>
-> >> Before:
-> >> 	flush = (u16)((ntohl(*(__be32 *)iph) ^ skb_gro_len(skb))
-> >> mov    edx,DWORD PTR [rcx]
-> >> bswap  edx
-> >> 	return skb->len - NAPI_GRO_CB(skb)->data_offset;
-> >> mov    r8d,DWORD PTR [rsi+0x38]
-> >> mov    r9d,DWORD PTR [rsi+0x70]
-> >> sub    r9d,r8d
-> >> xor    r9d,edx
-> >> 	| (ntohl(*(__be32 *)&iph->id) & ~IP_DF));
-> >> mov    ebp,0xffbfffff
-> >> and    ebp,DWORD PTR [rcx+0x4]
-> >> bswap  ebp
-> >> or     ebp,r9d
-> >>
-> >>
-> >> After:
-> >> 	flush = (get_unaligned_be16(&iph->tot_len) ^ skb_gro_len(skb))
-> >> movzx  edx,WORD PTR [rcx+0x2]
-> >> rol    dx,0x8
-> >> 	return skb->len - NAPI_GRO_CB(skb)->data_offset;
-> >> mov    r8d,DWORD PTR [rsi+0x38]
-> >> mov    r9d,DWORD PTR [rsi+0x70]
-> >> sub    r9d,r8d
-> >> xor    r9d,edx
-> >> 	| (get_unaligned_be16(&iph->frag_off) & ~IP_DF);
-> >> movzx  ebp,WORD PTR [rcx+0x6]
-> >> and    ebp,0xffffffbf
-> >> rol    bp,0x8
-> >> or     ebp,r9d
-> >>  
-> >   
-> 
-
+    x86: Align skb w/ start of cacheline on newer core 2/Xeon Arch
