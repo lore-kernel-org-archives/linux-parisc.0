@@ -1,170 +1,230 @@
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A55A3126B2
-	for <linux-parisc@vger.kernel.org>; Thu, 16 Apr 2026 10:30:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776335406; cv=none; b=HyiVLrHoEeTviy4tKe4Iq91fIRJTcOADKlDQarcolkYXmAHMEQCAXVcnWH77WdTpJVKbnyNJpasSjkBfzWRAmUk6OTZONwXjwlHXuIWKRZN1q4/gO02dqWkAxgmVjTf+Cl8hUTRPceHjHWTzc3sS7Frrs3oQDnnFVaSJar/An9o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776335406; c=relaxed/simple;
-	bh=Il5EilNKbQmVM1qv4XgxLAe02Z9+zxydkwUqJc2BPRU=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2838E39D6C8
+	for <linux-parisc@vger.kernel.org>; Thu, 16 Apr 2026 10:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776335409; cv=pass; b=joxM2DQpFwQ3hexqsRLlvNI026328D1MIKc2SdH5vMR5qqzomZiCfINqLJLO5HCrHXzYuPKan/Evr4a+ByX/zJcSb/OWXuq2ynqIdfIZ7I5RN1qP1RP1sbOXH/271X2hjWjKuBzFeiL78cr0mMO1JoIiJ2xml/gdnJzRNpJemgs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776335409; c=relaxed/simple;
+	bh=waJiDzOo49cMRleBM9fFS7wM9KT+ZlkCB7xqbkKrq9M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c3rLxa+7b7vEzT/2eopmplpAQzUM0cxloqXnuEDVlnxSC9Uwip3qvGjaqsuluJoTh6XQuZuoed76HgLLb4iZjzY3pG+hW04H7dCY3B32Ktu+aBwGN7mbtNKmf6M2cTo/e8LPQ9wPOPnyXPGJVbgLguMMUbVS1ryupGtjeRx4JWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	 To:Cc:Content-Type; b=vBpxm5ragwokL/XJiwz5ISsN/Ho2vbeytBA9EmYdeJuh4dAaQJS4ps2h0O1JsNOBa/YszKaQmzgNSJaA0WLzFX7WeKlwbAx01msZUqEfmUISCT0S8a/DxUKDfJT+RkFP86snJX4oqqRT/aDClHfC9prhdXecquGlDNPkhlQRDyc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H4q8woPu; arc=pass smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-7dbdcb85067so6553945a34.1
-        for <linux-parisc@vger.kernel.org>; Thu, 16 Apr 2026 03:30:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776335402; x=1776940202;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H4q8woPu"
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-6720c7968e4so1113128a12.0
+        for <linux-parisc@vger.kernel.org>; Thu, 16 Apr 2026 03:30:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776335404; cv=none;
+        d=google.com; s=arc-20240605;
+        b=gghR7oQZO0Dh4bUtjOS/zsjk4BdvsGhrchOP3MRtg4hkwWL70+0iJRUKWVGoUSA5rm
+         Uq/OcGShsiQ1RP5PDGRfrW3VM4dqr+q32hp7RdhkuIjhLz5yaoWm8c9KgaO3wfk3IMAt
+         ARtX+rJWBMrson2ZUTaIHoANkqcsRHMeLwh7jOHPX34EFwuxiPh6228yNIE3CNKAl4bH
+         NenyWQNz3r4YX5W/V/mOTHTLgzGIRDIRBB9MVnJaLILXAGZ5kg+gTL4IVzN5bDxWdL9j
+         +HA8nKqkbSjRJ2gMy09bY6zDqZH58ry+RZGvLUdoSQiYEVBbZAhlcHtpBlTrVIgPTASl
+         b0YA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=O4x/p20rCdbt363tjV0+ABHeJuaMLyMj2lG+gRWDekg=;
+        fh=FiyYaTQ2+KJS8kgPIXpK5/g8meFgoPi3D1Bg6yDoEtI=;
+        b=WscEy2t5ebx5ax1+BcfDlilnYKgEp0dBa0vMbAlStMXd6FlYlhjiIyDGlvrTJro9iL
+         tfwHKCSJh17zHmOjmcmpp96TFOnnwaDLpPD8ulalqwVbtXmeyZ25RwxVHlPMa0zUTOFG
+         +eBxqPczLfzbsWZaHXKjoJvtzhql9oz9R4MYF2UgWFdL955O0Pggiw2ZdMpjTcdyBIKe
+         8odYY6bVNZQopapOBNtiSJXSqfjaJWY9Sz0DMEmHvR5YdFqnQ4U+9gKmmQ7G7V/5krkB
+         6viFx/PuUz55uZ5J/ghIN15EYlYVpNXBEEWyc7AGkPm/od6Gbg3pATSvFKQmt035V3qT
+         4IAA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1776335404; x=1776940204; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z9HEDsaws+1AaPEcUyrGjtCss1Kv3jZQFAB8Oib7mmY=;
-        b=of80x8m/KPTtQkTWtcw3aTg6lgYrAxRiBARNzRV+fd3xfhrLjlr2izx4pVl2txH7Rj
-         rpTpJ9PxesOxw/jTUZ2l0QtMkeP1blqRsebxiHK12gC8qltsSor1a28FEczxNg704ySQ
-         B4nV+o6do6gYbqRd4rj8WBT/eT42yzsxmitFmafngAtwKssg32KKPPRjxofkoxmQVI+m
-         87OsAPK6uhLwZgFc8XRTQScWC3YorC/upwMlJD5fUgelONKQekKC7deNjFO7DPLZ3KbM
-         hdIeYZ32JK1o1PjVjvPhOUOPnTbep5bUHpsxSCHLT5prsVLAMvyO7notcZfrKN8hbyYi
-         ST2w==
-X-Forwarded-Encrypted: i=1; AFNElJ9pZ8xLkosKONRSf6jHkjAO1Ej1x/UoKSe3BhUWjjI3I1/AggzbKOhBahPt1j0rgebug5JwcpLoCjO2l9Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywb3D5Yyj5eSAlgeKDMY+r31IHRtrhntr3F+fmvSDmSLMj1QWqL
-	uGcMouDtFLgB4PDB3IdKJWKXBBUTkn6BqA/Zq+ElfVYwzMFQk1DIu/txtZPKQ+Ro
-X-Gm-Gg: AeBDietuBqv5jDpbklc8u2U+GlgkiPx6vT5A/YpLxU1sav2A+DqpZMXi5NBYtycO2Jt
-	vSbmtXhOCKiZ+Hw0BH1o89U8MjdjxWi7DahTjMVBECu9Q0avZfg8VW2OB1vWp+lwQmYNGqLcRjS
-	KH530fHm4lMno7cr4JbuGB4FQRHddbfcEnVVYXT6feTr7CiyEY0Nspa62zgyJ/uRlHHepooFqnG
-	msZxmKNSEqViYFxytUhJBc+5DkPr5S7UXJi6eI0x7tlOthyxKFpGreAudNcLk84XX5cC01FDDNx
-	YKUcsmBJ7VnOR9wcMkBP5B0E2lYtW4r/VR86dYHZcnhPoZhOJpv4B1584cjP97N311l73B0e2Es
-	EGd5EIbDB7LOUphVJYLYDcqcAhwLY++jveKdJ4r3/H76NCbWlC8Lk8R7DniIWj6sNCV2I2weHjB
-	6eMNJJaVvHPhH3JEb9/n0N/AqNRHznbDu17CZfcrBVjEGWjQLpsj9ZSMbqr1TLn4oic2Nrj9jSB
-	s8=
-X-Received: by 2002:a05:6830:67fb:b0:7d7:5959:946f with SMTP id 46e09a7af769-7dc27e1cabemr15961307a34.7.1776335402028;
-        Thu, 16 Apr 2026 03:30:02 -0700 (PDT)
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com. [209.85.167.182])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7dc76a123f9sm3184231a34.2.2026.04.16.03.30.01
-        for <linux-parisc@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Apr 2026 03:30:01 -0700 (PDT)
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-471618e20a5so4028122b6e.1
-        for <linux-parisc@vger.kernel.org>; Thu, 16 Apr 2026 03:30:01 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ+GhRNqL+wHpGvxEO1HEf1xZ8IyBd17lNORvphGCc1XJC39KnAR+B2CmRyiUzEIIIr+mLye6RPtNxmIE6c=@vger.kernel.org
-X-Received: by 2002:a05:6102:c48:b0:608:cd24:354c with SMTP id
- ada2fe7eead31-609fe9b0d22mr11966750137.3.1776335071251; Thu, 16 Apr 2026
- 03:24:31 -0700 (PDT)
+        bh=O4x/p20rCdbt363tjV0+ABHeJuaMLyMj2lG+gRWDekg=;
+        b=H4q8woPuewhmnSwupiWyXSO0br9VwrNdTqx3AAh0ZdoHsn8P/BS3W229QhJTRcQenA
+         +Y2Se9s2vPVFdlsVmVqd3G7OMhH5sWT9y/KQCXJUIPXiIj6tBp0FclX+43XoNBm4Q00J
+         HLKZxkcODRGNbGQZH+p9TjyrhfFWO1VenoSfyNuiUD7XwkrsNGMKjxhHmmojJoWTPZ+f
+         XAx6l/cdSeqXldmngMI7ZdM3/7aUgiPqM1XYoNaWgYjROSQFpApE8By4FC0FnYt02omZ
+         orazUsYImFAG/GLW27GIwCI/pd/MuDH9xavNw85VG3mt1LN4tItpAUD5qfUd2Ialatuu
+         tQiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776335404; x=1776940204;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=O4x/p20rCdbt363tjV0+ABHeJuaMLyMj2lG+gRWDekg=;
+        b=dYDSulQa+YHe0YN6r6eLM3QlFQNF8wAROFRRSSYlcJBrrXj/WxlrtxmNdeg3YV7chl
+         ZZV3lPjCFEuQ/YNufCwovz9z1LzU7feY1LfdK2bU6VaTKqJExP0lV3yauykQIklY3u3m
+         PHsLpBvyukWeegibTf9PLdSR10FIZQLI4jrLNXokG3co5aDnuGIyPfMlKDLqg/KANF6S
+         P7So31/JawBO18XD5MuzwiRUyKESpWP69Mo14Gdb55GlXi30m0/EAPjIdxRBeT9Hwvx0
+         5VRUKVKo/oUBovxPT8IigJ58wbd2t5uyAI5WQZMfBdkIW0mbUv7Jqjdcj38zDItogEaH
+         5W6w==
+X-Forwarded-Encrypted: i=1; AFNElJ8RKyI1VlrQipjNj2YZyxMffMkqYdFfbpUqMHEdbyo5T5EhTZM9rfuqqL+mLyUTPGvmz0TFduJxweldoFk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyO760hOol+4wL8A5JH5Ip3tp/t8rpY+qKs10FDn37E/Hdqt2Xt
+	dqdVD9E8IT102sS+/yaKizlxyDe44J6VF3VA4vDBj8Q6WlyBKMf5WBtqDFvoniFKKtzVAJka7Oo
+	2fqgh+y48vbEtdfNjenBnKPi8mb01T/c=
+X-Gm-Gg: AeBDieu2ly/hfzLgFrF1rEVNHN8BhwVD8hyWCSrsr5qAoGEZ7xy5L2J2p/4zmhthTr7
+	KltkjYz0CpuJ+rhCCcHPjH5Sau2tNY6V6J8+07HcbHxATG83Zq3PMWTayPHsRUpzW715W8Qau0O
+	eiCjoFwMP1bq13qwPCfwsk4Za/nG7KE4PU5Pg4j2HVoGdDkWRpHiXaj542jMmcZVePbg5cKssOc
+	EradA2QfrUy4jZC/YVF4DsYOTfizmemnv6fEN8BuAP8ZGPWxqUZc4ZOpTyWACbSobIn7Q/wqMm0
+	y9rQCPzeYJEnghv7nOLiLTojkiEFKEXr4DaZLE/Nt9AhXIAS8A==
+X-Received: by 2002:a05:6402:1bd0:b0:66e:103b:6350 with SMTP id
+ 4fb4d7f45d1cf-67271085617mr945994a12.7.1776335403710; Thu, 16 Apr 2026
+ 03:30:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260410120044.031381086@kernel.org> <20260410120318.794680738@kernel.org>
-In-Reply-To: <20260410120318.794680738@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 16 Apr 2026 12:24:18 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVerN6Pz07CQH+hcvT=-ZD-r9VNrSrGzTQZBEsuecK_ig@mail.gmail.com>
-X-Gm-Features: AQROBzDRGGELVSySTko37h6zEj8YoV3p6pwZDCVQUlUW6sZbw_W5mbJzFIh35nQ
-Message-ID: <CAMuHMdVerN6Pz07CQH+hcvT=-ZD-r9VNrSrGzTQZBEsuecK_ig@mail.gmail.com>
-Subject: Re: [patch 18/38] lib/tests: Replace get_cycles() with ktime_get()
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, 
-	Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev, 
-	Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
-	linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>, 
-	David Woodhouse <dwmw2@infradead.org>, Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org, 
-	Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org, Marco Elver <elver@google.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Thomas Sailer <t.sailer@alumni.ethz.ch>, 
-	linux-hams@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, linux-alpha@vger.kernel.org, 
-	Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, 
-	Catalin Marinas <catalin.marinas@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org, 
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, 
-	Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, 
-	Paul Walmsley <pjw@kernel.org>, linux-riscv@lists.infradead.org, 
-	Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org, 
-	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+References: <20260413062042.804-1-huangsj@hygon.cn> <76pfiwabdgsej6q2yxfh3efuqvsyg7mt7rvl5itzzjyhdrto5r@53viaxsackzv>
+ <ad4EvoDcAKE2Sl4+@hsj-2U-Workstation>
+In-Reply-To: <ad4EvoDcAKE2Sl4+@hsj-2U-Workstation>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Thu, 16 Apr 2026 12:29:50 +0200
+X-Gm-Features: AQROBzC-j8c2wDPnYX4NqzriRAjav7sQoMIZaVyLzvRZ8lq-CJThcPkUuW_xSxI
+Message-ID: <CAGudoHGLaoc+CoBPNCvFRYojnj+6E_Lsdv7NaJWxFMoHezemMQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] mm: split the file's i_mmap tree for NUMA
+To: Huang Shijie <huangsj@hygon.cn>
+Cc: akpm@linux-foundation.org, viro@zeniv.linux.org.uk, brauner@kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
+	muchun.song@linux.dev, osalvador@suse.de, linux-trace-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	nvdimm@lists.linux.dev, zhongyuan@hygon.cn, fangbaoshun@hygon.cn, 
+	yingzhiwei@hygon.cn
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Thomas,
+On Tue, Apr 14, 2026 at 11:11=E2=80=AFAM Huang Shijie <huangsj@hygon.cn> wr=
+ote:
+>
+> On Mon, Apr 13, 2026 at 05:33:21PM +0200, Mateusz Guzik wrote:
+> > On Mon, Apr 13, 2026 at 02:20:39PM +0800, Huang Shijie wrote:
+> > >   In NUMA, there are maybe many NUMA nodes and many CPUs.
+> > > For example, a Hygon's server has 12 NUMA nodes, and 384 CPUs.
+> > > In the UnixBench tests, there is a test "execl" which tests
+> > > the execve system call.
+> > >
+> > >   When we test our server with "./Run -c 384 execl",
+> > > the test result is not good enough. The i_mmap locks contended heavil=
+y on
+> > > "libc.so" and "ld.so". For example, the i_mmap tree for "libc.so" can=
+ have
+> > > over 6000 VMAs, all the VMAs can be in different NUMA mode.
+> > > The insert/remove operations do not run quickly enough.
+> > >
+> > > patch 1 & patch 2 are try to hide the direct access of i_mmap.
+> > > patch 3 splits the i_mmap into sibling trees, and we can get better
+> > > performance with this patch set:
+> > >     we can get 77% performance improvement(10 times average)
+> > >
+> >
+> > To my reading you kept the lock as-is and only distributed the protecte=
+d
+> > state.
+> >
+> > While I don't doubt the improvement, I'm confident should you take a
+> > look at the profile you are going to find this still does not scale wit=
+h
+> > rwsem being one of the problems (there are other global locks, some of
+> > which have experimental patches for).
+> IMHO, when the number of VMAs in the i_mmap is very large, only optimise =
+the rwsem
+> lock does not help too much for our NUMA case.
+>
+> In our NUMA server, the remote access could be the major issue.
+>
 
-On Fri, 10 Apr 2026 at 14:20, Thomas Gleixner <tglx@kernel.org> wrote:
-> get_cycles() is the historical access to a fine grained time source, but it
-> is a suboptimal choice for two reasons:
->
->    - get_cycles() is not guaranteed to be supported and functional on all
->      systems/platforms. If not supported or not functional it returns 0,
->      which makes benchmarking moot.
->
->    - get_cycles() returns the raw counter value of whatever the
->      architecture platform provides. The original x86 Time Stamp Counter
->      (TSC) was despite its name tied to the actual CPU core frequency.
->      That's not longer the case. So the counter value is only meaningful
->      when the CPU operates at the same frequency as the TSC or the value is
->      adjusted to the actual CPU frequency. Other architectures and
->      platforms provide similar disjunct counters via get_cycles(), so the
->      result is operations per BOGO-cycles, which is not really meaningful.
->
-> Use ktime_get() instead which provides nanosecond timestamps with the
-> granularity of the underlying hardware counter, which is not different to
-> the variety of get_cycles() implementations.
->
-> This provides at least understandable metrics, i.e. operations/nanoseconds,
-> and is available on all platforms. As with get_cycles() the result might
-> have to be put into relation with the CPU operating frequency, but that's
-> not any different.
->
-> This is part of a larger effort to remove get_cycles() usage from
-> non-architecture code.
->
-> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+I'm confused how this is not supposed to help. You moved your data to
+be stored per-domain. With my proposal the lock itself will also get
+that treatment.
 
-Thanks for your patch!
+Modulo the issue of what to do with code wanting to iterate the entire
+thing, this is blatantly faster.
 
-> --- a/lib/interval_tree_test.c
-> +++ b/lib/interval_tree_test.c
-> @@ -65,13 +65,13 @@ static void init(void)
->  static int basic_check(void)
->  {
->         int i, j;
-> -       cycles_t time1, time2, time;
-> +       ktime_t time1, time2, time;
 >
->         printk(KERN_ALERT "interval tree insert/remove");
+> >
+> > Apart from that this does nothing to help high core systems which are
+> > all one node, which imo puts another question mark on this specific
+> > proposal.
+> Yes, this patch set only focus on the NUMA case.
+> The one-node case should use the original i_mmap.
 >
->         init();
+> Maybe I can add a new config, CONFIG_SPILT_I_MMAP. The config is disabled
+> by default, and enabled when the NUMA node is not one.
 >
-> -       time1 = get_cycles();
-> +       time1 = ktime_get();
+> >
+> > Of course one may question whether a RB tree is the right choice here,
+> > it may be the lock-protected cost can go way down with merely a better
+> > data structure.
+> >
+> > Regardless of that, for actual scalability, there will be no way around
+> > decentralazing locking around this and partitioning per some core count
+> > (not just by numa awareness).
+> >
+> > Decentralizing locking is definitely possible, but I have not looked
+> > into specifics of how problematic it is. Best case scenario it will
+> > merely with separate locks. Worst case scenario something needs a fully
+> > stabilized state for traversal, in that case another rw lock can be
+> Yes.
 >
->         for (i = 0; i < perf_loops; i++) {
->                 for (j = 0; j < nnodes; j++)
-> @@ -80,11 +80,11 @@ static int basic_check(void)
->                         interval_tree_remove(nodes + j, &root);
->         }
+> The traversal may need to hold many locks.
 >
-> -       time2 = get_cycles();
-> +       time2 = ktime_get();
->         time = time2 - time1;
->
->         time = div_u64(time, perf_loops);
-> -       printk(" -> %llu cycles\n", (unsigned long long)time);
-> +       printk(" -> %llu nsecs\n", (unsigned long long)time);
 
-While cycles_t was unsigned long or long long, ktime_t is always s64,
-so "%lld", and the cast can be dropped (everywhere).
+The very paragraph you partially quoted answers what to do in that
+case: wrap everything with a new rwsem taken for reading when
+adding/removing entries and taken for writing when iterating the
+entire thing. Then the iteration sticks to one lock.
 
-Gr{oetje,eeting}s,
+The new rw lock puts an upper ceiling on scalability of the thing, but
+it is way higher than the current state.
 
-                        Geert
+Given the extra overhead associated with it one could consider
+sticking to one centralized state by default and switching to
+distributed state if there is enough contention.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> > slapped around this, creating locking order read lock -> per-subset
+> > write lock -- this will suffer scalability due to the read locking, but
+> > it will still scale drastically better as apart from that there will be
+> > no serialization. In this setting the problematic consumer will write
+> > lock the new thing to stabilize the state.
+> >
+> > So my non-maintainer opinion is that the patchset is not worth it as it
+> > fails to address anything for significantly more common and already
+> > affected setups.
+> This patch set is to reduce the remote access latency for insert/remove V=
+MA
+> in NUMA.
+>
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+And I am saying the mmap semaphore is a significant problem already on
+high-core no-numa setups. Addressing scalability in that case would
+sort out the problem in your setup and to a significantly higher
+extent.
+
+> >
+> > Have you looked into splitting the lock?
+> >
+> I ever tried.
+>
+> But there are two disadvantages:
+>   1.) The traversal may need to hold many locks which makes the
+>       code very horrible.
+>
+
+I already above this is avoidable.
+
+>   2.) Even we split the locks. Each lock protects a tree, when the tree b=
+ecomes
+>       big enough, the VMA insert/remove will also become slow in NUMA.
+>       The reason is that the tree has VMAs in different NUMA nodes.
+>
+
+This is orthogonal to my proposal. In fact, if one is to pretend this
+is never a factor with your patch, I would like to point out it will
+remain not a factor if the per-numa struct gets its own lock.
