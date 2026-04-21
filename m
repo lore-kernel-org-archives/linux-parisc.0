@@ -1,144 +1,140 @@
-Received: from mailgw2.hygon.cn (unknown [101.204.27.37])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35326375ABD;
-	Tue, 21 Apr 2026 03:07:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=101.204.27.37
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD742853F3
+	for <linux-parisc@vger.kernel.org>; Tue, 21 Apr 2026 06:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776740850; cv=none; b=bBMslRj/kNVpfnh2k5A2T0WOvDpTgyQjLpbhbl5lEyJHFIbtGanPebh8MuAaFRvwzYvuexyqFUAujIRcxTRDZ3FVm84ll6+SBz6iAE1/ObIORjlI9yIEOwe+CEJN6pWOTz14CAYYh1gChVFW500v79RlbvpBD3iOIlBDJjnnV2M=
+	t=1776754156; cv=none; b=nfFh6ARq4sMUW7ZaKPNLr8DCwwlVZnRsYD7YdiS34ysiilijY6/f4AfDFOj0grHVRgzO2j+D+3PV7k9ZQCJnQvXAnEly9BoaQZfblbLl86RnOsZ2og/43oQ34ciGIY3P/QoGfY4QDz7mRPKZY3bQer5ApYB4bOjHcwUIv215yxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776740850; c=relaxed/simple;
-	bh=vVd/7SelOp7jYayhI2w6h4uvD0LPeSpGH137yQgPMc4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JpD2H0V+Y+/C5HNTwGLLCCcvLPj1NE2PY5/G9MLx9TBZLxc5LJo7BO7qnL9yrOVlVmhaC+F6WdrbzK0VeTt8uXxYqdSQPnZL+ai4CJ0dmkwVOCLU1v49G1B1C1PJxnnoMHEOx1gjdOrEc+c9HNY+jl0SlRmYS70ZLuv5U3pJTFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hygon.cn; spf=pass smtp.mailfrom=hygon.cn; arc=none smtp.client-ip=101.204.27.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hygon.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hygon.cn
-Received: from maildlp2.hygon.cn (unknown [127.0.0.1])
-	by mailgw2.hygon.cn (Postfix) with ESMTP id 4g06hl3478z1YQpmD;
-	Tue, 21 Apr 2026 11:07:03 +0800 (CST)
-Received: from maildlp2.hygon.cn (unknown [172.23.18.61])
-	by mailgw2.hygon.cn (Postfix) with ESMTP id 4g06hj31Ffz1YQpmD;
-	Tue, 21 Apr 2026 11:07:01 +0800 (CST)
-Received: from cncheex04.Hygon.cn (unknown [172.23.18.114])
-	by maildlp2.hygon.cn (Postfix) with ESMTPS id A77E933D4F40;
-	Tue, 21 Apr 2026 11:07:00 +0800 (CST)
-Received: from hsj-2U-Workstation (172.19.20.61) by cncheex04.Hygon.cn
- (172.23.18.114) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Tue, 21 Apr
- 2026 11:06:53 +0800
-Date: Tue, 21 Apr 2026 11:06:59 +0800
-From: Huang Shijie <huangsj@hygon.cn>
-To: Pedro Falcato <pfalcato@suse.de>
-CC: Mateusz Guzik <mjguzik@gmail.com>, <akpm@linux-foundation.org>,
-	<viro@zeniv.linux.org.uk>, <brauner@kernel.org>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-fsdevel@vger.kernel.org>, <muchun.song@linux.dev>,
-	<osalvador@suse.de>, <linux-trace-kernel@vger.kernel.org>,
-	<linux-perf-users@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <zhongyuan@hygon.cn>, <fangbaoshun@hygon.cn>,
-	<yingzhiwei@hygon.cn>
-Subject: Re: [PATCH 0/3] mm: split the file's i_mmap tree for NUMA
-Message-ID: <aebp06qEMBx3yjHg@hsj-2U-Workstation>
-References: <20260413062042.804-1-huangsj@hygon.cn>
- <76pfiwabdgsej6q2yxfh3efuqvsyg7mt7rvl5itzzjyhdrto5r@53viaxsackzv>
- <aeWLCxru6cLWsxvQ@SH-HV00110.Hygon.cn>
- <hshxzebq5y4gavo7mbrgn7qitz5j5wyun73wy7ooiiehzzpcui@hlknbp34sgja>
+	s=arc-20240116; t=1776754156; c=relaxed/simple;
+	bh=am3smhs96M1Iz0Y0JDciE1ZjrAK1dDbEC7UccjVq/eg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fM1ODxoP6B9w3OWRJofvwsB6JAxmetUtBF6t/Kgwg5mOFDmzrcyLHj+C9qcberyJ84qvogcqKVU4bNpf+B2YRvPMOQafyU9TD7PniTUsqG1NVyx9a9Ja5KFQ94QD1/b3ly9RMf9Y/ZTs6wDQaYG/8pvFm1f+U2zh8QjAKjVIqaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J4HdCsEQ; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J4HdCsEQ"
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-35fc0d7c310so2678091a91.1
+        for <linux-parisc@vger.kernel.org>; Mon, 20 Apr 2026 23:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1776754153; x=1777358953; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VdNywBu7apdyTFV9cnt3GZxXLndr1pBULjY0WptzCm8=;
+        b=J4HdCsEQzBF52HS7kv/2N9GJ8av6ANJwagpeEgdEx1yRdELMEGjQ4U1u/N87NO4FNi
+         O6KdpnQd2wlsQteyBgo3JKT5dhLZvpI1wyEsq4drfOlNwbEJ6WcOJKua2hfbgUn7f/qO
+         TzEOq5j4q1kIqn9Y+uIFyo3FhWMNPvAyfGSeTx2OrK0/Srjf3V26Ep8QZ8qfFqhXNK/n
+         ZxjbuMVDQk5kg1icO+a9j//B79M0Kg9jntS58arF/1IdYz8rvP1GqYJvmDueJh+a2H6V
+         AcrX5EqwWq4kixz6oUFeG2btwWnpqWtN0xGCez+9Lm3iTdeVYKxGHu2/uM273h/aIkCV
+         n8bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776754153; x=1777358953;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VdNywBu7apdyTFV9cnt3GZxXLndr1pBULjY0WptzCm8=;
+        b=iHC4WiRAj63XKu9KbKxpaN4ZU3L3EK5lHYXpMQZBwqAGIS7n4VtHzCMgtqTOOoO6HG
+         bp5rla2fi6ztLy5hluXKdfvZl2M7YTW3lWsNA+18u/Z1jPvVnV9I1jy04fNbTWfAvr1f
+         dxjhYtcea8q7wXAmkUpMEgevMBmc2GBFFyq8xmkqIFaqpColw34LqKCxTmlL4/HRnG66
+         PWjmKEwLWkxgcmgyGGp/0ujthME294aS9F1yzW2CwG7hJ2i8uv3grrudQwL5iKGX1pE7
+         hQzF5OrlabOmP61e5F/IDLSRY4J8EWXDXxN9Fy0fYx+5KjdEgyFKFXL8mUe1zo7xz5qL
+         u+xw==
+X-Forwarded-Encrypted: i=1; AFNElJ8RtXwahwCVlmhUjcSuVJYpFdi3ke+jVe7DMJ4n0RlFHoKybdM2zwub7vfCKGqPPv0ExQzRPVWd05GfAUg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzoFxUATXOz4+Kx8g8vJBFhUeP6dhY7LQ6ia0zFRN36Wou/4RuW
+	aJUX8SRPmf5D0vEVMG5XmWpvCca1Q8m2rrmiqk5QyuJzbc3fyh8M5WQ1
+X-Gm-Gg: AeBDieuAR4QdHzvq3h9cD7vwzFHTN3LMwBMInYGYOcNwOcwMGTvfQdLKaH1FMQs/3wm
+	/RlRXztagcapAkj/HM4aHFl6Ee4eZomjNt2tKdb4Dyw0j/iVPYbUwZaAtPkM/M/vQNrz13OUd1J
+	iPWQLrxjgsF6jmkxZRlVqvUlEhg+V702hzhqAIOthlD1vBReb44KuNISFb+9vj6XXgcYOAxcbSo
+	FzRSWQWQzVVHXtyyLH2GXjw5rtkQ84vkcxIwcZOQoKts4rpdtArQUNB3uaXv3FQNbiPvtQA/erF
+	p6MoTV7Y59rYRrFBvVLY2KsOPrnO0QfrS2OwhDLc06hilND0J6vfxlfX2/8rqTfDDp9HKmcMBoT
+	wfGTo10TDJofdkypr7Ob/WTGMM0Dl3Pk7zdpebmGOWnsbPDFoimaPC/SGp4vBDJLY4XEs6t8dgr
+	akoxZFL1PfthSVBeXFCRmHZNDJ665Rgz5KoUEJ4jOK7Jo4S2Rrc2qr4WIOY5Wh5yuzcpRGyBati
+	Gjd9tZJRo3CQbw7
+X-Received: by 2002:a17:90a:dfd0:b0:35e:30bc:96ed with SMTP id 98e67ed59e1d1-36140402361mr16891174a91.10.1776754153374;
+        Mon, 20 Apr 2026 23:49:13 -0700 (PDT)
+Received: from li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com ([129.41.58.4])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3614195a8f0sm12278674a91.12.2026.04.20.23.48.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2026 23:49:13 -0700 (PDT)
+Date: Tue, 21 Apr 2026 12:18:55 +0530
+From: Mukesh Kumar Chaurasiya <mkchauras@gmail.com>
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, 
+	x86@kernel.org, Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev, 
+	Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	Herbert Xu <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org, 
+	Vlastimil Babka <vbabka@kernel.org>, linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>, 
+	Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org, Theodore Tso <tytso@mit.edu>, 
+	linux-ext4@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Thomas Sailer <t.sailer@alumni.ethz.ch>, 
+	linux-hams@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, linux-alpha@vger.kernel.org, 
+	Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, 
+	Catalin Marinas <catalin.marinas@arm.com>, Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
+	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org, 
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Paul Walmsley <pjw@kernel.org>, 
+	linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org, 
+	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+Subject: Re: [patch 32/38] powerpc/spufs: Use mftb() directly
+Message-ID: <aecdpyvTLJOjCdFp@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
+References: <20260410120044.031381086@kernel.org>
+ <20260410120319.723429844@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <hshxzebq5y4gavo7mbrgn7qitz5j5wyun73wy7ooiiehzzpcui@hlknbp34sgja>
-X-ClientProxiedBy: cncheex05.Hygon.cn (172.23.18.115) To cncheex04.Hygon.cn
- (172.23.18.114)
+In-Reply-To: <20260410120319.723429844@kernel.org>
 
-On Mon, Apr 20, 2026 at 02:48:49PM +0100, Pedro Falcato wrote:
-> BTW you're missing _a lot_ of CC's here, including the whole of mm/rmap.c
-> maintainership.
-
-Thanks, my fault.
-
+On Fri, Apr 10, 2026 at 02:21:04PM +0200, Thomas Gleixner wrote:
+> There is no reason to indirect via get_cycles(), which is about to be
+> removed.
 > 
-> On Mon, Apr 20, 2026 at 10:10:19AM +0800, Huang Shijie wrote:
-> > On Mon, Apr 13, 2026 at 05:33:21PM +0200, Mateusz Guzik wrote:
-> > > On Mon, Apr 13, 2026 at 02:20:39PM +0800, Huang Shijie wrote:
-> > > >   In NUMA, there are maybe many NUMA nodes and many CPUs.
-> > > > For example, a Hygon's server has 12 NUMA nodes, and 384 CPUs.
-> > > > In the UnixBench tests, there is a test "execl" which tests
-> > > > the execve system call.
-> > > > 
-> > > >   When we test our server with "./Run -c 384 execl",
-> > > > the test result is not good enough. The i_mmap locks contended heavily on
-> > > > "libc.so" and "ld.so". For example, the i_mmap tree for "libc.so" can have 
-> > > > over 6000 VMAs, all the VMAs can be in different NUMA mode.
-> > > > The insert/remove operations do not run quickly enough.
-> > > > 
-> > > > patch 1 & patch 2 are try to hide the direct access of i_mmap.
-> > > > patch 3 splits the i_mmap into sibling trees, and we can get better 
-> > > > performance with this patch set:
-> > > >     we can get 77% performance improvement(10 times average)
-> > > > 
-> > > 
-> > > To my reading you kept the lock as-is and only distributed the protected
-> > > state.
-> > > 
-> > > While I don't doubt the improvement, I'm confident should you take a
-> > > look at the profile you are going to find this still does not scale with
-> > > rwsem being one of the problems (there are other global locks, some of
-> > > which have experimental patches for).
-> > > 
-> > > Apart from that this does nothing to help high core systems which are
-> > > all one node, which imo puts another question mark on this specific
-> > > proposal.
-> > > 
-> > > Of course one may question whether a RB tree is the right choice here,
-> > > it may be the lock-protected cost can go way down with merely a better
-> > > data structure.
-> > > 
-> > > Regardless of that, for actual scalability, there will be no way around
-> > > decentralazing locking around this and partitioning per some core count
-> > > (not just by numa awareness).
-> > > 
-> > > Decentralizing locking is definitely possible, but I have not looked
-> > > into specifics of how problematic it is. Best case scenario it will
-> > > merely with separate locks. Worst case scenario something needs a fully
-> > > stabilized state for traversal, in that case another rw lock can be
-> > > slapped around this, creating locking order read lock -> per-subset
-> > > write lock -- this will suffer scalability due to the read locking, but
-> > > it will still scale drastically better as apart from that there will be
-> > > no serialization. In this setting the problematic consumer will write
-> > > lock the new thing to stabilize the state.
-> > > 
-> > I thought over again.
-> > I can change this patch set to support the non-NUMA case by:
-> >   1.) Still use one rw lock.
+> Use mftb() directly.
 > 
-> No. This doesn't help anything.
+> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> ---
+>  arch/powerpc/platforms/cell/spufs/switch.c |    5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> >   2.) For NUMA, keep the patch set as it is.
+> --- a/arch/powerpc/platforms/cell/spufs/switch.c
+> +++ b/arch/powerpc/platforms/cell/spufs/switch.c
+> @@ -34,6 +34,7 @@
+>  #include <asm/spu_priv1.h>
+>  #include <asm/spu_csa.h>
+>  #include <asm/mmu_context.h>
+> +#include <asm/time.h>
+>  
+>  #include "spufs.h"
+>  
+> @@ -279,7 +280,7 @@ static inline void save_timebase(struct
+>  	 *    Read PPE Timebase High and Timebase low registers
+>  	 *    and save in CSA.  TBD.
+>  	 */
+> -	csa->suspend_time = get_cycles();
+> +	csa->suspend_time = mftb();
+>  }
+>  
+>  static inline void remove_other_spu_access(struct spu_state *csa,
+> @@ -1261,7 +1262,7 @@ static inline void setup_decr(struct spu
+>  	 *     in LSCSA.
+>  	 */
+>  	if (csa->priv2.mfc_control_RW & MFC_CNTL_DECREMENTER_RUNNING) {
+> -		cycles_t resume_time = get_cycles();
+> +		cycles_t resume_time = mftb();
+>  		cycles_t delta_time = resume_time - csa->suspend_time;
+>  
+>  		csa->lscsa->decr_status.slot[0] = SPU_DECR_STATUS_RUNNING;
 > 
-> Please no. No NUMA vs non-NUMA case.
-> 
-> >   3.) For non-NUMA case, split the i_mmap tree to several subtrees.
-> >       For example, if a machine has 192 CPUs, split the 32 CPUs as a tree.
-> 
-> If lock contention is the problem, I don't see how splitting the tree helps,
-> unless it helps reduce lock hold time in a way that randomly helps your workload.
-> But that's entirely random.
-We actually face two issues:
-   1.) the lock contention
-   2.) the lock hold time.
-
-IMHO, if we can reduce the lock hold time, we can ease the lock contention too.
-So this patch set is to reduce the lock hold time, which is much helpful in our
-NUMA server in UnixBench test.
-
-If we split the lock into small locks, we can also benefit from it. 
-If you or Mateusz create the patch in future, I can test it on our server.
-I wonder if it can give us better performance then current patch set.
-
-Thanks
-Huang Shijie
-
+Reviewed-by: Mukesh Kumar Chaurasiya (IBM) <mkchauras@gmail.com>
