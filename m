@@ -1,175 +1,135 @@
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A85A53BE652
-	for <linux-parisc@vger.kernel.org>; Tue, 21 Apr 2026 11:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B4BC3D994;
+	Thu, 23 Apr 2026 05:24:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776770576; cv=none; b=ODnTV8eyPPoxWL6NUBR8lv1OPx2Wd0hE88hCRiGzzajEuyaLFNqAmj+KuIw6R8oHi+wV8C4iTifN4SMGcDExpKuM1wun359eFzh+OvbsIZAlFWZ6Z2gNf9XMp6FXVm0gv8JQaADJ5YkKJMwH6Lh+CTmU12CdyqGXNdB9uxHFIgQ=
+	t=1776921848; cv=none; b=Pc7U0YQTMLUGSO/TYE4b6i7a3D7DSzUF40JjDQYIOmll5qMWjtVZhc3IoffniBus2PfJlgmTQgSgGC2r/8fj/qyukmlZ4kDgABK7bW3wx6pY8M7mdcRYKBMz/nvJX95omwkZXu1pN36PZvw/rjNUDBPcBDQARyYn1e9jEdah3a0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776770576; c=relaxed/simple;
-	bh=7J5sLUyTcEtZ5b/o54KJz2TjlXrWGH0W+oigsdVGJYY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qkAwih4ysMmyabH1mUakM68Sfs7EtZcIJFZ/xeIIFFBE4/c0ZVxKisXG9qTDiusO5uNhdZWvBqa9CMB+sPSm8Iyr72F/1UcDktnpb8aKlDiv4TevaOxe+XfLpQKBCuc7O03VSmEf3VPz8rNOHmRJbxoMPbrQB8OpLLPfezRvmUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lU9jm6kG; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1776921848; c=relaxed/simple;
+	bh=7TEw+/yz/qzu5bAnkuu1LFWesAIgTB3HMDZulDr8t0A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=P10SVYJ/eNHAKVvnvTUl460LrCbLECWsdN5BgrpZs/88so5dXUEUC97UPLsPUgOHL1+hpKY8pDvADwlIDLazrR5IZCjIcfRJGL+vYPjhhCLDWZpU+Bnt6Mq8Tm05SPar8+dojkuFAivztgR7typ87d7+p6csJLvKbVwJ4Ocq00Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cvtq2KyS; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lU9jm6kG"
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-82f33d28c1dso2248093b3a.3
-        for <linux-parisc@vger.kernel.org>; Tue, 21 Apr 2026 04:22:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776770574; x=1777375374; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pbepvZoiaQHnY8ojgGndHUN0tqRJnJo2KRx8HLgDgUI=;
-        b=lU9jm6kGqDjqxIjkWxGDeqDvr17UMQYeVNP9rS5P3UWd7+VE4cpTrRwlYKSpCHI1KD
-         zZA4+dsX0fyXlhWGoGhioT7GlAk6Cad2+kFgyXXf+ZkLjXgYuVSOk6W9JhbsksRhS+cn
-         JjoUEw79Nz86BTgOmxYEMCIS5sQKYiwZ5dfniI9hbARcbUXmygsWFT4/6ZYrU7er4B5b
-         AF39CTz+lEumwPTp8qh8DUlpS3e4Z+amiPfglYGt2PS3FjwfgzzvqXLqKOW/KsOHooqZ
-         aJdiZQCu+ux924UJHp8L48osT1cgJGdd6A/cCTA6wbL1kWXsoMldHo20OThek5XInH4F
-         NHfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776770574; x=1777375374;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pbepvZoiaQHnY8ojgGndHUN0tqRJnJo2KRx8HLgDgUI=;
-        b=p9yuWVPvZ5QCBx7Vcqw10jebAHmALB9ZnJXS443TOkikdlDI3vlve5j50DvQk+06pm
-         7PKDeTea6KvPFww3OAbluiCp0UA4dbj+mJ5pKtEpT5E+N61tCAH7LYNUbAeuSJWi+EY1
-         SKFUzxSovfl5ZOZpMCUo/i1lmpzbEjscog3e92CoN9vjpyKLN9yZ/MRndpfk++CYSLjT
-         yBs4myDq5kwXTvyfk6wNmZzFl0X471CdKPTyLIlM8BoE4JCwdTspp/gtAiMI5dEXbrjM
-         WL7EZZOWvxsaPcwRcvdlU4W4AhiKB7UJdJVYRyBz3SHKSuLz3rF0duulPkVgA6OjEh47
-         x8jw==
-X-Forwarded-Encrypted: i=1; AFNElJ+8CZuejdYKKAI+nPrJI8aoX5xXJcnPoh+3BjN04GDRELuHhZH2jrzPq3Bgb4yHdmke9lyrpRWm8+3A5hE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yycjz5NMNbEAJNyC/1RRBMta18mj7XJnYY70/sIK8NiJE1CkKw9
-	tNhJviw0G/4aiGZ0eONsrsHbRm+XeGgUNL6aJpY+QeBtOFaBYHAbSEzW
-X-Gm-Gg: AeBDievzg7KoH8nY7AFFipVcwpW1jG78FOQTPs1qrwXgQNg+T8XRRnkbuuLCdlTqMDb
-	jeIzHoe5H/0SG53xko04gvw43lMid7dWueQvdACZKEtBj8MXfqmy7/P1kIGKOc2CY5OMwiyW3qG
-	9tdkTBaS6y+ikqW9ciIxCmhhaDb87CxbkyUCm/eE78PZr4Vyg4AJaV/knu53XAsW+DksPTzd9oo
-	9rwXx7KSIO6RXy6xW8HTOJU9jOKwLVnUeAPw2hrzaWfKpeaNcWas2MJwMqHLEDZ4yTwAx97qcS+
-	WtBTgAW6PnY4UzKoij9HVaRQgdf2VyYRT87yHDDwpcvmC0nkLfwNNEhl5FUG9Emt/kH9lAiDeMO
-	RM3vtaAn2q2a0HnUme/qHVQscQQ6KRuoTfICtlOm3hczsYsNAWWPqMAZYInTtOYdZKkoHm5HIqn
-	b/RsGIR+Vi9rNOurNqC1zbTUGjelvSRXKHP0+OLdC4+AQRZ2XwlvA1vLKSusdrlR/kgwsJnOPka
-	61R6Q==
-X-Received: by 2002:a05:6a00:6988:b0:82f:aae5:c7a9 with SMTP id d2e1a72fcca58-82faae5d438mr7228492b3a.27.1776770573719;
-        Tue, 21 Apr 2026 04:22:53 -0700 (PDT)
-Received: from li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com ([129.41.58.4])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82f8e981a0asm14155014b3a.3.2026.04.21.04.22.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Apr 2026 04:22:53 -0700 (PDT)
-Date: Tue, 21 Apr 2026 16:52:37 +0530
-From: Mukesh Kumar Chaurasiya <mkchauras@gmail.com>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, 
-	x86@kernel.org, Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev, 
-	Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	Herbert Xu <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org, 
-	Vlastimil Babka <vbabka@kernel.org>, linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>, 
-	Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org, Theodore Tso <tytso@mit.edu>, 
-	linux-ext4@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Thomas Sailer <t.sailer@alumni.ethz.ch>, 
-	linux-hams@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, linux-alpha@vger.kernel.org, 
-	Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, 
-	Catalin Marinas <catalin.marinas@arm.com>, Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
-	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org, 
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Paul Walmsley <pjw@kernel.org>, 
-	linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org, 
-	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-Subject: Re: [patch 33/38] powerpc: Select ARCH_HAS_RANDOM_ENTROPY
-Message-ID: <aedc9UddBSYXzrAj@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
-References: <20260410120044.031381086@kernel.org>
- <20260410120319.789114053@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cvtq2KyS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 225F9C2BCB2;
+	Thu, 23 Apr 2026 05:24:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776921848;
+	bh=7TEw+/yz/qzu5bAnkuu1LFWesAIgTB3HMDZulDr8t0A=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=Cvtq2KySs1xJrj4Wb9TdHeWK+7LRBEWyQWAJwAQ68pR3ggA4x2N1zQhRZrOB1+pnb
+	 66wgR9G3KZSrG2fLcG0POCkgcsHi9uq04J+ThLP32HHJCvcniAmB2hHyiyHhBGySsa
+	 ViJQmMIB91JSQdVfBcHGbXBDhparQLsdaGK24WUwRtsQTqWDNjVHIvGNhxMZF7Tln8
+	 9eTQRnCsrO+hfD3FKkspjNJU16hgEjnaQ/zGWY3ny7oXqOh3tBi/Hf4mRI7u07KHHJ
+	 IFaXlixxRmE+iOJBsMD3ZTjM/YhwhZjKB5O8dWibFGdSmdc2QhVRR4BPWLvyMl6Gd+
+	 p9Ll7JrY/homA==
+Message-ID: <f3cd203e-0acc-4b5c-b590-145c0e82c768@kernel.org>
+Date: Thu, 23 Apr 2026 07:24:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260410120319.789114053@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] parisc: led: fix reference leak on failed device
+ registration
+To: Helge Deller <deller@gmx.de>, Guangshuo Li <lgs201920130244@gmail.com>,
+ linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260415170515.3605095-1-lgs201920130244@gmail.com>
+ <929ebeca-d070-4537-b3f5-3a4c93f1301d@gmx.de>
+Content-Language: en-US
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <929ebeca-d070-4537-b3f5-3a4c93f1301d@gmx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 10, 2026 at 02:21:09PM +0200, Thomas Gleixner wrote:
-> The only remaining usage of get_cycles() is to provide random_get_entropy().
+On 17. 04. 26, 11:39, Helge Deller wrote:
+> On 4/15/26 19:05, Guangshuo Li wrote:
+>> When platform_device_register() fails in startup_leds(), the embedded
+>> struct device in platform_leds has already been initialized by
+>> device_initialize(), but the failure path only reports the error and
+>> does not drop the device reference for the current platform device:
+>>
+>>    startup_leds()
+>>      -> platform_device_register(&platform_leds)
+>>         -> device_initialize(&platform_leds.dev)
+>>         -> setup_pdev_dma_masks(&platform_leds)
+>>         -> platform_device_add(&platform_leds)
+>>
+>> This leads to a reference leak when platform_device_register() fails.
+>> Fix this by calling platform_device_put() after reporting the error.
+>>
+>> The issue was identified by a static analysis tool I developed and
+>> confirmed by manual review.
+>>
+>> Fixes: 789e527adfc33 ("parisc: led: Rewrite LED/LCD driver to 
+>> utilizize Linux LED subsystem")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Guangshuo Li <lgs201920130244@gmail.com>
+>> ---
+>>   drivers/parisc/led.c | 6 ++++--
+>>   1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> Switch powerpc over to the new scheme of selecting ARCH_HAS_RANDOM_ENTROPY
-> and providing random_get_entropy() in asm/random.h.
-> 
-> Remove asm/timex.h as it has no functionality anymore.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> ---
->  arch/powerpc/Kconfig              |    1 +
->  arch/powerpc/include/asm/random.h |   13 +++++++++++++
->  arch/powerpc/include/asm/timex.h  |   21 ---------------------
->  3 files changed, 14 insertions(+), 21 deletions(-)
-> 
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -150,6 +150,7 @@ config PPC
->  	select ARCH_HAS_PREEMPT_LAZY
->  	select ARCH_HAS_PTDUMP
->  	select ARCH_HAS_PTE_SPECIAL
-> +	select ARCH_HAS_RANDOM_ENTROPY
->  	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
->  	select ARCH_HAS_SET_MEMORY
->  	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC_BOOK3S || PPC_8xx) && !HIBERNATION
-> --- /dev/null
-> +++ b/arch/powerpc/include/asm/random.h
-> @@ -0,0 +1,13 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_POWERPC_RANDOM_H
-> +#define _ASM_POWERPC_RANDOM_H
-> +
-> +#include <asm/cputable.h>
-> +#include <asm/vdso/timebase.h>
-> +
-> +static inline unsigned long random_get_entropy(void)
-> +{
-> +	return mftb();
-> +}
-> +
-> +#endif	/* _ASM_POWERPC_RANDOM_H */
-> --- a/arch/powerpc/include/asm/timex.h
-> +++ b/arch/powerpc/include/asm/timex.h
-> @@ -1,21 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> -#ifndef _ASM_POWERPC_TIMEX_H
-> -#define _ASM_POWERPC_TIMEX_H
-> -
-> -#ifdef __KERNEL__
-> -
-> -/*
-> - * PowerPC architecture timex specifications
-> - */
-> -
-> -#include <asm/cputable.h>
-> -#include <asm/vdso/timebase.h>
-> -
-> -ostatic inline cycles_t get_cycles(void)
-> -{
-R> -	return mftb();
-> -}
-> -#define get_cycles get_cycles
-> -
-> -#endif	/* __KERNEL__ */
-> -#endif	/* _ASM_POWERPC_TIMEX_H */
-> 
-Build tested for this series with allmodconfig and allyesconfig on ppc64le
-machine for ppc64le.
-tree: git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git getcycles-v1
+> applied.
+> Thanks!
+> Helge
 
-Boot tested for this series on powernv9 qemu, powernv10 qemu and pSeries
-power11 hardware.
+Unless the static pcmtst_pdev has ->type->release or ->release set, the 
+patch triggers a warning upon put().
 
-Tested-by: Mukesh Kumar Chaurasiya (IBM) <mkchauras@gmail.com>
-Reviewed-by: Mukesh Kumar Chaurasiya (IBM) <mkchauras@gmail.com>
+platform_device_register() should be fixed instead.
+
+See also:
+https://patchew.org/linux/20260415174159.3625777-1-lgs201920130244@gmail.com/
+
+thanks,
+-- 
+js
+suse labs
 
