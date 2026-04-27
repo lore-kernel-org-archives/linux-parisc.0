@@ -1,149 +1,229 @@
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1D0E1AA1D2
-	for <linux-parisc@vger.kernel.org>; Mon, 27 Apr 2026 13:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7460E29405;
+	Mon, 27 Apr 2026 17:16:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777295162; cv=none; b=mkBn90i65gfzYyEePqL3JOn/fcVp06k8fVE9qAlj4DS/toTcSOakhXWpADxuFB2JTSPCk8Zyn8x7qma64pSIJOxDuISExFc1HrzhJThL0OgP/AyDdRubwYyZGUiFBeweYxbfS/DeI6Jt6LHVeX/CD8+YEcCSn+C71Ea7IrDdjnY=
+	t=1777310219; cv=none; b=lnKg7BoxsEj+KpDcf/oALBrXT1ccTPBpkTI3ECVX2s5+j9fNGEdNiRPFZQ8HHDtmvwK+7jcFnrgXz6RbeU/6P/VLAj5z8DPYqKu0fs6R/6tWQQ0otKZOoYGLjzORJyOu7yinHhzzi5Rz3N/XoPqxUmBTM7+3NcZDBN5Fa5hGw78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777295162; c=relaxed/simple;
-	bh=S4pqVnC7SrykP5CG0Cf7mf34BERu4m5QkSgWfBe5Qoc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Iv709ILkK7C8bjmcsF00s5+5XARqxp2mmOrI7XaiXZ0UmcYZH5OmygRlIEaGhr/J3ozMZ1N6VaebGObahOYkrY7U1epCfeqSO8Me3Cm/Qc4WJ8zjagIOhals/KNMftA6Hbs0eMT6IaYi3XinpJWE3CjDy0/3Vgoiydy4ltrTV/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S/MWFHxm; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1777310219; c=relaxed/simple;
+	bh=Gdo90UdOw5JDNcbBc6CTpgqBoS99tJWdzzhKt47HDkg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QCWJwhkgyQIPBwW36YBLsUTxKenVr8c/dnY28kBLLI5w/jdSgmUcTrI8h7IRMX6fYYCmnIiH5daNsx88sS8N05ODBVdWNquhCzzZoTW7kiY+fqoobv6Du/Xc5AYtVrf7QCsNShxs3Cx0dwSSwP+bsgcv8u6JdQAck3yTm/GilNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U2+LLE02; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S/MWFHxm"
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4893940bb5eso53391615e9.3
-        for <linux-parisc@vger.kernel.org>; Mon, 27 Apr 2026 06:06:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777295159; x=1777899959; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F8iqGCzMLvZ/FUHTnqulEZ9CiBEz3wlFLR64nRtCLLQ=;
-        b=S/MWFHxmiycuD3HU0EXzLIkC50oqSfh9RZXXPpjnGWIa5/zFuE5EbIpp3Sj820l6X/
-         +cQUkoUYkXn48mw4z2KPJ5VXbjFZgyI2k404SYQRjnvFMp/PnPNbYnLYACmsQv3RMfHb
-         l5oMqE7CAsIxfZvahOE/XbWt4pIBPKR1p5orA19BeR1PAhJ1kDbQW4CChsp+KekbCs4W
-         1PZCNm6FxpUOivynK2MbzzEabO6KdFjCe4ARpwN/aMcJXddfLMLmK31PBCPe4pySVCgO
-         omkEG+Hscn0lisPIQX6MZQng7vBpncOk5oPXG3HG6mhZgAIl8SboqQCwAajXAwv2q6LP
-         lK0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777295159; x=1777899959;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=F8iqGCzMLvZ/FUHTnqulEZ9CiBEz3wlFLR64nRtCLLQ=;
-        b=hyc3OvyrTdbeCUwE2QXjW8O7Utbo8Fy7nrw/RG0PUyg3YtBIjWByZ8UEEReB80H0Jg
-         aknd5CODznAEopGWR+n8z/4vEpXwno6njyilSnBFZA4PC/le5U94khLDlSXmNhNqzYs0
-         x+W3aGUOiKVSuNp6AS+Cx4kIYwuzJmlhqUbDuJLLv0eIY02xTGpmvg+Uoppg/iovgy9w
-         uCYx8CNP8rrx4nhV3YI8bEcIgRICb6CmVRlya8ponxP6ICAysC0/+OMrNOiuaKmgmVwM
-         I+Y0QkI3xHsM5UAtM7kZPO5Nwi+71uc4EZ1jDfqUu+ZfHFeEfrZDNGymnnvPaWm3n2rN
-         kahA==
-X-Forwarded-Encrypted: i=1; AFNElJ/kSy6XL9PdRmvVfrH+k5DI0zTs0Icp0BJM6hCGeJoNwPaUQASAnizVnASsEir2jTDzTWyJ56LxEdAlJhs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx82byFOMj96IS/T3rBrozSgK/uLkO1Googp/jTPSqMv+2UiLLD
-	t2onE3kNizny3NOAIegeEOPz0/QW5P6vZFwM1ptyBR1vCA/MTG5RjKyd
-X-Gm-Gg: AeBDiesPPcd5aaZ/TQc4Zz4LTAIrbvSh7RVhexkAUAhckzh4F0cOwhWFIue83t+7zJU
-	MzHl/K7t5Vo4vxCi0Vo0w00gASfLmiSYzdeY3L5Lxnqb1vZ9UepfugeGRiCE0V5llZTf9x9xv98
-	ZvNyZBgfI/+50o8AcoTPOnVtTiaBtKNPqcHfuzLZfCmm++TQA3DWC1FLtfjigHst1CZ8KHHgfSD
-	/xsxhruwDa351G0UWSDCr2SccUrVvscNsLMAJ5PU15BihoCzRmJ9lm9lDZFfOcTtNbnUQr/Un/X
-	ftW5rinDZiWyfGkBSvtIsYvNEd5NLxYfucCuQthCPz2uY7vWlZ0+rFge7kbBpguCCviupTSMwk5
-	Hl3MVwV3O6lTNuaFcJbu6S3HkkS1d7sdv1n1oXvU/mv6FUJkTBO9X5Tg6SV8Mnk8XEBi40VP0BH
-	1BQatwLZgs+snfXJV6e5YLDTavlzd4Y2rgC2qYREkgsCofbV74Hn1QpC+HuelnDFquJwh5KOV6L
-	h0=
-X-Received: by 2002:a05:600c:3150:b0:480:3ad0:93bf with SMTP id 5b1f17b1804b1-488fb7930famr614025895e9.24.1777295159074;
-        Mon, 27 Apr 2026 06:05:59 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488fb75ab25sm247366475e9.11.2026.04.27.06.05.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2026 06:05:58 -0700 (PDT)
-Date: Mon, 27 Apr 2026 14:05:55 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Ai Chao <aichao@kylinos.cn>
-Cc: deller@gmx.de, nicolas.ferre@microchip.com,
- alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
- linux@armlinux.org.uk, dilinger@queued.net, adaplas@gmail.com,
- James.Bottomley@HansenPartnership.com, FlorianSchandinat@gmx.de,
- alchark@gmail.com, krzk@kernel.org, kees@kernel.org, rene@exactco.de,
- tzimmermann@suse.de, rongqianfeng@vivo.com, thorsten.blum@linux.dev,
- chelsyratnawat2001@gmail.com, soci@c64.rulez.org,
- gregkh@linuxfoundation.org, daniel@thingy.jp, linmq006@gmail.com,
- fourier.thomas@gmail.com, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-geode@lists.infradead.org,
- linux-parisc@vger.kernel.org
-Subject: Re: [PATCH 03/35] fbdev: sisfb: Use safer strscpy() instead of
- strcpy()
-Message-ID: <20260427140555.4d001050@pumpkin>
-In-Reply-To: <20260427090910.1940231-1-aichao@kylinos.cn>
-References: <20260427090910.1940231-1-aichao@kylinos.cn>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U2+LLE02"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87FE1C2BCB4;
+	Mon, 27 Apr 2026 17:16:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777310218;
+	bh=Gdo90UdOw5JDNcbBc6CTpgqBoS99tJWdzzhKt47HDkg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=U2+LLE02v2RJdGrHn64GqYJdP4+hDdO9CRQcGon9U+fg19LBxhX5PBepS5h9HJCqe
+	 szqGGe/Sn0Ja8ufrVfKBRayklpg7ZNqhD3AjlJFyhWTD2cy+E9nyVtxoXvU6RVePwS
+	 nC/EKNFwPrGycTqEuaSwxvd9NLoS3iznsIjTk0KPgTVc+veLovfoR+uQQZvkXu6BEL
+	 XY5HSP+s8CkmcaZnZCCWlv0qtPkuKqPRoos+3EvmYxD3lbF+eVbofOW/u0ribOc9N6
+	 46gB4iCE7qS4DHXiu+LbPED9AO2rWWkmtG0xffEU92OaQJ+vWiy9PumgjbDE3AiKLE
+	 isfjlgjrnrghg==
+From: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+To: Yury Norov <ynorov@nvidia.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	David Laight <david.laight.linux@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+Cc: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	kvm@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	dmaengine@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	linux-fsi@lists.ozlabs.org,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org,
+	linux-wpan@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-serial@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	xen-devel@lists.xenproject.org,
+	linux-fsdevel@vger.kernel.org,
+	ocfs2-devel@lists.linux.dev,
+	bpf@vger.kernel.org,
+	kasan-dev@googlegroups.com,
+	linux-mm@kvack.org,
+	linux-x25@vger.kernel.org,
+	rust-for-linux@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	sound-open-firmware@alsa-project.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-arch@vger.kernel.org
+Subject: [RFC PATCH v1 0/9] uaccess: Convert small fixed size copy_{to/from}_user() to scoped user access
+Date: Mon, 27 Apr 2026 19:13:41 +0200
+Message-ID: <cover.1777306795.git.chleroy@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7253; i=chleroy@kernel.org; h=from:subject:message-id; bh=Gdo90UdOw5JDNcbBc6CTpgqBoS99tJWdzzhKt47HDkg=; b=owGbwMvMwCV2d0KB2p7V54MZT6slMWS+nxkaMinl/6P42P3bc0Qj3v7nk1G4YbGg/rEse+BPv 7e7BNgWdJSyMIhxMciKKbIc/8+9a0bXl9T8qbv0YeawMoEMYeDiFICJRDExMmwV0vIK89sWnHjX Y4WN3O+gaTyvmP0m2koKTvi9YNORsocM/wPkn2xoM0q8N63lWvLNy/m/speGuG7LLGiQ1I6bVSB dxgQA
+X-Developer-Key: i=chleroy@kernel.org; a=openpgp; fpr=10FFE6F8B390DE17ACC2632368A92FEB01B8DD78
+Content-Transfer-Encoding: 8bit
 
-On Mon, 27 Apr 2026 17:09:10 +0800
-Ai Chao <aichao@kylinos.cn> wrote:
+A lot of copy_from_user() and copy_to_user() perform copies of small
+fixed size pieces of data between kernel and userspace, and don't
+care about partial copies.
 
-> Hello David and Helge
-> ...
-> > > > -            strcpy(ivideo->myid, "SiS 730");
-> > > > +            strscpy(ivideo->myid, "SiS 730");    
-> > > 
-> > > The compiler knows at build time the length of myid, and the "SIS 730" string.
-> > > Using strscpy() has no benefit here either. Contrary, the code generated
-> > > because of using strscpy() is probably even larger.
-> > > Don't replace such code with strscpy().  
-> 
-> > Both should get converted to a memcpy().  
-> 
-> > If you increase the literal to be too long I'm pretty sure you'll
-> > get a compiler warning/error from strcpy().
-> > OTOH strscpy() is more likely to truncate the string (I'd need to
-> > check).  
-> 
-> > So leaving it as strcpy() is fine - and possibly even better.
-> > The header files might get changed to error strcpy() unless the compiler
-> > knows the source string has a constant length and the destination is
-> > big enough - but that hasn't been done yet.  
-> 
-> struct sis_video_info {
->     char    myid[40];
-> }
-> I have rewritten the code: 
-> strcpy(ivideo->myid, "SiS 730-0123456789abcdefghijklmnopqrstuvwxyz0123456789");
-> Used gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04.3)
-> There was no compiler warning or error. 
-> The strcpy copies the entire string into myid(causing a buffer overflow),
-> whereas strscpy only copies 40 characters into myid according to its size.
+copy_from_user() and copy_to_user() are big functions optimised for
+copying large amount of data, with cache management, etc ... This is
+often overkill for small copies that could just be inlined instead.
 
-It depends on what is in string.h and the enabled warnings.
-Testing on 'godbolt' gives an error with both gcc and clang without any
-special compilation options.
+What makes things a bit more tricky is that those copy functions
+are designed to handle partial copies in case of page fault. But among
+the 6000 callers of those functions, only 2% really care about the
+quantity of no-copied data that those functions return. All other ones
+fails as soon as the returned value is not 0, returning -EACCESS.
 
-The linux kernel build errors strcpy() at line 799 of fortify-string.h.
-strscpy() doesn't (and really shouldn't) generate an error since it is
-expected to truncate overlong strings.
+So first step in this series is to introduce variants called
+copy_from_user_partial() and copy_to_user_partial() which will be
+called by the 2% users that care about the partial copy, then the
+original copy_from_user() and copy_to_user() are changed to return
+-EFAULT when the copy fails.
 
-Since you should (at least) test compile any patches before sending them
-(even trivial ones) you ought to have things setup to have checked what
-happens in a kernel build.
-Ideally you should also run the code.
+Then the second step is to implement copy of small fixed-size data
+with scoped user access instead of calling the arch specific heavy
+user copy functions.
 
-This really means that strcpy() is better than strscpy() for copying fixed
-length strings into arrays.
+Patch 5, can be split in different patches for each archicture or
+subsystem, but let's get a first feedback and agree on the principle.
 
-	David
+Christophe Leroy (CS GROUP) (9):
+  uaccess: Split check_zeroed_user() out of usercopy.c
+  uaccess: Convert INLINE_COPY_{TO/FROM}_USER to kconfig and reduce
+    ifdefery
+  x86/umip: Be stricter in fixup_umip_exception()
+  uaccess: Introduce copy_{to/from}_user_partial()
+  uaccess: Switch to copy_{to/from}_user_partial() when relevant
+  uaccess: Change copy_{to/from}_user to return -EFAULT
+  x86: Add unsafe_copy_from_user()
+  arm64: Add unsafe_copy_from_user()
+  uaccess: Convert small fixed size copy_{to/from}_user() to scoped user
+    access
 
-> 
-> Thanks,
-> Ai Chao
-> 
+ arch/alpha/Kconfig                            |   1 +
+ arch/alpha/kernel/osf_sys.c                   |   4 +-
+ arch/alpha/kernel/termios.c                   |   2 +-
+ arch/arc/include/asm/uaccess.h                |   3 -
+ arch/arc/kernel/disasm.c                      |   2 +-
+ arch/arm/include/asm/uaccess.h                |   2 -
+ arch/arm64/include/asm/gcs.h                  |   2 +-
+ arch/arm64/include/asm/uaccess.h              |  30 +++--
+ arch/arm64/kernel/signal32.c                  |   2 +-
+ arch/csky/Kconfig                             |   1 +
+ arch/hexagon/include/asm/uaccess.h            |   3 -
+ arch/loongarch/include/asm/uaccess.h          |   3 -
+ arch/m68k/include/asm/uaccess.h               |   3 -
+ arch/microblaze/include/asm/uaccess.h         |   2 -
+ arch/mips/include/asm/uaccess.h               |   3 -
+ arch/mips/kernel/rtlx.c                       |   8 +-
+ arch/mips/kernel/vpe.c                        |   2 +-
+ arch/nios2/include/asm/uaccess.h              |   2 -
+ arch/openrisc/include/asm/uaccess.h           |   2 -
+ arch/parisc/include/asm/uaccess.h             |   3 -
+ arch/powerpc/Kconfig                          |   1 +
+ arch/powerpc/kvm/book3s_64_mmu_hv.c           |   4 +-
+ arch/powerpc/kvm/book3s_64_mmu_radix.c        |   4 +-
+ arch/powerpc/kvm/book3s_hv.c                  |   2 +-
+ arch/riscv/Kconfig                            |   1 +
+ arch/riscv/kernel/signal.c                    |   2 +-
+ arch/s390/include/asm/idals.h                 |   8 +-
+ arch/s390/include/asm/uaccess.h               |   3 -
+ arch/sh/include/asm/uaccess.h                 |   2 -
+ arch/sparc/include/asm/uaccess_32.h           |   3 -
+ arch/sparc/include/asm/uaccess_64.h           |   2 -
+ arch/sparc/kernel/termios.c                   |   2 +-
+ arch/um/include/asm/uaccess.h                 |   3 -
+ arch/um/kernel/process.c                      |   2 +-
+ arch/x86/Kconfig                              |   1 +
+ arch/x86/include/asm/uaccess.h                |  29 ++++-
+ arch/x86/kernel/umip.c                        |   2 +-
+ arch/x86/lib/insn-eval.c                      |   2 +-
+ arch/x86/um/signal.c                          |   2 +-
+ arch/xtensa/include/asm/uaccess.h             |   2 -
+ drivers/android/binder_alloc.c                |   2 +-
+ drivers/comedi/comedi_fops.c                  |   4 +-
+ drivers/dma/idxd/cdev.c                       |   2 +-
+ drivers/firmware/efi/test/efi_test.c          |   2 +-
+ drivers/fsi/fsi-scom.c                        |   2 +-
+ .../amd/display/amdgpu_dm/amdgpu_dm_debugfs.c |   2 +-
+ drivers/gpu/drm/i915/gt/intel_sseu.c          |   4 +-
+ drivers/gpu/drm/i915/i915_gem.c               |   4 +-
+ drivers/hwtracing/intel_th/msu.c              |   2 +-
+ drivers/misc/ibmvmc.c                         |   2 +-
+ drivers/misc/vmw_vmci/vmci_host.c             |   2 +-
+ drivers/most/most_cdev.c                      |   2 +-
+ drivers/net/ieee802154/ca8210.c               |   4 +-
+ drivers/net/wireless/ath/wil6210/debugfs.c    |   2 +-
+ .../intel/iwlwifi/pcie/gen1_2/trans.c         |   2 +-
+ drivers/net/wireless/ti/wlcore/debugfs.c      |   2 +-
+ drivers/ps3/ps3-lpm.c                         |   2 +-
+ drivers/s390/crypto/zcrypt_api.h              |   4 +-
+ drivers/spi/spidev.c                          |   2 +-
+ .../staging/media/atomisp/pci/atomisp_cmd.c   |   8 +-
+ drivers/tty/tty_ioctl.c                       |  14 +--
+ drivers/tty/vt/vc_screen.c                    |   4 +-
+ drivers/usb/gadget/function/f_hid.c           |   4 +-
+ drivers/usb/gadget/function/f_printer.c       |   2 +-
+ drivers/vfio/vfio_iommu_type1.c               |   4 +-
+ drivers/xen/xenbus/xenbus_dev_frontend.c      |   2 +-
+ fs/namespace.c                                |   2 +-
+ fs/ocfs2/dlmfs/dlmfs.c                        |   2 +-
+ fs/proc/base.c                                |   4 +-
+ include/asm-generic/uaccess.h                 |   2 -
+ include/linux/bpfptr.h                        |   2 +-
+ include/linux/sockptr.h                       |   4 +-
+ include/linux/uaccess.h                       | 107 ++++++++++++++----
+ ipc/msg.c                                     |   8 +-
+ ipc/sem.c                                     |   8 +-
+ ipc/shm.c                                     |  18 +--
+ kernel/regset.c                               |   2 +-
+ kernel/sys.c                                  |   4 +-
+ lib/Kconfig                                   |   3 +
+ lib/Makefile                                  |   4 +-
+ lib/kfifo.c                                   |   8 +-
+ lib/{usercopy.c => usercheck.c}               |  22 ----
+ lib/usercopy.c                                |  66 -----------
+ mm/kasan/kasan_test_c.c                       |   4 +-
+ mm/memory.c                                   |   2 +-
+ net/x25/af_x25.c                              |   2 +-
+ rust/helpers/uaccess.c                        |   6 +-
+ sound/pci/emu10k1/emufx.c                     |   4 +-
+ sound/pci/rme9652/hdsp.c                      |   6 +-
+ sound/soc/intel/avs/probes.c                  |   6 +-
+ sound/soc/sof/compress.c                      |  12 +-
+ sound/soc/sof/sof-client-probes.c             |   6 +-
+ 92 files changed, 269 insertions(+), 288 deletions(-)
+ copy lib/{usercopy.c => usercheck.c} (73%)
+
+-- 
+2.49.0
 
