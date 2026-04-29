@@ -1,106 +1,98 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA41A2CCC5
-	for <linux-parisc@vger.kernel.org>; Wed, 29 Apr 2026 19:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DB63AA1B8;
+	Wed, 29 Apr 2026 20:59:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777491557; cv=none; b=siJJsUhVZrHdPn1G6ZD6M/LiUR6lKOtU8Uum5WPgHu/msKAQsrhhuJGW1j1HOE6qkJLeBFC5TBZTHZke6p6A8IyMgVFNnUccme6wVSQ/25jWPzau3H4t/eucFiLX59ErdHQDUpmGs3/6VkBVN2Tej+GQJ4J0xRSCrlBHafatYqM=
+	t=1777496368; cv=none; b=chNLX79+t80hJZo8g1hrsMvrhLSvty9MgERS7MlWQoSXV6EU5ml6B298jKfInYf6/T9yUsnfA1VGCfUOMRTF0uWdmGAFPSnfLOOTh/xre6RtgxwyLCC1zxGkTG+/CVuOPpnOpp4cSNfDRQ+E/7YCtdmee992pqS/ebkEQcla9MI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777491557; c=relaxed/simple;
-	bh=3afIHw+H8LvqKc9Lf6G84LcMVZVIV/nqNyI28gtOszg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LdlpkL1lajWwrykk3rqQByrUE9MiOLzPnYAh7G27XQIvh8xwXgTx39dfcHK2ulyim4iKuLcrVdAzAXc30Y7ZJAkWFRCHAXJ0wpKO72WigNHj/9JeuFtck26poK5mtMDx89+olE87Lq6bCvdVDA4vaxCBNfzC0sX3el2MY4FXeBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K6/H9pTR; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1777496368; c=relaxed/simple;
+	bh=SRrw/xjAblV349vpFYVxAfsHA6OjMVTqD64CMZMlsCI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=PkkJLB8G+kq52sGsMF5wdt9Lxtd0ABx30Len0gq4MyshhVHYpUHbceQ/i1oUDjhZ/f7EAc7oeD73nL2nMRQBorC1mbU3n/twgj8jBRgL8MDp7AOwinc8xeVgLsxGUqo/Cw7/o3bRTCYEFHXVsHHI95Jjn49cq/Q4WBYS4SqI3PU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=n5cBWUGa; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K6/H9pTR"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8159C19425;
-	Wed, 29 Apr 2026 19:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777491557;
-	bh=3afIHw+H8LvqKc9Lf6G84LcMVZVIV/nqNyI28gtOszg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=K6/H9pTRtcep/mZdT5D7rfLFD2WwZHZzoIqwZrl142Y4AxusolZvjD4Vvqke8a4s3
-	 zsgiEKMBK2XTufnCizNRGsa+JMtETL86+89tEgVrsa9F4QEVvrKFNXXV0hWehupDiV
-	 LYsDySQdFZ7BAVrj5aueg6/vvz/vNPZDQR845elLUF40OZg9UkvOnt2eYUGJP9wtXJ
-	 Stz0aQ4l/B7kFAaVag1/EGr6vFWVbvtbH8VsdKxsQLGUYSJLwZKYaeia2KgLwLcjcX
-	 XA6iSze0KAG4rr6KDE+ZTl1PvbcjBcQm5s4XDZ/BJSIIFTptRxmWtlFc2g2o0tDJQ2
-	 pjHbO2z0ZzDxA==
-From: Helge Deller <deller@kernel.org>
-To: linux-parisc@vger.kernel.org
-Cc: deller@gmx.de,
-	Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>
-Subject: [PATCH] parisc: Fix build failure for 32-bit kernel with PA2.0 instruction set
-Date: Wed, 29 Apr 2026 21:39:03 +0200
-Message-ID: <20260429193903.76228-1-deller@kernel.org>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="n5cBWUGa"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1777496366;
+	bh=SRrw/xjAblV349vpFYVxAfsHA6OjMVTqD64CMZMlsCI=;
+	h=From:Date:Subject:To:Cc:From;
+	b=n5cBWUGaGuIj9fP5Q+bUg1/dIPYaYvqk9gv+jJMeqkNK0cU77p436oWMdEiA1G2y4
+	 Zx1fusJKvc5ay4SrXre4WZMTLDfiUkqBFngEJ/HowSKIHleIdZUQQZipzyOL4XwoHn
+	 gdKwlvDXpGBLmApyEvVA7g4z9TdBT6jnlZoE43iI=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Wed, 29 Apr 2026 22:59:25 +0200
+Subject: [PATCH] parisc: Only call VDSO32_SYMBOL() when valid
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Message-Id: <20260429-parisc-compat-vdso-v1-1-5242b8ac59db@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXMQQqDQAxA0atI1g1orFJ7leIijlFT0BkmKoJ49
+ 07b5Vv8f4JJVDF4ZidE2dXULwnFLQM38TIKap8MlFOd3+mBgaOaQ+fnwCvuvXlsqrojLpkKKiG
+ FIcqgx2/6av+2rXuLW78nuK4P4qmyOHYAAAA=
+X-Change-ID: 20260428-parisc-compat-vdso-956b2a3a2123
+To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1777496365; l=1362;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=SRrw/xjAblV349vpFYVxAfsHA6OjMVTqD64CMZMlsCI=;
+ b=dvHpOF1bUJhHn2bVLR30+gnIl+Wuj0WZ79u5z6VUMXrgb8JCCH82tWumzsYqGLjy9yOqVnfmk
+ ioz01v+ROCmDAQzDZ9JITAQ4JVPzvYIVJ9WiktmPxFVOqFFQjcAXgn1
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-From: Helge Deller <deller@gmx.de>
+The definitions used by VDSO32_SYMBOL() only work if the 32-bit vDSO
+actually exists.
 
-The CONFIG_PA11 is not reliable option to check if we build a 32-bit
-kernel which needs the 32-bit VDSO.
-Instead depend on CONFIG_64BIT and CONFIG_COMPAT only.
-
-Reported-by: Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Fixes: 3dce91790205 ("parisc: Allow to build without VDSO32")
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- arch/parisc/Makefile        | 16 +++++++++++-----
- arch/parisc/kernel/Makefile |  7 +++++--
- 2 files changed, 16 insertions(+), 7 deletions(-)
+ arch/parisc/kernel/signal.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index edab2a948352..4391783521bd 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -174,15 +174,21 @@ ifeq ($(KBUILD_EXTMOD),)
- # this hack.
- prepare: vdso_prepare
- vdso_prepare: prepare0
--	$(if $(CONFIG_64BIT),$(Q)$(MAKE) \
--		$(build)=arch/parisc/kernel/vdso64 include/generated/vdso64-offsets.h)
--	$(if $(CONFIG_PA11)$(CONFIG_COMPAT),$(Q)$(MAKE) \
-+ifdef CONFIG_64BIT
-+	$(Q)$(MAKE) $(build)=arch/parisc/kernel/vdso64 include/generated/vdso64-offsets.h
-+	$(if $(CONFIG_COMPAT),$(Q)$(MAKE) \
- 		$(build)=arch/parisc/kernel/vdso32 include/generated/vdso32-offsets.h)
-+else
-+	$(Q)$(MAKE) $(build)=arch/parisc/kernel/vdso32 include/generated/vdso32-offsets.h
-+endif
- endif
+diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
+index 64a62006bb15..192121047633 100644
+--- a/arch/parisc/kernel/signal.c
++++ b/arch/parisc/kernel/signal.c
+@@ -276,7 +276,9 @@ setup_rt_frame(struct ksignal *ksig, sigset_t *set, struct pt_regs *regs,
+ 		rp = VDSO64_SYMBOL(current, sigtramp_rt);
+ 	else
+ #endif
++#if defined(CONFIG_PA11) || defined(CONFIG_COMPAT)
+ 		rp = VDSO32_SYMBOL(current, sigtramp_rt);
++#endif
  
--vdso-install-$(CONFIG_PA11)	+= arch/parisc/kernel/vdso32/vdso32.so
-+ifdef CONFIG_64BIT
-+vdso-install-y			+= arch/parisc/kernel/vdso64/vdso64.so
- vdso-install-$(CONFIG_COMPAT)	+= arch/parisc/kernel/vdso32/vdso32.so
--vdso-install-$(CONFIG_64BIT)	+= arch/parisc/kernel/vdso64/vdso64.so
-+else
-+vdso-install-y			+= arch/parisc/kernel/vdso32/vdso32.so
-+endif
+ 	if (in_syscall)
+ 		rp += 4*4; /* skip 4 instructions and start at ldi 1,%r25 */
+@@ -514,10 +516,12 @@ insert_restart_trampoline(struct pt_regs *regs)
+ 			rp = VDSO64_SYMBOL(current, restart_syscall);
+ 		} else
+ #endif
++#if defined(CONFIG_PA11) || defined(CONFIG_COMPAT)
+ 		{
+ 			err |= put_user(regs->gr[31], &usp[0]);
+ 			rp = VDSO32_SYMBOL(current, restart_syscall);
+ 		}
++#endif
+ 		WARN_ON(err);
  
- install: KBUILD_IMAGE := vmlinux
- zinstall: KBUILD_IMAGE := vmlinuz
-diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
-index 2f3441769ac5..49f937c2abbe 100644
---- a/arch/parisc/kernel/Makefile
-+++ b/arch/parisc/kernel/Makefile
-@@ -46,6 +46,9 @@ obj-$(CONFIG_KEXEC_FILE)		+= kexec_file.o
- 
- # vdso
- obj-y			+= vdso.o
--obj-$(CONFIG_64BIT)	+= vdso64/
--obj-$(CONFIG_PA11)	+= vdso32/
-+ifdef CONFIG_64BIT
-+obj-y			+= vdso64/
- obj-$(CONFIG_COMPAT)	+= vdso32/
-+else
-+obj-y			+= vdso32/
-+endif
--- 
-2.53.0
+ 		regs->gr[31] = rp;
+
+---
+base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
+change-id: 20260428-parisc-compat-vdso-956b2a3a2123
+
+Best regards,
+--  
+Thomas Weißschuh <linux@weissschuh.net>
 
