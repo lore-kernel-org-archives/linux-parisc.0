@@ -1,40 +1,66 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACCF1EB5F8
-	for <linux-parisc@vger.kernel.org>; Thu,  7 May 2026 10:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF25F3F9F48
+	for <linux-parisc@vger.kernel.org>; Thu,  7 May 2026 14:23:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778151433; cv=none; b=JX3fltbiNA4jWgiAJbWLXF/NtdPTha03idR/Rl2hSckWKiPwBGUYp3IvrD2mSqDWsF6im70DKOaGdbMdMWmo+A5dzdzPx4kcrkbmLSWLlUCmwrrkROshYvBFdHd9jJem4sqgMAC4JDgx0yTrLdiQSem7eSkKZ7RPosMC1dl/xRM=
+	t=1778163829; cv=none; b=AADHJeKss6MZUzc+uAS9OWcYqrjmITHQYhxZXezq27SHO5PTTDGYRPofEGRZFe3GZttyys91qR2oeHEio9peU6nobZQOVr06mKPa/IvfQ+XEzAsO1E9znugx1y9qBVncocd5mDTAMFxYbxPDBLAUb6zb9mrmkzbvCvBkzSerlco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778151433; c=relaxed/simple;
-	bh=WMCbfhuXrBYuEWLT18FkbVAMISdQACtlTz7psEBX2BA=;
+	s=arc-20240116; t=1778163829; c=relaxed/simple;
+	bh=9PPgK4QLRSfTOdseskC5krVmq0BpGiNeGu5HCLmSg74=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=plQuXx4L3DlSj9/641M9i2ppLry+riaymHo6mkGqtkstpOZ2n0LjMTt5WjmvFhWJBnJSw/JhIb9GbxG3ZA1i7t3YKJEYEycWiJ51rn+YCurkVG815AoNAlIE5u+aO3r2/hPTL8h4W3IQo0q8tV+5aPCEn7M/BBR0R+ShbH7FbSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwOz-0001uh-6W; Thu, 07 May 2026 12:56:21 +0200
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wKwOQ-000uFj-2Z;
-	Thu, 07 May 2026 12:55:47 +0200
-Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 2374E5302D0;
-	Thu, 07 May 2026 10:55:46 +0000 (UTC)
-Date: Thu, 7 May 2026 12:55:45 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=emzg2Q69iUIXF16+Q9PbtGdxhhxvtzNtCxMBnBwGlAh8Wt6UkIt3uPUoFynK8iLVgJwYEmLeY7jWZgjT9vYh7XN3l6Jk3owfG3kgvwOPxAmEBVaaKm4yoHfglfmXqXH26LyloKgGZRqDAAPIS6K8mS4499hcHw2eXYhVcDDwYIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b=FkhbCI6+; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b="FkhbCI6+"
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4891c00e7aeso8344265e9.2
+        for <linux-parisc@vger.kernel.org>; Thu, 07 May 2026 07:23:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20251104.gappssmtp.com; s=20251104; t=1778163825; x=1778768625; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KHdHPIlg8ERzV5KgqRTDZ9XRFXSHKLYAiHw6AYH9eg4=;
+        b=FkhbCI6+5iGRjZDWKXPWkgyGSB1Rtp2FJO25fv5YVM16EJDf3nQ5DeNsCnKRIgo1XU
+         uYA8+soz4vGtGZuuTPHPPzyTCxMA8S/u3Jvv4OyRF2C0E4r+JlNe1O18B9vI1CnKstde
+         tLkvxSE+Hmnm8QuomilBsAonXLuiPktzZIyoFhJMUnyyTWtGKVk2/ti8+5wSakHBTh/7
+         cDqssVgVtg5yEpeaFOgOlWn4Zg59DYfOH/bGBAkGbB7Xe3xnuyT3XgkLtxweJel+Vt+y
+         j1NhpAGJf9fnl/RVWEPYVHjuxpH/ju12RbWfGCzFUsNxu+Ao2910f8UhhE05burJWSmZ
+         OUNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778163825; x=1778768625;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KHdHPIlg8ERzV5KgqRTDZ9XRFXSHKLYAiHw6AYH9eg4=;
+        b=QwpAZdnV3jXO6V/2foab/VfG0rBu27qziN8I87LKKm2lWufft9/peqpADv9tvYjsjU
+         lOPDYxmaWFTr/R83Bie2z8xKcz6N0IPR4GbD48hYRrPgOiLoj37AA/xWAv3raSh+qT/N
+         j9cCvRIZ0Tm8+m4NIuSF3Z7szko1k6gzSWNtAK9VvQ1z+uV2zHVsKWp80raDc7Z8QO2Y
+         6VhXMK+isI3sZXG2BotuAdRR/W1Cdh0JH4eGA6Jto4z6NgnMxl9SV3lo838f5r0z+wT/
+         wNiNNCckxy4AInuHOw/HmzS3363JU62/gq7aeqYOcTd9m3zd+onqyo89GwGDhToW+MDC
+         oOqw==
+X-Forwarded-Encrypted: i=1; AFNElJ8cDS1Q6VjWNWz95dw9LSTXr/v7EB+lie0RapvoVw/aWSvins8Fda6dCTWhJDTe899HCI9gQt0iCVmheyg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx5u7CzdZkgcwS2AAgpYVp5G8+jcQ5Vcy/JsWObBSsfOU+3JgZU
+	T6KlcUwSXR2ecAmQ82t90npOkwg81X+SJKuky7m33LNPrQ2JrmUhZbQIsjqrH9wTinw=
+X-Gm-Gg: AeBDiesAyhJ0mBILtaJwmbcvlQuWdYwjZlNd+jkUIQwCAl1IU/mljqEIymw7I/jNm/s
+	DqLa35ESVkA/9zB61H5p+LB6P6nY3xxGpPrBgVsaFYRRpGLcduGKL2QFweNaFfbJ5w3EEENPCxw
+	siDR6QjmOmVk4GWuPi0oEUtKcRDX1DAs7I9mF6SILidLONCv9VivnX83KM8mpwIr0kp+xlZtBnv
+	B17bo/QkZlzDUNejRacO6w3jNmC9Kg9pUhSXuiKf8s1YRTDEDd4U8XmXASAQKY1Ktdaz4G7cXMN
+	lG5W+tUf4wCff8Ri+m9ZH4nohIr+FcXPUCtOKb/zze3N/BLL9e/zcElbLbvlSuwQOls/bOm00yc
+	FTJ3LpBSCWsnNJyecMFsXcjf+hXDb1knyZapLSpZcGiLJas7gNU0c4J8kvYq3Fy+4OFGk8zDNlh
+	u8ixtMv24Tw+XsIS8mne46YX3lyN+sLhYNIyHon6w0mVhz4Mc1STn775U6/lWD6x3tDl3cN/lML
+	dU4zzkbM2f1eSZrmyCD7YOe9LSlFJWDBkCb
+X-Received: by 2002:a05:600c:628e:b0:48e:60a3:220a with SMTP id 5b1f17b1804b1-48e60a32224mr33559005e9.0.1778163825055;
+        Thu, 07 May 2026 07:23:45 -0700 (PDT)
+Received: from localhost (p200300f65f114e08e9fd60f450b139aa.dip0.t-ipconnect.de. [2003:f6:5f11:4e08:e9fd:60f4:50b1:39aa])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-48e538a8159sm137501655e9.6.2026.05.07.07.23.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2026 07:23:44 -0700 (PDT)
+Date: Thu, 7 May 2026 16:23:43 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: Michael Grzeschik <mgr@kernel.org>, 
 	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
 	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
@@ -75,10 +101,10 @@ Cc: Michael Grzeschik <mgr@kernel.org>,
 	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com
 Subject: Re: [PATCH net-next v2 1/2] net: Consistently define pci_device_ids
  using named initializers
-Message-ID: <20260507-healthy-gainful-fox-500552-mkl@pengutronix.de>
-X-AI: stop_reason: "refusal"
+Message-ID: <afyfa4E4rNbkMYTk@monoceros>
 References: <cover.1778149923.git.u.kleine-koenig@baylibre.com>
  <76da4f44d48bdde84580963862bf9616bee5c9e9.1778149923.git.u.kleine-koenig@baylibre.com>
+ <20260507-healthy-gainful-fox-500552-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -86,257 +112,78 @@ List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bj6moo23k7mnjddb"
+	protocol="application/pgp-signature"; boundary="2r3luua3e55dgqvk"
 Content-Disposition: inline
-In-Reply-To: <76da4f44d48bdde84580963862bf9616bee5c9e9.1778149923.git.u.kleine-koenig@baylibre.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-parisc@vger.kernel.org
+In-Reply-To: <20260507-healthy-gainful-fox-500552-mkl@pengutronix.de>
 
 
---bj6moo23k7mnjddb
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
+--2r3luua3e55dgqvk
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 Subject: Re: [PATCH net-next v2 1/2] net: Consistently define pci_device_ids
  using named initializers
 MIME-Version: 1.0
 
+Hello Marc,
+
+On Thu, May 07, 2026 at 12:55:45PM +0200, Marc Kleine-Budde wrote:
+> > +	}, {
+> >  		/* ASEM Dual CAN raw -new model */
+> > -		ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
+> > -		ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID_BIS,
+> > -		0, 0,
+> > -		(kernel_ulong_t)&plx_pci_card_info_asem_dual_can
+> > +		PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
+> > +			       ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID_BIS),
+> > +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_dual_can,
+> >  	},
+> > -	{ 0,}
+> > +	{ }
+>=20
+> Nitpick: can you convert the terminating entry to follow the same style
+> as the rest of the driver:
+>=20
 > diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/=
 plx_pci.c
-> index 08183833c9bc..a03553b80a5d 100644
+> index a03553b80a5d..d69ff0ccfd94 100644
 > --- a/drivers/net/can/sja1000/plx_pci.c
 > +++ b/drivers/net/can/sja1000/plx_pci.c
-> @@ -272,124 +272,89 @@ static struct plx_pci_card_info plx_pci_card_info_=
-asem_dual_can =3D {
->  static const struct pci_device_id plx_pci_tbl[] =3D {
->  	{
->  		/* Adlink PCI-7841/cPCI-7841 */
-> -		ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		PCI_CLASS_NETWORK_OTHER << 8, ~0,
-> -		(kernel_ulong_t)&plx_pci_card_info_adlink
-> -	},
-> -	{
-> +		PCI_DEVICE(ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID),
-> +		.class =3D PCI_CLASS_NETWORK_OTHER << 8,
-> +		.class_mask =3D ~0,
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_adlink,
-> +	}, {
->  		/* Adlink PCI-7841/cPCI-7841 SE */
-> -		ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		PCI_CLASS_COMMUNICATION_OTHER << 8, ~0,
-> -		(kernel_ulong_t)&plx_pci_card_info_adlink_se
-> -	},
-> -	{
-> +		PCI_DEVICE(ADLINK_PCI_VENDOR_ID, ADLINK_PCI_DEVICE_ID),
-> +		.class =3D PCI_CLASS_COMMUNICATION_OTHER << 8,
-> +		.class_mask =3D ~0,
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_adlink_se,
-> +	}, {
->  		/* esd CAN-PCI/200 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9050,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI200,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd200
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9050,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI200),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
-> +	}, {
->  		/* esd CAN-CPCI/200 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_CPCI200,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd200
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_CPCI200),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
-> +	}, {
->  		/* esd CAN-PCI104/200 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI104200,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd200
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI104200),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd200,
-> +	}, {
->  		/* esd CAN-PCI/266 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI266,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd266
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCI266),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd266,
-> +	}, {
->  		/* esd CAN-PMC/266 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PMC266,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd266
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PMC266),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd266,
-> +	}, {
->  		/* esd CAN-PCIE/2000 */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9056,
-> -		PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCIE2000,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_esd2000
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9056,
-> +				PCI_VENDOR_ID_ESDGMBH, ESD_PCI_SUB_SYS_ID_PCIE2000),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_esd2000,
-> +	}, {
->  		/* IXXAT PC-I 04/PCI card */
-> -		IXXAT_PCI_VENDOR_ID, IXXAT_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, IXXAT_PCI_SUB_SYS_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_ixxat
-> -	},
-> -	{
-> +		PCI_DEVICE_SUB(IXXAT_PCI_VENDOR_ID, IXXAT_PCI_DEVICE_ID,
-> +			       PCI_ANY_ID, IXXAT_PCI_SUB_SYS_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_ixxat,
-> +	}, {
->  		/* Marathon CAN-bus-PCI card */
-> -		PCI_VENDOR_ID_PLX, MARATHON_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_marathon_pci
-> -	},
-> -	{
-> +		PCI_VDEVICE(PLX, MARATHON_PCI_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_marathon_pci,
-> +	}, {
->  		/* Marathon CAN-bus-PCIe card */
-> -		PCI_VENDOR_ID_PLX, MARATHON_PCIE_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_marathon_pcie
-> -	},
-> -	{
-> +		PCI_VDEVICE(PLX, MARATHON_PCIE_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_marathon_pcie,
-> +	}, {
->  		/* TEWS TECHNOLOGIES TPMC810 card */
-> -		TEWS_PCI_VENDOR_ID, TEWS_PCI_DEVICE_ID_TMPC810,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_tews
-> -	},
-> -	{
-> +		PCI_DEVICE(TEWS_PCI_VENDOR_ID, TEWS_PCI_DEVICE_ID_TMPC810),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_tews,
-> +	}, {
->  		/* Connect Tech Inc. CANpro/104-Plus Opto (CRG001) card */
-> -		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
-> -		PCI_SUBVENDOR_ID_CONNECT_TECH, CTI_PCI_DEVICE_ID_CRG001,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_cti
-> -	},
-> -	{
-> +		PCI_VDEVICE_SUB(PLX, PCI_DEVICE_ID_PLX_9030,
-> +				PCI_SUBVENDOR_ID_CONNECT_TECH, CTI_PCI_DEVICE_ID_CRG001),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_cti,
-> +	}, {
->  		/* Elcus CAN-200-PCI */
-> -		CAN200PCI_VENDOR_ID, CAN200PCI_DEVICE_ID,
-> -		CAN200PCI_SUB_VENDOR_ID, CAN200PCI_SUB_DEVICE_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_elcus
-> -	},
-> -	{
-> +		PCI_DEVICE_SUB(CAN200PCI_VENDOR_ID, CAN200PCI_DEVICE_ID,
-> +			       CAN200PCI_SUB_VENDOR_ID, CAN200PCI_SUB_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_elcus,
-> +	}, {
->  		/* moxa */
-> -		MOXA_PCI_VENDOR_ID, MOXA_PCI_DEVICE_ID,
-> -		PCI_ANY_ID, PCI_ANY_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_moxa
-> -	},
-> -	{
-> +		PCI_DEVICE(MOXA_PCI_VENDOR_ID, MOXA_PCI_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_moxa,
-> +	}, {
->  		/* ASEM Dual CAN raw */
-> -		ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> -		ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_asem_dual_can
-> -	},
-> -	{
-> +		PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> +			       ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_dual_can,
-> +	}, {
->  		/* ASEM Dual CAN raw -new model */
-> -		ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> -		ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID_BIS,
-> -		0, 0,
-> -		(kernel_ulong_t)&plx_pci_card_info_asem_dual_can
-> +		PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE_ID,
-> +			       ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SUB_DEVICE_ID_BIS),
-> +		.driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_dual_can,
->  	},
-> -	{ 0,}
-> +	{ }
+> @@ -353,8 +353,8 @@ static const struct pci_device_id plx_pci_tbl[] =3D {
+>                  PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVI=
+CE_ID,
+>                                 ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_=
+SUB_DEVICE_ID_BIS),
+>                  .driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem=
+_dual_can,
+> -        },
+> -        { }
+> +        }, {
+> +        }
+>  };
+>  MODULE_DEVICE_TABLE(pci, plx_pci_tbl);
 
-Nitpick: can you convert the terminating entry to follow the same style
-as the rest of the driver:
+After the conversation in the v1 thread it was unclear to me if you
+stand by your opinion, so I kept the format as it was. I interpret your
+repetition of the nitpick as request to rework the can drivers for the
+next revision (if that happens).
 
-diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/pl=
-x_pci.c
-index a03553b80a5d..d69ff0ccfd94 100644
---- a/drivers/net/can/sja1000/plx_pci.c
-+++ b/drivers/net/can/sja1000/plx_pci.c
-@@ -353,8 +353,8 @@ static const struct pci_device_id plx_pci_tbl[] =3D {
-                 PCI_DEVICE_SUB(ASEM_RAW_CAN_VENDOR_ID, ASEM_RAW_CAN_DEVICE=
-_ID,
-                                ASEM_RAW_CAN_SUB_VENDOR_ID, ASEM_RAW_CAN_SU=
-B_DEVICE_ID_BIS),
-                 .driver_data =3D (kernel_ulong_t)&plx_pci_card_info_asem_d=
-ual_can,
--        },
--        { }
-+        }, {
-+        }
- };
- MODULE_DEVICE_TABLE(pci, plx_pci_tbl);
+Best regards
+Uwe
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---bj6moo23k7mnjddb
+--2r3luua3e55dgqvk
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCafxvrQAKCRDMOmT6rpmt
-0pHeAP9XFcWG4TIkfsDgMbSsjB0BDeIaX/oOHy7GN10y7WrRXAD9HGFep6ozobs7
-Ky/tnJ+5OGyoiQeSoshTzXtNkIIEoQA=
-=kV9y
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmn8oGwACgkQj4D7WH0S
+/k5magf/eyQ23u39ybxkW2OdbwK59q0fpRutP/sxrKWuT6tv8V2fFyOeuGTCjF38
+S+nSwmuH/rU1tyi6cJiCBx8U/lrBqlri55tfqDeMMmEdaTgDx/f8rLh5gw/OXR6w
+iiW3jwdOchqKMQAWW0XFekrRumOxBYByCEve5jEyzQwjs4cggMP+GUBgYLi9VMsu
+p0EMeC469BJE9KTtF0MQoLVR4xXQebXlYBWyCtn6NXuHOWYlZbFW4NYx1YQADQGM
+vg8UmTZiP5QB08RryLszWVJxAzMjkvPj8VPLDjxs5zDqJDt6Zbm3G+mNqj3JHLlV
+t3qw6OQQis3J/F/BMUIXdtL08Ss0JA==
+=i/K5
 -----END PGP SIGNATURE-----
 
---bj6moo23k7mnjddb--
+--2r3luua3e55dgqvk--
