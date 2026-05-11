@@ -1,132 +1,252 @@
-Received: from cmx-mtlrgo001.bell.net (mta-mtl-002.bell.net [209.71.208.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00912B2D7
-	for <linux-parisc@vger.kernel.org>; Sun, 10 May 2026 13:57:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.71.208.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D6983C9EF4
+	for <linux-parisc@vger.kernel.org>; Mon, 11 May 2026 09:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778421428; cv=none; b=VRsFV9uB+WMdqO531Q1VBjcNSddhM/dtJHwBFFS6klNsctsLYpdrEtaAjYhpDVzZNPfyRN/wnubauy64ozGY7VW8T71Pu3dxh324F4b65IJeUPJu57o2BI0O3xUIKj7EDBV7zvg4jNekfbg94su7nLAakuNOMQUYEYJYXJmEw3Y=
+	t=1778490043; cv=none; b=V2YQjqiMGfRuyUoyGd67uYpEY9Z6JPcIEXVzyHYMTT1NlMBBfXEpJt9Uv5SNZgr4UkOnc4YQhc+F1i021ojlCqUKOnZcLjIUcL1vL2if5oR+EgZoiEqbvkRYCTzFBLX0bL8M0fJoXl6Wpk4IAWeJ27IHlPXWhUB+tC9V8UIztug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778421428; c=relaxed/simple;
-	bh=gAEecVBcVfna8mBe68uz4rOwRjY0IqRBPe3T1k8gpIo=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=RJMClCHf2KmxOEK3eqDQhrb02AZLuiDcexHE4xShjmWHZ+AdUZbJHDpT7GK120FoCWSOJb8VhNgK9EWlT4tCn0GJYYU0wWGj/Qpxdyzw1CMe9qfZtTW9xz/swSDM8u2CUad7LIqPcYi6PuuLyZhct36G/mljmOKhSNBUW250Csw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bell.net; spf=pass smtp.mailfrom=bell.net; dkim=pass (2048-bit key) header.d=bell.net header.i=@bell.net header.b=S/dPsuaY; arc=none smtp.client-ip=209.71.208.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bell.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bell.net
+	s=arc-20240116; t=1778490043; c=relaxed/simple;
+	bh=ZYGinJLF1cDgGH/aGo4d1Hy0fwsOtdFNgDp8EWspf48=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ps8Uiu3jnSrMmcgzz+IMvGHjGPfsd2dHahIcZ8E4I7Vjr5G8T7WPUAosFmWTMGasc5vDbm52obbKeYMyr8PdyAgkix5JaOs+JrUBhev2W0eSlqpOW5pnw5XWwV5eJI2ihxegLN+4Gd/ojGp87vI2XKpTVMJfRuNVs2OiN/6HKnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b=zjyx8z06; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bell.net header.i=@bell.net header.b="S/dPsuaY"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bell.net; s=selector1; t=1778421427; 
-        bh=RkzM8MQoLUqxNJfOh0/YoCkydCfg1RejiD1ZUIX+enI=;
-        h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type;
-        b=S/dPsuaYG60G9OyTMbEjvQoUugoClWm7wRevqPGu4IE7DLmgyWBz9gICn6SZBog1AspCoV4k4gu52wrjUsCdVZWlspja7xbSSsUHSUveNSG/VQcHF+BOhS2yuziJjE1iGKslnra42XiIOBKtTa1YvbE2ZZC8iZH6jKVPGaNnz2jk/XeqQYW57hA+3fAD5TK/pckgUb5hiIcvNfzr1DmMp3gSrk6q3JphSSjWh7yF0ojQhyYO2pP3UimhVP321T0vF9E+fF2ewF8A+R6leII4xRsDnRbyGoTGW0AoBsHnTr5c13Ja98KSUwfv89fYl0eors384JWEtqVYV84heYYnZg==
-X-RG-SOPHOS: Clean
-X-RG-VADE-SC: 0
-X-RG-VADE: Clean
-X-RG-Env-Sender: dave.anglin@bell.net
-X-RG-Rigid: 69BEEF930735EAF9
-X-RazorGate-Vade: dmFkZTF7/+6O7pXBxYGcXDRRNfY1Gm+m1fBYfPHl63IPFBvT7gxjM1Tm96cKBwGUzMAj9F8GDY1it129XUvhCLlA0kyJCamL0oYJL/v7q2pJWh+S/Ak1/3O1Gqy9qSlvO4krTIibRPRw56R+MDmt0PiKuhtYgiySm7np67mN61nTx5yDlXbrEm2Hq7LAdAqvgJ2h6J3qTFKtq8XEJ3BCwtTUQTjbs5gYSElN++R3pOcyN8Cclyf+U+xQPly5IKE7PBSIoMI915Omf1B7Vz1R3diOATZP4kSrq5/mAX/GKiX0tdYjdQHWH7s6Wqqy23nJhZuMtwmInr1ASTd0zvJXY8lz7sVrdKllevb8uEyEGCqqPzDeUHWJbfdbqttPNr9Ika3gqVdGTgPXuK3XeEK4GvStpFonyB8YCNvKV0VYDYuk75cp1kS+QebeZXmxKi7+UPWxc8osIujj1wfEkIsQ3l6aWYWvOIEG9URN6sG2sP1meBUCIQVv/oDJVFzsCwt0Ig9AFHwtSRDkl5J7av0hy19WwNhoq1Tg6UuCB8IBGgNP4kXIDLY5TPuukiv7ZzbQ7SDexE29EG574y1j/06OIXjBpzmqmbpefhEdqKhMxw16OtJCPMaVCguo9bTTadtrDtKNIiWrqyobuGbVDTQsKvv/XWVTMTlxQCNxJ6Fx9AWeFuc0fQ
-X-RazorGate-Vade-Verdict: clean 0
-X-RazorGate-Vade-Classification: clean
-Received: from [192.168.2.49] (70.26.67.152) by cmx-mtlrgo001.bell.net (authenticated as dave.anglin@bell.net)
-        id 69BEEF930735EAF9; Sun, 10 May 2026 09:55:46 -0400
-Message-ID: <6cdd815c-3239-4ff1-bd4a-25cd8619f9cd@bell.net>
-Date: Sun, 10 May 2026 09:55:47 -0400
+	dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b="zjyx8z06"
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-44ccbd3290aso3191779f8f.2
+        for <linux-parisc@vger.kernel.org>; Mon, 11 May 2026 02:00:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20251104.gappssmtp.com; s=20251104; t=1778490038; x=1779094838; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zA2t05MaP/podHX+JpTZXPs7rW/q4RVQKoAjNccx6WY=;
+        b=zjyx8z06LW5isoT8LCSsXz+IFhYHTCiWyxWpyhQnuRjuxF2yJQkHA7pCKTR9CVv4yV
+         1eBHxsGm0obJ3tC+saBHhlRiU09Mm55lQIc7BnqeTKJkwIYBO0WoIpCpDplCe9cWKSYx
+         Ujn3uCjpcJsuYsrJ61DoJPPw7O9Ez3liNpKPyQBDaEnlwngLqDr76c5bMk9w5zA5gaAz
+         Gn5B0mW6DKzkZSqzk2ARFaS0DDNiSpAq7mbFSKS9viASh8q3Ubibs+uE3hJ2L4SVHS6s
+         zErl1L54vHW4glkpYJHJyvqjGfcir95CIXol8XdcDnNJQmnqgTliRKjS46BUvT0CoWlg
+         zgBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778490038; x=1779094838;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zA2t05MaP/podHX+JpTZXPs7rW/q4RVQKoAjNccx6WY=;
+        b=nP7NcTRkee0c3mkQCbqL6w/lHm7YNOP8wC64TGtTyO7uNEYif6Ty6FK0VZZQZLlcEI
+         HuSSl6y144SiY550tvS9Xx9ES39laCXgW1Jvebc+XOvmZ4Np9CuZu0XR971o/HHKIMoQ
+         i/yvqpQmPO5e18GQwPJuKMon2y6O/wOTbM1gSlTRc7WZ8K26NUxuiSZ8lyb427S3vKkc
+         gqkkkIkotuBcWj8wcWi3lSdDD8LLwJCBxPHaQv+zxSGxpHRHdc8PxCLyM8BcS/MWa3GQ
+         V1VEFICQDEHGfF6b+Kcs3ClpT9O+FCj0hKVDFnPCPNqVKyL6JEFqnhwQsh2NKVh1kmeE
+         twLg==
+X-Forwarded-Encrypted: i=1; AFNElJ/IP5UlrkyvDQPz/GaZxA4HloN1EnbHwiZZJ9EOKVBfUpWYwIvgh12Jroo+yhlNG1WLzHAeNFhtovE2doQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwgQKSjyrikEyKrVboxD07pqQeGYp0sxExn+X3LQ+iE2fCCHaeM
+	ezi9CplQs87q2vKaTfBLo6F8ywOqt8JfODLguIHXRmiCx7rodB84C+ed8DdvjzdPC44=
+X-Gm-Gg: Acq92OEuwBI+DPpBM4RXiBDXlAuaLP2fEHe6oSMYwY+W3QFD2lSLCZmr6JcafIVZcuR
+	Y5b67td16Kiut19p0N21ZBThPdLQlQAXiOaineKLGyNy683tP1QjdySDUd3EvzF4+k4uGV7IDxt
+	plflIKznof0TwawB2RLW7lQ7XG6dRzp8ql4TEvndxo4tdT83E/nUkpRlqUmnTW+ozDN9a0iZSVr
+	EbJt/mzZKe8IxrdCIHUFeU8rX6wO8JT5bh+3NDMOyDwkx6TfemD+Ji0gJex/oFMfsO14EcQhF6Z
+	NDcLdadOlzH4dhF8NN3vEt+FQsF7WDOJW4U1VtiwaL+xRwJpJiIZkaU9oJmnq6TCMsMMEUTC+eC
+	Ssw9xgGGfvsOHm+NAmdbmUopDmUS9NYNDAm5PeY71qhUCdJp91hE613Igt1Q4NswDSlS0i6cDBM
+	i1fTJ5H+POWynBU5W92f35BN9QWKUfAkuREFoiatmiXCbfkZfZoCI54hVPGDNn/gwmgdJCanE3u
+	e6DbbAlgS+qhNdsWo8qWmNHxQ==
+X-Received: by 2002:a5d:64e3:0:b0:449:cfea:ca91 with SMTP id ffacd0b85a97d-4515da96254mr34460937f8f.37.1778490037223;
+        Mon, 11 May 2026 02:00:37 -0700 (PDT)
+Received: from localhost (p200300f65f114e0841c796eda31a14b3.dip0.t-ipconnect.de. [2003:f6:5f11:4e08:41c7:96ed:a31a:14b3])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-4548e6a5b65sm25209225f8f.8.2026.05.11.02.00.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2026 02:00:36 -0700 (PDT)
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig=20=28The=20Capable=20Hub=29?= <u.kleine-koenig@baylibre.com>
+To: Michael Grzeschik <mgr@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Johannes Berg <johannes@sipsolutions.net>
+Cc: Steffen Klassert <klassert@kernel.org>,
+	David Dillow <dave@thedillows.org>,
+	Ion Badulescu <ionut@badula.org>,
+	Mark Einon <mark.einon@gmail.com>,
+	Rasesh Mody <rmody@marvell.com>,
+	GR-Linux-NIC-Dev@marvell.com,
+	Manish Chopra <manishc@marvell.com>,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Denis Kirjanov <kirjanov@gmail.com>,
+	Jijie Shao <shaojijie@huawei.com>,
+	Jian Shen <shenjian15@huawei.com>,
+	Cai Huoqing <cai.huoqing@linux.dev>,
+	Fan Gong <gongfan1@huawei.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Bloch <mbloch@nvidia.com>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Petr Machata <petrm@nvidia.com>,
+	Yibo Dong <dong100@mucse.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	nic_swsd@realtek.com,
+	Jiri Pirko <jiri@resnulli.us>,
+	Francois Romieu <romieu@fr.zoreil.com>,
+	Daniele Venzano <venza@brownhat.org>,
+	Samuel Chessman <chessman@tux.org>,
+	Jiawen Wu <jiawenwu@trustnetic.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	Kevin Curtis <kevin.curtis@farsite.co.uk>,
+	Arend van Spriel <arend.vanspriel@broadcom.com>,
+	Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Kees Cook <kees@kernel.org>,
+	Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	Thomas Fourier <fourier.thomas@gmail.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Kory Maincent <kory.maincent@bootlin.com>,
+	Zilin Guan <zilin@seu.edu.cn>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	David Arinzon <darinzon@amazon.com>,
+	Yeounsu Moon <yyyynoom@gmail.com>,
+	Denis Benato <benato.denis96@gmail.com>,
+	Yonglong Liu <liuyonglong@huawei.com>,
+	Andy Shevchenko <andriy.shevchenko@intel.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Yicong Hui <yiconghui@gmail.com>,
+	MD Danish Anwar <danishanwar@ti.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Larysa Zaremba <larysa.zaremba@intel.com>,
+	Ian Lin <ian.lin@infineon.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Double Lo <double.lo@cypress.com>,
+	Markus Schneider-Pargmann <msp@baylibre.com>,
+	Simon Horman <horms@kernel.org>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-can@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	linux-rdma@vger.kernel.org,
+	oss-drivers@corigine.com,
+	linux-wireless@vger.kernel.org,
+	brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com
+Subject: [PATCH net-next v3 0/2] Rework pci_device_id initialisation
+Date: Mon, 11 May 2026 11:00:22 +0200
+Message-ID: <20260511090023.1634387-4-u.kleine-koenig@baylibre.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-parisc <linux-parisc@vger.kernel.org>
-From: John David Anglin <dave.anglin@bell.net>
-Subject: Crash with latest debian kernel
-Autocrypt: addr=dave.anglin@bell.net; keydata=
- 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
- T70V9SSrl2hiw38vRzsl
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4853; i=u.kleine-koenig@baylibre.com; h=from:subject; bh=ZYGinJLF1cDgGH/aGo4d1Hy0fwsOtdFNgDp8EWspf48=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBqAZqnnelkHiCtzmBC4y0fb7vJdPOE1eZ7YhPdE 2SrLv8jYlGJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCagGapwAKCRCPgPtYfRL+ TjAaB/4oo4PlfsIbeG6MCk6KG/Z4+gxMxrSewie9L+e4GgVdrB4TOBKkquVHmIZGwKjcVZ4TTHb NefjSqaVMX4GAGFyvubu+IYDalSlSnAzan/1cuw698pTu8HJAZcUiXsULIZGAzyccgEjFzFRtOG 9zcX6kiJPNLHyc4KCm8r2nVxLqV6bD0Ra/lsh4CIqsXdKbNgT8R/zlx5qsBD4jv6XuZojWf/47T BGjl0kKv9jdWqI2IyZT+iFIbeMxYEcWSMZLzC6lnFeTSGLW7f1AVp8qVTep3xLTu5Qrh0AUeJ60 G6q8VibpIILN8q4yuUlgLX0vBjjeLn9Q8sKtPvNkz+TLgLBC
+X-Developer-Key: i=u.kleine-koenig@baylibre.com; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
 
-[43529.731938] Kernel panic - not syncing: corrupted stack end detected inside scheduler
-[43529.732083] CPU: 1 UID: 0 PID: 8726 Comm: kworker/u32:4 Not tainted 7.0.4+deb14-parisc64 #1 VOLUNTARY  Debian 7.0.4-1
-[43529.732347] Hardware name: 9000/800/rp3440
-[43529.736345] Workqueue: writeback wb_workfn (flush-259:0)
-[43529.736345] Backtrace:
-[43529.736345]  [<0000000040329614>] show_stack+0x88/0xc0
-[43529.740397]  [<000000004031c800>] dump_stack_lvl+0x120/0x188
-[43529.740397]  [<000000004031c89c>] dump_stack+0x34/0x48
-[43529.748350]  [<0000000040302280>] vpanic+0x22c/0x640
-[43529.748350]  [<00000000403026ec>] panic+0x58/0x78
-[43529.752346]  [<0000000041592c84>] __schedule+0x112c/0x114c
-[43529.752346]  [<0000000041592cfc>] schedule+0x58/0x1f8
-[43529.756343]  [<0000000041592f7c>] io_schedule+0x80/0xc8
-[43529.756343]  [<0000000040c72448>] rq_qos_wait+0x10c/0x268
-[43529.760343]  [<0000000040c9fb64>] wbt_wait+0xf8/0x178
-[43529.760343]  [<0000000040c71d48>] __rq_qos_throttle+0x54/0xa0
-[43529.764351]  [<0000000040c54eb4>] blk_mq_submit_bio+0x690/0xd68
-[43529.772345]  [<0000000040c353f0>] __submit_bio+0xa4/0x4d8
-[43529.772345]  [<0000000040c35a70>] submit_bio_noacct_nocheck+0x24c/0x470
-[43529.780340]  [<0000000040c35e1c>] submit_bio_noacct+0x188/0x978
-[43529.780340]  [<0000000040c366f4>] submit_bio+0xe8/0x1c8
-[43529.784350]  [<0000000040824978>] __swap_writepage+0x254/0x738
-[43529.784350]  [<0000000040825138>] swap_writeout+0x2dc/0x6a8
-[43529.788342]  [<0000000040752ff8>] shrink_folio_list+0x184c/0x1c98
-[43529.788342]  [<0000000040753778>] evict_folios+0x334/0xc90
-[43529.792340]  [<00000000407542dc>] try_to_shrink_lruvec+0x208/0x410
-[43529.800346]  [<00000000407545b0>] shrink_one+0xcc/0x2b0
-[43529.800346]  [<000000004075b150>] shrink_node+0xf4c/0x1510
-[43529.804342]  [<000000004075d1e8>] do_try_to_free_pages+0x154/0x8a0
-[43529.804342]  [<000000004075da4c>] try_to_free_pages+0x118/0x408
-[43529.808350]  [<00000000407fdc90>] __alloc_pages_slowpath.constprop.0+0xbc8/0x1b8c
-[43529.808350]  [<00000000407fee3c>] __alloc_frozen_pages_noprof+0x1e8/0x4b0
-[43529.816342]  [<00000000407ff230>] __folio_alloc_noprof+0x34/0x100
-[43529.824359]  [<000000004072116c>] __filemap_get_folio_mpol+0x250/0x890
-[43529.824359]  [<0000000040970228>] __getblk_slow+0x13c/0x618
-[43529.828350]
-[43529.828350] ---[ end Kernel panic - not syncing: corrupted stack end detected inside scheduler ]---
+Hello,
 
-Dave
+the previous iteration of this series (v2) is available at
+https://lore.kernel.org/netdev/cover.1778149923.git.u.kleine-koenig@baylibre.com
+
+Changes since v2:
+
+ - swap patch order as Jakub Kicinski reported a build failure (that I
+   couldn't reproduce though)
+ - drop the change to drivers/net/can/m_can/m_can_pci.c on Markus
+   Schneider-Pargmann's (non-public) request as this patch conflicts
+   with a cleanup he has in his queue that will prepare this driver
+   for my quest to add a union to pci_device_id in a differnt way.
+ - drop a recipent from Cc: that bounced before (khc@pm.waw.pl).
+
+Best regards
+Uwe
+
+Uwe Kleine-König (The Capable Hub) (2):
+  net: nfp: Drop PCI class entries with .class_mask = 0
+  net: Consistently define pci_device_ids using named initializers
+
+ drivers/net/arcnet/com20020-pci.c             | 242 +++------
+ drivers/net/can/sja1000/plx_pci.c             | 167 +++----
+ drivers/net/ethernet/3com/3c59x.c             |  80 +--
+ drivers/net/ethernet/3com/typhoon.c           |  75 ++-
+ drivers/net/ethernet/8390/ne2k-pci.c          |  24 +-
+ drivers/net/ethernet/adaptec/starfire.c       |   4 +-
+ drivers/net/ethernet/agere/et131x.c           |   6 +-
+ drivers/net/ethernet/broadcom/bnx2.c          |  62 ++-
+ .../net/ethernet/broadcom/bnx2x/bnx2x_main.c  |  50 +-
+ .../net/ethernet/cavium/liquidio/lio_main.c   |  10 +-
+ .../ethernet/cavium/liquidio/lio_vf_main.c    |   7 +-
+ drivers/net/ethernet/chelsio/cxgb/common.h    |   2 +-
+ drivers/net/ethernet/chelsio/cxgb/subr.c      |   2 +-
+ .../net/ethernet/chelsio/cxgb3/cxgb3_main.c   |   4 +-
+ .../net/ethernet/chelsio/cxgb4/cxgb4_main.c   |   4 +-
+ .../ethernet/chelsio/cxgb4vf/cxgb4vf_main.c   |   4 +-
+ drivers/net/ethernet/dec/tulip/de2104x.c      |   6 +-
+ drivers/net/ethernet/dec/tulip/dmfe.c         |  12 +-
+ drivers/net/ethernet/dec/tulip/tulip_core.c   |  78 +--
+ drivers/net/ethernet/dec/tulip/uli526x.c      |   6 +-
+ drivers/net/ethernet/dec/tulip/winbond-840.c  |  13 +-
+ drivers/net/ethernet/dlink/dl2k.h             |  12 +-
+ drivers/net/ethernet/dlink/sundance.c         |  14 +-
+ drivers/net/ethernet/fealnx.c                 |   8 +-
+ .../net/ethernet/hisilicon/hibmcge/hbg_main.c |   2 +-
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   |  50 +-
+ .../hisilicon/hns3/hns3pf/hclge_main.c        |  18 +-
+ .../hisilicon/hns3/hns3vf/hclgevf_main.c      |  12 +-
+ .../net/ethernet/huawei/hinic/hinic_main.c    |  12 +-
+ .../net/ethernet/huawei/hinic3/hinic3_lld.c   |   7 +-
+ drivers/net/ethernet/intel/e100.c             |   9 +-
+ drivers/net/ethernet/intel/e1000e/netdev.c    | 471 +++++++++++++-----
+ drivers/net/ethernet/intel/fm10k/fm10k_pci.c  |  10 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |  59 +--
+ drivers/net/ethernet/intel/iavf/iavf_main.c   |  10 +-
+ drivers/net/ethernet/intel/igb/igb_main.c     |  66 +--
+ drivers/net/ethernet/intel/igbvf/netdev.c     |   4 +-
+ drivers/net/ethernet/intel/igc/igc_main.c     |  34 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 106 ++--
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  49 +-
+ drivers/net/ethernet/mellanox/mlx4/main.c     |   6 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  26 +-
+ .../net/ethernet/mellanox/mlxsw/spectrum.c    |  16 +-
+ drivers/net/ethernet/micrel/ksz884x.c         |   8 +-
+ .../net/ethernet/mucse/rnpgbe/rnpgbe_main.c   |  10 +-
+ drivers/net/ethernet/natsemi/natsemi.c        |   4 +-
+ drivers/net/ethernet/netronome/nfp/nfp_main.c |  65 +--
+ .../ethernet/netronome/nfp/nfp_netvf_main.c   |  33 +-
+ drivers/net/ethernet/qlogic/qede/qede_main.c  |  20 +-
+ drivers/net/ethernet/realtek/8139too.c        |  52 +-
+ drivers/net/ethernet/realtek/r8169_main.c     |   8 +-
+ drivers/net/ethernet/rocker/rocker_main.c     |   4 +-
+ drivers/net/ethernet/sis/sis190.c             |   6 +-
+ drivers/net/ethernet/sis/sis900.c             |  10 +-
+ drivers/net/ethernet/smsc/epic100.c           |  18 +-
+ drivers/net/ethernet/sun/cassini.c            |   8 +-
+ drivers/net/ethernet/sun/sungem.c             |  26 +-
+ drivers/net/ethernet/ti/tlan.c                |  41 +-
+ drivers/net/ethernet/wangxun/ngbe/ngbe_main.c |  26 +-
+ .../net/ethernet/wangxun/ngbevf/ngbevf_main.c |  26 +-
+ .../net/ethernet/wangxun/txgbe/txgbe_main.c   |  18 +-
+ .../ethernet/wangxun/txgbevf/txgbevf_main.c   |  18 +-
+ drivers/net/wan/farsync.c                     |  24 +-
+ drivers/net/wan/pc300too.c                    |  14 +-
+ drivers/net/wan/pci200syn.c                   |   6 +-
+ drivers/net/wan/wanxl.c                       |  11 +-
+ .../broadcom/brcm80211/brcmfmac/pcie.c        |  17 +-
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c  |  52 +-
+ 68 files changed, 1285 insertions(+), 1099 deletions(-)
+
+
+base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
 -- 
-John David Anglin  dave.anglin@bell.net
+2.47.3
 
