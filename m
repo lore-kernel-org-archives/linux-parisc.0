@@ -1,121 +1,96 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69AA3B6C15;
-	Mon, 15 Jun 2026 20:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63BA1CAA68;
+	Wed, 17 Jun 2026 12:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781556235; cv=none; b=NVYzndRpDTaoz9vcooCKe2/hkseNP4lBg6+NYml9JZ16hQacJJubnmeX8DkChVuZXJQsR79bbDbKDO4QKt2gwV5Vqgd0UPG4fvklYE2HYyS9N2Fe7YIql3Q4DuVcab9WD4LJ3tepy4/UAZ8oe1J7jX2etk0Bbj1sW8zCxDQb+XY=
+	t=1781700129; cv=none; b=KD5Iye3XJNVDDHr5xdDpjhpT+RY16oaSlBr8GTHMZeDYOCX31ySDxF1niCe2kFcxxokG4N3Ky6UUvwtj5OefrpvRdzNurE3WHGcOKNRsrLJqZKgtkWA+oFCorgve90/CowcgnQF8JTq4dHdQHVbeW+0ffPFWzN+XidsUdxwgwO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781556235; c=relaxed/simple;
-	bh=faFwjoN0gn80v9QqMuh2mJ76DSKcg+KCmO8Za4zFEdQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iKakvP9p2OqT+bg94Kp5TeZfslm9ijLi9heIgQf7ThynyjkZv6MXWzKLSojUbYKFM8Ilev6eKNh12J8jESpr3iqwZHOxZCWJM4U9YbpVQuH8FauWtGifhU9Rc6kAl7tS1NWD8A5e6E32s0rfgvbJ8QtmTCvVqixaC3iCFMr8ZsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S9nA0vhD; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1781700129; c=relaxed/simple;
+	bh=sv9bDDMyUOTluObut285uOPrMWsldCYsk9y2aD3AE+Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HkBMVBwxtn4HuUBUOqcweDvrDlMK0dSq/UjGb3tZF16rGwiCG9l/JzxqwvOoIdFu4Y44Qtb7LU+kWlckLmAM8bMqSnhILHMzy2Lmj7Btr+wB6bXZpnp97GhK+v4PvS4iH+xxF9aS6Xa3l9RxveaoJ6C7dyw1lbxzKE0G3Pjhjxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Im0bG8Am; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S9nA0vhD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 492711F000E9;
-	Mon, 15 Jun 2026 20:43:52 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Im0bG8Am"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 643E41F000E9;
+	Wed, 17 Jun 2026 12:41:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781556234;
-	bh=pAr0CezAnYbjsc5uzKsTNhtjW8ESmPALnRPgKDluIbA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=S9nA0vhDxdupgcHbwB2JLHzDQ2Foz/U+lEYay6SGXpc21k+gF9cSVbZFiGnLkDmyH
-	 seRBOTTaN92A9/6ZDT6eDYu1wKhuDVok+mjhODT/ijI2tCNs38MRiJKw7xsVwWvLh5
-	 6pW1z7ECVQBZKSADO9xjN/WqSSNb5gFeEgj1jj1xm742D+xJCkFc3sjeShnHg6dwDo
-	 4sDxJLMnlENN71pyGTYkOTR9LiCcPUOuOPo9U3E3F9xR2xTRHNZuqosI0KepEKYVH5
-	 B40niaAFhxysltgzI9N0LDzy489Y4Kdnle4jwCcK00OFBYSPnF1ysU/0lcq0j9OfQD
-	 Rft/70AOqbmmw==
-Message-ID: <1996618c-a6ab-497f-9c4e-33468e7802d4@kernel.org>
-Date: Mon, 15 Jun 2026 22:43:51 +0200
+	s=k20260515; t=1781700128;
+	bh=shMcTxpz7Iae4CMErv9/x2nY1BGPOVWbdpSfFAc09vY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Im0bG8AmD3bgsJUqZdYGdopEe5rvENwOqhRGA6LfcbikFOn2YUPQXBJWxsK3aAa3F
+	 IKOG49MBRGBJ1Mar6LZ2Kju1FxOKtyMrE//+MnE4N9/Z71fGW3gauigkbzrv2V1kZP
+	 1FNp162R2Z9QvBsI+njynVaaI0fNfgYS5ai3uG8OmNg5itH6o2+k7segaCwH+SbOb5
+	 zOcIdHYuAFv7ORTp8+4nDfybUyv7DTPv3xm7a9kUQ+vj1V5p2XZfw7CYh7IqwWcWUs
+	 ypezZIGEaKxUJ1MkpzhGlNdEe4jZuo9Q/Bc1arqIHR5rd7H/I68vBRL6fPgiqclkJT
+	 0u72NIrlwde9g==
+Date: Wed, 17 Jun 2026 14:41:54 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Vincent Mailhol <mailhol@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Davidlohr Bueso <dave@stgolabs.net>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-efi@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Magnus Lindholm <linmag7@gmail.com>, linux-alpha@vger.kernel.org, Vineet Gupta <vgupta@kernel.org>, 
+	linux-snps-arc@lists.infradead.org, Russell King <linux@armlinux.org.uk>, 
+	linux-arm-kernel@lists.infradead.org, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	linuxppc-dev@lists.ozlabs.org, Paul Walmsley <pjw@kernel.org>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	linux-s390@vger.kernel.org, Thomas Gleixner <tglx@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, Jonathan Corbet <corbet@lwn.net>, 
+	Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 00/19] init: discoverable root partitions, a.k.a. an
+ omittable "root=" cmdline option
+Message-ID: <20260617-irritation-rollen-wirst-7d636cbfec92@brauner>
+References: <20260615-discoverable-root_partitions-v1-0-39c78fac42e2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/19] parisc: define DPS root partition type UUID
-To: Helge Deller <deller@gmx.de>,
- James Bottomley <James.Bottomley@HansenPartnership.com>,
- Jens Axboe <axboe@kernel.dk>, Davidlohr Bueso <dave@stgolabs.net>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>
-Cc: linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-efi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-parisc@vger.kernel.org
-References: <20260615-discoverable-root_partitions-v1-0-39c78fac42e2@kernel.org>
- <20260615-discoverable-root_partitions-v1-8-39c78fac42e2@kernel.org>
- <0158c89cffd76c621607f66d1889ccc084754729.camel@HansenPartnership.com>
- <0290e66b-1da2-4706-ab28-2d47f164df08@gmx.de>
-From: Vincent Mailhol <mailhol@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=mailhol@kernel.org; keydata=
- xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
- JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
- fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
- F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
- 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
- YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
- dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
- zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
-In-Reply-To: <0290e66b-1da2-4706-ab28-2d47f164df08@gmx.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260615-discoverable-root_partitions-v1-0-39c78fac42e2@kernel.org>
 
-On 15/06/2026 at 22:27, Helge Deller wrote:
-> On 6/15/26 22:02, James Bottomley wrote:
->> On Mon, 2026-06-15 at 18:09 +0200, Vincent Mailhol wrote:
->>> DPS [1] assigns GPT partition type UUIDs to operating system
->>> partitions. Root partitions use architecture-specific type UUIDs so
->>> the OS can discover the intended root filesystem without relying on a
->>> root=  cmdline option.
->>>
->>> Define DPS_ROOT_PARTITION_TYPE_UUID in asm/dps_root.h for parisc and
->>> select ARCH_HAS_DPS_ROOT_PARTITION_TYPE_UUID.
+On Mon, Jun 15, 2026 at 06:08:56PM +0200, Vincent Mailhol wrote:
+> DPS [1] defines GPT partition type UUIDs for OS partitions and
+> attributes that control whether such partitions should be
+> automatically discovered. The specification states that:
 > 
-> Vincent, first of all thank you for at least trying to including parisc
-> (and other
-> niche Linux ports) in the specification! (whatever the outcome is!)
-
-You are welcome. My personal interest is only x86_64 at the moment, but
-at least I tried to make it useful to the broader community!
-
->>> [1] The Discoverable Partitions Specification (DPS)
->>> Link:
->>> https://uapi-group.org/specifications/specs/
->>> discoverable_partitions_specification/
->>
->> How are you planning to make this work for parisc?  Some systems have a
->> PALO boot partition (fdisk type 0xf0) but the more modern way is to
->> place palo inside a hidden ext4 inode in /boot.  The way parisc IODC
->> works is very similar to the way MSDOS boots with the palo location
->> table in the first block so I theorize that would probably work for gpt
->> partitions as well ... I'm just not sure anyone has tested it.
->>
->> However, to get this to work with PALO for auto discovery, you'd need
->> palo patches to recognize the DPS UUID and no-one seems to have
->> submitted anything to palo for this.
+>   The OS can discover and mount the necessary file systems with a
+>   non-existent or incomplete /etc/fstab file and without the root=
+>   kernel command line option.
 > 
-> Maybe it's not necessary that palo does this job?
-> palo could stay as is and load kernel and the initrd.
-> Then the kernel (or the scripts in initrd) could try to find the root
-> partition on it's own (and handle GPT discs).
+> DPS is already implemented in systemd-gpt-auto-generator [2], which,
+> when embedded in an initrd, indeed allows automatic detection of the
+> root filesystem through its partition type UUID.
 > 
-> I even once started porting grub to parisc (which is currently on hold
-> because I'm busy with other stuff). If I ever finish it, having such a
-> mechanism/constant already in place is IMHO beneficial.
+> This series adds this discovery feature directly into the kernel so
+> that people who are not using systemd or not using an initrd can still
+> benefit from it. The implementation follows the same model as
+> systemd-gpt-auto-generator:
 
-You can see my answer to Alexander on the cover letter. This was an
-oversight. parisc does not have CONFIG_EFI to begin with, so the feature
-is just dead code there.
+I happen to co-maintain the DPS. It is userspace policy and complex
+userspace policy at that and does not belong into the kernel.
 
-I will remove parisc (and all other architectures which do not have a
-CONFIG_EFI) in v2. If someone wants to implement EFI support those
-architectures, only then, we can revisit this DPS topic for these
-architectures.
+This also implements a really tiny portion of the spec. It deals with a
+lot more complex concepts such as automatic partitioning during
+installation, verity, LUKS, containers. This is really not intended for
+the kernel at all. I mean, it's great that this spec is being used but I
+do not want this in the kernel just for the sake of auto-discovery.
 
-
-Yours sincerely,
-Vincent Mailhol
-
+The DPS is completely generic and can be implemented by tooling other
+than systemd (util-linux implements it and so does refind iirc). I think
+not wanting to use or build alternative userspace tooling for this is a
+really weak argument for pushing this into the kernel.
