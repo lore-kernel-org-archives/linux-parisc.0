@@ -1,105 +1,267 @@
-Received: from mail-dy1-f182.google.com (mail-dy1-f182.google.com [74.125.82.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C90351C0C
-	for <linux-parisc@vger.kernel.org>; Sat, 27 Jun 2026 05:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C82A3FF882;
+	Mon, 29 Jun 2026 12:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782538989; cv=none; b=Dz45psFgcmfigNNOdKnV2mhcbwS5vLEWmrgqOVafZ7h54ihCjazTQdmrG2vl2GJV6TfvvG/yhCWv+s8KPUjTpagliriAeqOpPCuXkX9NAh7kjCpXTM3LdAa2IX2akxiVQ7nsPX8cbgvVASqy7ld0FTVxRO2eEMseSQdd0JUgbtM=
+	t=1782735837; cv=none; b=r0U0c0qus5qgOr8ZCpPoHw2/wX6WEe3k9KPQFH3BenCP2iOYjRUcmY+TT0WM+ypY5KrFig8ur7UCFNmRm3TKJMDtrr676zuu/PwOfYy4tpLo+EzBJ2hapnuR3opidiUV3R2spipJFEq3A7R7+VYRVp3Mka4PHdwT3uRJZDSV5BM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782538989; c=relaxed/simple;
-	bh=1AlcacmmfGnLSGC42haB1KmCNL6YGKCWUowghp+cB7M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oP0icqP+Jjd7iX1csL6PcEW8DSxsyQ06K4run9dgF3y5ql9foxVUAQ5ut2XlHHWbuUyZ2/G3khhry4XLf8jlerIOiSlb7M66jMjB0n9tGolq2YZdLBfu4vcsb13PoMHNFnsUdfVsIa02s52FSjpwAVGXihMZYz/NRyHcQcazZzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MA8ZqyQ6; arc=none smtp.client-ip=74.125.82.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1782735837; c=relaxed/simple;
+	bh=ykYZMTKEV9hGpicnoJmepKH0wgtlYPIDGNJrMx1fbJc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Tdo/ejy01sywxuvhFNHEaC/YnijQLW9e2vGEdxqmMSlyArhme4Ww9YA/wfbYbs/ozdty1HmZG/mIxtMeFoonMyKrEdw9EdmIZd2b0M92S9dQRO3nzVZLRYWAX28pT+7b2mUJdV08AMt+mPy1ZbZM8g5qjzQ2ZxPC/zJxsS2+knE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VXIgWtDv; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MA8ZqyQ6"
-Received: by mail-dy1-f182.google.com with SMTP id 5a478bee46e88-30e18c3e0b8so52970eec.0
-        for <linux-parisc@vger.kernel.org>; Fri, 26 Jun 2026 22:43:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782538987; x=1783143787; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iqXoMKna19xGBHDnSKCZr4IKhjs+v6dxb7RGvIkniRE=;
-        b=MA8ZqyQ6PSrWjZtMEprM1wH20EjXeNvxAFgNqRNBcapuRta7nxP1lFLjGyWF9qZqAv
-         NR0qtZ7HQliE7M6kDc/aGIqbl7cc34kVdWralB6ny11f4nJ1ybp12BwerMX6Sd1Ws7vL
-         2gKmoD47O95Jun/dLQdID7u6+QkyzLYriJADS2gpTfF7k8xUUciCXOp/iephx8dls+Np
-         io1opYnfT71DmO3idkAYJ8rVUIO5HM5cPWD4wI8FILntjaenznB+XmljNEjVdjdWnkMG
-         zrrvNAar38KQqLaO37l5R8pJEsxlEKDdwwuHxIGca5sNm6VCx0tVIBVQ1WxaDuOxIyRk
-         eW/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782538987; x=1783143787;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iqXoMKna19xGBHDnSKCZr4IKhjs+v6dxb7RGvIkniRE=;
-        b=li+gWfu4j17UKADD0mLnT6UUjp3QWNi/RgnFEzZZTEgYSjf7wUBbIGrHufG8osVD3R
-         Paq3/HFtexEiNHEOjPvQ8Bq2DOXnmyRCLywBuhX6rUlydL6omS2+lGsYTe138V4OTsUI
-         uAwedSUl9E/7ulY7CV6D44BWWth/4kjre+1CjOPFkJG+Bqd0MxgbV7cKmPQ3+6InQeZt
-         tPUt5tz/VHzGOBF/GmUM7IDMEGi7/Gxv7cRt1Al6/WmE965kd5GpXnH0DcmU6+OecZOZ
-         C7ZtcZ+tpA9IKTjOM7v7qrm8PCeLAN7QY1gpZT27s9ACKbR02hdOmpwTSso1L0VwrJG7
-         0dNw==
-X-Forwarded-Encrypted: i=1; AHgh+Rp+JPIO2mj19h80jooqhxVzaxdBtovLcx1e2IGOsKxjL1qN0L4+EjIhDRkXWpEsX8fse61EhD+P2ZA4WPc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzhugXW0vYI6zjOwjgXA1RauECwZ2WY0577e9AaltigcLG4CqrH
-	b6Ae5X+02LrsmjEr2dPEYJJ51g2e6BuuyPrIjXCv3/V32fMoe3ISgGA0
-X-Gm-Gg: AfdE7cleT4lflrLOKeHJNRlJXVw90jOVU+8auJLAHSGiGDS4fzDB2RNTdgHAp0H14pu
-	+RtcO5+uDAdHPE+nAsi9LfJIZWkTZnv256PDNthpHErHILnpBSPJ3h4YmrdGnB9p1FBDaCwBWV4
-	h9IK3B4JvqPHbJ4EoSOUrnNvZPoHPfTk45Myl7DOAI/cCb7DFvx3NnjK6RBgzhVHGaXXlCEhjQA
-	aABmgAgSUIZVe7j6rlmqA+mrzZNYc+YGin5bHDyguwZo3iPHz0kiv5rKkzSA2LAZcVtXJwzbF9Z
-	a6t5FDILF3fLg6/o1H/Jy2zVGKqQvsJUDDqoeifEFx43Uey1KrB0MfM/OUvT469I/N0wn3qXVJt
-	FRTzPph858w6Zx+y/91uxHXXM+gTgsehYhra6N1i5Je8qNwIcyJwCFxs6XyJbMORcCwon/D0xjk
-	K+Wn1G+mEcfvSVJqyZEFLQb4xip0bl+z5kpRITq4gl1QY9a+a3A4Gg
-X-Received: by 2002:a05:7301:9e44:b0:2f5:5907:3a48 with SMTP id 5a478bee46e88-30c84d14053mr8966083eec.1.1782538986692;
-        Fri, 26 Jun 2026 22:43:06 -0700 (PDT)
-Received: from google.com ([2a00:79e0:2ebe:8:e062:ec60:2d87:502])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30ca5f15024sm11181432eec.17.2026.06.26.22.43.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2026 22:43:05 -0700 (PDT)
-Date: Fri, 26 Jun 2026 22:43:03 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: raoxu <raoxu@uniontech.com>
-Cc: James.Bottomley@hansenpartnership.com, deller@gmx.de, 
-	linux-parisc@vger.kernel.org, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
-Subject: Re: [PATCH] Input: gscps2 - advance receive buffer write index
-Message-ID: <aj9i44uye8mHGjR2@google.com>
-References: <460B5655BA580C60+20260624094739.850306-1-raoxu@uniontech.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VXIgWtDv"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5D2D1F000E9;
+	Mon, 29 Jun 2026 12:23:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1782735835;
+	bh=KhbirzDiqdXz8L9jjlZYmqe2i6OHEV90p3aTdG2piLY=;
+	h=From:To:Cc:Subject:Date;
+	b=VXIgWtDvSyFcIJVJpcYBkbjDgAVyydc/iME59+R6XRw8bXvm1BkNScIESWGDKzwG8
+	 AhB5OWOUACxuGpUzXK9CREXTc7QbzenbF+f/m6fiWZ0ZOCz579Z+6psilDULlUv4KS
+	 t1hK4vxpshyeCdzB6jjoAR0ouWSDv6aa2AfmFzAVxeVUQ8libN4amrv2h5IP6iXnkJ
+	 vw5hlBz64z8tNrLEbQWPi3qxat89f66kKwijiuXDogs+GZh0c9W1lQTLDBkLRzgknf
+	 wM2jN6figSLSgDjYHDAuCpQ6/CJax3wvd/hhdrpFl4QAONOJEwet916X7QRVjLhdGy
+	 V41g50mCmMcMA==
+From: Lorenzo Stoakes <ljs@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Russell King <linux@armlinux.org.uk>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Simon Schuster <schuster.simon@siemens-energy.com>,
+	"James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	Ian Abbott <abbotti@mev.co.uk>,
+	H Hartley Sweeten <hsweeten@visionengravers.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Rob Clark <robin.clark@oss.qualcomm.com>,
+	Dmitry Baryshkov <lumag@kernel.org>,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Thierry Reding <thierry.reding@kernel.org>,
+	Mikko Perttunen <mperttunen@nvidia.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Christian Koenig <christian.koenig@amd.com>,
+	Huang Rui <ray.huang@amd.com>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Dan Williams <djbw@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Oscar Salvador <osalvador@suse.de>,
+	David Hildenbrand <david@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	"Liam R . Howlett" <liam@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	SeongJae Park <sj@kernel.org>,
+	Miaohe Lin <linmiaohe@huawei.com>,
+	Hugh Dickins <hughd@google.com>,
+	Mike Rapoport <rppt@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-parisc@vger.kernel.org,
+	linux-sgx@vger.kernel.org,
+	etnaviv@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org,
+	freedreno@lists.freedesktop.org,
+	linux-tegra@vger.kernel.org,
+	kvm@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	nvdimm@lists.linux.dev,
+	linux-mm@kvack.org,
+	iommu@lists.linux.dev,
+	linux-perf-users@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	kasan-dev@googlegroups.com,
+	damon@lists.linux.dev,
+	Pedro Falcato <pfalcato@suse.de>,
+	Rik van Riel <riel@surriel.com>,
+	Harry Yoo <harry@kernel.org>,
+	Jann Horn <jannh@google.com>
+Subject: [PATCH 00/30] mm: make VMA page offset handling more consistent
+Date: Mon, 29 Jun 2026 13:23:11 +0100
+Message-ID: <cover.1782735110.git.ljs@kernel.org>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <460B5655BA580C60+20260624094739.850306-1-raoxu@uniontech.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jun 24, 2026 at 05:47:39PM +0800, raoxu wrote:
-> From: Xu Rao <raoxu@uniontech.com>
-> 
-> Commit 44f920069911 ("Input: gscps2 - use guard notation when
-> acquiring spinlock") moved the receive loop into gscps2_read_data()
-> and gscps2_report_data().
-> 
-> While moving the code, it preserved the writes to
-> buffer[ps2port->append], but omitted the following producer index
-> update from the original loop:
-> 
-> 	ps2port->append = (ps2port->append + 1) & BUFFER_SIZE;
-> 
-> As a result, append never advances. Since gscps2_report_data() only
-> reports bytes while act != append, the receive buffer always appears
-> empty and no keyboard or mouse data reaches the serio core.
-> 
-> Restore the omitted index update.
-> 
-> Fixes: 44f920069911 ("Input: gscps2 - use guard notation when acquiring spinlock")
-> Cc: stable@vger.kernel.org # 6.13+
-> Signed-off-by: Xu Rao <raoxu@uniontech.com>
+This series performs a series of cleanups and improvements around how the
+vma->vm_pgoff field is used.
 
-Applied, thank you.
+Folios belonging to file-backed mappings are simply indexed by the page
+offset within the file they map.
 
--- 
-Dmitry
+However, anonymous folios belonging to pure anonymous mappings are indexed
+by their "virtual" page offset, which is equal to addr >> PAGE_SHIFT at the
+time at which the VMA was first faulted in.
+
+The page offset of a VMA is stored in vma->vm_pgoff and indicates the page
+offset of the start of the VMA range, whether it be file-backed or
+anonymous.
+
+The work here both cleans up how we reference this field, as well as laying
+the foundations for a future series which addresses the inconsistency of
+CoW'd folios in MAP_PRIVATE-file backed mappings, which are indexed as if
+they were file-backed but behave as if they were anonymous.
+
+This future series will make it such that all anonymous folios are indexed
+by virtual page offset whether belonging to VMAs who satisfy
+vma_is_anonymous() or MAP_PRIVATE-mapped file-backed mappings.
+
+This series:
+
+* Exposes vma_start_pgoff() and updates the kernel to use it consistently.
+* Adds and uses the useful vma_end_pgoff() helper.
+* Parameterises the file-backed mapping helpers vma_interval_tree_*()
+  by adress_space rather than rb_root_cached.
+* Renames the misleadingly-named vma_interval_tree_*() helpers to
+  mapping_interval_tree_*() to be consistent with
+  anon_vma_interval_tree_*().
+* Parameterises anon_vma_interval_tree_*() by anon_vma.
+* Moves mm/interval_tree.c to the rmap section.
+* Adds vmg_*() helpers for page offset.
+* Clarifies the confusing vmg_adjust_set_range() function.
+* Introduces linear_page_delta() to provide relative pgoff within a VMA.
+* Replaces open-coded versions of linear_page_delta() and
+  linear_page_index() with invocations of these functions.
+* Introduces and uses vma_assert_can_modify() to account for whether a VMA
+  can be modified (detached or write locked).
+* Adds and uses vma_[add,sub]_pgoff() to adjust VMA page offset.
+* Moves __install_special_mapping() to vma.c.
+* Makes vma_set_range() static and internal to vma.c.
+* Introduces and makes use of vma_set_pgoff().
+* Fixes incorrect vma.h header inclusion.
+* Defaults VMA userland tests to 64-bit vma flags size.
+* Updates VMA userland tests to give better output on failure.
+* Various smaller cleanups.
+
+Lorenzo Stoakes (30):
+  mm: move vma_start_pgoff() into mm.h and clean up
+  mm: add kdoc comments for vma_start/last_pgoff()
+  tools/testing/vma: use vma_start_pgoff() in merge tests
+  mm: introduce and use vma_end_pgoff()
+  mm/rmap: update mm/interval_tree.c comments
+  mm/rmap: parameterise vma_interval_tree_*() by address_space
+  mm/rmap: elide unnecessary static inline's in interval_tree.c
+  mm/rmap: rename vma_interval_tree_*() to mapping_interval_tree_*()
+  mm/rmap: parameterise anon_vma_interval_tree_*() by anon_vma
+  MAINTAINERS: Move mm/interval_tree.c to rmap section
+  mm/vma: introduce and use vmg_pages(), vmg_[start, end]_pgoff()
+  mm/vma: clean up anon_vma_compatible()
+  mm/vma: refactor vmg_adjust_set_range() for clarity
+  mm/vma: minor cleanup of expand_[upwards, downwards]()
+  mm: introduce and use linear_page_delta()
+  mm/vma: use vma_start_pgoff(), linear_page_index() in mm code
+  mm: prefer vma_[start,end]_pgoff() to vma->vm_pgoff in kernel/
+  mm/vma: remove duplicative vma_pgoff_offset() helper
+  mm: use linear_page_[index, delta]() consistently
+  mm/vma: introduce vma_assert_can_modify()
+  mm/vma: add and use vma_[add/sub]_pgoff()
+  mm/vma: move __install_special_mapping() to vma.c
+  mm/vma: make vma_set_range() static, drop insert_vm_struct() decl
+  mm/vma: update vma_shrink() to not pass unnecessary pgoff parameter
+  mm/vma: update vmg_adjust_set_range() to offset pgoff instead
+  mm/vma: introduce and use vma_set_pgoff()
+  mm/vma: correct incorrect vma.h inclusion
+  mm/vma: use guard clauses in can_vma_merge_[before, after]()
+  tools/testing/vma: default VMA flag bits to 64-bit
+  tools/testing/vma: output compared expression on ASSERT_[EQ, NE]()
+
+ MAINTAINERS                           |   2 +-
+ arch/arm/mm/fault-armv.c              |   4 +-
+ arch/arm/mm/flush.c                   |   2 +-
+ arch/nios2/mm/cacheflush.c            |   2 +-
+ arch/parisc/kernel/cache.c            |   2 +-
+ arch/x86/kernel/cpu/sgx/virt.c        |   3 +-
+ drivers/comedi/comedi_fops.c          |   3 +-
+ drivers/gpu/drm/etnaviv/etnaviv_gem.c |   3 +-
+ drivers/gpu/drm/gma500/gem.c          |   2 +-
+ drivers/gpu/drm/msm/msm_gem.c         |   3 +-
+ drivers/gpu/drm/omapdrm/omap_gem.c    |   5 +-
+ drivers/gpu/drm/tegra/gem.c           |   3 +-
+ drivers/gpu/drm/ttm/ttm_bo_vm.c       |   7 +-
+ drivers/vfio/pci/nvgrace-gpu/main.c   |   3 +-
+ drivers/vfio/pci/vfio_pci_core.c      |   3 +-
+ fs/dax.c                              |   2 +-
+ fs/hugetlbfs/inode.c                  |  15 +-
+ include/linux/huge_mm.h               |   1 +
+ include/linux/hugetlb.h               |   3 +-
+ include/linux/mm.h                    | 118 +++++++++----
+ include/linux/mmap_lock.h             |   8 +
+ include/linux/pagemap.h               |  39 ++++-
+ kernel/dma/coherent.c                 |   7 +-
+ kernel/dma/direct.c                   |   6 +-
+ kernel/dma/mapping.c                  |   8 +-
+ kernel/dma/ops_helpers.c              |   4 +-
+ kernel/events/core.c                  |  20 ++-
+ kernel/events/uprobes.c               |  13 +-
+ kernel/kcov.c                         |   2 +-
+ kernel/trace/ring_buffer.c            |   3 +-
+ mm/damon/vaddr.c                      |   5 +-
+ mm/debug.c                            |   2 +-
+ mm/filemap.c                          |   7 +-
+ mm/huge_memory.c                      |   2 +-
+ mm/hugetlb.c                          |  15 +-
+ mm/internal.h                         |  33 ++--
+ mm/interval_tree.c                    | 113 +++++++-----
+ mm/khugepaged.c                       |   7 +-
+ mm/ksm.c                              |   7 +-
+ mm/madvise.c                          |   6 +-
+ mm/mapping_dirty_helpers.c            |   2 +-
+ mm/memory-failure.c                   |  10 +-
+ mm/memory.c                           |  33 ++--
+ mm/mempolicy.c                        |  13 +-
+ mm/mmap.c                             |  41 +----
+ mm/mmu_notifier.c                     |   2 +-
+ mm/mremap.c                           |  12 +-
+ mm/msync.c                            |   4 +-
+ mm/nommu.c                            |  22 +--
+ mm/pagewalk.c                         |   6 +-
+ mm/rmap.c                             |  14 +-
+ mm/shmem.c                            |   9 +-
+ mm/userfaultfd.c                      |   4 +-
+ mm/util.c                             |   4 +-
+ mm/vma.c                              | 239 ++++++++++++++++++--------
+ mm/vma.h                              |  59 ++++++-
+ mm/vma_exec.c                         |  12 +-
+ mm/vma_init.c                         |   6 +-
+ mm/vma_internal.h                     |   4 +-
+ tools/testing/vma/Makefile            |   2 +-
+ tools/testing/vma/include/dup.h       |  41 ++++-
+ tools/testing/vma/include/stubs.h     |  12 +-
+ tools/testing/vma/shared.c            |   9 -
+ tools/testing/vma/shared.h            |  36 ++--
+ tools/testing/vma/tests/merge.c       |  40 ++---
+ virt/kvm/guest_memfd.c                |   2 +-
+ 66 files changed, 699 insertions(+), 432 deletions(-)
+
+--
+2.54.0
