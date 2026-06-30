@@ -1,122 +1,145 @@
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00B83F86F5
-	for <linux-parisc@vger.kernel.org>; Tue, 30 Jun 2026 09:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CAD934751E
+	for <linux-parisc@vger.kernel.org>; Tue, 30 Jun 2026 15:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782811551; cv=none; b=YNrYAVxIZObwS9Z1c8KAYOs7K6mbUGJ99GBxmYZpRCoxtQA1fdp/GzaRSifuqKsEsth9DUjwdrVnSV7guHHBiKXXE/4Zq2BlszNrTDM3pnMWQN31EfPzlC1xF7fQ5lpFwm0luUttfPndpsiML4JW+SoscWlFSyoLYC53bBWBGhs=
+	t=1782833462; cv=none; b=SoC8JjF0GHFPT1xKd4j/xufJjzemYBKQ3YuBYpYk05cvsrDmWwgQZeal8Vta+Lxny6az+KpC453ZxOeU0O4KkHLHzTf6m5E0lX4KsPLEDT240reFuXRpHX9Upr2Fp7XJIVnphEbM2k3g5ZEhKNUnwJ5IcuAdXYVWebE34324VRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782811551; c=relaxed/simple;
-	bh=MRvLY17pbM4TTs+QySmJ74+XzDsCvr5hq+uHOeZJA8U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WTtQLuf4X7sKo0HbOTQe5xT0PizTGXY6GisJd9ZMB+3+RptDvKAQ14Wti5RF9EvsHLNQgfMZtrDTUSQYfF16nsv5InFqZeE2/vRU2aawjlUcdaiB99T/vHwvUEORcxacuYwxr4RrhzcqoPbBAdzMX1h4mu6Ipb3y+Zp+pY3YS5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=c5BypQhv; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+	s=arc-20240116; t=1782833462; c=relaxed/simple;
+	bh=dsxaVzZxmHO2gtIU2TvsbwgiexrCHtWtBKWF+qAkz/U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ufv+aV/6D+T6n3OaDSzmpteMN4guO2DkxdxuAhig5qfAmFGieOvWSc/ymuS/5MNO3mKbiblF5jvcmh4smjqzIHpdQK84db2VxRp0bNjtzGGsvGyHx7/RGgdiaBNOr+zZVh2m6+kFSGUdp+fab1yKz07iZBeijyUisDzGaco7FCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=cukaVGMX; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="c5BypQhv"
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-493bc8fda98so2486785e9.0
-        for <linux-parisc@vger.kernel.org>; Tue, 30 Jun 2026 02:25:49 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="cukaVGMX"
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-80814edb536so54542557b3.2
+        for <linux-parisc@vger.kernel.org>; Tue, 30 Jun 2026 08:31:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1782811548; x=1783416348; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xXxk8WYvRbGG7VeDgVB8LyavPKJyGQ2lYgVSE1kaTfw=;
-        b=c5BypQhvKYEh95TjF/60crvxj1DUWp7ifPKygeH03sGebkPqP0GHZvMADOHl8IdBr9
-         3GkKdZjnE9DQvUqpHOzJMmfcvkzaiHwUbJt+x92l9jQnOFl8GuwKSvTfM5pgMlqAIqMc
-         s6pQKVzrG/GOapErT7Layi82K+3mLK74GWbJTRcmR0tFW7uNoVD5kOZOuwxH4pfGlRZB
-         lcPnalpKV7AJmhnXzpzf9PSJYoRicGMFH8wcmhYtvmkGeXa/2i7dPP8buEpxOV/KEtOV
-         h49wMqtK9OD+TbnK70Oe1BYClWW7zDhVMI0twWTGWOWNbh82Z/a/I5Vl5mc1EyMK7X34
-         2VhQ==
+        d=gourry.net; s=google; t=1782833460; x=1783438260; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vvVAmqyImW7TQjYTHR7q/vQBEUZYJ1tMtKhaki/MPes=;
+        b=cukaVGMX7mBuccoBz6GSmp85lsZYZI0h/Lhjywx3ox40ZYV/6RAo0oHqTlK0ScWRQI
+         iRua8ON3MpvWirCOvcvRavW6eYJKrTMuMUuuTtm/KNFSwPYlolq7xaAbfwPkeHT6ysDh
+         9rHQE52G7RqtRlr9vm9GVcaENG8Urk7Eavnhn4akh1ulxmwJUgarDJr/Td8E2Cqxx99N
+         9Vm9fpdCMfDOPW3IkR0aOSSLJtch2aNnXZOza9aj/vPnhh+AVRovebJPw12MvhFZYooH
+         EOVuTi1jZEL7JXIJqIBXPFE7qbyK8qUoXOC1ROgCJGs0sOms/9ufN/ZoDMKcc9ZFj8Ml
+         Q8Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782811548; x=1783416348;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=xXxk8WYvRbGG7VeDgVB8LyavPKJyGQ2lYgVSE1kaTfw=;
-        b=aL2ral3uyR2rpvHwMGVq2jeow2hLVpFlQTecZGk7I1CNeFQVuQVlXnPq5CWKPJiovN
-         1WCFDaMdRODV3HYDv+4I/jC08FWH7ofK157h6mns2nxzAqFQ1LVWV38xlC9H42469xf+
-         4LKUC4k1dPggRtx+uSgqS02CidE7V0innpvjERu01NasGtRdaO1/IVAe8btGMKy+9B6G
-         sYSRHlCGN9/CUw/oPYbD1D8V9NvwLDgPIx16OQgCoNBKkp45puSGnelE83EKtbQ8Amx4
-         NX5BCesp1CxClJpp1GSsMzTXHZ8O1OxdN7wrf00nyHV4d6d1WVDO+1DpUoKqtG7Vjsml
-         d9cA==
-X-Gm-Message-State: AOJu0YxFrla42hbd275biPn9E5JWF8Yd8aEiqA6ixELapVzYsGDh4jWg
-	z5gtmPm4osQqX+869EI+TxbNf1199uDDYgMXKTKTq7U/qLWo+K6YpWD6HLpfie8jMHo=
-X-Gm-Gg: AfdE7clL5UMA0WX/+OawsbBX66F0iU+EWVc2Uhiy6hY33Iq+czkid6CYBXY7P9S0BHB
-	p17T8Q4J2cGAkhjoejMdugTSYK3TS7w7uZMYuElC7Tr+gGVTeC47Slp1Xe0oBU9N82rovsNS79Y
-	i3g0FLDH+YeiPOhpRKB5Boo13i/2N9PCfULxOYVWq947W9t/ARb0rkzP8ZBiJ2ZJy1GgAeXDRWb
-	4czoXJ+OlWjOYTLvdvc2BFkqEGQTh+uon+OnNnupkSvLNjG7GC7lJZ7BXDJ/mZQBLplvOkgW8Gq
-	2tPOD5RwkG+t76ScjhrlXHmYf7AbIWk8TsLd7TKWMwuVJ9mpUNTrrNiJLBjC1pIHfP5artByHqr
-	broURao5zRt6qz7Hz0ipM33mFv4aTU5Jz7yef8Z1d41h+0uISRlINejt1T4xpB+J5B2lZDHBP6w
-	PE2bqkgCO9dwC/7QrK5ZJ1EVtlULa+iddV6Rq+NTZ8sW+hfNkbetkCb7E2WMsBcSzKHexco+X2k
-	tUh
-X-Received: by 2002:a05:600c:548c:b0:493:bb45:d52c with SMTP id 5b1f17b1804b1-493bb45d5fbmr18291765e9.25.1782811548376;
-        Tue, 30 Jun 2026 02:25:48 -0700 (PDT)
-Received: from localhost (p200300f65f47db042c439d749f38355a.dip0.t-ipconnect.de. [2003:f6:5f47:db04:2c43:9d74:9f38:355a])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-493bc19f4b0sm26290415e9.1.2026.06.30.02.25.47
+        d=1e100.net; s=20251104; t=1782833460; x=1783438260;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vvVAmqyImW7TQjYTHR7q/vQBEUZYJ1tMtKhaki/MPes=;
+        b=iSkFJbVeGNm4tzHB8fZF6YBINfc8NcrWWumBVgP2Iyc6uiqeFdLoATXlAul9b8EXyS
+         FiAtQn5Cyd6/YhIuQ9fhq2F/ptae95tl/+dYvTHN6hE9IazstInJUZFQSag9lNusmtTo
+         GcVdVRtxoSmtjaeraPj0/E2MqDADhYAu8Rft8AWvdHMuSzz+y6sAELTovvcNb10EH6UZ
+         NtzRgW7pga8tert0qDYYmzHK7ioPTBe8sAhGIxaz1ircdABmgxoxf0djoU+XqfAJeW4P
+         NtABCR3Mv3Cz5mhZdZ++kF42POS9sgZh+k2Ca0RiKAIx28+upmeUYHae+vu5T6Y05u8f
+         bD8w==
+X-Forwarded-Encrypted: i=1; AHgh+Rps0rpFlf3RyqX/Ctg4oQglVsRp0NeuyF5MTZ6qf73Uk6YuYchCKypsvIveQEKBK6cHZne/BJ7MB/G856g=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKl0O00ul72kS9N7laoSExV+Qh63Hr3ZnNWNqZKByQQEcQm8Zi
+	WBwqaXhK0F+BbgfcZ/ooRNedfsfT9My+0blO2W0s/CNv8jhtQ/l+GBSOgw0q7fKgnDY=
+X-Gm-Gg: AfdE7ckHGzGmLq3GilgZofsdOfSvBTfRMR8BPISQC3gcTHgvSnOZo0aWYEdeS4eW++P
+	fFtRa406k9B3g8P6Akp40VNlHGmfAkyKM9hssokpcXqEU4cTEo9P7Sy7kZbe81rrDYS09k+6F/V
+	01irDN1X9Wp4e4wJJxH/NWzOAWb/F57TRdMts0mwwZlUH3UZgKq4wT1Xvca37Vf1am6g5qVvbOd
+	HFBgq1/LkUGpTwG/EhQMC8l8NtsR8As4m67Gg2hcOuOV7O1UX3q8kEPJ/LT9v76ZnbVM6OXXbYE
+	da7dFke7w9O38Tpu9xMDwdKstcslXa+1TdSlwayg+SFDN654yVynmC/dKe/Adl1KcgTfXyBHDAC
+	6LnEWgtVgtsrQDe6kgFHbqxZmBvbxmwHesSU6ggPnlZ14VxLZA/A1dQpzE4Jc6c+Dcr6FQV3s1n
+	BVQg0CwiTXV/v1mHCWhW+brUgAT+ZE9vMtwFT0vJAPon2VXfuAveW5b6SW41cEoPbB5hqQ
+X-Received: by 2002:a05:690c:6112:b0:80e:bd63:1780 with SMTP id 00721157ae682-810d7eb0bd6mr46000317b3.2.1782833460437;
+        Tue, 30 Jun 2026 08:31:00 -0700 (PDT)
+Received: from gourry-fedora-PF4VCD3F (pool-173-79-60-52.washdc.fios.verizon.net. [173.79.60.52])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8f1a783d9d7sm25574106d6.41.2026.06.30.08.30.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2026 02:25:47 -0700 (PDT)
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig=20=28The=20Capable=20Hub=29?= <u.kleine-koenig@baylibre.com>
-To: Oleg Nesterov <oleg@redhat.com>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 15/17] parisc: #include <linux/compiler.h> for unlikely() in <asm/ptrace.h>
-Date: Tue, 30 Jun 2026 11:24:34 +0200
-Message-ID:  <0574a2b73363c3cbf21c55c27455c3cecfb33583.1782808461.git.u.kleine-koenig@baylibre.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <cover.1782808460.git.u.kleine-koenig@baylibre.com>
-References: <cover.1782808460.git.u.kleine-koenig@baylibre.com>
+        Tue, 30 Jun 2026 08:30:59 -0700 (PDT)
+Date: Tue, 30 Jun 2026 11:30:54 -0400
+From: Gregory Price <gourry@gourry.net>
+To: Lorenzo Stoakes <ljs@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Simon Schuster <schuster.simon@siemens-energy.com>,
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Jarkko Sakkinen <jarkko@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	Ian Abbott <abbotti@mev.co.uk>,
+	H Hartley Sweeten <hsweeten@visionengravers.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Rob Clark <robin.clark@oss.qualcomm.com>,
+	Dmitry Baryshkov <lumag@kernel.org>,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Thierry Reding <thierry.reding@kernel.org>,
+	Mikko Perttunen <mperttunen@nvidia.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Christian Koenig <christian.koenig@amd.com>,
+	Huang Rui <ray.huang@amd.com>, Ankit Agrawal <ankita@nvidia.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Dan Williams <djbw@kernel.org>, Muchun Song <muchun.song@linux.dev>,
+	Oscar Salvador <osalvador@suse.de>,
+	David Hildenbrand <david@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	"Liam R . Howlett" <liam@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>, SeongJae Park <sj@kernel.org>,
+	Miaohe Lin <linmiaohe@huawei.com>, Hugh Dickins <hughd@google.com>,
+	Mike Rapoport <rppt@kernel.org>, Kees Cook <kees@kernel.org>,
+	Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+	linux-sgx@vger.kernel.org, etnaviv@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+	freedreno@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+	kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	nvdimm@lists.linux.dev, linux-mm@kvack.org, iommu@lists.linux.dev,
+	linux-perf-users@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+	damon@lists.linux.dev, Pedro Falcato <pfalcato@suse.de>,
+	Rik van Riel <riel@surriel.com>, Harry Yoo <harry@kernel.org>,
+	Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 07/30] mm/rmap: elide unnecessary static inline's in
+ interval_tree.c
+Message-ID: <akPhLlv66ZqQ-jrw@gourry-fedora-PF4VCD3F>
+References: <cover.1782735110.git.ljs@kernel.org>
+ <ed5fd5358382217a92f0a6afddcfaa030c933055.1782735110.git.ljs@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1258; i=u.kleine-koenig@baylibre.com; h=from:subject:message-id; bh=MRvLY17pbM4TTs+QySmJ74+XzDsCvr5hq+uHOeZJA8U=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBqQ4tvhvvYxM5X83NpM+WshHM956pp4PuSnhBXJ B26XGCIaRKJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCakOLbwAKCRCPgPtYfRL+ Tvo/CACck5TBX1kQca+6xZAvCzOaAzsoSSIEIJek3VXR2FNDyjpVjpmXsPlRsOyOMqp1G6g4SWr IRnCr2fr7zF1O5hfmT+D55ryaUOwsqkLfrrBXOxb9zmgSZQQK1WCvOYEtwQynVJClKq7l2+n1LM UnUE+srbkmWf1BCRXeZzB6E9aMK2kzoYpn206KvTHb7YTZVUABnayjf6uNpoJ5V3335feag9WaR cwL+e7H/pL21GXe0kln2omhriPFeAE0Mnr5Co0BC0JJ29u78CNPXRZEuCsvyXNqq2qTGmUpcXAJ Sg01hjUxrL6TWwMbz8ndhV1aFSzzy6KHCIKNnDcrmhIOyK9o
-X-Developer-Key: i=u.kleine-koenig@baylibre.com; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed5fd5358382217a92f0a6afddcfaa030c933055.1782735110.git.ljs@kernel.org>
 
-Currently <linux/compiler.h> isn't included at all (not even
-transitively) in <asm/ptrace.h>.
-arch/parisc/kernel/asm-offsets.c just happens to include the following
-chain of includes before <asm/ptrace.h>:
+On Mon, Jun 29, 2026 at 01:23:18PM +0100, Lorenzo Stoakes wrote:
+> It's not necessary to declare these functions static inline as they are
+> contained within a single compilation unit.
+> 
+> This makes the anonymous interval tree code consistent with the newly
+> updated file-backed interval tree code.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Lorenzo Stoakes <ljs@kernel.org>
 
-	<linux/sched.h>
-	-> <asm/processor.h>
-	-> <asm/hardware.h>
-	-> <linux/mod_devicetable.h>
-	-> <linux/uuid.h>
-	-> <linux/string.h>
-	-> <linux/compiler.h>
-
-. That chain will be broken, because in one of the next commits
-<asm/hardware.h> is changed to only include <linux/device-id/parisc.h>
-instead of <linux/mod_devicetable.h>. So to ensure
-arch/parisc/kernel/asm-offsets.c knows about unlikely() even after that
-change, #include <linux/compiler.h> explicitly.
-
-Signed-off-by: Uwe Kleine-König (The Capable Hub) <u.kleine-koenig@baylibre.com>
----
- arch/parisc/include/asm/ptrace.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/parisc/include/asm/ptrace.h b/arch/parisc/include/asm/ptrace.h
-index eea3f3df0823..5e1f52b3922d 100644
---- a/arch/parisc/include/asm/ptrace.h
-+++ b/arch/parisc/include/asm/ptrace.h
-@@ -7,6 +7,7 @@
- 
- #include <asm/assembly.h>
- #include <uapi/asm/ptrace.h>
-+#include <linux/compiler.h>
- 
- #define task_regs(task) ((struct pt_regs *) ((char *)(task) + TASK_REGS))
- 
--- 
-2.47.3
+Reviewed-by: Gregory Price <gourry@gourry.net>
 
