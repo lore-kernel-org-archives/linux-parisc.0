@@ -1,33 +1,67 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD7953CC315;
-	Fri,  3 Jul 2026 11:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5093D16F9
+	for <linux-parisc@vger.kernel.org>; Fri,  3 Jul 2026 13:36:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783079989; cv=none; b=VhThyM9avYzN9LK7qEVK2mJVXV73roVr1ridS0g51G+W/ioZtHSrsZrUmyzwpa914Ccb9KlYEdbgzVcgYzUBbVT4z2Z23nr21cfS5m+NxQmCag2zzNdKEVzP8p0N/BRSdSQKBsl6yfSUWK5OiXMj0h+ApYB2z3pi7X0rYCZA71A=
+	t=1783085766; cv=none; b=mh2Z3456Cu3VyH0OYH786pIVuGmxLjgbg1WUYQJ5IvCk696dMmR9JHfL6FZvIyT5CFkL5tFE6gJb+C6Nz8A1pSsKtjnQMZF+29QYjXbc3qBQ1Grc4XtJiu0+2macjvyYLmCAbT38yjRZaXzYwIi1axMIjjiMWpTKW5tw9mJC5w4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783079989; c=relaxed/simple;
-	bh=CtML3PEXn1LHht7AQdQyqLzB0Qb9Ae10yAgK67397Zw=;
+	s=arc-20240116; t=1783085766; c=relaxed/simple;
+	bh=3+iyZZJ72WgUSPLdNBTNWi2rabs+mKXDECi8R3MNjWs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jafNVijkqwRi5Lb7hX7XV+4gZD+gg4dBYaV+/KlrIQAwf1mv/XARxFWTnLuJa+dCd5DB8zWK1tO1IOBRnBtRhJXqUjbK2R8Vqh1TnXkWEqEihguI7hqen99Qg5F8Lnho5KhUFd5fDMTWvtX1Spau2pQTbqBzzJqviX5vFLetrzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=BzvOXcJ3; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	 In-Reply-To:Content-Type; b=cSQmN5dFeMo6UC4cGpsWLDDYjkKOGxHQHP5mcVwNexIp9w1s1e4yeDOMdu+EsTulxY/bwV6AQ4Fc2xMyWK3IgAVzs51NLDW+VgzzLyY3TAdjMiS3lfXN+KjHQMRZRtJz16R78DeckzfOK+GBak1Xtwqn1Cm9J9E/VdN8+9nODsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=IL+OxW5n; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="BzvOXcJ3"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB43D4637;
-	Fri,  3 Jul 2026 04:59:42 -0700 (PDT)
-Received: from [10.57.81.24] (unknown [10.57.81.24])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 990933F673;
-	Fri,  3 Jul 2026 04:59:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1783079987; bh=CtML3PEXn1LHht7AQdQyqLzB0Qb9Ae10yAgK67397Zw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=BzvOXcJ33pukFW1hsXEQNbx9QPLsxIFvrmHevHBsOp8nnm06vLzF5mha44X2sHHDU
-	 SHr/Zn3XgMMxalHNhRBDOI53sw4fZs97H12agiXgP0ix1sp+Z6e44T3eAOSbucjLm7
-	 PcWgBN9O+acHfIv6mNNUdNha0fe7PMafRvzBoqR4=
-Message-ID: <fa1f5b39-2703-40a1-81d6-3feba87e19b0@arm.com>
-Date: Fri, 3 Jul 2026 13:59:21 +0200
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="IL+OxW5n"
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-493adc4ff7eso573825e9.0
+        for <linux-parisc@vger.kernel.org>; Fri, 03 Jul 2026 06:36:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1783085763; x=1783690563; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=FNBtslBmkdxYY8pJaB+biO9zOY0LMt3+psd/OnIDrZs=;
+        b=IL+OxW5neLn5t1qzQH0sjTS8g6WWnE1LSAY1otwpN++M+eYk+7Qb/eOyuH56JyZdsb
+         viO0GDl7TqRygk8yFdTH5ZPZHKLPmUcVS2uJHg6brbMcUAt4Mn1kIo5syIywXMuub5Ob
+         jk6ZdNIM55TxHOw/+h0uAGuHqbqEWcTM1gGlHNCLKnt+uY1gfrh8svmNObcr4YZUngUa
+         MpKoL/DuHGfSUPpflFRvfvKW8bas6qbb7gkUdwwUyLQjy3xnjOLYSBZOk/GkfZk44pV7
+         tC7teC6Zo7nCBlLbCkWw0nDGDFqSy1uvg9eNfGapGpBDIDU+UKgaEWo33gbkFNpAOFdx
+         EutQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783085763; x=1783690563;
+        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=FNBtslBmkdxYY8pJaB+biO9zOY0LMt3+psd/OnIDrZs=;
+        b=lQ1lrgTuX93SLP1Nz5k3eQlyVrmQfkP/QI0GEF5ZZyjsP8JoIDuId5qU3pNetcrup2
+         9YFjk9uFKFsxSur6BZ9MiXs9yMH89oHajMgDWRCF5rRXOMifNCIZ40kQ36r4UO7d1E2N
+         G+smy5WBH5wAl7qsjiDxMnnjXK0k8U7OmVAI6c4McBtAiUTvBmqZIN77SnIWYi1dFRdw
+         0I9kkgoLV+UHrkmIqsQPvVrPAPNeDawGObWFk2LYzZZ5pg5UpSedaYLlgwkr/sgxQ+3d
+         F6e/rFnrMpJoAt8ckHLDNVIiB3e1+jz1LzOWMa1WKoWbRoKC9MBRVMcYo6/a5pD0C9UE
+         9rbQ==
+X-Forwarded-Encrypted: i=1; AFNElJ/Gt7rUXPP/jMt8y9z46X3dbtwf47XfxYEZibeQ/KDNpxZp/cOayYOvPUFUJNdUNtuBRwZ2al3taQ1WmzA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwyBYEBRMrrRZ1S1q8qnWI5gWLVtOB672VQ0w4FWNLWBMvxrjay
+	ld/0fxHDvjaf3op45m7ZB60JGbNzQ6H3o7VGf1nNgvli6udibjSRSJ8pu5wRh34QbZc=
+X-Gm-Gg: AfdE7cmK5DOtlS/hgyt6AN6cDOgYXUbLpFcSY+OnnEykNp7od8PIlW2/CwTNjZEH9QO
+	B2NhxNWHixPVYsBadkqHUt13IZ5Fs/aoIgSt7492vyimMDcTu9o5SazFgbPTtS4ck7QD2fM4/qg
+	dqYVb7RigkEFibAGhsevPRGj2epd6eRpBoN9hS9+mc/LQ2WIn6wuJYbNziQlOQhOtyJcVh0fSjK
+	Tr137NHY3VWWR+1XElwbnnZo2tvwokF6UOTibOvK3GGXdqXK0f0PqTOGa97a/J0aTI28tn+twk0
+	BZnA+ycg+qaEDTEuo8166xayAzDfVLROiXeSlKnJrVF5bk1ew9ZhPKPnKqioyIxq+aZosa1epdR
+	cFun107TOqOhxNGSKMTd18mtl8tiugRtbj4t8/GBFOcX8AEY4lhSxTWe8YWVHtODjwyXc6RUUCt
+	ZS4r2a8M8=
+X-Received: by 2002:a05:600c:1912:b0:493:bd67:315 with SMTP id 5b1f17b1804b1-493c2b91fe3mr73724125e9.5.1783085762867;
+        Fri, 03 Jul 2026 06:36:02 -0700 (PDT)
+Received: from ?IPV6:2001:1a48:8:903::e14? ([2001:1a48:8:903::e14])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493bef11338sm202929555e9.1.2026.07.03.06.36.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Jul 2026 06:36:02 -0700 (PDT)
+Message-ID: <f0110241-eb12-49f8-81ce-3acf12939f45@suse.com>
+Date: Fri, 3 Jul 2026 15:36:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -35,89 +69,116 @@ List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v16 01/18] seccomp: Convert __secure_computing() to return
- boolean
-To: =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>,
- Mark Rutland <mark.rutland@arm.com>
-Cc: Thomas Gleixner <tglx@kernel.org>, Jinjie Ruan <ruanjinjie@huawei.com>,
- oleg@redhat.com, richard.henderson@linaro.org, mattst88@gmail.com,
- linmag7@gmail.com, linux@armlinux.org.uk, catalin.marinas@arm.com,
- will@kernel.org, kees@kernel.org, guoren@kernel.org, chenhuacai@kernel.org,
- kernel@xen0n.name, geert@linux-m68k.org, tsbogend@alpha.franken.de,
- James.Bottomley@hansenpartnership.com, deller@gmx.de, maddy@linux.ibm.com,
- mpe@ellerman.id.au, npiggin@gmail.com, chleroy@kernel.org, pjw@kernel.org,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, alex@ghiti.fr, hca@linux.ibm.com,
- gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
- svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
- glaubitz@physik.fu-berlin.de, richard@nod.at,
- anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, luto@kernel.org,
- mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
- chris@zankel.net, jcmvbkbc@gmail.com, peterz@infradead.org,
- wad@chromium.org, thuth@redhat.com, ada.coupriediaz@arm.com,
- linusw@kernel.org, yeoreum.yun@arm.com, song@kernel.org,
- james.morse@arm.com, anshuman.khandual@arm.com, broonie@kernel.org,
- liqiang01@kylinos.cn, pengcan@kylinos.cn, ryan.roberts@arm.com,
- yangtiezhu@loongson.cn, sshegde@linux.ibm.com, mchauras@linux.ibm.com,
- austin.kim@lge.com, jchrist@linux.ibm.com, arnd@arndb.de,
- thomas.weissschuh@linutronix.de, sohil.mehta@intel.com,
- andrew.cooper3@citrix.com, jgross@suse.com, kas@kernel.org, x86@kernel.org,
- linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org
-References: <20260629130616.642022-1-ruanjinjie@huawei.com>
- <20260629130616.642022-2-ruanjinjie@huawei.com>
- <akdp6GAu77-ipsXA@kunlun.suse.cz> <87cxx4mmim.ffs@fw13>
- <akeIK5TRCjlKbzbp@J2N7QTR9R3> <akeOjqMy7HVgRRCr@kunlun.suse.cz>
-From: Kevin Brodsky <kevin.brodsky@arm.com>
-Content-Language: en-GB
-In-Reply-To: <akeOjqMy7HVgRRCr@kunlun.suse.cz>
+Subject: Re: [PATCH 01/30] mm: move vma_start_pgoff() into mm.h and clean up
+Content-Language: en-US
+To: Lorenzo Stoakes <ljs@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Russell King <linux@armlinux.org.uk>, Dinh Nguyen <dinguyen@kernel.org>,
+ Simon Schuster <schuster.simon@siemens-energy.com>,
+ "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Jarkko Sakkinen <jarkko@kernel.org>,
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, Ian Abbott <abbotti@mev.co.uk>,
+ H Hartley Sweeten <hsweeten@visionengravers.com>,
+ Lucas Stach <l.stach@pengutronix.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>,
+ Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Clark <robin.clark@oss.qualcomm.com>, Dmitry Baryshkov
+ <lumag@kernel.org>, Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+ Thierry Reding <thierry.reding@kernel.org>,
+ Mikko Perttunen <mperttunen@nvidia.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>,
+ Ankit Agrawal <ankita@nvidia.com>, Alex Williamson <alex@shazbot.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Dan Williams <djbw@kernel.org>,
+ Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>,
+ David Hildenbrand <david@kernel.org>, Suren Baghdasaryan
+ <surenb@google.com>, "Liam R . Howlett" <liam@infradead.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Oleg Nesterov <oleg@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
+ SeongJae Park <sj@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>,
+ Hugh Dickins <hughd@google.com>, Mike Rapoport <rppt@kernel.org>,
+ Kees Cook <kees@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-parisc@vger.kernel.org, linux-sgx@vger.kernel.org,
+ etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+ linux-tegra@vger.kernel.org, kvm@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev, linux-mm@kvack.org,
+ iommu@lists.linux.dev, linux-perf-users@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+ damon@lists.linux.dev, Pedro Falcato <pfalcato@suse.de>,
+ Rik van Riel <riel@surriel.com>, Harry Yoo <harry@kernel.org>,
+ Jann Horn <jannh@google.com>
+References: <cover.1782735110.git.ljs@kernel.org>
+ <b28b698df4c009e85c4728446ca5863d8e633164.1782735110.git.ljs@kernel.org>
+From: Vlastimil Babka <vbabka@suse.com>
+Autocrypt: addr=vbabka@suse.com; keydata=
+ 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
+ pYekxJujNeEDkUlky0Y=
+In-Reply-To: <b28b698df4c009e85c4728446ca5863d8e633164.1782735110.git.ljs@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 03/07/2026 12:27, Michal Suchánek wrote:
-> On Fri, Jul 03, 2026 at 11:00:11AM +0100, Mark Rutland wrote:
->> On Fri, Jul 03, 2026 at 11:48:49AM +0200, Thomas Gleixner wrote:
->>> On Fri, Jul 03 2026 at 09:51, Michal Suchánek wrote:
->>>> On Mon, Jun 29, 2026 at 09:05:59PM +0800, Jinjie Ruan wrote:
->>>>> -	if (secure_computing())
->>>>> +	if (!secure_computing())
->>>>>  		return -1;
->>>> Hello,
->>>>
->>>> I am not fond of this logic inversion. The boolean is meaningless in
->>>> itself.
->>>>
->>>> Previously -1 was used to indicate that the syscall was filtered but you
->>>> chose to invert the logic choosing true to mean syscall was not filtered.
->>>>
->>>> You could choose true to mean that syscall was fitered avoiding this
->>>> inversion.
->>> That's just wrong. Boolean logic makes more sense with having
->>> (!condition()). Just because the old 0/-1 nonsense had it the other way
->>> round does not mean it has to stay that way.
->> 100% agreed!
->>
->> Bikeshedding below; sorry.
->>
->> I think the bigger problem is just that secure_computing() is a terrible
->> name that does not express the intended semantic -- it's not clear
->> whether "secure computing" means "seccomp permit the syscall" or
->> "seccomp is enabled and some special rules now apply" or something else
->> entirely.
->>
->> If we're changing the return type, it might be worth renaming the
->> function something like:
->>
->> 	seccomp_permits_syscall()
-> Then not only it is clear which way the boolean value should be
-> interpreted, it also pervents the accidental inversion of existing
-> calls. Overall great.
+On 6/29/26 14:23, Lorenzo Stoakes wrote:
+> vma_last_pgoff() already lives there, so it's a bit odd to keep
+> vma_start_pgoff() in mm/interval_tree.c. Move them together.
+> 
+> These each return unsigned long, which pgoff_t is typedef'd to. Make this
+> consistent and have these functions return pgoff_t instead.
+> 
+> Additionally, express vma_last_pgoff() in terms of vma_start_pgoff(), since
+> we wrap the vma->vm_pgoff access, we may as well use it here.
+> 
+> Also while we're here, const-ify the VMA and cleanup a bit.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Lorenzo Stoakes <ljs@kernel.org>
 
-Totally agreed, if we have the opportunity to rename a completely
-undescriptive function name like "secure_computing" we should take it.
+Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
-- Kevin
