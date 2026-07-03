@@ -1,181 +1,94 @@
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E8A3F4DD3
-	for <linux-parisc@vger.kernel.org>; Fri,  3 Jul 2026 14:38:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4982F36A341;
+	Fri,  3 Jul 2026 20:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783089502; cv=none; b=XhyLdOHIu9lsx3VqLYfNanxPDjCfNJtx96rCJNz1D6bWTlYcdv6OL540kLe2MA3ra0VBawYffawV+sw/w3cQowzTlxyT7xxegVDKpDAuEvu15H4W4tPNpJsS6UsNPScZYB68K09wgVmBwyMrcdYm+Tnjh9qvaeFYGTPUQGH9rCs=
+	t=1783111967; cv=none; b=fWJeNc/ITi0T/TlAs2jIOubPQg3oDMaIaAdUBk5w9iAeKEi7Mj2GpdLsC+qk6fTCVir3t30iI5kJuIV31NOmSc8EUgUHK/W71boD7kNkXlApZ1BRXgCcWTtntqILcCitQHfQGSRVgRQhj4UeCNUuBbyQxJfAH8Rqk4+xEKsTPX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783089502; c=relaxed/simple;
-	bh=6AeDRRgD3yN4DkAMI16Ol5bWSHoi/2y1rDyIZ4jO6DQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=noNr15+sDqGtcbdikyChDfkwUovvvB3GEHYqAoMcNStTdLbYdjHhom6bRFsYhEnSfgF0lAp1pXE78Zk0u7SXQPjcIOTKv6b1DD+ZJnY/Ap+ipOGwBv9OFi9eYm+HWvdg8Ln3o3qftz8U7jRyxVa0bF2d1OPuBvaoVYer6WHrkN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AQTwpQVf; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	s=arc-20240116; t=1783111967; c=relaxed/simple;
+	bh=xnBU3ce/vpLN9V3n2dw5RmzeomvK81+Van+F8Cle4zc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=c71j+n+SVCcJnTphP52WkImR0PatWcLUaLm7TEVP3d0bbV9o/xElRj/xyCJmD0dr16GyRBYIB0Vulc2mIK8UHQz8HkMfoEjx/TYoWDAJZ/6LFdSfEWYdDFQLPn6OrbAYSUxrjz8/xNs8yn7W4rLMsQLGSrmMRiQHEOoFDEwQSo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/AEFhD/; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AQTwpQVf"
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-473987fc217so79366f8f.0
-        for <linux-parisc@vger.kernel.org>; Fri, 03 Jul 2026 07:38:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1783089496; x=1783694296; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=cYcKnRNBBATcFMmYjoa8x8AgbZncnZb+6A3fuAeXiUI=;
-        b=AQTwpQVfjkKo2qB/x5jup+2NrY7ocLaBf9x4L5SQhi9GBQfkXkUZhKKMdoro8pFiRZ
-         oEBXPiwFlt1BTrKy9hh8pDscVq49rTfUk1anH7L58iQuyqsoJDRtlAI3uICVNigf2Ouf
-         ozzfj+NEN/tklxjHHmaBR1i5sv9SrAlvOXO7iRGVlIZs/ZJNlUeuZIjJrS0NgjrvJPmh
-         +Mz3XQSUT42G3G/KItk9RBrVqgMIbEgkQ59qQnR3prHBf6+s6X8UDgSqZcn8rTKDOgQ3
-         u+dg60GRY05+An/aqTxDsdUzGWsKmPObP/s6B8wNGCSp4ysrLMXcKaEvNUnoWqhx9WHm
-         x4AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783089496; x=1783694296;
-        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=cYcKnRNBBATcFMmYjoa8x8AgbZncnZb+6A3fuAeXiUI=;
-        b=TTU2rMY+K8gkPN/mwmhnE7wukPNqzfhaiato2tMtK//s9QFnU5sfnv40K7pyqHncYs
-         PiAHQtBWboxCwBMq7yUt7rgE9dt0M/QcsaWZFgeJ9k6h4CJdMZNbyEzNWwi9aw6cRCzG
-         NA1VbQRqyTuzL28hjHqFHxxpHtGlGGEdLoM9tFcdec5rV4+WLk0TiYVmeOilEgMaVX6D
-         0twc4wk3h365c2jSmR459oQNRApwpE+yo8YHeTkEuS0xU/eT/L9wtjLyIQcUGmDY3rt9
-         SD+/wtN3M1ChauGMphEXTvhnRpdJYPp/F8iEx0mOKCRZgcFYHlQgBXB/pGVYZzxr7cjp
-         RGcA==
-X-Forwarded-Encrypted: i=1; AHgh+RqJtj4z+cnEVsDRLDWG5w03OkH1/wAgMMqRtZkJDs/brZ4F5Ky682lpMXk7DoVmQjzPs23wHouNXr44wog=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyCDGphb+u5uvruFwN+vx03tzIWjVQRMqm9QJ4M90C/NEI7MkB1
-	MRx7010NgDkPYGfA7os/5rnBYVZ21Eh0azQSm+vH3FgZcfGQcUZIoAqlg+CbPvzyPw0=
-X-Gm-Gg: AfdE7cnmetP4Jal2DRJfpiiQ+WfBx+Iddj7AiglFdCWKgsb1t1NZ8ptT1du6GmmPpZS
-	eYRw+i0vc4ibmNKZ/lG96/7sAsgQhP/asXFp0q936vs7OHC5izkcG7/m4bYYFQoW1sah0yF2w+e
-	GGRSr+FPH70ZDT3G74Hy5CWGUnYWHDtSIi258AfQBkRIcGuaBZc8HOVN0wNa9Wp7dH71geT8id/
-	IydKjFgalwbodHN2L7wjhsY8YeHksbOrTLLH6vFwjf7/4tAQ1pAacrv1tY+FTL3hz1NUnZYe06Q
-	Ywm0lTrTxizPFw836VSl/ZFsLURAFfeeKFvp4Y/OFTLbCqd7/piXu+6hP5++ongpaIPjBxdxdWs
-	EDOtrQc661Re4jTTI8Wa9muwRBTp52rX9QMxSZ6uD8jiN8wSVevXeXtHht40eEbnZViw9Po4ZJi
-	7pgIheiUs=
-X-Received: by 2002:a05:6000:310a:b0:474:2b24:8dcd with SMTP id ffacd0b85a97d-477554e264amr8372343f8f.0.1783089495690;
-        Fri, 03 Jul 2026 07:38:15 -0700 (PDT)
-Received: from ?IPV6:2001:1a48:8:903::e14? ([2001:1a48:8:903::e14])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-477db3db964sm17544462f8f.8.2026.07.03.07.38.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Jul 2026 07:38:15 -0700 (PDT)
-Message-ID: <86a2b2ae-5c5a-418f-a944-4c8d179aede8@suse.com>
-Date: Fri, 3 Jul 2026 16:38:12 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/AEFhD/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49A6E1F00A3E;
+	Fri,  3 Jul 2026 20:52:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783111965;
+	bh=qc6RQIMJ3TCgtwMlpFywp2lkPnh2VJAI6hIxptvIyMs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=m/AEFhD/QQMVr60LVSSrHBJhZzSHloaCLPk21mBJcgCOInHXk9skqaY/SzJJ84tEX
+	 UmT6M2g7SmZe+Xfl7u66KmHjHFowNBAw9iuDKrQPpkA0d+AKOFoNGiI4ScRdGq9tzV
+	 5Bw71e6tMbrrNqTc7h68y+P8wFXYypmrKhsg4IoUL3B2t/kFt2ZfrsDK6qF5Axq7m+
+	 0X+YpoR5DWk7RItGPbLuh218SieWYIlmdker7qyk9wbsyvgoZgAjV4Uu3czl1MVLAt
+	 DcAB4UvUtBhMMozkhoRv21B/k0znEvzlBngIXWCHw9H0yTbipW6aseVsPvTnj3WZDs
+	 DRMEjZMu/EqhQ==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Kevin Brodsky <kevin.brodsky@arm.com>, Michal =?utf-8?Q?Such=C3=A1nek?=
+ <msuchanek@suse.de>, Mark Rutland <mark.rutland@arm.com>
+Cc: Jinjie Ruan <ruanjinjie@huawei.com>, oleg@redhat.com,
+ richard.henderson@linaro.org, mattst88@gmail.com, linmag7@gmail.com,
+ linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+ kees@kernel.org, guoren@kernel.org, chenhuacai@kernel.org,
+ kernel@xen0n.name, geert@linux-m68k.org, tsbogend@alpha.franken.de,
+ James.Bottomley@hansenpartnership.com, deller@gmx.de, maddy@linux.ibm.com,
+ mpe@ellerman.id.au, npiggin@gmail.com, chleroy@kernel.org, pjw@kernel.org,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, alex@ghiti.fr,
+ hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+ borntraeger@linux.ibm.com, svens@linux.ibm.com,
+ ysato@users.sourceforge.jp, dalias@libc.org, glaubitz@physik.fu-berlin.de,
+ richard@nod.at, anton.ivanov@cambridgegreys.com,
+ johannes@sipsolutions.net, luto@kernel.org, mingo@redhat.com,
+ bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+ chris@zankel.net, jcmvbkbc@gmail.com, peterz@infradead.org,
+ wad@chromium.org, thuth@redhat.com, ada.coupriediaz@arm.com,
+ linusw@kernel.org, yeoreum.yun@arm.com, song@kernel.org,
+ james.morse@arm.com, anshuman.khandual@arm.com, broonie@kernel.org,
+ liqiang01@kylinos.cn, pengcan@kylinos.cn, ryan.roberts@arm.com,
+ yangtiezhu@loongson.cn, sshegde@linux.ibm.com, mchauras@linux.ibm.com,
+ austin.kim@lge.com, jchrist@linux.ibm.com, arnd@arndb.de,
+ thomas.weissschuh@linutronix.de, sohil.mehta@intel.com,
+ andrew.cooper3@citrix.com, jgross@suse.com, kas@kernel.org,
+ x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH v16 01/18] seccomp: Convert __secure_computing() to
+ return boolean
+In-Reply-To: <fa1f5b39-2703-40a1-81d6-3feba87e19b0@arm.com>
+References: <20260629130616.642022-1-ruanjinjie@huawei.com>
+ <20260629130616.642022-2-ruanjinjie@huawei.com>
+ <akdp6GAu77-ipsXA@kunlun.suse.cz> <87cxx4mmim.ffs@fw13>
+ <akeIK5TRCjlKbzbp@J2N7QTR9R3> <akeOjqMy7HVgRRCr@kunlun.suse.cz>
+ <fa1f5b39-2703-40a1-81d6-3feba87e19b0@arm.com>
+Date: Fri, 03 Jul 2026 22:52:43 +0200
+Message-ID: <87echjlrs4.ffs@fw13>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/30] mm: introduce and use vma_end_pgoff()
-Content-Language: en-US
-To: Lorenzo Stoakes <ljs@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Russell King <linux@armlinux.org.uk>, Dinh Nguyen <dinguyen@kernel.org>,
- Simon Schuster <schuster.simon@siemens-energy.com>,
- "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Jarkko Sakkinen <jarkko@kernel.org>,
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, Ian Abbott <abbotti@mev.co.uk>,
- H Hartley Sweeten <hsweeten@visionengravers.com>,
- Lucas Stach <l.stach@pengutronix.de>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>,
- Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Clark <robin.clark@oss.qualcomm.com>, Dmitry Baryshkov
- <lumag@kernel.org>, Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
- Thierry Reding <thierry.reding@kernel.org>,
- Mikko Perttunen <mperttunen@nvidia.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>,
- Ankit Agrawal <ankita@nvidia.com>, Alex Williamson <alex@shazbot.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Dan Williams <djbw@kernel.org>,
- Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>,
- David Hildenbrand <david@kernel.org>, Suren Baghdasaryan
- <surenb@google.com>, "Liam R . Howlett" <liam@infradead.org>,
- Matthew Wilcox <willy@infradead.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Oleg Nesterov <oleg@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
- SeongJae Park <sj@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>,
- Hugh Dickins <hughd@google.com>, Mike Rapoport <rppt@kernel.org>,
- Kees Cook <kees@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
- linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-sgx@vger.kernel.org, etnaviv@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
- freedreno@lists.freedesktop.org, linux-tegra@vger.kernel.org,
- kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
- linux-mm@kvack.org, iommu@lists.linux.dev, linux-perf-users@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
- damon@lists.linux.dev, Pedro Falcato <pfalcato@suse.de>,
- Rik van Riel <riel@surriel.com>, Harry Yoo <harry@kernel.org>,
- Jann Horn <jannh@google.com>
-References: <cover.1782735110.git.ljs@kernel.org>
- <e379a1cb6a897126ad96e3a263fdb91d6c11f6cb.1782735110.git.ljs@kernel.org>
-From: Vlastimil Babka <vbabka@suse.com>
-Autocrypt: addr=vbabka@suse.com; keydata=
- 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
- pYekxJujNeEDkUlky0Y=
-In-Reply-To: <e379a1cb6a897126ad96e3a263fdb91d6c11f6cb.1782735110.git.ljs@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 6/29/26 14:23, Lorenzo Stoakes wrote:
-> We already have vma_last_pgoff() which retrieves the last page offset
-> within a VMA.
-> 
-> However, code often wishes to span a page offset range, which requires the
-> exclusive end of this range.
-> 
-> So provide this in vma_end_pgoff() and update vma_last_pgoff() to use this
-> function.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Lorenzo Stoakes <ljs@kernel.org>
+On Fri, Jul 03 2026 at 13:59, Kevin Brodsky wrote:
+> On 03/07/2026 12:27, Michal Such=C3=A1nek wrote:
+>>> If we're changing the return type, it might be worth renaming the
+>>> function something like:
+>>>
+>>> 	seccomp_permits_syscall()
+>> Then not only it is clear which way the boolean value should be
+>> interpreted, it also pervents the accidental inversion of existing
+>> calls. Overall great.
+>
+> Totally agreed, if we have the opportunity to rename a completely
+> undescriptive function name like "secure_computing" we should take it.
 
-Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-
+Absolutely no objections from my side on that.
