@@ -1,109 +1,73 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mail.mindbit.ro (xs1.mindbit.ro [80.86.107.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1043331EA9
-	for <linux-parisc@vger.kernel.org>; Fri,  3 Jul 2026 21:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4BB02C9D;
+	Sun,  5 Jul 2026 21:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.86.107.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783114357; cv=none; b=G609bf0upkAy97kReYGoN2GX+uGVooQsllIda2rznXmXaJwhAXjUHzvcLYSB2p8no1jkJTM/37rMK1n3h6qWzCi5xnPeIms4+VKhvVzB5n2bhb3+9VNNwDHXLaOmbgoP3cZEC6MqTukhL0JGliM9p46oVSFW01hLbbnY8D7KnF8=
+	t=1783285855; cv=none; b=rWExxD5be5rtU8CDSefx2jyK+yrH5F1NjCHKSRAdxk9VEP0n29vZ2mXYwY4XvC0dgysbFNUMhSLDKCvMYWRs88LSblibeBfSdO2S0rRClyRPr7XdscUOtesKhnKYSJWg3ETIIG/Py/ki8QIEN5bhYbpQwybiUFZ3+4kBeXMtp+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783114357; c=relaxed/simple;
-	bh=2Xe0OMXeeYc9/S4+5LxR1blLhyrbF1Lgb0xGUfI7zl4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bN4ji1s6uxBQ1XdVZHNQ5Y56jYLxHcPh62F17NCL7g6fhClquKEblPXEjGN8vp5iFXYUckhB/3oDtURKVa7RX+5Me+7/IVNS0ctayLfaMc//kOHo8HHzR0xjsmN/E+be64bPajz6Ubua1qqqHch24se+eO58M3xlLHl3afntirc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KtXX8IuU; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1783285855; c=relaxed/simple;
+	bh=G7Cbr0jGNqJqCD4YpEpXCq4ZiHm/GzYfU4tP9mTrrcE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SqGx9q0e2jsIPKGW2hpdJSm7jWFz/LdY455pzcB24RK0GkMt/06HAzeI84x8F3zN+0iedP5C8+BRqkHG4luj7zGfE/PEVV6MjphU41G5lAb1xmp3YbngBgHJCFzohM1GrE2SeGIEeIix8oj3qXkcYMtRW1KWN4iqDEhIkOAHNbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rendec.net; spf=pass smtp.mailfrom=rendec.net; dkim=pass (2048-bit key) header.d=rendec.net header.i=@rendec.net header.b=hHv6ilBN; arc=none smtp.client-ip=80.86.107.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rendec.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rendec.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KtXX8IuU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 068481F00A3D
-	for <linux-parisc@vger.kernel.org>; Fri,  3 Jul 2026 21:32:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783114356;
-	bh=OKSIV0oOxnrYHCfPO5lAQhnCzHPQePBOMJ0ktW8HRY4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=KtXX8IuUBNhuHWxHxBTjmuPBk9hzOQ7UsQ1CE9gvBu/kMIDFo6Om3uI/27v9fejDF
-	 +EVx4yFRcD+ZHGYHSXYVZZrdD4NN/AABtyOquBKTUSIeaFLSvadRobD8UUMhpLHrw0
-	 fvkNRGAwgqS7RXxOwI5DWG0GAAfbEfvGiRFksz8erK7uHpTpuZSuWn/tAoEAx/C2WO
-	 88OCMIKeQZOVmG2qajorm/8ZVb4ZRZWobPwoWS9swqCLPbGZVB9YV96d8g65sWN148
-	 RiD56W+0SQV3jJI86Xxpjs0EONHteMV6QzKzQJsvVBtqNZ2E7uv6VZzpJWrrCp/VUv
-	 yBpdVzNcTlwqA==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5aea9d606f0so987393e87.3
-        for <linux-parisc@vger.kernel.org>; Fri, 03 Jul 2026 14:32:35 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RpOKg7Kkl82UpuFCVw+QvD+1DzmZ9NdHieGv0mIj9od28zvQxALjIO4+E+H1bqFzTaR0EfAlO+GWa1NSVQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw20VF1kKI4crB+eO2wDSnEDkkJRAubJBsvtV/Fv/9e5q/T7k92
-	6oPQao6PQWm419VPVSg8Hkr8pJm6V3RIl+8cXUmKv+piL0hUN7r6oLXSI8RwUJkPvFQsEusvTYF
-	w2RG86oal5qjiHwCxIf6b1cGEfJgUlRQ=
-X-Received: by 2002:a05:6512:8391:b0:5ae:ba2b:b469 with SMTP id
- 2adb3069b0e04-5aed5092745mr72984e87.18.1783114353971; Fri, 03 Jul 2026
- 14:32:33 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=rendec.net header.i=@rendec.net header.b="hHv6ilBN"
+Received: from dog.kanata.rendec.net (pool-174-112-193-187.cpe.net.cable.rogers.com [174.112.193.187])
+	by mail.mindbit.ro (Postfix) with ESMTPSA id 77B95C2A88;
+	Mon,  6 Jul 2026 00:10:43 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.mindbit.ro 77B95C2A88
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rendec.net;
+	s=default; t=1783285844;
+	bh=+krgGADGayuqpJkFzoU47G/YcyZfwCQuxzbIud/vEiE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=hHv6ilBNBJ5q0dWEsd3iVh9w0ohB4Ug1PU5qw42tb0sdUoXO0O9lb7NoYT2karZm+
+	 r1iHA2sRhSWlpMhQOZ7nyPN+j0pbsuWtl3ZW+KS4sGBaHgW/b+VcxHwddLDg5gV85e
+	 ZSjlwq/ZrdPzq+5e4EHoX5C/tx8fTk/ETxlI4Kt8dkG0wdQPvVawEmyOeRdfbtUJxa
+	 aCCtvXAxSxMzSdPRz0Ese2K0+fzcH8rZrZfVt0RrnF43j1mXcSCvXI9bbHPN0fJ1Nm
+	 LncNyUClMyHO9G/HMnkphfwhBE4oCMi6tnPK9MsURG+hBQ4jjKZoUVf2vR8JdTAD2B
+	 UC2xzRuQhncWQ==
+From: Radu Rendec <radu@rendec.net>
+To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Thomas Gleixner <tglx@kernel.org>
+Cc: linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Remove unnecessary NULL check of the kstat_irqs field
+Date: Sun,  5 Jul 2026 17:09:49 -0400
+Message-ID: <20260705210951.2717741-1-radu@rendec.net>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260629130616.642022-1-ruanjinjie@huawei.com>
- <20260629130616.642022-2-ruanjinjie@huawei.com> <akdp6GAu77-ipsXA@kunlun.suse.cz>
- <87cxx4mmim.ffs@fw13> <akeIK5TRCjlKbzbp@J2N7QTR9R3>
-In-Reply-To: <akeIK5TRCjlKbzbp@J2N7QTR9R3>
-From: Linus Walleij <linusw@kernel.org>
-Date: Fri, 3 Jul 2026 23:32:21 +0200
-X-Gmail-Original-Message-ID: <CAD++jLn0Pfhx0bY9XywVkDVU-nyAbvrnf9Wr8TSkuV4hgJL=8w@mail.gmail.com>
-X-Gm-Features: AVVi8CegcPVBpxUBhMgaVmjHkjMbMgWpKQVd4voTgZ2p1M7BcZ7lo9TMo7bB8LM
-Message-ID: <CAD++jLn0Pfhx0bY9XywVkDVU-nyAbvrnf9Wr8TSkuV4hgJL=8w@mail.gmail.com>
-Subject: Re: [PATCH v16 01/18] seccomp: Convert __secure_computing() to return boolean
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Thomas Gleixner <tglx@kernel.org>, =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>, 
-	Jinjie Ruan <ruanjinjie@huawei.com>, oleg@redhat.com, richard.henderson@linaro.org, 
-	mattst88@gmail.com, linmag7@gmail.com, linux@armlinux.org.uk, 
-	catalin.marinas@arm.com, will@kernel.org, kees@kernel.org, guoren@kernel.org, 
-	chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org, 
-	tsbogend@alpha.franken.de, James.Bottomley@hansenpartnership.com, 
-	deller@gmx.de, maddy@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com, 
-	chleroy@kernel.org, pjw@kernel.org, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	alex@ghiti.fr, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, 
-	borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, 
-	dalias@libc.org, glaubitz@physik.fu-berlin.de, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, luto@kernel.org, 
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com, 
-	chris@zankel.net, jcmvbkbc@gmail.com, peterz@infradead.org, wad@chromium.org, 
-	thuth@redhat.com, ada.coupriediaz@arm.com, kevin.brodsky@arm.com, 
-	yeoreum.yun@arm.com, song@kernel.org, james.morse@arm.com, 
-	anshuman.khandual@arm.com, broonie@kernel.org, liqiang01@kylinos.cn, 
-	pengcan@kylinos.cn, ryan.roberts@arm.com, yangtiezhu@loongson.cn, 
-	sshegde@linux.ibm.com, mchauras@linux.ibm.com, austin.kim@lge.com, 
-	jchrist@linux.ibm.com, arnd@arndb.de, thomas.weissschuh@linutronix.de, 
-	sohil.mehta@intel.com, andrew.cooper3@citrix.com, jgross@suse.com, 
-	kas@kernel.org, x86@kernel.org, linux-alpha@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mm@kvack.org, linux-csky@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jul 3, 2026 at 12:00=E2=80=AFPM Mark Rutland <mark.rutland@arm.com>=
- wrote:
+The kstat_irqs field of struct irq_desc is used to store a per-cpu count
+of interrupt events. It is initialized in init_desc(), along with all
+the other fields in struct irq_desc that need explicit initialization,
+and therefore it's always available (non-NULL) for any valid interrupt
+descriptor.
 
-> Bikeshedding below; sorry.
->
-> I think the bigger problem is just that secure_computing() is a terrible
-> name that does not express the intended semantic -- it's not clear
-> whether "secure computing" means "seccomp permit the syscall" or
-> "seccomp is enabled and some special rules now apply" or something else
-> entirely.
->
-> If we're changing the return type, it might be worth renaming the
-> function something like:
->
->         seccomp_permits_syscall()
+This series removes the unnecessary NULL check of the kstat_irqs field.
+The first patch addresses the generic IRQ code, and the second patch
+addresses one isolated occurrence in the parisc code. The first patch
+also includes a more detailed description of why removing the NULL check
+is safe.
 
-Yeah that's way better, let's do this.
-(I also had problems with this function!!)
+Radu Rendec (2):
+  genirq: Remove unnecessary NULL check of the kstat_irqs field
+  parisc: Remove unnecessary NULL check of the kstat_irqs field
 
-Rusty Russel's API design manifesto tells us to do this:
-https://gist.github.com/mjball/9cd028ac793ae8b351df1379f1e721f9
+ arch/parisc/kernel/smp.c |  2 +-
+ include/linux/irqdesc.h  |  2 +-
+ kernel/irq/irqdesc.c     | 11 ++++-------
+ 3 files changed, 6 insertions(+), 9 deletions(-)
 
-Yours,
-Linus Walleij
+-- 
+2.54.0
+
