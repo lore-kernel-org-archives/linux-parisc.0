@@ -1,65 +1,65 @@
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 072B74499B2
-	for <linux-parisc@vger.kernel.org>; Thu,  9 Jul 2026 18:49:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92CD544999B
+	for <linux-parisc@vger.kernel.org>; Thu,  9 Jul 2026 18:51:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783622982; cv=none; b=ZcGRAlmKWJJsf27ivrUrCVmwE5Xm8T5CvPfvV5b4qQpQYCPSDzQNf/GNVhuTa6UJWxPUj2k18GVZHUCwuZFmIN4ThNkBY3TJ74P+2Nqvh2jbl8Orttk7eau1Q/EUplpZTkIdJN26B98LDYJXmM8R9ki7JiOez/3wS6mxX2nbnbg=
+	t=1783623070; cv=none; b=s+FI18k/fAQTyv+OAHd6S1xevbrilfERK33NqiyvPXXJw7QStp2NDABn2QVdA5M0Nl7NphvPuSPQSciFyomWThHLGMGibnwoMatQMTNR7MmOgyrDnSn35upW3gM0ElStuwcdaRuy98onrt7pqI3ZYbgkdGMHmL7AmCKQYCv9rkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783622982; c=relaxed/simple;
-	bh=Vt3AAg3Xfx8+LNeTFAW2+W3Hb+78J4FMQ1nIkkkMzK4=;
+	s=arc-20240116; t=1783623070; c=relaxed/simple;
+	bh=lzP8p16U25+AihhB4pAY2jVwlzeYDWG3z6Eulu2pBWI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iO86Ha/Ot7dGmJZaIl3keIDJn1X2LZYhzkSujBXdkuc694nyqMV4bsJSwPLtdjcx+W6u0HBP11MRe0iuT1733/YF4idwB8dI1IfmKbp6vy1ib2GT1B5E4zsXi9Mwpt6iuh7FJo/G3TtArlPTrPgW89xX28B6SzNEdZoGfOnWK1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WseUpRiD; arc=none smtp.client-ip=209.85.216.43
+	 Content-Type:Content-Disposition:In-Reply-To; b=aHlJw/n44eAi+aAXd6XMISczYJdMEjld9AIbpO2TreYcBcKXYNZukzf8nD8ccde1vmZjbU6GvKc5ZKBjv24zpUcfh5wHL2vxkfZ7u5iFGn8UQw4SxrcWBFbFmkJEctC63Vrz0tS8/MAmg9QST4AFNBgQpk1NVCtsA2e39R9wRiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nN4Lxdbu; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WseUpRiD"
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-38175907a56so1104188a91.0
-        for <linux-parisc@vger.kernel.org>; Thu, 09 Jul 2026 11:49:38 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nN4Lxdbu"
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-38426d04bb4so142474a91.1
+        for <linux-parisc@vger.kernel.org>; Thu, 09 Jul 2026 11:51:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783622978; x=1784227778; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1783623067; x=1784227867; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=nwM8hgg0owOvY9szEO+ZJ41xpH48S7vT5kW5bfv9ji8=;
-        b=WseUpRiDSW1IwvJgJS8P4KkUNnBWLn7KhUi98d7jYXG6XuXauUVzyeudzSDC80u4EZ
-         ZBoh2fncfuh1OfPnEgQH7fpXE0QyODrg5BQaPaqwFRfrKcV3X0xNWeNuXgfxNUQiqSUD
-         d/OFMuunwQZHR3xDsSJWX4M7+h9j11+6Lx8rFgnBzZFBWkLVUuS870k5worYzoz5Gcub
-         alPI6Q3hla4/AsL7CbHM03wPidOJ+1vPSXO8YuAYWAtkFh/OvWAhECy3/AvwOLZkdlNs
-         MdbkqBUXt8hcVLq2nwxmBlIPPS/5b6Igt9XjnTbg440E2N2pGveUWVor5FM5WetWaGVQ
-         Tr6A==
+        bh=+EsurZOWBA/vTxJ4VlwckFkTmsLoBwFFgPdTWboTXPw=;
+        b=nN4LxdbuQkIm1frIFQ2Xjm7NJy9RsZ9CPtSEjIprcsRUGu7BdvaAxFR8/rNHO8YA8a
+         X1woSb1Nu/xrs8OHOa4JqGM5iSzdNhmHwQxKYmpIasulAW8/8O7le9XWzN1AFwp1WRj5
+         8IP7olcUdeE+dttzz+QppekbyWD4pWzL2Y6Frw6JWKkXpOY6G3ZmgAuptd/imHU0UcG2
+         CR6IUAA8Iz2OvsZLLSO59oKvCw2zeV/49J75QyROZlz9Qilh8bKGCQrp/MD5+HjNt3H0
+         ViN6guEja5TuF6yY0NsB8cmMFWB7pXxfMLxJ2DIo48GamyBpm0M56vpJlJ55xZvSJAOJ
+         LOYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783622978; x=1784227778;
+        d=1e100.net; s=20251104; t=1783623067; x=1784227867;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=nwM8hgg0owOvY9szEO+ZJ41xpH48S7vT5kW5bfv9ji8=;
-        b=D5JHFZ97It6M5HHgWkH3nqk0CtKDBpnbei9CaHZ2VgWRTtwzXZwSxTnljJ0c4OkOco
-         VIF67zPaum5XkHHMmyIysE5ApVf6fNH43BLjJi7JBURBoLrT0Wrp2nFN+2dcdC9P3VHV
-         phVfbMWbY6wK3XQdHuYOlH+7zUWmkLnL/Y+L2Ah9L0Oe02FBkTjDEYVZGjRhVypE591j
-         VuYBEzLVxsI6RD2xp3YrQDBOCTN1/Obe3zM9hGSBaR0RYYvMwUIZl5U4McI2z4qTmdKU
-         UinDxV5gAYzm8k00yPQsxQBXD10IxUV7ylRrf5lThEzU0EewM66u9/dp1uLM0BX2oY+Q
-         Kr4w==
-X-Forwarded-Encrypted: i=1; AHgh+Rqau9U9xrFENVvIbSyUrpdn3waylf4PU4feDlX5XOpiFd/LROVKO6o2cDVP2AVbSAi+kAwq3l56XKQfrjc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRGkNmEAdGKYym37wB95VrZOILE7gKD1cm7UfLZm8+uRLlbCcn
-	pmFREP44b2TziHzITrHTGHRgAEwTw/fX/4Hk6JhigRygwdfZIuHDlMJh
-X-Gm-Gg: AfdE7clGDWzzuJuWvdM/dFep3i7XQ1T8jZihsQ/TweYGIXQCvFr+B52fuLAOZ3GAmQD
-	X9+YebWWLIrkUFQ7tuB32IYyd9GwLbY1TD4GtPF4mmJPq3hiAKm9ve2Z5LgginMnXkOaoBTOSAD
-	HB6Db40SWAjVKIvYCkvvx/oy6n+dAMDKRa5VudG9Uc9Ypayr2InFqrr+S46ajelYTcCbClCYuXz
-	g1jxY8yEILLQgJ2EWSEguFQmfbI5fCbGhEbT++oBMTgUjbSuQcBE/uaTqjxvEn4QirhvgEwaEmy
-	N56Prz0rNRcTbcwDwwyhosCPoXPB1pCqIG6kYnnWcC78zcRw5bLtJF2V99lqi1xD0Z5vlTs1LFr
-	Sg+3Qrj8xwcrUZLFc1ZRkMCrLAKPcdFN6kMAm6dFd/EWJVUWBhgDmT/QRQ1x2lpczJAg7KoDWXP
-	F45bfkqjhqppHUyleCpQU0niLhYws5Si1wbgWtUqLcBgTdxGFHaMwRRCL23zgd
-X-Received: by 2002:a17:90b:180a:b0:387:d9cc:7dc1 with SMTP id 98e67ed59e1d1-38d15c8e9c6mr429024a91.19.1783622978242;
-        Thu, 09 Jul 2026 11:49:38 -0700 (PDT)
+        bh=+EsurZOWBA/vTxJ4VlwckFkTmsLoBwFFgPdTWboTXPw=;
+        b=kI6LeREN9+MT2by9AKZinSZvO+9ln6eOahm1ezJI8WLILa1cm7glxYXsNTcpnLnX2a
+         ZQN6d/w2kj/FCDxNaBx0feafO8qMT0JOss1gmVb4jwfDg0ZtNJ8UjtUVsw4tj6mS1z20
+         SDy85wnWufFo/F3nYrZ8IRryonCzEesGV9GzFV28KbuPpcioQ9JolEJN5f1oH+z9x60i
+         W5gvPqZrBFxiCGFUeStjpa+f20pdJkVGtDAKRS/1Wuz8bPY2fU1gu7PHhmY9r/emEM0e
+         38vnB099SKUYI2Yg0sfwV4Q/WGh3aoWnODah8PW/ivn2M2OTAxFpLcDCwMo54bkc3H/D
+         1l5Q==
+X-Forwarded-Encrypted: i=1; AHgh+Rpv+BmVuJI5WNbo6Rbr7bcKs41zM6NCUVqF6K7TW0rO0PaGHu32IVoaqC3kHG6GQstZbAIv2vPAXNvlO9E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YznpPtuXbI36zA7Po2Fu1/baWl6ETUzmFbkqZXhF9wZZ3sYyeF9
+	ixkVFD5y5261CgmzcRKCXubT0mb9ywTohOnJUe0fcCwiap+HbUULQL3E
+X-Gm-Gg: AfdE7ckI4C+gG0Q4XJXwF0aD0OFg5kBps4gdQPYcogWsrcsNkVSr5iAN1sSOZkzF408
+	F7+bulCzm0IWH6QA1SA4db5GSuIfvEBUR38CNuy/GltscvAPxa5vYJO7/vl5+JiX0BGsUVtdjX/
+	1KT/2Qy+IMjbAAJWwNm7rIvgRyZgUUBrVRGIgBbe/v3J0SpAYazhM0QY0uFdeNnR1fDi5AJodou
+	fLAvzZy7UTNF9XNgyEmSTfzy+TOkqfwdWpvSfWMA897V09BRdNJqkXWwtVQAzejlrF5gyRqSJ+w
+	AsR9dMw0YXF4hGyJXdm5tjuwQ73xwps0Ta0FqpZ3D0xwuRHBur5fDUMh1yppZNdUi+S/rDdzUwE
+	Sy4QbuVoO+kPvWMesnqTQ8NUuE47z8JLMyWetKwRHut22fJGLFz4BnY6cjUBOYnB9LAer8BZgwy
+	I5eY8x6tlRVhzmTvJ5J6YnZtyuMjDAHiNnewz+mFXP0VSVbxPbSnIKl7Q/S3tt
+X-Received: by 2002:a17:90b:3d86:b0:36a:caf2:3815 with SMTP id 98e67ed59e1d1-38d15876f4amr425299a91.15.1783623066680;
+        Thu, 09 Jul 2026 11:51:06 -0700 (PDT)
 Received: from li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com ([106.51.160.236])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-311747f72a6sm37887153eec.1.2026.07.09.11.49.21
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-311747f596asm33415688eec.2.2026.07.09.11.50.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 11:49:37 -0700 (PDT)
-Date: Fri, 10 Jul 2026 00:19:18 +0530
+        Thu, 09 Jul 2026 11:51:05 -0700 (PDT)
+Date: Fri, 10 Jul 2026 00:20:46 +0530
 From: Mukesh Kumar Chaurasiya <mkchauras@gmail.com>
 To: Thomas Gleixner <tglx@kernel.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, 
@@ -84,10 +84,10 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-openrisc@vger.kernel.org, 
 	sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, 
 	Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [patch 09/18] entry: Remove syscall_enter_from_user_mode()
-Message-ID: <ak_tIel1LZh-zlAU@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
+Subject: Re: [patch 10/18] entry: Use syscall number instead of rereading it
+Message-ID: <ak_tgBEhNxX5m700@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
 References: <20260707181957.433213175@kernel.org>
- <20260707190254.132654198@kernel.org>
+ <20260707190254.181086755@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -96,142 +96,49 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260707190254.132654198@kernel.org>
+In-Reply-To: <20260707190254.181086755@kernel.org>
 
-On Tue, Jul 07, 2026 at 09:06:32PM +0200, Thomas Gleixner wrote:
-> All architecture use either:
-> 
->     nr = enter_from_user_mode_randomize_stack(regs, nr);
-> 
-> or
-> 
->     enter_from_user_mode_randomize_stack(regs);
->     nr = syscall_enter_from_user_mode_work(regs, nr);
-> 
-> Remove the now unused function.
+On Tue, Jul 07, 2026 at 09:06:36PM +0200, Thomas Gleixner wrote:
+> rseq_syscall_enter_work() is invoked before the syscall number can be
+> modified. So there is no point in rereading it from pt_regs.
 > 
 > Signed-off-by: Thomas Gleixner <tglx@kernel.org>
 > ---
->  Documentation/core-api/entry.rst |   17 +++++++++-------
->  include/linux/entry-common.h     |   40 +++------------------------------------
->  include/linux/irq-entry-common.h |    6 ++---
->  3 files changed, 17 insertions(+), 46 deletions(-)
+>  include/linux/entry-common.h |    9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 > 
-> --- a/Documentation/core-api/entry.rst
-> +++ b/Documentation/core-api/entry.rst
-> @@ -68,7 +68,7 @@ low-level C code must not be instrumente
->    noinstr void syscall(struct pt_regs *regs, int nr)
->    {
->  	arch_syscall_enter(regs);
-> -	nr = syscall_enter_from_user_mode(regs, nr);
-> +	nr = syscall_enter_from_user_mode_randomize_stack(regs, nr);
->  
->  	instrumentation_begin();
->  	if (!invoke_syscall(regs, nr) && nr != -1)
-> @@ -78,12 +78,14 @@ low-level C code must not be instrumente
->  	syscall_exit_to_user_mode(regs);
->    }
->  
-> -syscall_enter_from_user_mode() first invokes enter_from_user_mode() which
-> -establishes state in the following order:
-> +syscall_enter_from_user_mode_randomize_stack() first invokes
-> +enter_from_user_mode_randomize_stack() which establishes state in the
-> +following order:
->  
->    * Lockdep
->    * RCU / Context tracking
->    * Tracing
-> +  * Apply stack randomization
->  
->  and then invokes the various entry work functions like ptrace, seccomp, audit,
->  syscall tracing, etc. After all that is done, the instrumentable invoke_syscall
-> @@ -99,10 +101,11 @@ that it invokes exit_to_user_mode() whic
->    * RCU / Context tracking
->    * Lockdep
->  
-> -syscall_enter_from_user_mode() and syscall_exit_to_user_mode() are also
-> -available as fine grained subfunctions in cases where the architecture code
-> -has to do extra work between the various steps. In such cases it has to
-> -ensure that enter_from_user_mode() is called first on entry and
-> +syscall_enter_from_user_mode_randomize_stack() and
-> +syscall_exit_to_user_mode() are also available as fine grained subfunctions
-> +in cases where the architecture code has to do extra work between the
-> +various steps. In such cases it has to ensure that
-> +enter_from_user_mode_randomize_stack() is called first on entry and
->  exit_to_user_mode() is called last on exit.
->  
->  Do not nest syscalls. Nested syscalls will cause RCU and/or context tracking
 > --- a/include/linux/entry-common.h
 > +++ b/include/linux/entry-common.h
-> @@ -19,7 +19,7 @@
->  #endif
+> @@ -70,9 +70,10 @@ static inline void syscall_enter_audit(s
+>  	}
+>  }
 >  
->  /*
-> - * SYSCALL_WORK flags handled in syscall_enter_from_user_mode()
-> + * SYSCALL_WORK flags handled in syscall_enter_from_user_mode_work()
->   */
->  #define SYSCALL_WORK_ENTER	(SYSCALL_WORK_SECCOMP |			\
->  				 SYSCALL_WORK_SYSCALL_TRACEPOINT |	\
-> @@ -205,42 +205,10 @@ do {									\
->  	_ret;								\
->  })
->  
-> -/**
-> - * syscall_enter_from_user_mode - Establish state and check and handle work
-> - *				  before invoking a syscall
-> - * @regs:	Pointer to currents pt_regs
-> - * @syscall:	The syscall number
-> - *
-> - * Invoked from architecture specific syscall entry code with interrupts
-> - * disabled. The calling code has to be non-instrumentable. When the
-> - * function returns all state is correct, interrupts are enabled and the
-> - * subsequent functions can be instrumented.
-> - *
-> - * This is the combination of enter_from_user_mode() and
-> - * syscall_enter_from_user_mode_work() to be used when there is no
-> - * architecture specific work to be done between the two.
-> - *
-> - * Returns: The original or a modified syscall number. See
-> - * syscall_enter_from_user_mode_work() for further explanation.
-> - */
-> -static __always_inline long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall)
-> -{
-> -	long ret;
-> -
-> -	enter_from_user_mode(regs);
-> -
-> -	instrumentation_begin();
-> -	local_irq_enable();
-> -	ret = syscall_enter_from_user_mode_work(regs, syscall);
-> -	instrumentation_end();
-> -
-> -	return ret;
-> -}
-> -
->  /*
-> - * If SYSCALL_EMU is set, then the only reason to report is when
-> - * SINGLESTEP is set (i.e. PTRACE_SYSEMU_SINGLESTEP).  This syscall
-> - * instruction has been already reported in syscall_enter_from_user_mode().
-> + * If SYSCALL_EMU is set, then the only reason to report is when SINGLESTEP is
-> + * set (i.e. PTRACE_SYSEMU_SINGLESTEP).  This syscall instruction has been
-> + * already reported in syscall_enter_from_user_mode_work().
->   */
->  static __always_inline bool report_single_step(unsigned long work)
+> -static __always_inline long syscall_trace_enter(struct pt_regs *regs, unsigned long work)
+> +static __always_inline long syscall_trace_enter(struct pt_regs *regs, unsigned long work,
+> +						long syscall)
 >  {
-> --- a/include/linux/irq-entry-common.h
-> +++ b/include/linux/irq-entry-common.h
-> @@ -49,9 +49,9 @@
->   * Defaults to an empty implementation. Can be replaced by architecture
->   * specific code.
->   *
-> - * Invoked from syscall_enter_from_user_mode() in the non-instrumentable
-> - * section. Use __always_inline so the compiler cannot push it out of line
-> - * and make it instrumentable.
-> + * Invoked from enter_from_user_mode_syscall_and_randomize_stack() in the
-> + * non-instrumentable section. Use __always_inline so the compiler cannot push
-> + * it out of line and make it instrumentable.
->   */
->  static __always_inline void arch_enter_from_user_mode(struct pt_regs *regs);
+> -	long syscall, ret = 0;
+> +	long ret = 0;
 >  
+>  	/*
+>  	 * Handle Syscall User Dispatch.  This must comes first, since
+> @@ -90,7 +91,7 @@ static __always_inline long syscall_trac
+>  	 * through hrtimer_interrupt().
+>  	 */
+>  	if (work & SYSCALL_WORK_SYSCALL_RSEQ_SLICE)
+> -		rseq_syscall_enter_work(syscall_get_nr(current, regs));
+> +		rseq_syscall_enter_work(syscall);
+>  
+>  	/* Handle ptrace */
+>  	if (work & (SYSCALL_WORK_SYSCALL_TRACE | SYSCALL_WORK_SYSCALL_EMU)) {
+> @@ -145,7 +146,7 @@ static __always_inline long syscall_ente
+>  	unsigned long work = READ_ONCE(current_thread_info()->syscall_work);
+>  
+>  	if (work & SYSCALL_WORK_ENTER)
+> -		syscall = syscall_trace_enter(regs, work);
+> +		syscall = syscall_trace_enter(regs, work, syscall);
+>  
+>  	return syscall;
+>  }
 > 
 Reviewed-by: Mukesh Kumar Chaurasiya (IBM) <mkchauras@gmail.com>
