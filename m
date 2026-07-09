@@ -1,128 +1,76 @@
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0673428463
-	for <linux-parisc@vger.kernel.org>; Thu,  9 Jul 2026 15:57:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4F242E8E2;
+	Thu,  9 Jul 2026 16:22:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783612639; cv=none; b=D/ZXy94GF93B6CPcrtwja827Jf0oNDsVtrW6X7Y9vitoUhzbXVinuex8Wg52sRNOmTY99quW8iJ/P/S/AFF/CY1PYLnajmw0uPMDvENsEyiuhXQV0pKoIHFyi07XE3jjRIRkmdE+d7l2K985GOhhkNBtUcgUAvC6d4NBJHXPmQU=
+	t=1783614128; cv=none; b=Y5BEaKvyfj9umFm4LQIHUj2Q+C1HHaGaOZiMjaGdkY+h1in51AiLOfZZAwtD1mDTCLnq1PsJq3N+993yD71Mwqrq7lJSFi7EvScvGcfrMPkEFLhwIn4HFl1aMCOIMnfzsu6oDQtVcjM7+YBvC5hZOdnu4xnR3OxIYafkcQPclxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783612639; c=relaxed/simple;
-	bh=zOqJj5IGDkUHkuE0A0VjkQNttgCPQIdWlZYAcSbicnE=;
+	s=arc-20240116; t=1783614128; c=relaxed/simple;
+	bh=VI3Ojo7ccWWfCHnU/9oqVcNO820ulcvMp+VbcWTgRSA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DqywsLQGB01ctpOSHBmkg+nzvXhtp39CNwDI8g5CyOGNrayYh2i31zBuTYujdNe9AngF+FtCYuktZaV2/yX40PDCLZSuEa9rEkp9ZmfVvxaStK+bo11q46Exb7gFl1AzbS0rD+RDe/7j3MM1/SdJ4q5KYMiMzvhMtHcQJuMlKrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=JaiPRMxW; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+	 Content-Type:Content-Disposition:In-Reply-To; b=VHunwbQbfxwTT//vRwY1WPAj9TINyxq93S9KS8Hv4UWeVHU/crfjJaceQPtzMIfJaVbzKpSCmJGgsvnetcwsSFzAb4CLjXn/A9xTVfnHl0xPR4XRN3IxCHJ8PZ+usMuBEMg0l5BZW2Bhy5tecgiPpR+DN4aQ8rvYFKFlflQ329o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S/Uien6v; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="JaiPRMxW"
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-8f18d92172aso760106d6.2
-        for <linux-parisc@vger.kernel.org>; Thu, 09 Jul 2026 08:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1783612635; x=1784217435; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=T5BtG8ZZnILhla7gs7f63UlRSUpFIkMkPS04TXxov0k=;
-        b=JaiPRMxWcQcvwomxKrNgkR+V+GW/eBHpnGZNau6MH5y450xJl98VMTJJHAF9jRsuXC
-         Xt7mR7KeawTZPVnKboCCSGbsxow5a2PgFeiSY8/XWddVDWFrEWmFXtO5W/Dl0nrr5olU
-         FHib07hylrfhwz/tO61AsseU9KRqyHxGgKPeBcjHWB/NVjmWrN59d0H3M1NQXERgA5Mw
-         SBvOCnVFfjsbezQ1DAbcIXDOTZgXYgBqCjS4/QI1RF06UoQPY6hmEkM7zoDzdAY2dn+j
-         Mu9hGDFmirDa4O7n5AJQfExMa5HZRVOJt/+stBKx4vf5W+gioGtJL2bg1Fid5qnDWQi0
-         ldYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783612635; x=1784217435;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=T5BtG8ZZnILhla7gs7f63UlRSUpFIkMkPS04TXxov0k=;
-        b=hiNRbI66TfPP1Jok1E06QRsBsWtJRrDtzP2CFCSDHWCaGbFSTvWn1LW/BL76+0Eh46
-         AA9Uamq4ipVfFRQ+8xjw4R0C+Kf962e24FisC51TreAGEFn7cQ/67bT64Qj17yimyCo1
-         lFfPKoz/S3RQJzO+dX/nNmic06wbdezrFg4RISmbtNL1BpvRlG3Qd1+xI8HY4M9g1I2i
-         nbC5jsSgVo5ftpcKSft3pi8cwQ0hK7pJ+3D8tYtK/C6GDm9HHdgLvNqGq2br9+a+MUQH
-         3qA/d41gwD8QJdrIySbdkMlLCmazttCy/E4cGTXZBf2AejxLED6g7ydszrYJx+Md0WV/
-         iv9Q==
-X-Forwarded-Encrypted: i=1; AHgh+RrxtxWIrCyG5hIaw9l6XproMA3rnHIvwEk1BADo/PufdaDV9ju0oITUt9w/sPPc4fvQFqJGLx5HHAOBU/U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyteDCyz/n4eqyORC51YE2tZ+bZKdQtIVTKJwuJf+oJoLK6tgWW
-	sXdOgIQrbmVGh66R5PTHATh4mA7yovX3tXZYfIxx5Aohsv9cygqIMuAa6vLq2FhtT48=
-X-Gm-Gg: AfdE7clcBrx8eP2Ewxs5/3T6mxABnKAoL9z3fwVv40q9AUb7Nxbosv/bdD5huSQiEho
-	zXW6xOhn/ukyD525qvYPtBtlDtUPtK1uIUnQ47F03LPVxFqnAMZWwI4H0X4c7+WfbYSoCQBVB+T
-	Q2VNCKLZ1zg0Gy0ucvqV9KyL2pvdGmv02qYzd7vlTirSwf7YgyEKBFmhKmN1B0zTilxtiLGHDQ1
-	W2elyM9KmL6UAugVA6HlSulCy8+eeDf9AEaVnGzfrOvSzFw047274lCI5SkECNoEhocG680V6/o
-	nj+QH4+w2w/eMW1ihyj+9Se3yRBLVmJPOKmw5Wu60XLhxU6XFfT5KkYZZn99C3F/MsYRtpCQnav
-	WI/JPWFPlsFnHMR9sK6SpMrlASb3psIzabSxKWzY8W3HkFV69CrZVKyaFNTSmntccrYj3Xu32zT
-	K5Al9hlXY9vF/iXCt30O7ncEEmsNj89KPvXITCn/YidedrWN7rRSntS/FvLURMT472sdFvsNqmF
-	vcZRMI=
-X-Received: by 2002:a05:6214:2aa6:b0:8f3:e0ce:6119 with SMTP id 6a1803df08f44-8fec0ead52amr91789316d6.21.1783612635560;
-        Thu, 09 Jul 2026 08:57:15 -0700 (PDT)
-Received: from gourry-fedora-PF4VCD3F (pool-173-79-60-52.washdc.fios.verizon.net. [173.79.60.52])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8ffd86d43e2sm20317526d6.43.2026.07.09.08.57.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 08:57:15 -0700 (PDT)
-Date: Thu, 9 Jul 2026 11:57:09 -0400
-From: Gregory Price <gourry@gourry.net>
-To: Lorenzo Stoakes <ljs@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Simon Schuster <schuster.simon@siemens-energy.com>,
-	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Jarkko Sakkinen <jarkko@kernel.org>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	Ian Abbott <abbotti@mev.co.uk>,
-	H Hartley Sweeten <hsweeten@visionengravers.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Rob Clark <robin.clark@oss.qualcomm.com>,
-	Dmitry Baryshkov <lumag@kernel.org>,
-	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	Thierry Reding <thierry.reding@kernel.org>,
-	Mikko Perttunen <mperttunen@nvidia.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Christian Koenig <christian.koenig@amd.com>,
-	Huang Rui <ray.huang@amd.com>, Ankit Agrawal <ankita@nvidia.com>,
-	Alex Williamson <alex@shazbot.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Dan Williams <djbw@kernel.org>, Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	David Hildenbrand <david@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	"Liam R . Howlett" <liam@infradead.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S/Uien6v"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B0FB1F000E9;
+	Thu,  9 Jul 2026 16:22:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783614126;
+	bh=E3GKiVGCG/M7FltpcGzY43WO5HnNe5q++QmCFGBnpG0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=S/Uien6vGeymdukHshCIRbD/qQirZnmNv1fkPyrZGO6+K+ckkFdEYSDwlnKFpi2BF
+	 tuyJKBhR0dyYdYiHulLx/LgusylN0RPtbaGzeJM/aCdOjZzg650pi7YEBbg+JGqSHR
+	 64dXPeQbq2evJa22r52hBC05ICSGISNW2xikw530YpQ+nCbruCjZdneQ5mim5aCUCw
+	 Xf0AYTbfJ+wFGM1bNULmUZblGmQ7iYYE8zwgMJIETdC1+LLXgejWycDXueD9QUnxdI
+	 F83JV94XXQwp5V/iZ2sAm+8m4as7p5Y/PmHH5g0nCXnFS05/jmhxEmyZJZGFezfdfB
+	 UQzRtgW6GQfPA==
+Date: Thu, 9 Jul 2026 09:22:06 -0700
+From: Kees Cook <kees@kernel.org>
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>, SeongJae Park <sj@kernel.org>,
-	Miaohe Lin <linmiaohe@huawei.com>, Hugh Dickins <hughd@google.com>,
-	Mike Rapoport <rppt@kernel.org>, Kees Cook <kees@kernel.org>,
-	Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
-	linux-sgx@vger.kernel.org, etnaviv@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-	freedreno@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-	kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	nvdimm@lists.linux.dev, linux-mm@kvack.org, iommu@lists.linux.dev,
-	linux-perf-users@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-	damon@lists.linux.dev, Pedro Falcato <pfalcato@suse.de>,
-	Rik van Riel <riel@surriel.com>, Harry Yoo <harry@kernel.org>,
-	Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 19/30] mm: use linear_page_[index, delta]() consistently
-Message-ID: <ak_E1Y-D2Twykusr@gourry-fedora-PF4VCD3F>
-References: <cover.1782735110.git.ljs@kernel.org>
- <bf56e2e98b512962a2fb88900d535a0e9e6769d8.1782735110.git.ljs@kernel.org>
- <ak_EivwcDDdn1Xvp@gourry-fedora-PF4VCD3F>
+	Mark Rutland <mark.rutland@arm.com>,
+	Jinjie Ruan <ruanjinjie@huawei.com>,
+	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Guo Ren <guoren@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Helge Deller <deller@gmx.de>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Richard Weinberger <richard@nod.at>,
+	Chris Zankel <chris@zankel.net>,
+	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+	linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	linuxppc-dev@lists.ozlabs.org, Huacai Chen <chenhuacai@kernel.org>,
+	loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	linux-riscv@lists.infradead.org,
+	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
+	x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	Brian Cain <bcain@kernel.org>, Michal Simek <monstr@monstr.eu>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [patch 11/18] seccomp, treewide: Rename and convert
+ __secure_computing() to return boolean
+Message-ID: <202607090921.ABE4BB4A@keescook>
+References: <20260707181957.433213175@kernel.org>
+ <20260707190254.230735780@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -131,19 +79,18 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ak_EivwcDDdn1Xvp@gourry-fedora-PF4VCD3F>
+In-Reply-To: <20260707190254.230735780@kernel.org>
 
-On Thu, Jul 09, 2026 at 11:55:54AM -0400, Gregory Price wrote:
-> > @@ -2462,7 +2463,7 @@ static int comedi_vm_access(struct vm_area_struct *vma, unsigned long addr,
-> >  {
-> >  	struct comedi_buf_map *bm = vma->vm_private_data;
-> >  	unsigned long offset =
-> > -	    addr - vma->vm_start + (vma->vm_pgoff << PAGE_SHIFT);
-> > +	    addr - vma->vm_start + (vma_start_pgoff(vma) << PAGE_SHIFT);
-> >  
+On Tue, Jul 07, 2026 at 09:06:40PM +0200, Thomas Gleixner wrote:
+> From: Jinjie Ruan <ruanjinjie@huawei.com>
 > 
-> Obviously correct, but was this intended for a different patch?
-> 
-> ~Gregory
+> The return value of __secure_computing() currently uses 0 to indicate
+> that a system call should be allowed, and -1 to indicate that it should
+> be blocked/killed. This 0/-1 pattern is non-intuitive for a security
+> check function and makes the control flow at the call sites less readable.
 
-bleh already caught, sorry for the noise :]
+Conceptually, I'm good with this. Just make sure that the
+tools/testing/selftests/seccomp/seccomp_bpf tests still passes. :)
+
+-- 
+Kees Cook
