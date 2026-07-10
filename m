@@ -1,148 +1,132 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F347427A06
-	for <linux-parisc@vger.kernel.org>; Fri, 10 Jul 2026 12:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B6D377544;
+	Fri, 10 Jul 2026 13:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783688003; cv=none; b=jaqAuyvN8Wyrvk5OE85DntNSR/fJ24RJhV2URXcUBwRJ3EU0M0r++ya2PF6ejD1q59n0nfr80Avs2YKOc8/u7e/G2C6jYj8BSqXFEJxOshKLb/veXMthsKjS0NfVoB+UrBsO84wHsiADEsXxeEcoVTlTpbqciWYiOAa7dnKcNz8=
+	t=1783690767; cv=none; b=q4Sd47eeuC/Pr9rX0DQfdHOq+ljWD1gAYy3StiL2oSaEOSaYd1STgDJohmyWs/BC6rUIYJA3XBkKEl+ntCDuB0bn8l90aJL9lK+xnmAdAoLxCIlCIiHJtdpXhe0Ow1IziWtxrtfTn+kBY6j2Zl4ytPkhl/UxE3GXduUcUb7YU4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783688003; c=relaxed/simple;
-	bh=sxv6a13OPgrK6TOsUQ/kBJYeYtA4hSsjpL/QVUw8MJI=;
+	s=arc-20240116; t=1783690767; c=relaxed/simple;
+	bh=1zOgBPuUrXPvOJucK7GyHI1L3i2YRBy6YlCIQgSIRNM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ff14UT4OBEjLXP1iVEMS6o7Z2ggesijQ06mJlFwQgjzpI6FOgUHEu6iTGPo4YpP/+qT/sWBQlud64sQzyMBxKjHQaL4XHYoRQvGBrY55pEP103Sq5H3bRJLP8PwJuIruqFVFTM+pSFV5cdDWq2GOJi46VxS1B9drH1bynbRNoVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O2AA42wc; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=uCCCam7JJ+bGLls+yV+6sAzqo+QGyEBBt5ltXIDLZCPAIXGa6TP+wguwbhEQ3fsZq8/319Hgp5pkBF/opR2ou+foI1Mph94u6D91xhLpeOoynPWrdTozYYh2E5C/BZaB7Nwu1YgTZ7JgPh5BOsFiDJ43Zc8XAsGXumIWeXU2nWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fydQPaDx; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O2AA42wc"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1783688000;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XTxMckJ71iKdcnC625lbZ9WJQgTp+gyXuVTaxsSZYeA=;
-	b=O2AA42wc0EFpHFaeTcNaA+5w2Vxj2dLQZ00YjfR5A3+JB1y4OPtfyeY1VNKeuyYVDjlqoy
-	TzMenwjfF9q+zFqyZXi8XP+H48JHs7nMPojLVdTC4UG6U94iupybkM9uqpYd1CMMtl1uyc
-	pySLQjyn0zU5XCWVDK7TvBD50TiZKnw=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-640-duefXCb_NOaqJcpTJsNlCw-1; Fri,
- 10 Jul 2026 08:53:17 -0400
-X-MC-Unique: duefXCb_NOaqJcpTJsNlCw-1
-X-Mimecast-MFC-AGG-ID: duefXCb_NOaqJcpTJsNlCw_1783687991
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AAE061801379;
-	Fri, 10 Jul 2026 12:53:07 +0000 (UTC)
-Received: from fedora (unknown [10.44.49.164])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 8AEF2180029C;
-	Fri, 10 Jul 2026 12:52:47 +0000 (UTC)
-Received: by fedora (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri, 10 Jul 2026 14:53:07 +0200 (CEST)
-Date: Fri, 10 Jul 2026 14:52:40 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-Cc: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	linux-riscv@lists.infradead.org,
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-	Jinjie Ruan <ruanjinjie@huawei.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Guo Ren <guoren@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Helge Deller <deller@gmx.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Richard Weinberger <richard@nod.at>,
-	Chris Zankel <chris@zankel.net>,
-	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-	Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
-	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org
-Subject: Re: [patch 13/18] entry: Make trace_syscall_enter() return type bool
-Message-ID: <alDrGBMdTuoLcVyy@redhat.com>
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.338083894@kernel.org>
- <ak5ySpil83TNWxeq@kunlun.suse.cz>
- <87se5tqkyp.ffs@fw13>
- <alDQ7isUKJFl8Va4@kunlun.suse.cz>
- <alDaOw8t-e3rxIPm@redhat.com>
- <alDmTcgzMlKiio9H@kunlun.suse.cz>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fydQPaDx"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82F051F000E9;
+	Fri, 10 Jul 2026 13:39:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783690762;
+	bh=hWe5y0XfVr4QQQGo0kaEF8UGbBWB4HZz8UbrXKM7Z28=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=fydQPaDxS/hHGLVdvf977qUXBNSF6t19lqQW/RqVTS+Xk5pgKo0deA+cWIFhyYRvv
+	 IeSezmg4COMZrohE1QJ6gnvclo/bOnA8j2IrdEmxinGMPa0Cv9pB6NQzVtyWt96x//
+	 6dNWU5GX7waS+2jwE8BVZ3WNZw/wsfy0C0SSKxIKb3QlnIRCNzHVm3c5Ps0q8mrTgW
+	 zsWArKYrCmnfDcrebwcipzmYNQ0mhqZJQQZSGHykLDKtejNlCDmPcno/dc/3rjzGeu
+	 kuxVdLjqHCE3kyZgIMxt9Re36Qo0mzOOVMmO0ZdfPfAx62l26oANlEaaJo1XHJjjzR
+	 MdqLjT6QyxJDg==
+Date: Fri, 10 Jul 2026 14:38:58 +0100
+From: Lorenzo Stoakes <ljs@kernel.org>
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Russell King <linux@armlinux.org.uk>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Simon Schuster <schuster.simon@siemens-energy.com>, 
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, Ian Abbott <abbotti@mev.co.uk>, 
+	H Hartley Sweeten <hsweeten@visionengravers.com>, Lucas Stach <l.stach@pengutronix.de>, 
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Rob Clark <robin.clark@oss.qualcomm.com>, Dmitry Baryshkov <lumag@kernel.org>, 
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, Thierry Reding <thierry.reding@kernel.org>, 
+	Mikko Perttunen <mperttunen@nvidia.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
+	Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>, Ankit Agrawal <ankita@nvidia.com>, 
+	Alex Williamson <alex@shazbot.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Dan Williams <djbw@kernel.org>, 
+	Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, 
+	Suren Baghdasaryan <surenb@google.com>, "Liam R . Howlett" <liam@infradead.org>, 
+	Matthew Wilcox <willy@infradead.org>, Marek Szyprowski <m.szyprowski@samsung.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Oleg Nesterov <oleg@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	SeongJae Park <sj@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>, 
+	Hugh Dickins <hughd@google.com>, Mike Rapoport <rppt@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-sgx@vger.kernel.org, 
+	etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, 
+	freedreno@lists.freedesktop.org, linux-tegra@vger.kernel.org, kvm@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev, linux-mm@kvack.org, 
+	iommu@lists.linux.dev, linux-perf-users@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com, damon@lists.linux.dev, 
+	Pedro Falcato <pfalcato@suse.de>, Rik van Riel <riel@surriel.com>, Harry Yoo <harry@kernel.org>, 
+	Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 02/30] mm: add kdoc comments for vma_start/last_pgoff()
+Message-ID: <alD1h7kHZdX_0I-0@lucifer>
+References: <cover.1782735110.git.ljs@kernel.org>
+ <8c618dfd7de419e3b797b8bd1cd921d4c5b8878b.1782735110.git.ljs@kernel.org>
+ <03762de9-c695-4cdd-8c25-4fc31335ea15@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <alDmTcgzMlKiio9H@kunlun.suse.cz>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+In-Reply-To: <03762de9-c695-4cdd-8c25-4fc31335ea15@kernel.org>
 
-On 07/10, Michal Suchánek wrote:
->
-> On Fri, Jul 10, 2026 at 01:40:43PM +0200, Oleg Nesterov wrote:
+On Tue, Jul 07, 2026 at 04:46:13PM +0200, David Hildenbrand (Arm) wrote:
+> On 6/29/26 14:23, Lorenzo Stoakes wrote:
+> > Describe what vma_start_pgoff() and vma_last_pgoff() actually provide in
+> > detail.
 > >
-> > I can only say that ptrace users do want to skip the syscall and set the
-> > return value on entry.
+> > This is in order that we can differentiate this between functions that will
+> > be added in a subsequent patch which provide a different page offset.
 > >
-> > See
-> > 	[PATCH v5 1/2] ptrace: add PTRACE_SET_SYSCALL_INFO syscall skipping support
-> > 	https://lore.kernel.org/all/20260709100949.94345-2-renzo@cs.unibo.it/
+> > No functional change intended.
 > >
-> > The changelog explains that currently this doesn't work because
-> > among the arches which define HAVE_ARCH_TRACEHOOK (at least) arch/mips is
-> > broken in this regard.
+> > Signed-off-by: Lorenzo Stoakes <ljs@kernel.org>
+> > ---
+> >  include/linux/mm.h | 26 ++++++++++++++++++++++++++
+> >  1 file changed, 26 insertions(+)
+> >
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index 059144435729..2f00c75e66bd 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -4278,11 +4278,37 @@ static inline unsigned long vma_pages(const struct vm_area_struct *vma)
+> >  	return (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
+> >  }
+> >
+> > +/**
+> > + * vma_start_pgoff() - Get the page offset of the start of @vma
+> > + * @vma: The VMA whose page offset is required.
+> > + *
+> > + * If the VMA is file-backed, this is the page offset into the file.
+> > + *
+> > + * If the VMA is anonymous, this is the virtual page offset of the start of the
+> > + * VMA - if unfaulted, then vma->vm_start >> PAGE_SHIFT, if faulted then the
+> > + * virtual page offset at the time of first fault.
+> > + *
+> > + * Note that if @vma is a MAP_PRIVATE file-backed mapping, then this returns the
+> > + * file offset.
 >
-> Or it could be documented that setting the return value has to be done
-> in the exit trace, and that would than work on any architecture AFAICT.
+> There is the ugly case of @vma being a MAP_PRIVATE PFNMAP mapping, where it
+> returns something different.
 
-Well, ptrace users know the problem. And this what they have to do
-currently.
+Yup, the pfn  I will update doc to mention this abomination too.
 
-> With ppc and s390 using the same register for the syscall number and
-> syscall return value it's very much impossible to poke the return value
-> on entry into a register using the generic register access function. As
-> of now there is no place to store the value ot of the return value
-> outside of the registers, either.
+The virt pgoff stuff in the RFC fixes this also.
 
-I know nothing about ppc and s390. Can't comment right now.
-
-> And the current PTRACE_SET_SYSCALL_INFO indeed sets the syscall nr and
-> arguments on entry and the syscall return value on exit, that
-> disctincion is implemented.
 >
-> Not sure how the patchset you point out is relevant, it only adds
-> changes in the exit case.
+> (remap_pfn_range_prepare_vma() -> vma->vm_pgoff set to PFN)
+>
+> --
+> Cheers,
+>
+> David
 
-No. It allows to skip-and-set-retval on PTRACE_EVENT_SECCOMP.
-
-But ENTRY -> EXIT transition is not yet allowed due to the problems
-above.
-
-Oleg.
-
+Cheers, Lorenzo
