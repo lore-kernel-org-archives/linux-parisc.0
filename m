@@ -1,65 +1,65 @@
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2608390222
-	for <linux-parisc@vger.kernel.org>; Fri, 10 Jul 2026 20:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359773AA1A6
+	for <linux-parisc@vger.kernel.org>; Fri, 10 Jul 2026 21:04:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783716548; cv=none; b=fGXfTqIPag+TanmUa7Gq37lhkpB+FyZZXm9GkZDjX3GN20xP2QO4+JvFhxFtHKN3LoWdZ6lbmPJ+I20ey+Y3YjP7I7otYRpG8ohJbBVJNIlDTyvVWrF8xgt4WORkgcg4N6ln3kfrElZTsUIWoVBiYsZsSLsvtZ2zK90Wc5SpF8k=
+	t=1783717447; cv=none; b=D5lWQzyNWaRT5QT+rYyP+9Vrqzy4trDFkYWrGqyAMMZ2dhhEtympYllRyDrrQKKKmCeV+IXCVdqjN3yv3FSAkuAQeAF4WCFhxlKJ9rtxXxsLin8aqXy6Cmt8e6TQ7AW+P4OGC0ve2+0CuUrv5w1XvGsnpWe7TKIjA8dta6uIDCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783716548; c=relaxed/simple;
-	bh=gC5eUqeAebp3PWfUT6EP2kjPnQImFCyW8H71EpslMQY=;
+	s=arc-20240116; t=1783717447; c=relaxed/simple;
+	bh=2Gu7794NM37tAeRC1T+cOMES75vIKzE7urqHPy3L3qo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EC8eCZ2N3cgpG8G5sGXJzdojgfDHDc3UifWTQ/XJfssEIdP8KNP0NswAS+G2070JQ1r9FXJYuZpHCbf9OJnX3Wb/jXhvLNFzgkIJNDpcCg/837aQrmW8CA+Q3EDx3Cee8+apKhS3nJDHbBuMmcsllQehcq1KbepPNUm0z5VpX2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=fonv6uPz; arc=none smtp.client-ip=209.85.160.178
+	 Content-Type:Content-Disposition:In-Reply-To; b=oQbqiU1ntMCBPl1RWx49c3LEGryhSmdC/7w6cD2/XR5AEh9PwRvYORk4nXtDEKAu/QdWuSnrFQXoBDUR16BPoVawH9AkVXToQshhvoR9E+0iuJJEoyjTOeALni0WzSB4NiXxQgMVmIgX6PASdRJP0G0Asq9FVfUFfuRDDAmvk28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=GAAEi2MX; arc=none smtp.client-ip=209.85.222.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="fonv6uPz"
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-51c8e2e39easo10028471cf.0
-        for <linux-parisc@vger.kernel.org>; Fri, 10 Jul 2026 13:49:05 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="GAAEi2MX"
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-92e5c92c389so70641185a.3
+        for <linux-parisc@vger.kernel.org>; Fri, 10 Jul 2026 14:04:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1783716545; x=1784321345; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1783717444; x=1784322244; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=fM3Bw1AZy4lAkPPHaL59OrI7vB0RIP/keCGdI0vS7tk=;
-        b=fonv6uPzbSKpXVdHanWV5yL2JqDJx0BGpTTlatVYw7KbdZpIPvlukInSDvuGJzFPvj
-         9Rb6nF6N1V592BAcnYZj+KuIQ6SUkNVw5BFkU33l8++hsxVZYpm6N2yINGX4SeQYz5Pm
-         0uC+wmjY2g/BzoUPQOVBvgQPzF+896+ru9GQ2Bke9PjtSUaYf3ji+w173v1VHl2JDf2D
-         cuZ4xUZCBkOxjsAwjzBGUe8aor3Jv10fASVIo+klHJhyWjemtNaXu9/XAhOtcs6ap+8P
-         tLKZ/vRdwaA27+Rqe3dkWQovqS2cERzk2/CXU2jrO9ebCfwVgJ2tr/qigd8Ad8xNjTbV
-         N9kg==
+        bh=OhI7UcJVN9EaMSo9cM31eWAmb7Tf3pcvHFHtAkV4RLE=;
+        b=GAAEi2MXoK+d/7/XAlFH+uiwIvxElpqz2dxEJAvsZNqfRI6/N79PCLifDgfeMUcqvt
+         HexRjEpY/PfBP4oFj8HmYN45Gt2i2+DXm3nPp9nhWA5E/HyTGZygY/6km0Vrug3RPrVo
+         l/ANztGVwLHIbt9x0+eBiitMuUIVcvOIREK4ruHnXQbfVPld5OVItIr+rsiHS4Q6k7Q0
+         mMf8R06eb0qTuCS8QMBVMDNLbhvgdv/XTS4GWFw+yFPBpS8QOI93/aLd8xoOpa4pcffX
+         ELNnFOC13AucrZb4Lz+pnfgIdgXUxAiq7NvnP/Sg97BHoymUuKpsob1sY+lQEbqbOFUF
+         hVDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783716545; x=1784321345;
+        d=1e100.net; s=20251104; t=1783717444; x=1784322244;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=fM3Bw1AZy4lAkPPHaL59OrI7vB0RIP/keCGdI0vS7tk=;
-        b=XSF0i1CN8S8iBOQakkX/Knw2NuBSIHQvRKsGPBvBlmtzVXtqi/Bd9w9TwZvIqQ4GID
-         Gql1dXcflm6rFPMnhjdMj5oYkepgrxbHg45/U3XtGtYoganRxds8QFK+9XqnNn3KG13g
-         wuwirxNfa0S18aKHqlUlnYC/v/Ey5nyQyOVGB9CwMvzz6x5j/1+BnzoYuofq58T6aQvW
-         M5mzIsNMgCYlJXStKjyNiFWqzKw73D5YNYlC83mRlEudBJMxrvYCm5aufdLp/bj/nZmH
-         31VB2vIEkq2taGt7dvKiwkZQE6o7oZLVC49hHX7nO2a5hfGsWRzaHsxzKmqWNydI/tZs
-         PC/g==
-X-Forwarded-Encrypted: i=1; AHgh+RoQlJ+zUhqNfUhCf/930gSP7QWRPCwbm7/dpFJYXX+a+ICUrN2wEIuABtAKXFbSbnaEaBLdW5Uw6TIFOZ8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz2jiyySPoqbb0Ktfu3BqJ7ngq2zji9vlGG7EdiRLJIxhIKCG4G
-	23kWlFESTnrDAgHrtfGxbfDCuZ+uRC4A1WTLnYDRkxxigH2NuYr/5YiaYXi/u8E7JrQ=
-X-Gm-Gg: AfdE7ckX+uTSfpQZSHSaAVc2u7/uBf44TXjlBrOh0tPDns6odpdTsxt1HxyopXCuSwt
-	vP3x8Ytbd0vN5biF0atrB8exrEizbH+H42bOv9dpjmf31O777zfpuB0HPtQExqUJ7dqwrxZBFfe
-	MvfF9/McasTk8JulEXPOZX0cuaJK+LYNArNiQpfsYF2R7eltF1DtGmjiONiLUy193CeFBnOf2Zx
-	N/rbqNpIXvZMIPPR4aEaviSGKRNmgrpceMwGmc8IYKxo+8WW763PjZgnOoFYSkRN98lFd0UkMlk
-	ZbufJ1r5lsv6n4WElm12JG/wv1JuOETAvYWr81hG4CJY3d9Asbjg/fpyktsBDlr4qs+MqVZBkY6
-	DRezRAW6X14RdV0gn7WwTzrjGrrW7CpR57qrq00MPB8Ni2qmjhIgu1vPeW6AxwiRx+eGtmQLnjp
-	6Bk+T8G+fmtCWng+cuQjrraKa/wrzsilJPSkaFWep6A4c95stParUCZc1nnMF0/wMnmJDH
-X-Received: by 2002:a05:622a:15c4:b0:51c:7b11:41a3 with SMTP id d75a77b69052e-51cbf361a3bmr5658901cf.80.1783716544856;
-        Fri, 10 Jul 2026 13:49:04 -0700 (PDT)
+        bh=OhI7UcJVN9EaMSo9cM31eWAmb7Tf3pcvHFHtAkV4RLE=;
+        b=H31I/0qJBQso4CENOvMXzhf6LqCcEFlxtFAlfaeE8731prMwq24cAn32PJqSP2FFfh
+         f4iBLIL6+fYf07ZeT/QO62E0I2rAe3em8Nw5NuaMA8ohQ6+4D3J7bxMZulcm45zlIzag
+         wDE8XPr0enwbqjECeVRAkZAUM25cTkB5KF8wr+4oLQEkwXKqzLAK4nomqrBNmmyvJWio
+         7+3BnjQJBfmzKYhdmDk1ki/64HkBtdF7rHBLPdSXLBh+4s52j4kmanlObIQa0M+7uuaA
+         RMFowuZMJVR2ld/ULeKqiEFaKy7zO2nKSwsaPO4RenF60ZeMazl6wSOeDz5CoKBUohEP
+         PQSg==
+X-Forwarded-Encrypted: i=1; AHgh+RptUrtiWQLdirnP5mE+/Sq75ZjnM7Wf2ajztQjom2ENJF/BTz05GHMzmyFgSgN1I5VqcgZ8DzVv+edWE5U=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz9CO+5bmcC2+ajFZAQeJhe2GvHpahdToEIB3DyuJWdnqk6fzSK
+	M62JCKFr8A7cd528jQhcmmGibWBzo3/KzgRVhYC8skFYiBXIwslaO62w37L7Y3yeY6Y=
+X-Gm-Gg: AfdE7cmFWo7GsTkkr/Qf1mLW1K5oScPXljQD+AhhTGr7cApSHSti85rT1NE/gH6BQcM
+	9zMpzGpkJC8xdq7OvSRsu8ZeZNj9pQ8MR7Enm/8UhqHi17Q44KXVRViMbPDDpz45UkPQEsZDF1t
+	nvefUok4dSvhnWfXPhrAmC1EESiZdExa2l3nyVcPYl2pgBvL1d86cP4jbalHC50ZxqS0B/kus+w
+	35owqguviVe/dBjMjLW8om6wyZyubdqqWK8jJ6msZcQwZwtwiBGYpiIXBxmMHUNYptVS6GlOMtP
+	uTHu8qSuJ/Zfgi0T2B2t9OfejsLIIPv15xJkmM+vr7yBVX8sYdnuI3ZWTBb4Blznif0mQMQxsbk
+	2wuEvZ9Zuw6fGUl+wjZrSpFNcbzodnYvq/ujVV4ZleC5CFL/wzOPYX137EmXKZu5f/Ke3jkJNqW
+	xZJIi+R6+MU2wD59JfVB7j4nf3bz8Y6NnqQdk95yQyDYhcqE/jzB/oX2sj2gT9AyJuJWhQ
+X-Received: by 2002:a05:6214:3bc7:b0:8ea:10f8:ae87 with SMTP id 6a1803df08f44-903fe450f77mr10485176d6.11.1783717444207;
+        Fri, 10 Jul 2026 14:04:04 -0700 (PDT)
 Received: from gourry-fedora-PF4VCD3F (pool-173-79-60-52.washdc.fios.verizon.net. [173.79.60.52])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51caaf5f61csm24147321cf.22.2026.07.10.13.49.02
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8ffd50df5e2sm50655596d6.4.2026.07.10.14.04.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2026 13:49:04 -0700 (PDT)
-Date: Fri, 10 Jul 2026 16:48:58 -0400
+        Fri, 10 Jul 2026 14:04:03 -0700 (PDT)
+Date: Fri, 10 Jul 2026 17:03:58 -0400
 From: Gregory Price <gourry@gourry.net>
 To: Lorenzo Stoakes <ljs@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -117,11 +117,12 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	damon@lists.linux.dev, Pedro Falcato <pfalcato@suse.de>,
 	Rik van Riel <riel@surriel.com>, Harry Yoo <harry@kernel.org>,
 	Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 30/30] tools/testing/vma: output compared expression on
- ASSERT_[EQ, NE]()
-Message-ID: <alFausURKttxHUAI@gourry-fedora-PF4VCD3F>
+Subject: Re: [PATCH 27/30] mm/vma: correct incorrect vma.h inclusion
+Message-ID: <alFePgFUR52GgBS7@gourry-fedora-PF4VCD3F>
 References: <cover.1782735110.git.ljs@kernel.org>
- <432444fa4c12ae1c4047550e2b205d3e9bab458f.1782735110.git.ljs@kernel.org>
+ <22d0f4e3fe11f6fd1312734e242d008267ad142c.1782735110.git.ljs@kernel.org>
+ <alFHR3fg8K1-SITK@gourry-fedora-PF4VCD3F>
+ <alFJUfaGHVnKd-Nb@lucifer>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -130,84 +131,16 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <432444fa4c12ae1c4047550e2b205d3e9bab458f.1782735110.git.ljs@kernel.org>
+In-Reply-To: <alFJUfaGHVnKd-Nb@lucifer>
 
-On Mon, Jun 29, 2026 at 01:23:41PM +0100, Lorenzo Stoakes wrote:
-> -#define ASSERT_TRUE(_expr)						\
-> -	do {								\
-> -		if (!(_expr)) {						\
-> -			fprintf(stderr,					\
-> -				"Assert FAILED at %s:%d:%s(): %s is FALSE.\n", \
-> -				__FILE__, __LINE__, __FUNCTION__, #_expr); \
-> -			return false;					\
-> -		}							\
-> +#define __ASSERT_TRUE(_expr, _fmt, ...)					   \
-> +	do {								   \
-> +		if (!(_expr)) {						   \
-> +			fprintf(stderr,					   \
-> +				"Assert FAILED at %s:%d:%s(): %s is FALSE" \
-> +				_fmt ".\n",				   \
-> +				__FILE__, __LINE__, __FUNCTION__, #_expr   \
-> +				__VA_OPT__(,) __VA_ARGS__);		   \
-> +			return false;					   \
-> +		}							   \
->  	} while (0)
+On Fri, Jul 10, 2026 at 08:35:43PM +0100, Lorenzo Stoakes wrote:
+> >
+> > Do you actually need 3 copies of this comment or just one copy in
+> > vma_internal.h?
 > 
-> +#define __TO_SCALAR(x)	((unsigned long long)(uintptr_t)(x))
-> +
-> +#define ASSERT_TRUE(_expr) __ASSERT_TRUE(_expr, "")
+> I'd rather have it at a glance, it's a bit silly but C headers are silly :P
+> 
+> BTW you're kinda racing against time here as I'm on the verge of sending v2
+> :P
 
-Mmmmm... macro madness.... I don't think this is what you want.
-
-I think you end up double-running the expression in the failure branch.
-
-  ASSERT_EQ(cleanup_mm(&mm, &vmi), 2)
-
-run through the preprocessor expands to:
-
-  do {
-      if (!( (cleanup_mm(&mm, &vmi)) == (2) )) {
-              **** first run ****
-
-          fprintf(stderr,
-              "Assert FAILED at %s:%d:%s(): %s is FALSE" " (0x%llx != 0x%llx)" ".\n",
-              "merge.c", 645, __FUNCTION__,
-              "(cleanup_mm(&mm, &vmi)) == (2)",
-              ((unsigned long long)(uintptr_t)(cleanup_mm(&mm, &vmi))),
-                                               **** second run ****
-
-              ((unsigned long long)(uintptr_t)(2)));
-          return false;
-      }
-  } while (0);
-
-
-A bunch of existing ASSERT callers mutate state, so there's no guarantee
-the printed value matches teh actual test value.
-
-I think you want something like:
-
-#define ASSERT_EQ(_val1, _val2) do {	\
-	__auto_type _v1 = (_val1);	\
-	__auto_type _v2 = (_val2);	\
-	__ASSERT_TRUE(_v1 == _v2, " (0x%llx != 0x%llx)",	\
-		__TO_SCALAR(_v1), __TO_SCALAR(_v2));	\
-} while (0)
-
-which expands to:
-
-  do {
-      __auto_type _v1 = (cleanup_mm(&mm, &vmi));
-      __auto_type _v2 = (2);
-      do {
-          if (!(_v1 == _v2)) {
-              fprintf(stderr, "...FALSE (0x%llx != 0x%llx).\n",
-                      "merge.c", 645, __FUNCTION__, "_v1 == _v2",
-                      ((unsigned long long)(uintptr_t)(_v1)),
-                      ((unsigned long long)(uintptr_t)(_v2)));
-              return false;
-          }
-      } while (0);
-  } while (0);
-
-~Gregory
+:[ i don't refresh my inbox when i get hyperfocused and now i am sad
