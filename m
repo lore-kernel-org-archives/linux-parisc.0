@@ -1,235 +1,208 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206F33F210C
-	for <linux-parisc@vger.kernel.org>; Tue, 14 Jul 2026 08:20:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3EA3644CF;
+	Tue, 14 Jul 2026 10:17:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784017233; cv=none; b=hr+0ku9+MDED0/eyj1tKTjYK7A2C/umcFwwNS0csZUIHfbOAMwCjTSlZ1dtO5gFbklhBY2xIMXuWLMYZGJ3wmQNt7b90+cH9Kmh7oMIX98yPdCBWuQG4spVMI6PXMqkfY1xLpMffU6Eo3v5ryN7VPfJMS+SnEMAo8Gm0/PohaQU=
+	t=1784024268; cv=none; b=KoARJtzUTnXChmf2Ufmh6BWVO6FMgt/WqrkkainQ9/6YkXo72jB14UASOGPznSGKiNKf08VcP09hEZCQXvPVuTF5gZQKaIYMWMn0Fd2fmP63+SPTkE+54Rg5bmIWrpKrjKMLQTR5FfOtdrPgVhhJkLvWSOpUIxWQMiM/y2seVFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784017233; c=relaxed/simple;
-	bh=TGt1HFaW/THuzsrHNEcoHdyo6LaeCt1ApJr4+qFvNmI=;
+	s=arc-20240116; t=1784024268; c=relaxed/simple;
+	bh=4DH5a6ve/auP/7V1bjyB0V4QG2dck0UzPWpYqC6/K2k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L6iVhbqaGP3MuMkZoEx1UV3SSGxMvm2BVvgrJ/8bQR0QD/9RYPQq3YEgBikzL3TFURBJ0iNT/vz7yy3/bhYRg8UYcs+pkC3NWcS8k5QTbuQgfOUziamyVXt0MZn0GuxfEaKBBSCq9Sw182ZFEP1OFQQ9u+I0p8PcB4ofR1VjqL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DKJ09ll/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=kyKADJBo; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DKJ09ll/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=kyKADJBo; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+	 Content-Type:Content-Disposition:In-Reply-To; b=gLcLeuk+BDUCgI/Utnn9318eE4ks4juatKBtAsY3GwsxdDJJIB9hXvBcw29WAMPdf0cMeZ/V9I45Joos8rwZ9/pQiT2fRKXgox9poFtuzrL+1YB0g85Pt/QWBmivN9agjPbS8XPa+vaIaW6HuPUPUfJgVdQaKE/EsD0EEfaOEmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fy6x3ScG; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DKJ09ll/";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="kyKADJBo";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DKJ09ll/";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="kyKADJBo"
-Received: from kunlun.suse.cz (unknown [IPv6:2a07:de40:b306:2000::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5B37B77D67;
-	Tue, 14 Jul 2026 08:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1784017221; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j1nzoIiIS1i6/8kifcmUM+0AdKBs7HiZlyka0H+4a9w=;
-	b=DKJ09ll/zFwCXlbl6voF6Ew/i+nGfuIXvwr6+pPYyJYkjrugeEud/q+Ki5j7VPl5fqg4RU
-	7v0Fr5aEHfh6wFz8BRS8uap35P8g2QzVdrMcXNhwITMtJjhdQjQ/wGAESjusjginjvTIaB
-	s/IaH99ENQnMIs5WMPNIymEU1PqEzNQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1784017221;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j1nzoIiIS1i6/8kifcmUM+0AdKBs7HiZlyka0H+4a9w=;
-	b=kyKADJBodi7qpCF8SOU3elSKX6/nsxl0ZSGyW3McIGkcmKNlth+AD/XvcaQdtO7s/xaBLW
-	/BdlcT2IZYRDreCA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="DKJ09ll/";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=kyKADJBo
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1784017221; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j1nzoIiIS1i6/8kifcmUM+0AdKBs7HiZlyka0H+4a9w=;
-	b=DKJ09ll/zFwCXlbl6voF6Ew/i+nGfuIXvwr6+pPYyJYkjrugeEud/q+Ki5j7VPl5fqg4RU
-	7v0Fr5aEHfh6wFz8BRS8uap35P8g2QzVdrMcXNhwITMtJjhdQjQ/wGAESjusjginjvTIaB
-	s/IaH99ENQnMIs5WMPNIymEU1PqEzNQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1784017221;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j1nzoIiIS1i6/8kifcmUM+0AdKBs7HiZlyka0H+4a9w=;
-	b=kyKADJBodi7qpCF8SOU3elSKX6/nsxl0ZSGyW3McIGkcmKNlth+AD/XvcaQdtO7s/xaBLW
-	/BdlcT2IZYRDreCA==
-Date: Tue, 14 Jul 2026 10:20:20 +0200
-From: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	linux-riscv@lists.infradead.org,
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-	Jinjie Ruan <ruanjinjie@huawei.com>,
-	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Guo Ren <guoren@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Helge Deller <deller@gmx.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Richard Weinberger <richard@nod.at>,
-	Chris Zankel <chris@zankel.net>,
-	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-	Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
-	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org
-Subject: Re: [patch 13/18] entry: Make trace_syscall_enter() return type bool
-Message-ID: <alXxRMjQsBas4AJv@kunlun.suse.cz>
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.338083894@kernel.org>
- <ak5ySpil83TNWxeq@kunlun.suse.cz>
- <87se5tqkyp.ffs@fw13>
- <alDQ7isUKJFl8Va4@kunlun.suse.cz>
- <87a4rxqnar.ffs@fw13>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fy6x3ScG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C4FE1F00A3A;
+	Tue, 14 Jul 2026 10:17:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784024267;
+	bh=m1KwIxFOjH59vMqkPqvNJy2V0MLfN207LfncRH5TxDo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Fy6x3ScGp4SvjcLCb2EYasEF7Bg+N3JfXA1S2rYhDdGa8fr4+6eT9Z5sUIb80sT2r
+	 12V6KN+91XeSPeyZyRfBCNnMtsE0Z3zX1AfM0d9+BaPvnE/m8+pkUwQTaWwez7DEAX
+	 40QuoDzKqfzY1GCwuoG58CjBJE29XwBLRxM4TLNdmwQj8Blhck0AkxR92okiojzvMx
+	 WvMiVcF3zrA3KFpoksv9rfWx4gssKNluZWhtd5duC3QeTgeKUloBSHGktJzF0RJITM
+	 VrXH2ihLGQi0Xivwew6+5RuBX85r1ZYghiUkt5mTAu6e5JRNfb657XTWVfzpRGcHfX
+	 762G6nWtq/nvw==
+Date: Tue, 14 Jul 2026 11:17:11 +0100
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	David Hildenbrand <david@kernel.org>, "Liam R. Howlett" <liam@infradead.org>, 
+	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+	Michal Hocko <mhocko@suse.com>, Rik van Riel <riel@surriel.com>, Harry Yoo <harry@kernel.org>, 
+	Jann Horn <jannh@google.com>, Lance Yang <lance.yang@linux.dev>, 
+	Pedro Falcato <pfalcato@suse.de>, Russell King <linux@armlinux.org.uk>, 
+	Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Dan Williams <djbw@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
+	Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, Zi Yan <ziy@nvidia.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Nico Pache <npache@redhat.com>, 
+	Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>, 
+	Miaohe Lin <linmiaohe@huawei.com>, Naoya Horiguchi <nao.horiguchi@gmail.com>, 
+	Xu Xin <xu.xin16@zte.com.cn>, Chengming Zhou <chengming.zhou@linux.dev>, 
+	SJ Park <sj@kernel.org>, Matthew Brost <matthew.brost@intel.com>, 
+	Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>, Byungchul Park <byungchul@sk.com>, 
+	Gregory Price <gourry@gourry.net>, Ying Huang <ying.huang@linux.alibaba.com>, 
+	Alistair Popple <apopple@nvidia.com>, Hugh Dickins <hughd@google.com>, Peter Xu <peterx@redhat.com>, 
+	Kees Cook <kees@kernel.org>, Marek Szyprowski <m.szyprowski@samsung.com>, 
+	Robin Murphy <robin.murphy@arm.com>, Andrey Konovalov <andreyknvl@gmail.com>, 
+	Alexander Potapenko <glider@google.com>, Dmitry Vyukov <dvyukov@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Thomas Gleixner <tglx@kernel.org>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Ian Abbott <abbotti@mev.co.uk>, 
+	H Hartley Sweeten <hsweeten@visionengravers.com>, Lucas Stach <l.stach@pengutronix.de>, 
+	Christian Gmeiner <christian.gmeiner@gmail.com>, David Airlie <airlied@gmail.com>, 
+	Simona Vetter <simona@ffwll.ch>, Patrik Jakobsson <patrik.r.jakobsson@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Clark <robin.clark@oss.qualcomm.com>, 
+	Dmitry Baryshkov <lumag@kernel.org>, Abhinav Kumar <abhinav.kumar@linux.dev>, 
+	Jessica Zhang <jesszhan0024@gmail.com>, Sean Paul <sean@poorly.run>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
+	Thierry Reding <thierry.reding@kernel.org>, Mikko Perttunen <mperttunen@nvidia.com>, 
+	Jonathan Hunter <jonathanh@nvidia.com>, Christian Koenig <christian.koenig@amd.com>, 
+	Huang Rui <ray.huang@amd.com>, Matthew Auld <matthew.auld@intel.com>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Yishai Hadas <yishaih@nvidia.com>, 
+	Shameer Kolothum <skolothumtho@nvidia.com>, Kevin Tian <kevin.tian@intel.com>, 
+	Ankit Agrawal <ankita@nvidia.com>, Alex Williamson <alex@shazbot.org>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Usama Arif <usama.arif@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	nvdimm@lists.linux.dev, linux-perf-users@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev, iommu@lists.linux.dev, 
+	kasan-dev@googlegroups.com, linux-sgx@vger.kernel.org, etnaviv@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org, 
+	linux-tegra@vger.kernel.org, kvm@vger.kernel.org, 
+	Russell King <linux+etnaviv@armlinux.org.uk>
+Subject: Re: [PATCH v2 13/33] mm/vma: introduce and use vmg_pages(),
+ vmg_[start, end]_pgoff()
+Message-ID: <alYMZkJKJABhPsa6@lucifer>
+References: <20260710-b4-pre-scalable-cow-v2-0-2a5aa403d977@kernel.org>
+ <20260710-b4-pre-scalable-cow-v2-13-2a5aa403d977@kernel.org>
+ <508301c5-5460-40e8-bc34-6410be5be40a@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87a4rxqnar.ffs@fw13>
-X-Spamd-Bar: +++++++++++++
-X-Rspamd-Queue-Id: 5B37B77D67
-X-Spam-Flag: YES
-X-Spam-Score: 13.02
-X-Spam-Level: *************
-X-Rspamd-Action: add header
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [13.02 / 50.00];
-	SPAM_FLAG(5.00)[];
-	NEURAL_SPAM_LONG(3.50)[1.000];
-	BAYES_HAM(-3.00)[100.00%];
-	HFILTER_HOSTNAME_UNKNOWN(2.50)[];
-	RDNS_NONE(2.00)[];
-	ONCE_RECEIVED(1.20)[];
-	HFILTER_HELO_IP_A(1.00)[kunlun.suse.cz];
-	NEURAL_SPAM_SHORT(0.83)[0.278];
-	HFILTER_HELO_NORES_A_OR_MX(0.30)[kunlun.suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmx.de];
-	FREEMAIL_CC(0.00)[vger.kernel.org,infradead.org,ellerman.id.au,linux.ibm.com,lists.ozlabs.org,kernel.org,lists.linux.dev,dabbelt.com,lists.infradead.org,arm.com,huawei.com,redhat.com,linaro.org,armlinux.org.uk,linux-m68k.org,alpha.franken.de,gmx.de,users.sourceforge.jp,nod.at,zankel.net,lists.linux-m68k.org,arndb.de,monstr.eu,davemloft.net,gaisler.com,lwn.net];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b306:2000::2:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[52];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_ZERO(0.00)[0];
-	DKIM_TRACE(0.00)[suse.de:+];
-	R_RATELIMIT(0.00)[to_ip_from(RLs1yuyu6ywojxyk8y3ncu5g39)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim]
-X-Spam: Yes
+In-Reply-To: <508301c5-5460-40e8-bc34-6410be5be40a@kernel.org>
 
-On Sat, Jul 11, 2026 at 10:33:16PM +0200, Thomas Gleixner wrote:
-> Michal!
-> 
-> On Fri, Jul 10 2026 at 13:01, Michal Suchánek wrote:
-> > On Wed, Jul 08, 2026 at 10:34:38PM +0200, Thomas Gleixner wrote:
-> >> does not make #2 magically go away. It's still the same problem whether
-> >> you like it or not.
+On Mon, Jul 13, 2026 at 08:12:24PM +0200, Vlastimil Babka (SUSE) wrote:
+> On 7/10/26 22:16, Lorenzo Stoakes wrote:
+> > In the VMA logic we often need to determine the number of pages in the
+> > specified merge range, as well as the start and end page offsets of that
+> > range.
 > >
-> > However, reading the syscall number from pt_regs only after
-> > syscall_enter_from_user_mode exits does.
-> 
-> That does not solve anything at all.
-> 
-> TBH, your communication style is annoying as hell. You fail to provide
-> any useful arguments and explanations despite me giving you a proper
-> analysis. And I'm absolutely tired of this.
-> 
-> So let me try again for _ONE_ last time to explain you why your ppc/s390
-> world view is broken and let's look at the current code (irrelevant
-> portions omitted).
-> 
-> static __always_inline long syscall_trace_enter(struct pt_regs *regs, unsigned long work)
-> {
-> 	if (work & SYSCALL_WORK_SYSCALL_USER_DISPATCH) {
-> #1		if (syscall_user_dispatch(regs))
-> 			return -1L;
-> 	}
->         
-> 	if (work & (SYSCALL_WORK_SYSCALL_TRACE | SYSCALL_WORK_SYSCALL_EMU)) {
-> #2		ret = arch_ptrace_report_syscall_entry(regs);
-> 		if (ret || (work & SYSCALL_WORK_SYSCALL_EMU))
-> 			return -1L;
-> 	}
-> 
-> 	/* Do seccomp after ptrace, to catch any tracer changes. */
-> 	if (work & SYSCALL_WORK_SECCOMP) {
-> #3		ret = __secure_computing();
-> 		if (ret == -1L)
-> 			return ret;
-> 	}
-> 
-> 	/* Either of the above might have changed the syscall number */
-> #4	syscall = syscall_get_nr(current, regs);
-> 
-> 	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
-> #5		syscall = trace_syscall_enter(regs, syscall);
-> 
->         return syscall;
-> }
-> 
-> #1) The user dispatch mechanism does not modify the syscall return
->     value, but it can rollback the syscall and tell the call site to
->     skip the invocation.
-> 
->     The mechanism used in upstream today is to return -1L as the syscall
->     number which makes the architecture specific entry code skip the
->     syscall and refrain from touching the return value.
-> 
-> #2) ptrace
-> 
->     ptrace can poke whatever it wants into the syscall number storage
->     via ptrace_set_syscall_info_entry() -> syscall_set_nr()
-> 
->     It does not set the return code.
-> 
->     It does not abort the syscall when the poked syscall number is -1L.
+> > Introduce and use helpers for these purposes.
+> >
+> > No functional change intended.
+> >
+> > Reviewed-by: Pedro Falcato <pfalcato@suse.de>
+> > Reviewed-by: Gregory Price <gourry@gourry.net>
+> > Signed-off-by: Lorenzo Stoakes <ljs@kernel.org>
+>
+> Uh, the PHYS_PFN() usage here was quite an abuse. Good riddance.
 
-Indeed, it does not abort on -1 syscall number anymore although there
-are still comments around that claim that setting the syscall number to
--1 is special.
+Yeah and mine :)) but absolutely agree it was wrong and glad to fix my own
+mistake in using that ;)
 
-Thanks
+> Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
-Michal
+Thanks!
+
+>
+> > ---
+> >  mm/vma.c | 11 ++++-------
+> >  mm/vma.h | 17 +++++++++++++++++
+> >  2 files changed, 21 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/mm/vma.c b/mm/vma.c
+> > index 35ba3475128f..995de8198fbb 100644
+> > --- a/mm/vma.c
+> > +++ b/mm/vma.c
+> > @@ -197,11 +197,9 @@ static void init_multi_vma_prep(struct vma_prepare *vp,
+> >   */
+> >  static bool can_vma_merge_before(struct vma_merge_struct *vmg)
+> >  {
+> > -	pgoff_t pglen = PHYS_PFN(vmg->end - vmg->start);
+> > -
+> >  	if (is_mergeable_vma(vmg, /* merge_next = */ true) &&
+> >  	    is_mergeable_anon_vma(vmg, /* merge_next = */ true)) {
+> > -		if (vmg->next->vm_pgoff == vmg->pgoff + pglen)
+> > +		if (vmg_end_pgoff(vmg) == vma_start_pgoff(vmg->next))
+> >  			return true;
+> >  	}
+> >
+> > @@ -221,7 +219,7 @@ static bool can_vma_merge_after(struct vma_merge_struct *vmg)
+> >  {
+> >  	if (is_mergeable_vma(vmg, /* merge_next = */ false) &&
+> >  	    is_mergeable_anon_vma(vmg, /* merge_next = */ false)) {
+> > -		if (vmg->prev->vm_pgoff + vma_pages(vmg->prev) == vmg->pgoff)
+> > +		if (vma_end_pgoff(vmg->prev) == vmg_start_pgoff(vmg))
+> >  			return true;
+> >  	}
+> >  	return false;
+> > @@ -759,7 +757,7 @@ static int commit_merge(struct vma_merge_struct *vmg)
+> >  	 */
+> >  	vma_adjust_trans_huge(vma, vmg->start, vmg->end,
+> >  			      vmg->__adjust_middle_start ? vmg->middle : NULL);
+> > -	vma_set_range(vma, vmg->start, vmg->end, vmg->pgoff);
+> > +	vma_set_range(vma, vmg->start, vmg->end, vmg_start_pgoff(vmg));
+> >  	vmg_adjust_set_range(vmg);
+> >  	vma_iter_store_overwrite(vmg->vmi, vmg->target);
+> >
+> > @@ -962,8 +960,7 @@ static __must_check struct vm_area_struct *vma_merge_existing_range(
+> >  		 *    middle     next
+> >  		 * shrink/delete extend
+> >  		 */
+> > -
+> > -		pgoff_t pglen = PHYS_PFN(vmg->end - vmg->start);
+> > +		const pgoff_t pglen = vmg_pages(vmg);
+> >
+> >  		VM_WARN_ON_VMG(!merge_right, vmg);
+> >  		/* If we are offset into a VMA, then prev must be middle. */
+> > diff --git a/mm/vma.h b/mm/vma.h
+> > index 8e4b61a7304c..527716c8739d 100644
+> > --- a/mm/vma.h
+> > +++ b/mm/vma.h
+> > @@ -230,6 +230,23 @@ static inline bool vmg_nomem(struct vma_merge_struct *vmg)
+> >  	return vmg->state == VMA_MERGE_ERROR_NOMEM;
+> >  }
+> >
+> > +static inline pgoff_t vmg_start_pgoff(const struct vma_merge_struct *vmg)
+> > +{
+> > +	return vmg->pgoff;
+> > +}
+> > +
+> > +static inline pgoff_t vmg_pages(const struct vma_merge_struct *vmg)
+> > +{
+> > +	const unsigned long size = vmg->end - vmg->start;
+> > +
+> > +	return size >> PAGE_SHIFT;
+> > +}
+> > +
+> > +static inline pgoff_t vmg_end_pgoff(const struct vma_merge_struct *vmg)
+> > +{
+> > +	return vmg_start_pgoff(vmg) + vmg_pages(vmg);
+> > +}
+> > +
+> >  /* Assumes addr >= vma->vm_start. */
+> >  static inline pgoff_t vma_pgoff_offset(struct vm_area_struct *vma,
+> >  				       unsigned long addr)
+> >
+>
+
+Cheers, Lorenzo
