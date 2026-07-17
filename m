@@ -1,70 +1,111 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3B6423A78;
-	Thu, 16 Jul 2026 13:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5125922A80D
+	for <linux-parisc@vger.kernel.org>; Fri, 17 Jul 2026 19:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784208720; cv=none; b=oq59Brra/sRh9JSj8giGUe9BxUiyiDe4CvziNwDV1cWqfZiDXU7+VgBlMYp6eheD+n1X0+hwWaiNMKu8g//DsB6FeOPl6BSp4qXikdIPH2eobzAlJpeBVknrmYoIU23L+wj0GCXbkcsOOQusf2aYFPr7XGFl8E3/xOtc+gUs5jM=
+	t=1784315171; cv=none; b=HQg0HEzRtXoganIdx8dMg+qtkUAqFIlOyS2ZIdsfvvS7zk3ndYDLmB0VrLxTdrzHudn5PfV3WwdXeFgnEwKEnWlm+9KLtii14R0FzvYT3cpS2tJL7ne/bWIZAsMcoJ3gZcYmGAbB0/xTpKpcG8Q27RVHg3MHdBLIWYJ7aJmXooA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784208720; c=relaxed/simple;
-	bh=yS9bNunJIYcGp7pM+GGsfoUYEDKOWl8+J/XHzg82dRU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pi+eLeUI5uuW5U0o/EPM0/o3U7bbmMR1vSZhYN3GwBwqeGI1vmPeTKNphyib1QOULiH25chR27bz18765w5JcDeSNn/MJPbm5C2aqzXFEFlolSBt+fqP+nKGs9SwgtFBBTR6qMkOqK2DPrcWhmCxDhHcoA8Y3jOqqSgA4e3P2RU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KbqUptLj; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784315171; c=relaxed/simple;
+	bh=SmKAs9qFcLTR3agDAsPoMblcsCPnahuVR9tnj9R3Vso=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KrQQNyG83GVZSGulBTjltHP5MZwqGdK2eBVdUheIPN+Cohx0DbgCVExGJSknYo1eH9WMVBWc8jmLmLtr0oC+qpBcv5Y+qgPoTChwg57sgyX46rQ7U4tVtGh8pGwCfP/a08uViVQ1J/bgaewPkDXtPhLR+NKgexCgRz+iad+hGaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P43hC9Mj; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KbqUptLj"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 905941F000E9;
-	Thu, 16 Jul 2026 13:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784208719;
-	bh=yS9bNunJIYcGp7pM+GGsfoUYEDKOWl8+J/XHzg82dRU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=KbqUptLjSwHbPDnl6EODLgtr0+4G+Vr/GtLsN8uL1R0gJIbcJrT9INA5Bsp48xFc7
-	 uBGW/ISebTiRPnsimApzUl9NclYX2xh1l1X4NXZZjnAeSSSFNYTRMypcY/rUhyl+X1
-	 /7F6szx0dZdEkzpjdZXEZE5GDp4nGDRMG6wLJU1JgK7vImT0swvx9wF8O4ht7g3joe
-	 kDDXkZm0rqfhR/CQny+02fMgaTBpKdu49C8Yx2xuJ87zFpVlntVhAzq2XjsDAJ5/eD
-	 MgCdvius755vFAuRCD11n+E/RU74UcgR42ez7mpfqR5l5mHGTHiYGsp1W8i6LKucW6
-	 B2mW+krILaKHg==
-Date: Thu, 16 Jul 2026 14:31:43 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	nvdimm@lists.linux.dev, linux-perf-users@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev, iommu@lists.linux.dev, 
-	kasan-dev@googlegroups.com, linux-sgx@vger.kernel.org, etnaviv@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org, 
-	linux-tegra@vger.kernel.org, kvm@vger.kernel.org, 
-	Russell King <linux+etnaviv@armlinux.org.uk>, Ackerley Tng <ackerleytng@google.com>, 
-	Kai Huang <kai.huang@intel.com>
-Subject: Re: [PATCH v2 00/33] mm: make VMA page offset handling more
- consistent
-Message-ID: <aljdJD9TNWYCQ3HL@lucifer>
-References: <20260710-b4-pre-scalable-cow-v2-0-2a5aa403d977@kernel.org>
- <c2fd5114-74d0-4996-8035-311ba976b3eb@amd.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P43hC9Mj"
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-8eefd0c5f59so49497976d6.3
+        for <linux-parisc@vger.kernel.org>; Fri, 17 Jul 2026 12:06:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1784315169; x=1784919969; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=Nbm0vupgXVGHi1DpNIYtN3nv8LfK+SAoC7r8NbSjB9U=;
+        b=P43hC9MjtHBZUqSBwTJV9f2a3mLTU0IZ9TVf9oAdhf4vJ8Flan5m7heG0BTohPL6Df
+         +ZdD8hNm1u3ujxL2vEU5Bi6ZEin1x85Q3wkQvP0kxmrdntzT1Nnlq1475E4UIILCuOLo
+         qKSbIkzzmU6owAC95Tga51ZC7m48UqOAbc7FUMZb76QEfBnFF1tdlOcCh/ZAMlAX4PQr
+         t35F1EN454wq0jUwz3k3qUhTD4kFAEFbtWt14zLCu9QM6MgXwjwVYxtLB4O0LeeQEkBT
+         3+F6+gdWYTDX66M8ZMzmeZ7F7yJ9I8/ntsD6dP6d1Nb1Pd3Vfp6d2cZG9EnUk1u9Yi07
+         l6Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784315169; x=1784919969;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=Nbm0vupgXVGHi1DpNIYtN3nv8LfK+SAoC7r8NbSjB9U=;
+        b=FxaU+WyCEV35Tj9RDrOx1xFaoMCQJQlWduIAil58yPDmmLpEPMEx51QuLIWAnFFnMu
+         AF5FoVBQBTMNirmtz8BNFCG4LVd2gqSTKEmBvO0Fo0fJ4DzYqmueuB57B2NbT8YDy8CY
+         TqqZ6SXdsqxXkzH9jzc17KsClSfrU/ELXjaIypD//AwABx79hTjab896XDlaAswpLaYm
+         CIEUBBqc7yrfHOr3E1ijFWJ33Z5NYlgFDkkgO8fg7Omm2kvw0zATSAZSjFXeIvlGFGVj
+         OXZ+mnzPw1sU/MHbNGIiLTHusOQ5TWyg2KQMAQX5NjpJMO4YQdGCVfp350ys/CVgRj6y
+         rvlg==
+X-Forwarded-Encrypted: i=1; AHgh+RoSbd518MFKB+UQ77V75nqXwZk63wMc9GkCT1R3h1aR73CeFQEhfRMHqpDXdkNmYQbetn1LYfIN12V+DLs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YziXbcDnspDMl25CN6H7BSNpkh1xMtNTGvI7i/OorabqdqdbJc4
+	CgwycPYBp0NglwdxIjcd42RJy6KBfOGRBOGg2MYUHScGzfRChkvdcJ/H
+X-Gm-Gg: AfdE7cnZOF+6g1C6u25jZ8dwf8SUl5MqH7ezuOehw56W5libBM1rFvG7C/Lj/rUDdYZ
+	905rVf0Z3mQSdy+HFUGtNkIA+lBuS8SVJEWZdBn50ZsPUAIUQTmcNJqwC5sMgrxd1tjNYBK528+
+	RjKgNkGakCE8nfnQSOhnSsdF24RfqOOM+GMzAgcouhputTg2zIOgZaQ3Wo3x51S5mD467g3O41p
+	OPNsZqFjNwHEDfiS+6G/WU4IklGnfqS3ZMnZ2xkBclaGGP/iABZmvdfbjjtSXg0xJIBtcSmdFY1
+	jnaB+ntazllQDDN1fns7dRicjGfcducUzFfq/U84E0JspQSPuyJ3vLDb/LAn7r0r79404pjAZRC
+	YvybsG+k3rStEyYCFf5ICfwH66D3CAPcvj7+wAj40gSHqIM9BLJy4emuUkBptJY2VkX7OvLmaIm
+	qj75I3rYcp
+X-Received: by 2002:ad4:5c43:0:b0:8f1:36c7:497c with SMTP id 6a1803df08f44-907784ddb2dmr47350846d6.33.1784315169083;
+        Fri, 17 Jul 2026 12:06:09 -0700 (PDT)
+Received: from TurinLinux.. ([184.144.109.221])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-9077871d06csm24035606d6.43.2026.07.17.12.06.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jul 2026 12:06:04 -0700 (PDT)
+From: Nicholas Dudar <main.kalliope@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	memxor@gmail.com,
+	deller@gmx.de,
+	James.Bottomley@HansenPartnership.com
+Cc: bpf@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	visitorckw@gmail.com
+Subject: [PATCH bpf-next 0/2] bpf, parisc: Add support for BPF_SDIV and BPF_SMOD in the parisc JITs
+Date: Fri, 17 Jul 2026 15:05:42 -0400
+Message-Id: <20260717190544.257306-1-main.kalliope@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c2fd5114-74d0-4996-8035-311ba976b3eb@amd.com>
 
-On Thu, Jul 16, 2026 at 12:03:41PM +0200, Christian König wrote:
->
-> I only skimmed over the set but should there be any changes required to DMA-buf, amdgpu or radeon driver feel free to add
->
-> Acked-by: Christian König <christian.koenig@amd.com>
->
-> and merge upstream through any branch you feel fit.
->
-> Regards,
-> Christian.
+The parisc BPF JITs emit unsigned divide and remainder for signed
+BPF_DIV and BPF_MOD (off == 1) on the 64-bit and 32-bit JITs, so
+neither implements signed BPF_SDIV and BPF_SMOD. Signed div/mod
+return an unsigned result for negative operands rather than the
+verifier's and the interpreter's signed result.
 
-Thanks :)
+Patch 1 adds signed support to the parisc64 JIT and the shared signed
+64-bit helpers (hppa_sdiv64/hppa_sdiv64_rem) in bpf_jit_core.c. Patch
+2 adds it to the parisc32 JIT, using those helpers for the 64-bit path
+and the $$divI/$$remI signed millicode for the 32-bit path.
 
-Cheers, Lorenzo
+Both were tested with test_bpf on qemu-system-hppa; the signed div/mod
+cases fail before and pass after.
+
+Nicholas Dudar (2):
+  bpf, parisc: Add support for BPF_SDIV and BPF_SMOD in the parisc64 JIT
+  bpf, parisc: Add support for BPF_SDIV and BPF_SMOD in the parisc32 JIT
+
+ arch/parisc/net/bpf_jit.h        |  2 ++
+ arch/parisc/net/bpf_jit_comp32.c | 29 +++++++++++++++++---------
+ arch/parisc/net/bpf_jit_comp64.c | 35 ++++++++++++++++++++++++--------
+ arch/parisc/net/bpf_jit_core.c   | 14 +++++++++++++
+ 4 files changed, 61 insertions(+), 19 deletions(-)
+
+
+base-commit: 1d91ea01185656ac3ee63c5f9f6f8bde3c746b3d
+-- 
+2.34.1
+
