@@ -1,95 +1,114 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECC738C2DE;
-	Mon, 20 Jul 2026 07:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FF938D6B5
+	for <linux-parisc@vger.kernel.org>; Mon, 20 Jul 2026 19:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784532046; cv=none; b=NzLa9kO86PAE12Elqmpd2SqXz8QSQerOqRyqDhugtlLopyuiP+lbAzgg6MwwEhZzy8oJCTkhSw9kCfXieTs0d4U/Nrz5qasZKdrNu0Yr+t0W54y8TVcLfUF1VjYkU8YAElqUaBuAchDrgjNOjYEFNCaqRdQsnb77/2yfqs+M1uA=
+	t=1784574315; cv=none; b=k0OpqA5HQjy9KrDZGZze5mohPEokRJOVruPPHShrtdh4khutcT434rzQhvamwfD2yrbwMoQ1ZlYAZHJg9XV8ZtCyBGl6GsdivmH1Nm3WIkTFH+1qUCME/llTMd/G3zOitNrmu96YNQCmaX7NpV8Xy1nPDkwSTckn9bsJgQgF/7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784532046; c=relaxed/simple;
-	bh=wS3iOjal19hc48fA51Gyg+UKNxQ+naTpbmOlu9ZaCrs=;
+	s=arc-20240116; t=1784574315; c=relaxed/simple;
+	bh=fnW288skhTtWEbrTN/fD9Nt9dtFSRpG2InOVP3xSzZg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HHDxSuwRopir4v3JHnTJLCxaZabmUPw6ZEu5/42/FWk7Ew97ur1fM5ioIJGEep+anuaSJcRBh/lEJ6ncgYVCVt5Aw3x3XaiZH74usYLOCJQs4CepesJWdz1QJmQ+uBn8fTgeEpasJ3Dd/0UqQkP/9/o4DGdReP7GepcOTP+/K48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q4SQ5H7p; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=GrxR19dspSbdjHkf07luPj6KoUC6O/DFOufgcnA/t1afPsgQSLmKYUUCvHlvQyQ/AFhigpAkRJGTzUTxwQL9QAJgRbxgP0LLR6xScPIW9yJ1HbtzNCMapC7tD2ILJDCmdK2NTxcfDhUmO5XDpkAvjPiTn2ueixGcBZMIL43+P/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NbyExw7C; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q4SQ5H7p"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F055C1F00A3A;
-	Mon, 20 Jul 2026 07:20:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784532040;
-	bh=gANMU5sOivOjZzaedPM5r16YKmZ48cwI33ZQeohFkKI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=Q4SQ5H7pfr3jaDU2ZnnO+1hHIoXl1iFH5WSqv7jLKEoKzb1W8Q48EBE20IuNZFTUn
-	 ixKm0DVIy5OI2nLk58vf2Hjrg7we7B+X4V1GJxyPkSv0+C69K1TUoySPfe3BcFYtS/
-	 t7GufXN3+op+50lWLzds22S7AYYtVpeOlcrG/0bZfPer/n9WDDe8GhqIXCV0fWPGUD
-	 XmaJPMeyIJugU5z50bBvNZ+bv5B8MYe6yecmFyVa9TEs0150ohb7J9prH1nL+rHsFg
-	 Tpa/uQSSoq+PE+oR7BoJwZF5ntDZOzikcQrAbuelm4gJqA+MbVuFWtO9kyaJQf1xJj
-	 5Tno9QcBWPfNw==
-Date: Mon, 20 Jul 2026 08:20:01 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Zi Yan <ziy@nvidia.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, "Liam R. Howlett" <liam@infradead.org>, 
-	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Rik van Riel <riel@surriel.com>, 
-	Harry Yoo <harry@kernel.org>, Jann Horn <jannh@google.com>, Lance Yang <lance.yang@linux.dev>, 
-	Pedro Falcato <pfalcato@suse.de>, Russell King <linux@armlinux.org.uk>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Dan Williams <djbw@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
-	Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Nico Pache <npache@redhat.com>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>, 
-	Miaohe Lin <linmiaohe@huawei.com>, Naoya Horiguchi <nao.horiguchi@gmail.com>, 
-	Xu Xin <xu.xin16@zte.com.cn>, Chengming Zhou <chengming.zhou@linux.dev>, 
-	SJ Park <sj@kernel.org>, Matthew Brost <matthew.brost@intel.com>, 
-	Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>, Byungchul Park <byungchul@sk.com>, 
-	Gregory Price <gourry@gourry.net>, Ying Huang <ying.huang@linux.alibaba.com>, 
-	Alistair Popple <apopple@nvidia.com>, Hugh Dickins <hughd@google.com>, Peter Xu <peterx@redhat.com>, 
-	Kees Cook <kees@kernel.org>, Marek Szyprowski <m.szyprowski@samsung.com>, 
-	Robin Murphy <robin.murphy@arm.com>, Andrey Konovalov <andreyknvl@gmail.com>, 
-	Alexander Potapenko <glider@google.com>, Dmitry Vyukov <dvyukov@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Jarkko Sakkinen <jarkko@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Thomas Gleixner <tglx@kernel.org>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Ian Abbott <abbotti@mev.co.uk>, 
-	H Hartley Sweeten <hsweeten@visionengravers.com>, Lucas Stach <l.stach@pengutronix.de>, 
-	Christian Gmeiner <christian.gmeiner@gmail.com>, David Airlie <airlied@gmail.com>, 
-	Simona Vetter <simona@ffwll.ch>, Patrik Jakobsson <patrik.r.jakobsson@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Rob Clark <robin.clark@oss.qualcomm.com>, 
-	Dmitry Baryshkov <lumag@kernel.org>, Abhinav Kumar <abhinav.kumar@linux.dev>, 
-	Jessica Zhang <jesszhan0024@gmail.com>, Sean Paul <sean@poorly.run>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
-	Thierry Reding <thierry.reding@kernel.org>, Mikko Perttunen <mperttunen@nvidia.com>, 
-	Jonathan Hunter <jonathanh@nvidia.com>, Christian Koenig <christian.koenig@amd.com>, 
-	Huang Rui <ray.huang@amd.com>, Matthew Auld <matthew.auld@intel.com>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yishai Hadas <yishaih@nvidia.com>, 
-	Shameer Kolothum <skolothumtho@nvidia.com>, Kevin Tian <kevin.tian@intel.com>, 
-	Ankit Agrawal <ankita@nvidia.com>, Alex Williamson <alex@shazbot.org>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Usama Arif <usama.arif@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	nvdimm@lists.linux.dev, linux-perf-users@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev, iommu@lists.linux.dev, 
-	kasan-dev@googlegroups.com, linux-sgx@vger.kernel.org, etnaviv@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org, 
-	linux-tegra@vger.kernel.org, kvm@vger.kernel.org, 
-	Russell King <linux+etnaviv@armlinux.org.uk>
-Subject: Re: [PATCH v2 08/33] mm/rmap: rename vma_interval_tree_*() to
- mapping_rmap_tree_*()
-Message-ID: <al3LpROyiWEBL1wh@lucifer>
-References: <20260710-b4-pre-scalable-cow-v2-0-2a5aa403d977@kernel.org>
- <20260710-b4-pre-scalable-cow-v2-8-2a5aa403d977@kernel.org>
- <DK1CWBDK5J60.3VPRP45IS7L7E@nvidia.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NbyExw7C"
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2cc7e86e7aeso77530685ad.2
+        for <linux-parisc@vger.kernel.org>; Mon, 20 Jul 2026 12:05:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1784574313; x=1785179113; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=kPMaiKQm/Lrn2+15jJw1Tz84+egEdnjBHflNkHpDaxg=;
+        b=NbyExw7CLFk71hAnpCJNUiZedvi+eDrJI9mqRpI89yk+kTVspS/t7ax2vHPuApaQI4
+         WjEB3dlDf7AbdioL0MPE36Jh2OhFkDOOWSQrFN49T1hqj3zWED3bPmdmyadRGmnbJo1E
+         ca0paUja8vJl0Px2IaJ+jvDFtjbxKlFU5vZxK8Q3vOdXClzC4n6Czf1r4b6kVgsZv1yX
+         29P/R/8UZqC4oL081tJMc1zmK3K/Isg2hL9sbZjEOLbVukDq5XC/fATt/bIrIzRkK0rO
+         TQ1jiAAqfSRYsE5Vtkbln/d/nZy4Gh4zYiqUXLwpTtl2Myfh1ggjrRZH6EwGYJPKSxwC
+         jAWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784574313; x=1785179113;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=kPMaiKQm/Lrn2+15jJw1Tz84+egEdnjBHflNkHpDaxg=;
+        b=LN2dBVUE396lj9yGXK9jgchqiWf1O9e401mUKqOih2kW8hVp+6tdoj6dh9wtbGQ/pf
+         isRicPaOn7XK3MkcnhhIBu7j8HYFwEB/mCxtqBhnk057nRJcNYk5qnWSHRC9B2os2+PH
+         6IIPW6ybe2fFNFd+C8x0Sl5XpW3kjKmbE4PS4/aubsl3I18Lx12va0HtEh8LqjgDblhc
+         G5ymQDmuXSkaIH9sP+iNjyoUhplTUVCfHEIo2G/Cw5CsWYIdqx5lZSjMP7A2oksEKhmo
+         qwfRocNSQfjMnhQfnSghRYt7ROPSbXz3kyy3vi6I7KJACqITeQVhl0/wPaBQiO7cpzxT
+         dSpw==
+X-Forwarded-Encrypted: i=1; AHgh+RpsxnBi4iI66ua10/nAJOvNbNn+5zgcbPvE+WSi7aKnzR0nPnOmvbu3H5QIdWhKqVIEE+8jx5ZErkJ5t5o=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+iKRf5o+w+S+XfHi3QQnVWQzNgxMtyqj7nISPaeDoPTPYm16g
+	CPnzLzEOGrdYKah+5wnEo6mF8Lme4wZUSo8rfWHk06/Loqq/5aSyZhNM
+X-Gm-Gg: AR+sD10Vwyfn2jkWzVm1aVDfNqF8F5CEv3VxdLA/Yo8zAB1Ak8n4Cj6R2lu/h8dVL5N
+	jF8W/gsACNuIkW0hq5M7Hmee0Sta86ULVSbnCSEXpP3HLIlY74JN7QmMmOSCOeJYIZZdbZHnP9A
+	aXy6urr3QgZ1Ljv3ssZA1cOvaJa/S6x/GOBysE9qUnWzDwAc1iIJ2y0xYleLF0y4RCLGhF0yR6Q
+	4mUhPwEH58iPjZOdT7bCbfGdUEMmm5KEk1lxiScllOuFNUoUBLlLdOumTAfOYHjmPdHqbHRN7DC
+	zgr8pWzUdAOAvNJfLfZXhXowqZhFJBPq8eh9ntuUGRuDdIQ3VINjRG9uRTpAhBo/hnTKpupOwAw
+	vJJxweVb2AJtwNCXHJ9irSwqc4fNmRKWhloP7iEOpeqSj6xIwm1eKW+nAGnpGCLZPV1Dj9it5AK
+	kibgQXn+D3HcsBAL5pnoR4BCZMQDUdmzRQjA==
+X-Received: by 2002:a17:902:f681:b0:2ca:3e3f:4956 with SMTP id d9443c01a7336-2cf34a35445mr164591015ad.44.1784574312756;
+        Mon, 20 Jul 2026 12:05:12 -0700 (PDT)
+Received: from fedora ([2601:644:937c:6c90:6d4e:7b2d:4a39:fb0c])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2cf3448f73esm60735085ad.16.2026.07.20.12.05.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2026 12:05:11 -0700 (PDT)
+Date: Mon, 20 Jul 2026 12:05:08 -0700
+From: Vishal Moola <vishal.moola@gmail.com>
+To: Kevin Brodsky <kevin.brodsky@arm.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	"Liam R. Howlett" <liam@infradead.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Pasha Tatashin <pasha.tatashin@soleen.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ryan Roberts <ryan.roberts@arm.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	linuxppc-dev@lists.ozlabs.org, Paul Walmsley <pjw@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	linux-s390@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>, sparclinux@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org, Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ning Sun <ning.sun@intel.com>, x86@kernel.org,
+	tboot-devel@lists.sourceforge.net, Ard Biesheuvel <ardb@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	linux-efi@vger.kernel.org, Alistair Popple <apopple@nvidia.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 14/22] mm: set page table page type when allocated
+Message-ID: <al5xZHiFwatn518I@fedora>
+References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
+ <20260714-remove_pgtable_cdtor-v1-14-44be8a7685d7@arm.com>
+ <alZSwAM4pwmMOeaD@fedora>
+ <f3afa5df-73f3-49da-87a6-d75eb5f3610f@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -98,73 +117,56 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DK1CWBDK5J60.3VPRP45IS7L7E@nvidia.com>
+In-Reply-To: <f3afa5df-73f3-49da-87a6-d75eb5f3610f@arm.com>
 
-On Fri, Jul 17, 2026 at 10:54:24PM -0400, Zi Yan wrote:
-> On Fri Jul 10, 2026 at 4:16 PM EDT, Lorenzo Stoakes wrote:
-> > The family of vma_interval_tree_() functions manipulate the
-> > address_space (which, of course, is generally referred to as 'mapping')
-> > reverse mapping, but are named the 'VMA' interval tree.
-> >
-> > VMAs may be mapped by an anon_vma, an address_space, or both. Therefore
-> > calling the mapping interval tree a 'VMA' interval tree is rather
-> > confusing.
-> >
-> > This is also inconsistent with the anon_vma_interval_tree_*() functions
-> > which explicitly reference the rmap object to which they pertain.
-> >
-> > Rename the vma_interval_tree_*() functions to mapping_rmap_tree_*() to
-> > correct this.
-> >
-> > We will rename the anon rmap functions similarly in a subsequent patch.
-> >
-> > No functional change intended.
-> >
-> > Reviewed-by: Gregory Price <gourry@gourry.net>
-> > Signed-off-by: Lorenzo Stoakes <ljs@kernel.org>
-> > ---
-> >  arch/arm/mm/fault-armv.c          |  2 +-
-> >  arch/arm/mm/flush.c               |  2 +-
-> >  arch/nios2/mm/cacheflush.c        |  2 +-
-> >  arch/parisc/kernel/cache.c        |  2 +-
-> >  fs/dax.c                          |  2 +-
-> >  fs/hugetlbfs/inode.c              |  4 ++--
-> >  include/linux/mm.h                | 16 ++++++++--------
-> >  kernel/events/uprobes.c           |  2 +-
-> >  mm/hugetlb.c                      |  4 ++--
-> >  mm/interval_tree.c                | 22 +++++++++++-----------
-> >  mm/khugepaged.c                   |  4 ++--
-> >  mm/memory-failure.c               |  6 +++---
-> >  mm/memory.c                       |  2 +-
-> >  mm/mmap.c                         |  2 +-
-> >  mm/nommu.c                        |  8 ++++----
-> >  mm/pagewalk.c                     |  2 +-
-> >  mm/rmap.c                         |  2 +-
-> >  mm/vma.c                          | 12 ++++++------
-> >  tools/testing/vma/include/stubs.h |  4 ++--
-> >  19 files changed, 50 insertions(+), 50 deletions(-)
-> >
->
-> Just curious, why not file_rmap_tree_*()?
+On Thu, Jul 16, 2026 at 11:49:31AM +0200, Kevin Brodsky wrote:
+> On 14/07/2026 17:16, Vishal Moola wrote:
+> > On Tue, Jul 14, 2026 at 03:04:03PM +0100, Kevin Brodsky wrote:
+> >> As a step towards removing pagetable ctor/dtor calls for kernel
+> >> mm's, move the page type updates from the ctor/dtor to
+> >> pagetable_{alloc,free}.
+> > Thanks for doing this patchset.
+> 
+> Thanks for suggesting it :) It's turning out to be quite a bit more
+> involved than I expected though! (There are multiple cases where we call
+> the ctor/dtor without using pagetable_{alloc,free}, see my reply to the
+> cover letter.)
+> 
+> > We should switch over from __folio_set_pgtable() to __SetPagePgtable()
+> > in this patch. Ptdescs and folios should be treated as distinctly
+> > independent of each other.
+> 
+> I sure remember the previous discussion, but my reading of your comments
+> [1] is that we cannot really change this as long as pagetable_alloc()
+> can be called with order > 0, right? Multiple archs still rely on that.
 
-Just to avoid any confusion around address_space objects that are ostensibly
-'not files' like devices or whatnot, but moreso for consistency with the rest of
-the kernel in referring to this stuff as 'mapping'.
+Kinda...
 
-Naming is hard IOW :)
+The concern was about callers accessing tail pages directly for that
+information. Using the folio API ensures that we always look into the
+head page.
 
->
-> One nice part of this renaming is that the length of each function does
-> not chagne. That makes the patch easy to review.
->
-> Reviewed-by: Zi Yan <ziy@nvidia.com>
+Since we're now doing it at allocation time, we know we always have the
+head page, so it's fine.
 
-Thanks!
+The dtor/free should be more questionable because the underlying api
+uses virt_to_page() which could look at a tail page... oopsie. I
+haven't seen any reports tied to it so its probably fine (the
+setting/clearing has been using the folio API since ptdescs).
 
->
-> --
-> Best Regards,
-> Yan, Zi
->
+We can say thats a happy accident that makes distinguishing ptdescs
+and folios easier :)
 
-Cheers, Lorenzo
+> > Eventually, we want to replace the memcg accounting as well, but
+> > there's no existing API for that right now. Lets leave that as is for
+> > now; this patchset is big enough already ;)
+> 
+> Yep, looks like there was an attempt to improve this but it had to be
+> reverted [2].
+> 
+> - Kevin
+> 
+> [1] https://lore.kernel.org/all/aha321ndGSdReBJR@fedora/
+> [2]
+> https://lore.kernel.org/all/20260225002434.2953895-1-axelrasmussen@google.com/
+> 
