@@ -1,65 +1,62 @@
-Received: from cmx-mtlrgo002.bell.net (mta-mtl-007.bell.net [209.71.208.29])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8392298CAB;
-	Sat, 25 Jul 2026 17:02:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.71.208.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D4603F23B1;
+	Sat, 25 Jul 2026 17:38:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784998923; cv=none; b=YGXHg2YMB0ceQ81RPbxAPi5n1VWSeGi1y9u17/sjqNz4iiISABT1hmuTXBvF792AibBlo4ZGT9VDhLjsbhd2EJ+NIZpsPxnWX0dzRuDdWCTvYomPUeA7eyB/H5VAenYz06kP+kYnifPN5i1l3oQ/dQnMpUnz2N0KzetfwM6jGd0=
+	t=1785001119; cv=none; b=YR5fu14SzTVGDxhuZQlaGT6JuouLzxt6VyT1TBRNJYb+D8uX1Vc7/zodqZqzNtT7NLZyzC40NmYznA+Lar5IgFmzqc/94z6y2cG6k204vheS+OLGdTNI5FSA16iNpaIVjZFGf3MUtm/b+xlXcGP28/msOFy3Bhi2h7z5fPZJ4xQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784998923; c=relaxed/simple;
-	bh=4h3IRZSZw111ETRTyYQ94MxkECV+yRSXZdrbARm2NvU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QnUZUOK/qbrtDbN2pDRLVK45kLL/Mh+aWFiLooBoR8TasOeDb23IzPfdHck9f9nlTINiB5a8ZMMW1TfSU0RwTO42XiEnhklNxyigZrWtfBdsNc+4thvDC30QTIG66usP1Mh2yelbRLtO//LPTIQSdC26DMsPOiZjZOQChITbTlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bell.net; spf=pass smtp.mailfrom=bell.net; dkim=pass (2048-bit key) header.d=bell.net header.i=@bell.net header.b=3O5VCyOW; arc=none smtp.client-ip=209.71.208.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bell.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bell.net
+	s=arc-20240116; t=1785001119; c=relaxed/simple;
+	bh=k2JgkmorkaNJ8D8+DSWiTjczfVCa1cmdZdl1b21Qq2A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UQ9GaZ3ZUEOWiHqgEM9/oGM6oUOUoVQsrdPUmjgpYltHXLaMHH6QR3plOLanUNI1V77jK0RzvBwp1TkRH/CpLANad+ObyHlSsHj9V/P2oPHQEaP51jNvczvqnzA5Oge4AJ6Z4Wf5v85T5B7x0qy4mxiPHbdcBx1gtqrLgWaVr00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hbLGkWpN; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bell.net header.i=@bell.net header.b="3O5VCyOW"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bell.net; s=selector1; t=1784998920; 
-        bh=Wqzc1rdrD9/zZgtfkeN/lk6lY1WJu6IQP1Gt28locAY=;
-        h=Message-ID:Date:MIME-Version:Subject:To:References:From:In-Reply-To:Content-Type;
-        b=3O5VCyOWigaM9s3q4V/P9VxjaVEm4PH4BhJoBMf5/p0nbQw4no4QMS8q+bgWvMEzwDK99xatkKtmhDlJfB8dVaepGovo7iaZm0O4a3CfWeEBAzSFCm1VgeiL/SKVcleOfFriHxcAtb7aESSGWPDcIaig4J39IXkcF1KzmJ3vabPvyaYD+XG6z5wk0pvXasNt28KlfPWZlKbiYFnfzddjWdrOgjS/w5YdA7AUxqwDyM3bEk7fup7kh+wWMYvOkglV+qAtTf0UO6pZKy3IDwvjv66F8LwqUfqlftXHZCpIPYdb3H/zrfiC1usrdSnWDjc5mYWv6x5dVksUAsFrbcyBew==
-X-RG-SOPHOS: Clean
-X-RG-VADE-SC: 0
-X-RG-VADE: Clean
-X-RG-Env-Sender: dave.anglin@bell.net
-X-RG-Rigid: 69B7AEA70B5C1637
-X-RazorGate-Vade: dmFkZTFBL85r2oEp4gvfdK9Qq+Fk279rWqVJnzUbNG9fBvLFR/dedrP8wVgFqykZFUTtnttUvrht+OPOiRl/1oU1X3DnhmkwJ+4FUfJN4YMM1Uvc+FmDjW+MWZJ4A0FjpNpERM53NIjMWcPZhyZQFlG4htjVqZ7TJEV4FI7ta2yH4wzyax6s/4E4T4WCOk4oS7RVnzZ9H7irp28HQyCyZeltVxOz9AOr3uOwK79TyneqiRNx+3a7ieGIx7Rrh1xt7fPNGAbDlI7/re/7tVsLMnTzaM8sIoSYfJrV5YxItpSXdxwsobLjy7j764yoaItE9IWqOZ8nHnzugNBwWYuDikcsYd4ZIeOFwBtFev92vMT/vouaEKz+Ah1vjLT+QwgLhdKduIi9iaJDNNkjELFJJE/yNIszKpKlgjW1HQwxXcm3pFfMYsehZFbAmRqL5QVr4EPAW+cvXuonKobvy9fNczSRBD1tyEDCCz/SgvyoOPUZfFsRv1qGgvtqzStwN7Zbtrj68SxbRBYbLYJaroia6vW6b+bLrsEw/meOFF91HfqL8XVq9KdlPKuyvJg40LZ7ScGPqA+pM8+6XXzL1HD4rQYkQoM2CqPSkFuWO81zqkSvf6vLU4tetFZnIofxXAd0aTEd9y+bczB4IJxuzjc+nVt1JlVepAHkbCONpd6s8mfBgySdAQ
-X-RazorGate-Vade-Verdict: clean 0
-X-RazorGate-Vade-Classification: clean
-Received: from [192.168.2.49] (70.26.67.32) by cmx-mtlrgo002.bell.net (authenticated as dave.anglin@bell.net)
-        id 69B7AEA70B5C1637; Sat, 25 Jul 2026 13:00:55 -0400
-Message-ID: <4606e13f-6827-45d0-b3b8-6bc26358f7ae@bell.net>
-Date: Sat, 25 Jul 2026 13:00:55 -0400
-Precedence: bulk
-X-Mailing-List: linux-parisc@vger.kernel.org
-List-Id: <linux-parisc.vger.kernel.org>
-List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hbLGkWpN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C003D1F000E9;
+	Sat, 25 Jul 2026 17:38:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785001112;
+	bh=QylY0Jj+M9aiGs5V5SL5IjP/iHtiFsye8Zowe/lAKfs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=hbLGkWpNrMM4k73a7LkMKOLXC3oYWnMbIQUTX9a1AMPyP+ZB2YtDGSKAOO7LnRTqG
+	 vBTBVOyCfgkBM0MWbOb/NoVC5YN9xSGoda6NWf0PzmMOT1fw/XOO6vHcoZm2T9Hnp5
+	 55ibAzms1bMqsEcamK0sa477Sp/cRJs/DtF2sButDQG4u1jm7nFthZJfCS76oVES0q
+	 WsTkfomIff31rzlYsktIJhBXeK7omGcTHPA60jUlZ+1E5GFmI8FYxCp3658BnzoxL3
+	 TPxHPEdFzInIhLMkWjbdj7ZY/o7vUtkGVxUVFRul5xDUBZdBWJw09bqSEyMu0nLWef
+	 YF/1c7ceJP17Q==
+Date: Sat, 25 Jul 2026 19:38:23 +0200
+From: Helge Deller <deller@kernel.org>
+To: John David Anglin <dave.anglin@bell.net>,
+	Usama Arif <usama.arif@linux.dev>
+Cc: Helge Deller <deller@gmx.de>, Pedro Falcato <pfalcato@suse.de>,
+	Matthew Wilcox <willy@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	"Liam R. Howlett" <liam@infradead.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
+	Zi Yan <ziy@nvidia.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Nico Pache <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
+	Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
+	Lance Yang <lance.yang@linux.dev>,
+	Kevin Brodsky <kevin.brodsky@arm.com>,
+	Muhammad Usama Anjum <usama.anjum@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH 3/5] mm/parisc: constify ptep_get() argument
-To: Helge Deller <deller@gmx.de>, Usama Arif <usama.arif@linux.dev>,
- Pedro Falcato <pfalcato@suse.de>
-Cc: Matthew Wilcox <willy@infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>, Lorenzo Stoakes <ljs@kernel.org>,
- "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>,
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
- Zi Yan <ziy@nvidia.com>, Baolin Wang <baolin.wang@linux.alibaba.com>,
- Nico Pache <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
- Lance Yang <lance.yang@linux.dev>, Kevin Brodsky <kevin.brodsky@arm.com>,
- Muhammad Usama Anjum <usama.anjum@arm.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Message-ID: <amT0j_bBT3CCxPcg@p100>
 References: <20260724102017.141532-1-pfalcato@suse.de>
  <20260724102017.141532-4-pfalcato@suse.de>
  <0fd713a8-e4ab-4c07-b36e-79dd138b4a86@linux.dev>
@@ -68,134 +65,153 @@ References: <20260724102017.141532-1-pfalcato@suse.de>
  <amOEUZlp1BxYh6_t@pedro-suse>
  <fd239383-dcbe-4daf-b337-32facef07076@linux.dev>
  <3e9dece8-4e86-4ce5-bd74-b3ec305f3003@gmx.de>
-Content-Language: en-US
-From: John David Anglin <dave.anglin@bell.net>
-Autocrypt: addr=dave.anglin@bell.net; keydata=
- xsFNBFJfN1MBEACxBrfJ+5RdCO+UQOUARQLSsnVewkvmNlJRgykqJkkI5BjO2hhScE+MHoTK
- MoAeKwoLfBwltwoohH5RKxDSAIWajTY5BtkJBT23y0hm37fN2JXHGS4PwwgHTSz63cu5N1MK
- n8DZ3xbXFmqKtyaWRwdA40dy11UfI4xzX/qWR3llW5lp6ERdsDDGHm5u/xwXdjrAilPDk/av
- d9WmA4s7TvM/DY3/GCJyNp0aJPcLShU2+1JgBxC6NO6oImVwW07Ico89ETcyaQtlXuGeXYTK
- UoKdEHQsRf669vwcV5XbmQ6qhur7QYTlOOIdDT+8zmBSlqBLLe09soATDciJnyyXDO1Nf/hZ
- gcI3lFX86i8Fm7lQvp2oM5tLsODZUTWVT1qAFkHCOJknVwqRZ8MfOvaTE7L9hzQ9QKgIKrSE
- FRgf+gs1t1vQMRHkIxVWb730C0TGiMGNn2oRUV5O5QEdb/tnH0Te1l+hX540adKZ8/CWzzW9
- vcx+qD9IWLRyZMsM9JnmAIvYv06+YIcdpbRYOngWPd2BqvktzIs9mC4n9oU6WmUhBIaGOGnt
- t/49bTRtJznqm/lgqxtE2NliJN79dbZJuJWe5HkjVa7mP4xtsG59Rh2hat9ByUfROOfoZ0dS
- sVHF/N6NLWcf44trK9HZdT/wUeftEWtMV9WqxIwsA4cgSHFR2QARAQABzTdKb2huIERhdmlk
- IEFuZ2xpbiAoRGViaWFuIFBvcnRzKSA8ZGF2ZS5hbmdsaW5AYmVsbC5uZXQ+wsF3BBMBCAAh
- BQJSXzdTAhsDBQsJCAcDBRUKCQgLBRYCAwEAAh4BAheAAAoJEF2/za5fGU3xs/4P/15sNizR
- ukZLNYoeGAd6keRtNcEcVGEpRgzc/WYlXCRTEjRknMvmCu9z13z8qB9Y9N4JrPdp+NQj5HEs
- ODPI+1w1Mjj9R2VZ1v7suFwhjxMTUQUjCsgna1H+zW/UFsrL5ERX2G3aUKlVdYmSWapeGeFL
- xSMPzawPEDsbWzBzYLSHUOZexMAxoJYWnpN9JceEcGvK1SU2AaGkhomFoPfEf7Ql1u3Pgzie
- ClWEr2QHl+Ku1xW0qx5OLKHxntaQiu30wKHBcsF0Zx2uVGYoINJl/syazfZyKTdbmJnEYyNa
- Bdbn7B8jIkVCShLOWJ8AQGX/XiOoL/oE9pSZ60+MBO9qd18TGYByj0X2PvH+OyQGul5zYM7Q
- 7lT97PEzh8xnib49zJVVrKDdJds/rxFwkcHdeppRkxJH0+4T0GnU2IZsEkvpRQNJAEDmEE8n
- uRfssr7RudZQQwaBugUGaoouVyFxzCxdpSYL6zWHA51VojvJYEBQDuFNlUCqet9LtNlLKx2z
- CAKmUPTaDwPcS3uOywOW7WZrAGva1kz9lzxZ+GAwgh38HAFqQT8DQvW8jnBBG4m4q7lbaum3
- znERv7kcfKWoWS7fzxLNTIitrbpYA3E7Zl9D2pDV3v55ZQcO/M35K9teRo6glrtFDU/HXM+r
- ABbh8u9UnADbPmJr9nb7J0tZUSS/zsFNBFJfN1MBEADBzhVn4XyGkPAaFbLPcMUfwcIgvvPF
- UsLi9Q53H/F00cf7BkMY40gLEXvsvdUjAFyfas6z89gzVoTUx3HXkJTIDTiPuUc1TOdUpGYP
- hlftgU+UqW5O8MMvKM8gx5qn64DU0UFcS+7/CQrKOJmzktr/72g98nVznf5VGysa44cgYeoA
- v1HuEoqGO9taA3Io1KcGrzr9cAZtlpwj/tcUJlc6H5mqPHn2EdWYmJeGvNnFtxd0qJDmxp5e
- YVe4HFNjUwsb3oJekIUopDksAP41RRV0FM/2XaPatkNlTZR2krIVq2YNr0dMU8MbMPxGHnI9
- b0GUI+T/EZYeFsbx3eRqjv1rnNg2A6kPRQpn8dN3BKhTR5CA7E/cs+4kTmV76aHpW8m/NmTc
- t7KNrkMKfi+luhU2P/sKh7Xqfbcs7txOWB2V4/sbco00PPxWr20JCA5hYidaKGyQxuXdPUlQ
- Qja4WJFnAtBhh3Oajgwhbvd6S79tz1acjNXZ89b8IN7yDm9sQ+4LhWoUQhB5EEUUUVQTrzYS
- yTGN1YTTO5IUU5UJHb5WGMnSPLLArASctOE01/FYnnOGeU+GFIeQp91p+Jhd07hUr6KWYeJY
- OgEmu+K8SyjfggCWdo8aGy0H3Yr0YzaHeK2HrfC3eZcUuo+yDW3tnrNwM1rd1i3F3+zJK18q
- GnBxEQARAQABwsFfBBgBCAAJBQJSXzdTAhsMAAoJEF2/za5fGU3xNDQP/ikzh1NK/UBrWtpN
- yXLbype4k5/zyQd9FIBxAOYEOogfKdkp+Yc66qNf36gO6vsokxsDXU9me1n8tFoB/DCdzKbQ
- /RjKQRMNNR4fT2Q9XV6GZYSL/P2A1wzDW06tEI+u+1dV40ciQULQ3ZH4idBW3LdN+nloQf/C
- qoYkOf4WoLyhSzW7xdNPZqiJCAdcz9djN79FOz8US+waBCJrL6q5dFSvvsYj6PoPJkCgXhiJ
- hI91/ERMuK9oA1oaBxCvuObBPiFlBDNXZCwmUk6qzLDjfZ3wdiZCxc5g7d2e2taBZw/MsKFc
- k+m6bN5+Hi1lkmZEP0L4MD6zcPuOjHmYYzX4XfQ61lQ8c4ztXp5cKkrvaMuN/bD57HJ6Y73Q
- Y+wVxs9x7srl4iRnbulCeiSOAqHmwBAoWaolthqe7EYL4d2+CjPCcfIuK7ezsEm8c3o3EqC4
- /UpL1nTi0rknRTGc0VmPef+IqQUj33GGj5JRzVJZPnYyCx8sCb35Lhs6X8ggpsafUkuKrH76
- XV2KRzaE359RgbM3pNEViXp3NclPYmeu+XI8Ls/y6tSq5e/o/egktdyJj+xvAj9ZS18b10Jp
- e67qK8wZC/+N7LGON05VcLrdZ+FXuEEojJWbabF6rJGN5X/UlH5OowVFEMhD9s31tciAvBwy
- T70V9SSrl2hiw38vRzsl
-In-Reply-To: <3e9dece8-4e86-4ce5-bd74-b3ec305f3003@gmx.de>
-Content-Type: text/plain; charset=UTF-8
+ <4606e13f-6827-45d0-b3b8-6bc26358f7ae@bell.net>
+Precedence: bulk
+X-Mailing-List: linux-parisc@vger.kernel.org
+List-Id: <linux-parisc.vger.kernel.org>
+List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <4606e13f-6827-45d0-b3b8-6bc26358f7ae@bell.net>
 
-On 2026-07-25 12:27 p.m., Helge Deller wrote:
-> On 7/24/26 17:48, Usama Arif wrote:
->>
->>
->> On 24/07/2026 16:32, Pedro Falcato wrote:
->>> On Fri, Jul 24, 2026 at 04:03:44PM +0100, Usama Arif wrote:
->>>>
->>>>
->>>> On 24/07/2026 15:14, Matthew Wilcox wrote:
->>>>> On Fri, Jul 24, 2026 at 02:36:59PM +0100, Usama Arif wrote:
->>>>>>
->>>>>>
->>>>>> On 24/07/2026 11:20, Pedro Falcato wrote:
->>>>>>> ptep_get() does not need write access to the PTE.
->>>>>>>
->>>>>>> Signed-off-by: Pedro Falcato <pfalcato@suse.de>
->>>>>>> ---
->>>>>>>   arch/parisc/include/asm/pgtable.h | 2 +-
->>>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>>
->>>>>> hmm I think you might break build bisectibility if
->>>>>> you separate out the patches, you should squash patch 3 and 4,
->>>>>> with patch 1.
->>>>>
->>>>> I don't see how this breaks bisectability.  Can you elaborate on what
->>>>> you think would break?
->>>>
->>>> Patch 1 does:
->>>>
->>>> -static inline pte_t ptep_get_lockless(pte_t *ptep)
->>>> +static inline pte_t ptep_get_lockless(const pte_t *ptep)
->>>>   {
->>>>       return ptep_get(ptep);
->>>>   }
->>>>
->>>>
->>>> ptep_get() takes a non-const arg till patch 3 for example for parsic.
->>>> I don't think you can pass a const variable to non const function arg?
->>>>
->>>> So parsic won't compile in patch 1 and 2, powerprc wont compile
->>>> for patches 1, 2 and 3..
->>>
->>> Aha, yes, nice catch! I'll have to rethink that. Maybe squashing the patches
->>> would be the cleanest way forward.
->>>
->>
->> Yes, squashing is the simplest way forward.
->>
->>> FWIW, the vast majority of architectures aren't doing funny things on
->>> ptep_get(). E.g PA-RISC, loongarch only define these so they can use it in
->>> their own asm/pgtable.h. I'd really like to delete these but I can't tell
->>> if they are *actually* required.
->>>
->>
->> Ah maybe there is something in git history on why it was needed?
->>
->> If not, hopefully someone from the arch lists could clarify..
-> I tried to remove ptep_get() and ptep_test_and_clear_young() from
-> arch/parisc/include/asm/pgtable.h, but this then triggers compile errors:
+* John David Anglin <dave.anglin@bell.net>:
+> On 2026-07-25 12:27 p.m., Helge Deller wrote:
+> > On 7/24/26 17:48, Usama Arif wrote:
+> >>
+> >>
+> >> On 24/07/2026 16:32, Pedro Falcato wrote:
+> >>> On Fri, Jul 24, 2026 at 04:03:44PM +0100, Usama Arif wrote:
+> >>>>
+> >>>>
+> >>>> On 24/07/2026 15:14, Matthew Wilcox wrote:
+> >>>>> On Fri, Jul 24, 2026 at 02:36:59PM +0100, Usama Arif wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>> On 24/07/2026 11:20, Pedro Falcato wrote:
+> >>>>>>> ptep_get() does not need write access to the PTE.
+> >>>>>>>
+> >>>>>>> Signed-off-by: Pedro Falcato <pfalcato@suse.de>
+> >>>>>>> ---
+> >>>>>>>   arch/parisc/include/asm/pgtable.h | 2 +-
+> >>>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>>>>
+> >>>>>> hmm I think you might break build bisectibility if
+> >>>>>> you separate out the patches, you should squash patch 3 and 4,
+> >>>>>> with patch 1.
+> >>>>>
+> >>>>> I don't see how this breaks bisectability.  Can you elaborate on what
+> >>>>> you think would break?
+> >>>>
+> >>>> Patch 1 does:
+> >>>>
+> >>>> -static inline pte_t ptep_get_lockless(pte_t *ptep)
+> >>>> +static inline pte_t ptep_get_lockless(const pte_t *ptep)
+> >>>>   {
+> >>>>       return ptep_get(ptep);
+> >>>>   }
+> >>>>
+> >>>>
+> >>>> ptep_get() takes a non-const arg till patch 3 for example for parsic.
+> >>>> I don't think you can pass a const variable to non const function arg?
+> >>>>
+> >>>> So parsic won't compile in patch 1 and 2, powerprc wont compile
+> >>>> for patches 1, 2 and 3..
+> >>>
+> >>> Aha, yes, nice catch! I'll have to rethink that. Maybe squashing the patches
+> >>> would be the cleanest way forward.
+> >>>
+> >>
+> >> Yes, squashing is the simplest way forward.
+> >>
+> >>> FWIW, the vast majority of architectures aren't doing funny things on
+> >>> ptep_get(). E.g PA-RISC, loongarch only define these so they can use it in
+> >>> their own asm/pgtable.h. I'd really like to delete these but I can't tell
+> >>> if they are *actually* required.
+> >>>
+> >>
+> >> Ah maybe there is something in git history on why it was needed?
+> >>
+> >> If not, hopefully someone from the arch lists could clarify..
+> > I tried to remove ptep_get() and ptep_test_and_clear_young() from
+> > arch/parisc/include/asm/pgtable.h, but this then triggers compile errors:
+> > 
+> >  CC      arch/parisc/kernel/asm-offsets.s
+> > In file included from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/mm.h:31,
+> >                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pid_namespace.h:7,
+> >                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/ptrace.h:10,
+> >                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/arch/parisc/kernel/asm-offsets.c:21:
+> > /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pgtable.h: In function ‘clear_young_dirty_ptes’:
+> > /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pgtable.h:683:25: error: implicit declaration of function ‘ptep_test_and_clear_young’;
+> > did you mean ‘pmdp_test_and_clear_young’? [-Wimplicit-function-declaration]
+> >   683 |                         ptep_test_and_clear_young(vma, addr, ptep);
+> >       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+> >       |                         pmdp_test_and_clear_young
+> > 
+> > So, I think the answer is, that the local copy of ptep_get() is used in the parisc implementation of
+> > ptep_test_and_clear_young() function.
+> > 
+> > Switching to the default include/linux/pgtable.h seems not easy doable....
 > 
->  CC      arch/parisc/kernel/asm-offsets.s
-> In file included from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/mm.h:31,
->                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pid_namespace.h:7,
->                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/ptrace.h:10,
->                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/arch/parisc/kernel/asm-offsets.c:21:
-> /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pgtable.h: In function ‘clear_young_dirty_ptes’:
-> /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pgtable.h:683:25: error: implicit declaration of function ‘ptep_test_and_clear_young’;
-> did you mean ‘pmdp_test_and_clear_young’? [-Wimplicit-function-declaration]
->   683 |                         ptep_test_and_clear_young(vma, addr, ptep);
->       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
->       |                         pmdp_test_and_clear_young
-> 
-> So, I think the answer is, that the local copy of ptep_get() is used in the parisc implementation of
-> ptep_test_and_clear_young() function.
-> 
-> Switching to the default include/linux/pgtable.h seems not easy doable....
+> Did you remove define for __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG in parisc version of pgtable.h?
 
-Did you remove define for __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG in parisc version of pgtable.h?
+Indeed, I missed to remove that.
 
-Dave
--- 
-John David Anglin  dave.anglin@bell.net
+Usama, if you want you can add the patch below to your patch set, thus
+simplifying your series?
+
+Helge
+
+------
+
+From: Helge Deller <deller@gmx.de>
+Date: Sat, 25 Jul 2026 19:19:55 +0200
+Subject: [PATCH] parisc: Drop own implementations for ptep_get() and
+ ptep_test_and_clear_young()
+
+Switch to the generic implementations, which are identical.
+
+Suggested-by: Usama Arif <usama.arif@linux.dev>
+Suggested-by: John David Anglin <dave.anglin@bell.net>
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
+index 467b8547ac8b..d92dee9fef3f 100644
+--- a/arch/parisc/include/asm/pgtable.h
++++ b/arch/parisc/include/asm/pgtable.h
+@@ -432,25 +432,6 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+ 	return pte;
+ }
+ 
+-static inline pte_t ptep_get(pte_t *ptep)
+-{
+-	return READ_ONCE(*ptep);
+-}
+-#define ptep_get ptep_get
+-
+-static inline bool ptep_test_and_clear_young(struct vm_area_struct *vma,
+-		unsigned long addr, pte_t *ptep)
+-{
+-	pte_t pte;
+-
+-	pte = ptep_get(ptep);
+-	if (!pte_young(pte)) {
+-		return false;
+-	}
+-	set_pte_at(vma->vm_mm, addr, ptep, pte_mkold(pte));
+-	return true;
+-}
+-
+ bool ptep_clear_flush_young(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep);
+ pte_t ptep_clear_flush(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep);
+ 
+@@ -491,7 +472,6 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
+ #define HAVE_ARCH_UNMAPPED_AREA
+ #define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
+ 
+-#define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+ #define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
+ #define __HAVE_ARCH_PTEP_CLEAR_FLUSH
+ #define __HAVE_ARCH_PTEP_SET_WRPROTECT
