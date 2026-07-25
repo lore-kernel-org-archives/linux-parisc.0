@@ -1,181 +1,54 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D4603F23B1;
-	Sat, 25 Jul 2026 17:38:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3D83F661D
+	for <linux-parisc@vger.kernel.org>; Sat, 25 Jul 2026 17:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785001119; cv=none; b=YR5fu14SzTVGDxhuZQlaGT6JuouLzxt6VyT1TBRNJYb+D8uX1Vc7/zodqZqzNtT7NLZyzC40NmYznA+Lar5IgFmzqc/94z6y2cG6k204vheS+OLGdTNI5FSA16iNpaIVjZFGf3MUtm/b+xlXcGP28/msOFy3Bhi2h7z5fPZJ4xQ=
+	t=1785001214; cv=none; b=CT92cxJoezzhG3KwFWzZmbc/Oytwa1+35KD2CCYhWyKaZ+HL5+je5CTVv7d1vNZcpjqDBtnXT6v04DzZ6FaxXX7AW6impuCDaxbYnSGPkFsH+5SceyWyK9x69bDNegGNp7pVdw53qFqB0AGty5CZwnh3NXHgsrTyODLfUYyWflY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785001119; c=relaxed/simple;
-	bh=k2JgkmorkaNJ8D8+DSWiTjczfVCa1cmdZdl1b21Qq2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UQ9GaZ3ZUEOWiHqgEM9/oGM6oUOUoVQsrdPUmjgpYltHXLaMHH6QR3plOLanUNI1V77jK0RzvBwp1TkRH/CpLANad+ObyHlSsHj9V/P2oPHQEaP51jNvczvqnzA5Oge4AJ6Z4Wf5v85T5B7x0qy4mxiPHbdcBx1gtqrLgWaVr00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hbLGkWpN; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785001214; c=relaxed/simple;
+	bh=EKY9IvWnE9V8hlMCD/hC3yVKIjplnzIBDYo8qXtQeP0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=gJT1Oo6eAGwLf/mmw7rs8XiBvicgjIT2yiid5spfyxGwhMz3grFuSXWQoV8eRwfzyw8CzLfGS9K0ygWtXKmLK3MSH4E5B06UqDBk3W4Khw4D0LcGZfRubyhn+XZ969jK5PFrRDrCck7yl6kWJ0t0ErTf0H5xlszn2XnwqP+19GU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QwnyoiKx; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hbLGkWpN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C003D1F000E9;
-	Sat, 25 Jul 2026 17:38:25 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QwnyoiKx"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67BC91F000E9
+	for <linux-parisc@vger.kernel.org>; Sat, 25 Jul 2026 17:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785001112;
-	bh=QylY0Jj+M9aiGs5V5SL5IjP/iHtiFsye8Zowe/lAKfs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=hbLGkWpNrMM4k73a7LkMKOLXC3oYWnMbIQUTX9a1AMPyP+ZB2YtDGSKAOO7LnRTqG
-	 vBTBVOyCfgkBM0MWbOb/NoVC5YN9xSGoda6NWf0PzmMOT1fw/XOO6vHcoZm2T9Hnp5
-	 55ibAzms1bMqsEcamK0sa477Sp/cRJs/DtF2sButDQG4u1jm7nFthZJfCS76oVES0q
-	 WsTkfomIff31rzlYsktIJhBXeK7omGcTHPA60jUlZ+1E5GFmI8FYxCp3658BnzoxL3
-	 TPxHPEdFzInIhLMkWjbdj7ZY/o7vUtkGVxUVFRul5xDUBZdBWJw09bqSEyMu0nLWef
-	 YF/1c7ceJP17Q==
-Date: Sat, 25 Jul 2026 19:38:23 +0200
+	s=k20260515; t=1785001209;
+	bh=libfMq5NdgDZLW/lRVsP3tpKmXc5EDrj51OWIc6kMQU=;
+	h=From:To:Subject:Date;
+	b=QwnyoiKxHjl+TlmYVOGWzeF5uI6IKiyjwLc8QqwjGwauQcrnsadrZPR06V2f4YtSK
+	 /CtKdU5kHoTELa2gfKCc6ZMebh+iTB8lWNRft3M3Lnz4XvgYlNucGUKdqqoJ0QurXV
+	 4rItsZMZBguJuf8Ccx4/gV0tDB8vqYWkg0Yqc2CQp3+59LTtzQw/7I8OgJHG387oTE
+	 beHz80b7tGzQfi3BmNUTKSY5TCjVbHtFzhhoU0fEr2qnT34+PjO3bwosdqDcrZUsx0
+	 plUW/l2lHwFlKT+zrl/a3UBTaEEK19jf2MxkiU6LgOXlFsFvwrdmiQTABDd13UOb4F
+	 1ohUvs7XQzoRQ==
 From: Helge Deller <deller@kernel.org>
-To: John David Anglin <dave.anglin@bell.net>,
-	Usama Arif <usama.arif@linux.dev>
-Cc: Helge Deller <deller@gmx.de>, Pedro Falcato <pfalcato@suse.de>,
-	Matthew Wilcox <willy@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	"Liam R. Howlett" <liam@infradead.org>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
-	Zi Yan <ziy@nvidia.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Nico Pache <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
-	Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
-	Lance Yang <lance.yang@linux.dev>,
-	Kevin Brodsky <kevin.brodsky@arm.com>,
-	Muhammad Usama Anjum <usama.anjum@arm.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 3/5] mm/parisc: constify ptep_get() argument
-Message-ID: <amT0j_bBT3CCxPcg@p100>
-References: <20260724102017.141532-1-pfalcato@suse.de>
- <20260724102017.141532-4-pfalcato@suse.de>
- <0fd713a8-e4ab-4c07-b36e-79dd138b4a86@linux.dev>
- <amNzLXuwflIZFKtI@casper.infradead.org>
- <253f7ac0-205b-42f1-9fb5-d19eceb581b6@linux.dev>
- <amOEUZlp1BxYh6_t@pedro-suse>
- <fd239383-dcbe-4daf-b337-32facef07076@linux.dev>
- <3e9dece8-4e86-4ce5-bd74-b3ec305f3003@gmx.de>
- <4606e13f-6827-45d0-b3b8-6bc26358f7ae@bell.net>
+To: linux-parisc@vger.kernel.org
+Subject: [PATCH] parisc: Drop own implementations for ptep_get() and ptep_test_and_clear_young()
+Date: Sat, 25 Jul 2026 19:40:02 +0200
+Message-ID: <20260725174002.100712-1-deller@kernel.org>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4606e13f-6827-45d0-b3b8-6bc26358f7ae@bell.net>
-
-* John David Anglin <dave.anglin@bell.net>:
-> On 2026-07-25 12:27 p.m., Helge Deller wrote:
-> > On 7/24/26 17:48, Usama Arif wrote:
-> >>
-> >>
-> >> On 24/07/2026 16:32, Pedro Falcato wrote:
-> >>> On Fri, Jul 24, 2026 at 04:03:44PM +0100, Usama Arif wrote:
-> >>>>
-> >>>>
-> >>>> On 24/07/2026 15:14, Matthew Wilcox wrote:
-> >>>>> On Fri, Jul 24, 2026 at 02:36:59PM +0100, Usama Arif wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>> On 24/07/2026 11:20, Pedro Falcato wrote:
-> >>>>>>> ptep_get() does not need write access to the PTE.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Pedro Falcato <pfalcato@suse.de>
-> >>>>>>> ---
-> >>>>>>>   arch/parisc/include/asm/pgtable.h | 2 +-
-> >>>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>>>>>
-> >>>>>> hmm I think you might break build bisectibility if
-> >>>>>> you separate out the patches, you should squash patch 3 and 4,
-> >>>>>> with patch 1.
-> >>>>>
-> >>>>> I don't see how this breaks bisectability.  Can you elaborate on what
-> >>>>> you think would break?
-> >>>>
-> >>>> Patch 1 does:
-> >>>>
-> >>>> -static inline pte_t ptep_get_lockless(pte_t *ptep)
-> >>>> +static inline pte_t ptep_get_lockless(const pte_t *ptep)
-> >>>>   {
-> >>>>       return ptep_get(ptep);
-> >>>>   }
-> >>>>
-> >>>>
-> >>>> ptep_get() takes a non-const arg till patch 3 for example for parsic.
-> >>>> I don't think you can pass a const variable to non const function arg?
-> >>>>
-> >>>> So parsic won't compile in patch 1 and 2, powerprc wont compile
-> >>>> for patches 1, 2 and 3..
-> >>>
-> >>> Aha, yes, nice catch! I'll have to rethink that. Maybe squashing the patches
-> >>> would be the cleanest way forward.
-> >>>
-> >>
-> >> Yes, squashing is the simplest way forward.
-> >>
-> >>> FWIW, the vast majority of architectures aren't doing funny things on
-> >>> ptep_get(). E.g PA-RISC, loongarch only define these so they can use it in
-> >>> their own asm/pgtable.h. I'd really like to delete these but I can't tell
-> >>> if they are *actually* required.
-> >>>
-> >>
-> >> Ah maybe there is something in git history on why it was needed?
-> >>
-> >> If not, hopefully someone from the arch lists could clarify..
-> > I tried to remove ptep_get() and ptep_test_and_clear_young() from
-> > arch/parisc/include/asm/pgtable.h, but this then triggers compile errors:
-> > 
-> >  CC      arch/parisc/kernel/asm-offsets.s
-> > In file included from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/mm.h:31,
-> >                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pid_namespace.h:7,
-> >                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/ptrace.h:10,
-> >                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/arch/parisc/kernel/asm-offsets.c:21:
-> > /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pgtable.h: In function ‘clear_young_dirty_ptes’:
-> > /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pgtable.h:683:25: error: implicit declaration of function ‘ptep_test_and_clear_young’;
-> > did you mean ‘pmdp_test_and_clear_young’? [-Wimplicit-function-declaration]
-> >   683 |                         ptep_test_and_clear_young(vma, addr, ptep);
-> >       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
-> >       |                         pmdp_test_and_clear_young
-> > 
-> > So, I think the answer is, that the local copy of ptep_get() is used in the parisc implementation of
-> > ptep_test_and_clear_young() function.
-> > 
-> > Switching to the default include/linux/pgtable.h seems not easy doable....
-> 
-> Did you remove define for __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG in parisc version of pgtable.h?
-
-Indeed, I missed to remove that.
-
-Usama, if you want you can add the patch below to your patch set, thus
-simplifying your series?
-
-Helge
-
-------
 
 From: Helge Deller <deller@gmx.de>
-Date: Sat, 25 Jul 2026 19:19:55 +0200
-Subject: [PATCH] parisc: Drop own implementations for ptep_get() and
- ptep_test_and_clear_young()
 
 Switch to the generic implementations, which are identical.
 
 Suggested-by: Usama Arif <usama.arif@linux.dev>
 Suggested-by: John David Anglin <dave.anglin@bell.net>
 Signed-off-by: Helge Deller <deller@gmx.de>
+---
+ arch/parisc/include/asm/pgtable.h | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
 diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
 index 467b8547ac8b..d92dee9fef3f 100644
@@ -215,3 +88,6 @@ index 467b8547ac8b..d92dee9fef3f 100644
  #define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
  #define __HAVE_ARCH_PTEP_CLEAR_FLUSH
  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
+-- 
+2.54.0
+
