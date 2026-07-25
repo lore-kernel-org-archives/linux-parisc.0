@@ -1,35 +1,35 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3D83F661D
-	for <linux-parisc@vger.kernel.org>; Sat, 25 Jul 2026 17:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21543EFD27
+	for <linux-parisc@vger.kernel.org>; Sat, 25 Jul 2026 19:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785001214; cv=none; b=CT92cxJoezzhG3KwFWzZmbc/Oytwa1+35KD2CCYhWyKaZ+HL5+je5CTVv7d1vNZcpjqDBtnXT6v04DzZ6FaxXX7AW6impuCDaxbYnSGPkFsH+5SceyWyK9x69bDNegGNp7pVdw53qFqB0AGty5CZwnh3NXHgsrTyODLfUYyWflY=
+	t=1785006135; cv=none; b=tS0HhQWA5iyAdDgbe6U6CyrrDYXBiTsoJIDM1q2yQotaXfTRB/eHqk5ZwsymsQAbvUkxaH7VNDmfTQQ9htHInRmF29+5mJnDKiJSDsjfB/hq9kE513vHWk5FBHtnGtcUTT55e5rvTMbYc/SUkpuzZdyDhgeKuHi0+tpFng4SgN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785001214; c=relaxed/simple;
-	bh=EKY9IvWnE9V8hlMCD/hC3yVKIjplnzIBDYo8qXtQeP0=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=gJT1Oo6eAGwLf/mmw7rs8XiBvicgjIT2yiid5spfyxGwhMz3grFuSXWQoV8eRwfzyw8CzLfGS9K0ygWtXKmLK3MSH4E5B06UqDBk3W4Khw4D0LcGZfRubyhn+XZ969jK5PFrRDrCck7yl6kWJ0t0ErTf0H5xlszn2XnwqP+19GU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QwnyoiKx; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785006135; c=relaxed/simple;
+	bh=JYL2Esp1k+dQTm7sDHTEsDt5E4SfF2psBp15HMU3tdE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=PCdb9usbMA4Hn1kGxBr7s7/+nDg9BuJgIoTBieuQHNy4qy0nVpELFylzwy42HYaL5yxNb91+k10s7X+Yf+3NmthRpWNoHV7LnJkdGqVmV+R96O/UoNzblyl3k05eBPGJBsEUb0fil9XM9CDI4sWEj0DNAS/Y1ErDfLGPN5NOJcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mxfGQORO; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QwnyoiKx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67BC91F000E9
-	for <linux-parisc@vger.kernel.org>; Sat, 25 Jul 2026 17:40:09 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mxfGQORO"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80F571F000E9
+	for <linux-parisc@vger.kernel.org>; Sat, 25 Jul 2026 19:02:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785001209;
-	bh=libfMq5NdgDZLW/lRVsP3tpKmXc5EDrj51OWIc6kMQU=;
+	s=k20260515; t=1785006133;
+	bh=O0k5CBlvr2f/MNq1/6VnAzjsF4jw71hV0IS5Zy72uyA=;
 	h=From:To:Subject:Date;
-	b=QwnyoiKxHjl+TlmYVOGWzeF5uI6IKiyjwLc8QqwjGwauQcrnsadrZPR06V2f4YtSK
-	 /CtKdU5kHoTELa2gfKCc6ZMebh+iTB8lWNRft3M3Lnz4XvgYlNucGUKdqqoJ0QurXV
-	 4rItsZMZBguJuf8Ccx4/gV0tDB8vqYWkg0Yqc2CQp3+59LTtzQw/7I8OgJHG387oTE
-	 beHz80b7tGzQfi3BmNUTKSY5TCjVbHtFzhhoU0fEr2qnT34+PjO3bwosdqDcrZUsx0
-	 plUW/l2lHwFlKT+zrl/a3UBTaEEK19jf2MxkiU6LgOXlFsFvwrdmiQTABDd13UOb4F
-	 1ohUvs7XQzoRQ==
+	b=mxfGQORO5ifw9VXqZaDiuStvDayt0IUUhaKLp4LXlmR1vRxT6+jr0bYDttn9iD5q6
+	 SjOzPM8JXv4yfgH+Xq3yMGxE0H/6diKbnsqjlw9Us15MmBGQ13Yx3GxeZq2FfVoaSM
+	 8sZy3jJJK8Nf4UuDOdu5+a0mlBPjH42SoTF0wnj/SdvOQCJs+ypW6IDPDYTAGMNQDh
+	 CEEiNUyGPQph6pATxlwYijUJgRV6PvKeegnDw3MMie93GoTWluwK2LW7/2f4S2zpoX
+	 wCylgBGldP625vhYBfLhJMyjR4IEYzzJfUF74spfIwdB7LdtcXqwD2hqH+5piwN5nJ
+	 YRZv+znNYBpFQ==
 From: Helge Deller <deller@kernel.org>
 To: linux-parisc@vger.kernel.org
-Subject: [PATCH] parisc: Drop own implementations for ptep_get() and ptep_test_and_clear_young()
-Date: Sat, 25 Jul 2026 19:40:02 +0200
-Message-ID: <20260725174002.100712-1-deller@kernel.org>
+Subject: [PATCH 1/2] parisc: Drop redundant implementation of pte_same()
+Date: Sat, 25 Jul 2026 21:02:06 +0200
+Message-ID: <20260725190207.113620-1-deller@kernel.org>
 X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
@@ -41,53 +41,31 @@ Content-Transfer-Encoding: 8bit
 
 From: Helge Deller <deller@gmx.de>
 
-Switch to the generic implementations, which are identical.
-
-Suggested-by: Usama Arif <usama.arif@linux.dev>
-Suggested-by: John David Anglin <dave.anglin@bell.net>
 Signed-off-by: Helge Deller <deller@gmx.de>
 ---
- arch/parisc/include/asm/pgtable.h | 20 --------------------
- 1 file changed, 20 deletions(-)
+ arch/parisc/include/asm/pgtable.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
-index 467b8547ac8b..d92dee9fef3f 100644
+index d92dee9fef3f..a042131553d5 100644
 --- a/arch/parisc/include/asm/pgtable.h
 +++ b/arch/parisc/include/asm/pgtable.h
-@@ -432,25 +432,6 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
- 	return pte;
+@@ -441,8 +441,6 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
+ 	set_pte_at(mm, addr, ptep, pte_wrprotect(*ptep));
  }
  
--static inline pte_t ptep_get(pte_t *ptep)
--{
--	return READ_ONCE(*ptep);
--}
--#define ptep_get ptep_get
+-#define pte_same(A,B)	(pte_val(A) == pte_val(B))
 -
--static inline bool ptep_test_and_clear_young(struct vm_area_struct *vma,
--		unsigned long addr, pte_t *ptep)
--{
--	pte_t pte;
--
--	pte = ptep_get(ptep);
--	if (!pte_young(pte)) {
--		return false;
--	}
--	set_pte_at(vma->vm_mm, addr, ptep, pte_mkold(pte));
--	return true;
--}
--
- bool ptep_clear_flush_young(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep);
- pte_t ptep_clear_flush(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep);
+ #endif /* !__ASSEMBLER__ */
  
-@@ -491,7 +472,6 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
- #define HAVE_ARCH_UNMAPPED_AREA
- #define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
  
--#define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+@@ -475,6 +473,5 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
  #define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
  #define __HAVE_ARCH_PTEP_CLEAR_FLUSH
  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
+-#define __HAVE_ARCH_PTE_SAME
+ 
+ #endif /* _PARISC_PGTABLE_H */
 -- 
 2.54.0
 
