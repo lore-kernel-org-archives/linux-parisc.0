@@ -1,36 +1,39 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21543EFD27
-	for <linux-parisc@vger.kernel.org>; Sat, 25 Jul 2026 19:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8FD392C3A
+	for <linux-parisc@vger.kernel.org>; Sat, 25 Jul 2026 19:02:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785006135; cv=none; b=tS0HhQWA5iyAdDgbe6U6CyrrDYXBiTsoJIDM1q2yQotaXfTRB/eHqk5ZwsymsQAbvUkxaH7VNDmfTQQ9htHInRmF29+5mJnDKiJSDsjfB/hq9kE513vHWk5FBHtnGtcUTT55e5rvTMbYc/SUkpuzZdyDhgeKuHi0+tpFng4SgN4=
+	t=1785006136; cv=none; b=Rxo7Spz61hWf4+fmfeZ5SXkCT0QgKiPW7vTqiOJ/o6S95u2sVpQTNr7WWo8YN3PM5sDACvLATbQl3QCQcT+F9Xz8LpCsEjpImWD1sPf7e1nEOhXL+XJpKipHlTBUW35sjoDKgR14wo4ylQfGIIufJG0eBHHv4e9ATdFOZ/TGfIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785006135; c=relaxed/simple;
-	bh=JYL2Esp1k+dQTm7sDHTEsDt5E4SfF2psBp15HMU3tdE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=PCdb9usbMA4Hn1kGxBr7s7/+nDg9BuJgIoTBieuQHNy4qy0nVpELFylzwy42HYaL5yxNb91+k10s7X+Yf+3NmthRpWNoHV7LnJkdGqVmV+R96O/UoNzblyl3k05eBPGJBsEUb0fil9XM9CDI4sWEj0DNAS/Y1ErDfLGPN5NOJcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mxfGQORO; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785006136; c=relaxed/simple;
+	bh=mAEzY8haP3S0e4OCqrGXq3I/9UKl7k1uuelyxlbnXYQ=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=UdIKei+za19q4oBaWukW3oalA8v56F3MKShEMBuQS5nqcl/HflaqV6aL6qM1BEtw/gFLR8eXd0WdMUdOmv8M6TrRtnCRSaylsT8A6DoOdDf8zx6hR9weZGcs5Xx0h5SGWpgvLOR92+9O0ngUtyMdZGCWoSHiSqDIqimuAzX03Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PyR7E+Mw; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mxfGQORO"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80F571F000E9
-	for <linux-parisc@vger.kernel.org>; Sat, 25 Jul 2026 19:02:12 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PyR7E+Mw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CF81F00A3A
+	for <linux-parisc@vger.kernel.org>; Sat, 25 Jul 2026 19:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785006133;
-	bh=O0k5CBlvr2f/MNq1/6VnAzjsF4jw71hV0IS5Zy72uyA=;
-	h=From:To:Subject:Date;
-	b=mxfGQORO5ifw9VXqZaDiuStvDayt0IUUhaKLp4LXlmR1vRxT6+jr0bYDttn9iD5q6
-	 SjOzPM8JXv4yfgH+Xq3yMGxE0H/6diKbnsqjlw9Us15MmBGQ13Yx3GxeZq2FfVoaSM
-	 8sZy3jJJK8Nf4UuDOdu5+a0mlBPjH42SoTF0wnj/SdvOQCJs+ypW6IDPDYTAGMNQDh
-	 CEEiNUyGPQph6pATxlwYijUJgRV6PvKeegnDw3MMie93GoTWluwK2LW7/2f4S2zpoX
-	 wCylgBGldP625vhYBfLhJMyjR4IEYzzJfUF74spfIwdB7LdtcXqwD2hqH+5piwN5nJ
-	 YRZv+znNYBpFQ==
+	s=k20260515; t=1785006134;
+	bh=4BBwS5pvB3TXgp1XMgt3eses9lq6qX2ExyV2ZHx3u08=;
+	h=From:To:Subject:Date:In-Reply-To:References;
+	b=PyR7E+MwXs4VAA36vaYxRkreaKbDitO4O/ZSkcS9Uj6B5sl506R+bUmW12OXzGrhq
+	 aYT9Dmk1jn1XwvlRXGUgoVzzsC7z4TjVRB/h4mqm1Ma1e2uE1UP+5SyyoH2WmyR8Y9
+	 K6KwzROzUZPS6QpYrJOvYoKmZpvpu0edpcZyYn3uasNiiEd+n1Q7fLDEavQrrjtVHm
+	 3s+5jWlfuG72/nuX9Lv8id2jDjl3LrvwCalsfooCp0EmtYPKrzgAclopWa4H7vXqYl
+	 234neQG4a6OHZ012OZ4Kk4UUi7ne6dFemeMlmtjaN5cSJVgMTBr4vExBpDg03DiWSj
+	 D0ILLpLXnxing==
 From: Helge Deller <deller@kernel.org>
 To: linux-parisc@vger.kernel.org
-Subject: [PATCH 1/2] parisc: Drop redundant implementation of pte_same()
-Date: Sat, 25 Jul 2026 21:02:06 +0200
-Message-ID: <20260725190207.113620-1-deller@kernel.org>
+Subject: [PATCH 2/2] parisc: Drop redundant implementation of ptep_set_wrprotect()
+Date: Sat, 25 Jul 2026 21:02:07 +0200
+Message-ID: <20260725190207.113620-2-deller@kernel.org>
 X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260725190207.113620-1-deller@kernel.org>
+References: <20260725190207.113620-1-deller@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -43,27 +46,31 @@ From: Helge Deller <deller@gmx.de>
 
 Signed-off-by: Helge Deller <deller@gmx.de>
 ---
- arch/parisc/include/asm/pgtable.h | 3 ---
- 1 file changed, 3 deletions(-)
+ arch/parisc/include/asm/pgtable.h | 7 -------
+ 1 file changed, 7 deletions(-)
 
 diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
-index d92dee9fef3f..a042131553d5 100644
+index a042131553d5..2dda06fcd35c 100644
 --- a/arch/parisc/include/asm/pgtable.h
 +++ b/arch/parisc/include/asm/pgtable.h
-@@ -441,8 +441,6 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
- 	set_pte_at(mm, addr, ptep, pte_wrprotect(*ptep));
- }
+@@ -435,12 +435,6 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+ bool ptep_clear_flush_young(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep);
+ pte_t ptep_clear_flush(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep);
  
--#define pte_same(A,B)	(pte_val(A) == pte_val(B))
+-struct mm_struct;
+-static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
+-{
+-	set_pte_at(mm, addr, ptep, pte_wrprotect(*ptep));
+-}
 -
  #endif /* !__ASSEMBLER__ */
  
  
-@@ -475,6 +473,5 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
+@@ -472,6 +466,5 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
+ 
  #define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
  #define __HAVE_ARCH_PTEP_CLEAR_FLUSH
- #define __HAVE_ARCH_PTEP_SET_WRPROTECT
--#define __HAVE_ARCH_PTE_SAME
+-#define __HAVE_ARCH_PTEP_SET_WRPROTECT
  
  #endif /* _PARISC_PGTABLE_H */
 -- 
