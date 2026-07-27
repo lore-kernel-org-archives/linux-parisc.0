@@ -1,297 +1,155 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583823EB0F7
-	for <linux-parisc@vger.kernel.org>; Mon, 27 Jul 2026 09:15:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED653FFFA7;
+	Mon, 27 Jul 2026 13:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785143710; cv=none; b=KTXhvxKnqQDlbJQn8XTIW8qg3hbvuJahZ4kvAKdclNx0ZNWlBIm7kazLRl9O3YiPFctVw9O3EmPjpmdT/nxlBEToQs6SF1nRAhg01F6KLTn4sc4GWDVBbtpF0kCbtuP80uBKZw+4G83l3Z6Zl+UpSG8JUKVSPgnFONu4HDdZFtQ=
+	t=1785159878; cv=none; b=ljcnvuuDM5zuUgmwYxBsCpxVa3A9Em/nwA6QWGoLvErnnIoxCD43k3zwCJUnm81Pv6OdAGkzQEylEocHQdQ20RrXs8iErnXV1jgyQBgatXxKo5+czeNetIRG3NxlPtpF1f5k3xj0JJPNrwC39JdaXdbk9lVFc7pURQCGq2zflmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785143710; c=relaxed/simple;
-	bh=Rv/b/Ky8BSiow63FiGNuR9awCOBMuT7p7LZYIYHc/wg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L1a5T7P0ViWhoXYoKFlezfxszpoaP3E7GQtd51MH5LN7FtPY6dcMdJfQVBbhGtjk5ZXgNz+EmduailJdK4UqTOdvR9eM51Z0ebtGWd43/1R6OjEj5YdhI1fGgAzpKMijSClWwPTDw4URsvHTFgHX2jtMcXyL2I2qFnsNuw15aiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=XH4COWUi; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=bdm02+CD; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=gT14ov0W; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=59Y51aLI; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+	s=arc-20240116; t=1785159878; c=relaxed/simple;
+	bh=tdljK4mTpVAH50rmxIGqjRBRc+v1OZBcBhRh6rUCIAs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q/y1iromOmPYAFI8lCdel23uyBSmyUTgbiVUL0iE5KomhGpC+P4ylQeDLXe8FcN4ftSvYL4T3520Z2aChrxieMjULRgG3RmqtTlZYD4EZnqbvEGW08mFlAESYXWUaYkQT+zcoBe8K21hiP+qUZLIBml+ojMx98UF/TK6THbdg60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f2z7b51q; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="XH4COWUi";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="bdm02+CD";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="gT14ov0W";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="59Y51aLI"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 214317DA77;
-	Mon, 27 Jul 2026 09:14:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1785143702; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Nofef/k2ghi2COUtOHG8Fiu5zrxha6Onv0LZX52ftP4=;
-	b=XH4COWUi/uVSTTItRb/nUmfm8hm6XLb+2ccrA+RSH9hDCrCENsMx7DdG1OWFISHT6yiJar
-	na1H2WcWdnbTJhAmma6fHG2fZdoBEv0sNydB8Z028wX4I5FNCCSh+4CvoK0zBQnxUDz5sv
-	fK0AfBjzu45udqdKvJg4xwhvU+eyHcE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1785143702;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Nofef/k2ghi2COUtOHG8Fiu5zrxha6Onv0LZX52ftP4=;
-	b=bdm02+CDJ05kV++dhJds+LNeKzhLGoPjHgz72E0kyd3TFAyzK2ZG2IlQFCaDm8PiZrpNT2
-	rCtsIQeQl1/lYUDg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=gT14ov0W;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=59Y51aLI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1785143698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Nofef/k2ghi2COUtOHG8Fiu5zrxha6Onv0LZX52ftP4=;
-	b=gT14ov0WCez/rIUxEy8m1tADx6vn9TvWYnVIlGDTGvvTkjqgKfNlsTpWeYmj3zns/HRrah
-	yetFtSmLwPTMVM2yAdcVmh9IB0etgC+Ko7dJ0vjckI/njniugxrFqPUNdwhmH9agXU+RvH
-	Vv24fXObUNvrvroqv5eY8mBjjk6l63M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1785143698;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Nofef/k2ghi2COUtOHG8Fiu5zrxha6Onv0LZX52ftP4=;
-	b=59Y51aLI6YcXix+Z2oMApRzqEq+GdCAi5lSa72SMl9lcyKfcsYff4UnevNIIfGg1Xje3eG
-	/vP8AY5Z6JDlUaAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0A492779B9;
-	Mon, 27 Jul 2026 09:14:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Gy7HOo8hZ2r9DwAAD6G6ig
-	(envelope-from <pfalcato@suse.de>); Mon, 27 Jul 2026 09:14:55 +0000
-Date: Mon, 27 Jul 2026 10:14:54 +0100
-From: Pedro Falcato <pfalcato@suse.de>
-To: Helge Deller <deller@kernel.org>
-Cc: John David Anglin <dave.anglin@bell.net>, 
-	Usama Arif <usama.arif@linux.dev>, Helge Deller <deller@gmx.de>, 
-	Matthew Wilcox <willy@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Lorenzo Stoakes <ljs@kernel.org>, "Liam R. Howlett" <liam@infradead.org>, 
-	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>, 
-	Zi Yan <ziy@nvidia.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	Nico Pache <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
-	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
-	Kevin Brodsky <kevin.brodsky@arm.com>, Muhammad Usama Anjum <usama.anjum@arm.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 3/5] mm/parisc: constify ptep_get() argument
-Message-ID: <amchbBH5zF7Rq5LT@pedro-suse>
-References: <20260724102017.141532-1-pfalcato@suse.de>
- <20260724102017.141532-4-pfalcato@suse.de>
- <0fd713a8-e4ab-4c07-b36e-79dd138b4a86@linux.dev>
- <amNzLXuwflIZFKtI@casper.infradead.org>
- <253f7ac0-205b-42f1-9fb5-d19eceb581b6@linux.dev>
- <amOEUZlp1BxYh6_t@pedro-suse>
- <fd239383-dcbe-4daf-b337-32facef07076@linux.dev>
- <3e9dece8-4e86-4ce5-bd74-b3ec305f3003@gmx.de>
- <4606e13f-6827-45d0-b3b8-6bc26358f7ae@bell.net>
- <amT0j_bBT3CCxPcg@p100>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f2z7b51q"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62FB11F000E9;
+	Mon, 27 Jul 2026 13:44:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785159876;
+	bh=5HBSjs0YXmx8rxbE5f0/XZpbxIe03X0ZCU3v967/exQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=f2z7b51qoUf6Sutj4dP/UQlgqzQVH/sIoduN90fsornu7wBavjeVzTibtWRxCn4rh
+	 af1p74G9L+W0ulIOv/E0zlviPmRGlrTCpAeBe6UOziqgNaO8mLutQyd2Rt9bXOavbP
+	 oxuEUCa930MO+rNmegPrETeDvk6+4qw+l7dF/K4dVeZaesqkECQ+rjiWPLI9947/nS
+	 6EgoWWmXHu+CiPztjXHtWmQasSMcMjjtDAhFB8AzK2J3qIXNAGrNm2xMBXCBIfcKKP
+	 pLmlnIiOtm1gHo56xq5M2Su4ZHAX9fPZP66WIxr77+wQ5XvR2KOVaLgM6gp5DcYv+w
+	 DI8hFDl/qc7uQ==
+Message-ID: <ac1e42b2-eee5-42cc-bf1e-dfdc5225adeb@kernel.org>
+Date: Mon, 27 Jul 2026 15:44:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <amT0j_bBT3CCxPcg@p100>
-X-Spam-Score: -2.51
-X-Spam-Level: 
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 214317DA77
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[bell.net,gmx.de];
-	FREEMAIL_CC(0.00)[bell.net,linux.dev,gmx.de,infradead.org,linux-foundation.org,kernel.org,arm.com,hansenpartnership.com,linux.ibm.com,ellerman.id.au,google.com,suse.com,suse.cz,nvidia.com,linux.alibaba.com,redhat.com,lists.infradead.org,vger.kernel.org,lists.ozlabs.org,kvack.org];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	R_RATELIMIT(0.00)[to_ip_from(RL764437jfm1qe6abtk9nwyx8m)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gmx.de:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,bell.net:email,linux.dev:email]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] mm: constify generic pte_get*()
+To: Pedro Falcato <pfalcato@suse.de>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Lorenzo Stoakes <ljs@kernel.org>,
+ "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>,
+ Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Michal Hocko <mhocko@suse.com>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Jan Kara <jack@suse.cz>, Zi Yan <ziy@nvidia.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>, Nico Pache <npache@redhat.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>,
+ Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>,
+ Usama Arif <usama.arif@linux.dev>, Kevin Brodsky <kevin.brodsky@arm.com>,
+ Muhammad Usama Anjum <usama.anjum@arm.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20260724102017.141532-1-pfalcato@suse.de>
+ <20260724102017.141532-2-pfalcato@suse.de>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20260724102017.141532-2-pfalcato@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Jul 25, 2026 at 07:38:23PM +0200, Helge Deller wrote:
-> * John David Anglin <dave.anglin@bell.net>:
-> > On 2026-07-25 12:27 p.m., Helge Deller wrote:
-> > > On 7/24/26 17:48, Usama Arif wrote:
-> > >>
-> > >>
-> > >> On 24/07/2026 16:32, Pedro Falcato wrote:
-> > >>> On Fri, Jul 24, 2026 at 04:03:44PM +0100, Usama Arif wrote:
-> > >>>>
-> > >>>>
-> > >>>> On 24/07/2026 15:14, Matthew Wilcox wrote:
-> > >>>>> On Fri, Jul 24, 2026 at 02:36:59PM +0100, Usama Arif wrote:
-> > >>>>>>
-> > >>>>>>
-> > >>>>>> On 24/07/2026 11:20, Pedro Falcato wrote:
-> > >>>>>>> ptep_get() does not need write access to the PTE.
-> > >>>>>>>
-> > >>>>>>> Signed-off-by: Pedro Falcato <pfalcato@suse.de>
-> > >>>>>>> ---
-> > >>>>>>>   arch/parisc/include/asm/pgtable.h | 2 +-
-> > >>>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >>>>>>>
-> > >>>>>> hmm I think you might break build bisectibility if
-> > >>>>>> you separate out the patches, you should squash patch 3 and 4,
-> > >>>>>> with patch 1.
-> > >>>>>
-> > >>>>> I don't see how this breaks bisectability.  Can you elaborate on what
-> > >>>>> you think would break?
-> > >>>>
-> > >>>> Patch 1 does:
-> > >>>>
-> > >>>> -static inline pte_t ptep_get_lockless(pte_t *ptep)
-> > >>>> +static inline pte_t ptep_get_lockless(const pte_t *ptep)
-> > >>>>   {
-> > >>>>       return ptep_get(ptep);
-> > >>>>   }
-> > >>>>
-> > >>>>
-> > >>>> ptep_get() takes a non-const arg till patch 3 for example for parsic.
-> > >>>> I don't think you can pass a const variable to non const function arg?
-> > >>>>
-> > >>>> So parsic won't compile in patch 1 and 2, powerprc wont compile
-> > >>>> for patches 1, 2 and 3..
-> > >>>
-> > >>> Aha, yes, nice catch! I'll have to rethink that. Maybe squashing the patches
-> > >>> would be the cleanest way forward.
-> > >>>
-> > >>
-> > >> Yes, squashing is the simplest way forward.
-> > >>
-> > >>> FWIW, the vast majority of architectures aren't doing funny things on
-> > >>> ptep_get(). E.g PA-RISC, loongarch only define these so they can use it in
-> > >>> their own asm/pgtable.h. I'd really like to delete these but I can't tell
-> > >>> if they are *actually* required.
-> > >>>
-> > >>
-> > >> Ah maybe there is something in git history on why it was needed?
-> > >>
-> > >> If not, hopefully someone from the arch lists could clarify..
-> > > I tried to remove ptep_get() and ptep_test_and_clear_young() from
-> > > arch/parisc/include/asm/pgtable.h, but this then triggers compile errors:
-> > > 
-> > >  CC      arch/parisc/kernel/asm-offsets.s
-> > > In file included from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/mm.h:31,
-> > >                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pid_namespace.h:7,
-> > >                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/ptrace.h:10,
-> > >                  from /home/cvs/parisc/git-kernel/linus-linux-2.6/arch/parisc/kernel/asm-offsets.c:21:
-> > > /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pgtable.h: In function ‘clear_young_dirty_ptes’:
-> > > /home/cvs/parisc/git-kernel/linus-linux-2.6/include/linux/pgtable.h:683:25: error: implicit declaration of function ‘ptep_test_and_clear_young’;
-> > > did you mean ‘pmdp_test_and_clear_young’? [-Wimplicit-function-declaration]
-> > >   683 |                         ptep_test_and_clear_young(vma, addr, ptep);
-> > >       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
-> > >       |                         pmdp_test_and_clear_young
-> > > 
-> > > So, I think the answer is, that the local copy of ptep_get() is used in the parisc implementation of
-> > > ptep_test_and_clear_young() function.
-> > > 
-> > > Switching to the default include/linux/pgtable.h seems not easy doable....
-> > 
-> > Did you remove define for __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG in parisc version of pgtable.h?
+On 7/24/26 12:20, Pedro Falcato wrote:
+> None of the helpers need write access to the PTE. Constifying the param
+> allows for const typesafety.
 > 
-> Indeed, I missed to remove that.
+> Signed-off-by: Pedro Falcato <pfalcato@suse.de>
+> ---
+>  include/linux/pgtable.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> Usama, if you want you can add the patch below to your patch set, thus
-> simplifying your series?
-
-It's actually my series but thanks Helge I'll pick it up!
-
-> 
-> Helge
-> 
-> ------
-> 
-> From: Helge Deller <deller@gmx.de>
-> Date: Sat, 25 Jul 2026 19:19:55 +0200
-> Subject: [PATCH] parisc: Drop own implementations for ptep_get() and
->  ptep_test_and_clear_young()
-> 
-> Switch to the generic implementations, which are identical.
-> 
-> Suggested-by: Usama Arif <usama.arif@linux.dev>
-> Suggested-by: John David Anglin <dave.anglin@bell.net>
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
-> diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
-> index 467b8547ac8b..d92dee9fef3f 100644
-> --- a/arch/parisc/include/asm/pgtable.h
-> +++ b/arch/parisc/include/asm/pgtable.h
-> @@ -432,25 +432,6 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
->  	return pte;
->  }
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 8c093c119e5a..dc418553e57a 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -490,7 +490,7 @@ static inline int pudp_set_access_flags(struct vm_area_struct *vma,
+>  #endif
 >  
+>  #ifndef ptep_get
 > -static inline pte_t ptep_get(pte_t *ptep)
-> -{
-> -	return READ_ONCE(*ptep);
-> -}
-> -#define ptep_get ptep_get
-> -
-> -static inline bool ptep_test_and_clear_young(struct vm_area_struct *vma,
-> -		unsigned long addr, pte_t *ptep)
-> -{
-> -	pte_t pte;
-> -
-> -	pte = ptep_get(ptep);
-> -	if (!pte_young(pte)) {
-> -		return false;
-> -	}
-> -	set_pte_at(vma->vm_mm, addr, ptep, pte_mkold(pte));
-> -	return true;
-> -}
-> -
->  bool ptep_clear_flush_young(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep);
->  pte_t ptep_clear_flush(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep);
+> +static inline pte_t ptep_get(const pte_t *ptep)
+>  {
+>  	return READ_ONCE(*ptep);
+>  }
+> @@ -739,7 +739,7 @@ static inline void ptep_clear(struct mm_struct *mm, unsigned long addr,
+>   * present bit set *unless* it is 'l'. Because get_user_pages_fast() only
+>   * operates on present ptes we're safe.
+>   */
+> -static inline pte_t ptep_get_lockless(pte_t *ptep)
+> +static inline pte_t ptep_get_lockless(const pte_t *ptep)
+>  {
+>  	pte_t pte;
 >  
-> @@ -491,7 +472,6 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr,
->  #define HAVE_ARCH_UNMAPPED_AREA
->  #define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
->  
-> -#define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
->  #define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
->  #define __HAVE_ARCH_PTEP_CLEAR_FLUSH
->  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
+> @@ -777,7 +777,7 @@ static inline pmd_t pmdp_get_lockless(pmd_t *pmdp)
+>   * We require that the PTE can be read atomically.
+>   */
+>  #ifndef ptep_get_lockless
+> -static inline pte_t ptep_get_lockless(pte_t *ptep)
+> +static inline pte_t ptep_get_lockless(const pte_t *ptep)
+>  {
+>  	return ptep_get(ptep);
+>  }
+
+Yes, that's a step into the right direction.
 
 -- 
-Pedro
+Cheers,
+
+David
