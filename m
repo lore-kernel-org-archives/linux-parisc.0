@@ -1,197 +1,513 @@
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18F5401A07;
-	Sat, 25 Jul 2026 20:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940C2221546
+	for <linux-parisc@vger.kernel.org>; Mon, 27 Jul 2026 00:38:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785010083; cv=none; b=Q0P3DJ1/n5//Ehuqjr6YhVwbo6fjvzwBqC0pUYQd+a0xy2x0HtsggyBoQV5JUxbIQn7x724QzaDqABnpRS3KHhEklQ5mVU7eI3Vl7RCldI3eJar6MFeP0yI4ArsNe8+8wN8ykvJE2KgI/wnfprjzbO19SlV6OGoq9pR4x1progg=
+	t=1785112685; cv=none; b=aPfhv/iYhFh6bHGxFjDq8qgmwvtod0BFWe8yEEhcF5XgbAPosCywYCzys0X9Mziawfs7KMiU9vIuneO8qbbJ1SFuX2crn4Wz2MLc6LzgC8PhwLcGRgFoevQmS/zn3V55f3wyn2ltBjl4kTl1lja4Wm2Q5ICrsL+NxrJ0raLd+7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785010083; c=relaxed/simple;
-	bh=Eq0wZqTa1O7hVLWbef4IxAKIDW8G2j6olw9bzNn5kGE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FF/as1KUbY0RV+ri/wRsfqzOSh8Qb5DRbNe5OAurdnINTV4dBCe1Ix3NiDs5h8lXYGr9N0/CIIDqsJAwB9eGxJ4atQNsCWIRSJsbj7IA9z8mDAirbJ2vT/12lTyN8iMffJd6iYuM3pHYfdP6Zgf50bwqnZ07MFJFidFf8rq7f/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=f1vxwfKg; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+	s=arc-20240116; t=1785112685; c=relaxed/simple;
+	bh=CFbS1EHpimalLgG3Gb675zA5golDUNn1TxzJLtF6jKA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=oeB6f7N0wb53wGR/67h5Jhi96AKkxBy0D7db1XEegj6mEP4akFt2CHE2qe2yR67MDUig8ij+jkMBx9gns7fePohSAGjKdX4++gsK302r6khGStm+XHeuNtpOVQOsc8CXm3NbFkONTldiLkc3EAs9xcBwMRFyqYagVyoKOhoutB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rh+XaWJr; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="f1vxwfKg"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1785010074; x=1785614874; i=deller@gmx.de;
-	bh=z+H7nndP4bKUyZusZFqUFq09NElNuzNEFjJqpsxq594=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=f1vxwfKgb4eyjlyGjZTPCegogyi0so5gdblRJjE7kM587noAhcnuFKQ35rHr3hDC
-	 AbgREoUIn/m7vFWRFvzxsq2vzy0Z3JbF5iA4R0LXRX/NU9zB1fM0k9rbKv3/+qUna
-	 w/9rzoZpjPdgvPBj/rdwkwilVxU3rJRymxJh5t/hVPlxoOsyKEp+/wdFzW9uXEdTu
-	 3zf8IGA39bfA1dd8OtNs3k5QIYua4F1usiAIyWWw69/TWhYQs/MD8M43G1xJb4J6W
-	 0lGPUR7bZj2NV9D+ulco0vrOPpiPAjYVICR1G2atinNHXmZwA+iSgy7BSpDAldkKK
-	 hGfELmXUxMZl1GF8YA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from client.hidden.invalid by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MYNNo-1wSM3v43dK-00Ilis; Sat, 25
- Jul 2026 22:07:54 +0200
-Message-ID: <8e9adcc1-5dbe-4e06-9383-48334c13e557@gmx.de>
-Date: Sat, 25 Jul 2026 22:07:50 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rh+XaWJr"
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-8486ac3f347so2869405b3a.1
+        for <linux-parisc@vger.kernel.org>; Sun, 26 Jul 2026 17:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1785112681; x=1785717481; darn=vger.kernel.org;
+        h=content-disposition:content-type:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=crWoGk6a2nyOeanrrIAaE3c9U5QAi76eR9/Temfhkro=;
+        b=Rh+XaWJrMFOS+mwIoR+3xGIrsxDrx/cKQNz3GrmwwWUJwu3Za23k8W80ROWlulTlHL
+         zQUlogKZ44YHgxlsME8kRofNel6AadZfZOSFG9115Ns8j7yLwRiNX9tZWmnWSrVoySNv
+         ZGuj31HoBDqtdFE5dCEkl7P3xZQMsGOe2O8SJ/RFnWXliU+6fLlhdwfPHNyrDlhYfBk/
+         7gRDBSGPtW78fImxw17sKP7vl/0lBmww0rYSikIvbK+8W5tCA+jwSQd8DCQ56GDzFAPj
+         eDA/ytlnWP938HjkaXpWspO2yH5qB6Afz5qrYQd2RXLvFw80S/BqDBULz/Zk8CDkIOdd
+         JhRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785112681; x=1785717481;
+        h=content-disposition:content-type:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=crWoGk6a2nyOeanrrIAaE3c9U5QAi76eR9/Temfhkro=;
+        b=GlSnZR5BGZZyAwd4EGIztU0QoxxCHXLnhhjOHKwPYNUaOjCLtD/R+SwegNePKNkG4S
+         +QzJ6BhfLnbqrD44cQyXBEMrYuh+iZu46ftBp8K7NYjaNMr05xFBBekxDgefD8mwpw8m
+         YF2pstfSvfo2eMKMR5s2hfeD64VGKOLtX3QSh9c3epXgTyBpW3du0Tc29vLNKzp1UlU8
+         IwyxwQQLHiqH7/bhF8szVRqrrdBU62ItSnK3JU+1RvexyVKpgTbk0jYcbElV439x2Ktp
+         TS/MSurACLO4Q+Spux7zz14PaSf3xwaiQlKnzDcrDBN7R5swhkhKdDGeDiNDLrhkIoPP
+         ugDA==
+X-Forwarded-Encrypted: i=1; AHgh+Rp4lOxacPckuil5uJAdIeJ5MZXnCNDw7dUZFQlnhNSWsgM03dRpcHp2UFgoYz1DR4RvvWGW+E5NcHHuiMI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQYGAxDuwGUfR6nRlpdvCAHvXYKemH6MQ6H5O9INqOv9mAWzkl
+	8zOnHGfpIdWldPExO0d6FUdoCBYsI3UcxOmrMWFnjFHjKaOCJxjF5MwS
+X-Gm-Gg: AR+sD11PoYIwvTJNktPzN+Dw/TwyRu6aZ5mrDQYUbtaSAFo4nyjnLiuXeAXzF3Lg48C
+	hfwD8BETlpbirmTvGO5tbstzW41wp1R6LoqsQVpQlJSSAOHkVa8TImu35udNSNvZQNc3zX0pC0U
+	wk+VQnjRRhIZ9nLQz9e1z6w+0kTeB1pM+iilC6vm9gn30xTFNZtodQtR+7MePI4r6fpkhm6p74n
+	st7/sf3D7ddueOhm6wHDVFJ4LfhoT0pj13vfyDeYvPOd/SrfAGZBuUlgpcXHcsBr7enC7449aBj
+	SatF/aLITPnSzcnmYQUmvWmNEOemqJbwh6J+8dSuJYn22HJeJ+2dW1X3EZwojMPb92Yau028+XQ
+	nn7nBuPVGzNUdniVogoMiM9EkzfoDBa0h6iJLJ1hkn3D7058rmhZnO/WdJiVaqTLmbOV0PPyQMp
+	sOONYwvsK6MNRCBFlF+rnTfhZb8WAuuPVeZ54UXddLFIE=
+X-Received: by 2002:a05:6a21:2d4b:b0:3bf:a517:cdcd with SMTP id adf61e73a8af0-3c6723e0acbmr8486529637.12.1785112680591;
+        Sun, 26 Jul 2026 17:38:00 -0700 (PDT)
+Received: from google.com ([2a00:79e0:2ebe:8:fc2f:1878:e714:ef41])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-314bc44cb92sm40536951eec.13.2026.07.26.17.37.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Jul 2026 17:37:59 -0700 (PDT)
+Date: Sun, 26 Jul 2026 17:37:56 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	Helge Deller <deller@gmx.de>
+Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
+	linux-parisc@vger.kernel.org
+Subject: [PATCH] Input: gscps2 - supply PA-RISC keyboard keymap via device
+ property
+Message-ID: <amaJEXxiKjghv0F0@google.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] parisc: superio: Spelling s/Peterson/Petersen/
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
- "Martin K . Petersen" <martin.petersen@oracle.com>,
- "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <feede3d4d3203379678dad30a78305fb17dcf939.1784012424.git.geert+renesas@glider.be>
-Content-Language: en-US
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <feede3d4d3203379678dad30a78305fb17dcf939.1784012424.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:y2WgfTMRX7gVwkEUsW+jQUffga33XnPjpKZBbmKix0O4Npp1yF5
- TLPmoq/AYVugycFYkI+tr1yIh1Uxn5JkLS/LRjKElBkXmlaiyiNfOY3FY23jH7yYyUCn2lZ
- EDUzxfC93/wmPn1FGnsSLuIa/LlsZyIzs6C3lv50j9no66IZ+1Lr8r4xR2m8Egk4Bh8L2UT
- iFOzooKq6rBLJ+xoT6LvA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:QyYj2lwdni0=;NNjFtzq4kI2cFieTvWJE7xrgwnw
- 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
- r7fsLP+/I=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 7/14/26 09:02, Geert Uytterhoeven wrote:
-> Correct a typo in Martin's surname.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->   drivers/parisc/superio.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-applied.
+Instead of hardcoding PA-RISC specific keycode tables into atkbd via
+compile-time inclusion, have the gscps2 PS/2 port driver attach a
+"linux,keymap" software node device property to the serio device when
+a keyboard port is registered. This allows atkbd to dynamically fetch
+and apply the custom keymap when probing the port using generic
+firmware property helpers, removing architecture-specific hacks from
+generic keyboard driver code.
 
-Thanks!
-Helge
+Co-locate the keymap definitions with the serio port driver by moving
+hpps2atkbd.h from drivers/input/keyboard/ to drivers/input/serio/.
+
+Assisted-by: Antigravity:gemini-3.5-flash
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/keyboard/Kconfig      |  38 ----------
+ drivers/input/keyboard/atkbd.c      |   8 --
+ drivers/input/keyboard/hpps2atkbd.h | 110 ----------------------------
+ drivers/input/serio/Kconfig         |  27 +++++++
+ drivers/input/serio/gscps2.c        |  27 +++++--
+ drivers/input/serio/hpps2atkbd.h    | 108 +++++++++++++++++++++++++++
+ 6 files changed, 154 insertions(+), 164 deletions(-)
+
+diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
+index 9d1019ba0245..d8c64f333462 100644
+--- a/drivers/input/keyboard/Kconfig
++++ b/drivers/input/keyboard/Kconfig
+@@ -119,44 +119,6 @@ config KEYBOARD_ATKBD
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called atkbd.
+ 
+-config KEYBOARD_ATKBD_HP_KEYCODES
+-	bool "Use HP keyboard scancodes"
+-	depends on PARISC && KEYBOARD_ATKBD
+-	default y
+-	help
+-	  Say Y here if you have a PA-RISC machine and want to use an AT or
+-	  PS/2 keyboard, and your keyboard uses keycodes that are specific to
+-	  PA-RISC keyboards.
+-
+-	  Say N if you use a standard keyboard.
+-
+-config KEYBOARD_ATKBD_RDI_KEYCODES
+-	bool "Use PrecisionBook keyboard scancodes"
+-	depends on KEYBOARD_ATKBD_HP_KEYCODES
+-	default n
+-	help
+-	  If you have an RDI PrecisionBook, say Y here if you want to use its
+-	  built-in keyboard (as opposed to an external keyboard).
+-
+-	  The PrecisionBook has five keys that conflict with those used by most
+-	  AT and PS/2 keyboards. These are as follows:
+-
+-	    PrecisionBook    Standard AT or PS/2
+-
+-	    F1               F12
+-	    Left Ctrl        Left Alt
+-	    Caps Lock        Left Ctrl
+-	    Right Ctrl       Caps Lock
+-	    Left             102nd key (the key to the right of Left Shift)
+-
+-	  If you say N here, and use the PrecisionBook keyboard, then each key
+-	  in the left-hand column will be interpreted as the corresponding key
+-	  in the right-hand column.
+-
+-	  If you say Y here, and use an external keyboard, then each key in the
+-	  right-hand column will be interpreted as the key shown in the
+-	  left-hand column.
+-
+ config KEYBOARD_QT1050
+ 	tristate "Microchip AT42QT1050 Touch Sensor Chip"
+ 	depends on I2C
+diff --git a/drivers/input/keyboard/atkbd.c b/drivers/input/keyboard/atkbd.c
+index 8cb4dc6fb165..3509b58e6492 100644
+--- a/drivers/input/keyboard/atkbd.c
++++ b/drivers/input/keyboard/atkbd.c
+@@ -73,13 +73,6 @@ MODULE_PARM_DESC(terminal, "Enable break codes on an IBM Terminal keyboard conne
+ #define ATKBD_KEYMAP_SIZE	512
+ 
+ static const unsigned short atkbd_set2_keycode[ATKBD_KEYMAP_SIZE] = {
+-#ifdef CONFIG_KEYBOARD_ATKBD_HP_KEYCODES
+-
+-/* XXX: need a more general approach */
+-
+-#include "hpps2atkbd.h"	/* include the keyboard scancodes */
+-
+-#else
+ 	  0, 67, 65, 63, 61, 59, 60, 88,183, 68, 66, 64, 62, 15, 41,117,
+ 	184, 56, 42, 93, 29, 16,  2,  0,185,  0, 44, 31, 30, 17,  3,  0,
+ 	186, 46, 45, 32, 18,  5,  4, 95,187, 57, 47, 33, 20, 19,  6,183,
+@@ -99,7 +92,6 @@ static const unsigned short atkbd_set2_keycode[ATKBD_KEYMAP_SIZE] = {
+ 	110,111,108,112,106,103,  0,119,  0,118,109,  0, 99,104,119,  0,
+ 
+ 	  0,  0,  0, 65, 99,
+-#endif
+ };
+ 
+ static const unsigned short atkbd_set3_keycode[ATKBD_KEYMAP_SIZE] = {
+diff --git a/drivers/input/keyboard/hpps2atkbd.h b/drivers/input/keyboard/hpps2atkbd.h
+deleted file mode 100644
+index dc33f6945222..000000000000
+--- a/drivers/input/keyboard/hpps2atkbd.h
++++ /dev/null
+@@ -1,110 +0,0 @@
+-/*
+- * drivers/input/keyboard/hpps2atkbd.h
+- *
+- * Copyright (c) 2004 Helge Deller <deller@gmx.de>
+- * Copyright (c) 2002 Laurent Canet <canetl@esiee.fr>
+- * Copyright (c) 2002 Thibaut Varene <varenet@parisc-linux.org>
+- * Copyright (c) 2000 Xavier Debacker <debackex@esiee.fr>
+- *
+- * HP PS/2 AT-compatible Keyboard, found in PA/RISC Workstations & Laptops
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
+- */
+-
+-
+-/* Is the keyboard an RDI PrecisionBook? */
+-#ifndef CONFIG_KEYBOARD_ATKBD_RDI_KEYCODES
+-# define CONFLICT(x,y) x
+-#else
+-# define CONFLICT(x,y) y
+-#endif
+-
+-/* sadly RDI (Tadpole) decided to ship a different keyboard layout
+-   than HP for their PS/2 laptop keyboard which leads to conflicting
+-   keycodes between a normal HP PS/2 keyboard and a RDI Precisionbook.
+-                                HP:		RDI:            */
+-#define C_07	CONFLICT(	KEY_F12,	KEY_F1		)
+-#define C_11	CONFLICT(	KEY_LEFTALT,	KEY_LEFTCTRL	)
+-#define C_14	CONFLICT(	KEY_LEFTCTRL,	KEY_CAPSLOCK	)
+-#define C_58	CONFLICT(	KEY_CAPSLOCK,	KEY_RIGHTCTRL	)
+-#define C_61	CONFLICT(	KEY_102ND,	KEY_LEFT	)
+-
+-/* Raw SET 2 scancode table */
+-
+-/* 00 */  KEY_RESERVED, KEY_F9,        KEY_RESERVED,  KEY_F5,        KEY_F3,        KEY_F1,       KEY_F2,        C_07,
+-/* 08 */  KEY_ESC,      KEY_F10,       KEY_F8,        KEY_F6,        KEY_F4,        KEY_TAB,      KEY_GRAVE,     KEY_F2,
+-/* 10 */  KEY_RESERVED, C_11,          KEY_LEFTSHIFT, KEY_RESERVED,  C_14,          KEY_Q,        KEY_1,         KEY_F3,
+-/* 18 */  KEY_RESERVED, KEY_LEFTALT,   KEY_Z,         KEY_S,         KEY_A,         KEY_W,        KEY_2,         KEY_F4,
+-/* 20 */  KEY_RESERVED, KEY_C,         KEY_X,         KEY_D,         KEY_E,         KEY_4,        KEY_3,         KEY_F5,
+-/* 28 */  KEY_RESERVED, KEY_SPACE,     KEY_V,         KEY_F,         KEY_T,         KEY_R,        KEY_5,         KEY_F6,
+-/* 30 */  KEY_RESERVED, KEY_N,         KEY_B,         KEY_H,         KEY_G,         KEY_Y,        KEY_6,         KEY_F7,
+-/* 38 */  KEY_RESERVED, KEY_RIGHTALT,  KEY_M,         KEY_J,         KEY_U,         KEY_7,        KEY_8,         KEY_F8,
+-/* 40 */  KEY_RESERVED, KEY_COMMA,     KEY_K,         KEY_I,         KEY_O,         KEY_0,        KEY_9,         KEY_F9,
+-/* 48 */  KEY_RESERVED, KEY_DOT,       KEY_SLASH,     KEY_L,         KEY_SEMICOLON, KEY_P,        KEY_MINUS,     KEY_F10,
+-/* 50 */  KEY_RESERVED, KEY_RESERVED,  KEY_APOSTROPHE,KEY_RESERVED,  KEY_LEFTBRACE, KEY_EQUAL,    KEY_F11,       KEY_SYSRQ,
+-/* 58 */  C_58,         KEY_RIGHTSHIFT,KEY_ENTER,     KEY_RIGHTBRACE,KEY_BACKSLASH, KEY_BACKSLASH,KEY_F12,       KEY_SCROLLLOCK,
+-/* 60 */  KEY_DOWN,     C_61,          KEY_PAUSE,     KEY_UP,        KEY_DELETE,    KEY_END,      KEY_BACKSPACE, KEY_INSERT,
+-/* 68 */  KEY_RESERVED, KEY_KP1,       KEY_RIGHT,     KEY_KP4,       KEY_KP7,       KEY_PAGEDOWN, KEY_HOME,      KEY_PAGEUP,
+-/* 70 */  KEY_KP0,      KEY_KPDOT,     KEY_KP2,       KEY_KP5,       KEY_KP6,       KEY_KP8,      KEY_ESC,       KEY_NUMLOCK,
+-/* 78 */  KEY_F11,      KEY_KPPLUS,    KEY_KP3,       KEY_KPMINUS,   KEY_KPASTERISK,KEY_KP9,      KEY_SCROLLLOCK,KEY_102ND,
+-/* 80 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 88 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 90 */  KEY_RESERVED, KEY_RIGHTALT,  255,           KEY_RESERVED,  KEY_RIGHTCTRL, KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 98 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_CAPSLOCK, KEY_RESERVED,  KEY_LEFTMETA,
+-/* a0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RIGHTMETA,
+-/* a8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_COMPOSE,
+-/* b0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* b8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* c0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* c8 */  KEY_RESERVED, KEY_RESERVED,  KEY_KPSLASH,   KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* d0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* d8 */  KEY_RESERVED, KEY_RESERVED,  KEY_KPENTER,   KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* e0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* e8 */  KEY_RESERVED, KEY_END,       KEY_RESERVED,  KEY_LEFT,      KEY_HOME,      KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* f0 */  KEY_INSERT,   KEY_DELETE,    KEY_DOWN,      KEY_RESERVED,  KEY_RIGHT,     KEY_UP,       KEY_RESERVED,  KEY_PAUSE,
+-/* f8 */  KEY_RESERVED, KEY_RESERVED,  KEY_PAGEDOWN,  KEY_RESERVED,  KEY_SYSRQ,     KEY_PAGEUP,   KEY_RESERVED,  KEY_RESERVED,
+-
+-/* These are offset for escaped keycodes: */
+-
+-/* 00 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_F7,        KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 08 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_LEFTMETA,  KEY_RIGHTMETA, KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 10 */  KEY_RESERVED, KEY_RIGHTALT,  KEY_RESERVED,  KEY_RESERVED,  KEY_RIGHTCTRL, KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 18 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 20 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 28 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 30 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 38 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 40 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 48 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 50 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 58 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 60 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 68 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 70 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 78 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 80 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 88 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 90 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* 98 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* a0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* a8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* b0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* b8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* c0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* c8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* d0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* d8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* e0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* e8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* f0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
+-/* f8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED
+-
+-#undef CONFLICT
+-#undef C_07
+-#undef C_11
+-#undef C_14
+-#undef C_58
+-#undef C_61
+-
+diff --git a/drivers/input/serio/Kconfig b/drivers/input/serio/Kconfig
+index bacab1f58400..087f0203fff9 100644
+--- a/drivers/input/serio/Kconfig
++++ b/drivers/input/serio/Kconfig
+@@ -106,6 +106,33 @@ config SERIO_GSCPS2
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called gscps2.
+ 
++config SERIO_GSCPS2_RDI_KEYCODES
++	bool "Use PrecisionBook keyboard scancodes"
++	depends on SERIO_GSCPS2
++	default n
++	help
++	  If you have an RDI PrecisionBook, say Y here if you want to use its
++	  built-in keyboard (as opposed to an external keyboard).
++
++	  The PrecisionBook has five keys that conflict with those used by most
++	  AT and PS/2 keyboards. These are as follows:
++
++	    PrecisionBook    Standard AT or PS/2
++
++	    F1               F12
++	    Left Ctrl        Left Alt
++	    Caps Lock        Left Ctrl
++	    Right Ctrl       Caps Lock
++	    Left             102nd key (the key to the right of Left Shift)
++
++	  If you say N here, and use the PrecisionBook keyboard, then each key
++	  in the left-hand column will be interpreted as the corresponding key
++	  in the right-hand column.
++
++	  If you say Y here, and use an external keyboard, then each key in the
++	  right-hand column will be interpreted as the key shown in the
++	  left-hand column.
++
+ config HP_SDC
+ 	tristate "HP System Device Controller i8042 Support"
+ 	depends on (GSC || HP300) && SERIO
+diff --git a/drivers/input/serio/gscps2.c b/drivers/input/serio/gscps2.c
+index bf9b993f5733..f4a4afde35c9 100644
+--- a/drivers/input/serio/gscps2.c
++++ b/drivers/input/serio/gscps2.c
+@@ -22,20 +22,19 @@
+  *                 was usable/enabled ?)
+  */
+ 
+-#include <linux/init.h>
+-#include <linux/module.h>
+-#include <linux/slab.h>
+-#include <linux/serio.h>
++#include <linux/delay.h>
+ #include <linux/input.h>
+ #include <linux/interrupt.h>
+-#include <linux/spinlock.h>
+-#include <linux/delay.h>
++#include <linux/io.h>
+ #include <linux/ioport.h>
++#include <linux/property.h>
++#include <linux/serio.h>
+ 
+ #include <asm/irq.h>
+-#include <asm/io.h>
+ #include <asm/parisc-device.h>
+ 
++#include "hpps2atkbd.h"
++
+ MODULE_AUTHOR("Laurent Canet <canetl@esiee.fr>, Thibaut Varene <varenet@parisc-linux.org>, Helge Deller <deller@gmx.de>");
+ MODULE_DESCRIPTION("HP GSC PS2 port driver");
+ MODULE_LICENSE("GPL");
+@@ -398,6 +397,17 @@ static int __init gscps2_probe(struct parisc_device *dev)
+ 		goto fail;
+ #endif
+ 
++	if (ps2port->id == GSC_ID_KEYBOARD) {
++		ret = device_create_managed_software_node(&serio->dev,
++							  gscps2_props, NULL);
++		if (ret) {
++			dev_err(&dev->dev,
++				"failed to add software node for keyboard: %d\n",
++				ret);
++			goto fail;
++		}
++	}
++
+ 	pr_info("serio: %s port at 0x%08lx irq %d @ %s\n",
+ 		ps2port->port->name,
+ 		hpa,
+@@ -415,7 +425,9 @@ static int __init gscps2_probe(struct parisc_device *dev)
+ 
+ fail_miserably:
+ 	iounmap(ps2port->addr);
++#if 0
+ 	release_mem_region(dev->hpa.start, GSC_STATUS + 4);
++#endif
+ 
+ fail_nomem:
+ 	kfree(ps2port);
+@@ -477,4 +489,3 @@ static void __exit gscps2_exit(void)
+ 
+ module_init(gscps2_init);
+ module_exit(gscps2_exit);
+-
+diff --git a/drivers/input/serio/hpps2atkbd.h b/drivers/input/serio/hpps2atkbd.h
+new file mode 100644
+index 000000000000..d110070693b6
+--- /dev/null
++++ b/drivers/input/serio/hpps2atkbd.h
+@@ -0,0 +1,108 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * HP PS/2 AT-compatible Keyboard, found in PA/RISC Workstations & Laptops
++ *
++ * Copyright (c) 2004 Helge Deller <deller@gmx.de>
++ * Copyright (c) 2002 Laurent Canet <canetl@esiee.fr>
++ * Copyright (c) 2002 Thibaut Varene <varenet@parisc-linux.org>
++ * Copyright (c) 2000 Xavier Debacker <debackex@esiee.fr>
++ */
++
++#ifndef CONFIG_SERIO_GSCPS2_RDI_KEYCODES
++# define CONFLICT(x, y) x
++#else
++# define CONFLICT(x, y) y
++#endif
++
++/*
++ * Sadly RDI (Tadpole) decided to ship a different keyboard layout
++ * than HP for their PS/2 laptop keyboard which leads to conflicting
++ * keycodes between a normal HP PS/2 keyboard and a RDI PrecisionBook.
++ *                             HP:           RDI:
++ */
++#define C_07	CONFLICT(	KEY_F12,	KEY_F1		)
++#define C_11	CONFLICT(	KEY_LEFTALT,	KEY_LEFTCTRL	)
++#define C_14	CONFLICT(	KEY_LEFTCTRL,	KEY_CAPSLOCK	)
++#define C_58	CONFLICT(	KEY_CAPSLOCK,	KEY_RIGHTCTRL	)
++#define C_61	CONFLICT(	KEY_102ND,	KEY_LEFT	)
++
++#define KEYMAP_ENTRY(scancode, keycode) (((scancode) << 16) | (keycode))
++
++static const u32 gscps2_keymap[] = {
++	KEYMAP_ENTRY(0x01, KEY_F9),		KEYMAP_ENTRY(0x03, KEY_F5),
++	KEYMAP_ENTRY(0x04, KEY_F3),		KEYMAP_ENTRY(0x05, KEY_F1),
++	KEYMAP_ENTRY(0x06, KEY_F2),		KEYMAP_ENTRY(0x07, C_07),
++	KEYMAP_ENTRY(0x08, KEY_ESC),		KEYMAP_ENTRY(0x09, KEY_F10),
++	KEYMAP_ENTRY(0x0a, KEY_F8),		KEYMAP_ENTRY(0x0b, KEY_F6),
++	KEYMAP_ENTRY(0x0c, KEY_F4),		KEYMAP_ENTRY(0x0d, KEY_TAB),
++	KEYMAP_ENTRY(0x0e, KEY_GRAVE),		KEYMAP_ENTRY(0x0f, KEY_F2),
++	KEYMAP_ENTRY(0x11, C_11),		KEYMAP_ENTRY(0x12, KEY_LEFTSHIFT),
++	KEYMAP_ENTRY(0x14, C_14),		KEYMAP_ENTRY(0x15, KEY_Q),
++	KEYMAP_ENTRY(0x16, KEY_1),		KEYMAP_ENTRY(0x17, KEY_F3),
++	KEYMAP_ENTRY(0x19, KEY_LEFTALT),	KEYMAP_ENTRY(0x1a, KEY_Z),
++	KEYMAP_ENTRY(0x1b, KEY_S),		KEYMAP_ENTRY(0x1c, KEY_A),
++	KEYMAP_ENTRY(0x1d, KEY_W),		KEYMAP_ENTRY(0x1e, KEY_2),
++	KEYMAP_ENTRY(0x1f, KEY_F4),		KEYMAP_ENTRY(0x21, KEY_C),
++	KEYMAP_ENTRY(0x22, KEY_X),		KEYMAP_ENTRY(0x23, KEY_D),
++	KEYMAP_ENTRY(0x24, KEY_E),		KEYMAP_ENTRY(0x25, KEY_4),
++	KEYMAP_ENTRY(0x26, KEY_3),		KEYMAP_ENTRY(0x27, KEY_F5),
++	KEYMAP_ENTRY(0x29, KEY_SPACE),		KEYMAP_ENTRY(0x2a, KEY_V),
++	KEYMAP_ENTRY(0x2b, KEY_F),		KEYMAP_ENTRY(0x2c, KEY_T),
++	KEYMAP_ENTRY(0x2d, KEY_R),		KEYMAP_ENTRY(0x2e, KEY_5),
++	KEYMAP_ENTRY(0x2f, KEY_F6),		KEYMAP_ENTRY(0x31, KEY_N),
++	KEYMAP_ENTRY(0x32, KEY_B),		KEYMAP_ENTRY(0x33, KEY_H),
++	KEYMAP_ENTRY(0x34, KEY_G),		KEYMAP_ENTRY(0x35, KEY_Y),
++	KEYMAP_ENTRY(0x36, KEY_6),		KEYMAP_ENTRY(0x37, KEY_F7),
++	KEYMAP_ENTRY(0x39, KEY_RIGHTALT),	KEYMAP_ENTRY(0x3a, KEY_M),
++	KEYMAP_ENTRY(0x3b, KEY_J),		KEYMAP_ENTRY(0x3c, KEY_U),
++	KEYMAP_ENTRY(0x3d, KEY_7),		KEYMAP_ENTRY(0x3e, KEY_8),
++	KEYMAP_ENTRY(0x3f, KEY_F8),		KEYMAP_ENTRY(0x41, KEY_COMMA),
++	KEYMAP_ENTRY(0x42, KEY_K),		KEYMAP_ENTRY(0x43, KEY_I),
++	KEYMAP_ENTRY(0x44, KEY_O),		KEYMAP_ENTRY(0x45, KEY_0),
++	KEYMAP_ENTRY(0x46, KEY_9),		KEYMAP_ENTRY(0x47, KEY_F9),
++	KEYMAP_ENTRY(0x49, KEY_DOT),		KEYMAP_ENTRY(0x4a, KEY_SLASH),
++	KEYMAP_ENTRY(0x4b, KEY_L),		KEYMAP_ENTRY(0x4c, KEY_SEMICOLON),
++	KEYMAP_ENTRY(0x4d, KEY_P),		KEYMAP_ENTRY(0x4e, KEY_MINUS),
++	KEYMAP_ENTRY(0x4f, KEY_F10),		KEYMAP_ENTRY(0x52, KEY_APOSTROPHE),
++	KEYMAP_ENTRY(0x54, KEY_LEFTBRACE),	KEYMAP_ENTRY(0x55, KEY_EQUAL),
++	KEYMAP_ENTRY(0x56, KEY_F11),		KEYMAP_ENTRY(0x57, KEY_SYSRQ),
++	KEYMAP_ENTRY(0x58, C_58),		KEYMAP_ENTRY(0x59, KEY_RIGHTSHIFT),
++	KEYMAP_ENTRY(0x5a, KEY_ENTER),		KEYMAP_ENTRY(0x5b, KEY_RIGHTBRACE),
++	KEYMAP_ENTRY(0x5c, KEY_BACKSLASH),	KEYMAP_ENTRY(0x5d, KEY_BACKSLASH),
++	KEYMAP_ENTRY(0x5e, KEY_F12),		KEYMAP_ENTRY(0x5f, KEY_SCROLLLOCK),
++	KEYMAP_ENTRY(0x60, KEY_DOWN),		KEYMAP_ENTRY(0x61, C_61),
++	KEYMAP_ENTRY(0x62, KEY_PAUSE),		KEYMAP_ENTRY(0x63, KEY_UP),
++	KEYMAP_ENTRY(0x64, KEY_DELETE),		KEYMAP_ENTRY(0x65, KEY_END),
++	KEYMAP_ENTRY(0x66, KEY_BACKSPACE),	KEYMAP_ENTRY(0x67, KEY_INSERT),
++	KEYMAP_ENTRY(0x69, KEY_KP1),		KEYMAP_ENTRY(0x6a, KEY_RIGHT),
++	KEYMAP_ENTRY(0x6b, KEY_KP4),		KEYMAP_ENTRY(0x6c, KEY_KP7),
++	KEYMAP_ENTRY(0x6d, KEY_PAGEDOWN),	KEYMAP_ENTRY(0x6e, KEY_HOME),
++	KEYMAP_ENTRY(0x6f, KEY_PAGEUP),		KEYMAP_ENTRY(0x70, KEY_KP0),
++	KEYMAP_ENTRY(0x71, KEY_KPDOT),		KEYMAP_ENTRY(0x72, KEY_KP2),
++	KEYMAP_ENTRY(0x73, KEY_KP5),		KEYMAP_ENTRY(0x74, KEY_KP6),
++	KEYMAP_ENTRY(0x75, KEY_KP8),		KEYMAP_ENTRY(0x76, KEY_ESC),
++	KEYMAP_ENTRY(0x77, KEY_NUMLOCK),	KEYMAP_ENTRY(0x78, KEY_F11),
++	KEYMAP_ENTRY(0x79, KEY_KPPLUS),		KEYMAP_ENTRY(0x7a, KEY_KP3),
++	KEYMAP_ENTRY(0x7b, KEY_KPMINUS),	KEYMAP_ENTRY(0x7c, KEY_KPASTERISK),
++	KEYMAP_ENTRY(0x7d, KEY_KP9),		KEYMAP_ENTRY(0x7e, KEY_SCROLLLOCK),
++	KEYMAP_ENTRY(0x7f, KEY_102ND),		KEYMAP_ENTRY(0x91, KEY_RIGHTALT),
++	KEYMAP_ENTRY(0x94, KEY_RIGHTCTRL),	KEYMAP_ENTRY(0x9d, KEY_CAPSLOCK),
++	KEYMAP_ENTRY(0x9f, KEY_LEFTMETA),	KEYMAP_ENTRY(0xa7, KEY_RIGHTMETA),
++	KEYMAP_ENTRY(0xaf, KEY_COMPOSE),	KEYMAP_ENTRY(0xe9, KEY_END),
++	KEYMAP_ENTRY(0xeb, KEY_LEFT),		KEYMAP_ENTRY(0xec, KEY_HOME),
++	KEYMAP_ENTRY(0xf0, KEY_INSERT),		KEYMAP_ENTRY(0xf1, KEY_DELETE),
++	KEYMAP_ENTRY(0xf2, KEY_DOWN),		KEYMAP_ENTRY(0xf4, KEY_RIGHT),
++	KEYMAP_ENTRY(0xf5, KEY_UP),		KEYMAP_ENTRY(0xf7, KEY_PAUSE),
++	KEYMAP_ENTRY(0xfa, KEY_PAGEDOWN),	KEYMAP_ENTRY(0xfc, KEY_SYSRQ),
++	KEYMAP_ENTRY(0xfd, KEY_PAGEUP),
++
++	/* Escaped keycodes */
++	KEYMAP_ENTRY(0x103, KEY_F7),		KEYMAP_ENTRY(0x10b, KEY_LEFTMETA),
++	KEYMAP_ENTRY(0x10c, KEY_RIGHTMETA),	KEYMAP_ENTRY(0x111, KEY_RIGHTALT),
++	KEYMAP_ENTRY(0x114, KEY_RIGHTCTRL),
++};
++
++static const struct property_entry gscps2_props[] = {
++	PROPERTY_ENTRY_U32_ARRAY("linux,keymap", gscps2_keymap),
++	{ }
++};
+-- 
+2.55.0.229.g6434b31f56-goog
+
+
+-- 
+Dmitry
