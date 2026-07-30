@@ -1,231 +1,113 @@
-Received: from AM0PR02CU008.outbound.protection.outlook.com (mail-westeuropeazon11013023.outbound.protection.outlook.com [52.101.72.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C3B304BB3;
-	Wed, 29 Jul 2026 17:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.72.23
-ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785344673; cv=fail; b=ev5b/OXnzfcSAiq7J+APRMfVynL+lqxok9VhJS9tJU0hfQhPpAg4vDkMVVxJw8HNqfjhWfBqbfsYeZqAq3XeTYrO0OnbWnXNFSRJZzvS2sKJVIH0iJpKobgepmrtH6SPSkbldhiZ3bUJA2txTo2p9LsJs34FuaOTzU1sV5aE0AM=
-ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785344673; c=relaxed/simple;
-	bh=PK8yOMUXakZ2cfqZghzpzJKHldPrTnlcNVBxo9DqwIs=;
-	h=Message-ID:Date:Cc:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=l3u0eU8NrTvladr1zozXuYqpM7KUylpeb+zemOG5fcOmwo2X8w+LAUox1XhCVaudufhnoLf2s0lRqEPdoUW9mrH0WT+DGN8XNZw85tTsJlanAGJr2Z7DVzLWvOLXYVylb1jv3N0p3UAShtaltFmNq6D5WYBUkY7eW3lI0dzNhmw=
-ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=BncRAtb1; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=BncRAtb1; arc=fail smtp.client-ip=52.101.72.23
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1BB3D3326;
+	Thu, 30 Jul 2026 09:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1785404733; cv=none; b=gvHBnblZFsidCDjPTE+6IeDwVplIXN65+f4c3HJ/+mgrhaLupHZbCT6oIDZUOdrA9JnuVa3ks3d9zgSvxakK7NYMDSnYH6DLn/PgW4Smsfmif9IPy4J0Q/FBHGZOER99dJz9+MlX2M6ZeLOmw33yslTXDHbRmBTOWXzRzSgud64=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1785404733; c=relaxed/simple;
+	bh=LSIdtHTCisLn+5yAWw3TzzyRYDq3lUr949psgtaeMq8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=buhtNUt3V4+4nmBvIkGhUL+ZOJD6wpwEIrimvLhQZmd0c9TELl0BlUT4RcXqs0rBvf8mJJJ/CrtHZhq+U6C/fQ7P4l1bDtVuT7qKlZHn0/wdSC+7FSnKcLEqgPLDXFD7AbFjkIY8LjB55RXime03s71tiP1Ql+T3YKF105+4w5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=uyhx6yMb; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="BncRAtb1";
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="BncRAtb1"
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
- b=NmDnOTYzQKdlDmLOueJT/hHtzqxVh0I5we3J8aFCT9jDLn7+8+Uoz3cigQWlTpBx5HRs0yoyCS0cXNQMW50t5S+56L4G1khCVHdVW5/21N3OH4gA5AbC1RDP2llHU0XtYVqTwgutaE+qjwPxaTn10YQ7cAFR8DVcwc0tV2jQj8NfOWJwjOB6Dt3XNcy5mCdMnFfP8ugQu+zrP5xHDauzCjQKztHztHCCBU9OO8Ovcp5X6NXIWW8QafVsgo5TBMfdogfDi6fV9UIudfea6F25DIzVWXH6guGZCAzVgcwjPwWZqc9B1KxZxUXOb+xJg7rRKCatCxfQ0D9KJAgskwfU9w==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PbbUS/qk5aVVW1vC8+CkjZ6Px4apThCtOkwiM7lkMQk=;
- b=f2xFDZA3UPyvngFDD/STe3RXTpQOVspNn6JE3vNWTs8noJ4YKFe4YahPycpku7fPOHenG/nbqRyV8v81tkdRERUZWu9JsegXS4p44Wv8M4swK6BF4Mwvp3Y8sjuE6/7AoOXqie97R2VMcMYoxs7aDP40KO/uCPdvHRfff+pHJYeuY3sQyRlpya6r3Vu7k0iiX7upBpdyu93ZjCoHvi6TdUh6cFmyC6dd/b8Cu/9XqWFZlKd4uvmAqCUfVtEEn+1GGdyaredG5JwYwKkRB2FhWD5c7y3DiwQ6+YQZLmEoAh4qp6x5GxWcKGwTLFxwyaKBGJ0IGfMqLLQuKeQMRqaqRg==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 4.158.2.129) smtp.rcpttodomain=suse.de smtp.mailfrom=arm.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=arm.com; dkim=pass
- (signature was verified) header.d=arm.com; arc=pass (0 oda=1 ltdi=1
- spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
- dmarc=[1,1,header.from=arm.com])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PbbUS/qk5aVVW1vC8+CkjZ6Px4apThCtOkwiM7lkMQk=;
- b=BncRAtb1wxWuxlYq3hw2v/M+04GjdKg+y4JuhjiTTj6i7XFl/6Jgw2fj+4b0moZKpngDIgLO6TQajpcJFf7aQKeCWM0Dyr1FxXKWsS/BxLIciiQgFsBGYHYVGXc59i+87QMOgh3eg+DLAUo73vT/abtt5OLSRIIXj/lENHQ9qeY=
-Received: from DU7PR01CA0023.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:50f::20) by DU4PR08MB11101.eurprd08.prod.outlook.com
- (2603:10a6:10:576::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.270.12; Wed, 29 Jul
- 2026 17:04:26 +0000
-Received: from DU6PEPF0000A7E1.eurprd02.prod.outlook.com
- (2603:10a6:10:50f:cafe::36) by DU7PR01CA0023.outlook.office365.com
- (2603:10a6:10:50f::20) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.270.12 via Frontend Transport; Wed,
- 29 Jul 2026 17:04:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 4.158.2.129)
- smtp.mailfrom=arm.com; dkim=pass (signature was verified)
- header.d=arm.com;dmarc=pass action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 4.158.2.129 as permitted sender) receiver=protection.outlook.com;
- client-ip=4.158.2.129; helo=outbound-uk1.az.dlp.m.darktrace.com; pr=C
-Received: from outbound-uk1.az.dlp.m.darktrace.com (4.158.2.129) by
- DU6PEPF0000A7E1.mail.protection.outlook.com (10.167.8.40) with Microsoft SMTP
- Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.270.5 via
- Frontend Transport; Wed, 29 Jul 2026 17:04:26 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xahEWMRLnwid9CUeH2xMEOsP0mG5mVIig03K9CrPeXgnE2GOpBr+kyZG+F2d35nN7dR9xvnXrP7djuCDDm0yGzzPCPLmwN9HVJRprqNsY1afrMOM76IATPc6Bx7cxzusYrxGi0huWmRQGSfB0QfwawPJIKbKFggt3SIihvOynDbEk3eLLBRhW2rqGskNlTyPWDq8w218z4dshXjQG7JrtiCZb8UUmiCp9IeCf02pp5vMYisEfl/Fqb9WAWkRqg1ftPnNj9ppDIsf9Q6yGfC8fiNJoUKPfwXfvqkzxfOvFUxsmrsXu6aIvBBVboUs/a/ltqbKrpSiLr2Tbuo+ui5Ynw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PbbUS/qk5aVVW1vC8+CkjZ6Px4apThCtOkwiM7lkMQk=;
- b=O/164cDNkIYfZ57+OU0eVLSYvhlM5ZSK1fDakvR237cxTdJV425e5h40oM0+vWNWTYYZbjS2OvWO1AwvWygrxMBzG+ve9IVN63Qhel7K8uGgreqLZI/laB970xYq/Xnv3k6qIohwLrGyn85FCaC0O5tBWx1IcDyuQtd4HwwoU0YnPOX9oqrN4gFotW/HHWygtNEzbgx7cniww0Dz6kHuixHYY1RiZxaM3z4S5QTYNUjH6fy5mvJNpJuQ6fgPcNbXpY5xk2fXVvexrXE7I9tC2S7p7aDARcljsa4nhrjA8kxpcNWfdxBXYzmwgly8WQqD4llBzx2j+05RCCurppSevQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PbbUS/qk5aVVW1vC8+CkjZ6Px4apThCtOkwiM7lkMQk=;
- b=BncRAtb1wxWuxlYq3hw2v/M+04GjdKg+y4JuhjiTTj6i7XFl/6Jgw2fj+4b0moZKpngDIgLO6TQajpcJFf7aQKeCWM0Dyr1FxXKWsS/BxLIciiQgFsBGYHYVGXc59i+87QMOgh3eg+DLAUo73vT/abtt5OLSRIIXj/lENHQ9qeY=
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-Received: from VI1PR08MB3421.eurprd08.prod.outlook.com (2603:10a6:803:80::16)
- by FRRPR08MB11966.eurprd08.prod.outlook.com (2603:10a6:d10:1d0::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.270.12; Wed, 29 Jul
- 2026 17:03:24 +0000
-Received: from VI1PR08MB3421.eurprd08.prod.outlook.com
- ([fe80::e079:6bd:fbe0:89b4]) by VI1PR08MB3421.eurprd08.prod.outlook.com
- ([fe80::e079:6bd:fbe0:89b4%3]) with mapi id 15.21.0270.009; Wed, 29 Jul 2026
- 17:03:23 +0000
-Message-ID: <e0f68f91-629a-4aa7-bad9-11ef7dafce4d@arm.com>
-Date: Wed, 29 Jul 2026 18:03:19 +0100
-User-Agent: Mozilla Thunderbird
-Cc: usama.anjum@arm.com, Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin
- <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>, Dimitri Sivanich
- <dimitri.sivanich@hpe.com>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Juergen Gross <jgross@suse.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>,
- Andrew Morton <akpm@linux-foundation.org>,
- "Liam R. Howlett" <liam@infradead.org>, Lorenzo Stoakes <ljs@kernel.org>,
- Will Deacon <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- David Hildenbrand <david@kernel.org>,
- Pasha Tatashin <pasha.tatashin@soleen.com>, Chris Li <chrisl@kernel.org>,
- Kairui Song <kasong@tencent.com>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, SJ Park <sj@kernel.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, Jan Kara <jack@suse.cz>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Miaohe Lin <linmiaohe@huawei.com>, Dennis Zhou <dennis@kernel.org>,
- Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@gentwo.org>,
- Mike Rapoport <rppt@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- ziy@nvidia.com, agordeev@linux.ibm.com, ryan.roberts@arm.com,
- linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-parisc@vger.kernel.org,
- xen-devel@lists.xenproject.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
- kasan-dev@googlegroups.com, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, damon@lists.linux.dev
-Subject: Re: [PATCH RFC 09/11] misc/sgi-gru: use ptep_get() for page-table
- reads
-To: Pedro Falcato <pfalcato@suse.de>
-References: <20260727164715.2866609-1-usama.anjum@arm.com>
- <20260727164715.2866609-10-usama.anjum@arm.com>
- <amnxCmFU40QQaxTx@pedro-suse.lan>
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="uyhx6yMb"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 769021684;
+	Thu, 30 Jul 2026 02:45:25 -0700 (PDT)
+Received: from e142334-100.cambridge.arm.com (e142334-100.cambridge.arm.com [10.2.198.93])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id ABF683F763;
+	Thu, 30 Jul 2026 02:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1785404729; bh=LSIdtHTCisLn+5yAWw3TzzyRYDq3lUr949psgtaeMq8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=uyhx6yMbGK4jULkEU5ipqBRkWMMCVoCor5HtxoAzpSWmG5F0jhmtjVEAd5813RVt3
+	 BcAV94v71Oc8js3DHo0yA7lUiU1W8N5eK1Ds3wJSD/VRuLzl+H0Zw/c5GQRsKkZZ/h
+	 CdSB/mADMD21j/sXUJfyhkbyXBbJS5s+2gdLANdQ=
 From: Muhammad Usama Anjum <usama.anjum@arm.com>
-Content-Language: en-US
-In-Reply-To: <amnxCmFU40QQaxTx@pedro-suse.lan>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P302CA0023.GBRP302.PROD.OUTLOOK.COM
- (2603:10a6:600:2c1::15) To VI1PR08MB3421.eurprd08.prod.outlook.com
- (2603:10a6:803:80::16)
+To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>
+Cc: Muhammad Usama Anjum <usama.anjum@arm.com>,
+	linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] parisc: sba_iommu: Remove dead DEBUG_DMB_TRAP code
+Date: Thu, 30 Jul 2026 10:45:00 +0100
+Message-ID: <20260730094501.3002718-1-usama.anjum@arm.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	VI1PR08MB3421:EE_|FRRPR08MB11966:EE_|DU6PEPF0000A7E1:EE_|DU4PR08MB11101:EE_
-X-MS-Office365-Filtering-Correlation-Id: 37141c21-a2fe-40d9-70d3-08deed937228
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted:
- BCL:0;ARA:13230040|1800799024|366016|23010399003|376014|7416014|4143699003|10067099003|11063799006|56012099006|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info-Original:
- DaJWhsTZTSxcIZbwinfD8XxtPw/2f++czvjbD1W4bd4XreSaU6D3188u9w9GWQdT1JXBI8k6WeoGO6ebdA1+x5ERQkgaS+IvsRPUFarLXoyLSoHZCSpfHIwd8F8MDWoNeQ1ES6E/mzkjlk9uqRqSUEnOeLxSkLZi6rsNJwpm6ua931PyYrgJVmT6wev4vTkMgr6syRqwCjlvl016KdBkPiyWoyKxZXNeor7nen405U+6SC5mEjJpEHoT80H3kzt3gxPjjZbNpd4hPE5DyqouQQ/VsqiaVT4B5FfF36BO841Sp/Xl1P8QhSFShghy3xRKonzeQ6A/ywt8H9Xc7keLkphSLfy4PtFSq3IQ9cNDuKln6Hvy3wazEyx/gr/sfCYkTZxE2WgTQ2sOWSeZfWA0h0Bs//n0R4D2bofUttfS5x1z/oSEZO66wztXTfYvOjSF4x+5WgQMtt44LAKW9yT0uqPjlfJb31GONqzqwi6bX+GqpqX9cYgrlXmoVI+N1K5HndLAeojNGxA1aOc+48bNI+LQ644ttsRtlgno3Kz2zTeOy2B2aSZkC+ecrjfht61nUE2Ky3+IWsStwYWvifvhWPtHsv2iZXgW/f3/PHUR8FXVam5L1/5xsQl5FIGgf0hMGGNYQ2A4WaTk1Pb40YB1BVCnjNZIvY4oAW6YwLT8GW4=
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR08MB3421.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(23010399003)(376014)(7416014)(4143699003)(10067099003)(11063799006)(56012099006)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-Exchange-RoutingPolicyChecked:
- ZiugpGqFJussUsX96Dr0qNIxsdKxjJBS2tE8DuDcDfFRexZmwdjfLQBMcHCaqX8OW1QUx7kPU5UoDm0xLd+5To+L1Lwby9UJzIjM7tj6tA5Gw+zuycwLiOY/6k46sQqIznBHfE1A0FGGTlp4WsiYDINkUezqpj2bXuRimKRIR8fvUQKmBSt1LLeBmJQ2za0zrmj0rciHYG5LhQEQzEyqn2YhvwKI5abL5D/+qqH+vCRW9DPPMD/dKpxd8el7hfi9uzaC51A5QUOe3GYui2sBAzf/m04Y5tcPJZU+DTlZbZmqZ/j2M/F5BLeLb4tlW6TNh/xL4+oFjqd9nq4+N9gbjg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: FRRPR08MB11966
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- DU6PEPF0000A7E1.eurprd02.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	e588c869-dbac-40f5-682d-08deed934bdf
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|35042699022|14060799003|7416014|376014|23010399003|82310400026|36860700016|10067099003|4143699003|11063799006|56012099006|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	HZfv24VYe2JXYJAVJ8cbRwULxYvRmalqgSIXDe+knxEVlgHAPn9PPAf7kwpuL2ydxaiYsToXHlAkBS0LLuUKzr6nueoTKcHRPlCscEzoHwtnrm4ZNVHtjxcwYzGoB6WAVI4gTES5V6J9EmIBlLY8NSIIYlR8LmBLgDduZZojsn+7VGMv7irEFiSoEgoIAhiOGx5pJrJIxWMbpEsQoep7yRtrOVB9UJg5KewP/dARA0RQGrt0A0kuGvyrcTGbBDC83rHvkS5JNzq+Jh1T8z3Gnhkw8OBdxHzf06nkf73xC1WRYuetSD4Udb4jIKKNhY3KOh8F7iVmr9ateNzuV50BamA/dLDrabuDQvoZyLW4tgArGvIEj3wdiHMvJspE45X9YANv0OxzY6PSOipCQuXD4P3Qn+u79XXXVBP11nQYW4IO5mvrftVB5S4tKrUbL7U7vzxw8w3umcj58TMkUsPeihGI1QKx+laLMHAa/Rwne4jdaktvund2DCX129NZoR3GCYwuC0waE384Cdv1hdOJ6hcZ8QG5n/r98HfJH0AyUtF4cfDzPNAsT09pGrBHIuawEEhqXQ60Oq/8yzx1Ct7mWTUqwfnvM9qo1upZXE0DB3U+ZiABJdnAWT8TdsY2JJd/QnUo8SJQDgaGtdLRRT4HWxxHDS9jzq7ugfLO2LwIS66DeqnLIHFjboOHcRlllKB148X/q0MFK/9a6Ce3Nsb8hQ==
-X-Forefront-Antispam-Report:
-	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(35042699022)(14060799003)(7416014)(376014)(23010399003)(82310400026)(36860700016)(10067099003)(4143699003)(11063799006)(56012099006)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	rVI+erN+tDK1bV2DaYVwEmRJDr4VXLVJC5i79Kwb6sY1tPpWPXDqyUvP/xGW2XsYbrI+7Wwi2BotLdlKPoK9b3n/U3Xl2foE2DFyjt+FCP46rO0Amkyn6h47Sgz2sqnuHI9loq0WbH19gPc+hxNxudzSfRRHOUW6vYyByqqbsq61kJzPy1RIjrjh8haoNQr5uUiQDCN518XDGA85hrv+CaQkKIj5ON3Q/fosJjMkX4lA5OU6W2iHLJUjz7wGYwts8jKk8vVybK+CL9aPF2+mNnzVXByXoH8iSxQIR6UShOdPnVt8EAtAyhS4LbxwtwTMnJNVVJO8nLEOf1Cz0eeIlyRjIO6c33byzt2IWrDNksjzAFpYRANtjC9ItlXIYppOcCXRWmciPDCiIDth7BHg5Vafj95ym4Z+Bs5+vT7lY8fwr4K4ZhzRH7o9McHNO91R
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2026 17:04:26.3745
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37141c21-a2fe-40d9-70d3-08deed937228
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[4.158.2.129];Helo=[outbound-uk1.az.dlp.m.darktrace.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DU6PEPF0000A7E1.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU4PR08MB11101
+Content-Transfer-Encoding: 8bit
 
-On 29/07/2026 1:36 pm, Pedro Falcato wrote:
-> On Mon, Jul 27, 2026 at 05:47:00PM +0100, Muhammad Usama Anjum wrote:
->> A leaf PMD is being read through ptep_get() by treating the PMD address
->> as PTE-sized table storage. ptep_get() now accepts hw_pte_t *, so update
->> the cast accordingly.
->>
->> pte_offset_kernel() also returns hw_pte_t *. Get pte_t value by calling
->> ptep_get().
->>
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@arm.com>
->> ---
->>  drivers/misc/sgi-gru/grufault.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/misc/sgi-gru/grufault.c b/drivers/misc/sgi-gru/grufault.c
->> index 3557d78ee47a2..ff89d34ad2aa4 100644
->> --- a/drivers/misc/sgi-gru/grufault.c
->> +++ b/drivers/misc/sgi-gru/grufault.c
->> @@ -228,10 +228,10 @@ static int atomic_pte_lookup(struct vm_area_struct *vma, unsigned long vaddr,
->>  		goto err;
->>  #ifdef CONFIG_X86_64
->>  	if (unlikely(pmd_leaf(*pmdp)))
->> -		pte = ptep_get((pte_t *)pmdp);
->> +		pte = ptep_get((hw_pte_t *)pmdp);
->>  	else
->>  #endif
->> -		pte = *pte_offset_kernel(pmdp, vaddr);
->> +		pte = ptep_get(pte_offset_kernel(pmdp, vaddr));
->>  
->>  	if (unlikely(!pte_present(pte) ||
->>  		     (write && (!pte_write(pte) || !pte_dirty(pte)))))
-> 
-> This code is super, super broken. Can we remove this ASAP? For starters,
-> we're using is_vm_hugetlb_page() to detect page shift, the code does not
-> grab refs on the pages, uses pte_offset_kernel() on user page tables,
-> does not handle PUD-level hugepages, does not handle PMD-level hugepages on !x86_64,
-> does not hold page table locks nor check for pte table retraction, etc
-> 
-> I don't think I need to go on.
-This and parisc both have dead code. I'll send separate patches to remove
-dead code.
+DEBUG_DMB_TRAP is unconditionally undefined, so the guarded
+declarations and calls can never be built. The declared iterate_pages()
+and set_data_memory_break() functions also have no definitions in the
+tree; removing the #undef would therefore leave unresolved references.
 
+Remove the unused option and its guarded code.
+
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@arm.com>
+---
+ drivers/parisc/sba_iommu.c | 21 ---------------------
+ 1 file changed, 21 deletions(-)
+
+diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+index d9339dd508262..e0a148ab5876c 100644
+--- a/drivers/parisc/sba_iommu.c
++++ b/drivers/parisc/sba_iommu.c
+@@ -66,7 +66,6 @@
+ #undef DEBUG_SBA_RESOURCE
+ #undef ASSERT_PDIR_SANITY
+ #undef DEBUG_LARGE_SG_ENTRIES
+-#undef DEBUG_DMB_TRAP
+ 
+ #ifdef DEBUG_SBA_INIT
+ #define DBG_INIT(x...)	printk(x)
+@@ -1695,12 +1694,6 @@ sba_common_init(struct sba_device *sba_dev)
+ 
+ 	for(i=0; i< sba_dev->num_ioc; i++) {
+ 		int res_size;
+-#ifdef DEBUG_DMB_TRAP
+-		extern void iterate_pages(unsigned long , unsigned long ,
+-					  void (*)(pte_t * , unsigned long),
+-					  unsigned long );
+-		void set_data_memory_break(pte_t * , unsigned long);
+-#endif
+ 		/* resource map size dictated by pdir_size */
+ 		res_size = sba_dev->ioc[i].pdir_size/sizeof(u64); /* entries */
+ 
+@@ -1715,12 +1708,6 @@ sba_common_init(struct sba_device *sba_dev)
+ 
+ 		sba_dev->ioc[i].res_size = res_size;
+ 		sba_dev->ioc[i].res_map = (char *) __get_free_pages(GFP_KERNEL, get_order(res_size));
+-
+-#ifdef DEBUG_DMB_TRAP
+-		iterate_pages( sba_dev->ioc[i].res_map, res_size,
+-				set_data_memory_break, 0);
+-#endif
+-
+ 		if (NULL == sba_dev->ioc[i].res_map)
+ 		{
+ 			panic("%s:%s() could not allocate resource map\n",
+@@ -1752,14 +1739,6 @@ sba_common_init(struct sba_device *sba_dev)
+ 				*p_start++ = -1;
+ 				
+ 		}
+-
+-#ifdef DEBUG_DMB_TRAP
+-		iterate_pages( sba_dev->ioc[i].res_map, res_size,
+-				set_data_memory_break, 0);
+-		iterate_pages( sba_dev->ioc[i].pdir_base, sba_dev->ioc[i].pdir_size,
+-				set_data_memory_break, 0);
+-#endif
+-
+ 		DBG_INIT("%s() %d res_map %x %p\n",
+ 			__func__, i, res_size, sba_dev->ioc[i].res_map);
+ 	}
 -- 
-Thanks,
-Usama
+2.47.3
 
