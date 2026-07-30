@@ -1,113 +1,188 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1BB3D3326;
-	Thu, 30 Jul 2026 09:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B1593EA97B;
+	Thu, 30 Jul 2026 10:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785404733; cv=none; b=gvHBnblZFsidCDjPTE+6IeDwVplIXN65+f4c3HJ/+mgrhaLupHZbCT6oIDZUOdrA9JnuVa3ks3d9zgSvxakK7NYMDSnYH6DLn/PgW4Smsfmif9IPy4J0Q/FBHGZOER99dJz9+MlX2M6ZeLOmw33yslTXDHbRmBTOWXzRzSgud64=
+	t=1785406195; cv=none; b=l9Gno9QpbvtwcA8ciyGhEW7iJRao9MxbgoY9dK50Nhd3V6Hd7RHu9UMY17qOjzuwYckZiplnQ3X5smhrWx6pMWcC3l/KQa6HaSA/oKZjjUP1P360Rwiv5q3j/gTSzGKrAlpsLT53qGF8pB7ajuPjtEpY6CJcJoXHyKBwao38UOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785404733; c=relaxed/simple;
-	bh=LSIdtHTCisLn+5yAWw3TzzyRYDq3lUr949psgtaeMq8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=buhtNUt3V4+4nmBvIkGhUL+ZOJD6wpwEIrimvLhQZmd0c9TELl0BlUT4RcXqs0rBvf8mJJJ/CrtHZhq+U6C/fQ7P4l1bDtVuT7qKlZHn0/wdSC+7FSnKcLEqgPLDXFD7AbFjkIY8LjB55RXime03s71tiP1Ql+T3YKF105+4w5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=uyhx6yMb; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	s=arc-20240116; t=1785406195; c=relaxed/simple;
+	bh=e5hVGagBJwDFZRPGo3gprKptArnbYpCpTmxxKu9+8wQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vGgJyOTmTRrXukx6jH5yh2Tko9+jbeYgoE8xNONQVTgPduXLXNpt3ldCfDq8ed9jIXyXBDR/TYz9DReCuc6SHh365uSF1rL7gqFzB8HyEBsx+OI5zM7ZhQOBnUBbyLPrBlucxo4zVtbJfOQIYcLhQLinTzR1zF5fyGJtksDFuZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mpgStl8w; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="uyhx6yMb"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 769021684;
-	Thu, 30 Jul 2026 02:45:25 -0700 (PDT)
-Received: from e142334-100.cambridge.arm.com (e142334-100.cambridge.arm.com [10.2.198.93])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id ABF683F763;
-	Thu, 30 Jul 2026 02:45:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1785404729; bh=LSIdtHTCisLn+5yAWw3TzzyRYDq3lUr949psgtaeMq8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=uyhx6yMbGK4jULkEU5ipqBRkWMMCVoCor5HtxoAzpSWmG5F0jhmtjVEAd5813RVt3
-	 BcAV94v71Oc8js3DHo0yA7lUiU1W8N5eK1Ds3wJSD/VRuLzl+H0Zw/c5GQRsKkZZ/h
-	 CdSB/mADMD21j/sXUJfyhkbyXBbJS5s+2gdLANdQ=
-From: Muhammad Usama Anjum <usama.anjum@arm.com>
-To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>
-Cc: Muhammad Usama Anjum <usama.anjum@arm.com>,
-	linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] parisc: sba_iommu: Remove dead DEBUG_DMB_TRAP code
-Date: Thu, 30 Jul 2026 10:45:00 +0100
-Message-ID: <20260730094501.3002718-1-usama.anjum@arm.com>
-X-Mailer: git-send-email 2.47.3
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mpgStl8w"
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66U6m2hU2316588;
+	Thu, 30 Jul 2026 10:08:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=SyEKmgQDKWQNaqyjGD9/StXJGEDRDY
+	1U+s/7IVPb15Q=; b=mpgStl8w7nM9YhaejMlJKR3MpAZdEg3CMrKaAXvLKHr7vT
+	6VVwUWTv94MCyV0t0LoEvX4NTx8I4oV6Z0RyamfkVYt+l2AOdDneecdkibOEY1+b
+	fD9XwZ3K4X8hUfJXGoIotglUANfOJDNKrE0DS35mkwFOijc9A8vDRLcyW5rJpkQl
+	ZSz6TwC2s319vuPGylh8x/WmuWHPvwVDTCys8JeV+xWvLk555y/ELhHSpwIRUICY
+	YonccknjvF9P+MZBOhJqIBxdnhuPD4Gkn7+w9bgCc5mVY0U6J1Gm6Uc9d61V0Jez
+	zbYakob6m6/arpoFMao3y0RyGCx0NamVLgwru4iQ==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fmuwd6a7b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 30 Jul 2026 10:08:25 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 66U9fHHZ004184;
+	Thu, 30 Jul 2026 10:08:25 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4fn8fkatpu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 30 Jul 2026 10:08:24 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 66UA8Mar34079042
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 30 Jul 2026 10:08:22 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8C9E62004F;
+	Thu, 30 Jul 2026 10:08:22 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C8DEC20040;
+	Thu, 30 Jul 2026 10:08:21 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.224.92.206])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 30 Jul 2026 10:08:21 +0000 (GMT)
+Date: Thu, 30 Jul 2026 12:08:20 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Muhammad Usama Anjum <usama.anjum@arm.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tursulin@ursulin.net>,
+        David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Liam R. Howlett" <liam@infradead.org>,
+        Lorenzo Stoakes <ljs@kernel.org>, Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+        Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        David Hildenbrand <david@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>, SJ Park <sj@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jan Kara <jack@suse.cz>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@gentwo.org>, Mike Rapoport <rppt@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, ziy@nvidia.com, pfalcato@suse.de,
+        ryan.roberts@arm.com, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, damon@lists.linux.dev
+Subject: Re: [PATCH RFC 05/11] mm: convert PTE table entries in ptep_get()
+Message-ID: <34eed5fd-c569-49d8-bc4d-a3d4b1207fbd-agordeev@linux.ibm.com>
+References: <20260727164715.2866609-1-usama.anjum@arm.com>
+ <20260727164715.2866609-6-usama.anjum@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260727164715.2866609-6-usama.anjum@arm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: o0rywYqMRb9-o-diVy_ik6hJzY7jXbKp
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzMwMDA3MiBTYWx0ZWRfX9YzlV5X9xylI
+ niwszbMcVKFzbqv5lB4+x3UMXHiu2Na/LX64PyF/7hm6373GBwUh9Nzp3rKvPU5zk189VQCofLr
+ rPG5w4Fu4iCy4m6kL6IwmlpOMbpH93Q=
+X-Authority-Analysis: v=2.4 cv=E/z9Y6dl c=1 sm=1 tr=0 ts=6a6b2299 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=kj9zAlcOel0A:10 a=RAioF0-LDSMA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=7CQSdrXTAAAA:8
+ a=rd7UzSewfSqtCNqF-5IA:9 a=CjuIK1q_8ugA:10 a=a-qgeE7W1pNrGK8U0ZQC:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzMwMDA3MiBTYWx0ZWRfX5SpBi0HAiQ/C
+ 9ni/l34t00qdV/3lkOyjkRQMHI/bzArsCFIkiciKZ8adXpzfTg+v45rnYJqhyhndiqeJpPiwNep
+ VZubCJTxxNPdh7fUODcM7dZfoUnpFjzvPK4ZEbfqEnIme5xp5/3dh/jC+Bz0wOnfq0jzNGqzp01
+ zPArarMM0ovv+hNUMHMW7KFO1ciq6TJyi7CqiLbDAikACDO4XCNopg90PkO7ZmmtnKQKZqCc3Iu
+ vjfATt8qU+7UDSj5FM+YWzMlFLtZ7yd+VsugakgEKb3nBJHhgB/c4j80i+hmodLARApOX/lUvJi
+ hIn4WaO+yfetcmUKLTaNKagXUiUaD1+XmWFrHFYPqNS0/OPuPyGwB/Il8okWMucK5lVYiKp9Avl
+ wy0uPYNZ2zKQHtwferVMHYGgVjDdrnJfKZLKq+RVgKww7RVJrU9y33ZnAADV+Y5aXFTSzYQrdU5
+ SYDEkUDGowOYGL7zbLg==
+X-Proofpoint-GUID: o0rywYqMRb9-o-diVy_ik6hJzY7jXbKp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-07-30_02,2026-07-29_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 priorityscore=1501 spamscore=0 clxscore=1015 phishscore=0
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 impostorscore=0 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607300072
 
-DEBUG_DMB_TRAP is unconditionally undefined, so the guarded
-declarations and calls can never be built. The declared iterate_pages()
-and set_data_memory_break() functions also have no definitions in the
-tree; removing the #undef would therefore leave unresolved references.
+On Mon, Jul 27, 2026 at 05:46:56PM +0100, Muhammad Usama Anjum wrote:
+> ptep_get() now accepts a pointer to hw_pte_t storage but must continue to
+> return a logical pte_t value. Add __pte_from_hw() as the conversion hook
+> and apply it in the generic ptep_get() implementation.
+> 
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@arm.com>
+> ---
+>  include/linux/pgtable.h       | 2 +-
+>  include/linux/pgtable_types.h | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index dad80d264aac2..3003ac9cd81fe 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -493,7 +493,7 @@ static inline int pudp_set_access_flags(struct vm_area_struct *vma,
+>  #ifndef ptep_get
+>  static inline pte_t ptep_get(hw_pte_t *ptep)
+>  {
+> -	return READ_ONCE(*ptep);
+> +	return READ_ONCE(__pte_from_hw(*ptep));
 
-Remove the unused option and its guarded code.
+Should it be something like?
 
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@arm.com>
----
- drivers/parisc/sba_iommu.c | 21 ---------------------
- 1 file changed, 21 deletions(-)
+	return __pte_from_hw(READ_ONCE(*ptep));
 
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index d9339dd508262..e0a148ab5876c 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -66,7 +66,6 @@
- #undef DEBUG_SBA_RESOURCE
- #undef ASSERT_PDIR_SANITY
- #undef DEBUG_LARGE_SG_ENTRIES
--#undef DEBUG_DMB_TRAP
- 
- #ifdef DEBUG_SBA_INIT
- #define DBG_INIT(x...)	printk(x)
-@@ -1695,12 +1694,6 @@ sba_common_init(struct sba_device *sba_dev)
- 
- 	for(i=0; i< sba_dev->num_ioc; i++) {
- 		int res_size;
--#ifdef DEBUG_DMB_TRAP
--		extern void iterate_pages(unsigned long , unsigned long ,
--					  void (*)(pte_t * , unsigned long),
--					  unsigned long );
--		void set_data_memory_break(pte_t * , unsigned long);
--#endif
- 		/* resource map size dictated by pdir_size */
- 		res_size = sba_dev->ioc[i].pdir_size/sizeof(u64); /* entries */
- 
-@@ -1715,12 +1708,6 @@ sba_common_init(struct sba_device *sba_dev)
- 
- 		sba_dev->ioc[i].res_size = res_size;
- 		sba_dev->ioc[i].res_map = (char *) __get_free_pages(GFP_KERNEL, get_order(res_size));
--
--#ifdef DEBUG_DMB_TRAP
--		iterate_pages( sba_dev->ioc[i].res_map, res_size,
--				set_data_memory_break, 0);
--#endif
--
- 		if (NULL == sba_dev->ioc[i].res_map)
- 		{
- 			panic("%s:%s() could not allocate resource map\n",
-@@ -1752,14 +1739,6 @@ sba_common_init(struct sba_device *sba_dev)
- 				*p_start++ = -1;
- 				
- 		}
--
--#ifdef DEBUG_DMB_TRAP
--		iterate_pages( sba_dev->ioc[i].res_map, res_size,
--				set_data_memory_break, 0);
--		iterate_pages( sba_dev->ioc[i].pdir_base, sba_dev->ioc[i].pdir_size,
--				set_data_memory_break, 0);
--#endif
--
- 		DBG_INIT("%s() %d res_map %x %p\n",
- 			__func__, i, res_size, sba_dev->ioc[i].res_map);
- 	}
--- 
-2.47.3
-
+>  }
+>  #endif
+>  
+> diff --git a/include/linux/pgtable_types.h b/include/linux/pgtable_types.h
+> index ed5dba42a4f8c..61afe27307ec2 100644
+> --- a/include/linux/pgtable_types.h
+> +++ b/include/linux/pgtable_types.h
+> @@ -6,6 +6,7 @@
+>  
+>  #ifndef __HAVE_ARCH_HW_PTE_T
+>  #define hw_pte_t pte_t
+> +#define __pte_from_hw(pte)	(pte)
+>  #endif
+>  
+>  #endif /* _LINUX_PGTABLE_TYPES_H */
+> -- 
+> 2.47.3
+> 
