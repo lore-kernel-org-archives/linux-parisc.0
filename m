@@ -1,72 +1,115 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A1638C2D8;
-	Fri, 31 Jul 2026 12:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C1F8416856;
+	Fri, 31 Jul 2026 13:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785502626; cv=none; b=sJh5DmD9AcOrqGTsemP111yuyE9IjYkuxj3p4YmefBzmKBcofrlWrHtB4sLOvcJTz5oNF+emGOXd+tgqiKdnzf5J2qPvT8BT5DIhzCu9yv6oHHXPJEZ3pB/fI/IGv3468/vZNILUKho4NnBVoYbWtuXIrZHmJhxEH78oCHaXLJU=
+	t=1785504495; cv=none; b=heEe8IWfQiXytHMwfsRKhezK1n7HQyfCfmctVopHVPgp856Ib1fF9k6pZIZNID+1mHblSedk/+TTQ7w0otsjoiQr7tfp1UcYdw43uAyrgcAeFRwv/0FLAO0J0oIzHQmYEM/Ahp5Z7i61abboppjPcqpoMdifYx+CI2PN8jQzhNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785502626; c=relaxed/simple;
-	bh=TJ7dmmVipIZs0Zcl+K7aRhPPgn8oNQNCffkL3Oo2Cf8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t90O7K7Warvqk0S4G9aneYlF7+iaryjVUunrS0ksfgDzQo8GsbGTgxqhp8tDb8zlfeYaBE4UVJRD0TsVamyx33qCy73HZ7D0yP4xcqiEirY1tuDZHMXSMeLQb0yw3b0HefGNSlxlJtJSGa+lLLX9A6GOSigRq3bc1c6m83jrLiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EUnrohVQ; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EUnrohVQ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 586C71F000E9;
-	Fri, 31 Jul 2026 12:57:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785502625;
-	bh=UV6MLtGG5wez0g/Wu0+mTWGRpvN86p0MV/xad0a+SiM=;
-	h=From:To:Cc:Subject:Date;
-	b=EUnrohVQ8UKJnLQilPnmypOzEl7Of/icp1ZbEGwrkaR80lPL38CTYR8lThCqOH6SZ
-	 vlYF8bSMvyyVu5FSHEykBccqe8+UOvkrvSjbXKPFCOfiRilWi/iQO8sBYoJ8npRb5X
-	 5V5dvyoHGHtrWOUre5pMPmUpi6V+tsNUvppTBfw5wXyy9GdFxWKO6QpWR3EI2RLAmz
-	 JyxH6MZrem3/hVKNgrBcPJouNX43alfWc/EWy7iduKYQtrNAJ4pqPu9ZQsJ7Zwxb8q
-	 r/EdEL5ZUN1LyLCd8JOaBPDA2wY0sCpMivY1WqaAWQlLKvnS5bQW0yaJJQTfI5VtiA
-	 XcklkrT2dueYA==
-From: Helge Deller <deller@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>,
-	linux-abi-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org
-Cc: deller@gmx.de
-Subject: [PATCH] UAPI: Drop PER_HPUX personality
-Date: Fri, 31 Jul 2026 14:56:51 +0200
-Message-ID: <20260731125651.2924-1-deller@kernel.org>
-X-Mailer: git-send-email 2.54.0
+	s=arc-20240116; t=1785504495; c=relaxed/simple;
+	bh=oi6aO5YdOOjB5Yvtjg8wrDX+VBEC3DBUvOL+gFJ43PE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Udb1XHJQn8c95Z46Q3mczcoHJcIKNv9Ri8EarnXnx/CzfJbd/lIepE4SebbBJl3KgvUSD/QwGAc9WCCbcLkrPHH8yGjtIufwijQ1qSIw6ex40yTm92LMEGtg40SCDZTtYqSzFNewOnnqqKCwyz+3gl4qWeNa3ow3d3alF2cE3UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf12.hostedemail.com (lb01a-stub [10.200.18.249])
+	by unirelay04.hostedemail.com (Postfix) with ESMTP id F1D761A0431;
+	Fri, 31 Jul 2026 13:28:09 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf12.hostedemail.com (Postfix) with ESMTPA id E384117;
+	Fri, 31 Jul 2026 13:27:45 +0000 (UTC)
+Date: Fri, 31 Jul 2026 09:28:25 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Muhammad Usama Anjum <usama.anjum@arm.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>, =?UTF-8?B?SsO8cmdlbiBH?=
+ =?UTF-8?B?cm/Dnw==?= <jgross@suse.com>, Jani Nikula
+ <jani.nikula@linux.intel.com>, Joonas Lahtinen
+ <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+ Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Dimitri Sivanich
+ <dimitri.sivanich@hpe.com>, Arnd Bergmann <arnd@arndb.de>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, "James E.J. Bottomley"
+ <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
+ Stefano Stabellini <sstabellini@kernel.org>, Muchun Song
+ <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, Andrew Morton
+ <akpm@linux-foundation.org>, "Liam R. Howlett" <liam@infradead.org>,
+ Lorenzo Stoakes <ljs@kernel.org>, Will Deacon <will@kernel.org>, "Aneesh
+ Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin <npiggin@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>, Andrey Ryabinin
+ <ryabinin.a.a@gmail.com>, David Hildenbrand <david@kernel.org>, Pasha
+ Tatashin <pasha.tatashin@soleen.com>, Chris Li <chrisl@kernel.org>, Kairui
+ Song <kasong@tencent.com>, Uladzislau Rezki <urezki@gmail.com>, Masami
+ Hiramatsu <mhiramat@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya
+ Dwivedi <memxor@gmail.com>, Ingo Molnar <mingo@redhat.com>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, SJ
+ Park <sj@kernel.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, Jan
+ Kara <jack@suse.cz>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky
+ <leon@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>, Dennis Zhou
+ <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, Christoph Lameter
+ <cl@gentwo.org>, Mike Rapoport <rppt@kernel.org>, Johannes Weiner
+ <hannes@cmpxchg.org>, ziy@nvidia.com, pfalcato@suse.de,
+ agordeev@linux.ibm.com, ryan.roberts@arm.com, linux-kernel@vger.kernel.org,
+ intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ linux-arch@vger.kernel.org, kasan-dev@googlegroups.com,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, damon@lists.linux.dev
+Subject: Re: [PATCH RFC 01/11] mm: introduce hw_pte_t for PTE table storage
+Message-ID: <20260731092825.36992dc9@gandalf.local.home>
+In-Reply-To: <9ac33752-b587-4901-b5f2-473e573d7ede@arm.com>
+References: <20260727164715.2866609-1-usama.anjum@arm.com>
+	<20260727164715.2866609-2-usama.anjum@arm.com>
+	<6xah74eadjmo2bozyr62wcxo4hhpsiufx2mshh7tztyy2dzzps@63m327m7pl5u>
+	<9ac33752-b587-4901-b5f2-473e573d7ede@arm.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: bk4wphtnyr8oskxq6ok6poi7ogrp6zg4
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: E384117
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX188VTzKisaRifdK5JzAhtUj+tNTYkibFXo=
+X-HE-Tag: 1785504465-704596
+X-HE-Meta: U2FsdGVkX1+okbaURBZ2Qkn+l9IgiK40Gqe8ZThpseNdxUoxO6+yJtshZ3puroffdGsnNQX9lyVqqMfMDNqtsaiMVrZRSqd7CxcOf+tlTFcxBWBx10qhJ57MkLj8ndzBOYoA/OODEfAwWEkK0Ynym/vN8RHly0+jRGqqJSDy6cHg7VOGub/UmsJX6TfoBSOwr0+39CvO+c3eZRPTPuO9wuZjY0AitKZFKa26poYwhlLhVPb0FYC1FMbtcEIPwcv0BUAY4FqESIdzLvKNozpw1fVotcfhrX1NJojLWeahTii05xgjJv7utljWLfUJzJrqYVN7s4pCcDgRjK7TriyixEP+/JmhkJIq3qIe3n8mNyiV8HHld6EP1z7IlvkGJKR3
 
-From: Helge Deller <deller@gmx.de>
+On Fri, 31 Jul 2026 11:19:32 +0100
+Muhammad Usama Anjum <usama.anjum@arm.com> wrote:
 
-Two and a half decades ago, there were plans to support HP-UX syscalls
-in Linux. This was never fully implemented, never worked and was never
-actually used by anybody.
-Let's simply drop this define now and free it up for other usages.
+> On 31/07/2026 6:49 am, Anshuman Khandual wrote:
+> > On Mon, Jul 27, 2026 at 05:46:52PM +0100, Muhammad Usama Anjum wrote:  
+> >> pte_t is used both for logical PTE values and for entries stored in a PTE
+> >> table, so pte_t * does not distinguish a pointer to a copied value from a
+> >> pointer to table storage.  
+> > 
+> > Should we rather call them as "Linux PTE" and "HW PTE" instead ?
+> > 
+> > Some like "Logical PTE" does not really sound very clear on what it represents.  
+> Yeah, I should make distinction more visible in the cover letter.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
----
- include/uapi/linux/personality.h | 1 -
- 1 file changed, 1 deletion(-)
+Just as an outside observer, so take this with a grain of salt and feel
+free to totally ignore it, the term "Logical" and "Physical" to me would be
+that the Logical one is created by software and is not mapped to hardware,
+whereas the "Physical" one would be backed by hardware.
 
-diff --git a/include/uapi/linux/personality.h b/include/uapi/linux/personality.h
-index 49796b7756af..243f5f80a7b8 100644
---- a/include/uapi/linux/personality.h
-+++ b/include/uapi/linux/personality.h
-@@ -62,7 +62,6 @@ enum {
- 	PER_SOLARIS =		0x000d | STICKY_TIMEOUTS,
- 	PER_UW7 =		0x000e | STICKY_TIMEOUTS | MMAP_PAGE_ZERO,
- 	PER_OSF4 =		0x000f,			 /* OSF/1 v4 */
--	PER_HPUX =		0x0010,
- 	PER_MASK =		0x00ff,
- };
- 
--- 
-2.54.0
+Just using the terminology from LVM where there are Logical volumes and
+Physical volumes.
 
+But if that doesn't represent what you are trying to accomplish here, then
+it is indeed not the appropriate terminology.
+
+Again, feel free to ignore this comment, but I just wanted to give an
+outside perspective of the terminology that I see.
+
+Cheers,
+
+-- Steve
