@@ -1,67 +1,82 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1107647CA92;
-	Fri, 31 Jul 2026 23:55:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDC61F2380;
+	Sat,  1 Aug 2026 07:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785542158; cv=none; b=EeSDxaD95UZ6dfv+fYjmkrJeXd9boMDfit1PbyjqJEaPIlZEWQFIJK47feuav0wraDqh+Hm9hKCT6y228qR2qMoGNvdHJPu384UHh+MfiwT2D/0qkGUk9Wf0HjwLnFLWjEk9+CvuDaJkhU1InSdkQp8J7x0GpNRqDLRJFi45V7Q=
+	t=1785567957; cv=none; b=SqaSv4tipCMTBN65rm1DSezHNfG5Rv0Gtf807PVhpEjFPOMVNURWhEo7Ct0g+4JNNSYeJylV2x1wbyt1UGYIadyhyBGxpDooBF+7AdRIurgNZT/BfowqJ8ERuLUPExbZ8N/r6lxvFGRPeaAzEy2aro4eC90cwbF9DI4JaLVUtuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785542158; c=relaxed/simple;
-	bh=fV3jlxIMrd3BMmhY6aGuaa3ta+K9DrPiCu+krjP2m9Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dXlCKUaGJjaJEUnZQTpzOfDYh7G4jaSKziBEXhp8ox2uVIiASR9StvcZtecfYWqlloqLW1qijLp99jnp7kDRrrvbOzpHIbbCj6kzEPFnwG0usRcV0zdMa/J8qcruZaCn5R5cAMwkCCnUWaq6y0FDLaNSqjk4W0q5FtwEgLazPcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bQFHOKrb; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1785567957; c=relaxed/simple;
+	bh=erzK1Th2TBoaCTR5UTV+1STaCBFMqSv6dq0OdLjJTdE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UqPV5MJrCI2rwMXHKHMOHoyC+IADtwbnA9ZkAsHuh3P5tQR191lxyAqeWFLyx7ncSKoFWbZP92QLIwfAhCPMAW+FFz+S4tblMyc/lLBUDv4VDDakdf0+4x9LOAb18ai+18siuUmo3ZuunXCrxJPMQ+fPSUAMbEjHkeVM5b/gUXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=d4Z2knDY; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bQFHOKrb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A32EC1F00ACF;
-	Fri, 31 Jul 2026 23:55:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785542156;
-	bh=fV3jlxIMrd3BMmhY6aGuaa3ta+K9DrPiCu+krjP2m9Q=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=bQFHOKrb3vY/usgTShZ6vijkb8ncEEsNDqvd7YcM1iRuYC/qtwQ6HRdCUc0NsdxPX
-	 VjJW1ASLaJvxDCoJekePi+Xaoli8b2QCVO6QOovKZobt8reaca1+geS0q3JEECD7SK
-	 vfiNWTuGUoYe0a1q8KCEXUiAOZxMIwshP6veysDftKLvPK+kS7DuG4E/nQeIEwZU9j
-	 /qZgOumDGy6zxpgUVin62JHQ8KRRwDqW5vEE2xLQ5C12XSUe9X9/fOoqawRaYRVLfL
-	 N0dtBeFBovD4WUvzZp0P2T5k+xBe8Ut4JZi+PGeJsU2i36jebT7IEA+OPqukXhohIg
-	 xjy3OVcp/bEsA==
-Date: Fri, 31 Jul 2026 16:55:55 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Pablo =?UTF-8?B?VmFsbGVzcMOtbg==?= Aranguren <pablopva014@gmail.com>
-Cc: David Laight <david.laight.linux@gmail.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, "open
- list:TULIP NETWORK DRIVERS" <netdev@vger.kernel.org>, "open list:TULIP
- NETWORK DRIVERS" <linux-parisc@vger.kernel.org>, open list
- <linux-kernel@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="d4Z2knDY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E42401F00AC4;
+	Sat,  1 Aug 2026 07:05:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
+	s=korg; t=1785567955;
+	bh=zAMd2B8bpOnhUlWUOEOiC7iQATpEbu0ud9L1Bvwwy1M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=d4Z2knDYNCMkK01SJ33shztf5LzPqcLtv4ULsXPiVzrzxfncwrMEBRrKX19uvova+
+	 thHtddor+n5utTmSetK+UC9y3Qkmi3h0WFbT7vwiJJcci6bR5iaEfcFSoopHz4HKjZ
+	 5aqW7hqFs7H3ETR5HCtaRYiAoqx5Y3QC5X3gIyd4=
+Date: Sat, 1 Aug 2026 09:04:27 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Pablo =?iso-8859-1?Q?Vallesp=EDn?= Aranguren <pablopva014@gmail.com>,
+	David Laight <david.laight.linux@gmail.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	"open list:TULIP NETWORK DRIVERS" <netdev@vger.kernel.org>,
+	"open list:TULIP NETWORK DRIVERS" <linux-parisc@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH] net: tulip: xircom_cb: drop runt frames before skb copy
-Message-ID: <20260731165555.50741429@kernel.org>
-In-Reply-To: <am0L4gNtPJaMPx_9@ThinkPad-P15>
+Message-ID: <2026080158-next-diligent-b4ce@gregkh>
 References: <amzqfjeo0Yo1p0Rd@ThinkPad-P15>
-	<20260731202629.10ff97e6@pumpkin>
-	<am0L4gNtPJaMPx_9@ThinkPad-P15>
+ <20260731202629.10ff97e6@pumpkin>
+ <am0L4gNtPJaMPx_9@ThinkPad-P15>
+ <20260731165555.50741429@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260731165555.50741429@kernel.org>
 
-On Fri, 31 Jul 2026 22:56:02 +0200 Pablo Vallesp=C3=ADn Aranguren wrote:
-> > Have you checked that that hardware can actually set a short value?
-> > I'd expect that packets shorter than 64 bytes (including the crc) are
-> > dropped as 'runts' and probably don't even use a ring entry. =20
->=20
-> I haven't verified how the real Xircom firmware handles runt frames (I
-> don't own this hardware). I tested with Qemu's emulated NIC, the device
-> itself does validate and reject negative-size values before sending them
-> to the driver.
+On Fri, Jul 31, 2026 at 04:55:55PM -0700, Jakub Kicinski wrote:
+> On Fri, 31 Jul 2026 22:56:02 +0200 Pablo Vallespín Aranguren wrote:
+> > > Have you checked that that hardware can actually set a short value?
+> > > I'd expect that packets shorter than 64 bytes (including the crc) are
+> > > dropped as 'runts' and probably don't even use a ring entry.  
+> > 
+> > I haven't verified how the real Xircom firmware handles runt frames (I
+> > don't own this hardware). I tested with Qemu's emulated NIC, the device
+> > itself does validate and reject negative-size values before sending them
+> > to the driver.
+> 
+> Are you related to Greg KH in any way? You use the same slop tag.
+> Just curious.
 
-Are you related to Greg KH in any way? You use the same slop tag.
-Just curious.
+Pablo is part of an CS masters intern project through vu.nl that I'm
+running to help audit and submit LLM-found issues against the kernel.
+Hence the gkh_clanker tag, as my bot is the thing that originally
+"found" this report.
 
-Please send a patch to delete this driver if you want to help.
-It's ancient.
+> Please send a patch to delete this driver if you want to help.
+> It's ancient.
+
+No objection from me, that fixes all of the issues!
+
+Pablo, want to submit a patch for that?
+
+thanks,
+
+greg k-h
