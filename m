@@ -1,581 +1,179 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B23412F290A
-	for <linux-parisc@vger.kernel.org>; Mon,  3 Aug 2026 04:39:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BF53BCD14;
+	Mon,  3 Aug 2026 13:59:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785731997; cv=none; b=m8QVGkFQYniTNq81TKP55WGc9fYalXlLknIiPsWBhJn20EyGR30rr4kJmu+vWBCJYNM3r5WNQ+2y9Al829zy/rcjZgYCA1B4gz8sfEIlNOtTxj4FPLeas6hvllc27IIYW2l7In6gFik4bMrvuFsVGfYv02OxrBBUqbFuIanpxVw=
+	t=1785765589; cv=none; b=lm+hWmeqLyOtUmfEUqfxF0+/LmW70sKyuwuJiKaaYMKAlIujB545DLz+KHAT9bSZRpyyhlu3dxi4q/a389S7qR1kNcADyqoZlF9g57RKCjcTgWYt9f58CoyTPmDsQJgetjPMgSQUewv6S+ev15YCqZW+WK5MTUTI9b3pvLT1mxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785731997; c=relaxed/simple;
-	bh=+/R1jcSiUVnMg/s+vraS3dkMpbtKaIIrc2VBm++2JQs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Dl07ydzZWKlVMM3bQq7yP2rtu60jmAymXFYTPzmF6uo1wfBUhG/N7zakk+FDquj1f8XgVugeglzc3+nUfmUIf1TaxaWZk3dznfmSuxBJuOx08IkSkZS2Pg24cLROM/WdgCPNCZ8rSz5ipyklzlbqYuZfqicoZau40fjXCR9FOJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W51lYbW9; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1785765589; c=relaxed/simple;
+	bh=BMco7cE6ZUb0x1sY/U4XBBksWpvbpHojwOQxtubK6HA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hl5RUgkce6lCHMieWkU+EChNLtQXBCOAwSRdG09e4fZXXpGaxlNC1KXotjKY+8ClocGsCPAgl7QlPw5NKAklGDC7CxgNCImVIh5naguQcVci7oOl1RMu9VuZ86Wr3/jy3iwdzqRCemdnRrBt4QrHef2cyhgkGdfFie8wDCjk8EI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VdJzXRQm; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W51lYbW9"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2cca0c5799eso23393835ad.0
-        for <linux-parisc@vger.kernel.org>; Sun, 02 Aug 2026 21:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1785731994; x=1786336794; darn=vger.kernel.org;
-        h=content-disposition:content-type:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=VwHZq4WokVlrx3unD7JipFNJT0hqiA8rGv/FPJBHwsQ=;
-        b=W51lYbW91Tk3d2Sj61V2O6RWZrNJ/8e1aNvEtD229AHgitjNuDjDs4Lcr6aHn7/Gpu
-         7CTxCnG8w/pOqT+OOT+O5NbRldb93qd/oxc986QPiwThZumdZMnhzHR899BTezSK9c6d
-         BonQABZoElXtF0oV8ldNIqmnHgvIQM+6oEC/HKYRpTX+pHfjoIx9B073XtD7XRn39z4J
-         7fWakz8+Fs4buJ5iK+tjia5AXwRSCOO7tfjaEz8kJC4Uimqkg8cm6Zc93pQqlTx0gNhO
-         bQUSp+f6QRHE4BPmOtj3r5ev7uKOyJGrw5GBHWD/tbNlEz41btWPIDUbJ3fW+sYoDxKV
-         dstg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785731994; x=1786336794;
-        h=content-disposition:content-type:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=VwHZq4WokVlrx3unD7JipFNJT0hqiA8rGv/FPJBHwsQ=;
-        b=oZdLr1r5FXYnbJ/wPY0SvoIk6SOWhdIItn9/6B66gdguogQHixw4CFERpUt9TjhhJr
-         OiuOhT3Rnnk57KZzejqpFqgK1wo+13PY04JBuEEu+VmkBSv8aZ1UnV5+V3xgQEEr0UQa
-         E/YXls4ssEbGqtFaxOYUkNk8+1O7W1PtlpWOYE/gsu65uk4YXVVU6pboP8LDwhTWAZec
-         vr9+Xdt0RPjYpinFPfROTj0ESI5+nZ7FtUJ9h14T8ewgdODX0OiOMRwaSdsYJh0MlVVT
-         /SCYINKz8EiQfA8OzXdDkf0S5KrTsqDDalCR4GqOr4Q+JipoQngU1WkUoG5zRLR80fAf
-         xnwA==
-X-Forwarded-Encrypted: i=1; AHgh+RoXCNW2HK/XHF0Wznc4unD5vdn9gBG67Wvxb9saDYIuOyS4pJzJGN36Uqw88piAm58Ff50FBsn8pHxNx1Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwrcTP7qCguM6c18DlWxUw1xeztuKBa/rgC2Y5FucZcK7eivuN9
-	ZrcyWFJkA90ftzGvmggq/7hp0TgXubeKm6/S09gcnQ2ixmfwhfGhg8Pp
-X-Gm-Gg: AR+sD11Ibb3K9nx2T0bYU9avjSTlkDZkYH10WVHoYsBqrSV2T22KFkVqzKBxqiTE0/l
-	MXuPEtEmEuySHjOHeQZy/P3ntCklAdA9uL/nojRqvBuTrW+g/OmjS5j7F5L8rySozj9kqYKG2AE
-	m6dekI9gvRt9N3EerpLn0OQiktqevXpmiFYo83Yk/6yNtFUqfdTrDTHwA0MJOwDVOOSGuA84taH
-	d1OAvJlX7ndWtGh3NDxKLEmZ5smH9OSqFkvewMBz5+P4dex7BDF9+9rEdCZA8vbcsKH7WGaKXFS
-	rSkwHNKYuQdAEAk082fNpAzfu7Xf8FGusC17+Uz+vCllabxn7ITKjcj6vnSkOMYHClteXiPI5WA
-	Vv4fx7yEjUZKLkYLOJKpYAlaMk1NJGto5RSHV6v7qNc3Sr42ZYtFd/+0sTUbJa+ZfcphUDpGJbI
-	wVdY+lEgrvkr5k+L1g++dDcjPJ/u0rwL/7RfCa5rEl3Xu+x2hD29+q84UmGJy78zLhO2GYMRb7N
-	gKj+LTmGBouW0zBfF6hZekx8K30+w==
-X-Received: by 2002:a05:6a20:c997:b0:3c6:5673:2bd1 with SMTP id adf61e73a8af0-3c92a89c77fmr8176717637.42.1785731993787;
-        Sun, 02 Aug 2026 21:39:53 -0700 (PDT)
-Received: from google.com ([2a00:79e0:2ebe:8:4fff:876c:cdae:e53c])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3153ddcba2bsm36309656eec.11.2026.08.02.21.39.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Aug 2026 21:39:53 -0700 (PDT)
-Date: Sun, 2 Aug 2026 21:39:49 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>
-Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
-	linux-parisc@vger.kernel.org
-Subject: [PATCH] Input: gscps2 - supply PA-RISC keyboard keymap via device
- property
-Message-ID: <am_9BvmZu9g4RlUM@google.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VdJzXRQm"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E4B91F000E9;
+	Mon,  3 Aug 2026 13:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785765588;
+	bh=JgJjMGVQwXfN1+lfqi/7mzYbORC4vBXwntqjWOpjj5Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=VdJzXRQmCKCQ7JgyKiUD1/ILZ8ALjapAPRXEniDDnzS1EoQJOd2Rh4mnj01mS0kaC
+	 SkdwvAXDVmUbSsA21mXsGUsV6UFqBCfzHqr7sKaMJIwGAPUZ/EuQ/qXVQNy9gbWQou
+	 k9r4ZeSmv7XSpcXC6vcb89age58OUEyz0Y3jtZ3UkudyTNaZ5gI+4+nRjmeVka/o9q
+	 /dN7dYJ78mn13G49euOFXvjaEbz3SgPDfvCdEu2cZqtsnpAXKCLf+lhpTv+wU8hwAu
+	 5uCt9p7JGa3sPVxgYgc/nGl9g631hfgqX2Lq234uZ0mjzzpUHJEqevNTssxpWPfwhD
+	 A251zj+Snu4hw==
+Message-ID: <01f07ea2-8bdd-4450-8a49-548f8b646cfd@kernel.org>
+Date: Mon, 3 Aug 2026 15:59:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Instead of hardcoding PA-RISC specific keycode tables into atkbd via
-compile-time inclusion, have the gscps2 PS/2 port driver attach a
-linux,keymap software node device property to the serio device when
-a keyboard port is registered. This allows atkbd to dynamically fetch
-and apply the custom keymap when probing the port using generic
-firmware property helpers, removing architecture-specific hacks from
-generic keyboard driver code.
-
-Co-locate the keymap definitions with the serio port driver by moving
-hpps2atkbd.h from drivers/input/keyboard/ to drivers/input/serio/.
-To handle the five conflicting keys on RDI PrecisionBook laptops without
-runtime model string checks or duplicate keymap tables in memory, add
-CONFIG_SERIO_GSCPS2_RDI_KEYCODES to drivers/input/serio/Kconfig and
-resolve the conflicting keycodes at compile time via preprocessor
-macros.
-
-Assisted-by: Antigravity:gemini-3.5-flash
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
-
-v2:
-- instead of using device_create_managed_software_node() that has issue
-  if serio port is unregistered before it is fully registered, switch to
-  creating software node when initializing the driver and attach it to
-  the serio port
-- added keycodes lost in movement (0x92 - silently ignored, 0xca -
-  KEY_KPSLASH, 0xda - KEY_KPENTER).
-
- drivers/input/keyboard/Kconfig      |  38 ---------
- drivers/input/keyboard/atkbd.c      |   8 --
- drivers/input/keyboard/hpps2atkbd.h | 110 -------------------------
- drivers/input/serio/Kconfig         |  27 +++++++
- drivers/input/serio/gscps2.c        |  47 ++++++++---
- drivers/input/serio/hpps2atkbd.h    | 120 ++++++++++++++++++++++++++++
- 6 files changed, 184 insertions(+), 166 deletions(-)
-
-diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
-index 9d1019ba0245..d8c64f333462 100644
---- a/drivers/input/keyboard/Kconfig
-+++ b/drivers/input/keyboard/Kconfig
-@@ -119,44 +119,6 @@ config KEYBOARD_ATKBD
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called atkbd.
- 
--config KEYBOARD_ATKBD_HP_KEYCODES
--	bool "Use HP keyboard scancodes"
--	depends on PARISC && KEYBOARD_ATKBD
--	default y
--	help
--	  Say Y here if you have a PA-RISC machine and want to use an AT or
--	  PS/2 keyboard, and your keyboard uses keycodes that are specific to
--	  PA-RISC keyboards.
--
--	  Say N if you use a standard keyboard.
--
--config KEYBOARD_ATKBD_RDI_KEYCODES
--	bool "Use PrecisionBook keyboard scancodes"
--	depends on KEYBOARD_ATKBD_HP_KEYCODES
--	default n
--	help
--	  If you have an RDI PrecisionBook, say Y here if you want to use its
--	  built-in keyboard (as opposed to an external keyboard).
--
--	  The PrecisionBook has five keys that conflict with those used by most
--	  AT and PS/2 keyboards. These are as follows:
--
--	    PrecisionBook    Standard AT or PS/2
--
--	    F1               F12
--	    Left Ctrl        Left Alt
--	    Caps Lock        Left Ctrl
--	    Right Ctrl       Caps Lock
--	    Left             102nd key (the key to the right of Left Shift)
--
--	  If you say N here, and use the PrecisionBook keyboard, then each key
--	  in the left-hand column will be interpreted as the corresponding key
--	  in the right-hand column.
--
--	  If you say Y here, and use an external keyboard, then each key in the
--	  right-hand column will be interpreted as the key shown in the
--	  left-hand column.
--
- config KEYBOARD_QT1050
- 	tristate "Microchip AT42QT1050 Touch Sensor Chip"
- 	depends on I2C
-diff --git a/drivers/input/keyboard/atkbd.c b/drivers/input/keyboard/atkbd.c
-index 4c82e988260e..5736f4bc5a50 100644
---- a/drivers/input/keyboard/atkbd.c
-+++ b/drivers/input/keyboard/atkbd.c
-@@ -73,13 +73,6 @@ MODULE_PARM_DESC(terminal, "Enable break codes on an IBM Terminal keyboard conne
- #define ATKBD_KEYMAP_SIZE	512
- 
- static const unsigned short atkbd_set2_keycode[ATKBD_KEYMAP_SIZE] = {
--#ifdef CONFIG_KEYBOARD_ATKBD_HP_KEYCODES
--
--/* XXX: need a more general approach */
--
--#include "hpps2atkbd.h"	/* include the keyboard scancodes */
--
--#else
- 	  0, 67, 65, 63, 61, 59, 60, 88,183, 68, 66, 64, 62, 15, 41,117,
- 	184, 56, 42, 93, 29, 16,  2,  0,185,  0, 44, 31, 30, 17,  3,  0,
- 	186, 46, 45, 32, 18,  5,  4, 95,187, 57, 47, 33, 20, 19,  6,183,
-@@ -99,7 +92,6 @@ static const unsigned short atkbd_set2_keycode[ATKBD_KEYMAP_SIZE] = {
- 	110,111,108,112,106,103,  0,119,  0,118,109,  0, 99,104,119,  0,
- 
- 	  0,  0,  0, 65, 99,
--#endif
- };
- 
- static const unsigned short atkbd_set3_keycode[ATKBD_KEYMAP_SIZE] = {
-diff --git a/drivers/input/keyboard/hpps2atkbd.h b/drivers/input/keyboard/hpps2atkbd.h
-deleted file mode 100644
-index dc33f6945222..000000000000
---- a/drivers/input/keyboard/hpps2atkbd.h
-+++ /dev/null
-@@ -1,110 +0,0 @@
--/*
-- * drivers/input/keyboard/hpps2atkbd.h
-- *
-- * Copyright (c) 2004 Helge Deller <deller@gmx.de>
-- * Copyright (c) 2002 Laurent Canet <canetl@esiee.fr>
-- * Copyright (c) 2002 Thibaut Varene <varenet@parisc-linux.org>
-- * Copyright (c) 2000 Xavier Debacker <debackex@esiee.fr>
-- *
-- * HP PS/2 AT-compatible Keyboard, found in PA/RISC Workstations & Laptops
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file "COPYING" in the main directory of this archive
-- * for more details.
-- */
--
--
--/* Is the keyboard an RDI PrecisionBook? */
--#ifndef CONFIG_KEYBOARD_ATKBD_RDI_KEYCODES
--# define CONFLICT(x,y) x
--#else
--# define CONFLICT(x,y) y
--#endif
--
--/* sadly RDI (Tadpole) decided to ship a different keyboard layout
--   than HP for their PS/2 laptop keyboard which leads to conflicting
--   keycodes between a normal HP PS/2 keyboard and a RDI Precisionbook.
--                                HP:		RDI:            */
--#define C_07	CONFLICT(	KEY_F12,	KEY_F1		)
--#define C_11	CONFLICT(	KEY_LEFTALT,	KEY_LEFTCTRL	)
--#define C_14	CONFLICT(	KEY_LEFTCTRL,	KEY_CAPSLOCK	)
--#define C_58	CONFLICT(	KEY_CAPSLOCK,	KEY_RIGHTCTRL	)
--#define C_61	CONFLICT(	KEY_102ND,	KEY_LEFT	)
--
--/* Raw SET 2 scancode table */
--
--/* 00 */  KEY_RESERVED, KEY_F9,        KEY_RESERVED,  KEY_F5,        KEY_F3,        KEY_F1,       KEY_F2,        C_07,
--/* 08 */  KEY_ESC,      KEY_F10,       KEY_F8,        KEY_F6,        KEY_F4,        KEY_TAB,      KEY_GRAVE,     KEY_F2,
--/* 10 */  KEY_RESERVED, C_11,          KEY_LEFTSHIFT, KEY_RESERVED,  C_14,          KEY_Q,        KEY_1,         KEY_F3,
--/* 18 */  KEY_RESERVED, KEY_LEFTALT,   KEY_Z,         KEY_S,         KEY_A,         KEY_W,        KEY_2,         KEY_F4,
--/* 20 */  KEY_RESERVED, KEY_C,         KEY_X,         KEY_D,         KEY_E,         KEY_4,        KEY_3,         KEY_F5,
--/* 28 */  KEY_RESERVED, KEY_SPACE,     KEY_V,         KEY_F,         KEY_T,         KEY_R,        KEY_5,         KEY_F6,
--/* 30 */  KEY_RESERVED, KEY_N,         KEY_B,         KEY_H,         KEY_G,         KEY_Y,        KEY_6,         KEY_F7,
--/* 38 */  KEY_RESERVED, KEY_RIGHTALT,  KEY_M,         KEY_J,         KEY_U,         KEY_7,        KEY_8,         KEY_F8,
--/* 40 */  KEY_RESERVED, KEY_COMMA,     KEY_K,         KEY_I,         KEY_O,         KEY_0,        KEY_9,         KEY_F9,
--/* 48 */  KEY_RESERVED, KEY_DOT,       KEY_SLASH,     KEY_L,         KEY_SEMICOLON, KEY_P,        KEY_MINUS,     KEY_F10,
--/* 50 */  KEY_RESERVED, KEY_RESERVED,  KEY_APOSTROPHE,KEY_RESERVED,  KEY_LEFTBRACE, KEY_EQUAL,    KEY_F11,       KEY_SYSRQ,
--/* 58 */  C_58,         KEY_RIGHTSHIFT,KEY_ENTER,     KEY_RIGHTBRACE,KEY_BACKSLASH, KEY_BACKSLASH,KEY_F12,       KEY_SCROLLLOCK,
--/* 60 */  KEY_DOWN,     C_61,          KEY_PAUSE,     KEY_UP,        KEY_DELETE,    KEY_END,      KEY_BACKSPACE, KEY_INSERT,
--/* 68 */  KEY_RESERVED, KEY_KP1,       KEY_RIGHT,     KEY_KP4,       KEY_KP7,       KEY_PAGEDOWN, KEY_HOME,      KEY_PAGEUP,
--/* 70 */  KEY_KP0,      KEY_KPDOT,     KEY_KP2,       KEY_KP5,       KEY_KP6,       KEY_KP8,      KEY_ESC,       KEY_NUMLOCK,
--/* 78 */  KEY_F11,      KEY_KPPLUS,    KEY_KP3,       KEY_KPMINUS,   KEY_KPASTERISK,KEY_KP9,      KEY_SCROLLLOCK,KEY_102ND,
--/* 80 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 88 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 90 */  KEY_RESERVED, KEY_RIGHTALT,  255,           KEY_RESERVED,  KEY_RIGHTCTRL, KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 98 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_CAPSLOCK, KEY_RESERVED,  KEY_LEFTMETA,
--/* a0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RIGHTMETA,
--/* a8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_COMPOSE,
--/* b0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* b8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* c0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* c8 */  KEY_RESERVED, KEY_RESERVED,  KEY_KPSLASH,   KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* d0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* d8 */  KEY_RESERVED, KEY_RESERVED,  KEY_KPENTER,   KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* e0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* e8 */  KEY_RESERVED, KEY_END,       KEY_RESERVED,  KEY_LEFT,      KEY_HOME,      KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* f0 */  KEY_INSERT,   KEY_DELETE,    KEY_DOWN,      KEY_RESERVED,  KEY_RIGHT,     KEY_UP,       KEY_RESERVED,  KEY_PAUSE,
--/* f8 */  KEY_RESERVED, KEY_RESERVED,  KEY_PAGEDOWN,  KEY_RESERVED,  KEY_SYSRQ,     KEY_PAGEUP,   KEY_RESERVED,  KEY_RESERVED,
--
--/* These are offset for escaped keycodes: */
--
--/* 00 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_F7,        KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 08 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_LEFTMETA,  KEY_RIGHTMETA, KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 10 */  KEY_RESERVED, KEY_RIGHTALT,  KEY_RESERVED,  KEY_RESERVED,  KEY_RIGHTCTRL, KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 18 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 20 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 28 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 30 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 38 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 40 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 48 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 50 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 58 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 60 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 68 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 70 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 78 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 80 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 88 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 90 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* 98 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* a0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* a8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* b0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* b8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* c0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* c8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* d0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* d8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* e0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* e8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* f0 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,
--/* f8 */  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED,  KEY_RESERVED, KEY_RESERVED,  KEY_RESERVED
--
--#undef CONFLICT
--#undef C_07
--#undef C_11
--#undef C_14
--#undef C_58
--#undef C_61
--
-diff --git a/drivers/input/serio/Kconfig b/drivers/input/serio/Kconfig
-index bacab1f58400..087f0203fff9 100644
---- a/drivers/input/serio/Kconfig
-+++ b/drivers/input/serio/Kconfig
-@@ -106,6 +106,33 @@ config SERIO_GSCPS2
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called gscps2.
- 
-+config SERIO_GSCPS2_RDI_KEYCODES
-+	bool "Use PrecisionBook keyboard scancodes"
-+	depends on SERIO_GSCPS2
-+	default n
-+	help
-+	  If you have an RDI PrecisionBook, say Y here if you want to use its
-+	  built-in keyboard (as opposed to an external keyboard).
-+
-+	  The PrecisionBook has five keys that conflict with those used by most
-+	  AT and PS/2 keyboards. These are as follows:
-+
-+	    PrecisionBook    Standard AT or PS/2
-+
-+	    F1               F12
-+	    Left Ctrl        Left Alt
-+	    Caps Lock        Left Ctrl
-+	    Right Ctrl       Caps Lock
-+	    Left             102nd key (the key to the right of Left Shift)
-+
-+	  If you say N here, and use the PrecisionBook keyboard, then each key
-+	  in the left-hand column will be interpreted as the corresponding key
-+	  in the right-hand column.
-+
-+	  If you say Y here, and use an external keyboard, then each key in the
-+	  right-hand column will be interpreted as the key shown in the
-+	  left-hand column.
-+
- config HP_SDC
- 	tristate "HP System Device Controller i8042 Support"
- 	depends on (GSC || HP300) && SERIO
-diff --git a/drivers/input/serio/gscps2.c b/drivers/input/serio/gscps2.c
-index bf9b993f5733..cd1bca57fda3 100644
---- a/drivers/input/serio/gscps2.c
-+++ b/drivers/input/serio/gscps2.c
-@@ -22,20 +22,19 @@
-  *                 was usable/enabled ?)
-  */
- 
--#include <linux/init.h>
--#include <linux/module.h>
--#include <linux/slab.h>
--#include <linux/serio.h>
-+#include <linux/delay.h>
- #include <linux/input.h>
- #include <linux/interrupt.h>
--#include <linux/spinlock.h>
--#include <linux/delay.h>
-+#include <linux/io.h>
- #include <linux/ioport.h>
-+#include <linux/property.h>
-+#include <linux/serio.h>
- 
- #include <asm/irq.h>
--#include <asm/io.h>
- #include <asm/parisc-device.h>
- 
-+#include "hpps2atkbd.h"
-+
- MODULE_AUTHOR("Laurent Canet <canetl@esiee.fr>, Thibaut Varene <varenet@parisc-linux.org>, Helge Deller <deller@gmx.de>");
- MODULE_DESCRIPTION("HP GSC PS2 port driver");
- MODULE_LICENSE("GPL");
-@@ -398,6 +397,17 @@ static int __init gscps2_probe(struct parisc_device *dev)
- 		goto fail;
- #endif
- 
-+	if (ps2port->id == GSC_ID_KEYBOARD) {
-+		ret = device_add_software_node(&serio->dev,
-+					       &gscps2_keyboard_node);
-+		if (ret) {
-+			dev_err(&dev->dev,
-+				"failed to add software node for keyboard: %d\n",
-+				ret);
-+			goto fail;
-+		}
-+	}
-+
- 	pr_info("serio: %s port at 0x%08lx irq %d @ %s\n",
- 		ps2port->port->name,
- 		hpa,
-@@ -411,11 +421,16 @@ static int __init gscps2_probe(struct parisc_device *dev)
- 	return 0;
- 
- fail:
-+	if (ps2port->id == GSC_ID_KEYBOARD)
-+		device_remove_software_node(&serio->dev);
-+
- 	free_irq(dev->irq, ps2port);
- 
- fail_miserably:
- 	iounmap(ps2port->addr);
-+#if 0
- 	release_mem_region(dev->hpa.start, GSC_STATUS + 4);
-+#endif
- 
- fail_nomem:
- 	kfree(ps2port);
-@@ -434,6 +449,9 @@ static void __exit gscps2_remove(struct parisc_device *dev)
- {
- 	struct gscps2port *ps2port = dev_get_drvdata(&dev->dev);
- 
-+	if (ps2port->id == GSC_ID_KEYBOARD)
-+		device_remove_software_node(&ps2port->port->dev);
-+
- 	serio_unregister_port(ps2port->port);
- 	free_irq(dev->irq, ps2port);
- 	gscps2_flush(ps2port);
-@@ -465,16 +483,25 @@ static struct parisc_driver parisc_ps2_driver __refdata = {
- 
- static int __init gscps2_init(void)
- {
--	register_parisc_driver(&parisc_ps2_driver);
--	return 0;
-+	int error;
-+
-+	error = software_node_register(&gscps2_keyboard_node);
-+	if (error)
-+		return error;
-+
-+	error = register_parisc_driver(&parisc_ps2_driver);
-+	if (error)
-+		software_node_unregister(&gscps2_keyboard_node);
-+
-+	return error;
- }
- 
- static void __exit gscps2_exit(void)
- {
- 	unregister_parisc_driver(&parisc_ps2_driver);
-+	software_node_unregister(&gscps2_keyboard_node);
- }
- 
- 
- module_init(gscps2_init);
- module_exit(gscps2_exit);
--
-diff --git a/drivers/input/serio/hpps2atkbd.h b/drivers/input/serio/hpps2atkbd.h
-new file mode 100644
-index 000000000000..9b7201930b49
---- /dev/null
-+++ b/drivers/input/serio/hpps2atkbd.h
-@@ -0,0 +1,120 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * HP PS/2 AT-compatible Keyboard, found in PA/RISC Workstations & Laptops
-+ *
-+ * Copyright (c) 2004 Helge Deller <deller@gmx.de>
-+ * Copyright (c) 2002 Laurent Canet <canetl@esiee.fr>
-+ * Copyright (c) 2002 Thibaut Varene <varenet@parisc-linux.org>
-+ * Copyright (c) 2000 Xavier Debacker <debackex@esiee.fr>
-+ */
-+
-+#ifndef CONFIG_SERIO_GSCPS2_RDI_KEYCODES
-+# define CONFLICT(x, y) x
-+#else
-+# define CONFLICT(x, y) y
-+#endif
-+
-+/*
-+ * Sadly RDI (Tadpole) decided to ship a different keyboard layout
-+ * than HP for their PS/2 laptop keyboard which leads to conflicting
-+ * keycodes between a normal HP PS/2 keyboard and a RDI PrecisionBook.
-+ *                             HP:           RDI:
-+ */
-+#define C_07	CONFLICT(	KEY_F12,	KEY_F1		)
-+#define C_11	CONFLICT(	KEY_LEFTALT,	KEY_LEFTCTRL	)
-+#define C_14	CONFLICT(	KEY_LEFTCTRL,	KEY_CAPSLOCK	)
-+#define C_58	CONFLICT(	KEY_CAPSLOCK,	KEY_RIGHTCTRL	)
-+#define C_61	CONFLICT(	KEY_102ND,	KEY_LEFT	)
-+
-+/*
-+ * Special keycode value recognized by atkbd (ATKBD_KEY_NULL) to silently
-+ * discard scancodes without generating input events or "unknown key" warnings.
-+ */
-+#define KEY_NULL	255
-+
-+#define KEYMAP_ENTRY(scancode, keycode) (((scancode) << 16) | (keycode))
-+
-+static const u32 gscps2_keymap[] = {
-+	KEYMAP_ENTRY(0x01, KEY_F9),		KEYMAP_ENTRY(0x03, KEY_F5),
-+	KEYMAP_ENTRY(0x04, KEY_F3),		KEYMAP_ENTRY(0x05, KEY_F1),
-+	KEYMAP_ENTRY(0x06, KEY_F2),		KEYMAP_ENTRY(0x07, C_07),
-+	KEYMAP_ENTRY(0x08, KEY_ESC),		KEYMAP_ENTRY(0x09, KEY_F10),
-+	KEYMAP_ENTRY(0x0a, KEY_F8),		KEYMAP_ENTRY(0x0b, KEY_F6),
-+	KEYMAP_ENTRY(0x0c, KEY_F4),		KEYMAP_ENTRY(0x0d, KEY_TAB),
-+	KEYMAP_ENTRY(0x0e, KEY_GRAVE),		KEYMAP_ENTRY(0x0f, KEY_F2),
-+	KEYMAP_ENTRY(0x11, C_11),		KEYMAP_ENTRY(0x12, KEY_LEFTSHIFT),
-+	KEYMAP_ENTRY(0x14, C_14),		KEYMAP_ENTRY(0x15, KEY_Q),
-+	KEYMAP_ENTRY(0x16, KEY_1),		KEYMAP_ENTRY(0x17, KEY_F3),
-+	KEYMAP_ENTRY(0x19, KEY_LEFTALT),	KEYMAP_ENTRY(0x1a, KEY_Z),
-+	KEYMAP_ENTRY(0x1b, KEY_S),		KEYMAP_ENTRY(0x1c, KEY_A),
-+	KEYMAP_ENTRY(0x1d, KEY_W),		KEYMAP_ENTRY(0x1e, KEY_2),
-+	KEYMAP_ENTRY(0x1f, KEY_F4),		KEYMAP_ENTRY(0x21, KEY_C),
-+	KEYMAP_ENTRY(0x22, KEY_X),		KEYMAP_ENTRY(0x23, KEY_D),
-+	KEYMAP_ENTRY(0x24, KEY_E),		KEYMAP_ENTRY(0x25, KEY_4),
-+	KEYMAP_ENTRY(0x26, KEY_3),		KEYMAP_ENTRY(0x27, KEY_F5),
-+	KEYMAP_ENTRY(0x29, KEY_SPACE),		KEYMAP_ENTRY(0x2a, KEY_V),
-+	KEYMAP_ENTRY(0x2b, KEY_F),		KEYMAP_ENTRY(0x2c, KEY_T),
-+	KEYMAP_ENTRY(0x2d, KEY_R),		KEYMAP_ENTRY(0x2e, KEY_5),
-+	KEYMAP_ENTRY(0x2f, KEY_F6),		KEYMAP_ENTRY(0x31, KEY_N),
-+	KEYMAP_ENTRY(0x32, KEY_B),		KEYMAP_ENTRY(0x33, KEY_H),
-+	KEYMAP_ENTRY(0x34, KEY_G),		KEYMAP_ENTRY(0x35, KEY_Y),
-+	KEYMAP_ENTRY(0x36, KEY_6),		KEYMAP_ENTRY(0x37, KEY_F7),
-+	KEYMAP_ENTRY(0x39, KEY_RIGHTALT),	KEYMAP_ENTRY(0x3a, KEY_M),
-+	KEYMAP_ENTRY(0x3b, KEY_J),		KEYMAP_ENTRY(0x3c, KEY_U),
-+	KEYMAP_ENTRY(0x3d, KEY_7),		KEYMAP_ENTRY(0x3e, KEY_8),
-+	KEYMAP_ENTRY(0x3f, KEY_F8),		KEYMAP_ENTRY(0x41, KEY_COMMA),
-+	KEYMAP_ENTRY(0x42, KEY_K),		KEYMAP_ENTRY(0x43, KEY_I),
-+	KEYMAP_ENTRY(0x44, KEY_O),		KEYMAP_ENTRY(0x45, KEY_0),
-+	KEYMAP_ENTRY(0x46, KEY_9),		KEYMAP_ENTRY(0x47, KEY_F9),
-+	KEYMAP_ENTRY(0x49, KEY_DOT),		KEYMAP_ENTRY(0x4a, KEY_SLASH),
-+	KEYMAP_ENTRY(0x4b, KEY_L),		KEYMAP_ENTRY(0x4c, KEY_SEMICOLON),
-+	KEYMAP_ENTRY(0x4d, KEY_P),		KEYMAP_ENTRY(0x4e, KEY_MINUS),
-+	KEYMAP_ENTRY(0x4f, KEY_F10),		KEYMAP_ENTRY(0x52, KEY_APOSTROPHE),
-+	KEYMAP_ENTRY(0x54, KEY_LEFTBRACE),	KEYMAP_ENTRY(0x55, KEY_EQUAL),
-+	KEYMAP_ENTRY(0x56, KEY_F11),		KEYMAP_ENTRY(0x57, KEY_SYSRQ),
-+	KEYMAP_ENTRY(0x58, C_58),		KEYMAP_ENTRY(0x59, KEY_RIGHTSHIFT),
-+	KEYMAP_ENTRY(0x5a, KEY_ENTER),		KEYMAP_ENTRY(0x5b, KEY_RIGHTBRACE),
-+	KEYMAP_ENTRY(0x5c, KEY_BACKSLASH),	KEYMAP_ENTRY(0x5d, KEY_BACKSLASH),
-+	KEYMAP_ENTRY(0x5e, KEY_F12),		KEYMAP_ENTRY(0x5f, KEY_SCROLLLOCK),
-+	KEYMAP_ENTRY(0x60, KEY_DOWN),		KEYMAP_ENTRY(0x61, C_61),
-+	KEYMAP_ENTRY(0x62, KEY_PAUSE),		KEYMAP_ENTRY(0x63, KEY_UP),
-+	KEYMAP_ENTRY(0x64, KEY_DELETE),		KEYMAP_ENTRY(0x65, KEY_END),
-+	KEYMAP_ENTRY(0x66, KEY_BACKSPACE),	KEYMAP_ENTRY(0x67, KEY_INSERT),
-+	KEYMAP_ENTRY(0x69, KEY_KP1),		KEYMAP_ENTRY(0x6a, KEY_RIGHT),
-+	KEYMAP_ENTRY(0x6b, KEY_KP4),		KEYMAP_ENTRY(0x6c, KEY_KP7),
-+	KEYMAP_ENTRY(0x6d, KEY_PAGEDOWN),	KEYMAP_ENTRY(0x6e, KEY_HOME),
-+	KEYMAP_ENTRY(0x6f, KEY_PAGEUP),		KEYMAP_ENTRY(0x70, KEY_KP0),
-+	KEYMAP_ENTRY(0x71, KEY_KPDOT),		KEYMAP_ENTRY(0x72, KEY_KP2),
-+	KEYMAP_ENTRY(0x73, KEY_KP5),		KEYMAP_ENTRY(0x74, KEY_KP6),
-+	KEYMAP_ENTRY(0x75, KEY_KP8),		KEYMAP_ENTRY(0x76, KEY_ESC),
-+	KEYMAP_ENTRY(0x77, KEY_NUMLOCK),	KEYMAP_ENTRY(0x78, KEY_F11),
-+	KEYMAP_ENTRY(0x79, KEY_KPPLUS),		KEYMAP_ENTRY(0x7a, KEY_KP3),
-+	KEYMAP_ENTRY(0x7b, KEY_KPMINUS),	KEYMAP_ENTRY(0x7c, KEY_KPASTERISK),
-+	KEYMAP_ENTRY(0x7d, KEY_KP9),		KEYMAP_ENTRY(0x7e, KEY_SCROLLLOCK),
-+	KEYMAP_ENTRY(0x7f, KEY_102ND),		KEYMAP_ENTRY(0x91, KEY_RIGHTALT),
-+	KEYMAP_ENTRY(0x92, KEY_NULL),		KEYMAP_ENTRY(0x94, KEY_RIGHTCTRL),
-+	KEYMAP_ENTRY(0x9d, KEY_CAPSLOCK),	KEYMAP_ENTRY(0x9f, KEY_LEFTMETA),
-+	KEYMAP_ENTRY(0xa7, KEY_RIGHTMETA),	KEYMAP_ENTRY(0xaf, KEY_COMPOSE),
-+	KEYMAP_ENTRY(0xca, KEY_KPSLASH),	KEYMAP_ENTRY(0xda, KEY_KPENTER),
-+	KEYMAP_ENTRY(0xe9, KEY_END),		KEYMAP_ENTRY(0xeb, KEY_LEFT),
-+	KEYMAP_ENTRY(0xec, KEY_HOME),		KEYMAP_ENTRY(0xf0, KEY_INSERT),
-+	KEYMAP_ENTRY(0xf1, KEY_DELETE),		KEYMAP_ENTRY(0xf2, KEY_DOWN),
-+	KEYMAP_ENTRY(0xf4, KEY_RIGHT),		KEYMAP_ENTRY(0xf5, KEY_UP),
-+	KEYMAP_ENTRY(0xf7, KEY_PAUSE),		KEYMAP_ENTRY(0xfa, KEY_PAGEDOWN),
-+	KEYMAP_ENTRY(0xfc, KEY_SYSRQ),		KEYMAP_ENTRY(0xfd, KEY_PAGEUP),
-+
-+	/* Escaped keycodes */
-+	KEYMAP_ENTRY(0x103, KEY_F7),		KEYMAP_ENTRY(0x10b, KEY_LEFTMETA),
-+	KEYMAP_ENTRY(0x10c, KEY_RIGHTMETA),	KEYMAP_ENTRY(0x111, KEY_RIGHTALT),
-+	KEYMAP_ENTRY(0x114, KEY_RIGHTCTRL),
-+};
-+
-+static const struct property_entry gscps2_props[] = {
-+	PROPERTY_ENTRY_U32_ARRAY("linux,keymap", gscps2_keymap),
-+	{ }
-+};
-+
-+static const struct software_node gscps2_keyboard_node = {
-+	.name = "gscps2-keyboard",
-+	.properties = gscps2_props,
-+};
--- 
-2.55.0.508.g3f0d502094-goog
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/22] mm: introduce MMF_KERNEL flag and set it for
+ init_mm
+To: Kevin Brodsky <kevin.brodsky@arm.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
+ "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>,
+ Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Michal Hocko <mhocko@suse.com>, Pasha Tatashin <pasha.tatashin@soleen.com>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ryan Roberts <ryan.roberts@arm.com>, linux-arm-kernel@lists.infradead.org,
+ Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
+ Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>, linux-s390@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>, sparclinux@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ning Sun <ning.sun@intel.com>,
+ x86@kernel.org, tboot-devel@lists.sourceforge.net,
+ Ard Biesheuvel <ardb@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>, linux-efi@vger.kernel.org,
+ Vishal Moola <vishal.moola@gmail.com>, Alistair Popple <apopple@nvidia.com>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
+ <20260714-remove_pgtable_cdtor-v1-3-44be8a7685d7@arm.com>
+Content-Language: fr-FR
+From: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+In-Reply-To: <20260714-remove_pgtable_cdtor-v1-3-44be8a7685d7@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
--- 
-Dmitry
+
+Le 14/07/2026 à 16:03, Kevin Brodsky a écrit :
+> mm code often needs to know whether some mm represents a kernel or
+> user address space. This is currently done by comparing the mm
+> pointer with &init_mm; besides not being particularly elegant, this
+> ignores the fact that other mm's (e.g. efi_mm) may also represent
+> parts of the kernel address space.
+> 
+> Introduce a new mm flag MMF_KERNEL and set it for init_mm.
+> Subsequent patches will use this flag to replace comparisons with
+> &init_mm. No functional change is introduced for now.
+
+Did you consider performance impact ? This test is usually done in quite 
+critical memory handling functions.
+
+init_mm is known at link time. Before your patch 08/22 there is just a 
+comparison of mm (r3) with a constant (loaded in r10):
+
+c0014048 <assert_pte_locked>:
+c0014048:	3d 40 c1 09 	lis     r10,-16119
+c001404c:	39 4a 03 98 	addi    r10,r10,920
+c0014050:	7c 03 50 00 	cmpw    r3,r10
+c0014054:	4d 82 00 20 	beqlr
+...
+
+After patch 08/22 we have, it first checks that mm is not 0, then it 
+loads the word located at mm+528 then AND it with 0x1. This load might 
+be costly.
+
+c0014048 <assert_pte_locked>:
+c0014048:	2c 03 00 00 	cmpwi   r3,0
+c001404c:	7c 85 23 78 	mr      r5,r4
+c0014050:	41 82 00 10 	beq     c0014060 <assert_pte_locked+0x18>
+c0014054:	81 23 02 10 	lwz     r9,528(r3)
+c0014058:	71 29 00 01 	andi.   r9,r9,1
+c001405c:	4c 82 00 20 	bnelr
+...
+
+Christophe
+
+> 
+> Assisted-by: Codex:GPT-5.5
+> Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
+> ---
+>   include/linux/mm_types.h | 10 ++++++++++
+>   mm/init-mm.c             |  1 +
+>   2 files changed, 11 insertions(+)
+> 
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index a2e0dc5892ff..7838ea3aac00 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -1414,6 +1414,8 @@ struct mm_struct {
+>   	char flexible_array[] __aligned(__alignof__(unsigned long));
+>   };
+>   
+> +#define MM_FLAGS_INIT(flags)	{ .__mm_flags = { BITMAP_FROM_U64(flags) } }
+> +
+>   static inline bool mm_flags_test(int flag, const struct mm_struct *mm)
+>   {
+>   	return test_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
+> @@ -2001,6 +2003,9 @@ enum {
+>   #define MMF_TOPDOWN		31	/* mm searches top down by default */
+>   #define MMF_TOPDOWN_MASK	BIT(MMF_TOPDOWN)
+>   
+> +#define MMF_KERNEL		32	/* mm belongs to the kernel */
+> +#define MMF_KERNEL_MASK		BIT_ULL(MMF_KERNEL)
+> +
+>   #define MMF_INIT_LEGACY_MASK	(MMF_DUMP_FILTER_MASK |\
+>   				 MMF_DISABLE_THP_MASK | MMF_HAS_MDWE_MASK |\
+>   				 MMF_VM_MERGE_ANY_MASK | MMF_TOPDOWN_MASK)
+> @@ -2008,6 +2013,11 @@ enum {
+>   /* Legacy flags must fit within 32 bits. */
+>   static_assert((u64)MMF_INIT_LEGACY_MASK <= (u64)UINT_MAX);
+>   
+> +static inline bool mm_is_kernel(const struct mm_struct *mm)
+> +{
+> +	return mm && mm_flags_test(MMF_KERNEL, mm);
+> +}
+> +
+>   /*
+>    * Initialise legacy flags according to masks, propagating selected flags on
+>    * fork. Further flag manipulation can be performed by the caller.
+> diff --git a/mm/init-mm.c b/mm/init-mm.c
+> index 3e792aad7626..93773269bf87 100644
+> --- a/mm/init-mm.c
+> +++ b/mm/init-mm.c
+> @@ -34,6 +34,7 @@ struct mm_struct init_mm = {
+>   	.pgd		= swapper_pg_dir,
+>   	.mm_users	= ATOMIC_INIT(2),
+>   	.mm_count	= ATOMIC_INIT(1),
+> +	.flags		= MM_FLAGS_INIT(MMF_KERNEL_MASK),
+>   	.write_protect_seq = SEQCNT_ZERO(init_mm.write_protect_seq),
+>   	MMAP_LOCK_INITIALIZER(init_mm)
+>   	.page_table_lock =  __SPIN_LOCK_UNLOCKED(init_mm.page_table_lock),
+> 
+
