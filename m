@@ -1,89 +1,123 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489BD3E1208;
-	Tue,  4 Aug 2026 12:59:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A853E00BE;
+	Tue,  4 Aug 2026 12:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785848354; cv=none; b=pska20XC8YUbw5hJDNSN6Zt6MnqMc1VGSetxdvA+kSdYKA5IVCDS62e804s8yLtiEAW8YuSUVabM65dnvnqaeAcOsHkysUYCYVb0gZ41+Rspr71D/qJDT/bpy1HR9EFZsFbhfH6NDlF4R5pd0sk7YoJ/RZKUChX60tF08BawvL0=
+	t=1785848371; cv=none; b=Ftal4qW9eIUohfpIt/Z5btQz+ZfLlQiVWx85btFHKKlSMWoy/xnxh5tmfsyH0WX5UImRmTGinD9pXVh9TIhPBMlHAFuelnJVuAjhmrfQC1x1dBC1bkkme2Ovp6OS/YINoEn9a8MnMKXzyjpTso31/ClBtUBwjOPxyaXZW4qh0HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785848354; c=relaxed/simple;
-	bh=MqO3ykCmDMFFFmaMS3o2pcAuXXStb1NfZrLmb5fx/j4=;
+	s=arc-20240116; t=1785848371; c=relaxed/simple;
+	bh=cmKzuBijcDPvK7lbmrVWF4TTSNMZ5YyfBQGhlIqOBjs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fc+UhLtbetFb2RxpFIL2z791uSxYSHm3Pi9qCE40+nCN2xTh08Yys1rkgHUbBNdX2+tpa65iv/UeP4L1e5RJ6/jMDyeSl8aXlj1duN8z3clb5jmUiOne0K6FFjCXvASpuHtW82Hp8NFLQ5WvKoLIvs9PxKuvC/z3DNL997IBEcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pP6eOKiK; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=qN6oqo+xcnbCbDJFWwHireiUtPFp87t0DXRB/p6rOTBkdUSX4v1iQL1dolpkcT8Z9J3WvCNFswukwIwNBPjt928eIibx1MJdOHSzbKkuRpV+JsfU2bdwcCqwqAEKErWN74FpA3KPuELFWz9T0JqpIO6ScAejJ9REO6xlPxuRobg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gVucjhvr; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pP6eOKiK"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=WUhUtN56r9fhARFOR9vE7IJU5nDAKoBATYQLtqQHv74=; b=pP6eOKiKd9yHzPpXFoijOPZYcn
-	g4v0q4mwyuAeBsneIHdRduKG3I+OIh4tIVkYu/T2h/aviBTH2KPoaxL/qLGIL85t4O1Tp0VU3BkTF
-	gU7zJkQ90U3bvak4JQbu73yEVi8uRyGuLKs8538OT1Xk7dABexIEj79hgw5u42zyhFc9/xmguMII0
-	AxvJ8CR11yplfLptoFTGqhFGhnfo5+US6hkFaU857zkpLC28EDeEvM9vVdQTE8AM0UbFVjHJ1wTpy
-	6bqi/nksGDyeWksNuT/HgaxycvVr+yhJxm17U6RnDnkcnU8b8YxSPqXqbbtw3NHGt2+h/LVva611d
-	xg/uTX8Q==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wrEjg-00000001rnm-0CoA;
-	Tue, 04 Aug 2026 12:59:12 +0000
-Date: Tue, 4 Aug 2026 05:59:12 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Helge Deller <deller@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	linux-abi-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, deller@gmx.de,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] UAPI: Drop PER_HPUX personality
-Message-ID: <anHiICAgWyO3yjxL@infradead.org>
-References: <20260731125651.2924-1-deller@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gVucjhvr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3B111F000E9;
+	Tue,  4 Aug 2026 12:59:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785848370;
+	bh=rkEir9uFm1qRBCXp0zpCOeuLTQKL4glDCYZRatT+50Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=gVucjhvrdbhER92eS5xBHqYeZpRRPk+DMQSNxJPje3bAw5/f6Is/Nlxg+QiKYxfyL
+	 pGQoOaMN++o0pL9N4wS88gUthxS0LEzYZKJZYvjbiDx/YUuiHmFTpl65FF4Q9xwM0s
+	 a3HI42iOihbi5kLSp3FDAlBecuXQkaSEbziibdWB2HI43ExYZ5VxAwgNzL8NLKy4/V
+	 BvJA7uaB+cbSx42oZRA6c8/ULe0tqE31ITKSKG8p1/ldAswRXodrmvS/+E0is3fQsS
+	 w6b9GFu80tahoLmlwJ3y8g26YTuFV2gojiLnnLp6U02LXioHwZLgPZzUCMN88kobJv
+	 U6M2c8qhm7r5g==
+Date: Tue, 4 Aug 2026 13:59:08 +0100
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+To: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+Cc: Pedro Falcato <pfalcato@suse.de>, David Hildenbrand <david@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, "Liam R. Howlett" <liam@infradead.org>, 
+	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Jan Kara <jack@suse.cz>, Zi Yan <ziy@nvidia.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Nico Pache <npache@redhat.com>, 
+	Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>, 
+	Lance Yang <lance.yang@linux.dev>, Usama Arif <usama.arif@linux.dev>, 
+	Kevin Brodsky <kevin.brodsky@arm.com>, Muhammad Usama Anjum <usama.anjum@arm.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] mm/powerpc/8xx: constify ptep_get() argument
+Message-ID: <anHgw2Z-d-OQk9qs@lucifer>
+References: <20260803164400.531199-1-pfalcato@suse.de>
+ <20260803164400.531199-4-pfalcato@suse.de>
+ <anHI4B-lMu6AJJfA@lucifer>
+ <dcdb8cab-c18c-4995-ad1d-2f2d4700e7c1@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20260731125651.2924-1-deller@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dcdb8cab-c18c-4995-ad1d-2f2d4700e7c1@kernel.org>
 
-On Fri, Jul 31, 2026 at 02:56:51PM +0200, Helge Deller wrote:
-> From: Helge Deller <deller@gmx.de>
-> 
-> Two and a half decades ago, there were plans to support HP-UX syscalls
-> in Linux. This was never fully implemented, never worked and was never
-> actually used by anybody.
-> Let's simply drop this define now and free it up for other usages.
+On Tue, Aug 04, 2026 at 02:50:19PM +0200, Christophe Leroy (CS GROUP) wrote:
+> Hi Lorenzo,
+>
+> Le 04/08/2026 à 13:13, Lorenzo Stoakes (ARM) a écrit :
+> > On Mon, Aug 03, 2026 at 05:43:57PM +0100, Pedro Falcato wrote:
+> > > There is no need for write access to the PTE.
+> > >
+> > > Signed-off-by: Pedro Falcato <pfalcato@suse.de>
+> >
+> > With below addressed LGTM so:
+> >
+> > Reviewed-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+> >
+> > > ---
+> > >   arch/powerpc/include/asm/nohash/32/pte-8xx.h | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+> > > index e2ea8ba9f8ca..f2bab31040c7 100644
+> > > --- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+> > > +++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
+> > > @@ -226,7 +226,7 @@ static inline pte_basic_t pte_update(struct mm_struct *mm, unsigned long addr, p
+> > >
+> > >   #ifdef CONFIG_PPC_16K_PAGES
+> > >   #define ptep_get ptep_get
+> > > -static inline pte_t ptep_get(pte_t *ptep)
+> > > +static inline pte_t ptep_get(const pte_t *ptep)
+> > >   {
+> > >   	pte_basic_t val = READ_ONCE(ptep->pte);
+> > >   	pte_t pte = {val, val, val, val};
+> >
+> > Worth making these const too (that {val, val, val, val} horrifies me btw :)?
+>
+> Any suggestion welcome.
 
-Looks good:
+I'm being super nitty, all I mean is:
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+-   	pte_basic_t val = READ_ONCE(ptep->pte);
+-  	pte_t pte = {val, val, val, val};
++   	const pte_basic_t val = READ_ONCE(ptep->pte);
++  	const pte_t pte = {val, val, val, val};
 
-There's not real tree for include/uapi/linux/personality.h, maybe
-we can get Andrew to merge it through -mm?
+:)
 
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> ---
->  include/uapi/linux/personality.h | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/include/uapi/linux/personality.h b/include/uapi/linux/personality.h
-> index 49796b7756af..243f5f80a7b8 100644
-> --- a/include/uapi/linux/personality.h
-> +++ b/include/uapi/linux/personality.h
-> @@ -62,7 +62,6 @@ enum {
->  	PER_SOLARIS =		0x000d | STICKY_TIMEOUTS,
->  	PER_UW7 =		0x000e | STICKY_TIMEOUTS | MMAP_PAGE_ZERO,
->  	PER_OSF4 =		0x000f,			 /* OSF/1 v4 */
-> -	PER_HPUX =		0x0010,
->  	PER_MASK =		0x00ff,
->  };
->  
-> -- 
-> 2.54.0
-> 
----end quoted text---
+>
+> powerpc 8xx page table is independant on page size. When you use 16k pages,
+> depending on the address you hit the page for the first time, the HW assist
+> page table walk will fetch one of four 4k cells in page table that need to
+> be identical as they all four define the same 16k page. Not sure I'm clear.
+
+No that's clear, thanks!
+
+(I say 'horrifying' because I am looking into RCU page table freeing which this
+may complicate, though perhaps not in practice, to be continued :)
+
+>
+> Christophe
+>
+
+--
+Cheers, Lorenzo
