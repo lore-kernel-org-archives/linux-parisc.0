@@ -1,120 +1,77 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF2646F4B5;
-	Wed,  5 Aug 2026 12:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6CD2F5A36;
+	Thu,  6 Aug 2026 01:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785933609; cv=none; b=oyehUUPDQ2CTusrxLQ7XNFgyQwvRYBqigoR7LwORtWHkOGcK9yjSfPG1SZ4HHVmFqlnagxQQqdo4AiZBxmpxyckMdMJRAagNUHmcg1FRSOV1qxh3aCz/BTrfP0D8CetoERigjM1ZlAgUiiPs3QaBVx2B5/NqQm/YRn/qa2ixrfY=
+	t=1785980450; cv=none; b=bqIZsmYUvjm1mbxFrG8dQzTPbMI+hL5dDz0oiKDqcJ3GDnnEUV9GRXI/ZTIbRMhM7y+IOXrqNF0QqdVCEmmqhv9IAfzoGbcxzGuuBxntWdfT7HYz8/CwqXK2EuSGVY28NGcO2BBmr7O5xwc60grPdgM2i3IeDIU4fOs9ZrVq0uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785933609; c=relaxed/simple;
-	bh=Vhv7ls9HY0Ojyl5KzUa7eLRg0QkyDxxBzPjP/hbyt/c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pqQXl/NKcXlydQVoUjqPWE4RkuYhhCkvcLGyncNL2MVPiNh9tgRd/qIJIfrJp0CObHBJaHbIlvKbmFepADiBN/T5iy3uv50qfO91SIkmQO0ykZdtu76usqxedw9ZSC//Yxx4VHtZCcqkTJyKWVtmtre9PaFElYXBTI1nsm/qQ1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C7D8F3E26;
-	Wed,  5 Aug 2026 12:40:05 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CBBE8779C3;
-	Wed,  5 Aug 2026 12:40:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 5Z90LiMvc2owfAAAD6G6ig
-	(envelope-from <pfalcato@suse.de>); Wed, 05 Aug 2026 12:40:03 +0000
-Date: Wed, 5 Aug 2026 13:40:02 +0100
-From: Pedro Falcato <pfalcato@suse.de>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: David Hildenbrand <david@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Lorenzo Stoakes <ljs@kernel.org>, 
-	"Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>, 
-	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Michal Hocko <mhocko@suse.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Jan Kara <jack@suse.cz>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Nico Pache <npache@redhat.com>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>, 
-	Lance Yang <lance.yang@linux.dev>, Usama Arif <usama.arif@linux.dev>, 
-	Kevin Brodsky <kevin.brodsky@arm.com>, Muhammad Usama Anjum <usama.anjum@arm.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] mm: add basic PTE const type-safety
-Message-ID: <anMrnsN1xf_Psn3w@pedro-suse.lan>
-References: <20260803164400.531199-1-pfalcato@suse.de>
- <a5afofuxhzwkeb76jdheottyxt4mms3arg2iucunztczbmd3lf@wiqp7yccjzlt>
+	s=arc-20240116; t=1785980450; c=relaxed/simple;
+	bh=BoqJcEU00R6WLoT1rdDHWfwduCYFnb+SEE7uFRPbz3I=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ugbj4zmZnyemRz/HZG6RhbHwelGPute+YDUj2STjplqGy9/g09Ic8a1iO4V3flQZiSfngk5YHMPoAkjCJoy3Yeolf+wIQ6mlNErD2f4CaMzE0cynG/S5S/MzXeVl9745sK2QoUrGTfLcPdRQfJQ0xc3JWDYsPxyTEN8ukIhBvbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cyzB4mNG; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cyzB4mNG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED2EB1F000E9;
+	Thu,  6 Aug 2026 01:40:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785980449;
+	bh=P7WIeM8Rx7X2twfXGV91t1GSyzjePmrAq1NMknos9A0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=cyzB4mNG0ubuCbLGyyRC+tQiH7BT8f1WN7iSHgpxZ41zB+ZahC1wYeMutEc86hOA/
+	 rFGPlVjF/dR+YYXB4bmDxJMaSAJPLUlFUuArIc/qXbWx8Fr+dQKYJ0oFV0l8Xa2jFj
+	 CHVwy5GasMSqlR+nEoXuEJmFhRPZLeOOSUTdeQ0C98ryO2oqaGayCqcWUHIAkNwyB7
+	 6z90mgT1S/hCCkyHtwsg1fa0N4tQhkkA2Nf9KjcD3vBwq/hE1LoVMKhVwoEV0HShKb
+	 fGstJgJaQIALNXQAJzU+Po9yrVFyzW7JSLEyGbX0z2B080vyCxgslfTlaPz1tDSON+
+	 JuLEMi7A2Ywaw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id D0A28392FFF3;
+	Thu,  6 Aug 2026 01:40:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5afofuxhzwkeb76jdheottyxt4mms3arg2iucunztczbmd3lf@wiqp7yccjzlt>
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: C7D8F3E26
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: tulip: remove xircom_cb driver
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <178598040839.599522.8669819859721166117.git-patchwork-notify@kernel.org>
+Date: Thu, 06 Aug 2026 01:40:08 +0000
+References: <am48DR5FC-xTY3-D@ThinkPad-P15>
+In-Reply-To: <am48DR5FC-xTY3-D@ThinkPad-P15>
+To: =?utf-8?q?Pablo_Vallesp=C3=ADn_Aranguren_=3Cpablopva014=40gmail=2Ecom=3E?=@aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org
+Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+ gregkh@linuxfoundation.org
 
-On Wed, Aug 05, 2026 at 04:12:21PM +0530, Anshuman Khandual wrote:
-> On Mon, Aug 03, 2026 at 05:43:54PM +0100, Pedro Falcato wrote:
-> > Since forever, MM code has thrown pte_t * around with no concern for const
-> > safety, or typesafety of any kind. This is confusing. Attempt to address it
-> > by:
-> > 1) Making sure pte_get*() helpers can cope with const pte_t * arguments
-> > 2) Constifying the pte_offset_map_ro_nolock() return type, which by definition
-> > already pledges that users will not write to it.
-> > 
-> > These two simple steps were already able to uncover code smell from
-> > khugepaged + do_swap_page().
-> > 
-> > Separate steps could include introducing pte_offset_map_ro_lock() for more
-> > widespread usage of this.
-> > 
-> > Benefits of this include less confusion and better type-safety. It could also
-> > futurely aid in efforts such as [0] which may want semantic annotation of these
-> > accesses.
-> > 
-> > Based on mm-unstable and compile-tested on a handful of architectures.
-> > 
-> > No functional changes intended.
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Sat, 1 Aug 2026 20:33:49 +0200 you wrote:
+> A possible bug was found in investigate_read_descriptor() and a fix was
+> proposed. Since this is an orphan driver for hardware that is old,
+> removing the driver was suggested instead. This patch removes the driver.
 > 
-> Even though the pte accesses should always be type-safe, this series does
-> not really address the problem completely and instead changes things only
-> for a small set of pte access sites. So just wondering how much beneficial
-> this series really is ?
+> Link: https://lore.kernel.org/netdev/2026080158-next-diligent-b4ce@gregkh
+> Signed-off-by: Pablo Vallespín Aranguren <pablopva014@gmail.com>
+> 
+> [...]
 
-This series is meant to be a small step in the right direction (while
-feeling out what the community thinks, which seems to be receptive). The
-obvious next steps would be to introduce some sort of
+Here is the summary with links:
+  - net: tulip: remove xircom_cb driver
+    https://git.kernel.org/netdev/net-next/c/ff3a8694c2e8
 
-const pte_t *pte_offset_map_ro_lock(struct mm_struct *mm, pmd_t *pmd,
-			   unsigned long addr, spinlock_t **ptlp);
-
-and use it in more places. That will obviously involve a bit of churn.
-
-
+You are awesome, thank you!
 -- 
-Pedro
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
