@@ -1,112 +1,194 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584074483A8;
-	Thu,  6 Aug 2026 15:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A5594519A3;
+	Fri,  7 Aug 2026 06:59:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786028714; cv=none; b=AmzBZwKFZ6Qm9CyepjoMi179RVEQAE63nfyzfzg02n282pzZb/eLve3peYSHvtLdRkL+wZXLqUPtKuJCfhRgncqzzocZ3F3eH2EWbkGa+7Y6RsFgh9UGuCh1EvYQMH9Gqp25j4RU9RbQHRz1GpSllENH0lNf0FN3WZkgIdUQFiQ=
+	t=1786085994; cv=none; b=L5MrOLgtfmHpuIi7OQ1KsnfElNtOXtvqD/gEHefjJygZ3JcPkTR+JCa8rUUaAyewq1mb8J0d8FDhOVx0GTzJty2/RYnflkPY4+1nsMdbDYsljpTTYIY5ep2OaYDF1Yph2LJfoSB83wryNLRnVKB9d9ioqhpu7Qs2AtNXf4TVHKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786028714; c=relaxed/simple;
-	bh=orgLGllWh2lnoEBQ4JYQUYZM9EAqFWvuC1DruRncWG8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=omKDqZ+sihK2PuAYr17EcRqo8kzfpXVq6XYS6hdS9/aY0+A63Fw6O0GYyAiFyJiS1fYHxts/bOTZxYVKORr4BioZa38pe7jhpKnVtnuABVB3sdpHRDXGWauxaTuRl44TlLIs1PSdnJkhFjcLtwlSZUOdiW8sHC1ejejGKcGbxIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F8EpqDP/; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1786085994; c=relaxed/simple;
+	bh=wXVfqEMAbawB8MPO0UhUwCJPPfwfB0Bx4TSGkqK+SO0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qLVRh48SJbqxkrCKl6VPxswHdqERtQMU/5D79O5of+D4k3zdifDcjK9Nx97A7BTe0/0pf19RJAMK7+B+mL1y8ESiZo8blKYRQU528yqOLwNWQfvkon42gjqJeNaIdNxRKP/AVPpEmNKWBWn/UxdmYHubzeI3UovAfrbnsmempUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=b6abVgzg; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F8EpqDP/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAA171F000E9;
-	Thu,  6 Aug 2026 15:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786028712;
-	bh=1Z3Rij5Y2TDRcGbge5gJ16K4Ai71Dj0D517MtFEVucY=;
-	h=From:To:Cc:Subject:Date;
-	b=F8EpqDP/NZMcNWBNq4noLlupXQnF+W/i3Gc+5RcOJhOkLaR+ektD3WjacvDW+2Nda
-	 TTNZp1cEYJr1gE0/68MEOAtWOB4mTae23hMEfgIXo0M0k0IYflkdZuYkXYJgFB65PR
-	 pymSWrdLXTlCFm5kWOplWPyfR+15bGbwjgxcRqfwaz4Q2Jj990zVIMYObN0TUyq1sv
-	 lKzrOYXB67clExPvld6JCIFVdB8K7f7qjKjVpJ+Sk4DobMVPi4RKPAu59nO2fbx9wf
-	 trjoX1siXf6FjQsMiul76Oe+pScxgBuk273t1ryYcOEl/cuBXeXLs7C/ZAxCOgAKlg
-	 /W1kQASeNegGw==
-From: Helge Deller <deller@kernel.org>
-To: linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-parisc@vger.kernel.org
-Cc: deller@gmx.de
-Subject: [PATCH v2] sticon/parisc: Detect default STI graphics card for console output
-Date: Thu,  6 Aug 2026 17:04:15 +0200
-Message-ID: <20260806150414.7870-2-deller@kernel.org>
-X-Mailer: git-send-email 2.54.0
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="b6abVgzg"
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6770Huoo016275;
+	Fri, 7 Aug 2026 06:58:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=Ra4H8CAbtiN9wPr1aKFBAag6HNf0qB
+	uveAYY5O5upyA=; b=b6abVgzghGiyJP2Wlz0QxQ4Xlm4EEGD9Kpi/bbrlqUSFBE
+	peaClBZE7a6uUDxpMzlqxLdBYmzJ2Zv0Gov1Z/ABs95zQALrNBxETA0/pEucil/j
+	W+YyJwlwpe3OK1MAOCII7fcp3YeD9G589urjh/7H6praJpDu3PDyifCYlbxg55Wq
+	kegIhHrXFaKgEStmSWQn7LYsur2nUZn/xPNaUh2EUQxX/E75LETTqXwjtCkcIvTM
+	6z2V+hipWhFW5E/1SdFcNJm3hHGg12nD12POK8woGUy/Cd3cVuoSGV0jyJiT1nQe
+	XgoPgNhStcc1pjBG2Dfbs0hQJW5cw8oy/wETB5bQ==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4fvy00am7a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 07 Aug 2026 06:58:32 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 6776uLDe003221;
+	Fri, 7 Aug 2026 06:58:31 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4fsu4qxspg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 07 Aug 2026 06:58:31 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6776wSir33882500
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 7 Aug 2026 06:58:29 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D3B0620040;
+	Fri,  7 Aug 2026 06:58:28 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4351E20043;
+	Fri,  7 Aug 2026 06:58:26 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.111.55.180])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri,  7 Aug 2026 06:58:26 +0000 (GMT)
+Date: Fri, 7 Aug 2026 08:58:24 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Muhammad Usama Anjum <usama.anjum@arm.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tursulin@ursulin.net>,
+        David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Liam R. Howlett" <liam@infradead.org>,
+        Lorenzo Stoakes <ljs@kernel.org>, Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+        Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        David Hildenbrand <david@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>, SJ Park <sj@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jan Kara <jack@suse.cz>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@gentwo.org>, Mike Rapoport <rppt@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, ziy@nvidia.com, pfalcato@suse.de,
+        ryan.roberts@arm.com, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, damon@lists.linux.dev
+Subject: Re: [PATCH 6/9] mm: convert PTE table entry to pte
+Message-ID: <fab9fc78-1e1d-4d5b-a9ca-92f3ebd04108-agordeev@linux.ibm.com>
+References: <20260806083926.1807279-1-usama.anjum@arm.com>
+ <20260806083926.1807279-7-usama.anjum@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260806083926.1807279-7-usama.anjum@arm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Info: AW1haW4tMjYwODA3MDA0OSBTYWx0ZWRfX3Npn1dSDlp+R
+ fqhR9MpXZOAAKnyVJ8e3VxdJ3uPpsfM7vsZzpddpvCei+hGCUgHlBFVERXxX+W23gcpS04A1TAu
+ ZsTRXf6ZMD17BVZmsTCM0lUCa3PumjU=
+X-Authority-Analysis: v=2.4 cv=VPTtWdPX c=1 sm=1 tr=0 ts=6a758218 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=kj9zAlcOel0A:10 a=Sv0fKeRqtYgA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=VwQbUJbxAAAA:8
+ a=7CQSdrXTAAAA:8 a=VnNF1IyMAAAA:8 a=MkxDnzPc83ckttyupOUA:9 a=CjuIK1q_8ugA:10
+ a=a-qgeE7W1pNrGK8U0ZQC:22
+X-Proofpoint-ORIG-GUID: 9g22-5Yiq-VIyR9utDe_g8M8U8wsuEOd
+X-Proofpoint-GUID: 9g22-5Yiq-VIyR9utDe_g8M8U8wsuEOd
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODA3MDA0OSBTYWx0ZWRfX4qeGdjjX3Iob
+ oR2d/W90tNYt47jYoawp2wnB7y1FcZkNxxg7/PT57hDZR5feFluugIlRZ22mBQ/td/U5spNK5Sw
+ r8fBBZDJMOMHDyBDHn28hS5vFD1IBzJcw9uh6xxZ9XoecZCsQnhJUSSf9noMzRB2RMvDZxhPIkf
+ XMKQ1X4w4JsUHL/vsYXt9nxlaz1I/q7ljQgCtXwMvAVt1kijbs35mMQ7c76oGi39I1XSIpxXjmb
+ kIMcLde1EyTpmQmaPbN+E3LbUk4M/lkkgjjjvsZIBgTXWy3e0GMD7NaUrStoYwo4ESb8Z4Wsdqh
+ +581CUAUBwBVUa2TokmdsZzGbrL67tdrfft71SfQsy0ZlWFNR+iL1PR2Oez6zshpb+e7rynA9dG
+ f8FbSxO38FmGhTq0nvrdQcjHK2fKXR2vKx64CE0UHGLhgbh7cUWWpBSkiNUoiKjHZV0BphvCO4H
+ jlupay2/A2mIbK8uZUQ==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-08-07_01,2026-08-06_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 spamscore=0 clxscore=1015
+ priorityscore=1501 phishscore=0 impostorscore=0 adultscore=0 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608070049
 
-From: Helge Deller <deller@gmx.de>
+On Thu, Aug 06, 2026 at 09:38:44AM +0100, Muhammad Usama Anjum wrote:
+> The non-MMU stub receives hw_pte_t but returns a logical pte_t
+> value. Convert the stored entry through __pte_from_hw() before
+> returning.
+> 
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@arm.com>
+> ---
+>  include/linux/hugetlb.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index bc0b9c65aa1d0..9e8b391aa4bc9 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -1283,7 +1283,7 @@ static inline pte_t huge_ptep_clear_flush(struct vm_area_struct *vma,
+>  #ifdef CONFIG_MMU
+>  	return ptep_get(ptep);
+>  #else
+> -	return *ptep;
+> +	return __pte_from_hw(*ptep);
 
-If a machine has multiple graphic cards, detect the graphic card which is used
-to display firmware messages and use that one as the default graphic card for
-sticon and fbcon.
+But this is a direct dereferencing, which breaks the whole point, isn't it?
 
-On parisc machines the default graphic card used for BCH (boot console
-handler, aka BIOS menu) is stored in the stable storage (equivalent to CMOS
-storage on x86) or in the console path in page zero. Extract that path and
-store it as default STI path for later comparism. Take care that the graphic
-card can be a GSC or a PCI card which use different path strings.
+What about introducing something like pte_t ptep_get_sw(hw_pte_t *ptep)
+to be used in exactly situations like this? With that the semantics of
+hw_pte_t pointers becomes straightforward and closes the still ongoing
+"storage vs lifetime" discussion:
 
-Increase max string size for default_sti_path to 32 chars as the
-print_pa_hwpath() function formats a hardware path using unbounded sprintf
-calls for up to 6 bus converter components and 1 module component (e.g.,
-255/255/...), which can produce a string up to 28 bytes long.
+hw_pte_t*     points to HW-formatted page table entries
 
-Signed-off-by: Helge Deller <deller@gmx.de>
----
- drivers/video/sticore.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ptep_get()    is used to obtain HW-linked/attached entries, and may wire
+              extra code like [1] or [2]
 
-v2: increase default_sti_path and take care of PCU cards as reported by
-    the Sashiko AI bot review.
+ptep_get_sw() is used to obtain HW-unlinked/unattached entries and in
+              most cases is just a direct dereference
 
-diff --git a/drivers/video/sticore.c b/drivers/video/sticore.c
-index 0d37e4b10447..1d4477f20450 100644
---- a/drivers/video/sticore.c
-+++ b/drivers/video/sticore.c
-@@ -325,7 +325,7 @@ static void sti_rom_copy(unsigned long base, unsigned long count, void *dest)
- 
- 
- 
--static char default_sti_path[21] __read_mostly;
-+static char default_sti_path[32] __read_mostly;
- 
- #ifndef MODULE
- static int __init sti_setup(char *str)
-@@ -1148,6 +1148,26 @@ static void sti_init_roms(void)
- 	pr_info("STI GSC/PCI core graphics driver "
- 			STI_DRIVERVERSION "\n");
- 
-+	/*
-+	 * Find default console by hardware path which is either stored in
-+	 * console entry in stable storage or alternatively from console path
-+	 * in PAGE0 used by BCH and PDC.
-+	 */
-+	if (!default_sti_path[0]) {
-+		struct pdc_module_path conspath;
-+		struct device *dev = NULL;
-+
-+		if (pdc_stable_read(0x60, &conspath, sizeof(conspath)) == PDC_OK)
-+			dev = hwpath_to_device(&conspath.path);
-+		if (!dev)
-+			dev = hwpath_to_device(&PAGE0->mem_cons.dp.path);
-+		if (dev && dev_is_pci(dev))
-+			print_pci_hwpath(to_pci_dev(dev), default_sti_path);
-+		else if (dev && !dev_is_pci(dev))
-+			print_pa_hwpath(to_parisc_device(dev), default_sti_path);
-+		pr_debug("default graphic card: %s\n", default_sti_path);
-+	}
-+
- 	/* Register drivers for native & PCI cards */
- 	register_parisc_driver(&pa_sti_driver);
- 	WARN_ON(pci_register_driver(&pci_sti_driver));
--- 
-2.54.0
+The caller should always know whether the entry is attached or not, so
+confusions like [3] are avoided.
 
+1. https://lore.kernel.org/linux-mm/20260526-kpkeys-v8-21-eaaacdacc67c@arm.com/
+2. https://lore.kernel.org/linux-s390/650903a4-0dd9-4e6b-9d4b-3c32c5657236-agordeev@linux.ibm.com/
+3. https://lore.kernel.org/linux-s390/b44e071d-7c9d-4e7e-a84d-4af3499a5a05@arm.com/
+
+>  #endif
+>  }
+>  
+> -- 
+> 2.47.3
+> 
