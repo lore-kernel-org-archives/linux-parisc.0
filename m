@@ -1,29 +1,29 @@
-Received: from AM0PR02CU008.outbound.protection.outlook.com (mail-westeuropeazon11013058.outbound.protection.outlook.com [52.101.72.58])
+Received: from MRWPR03CU001.outbound.protection.outlook.com (mail-francesouthazon11011004.outbound.protection.outlook.com [40.107.130.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF28473C88;
-	Fri,  7 Aug 2026 15:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.72.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA7537E5DD;
+	Fri,  7 Aug 2026 16:26:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.130.4
 ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786116294; cv=fail; b=LEpUgUBmI9Slc2tv2iDq2Ib12o+CLQDJJvF5S3nXb+JFd+JywWIb2EvZskivogOkdPy3l5UQk1x/0W2BTTHhuzvpc8DQYBzhIiXh2x4rWHYMAWyNS48DC7FFxtqKTY/8buoo5czAqPxOmkWbhFBSEKXUVXVVN9jaHycDzYqaDM4=
+	t=1786120014; cv=fail; b=YUI9l26glEN1DWatLBQRa1+DUENl+B25p9ebMjNhKUCjeBPhES3GythOlRDnvAsus+pjpzSY+5nGZ4OE1KqadLQG3VNvOYq7atdlX3COdksIE6c0M6V1wcgVawGnz33EQ+IhSL1jAb1pyBvXga8huDnYoAnqzrWpn9I1mdGJUbc=
 ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786116294; c=relaxed/simple;
-	bh=XKrRklP/dWKdI/wyDtKdqGb7bhciH7J88gGmFLB3n9I=;
+	s=arc-20240116; t=1786120014; c=relaxed/simple;
+	bh=ivi6SkSu4KC5kFkH+SMpwmoPjZrWBdMtf3OmP4UnPnU=;
 	h=Message-ID:Date:Cc:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=pnVZct4JVjpV5oVZMMNNmZxAh6AcgzUkgOo9PnfizVLNI1hoCYco6ylHt1AP1LYRSelsCKvA0fv6+dXPe3EhQ9DWeh2YCGBNjstjdt0GITqze0k4dtP4JnBX/4lLlwxqzrga/9hPIB/QmbO38/mAu7i2LM8MYFIYaabDWmnkDVY=
-ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=enPJXwJa; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=enPJXwJa; arc=fail smtp.client-ip=52.101.72.58
+	 Content-Type:MIME-Version; b=Tdrn4YcPgVgQd++b1LXmVGkOhznOeSnqF+WsCS3Yfiv+3JBHrZOSre4bQL+ar/ae4ysELsXUCGsazrjdKdiYKSyuHqbFeJFEW8cbiKmLDWA5xhqA3tUaSaWqMHkneOlfQWd8b0Y5yZj5hlsVX1gOg12ve+mabn5bDDvM8iWCYzk=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=LbE4HoBx; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=LbE4HoBx; arc=fail smtp.client-ip=40.107.130.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="enPJXwJa";
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="enPJXwJa"
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="LbE4HoBx";
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="LbE4HoBx"
 ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
- b=YgYEf8/SAqc2pFNvqaD4dDMa/gsJUU+5MZOxScmIqgUj/Tx7t4IlrtLsb91lNcg69MR7dVZoeSppBCkkBgQGOqwkJ6OWWJ+MTzZdA5kBb1VsrAvpI2lcKR4S8ceD0HjUcj+ESfu4Zd+1mIbJMlJ0ibLEGcuwKGy8JlCK2FsT3toHWjiGadnfZeBoOXcXciv/bmssMN5WrVhJFvGs2j8vQzPbqaxRjQSaxJiLt+8aMVo0WuXLmER0/KfgBnTJb7H6E9NhxpSG9VS6y01FqG904amkoWg43Gzd4regFez2fl/jNZpv5RUfsY46/OvfjqvHaibmSbVVst2yCnM5oUxUZg==
+ b=S1XfxwbdoezrGNtcj8UyE3GCZXPXBdAlOWQPBP28V+8tyrszTTGsxfqldiEGqWUtuUE3vGD6hP9N8iWgN/hWSoqJbKvP7dCnk5mClR/jGw+Xd8ULlXemEMgYLQG5a8+SX+zAiRD/IiLlYYyj9WdOPaiYjjvyJLvzn4300I63UoltiCDj8Jg0P5yNqhROTB5cT1IJ66IKetoBSUH9ZlAkDZ0jb1JhqadNZhlcWhQg0uXCf1ZZJUT/3VejedLWxaDFhoB7eXKVxueFE8+BcEVbJjRFeKflCsN6qbZXJGnduh1MfFIEI7/GxeHQ+Rq3Rlf9McLwZh3G/s7I32c5KxrR3g==
 ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=214jEOHDvbqO65kJp7R9WvTe7aHGn+ywbFPey8CpPng=;
- b=y+TPSW3BkJ1wUWEQ2sdPKNn62KbZXzdE/RRRrao+EOsUTJgTZtUkfUNwGiKVCpF39Swbmbd5wxX4F7TgHkMR/eHuxNXfS60q5y3z2KCSD9V/rFsOQDDkPkOxMtAaMC1vEvORGD77NqqZuZ2t6zVYfxHh0tSrPjjxPy9iwHrAy4mekd47nKe08vlEsLMc2/53MckeG+WHt9Rd9/5SqaDvyL1zYObh9cIOBQysoAOscfpwXLhOEJffH1pZiNbV5UxBhASGtAXqrZpIylWQ3A2qq07ZT5YNmb3jKWs8dOpSPNEgnZPRyVJAFWTYhgQlasMIEbdxCVJtRCfD4iGbYwH77Q==
+ bh=MS1lmnXLC+3vPC4LjFRguif+C4PkJMlmWukiMTyIh2c=;
+ b=QoPWnMGbeaEPY70JHB5FQkhZMhNEsKVxusaXcu3ZHcrzDdOsIH9+aABL25xarJ2p0BlpVUxRf6Rgne1yLcv5zGx6QYZC0BurUyoI26KRLxEWfz7BT1WkTKdGln9XQj+21bbKcTWU5FdswTkyPLbGGfARa3gbWsvHVimPUlPOEt/SW7LYQCODLdiyL+SIffv0U//X6j+iV2CRM+LdaMa6FV/uONol3kF+A/EQq4DM41RU4LgJE6M4FV88hSW9/TUJWGaUuxL5/L7o/ivebYQhF9bO3h+hR2CNByMmIjCJr6HDtFMzZtLfkA/9O71rEd8cKcmANziXxWRrfApO7Lw8Fw==
 ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
  4.158.2.129) smtp.rcpttodomain=linux.ibm.com smtp.mailfrom=arm.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=arm.com;
@@ -32,18 +32,18 @@ ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
  dmarc=[1,1,header.from=arm.com])
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=214jEOHDvbqO65kJp7R9WvTe7aHGn+ywbFPey8CpPng=;
- b=enPJXwJauFv1oQ+Zsu+QSANwW3vkwSHO6idG1f9lavXYCMDiQj7zALU9r7ZrSNwB83ddazzAia7berLLBPNVREmY+i8jUOiFiAzFgVdPhUoiSCQgYnEuLgSz9qoiTNaXORSa7/hhnbz2uAkAxi6hltZwGxaaMH2YsrtnaxNGBH4=
-Received: from DU2PR04CA0029.eurprd04.prod.outlook.com (2603:10a6:10:3b::34)
- by VI0PR08MB10800.eurprd08.prod.outlook.com (2603:10a6:800:205::8) with
+ bh=MS1lmnXLC+3vPC4LjFRguif+C4PkJMlmWukiMTyIh2c=;
+ b=LbE4HoBxjfRtlY7c6ZHDXc95qdWRroP7GkPtXzaFqe+eQxYuiOQOAwMBr7zadR4TuTA5v2UTuXmiECUnpZtueKfuejTnnfUkBfLrYjyJgXAvWpK0ohfjKh71EC1IompC0jkrflMssKe0/wRqt9RdzegAqcf5Dc1XBW/fb9/q1tA=
+Received: from AS4P192CA0049.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:658::22)
+ by PAXPR08MB7442.eurprd08.prod.outlook.com (2603:10a6:102:2b8::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.23; Fri, 7 Aug
- 2026 15:24:43 +0000
-Received: from DU2PEPF00028D12.eurprd03.prod.outlook.com
- (2603:10a6:10:3b:cafe::3a) by DU2PR04CA0029.outlook.office365.com
- (2603:10a6:10:3b::34) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.292.21 via Frontend Transport; Fri, 7
- Aug 2026 15:24:43 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.16; Fri, 7 Aug
+ 2026 16:26:44 +0000
+Received: from AMS0EPF00000199.eurprd05.prod.outlook.com
+ (2603:10a6:20b:658:cafe::5) by AS4P192CA0049.outlook.office365.com
+ (2603:10a6:20b:658::22) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.292.23 via Frontend Transport; Fri, 7
+ Aug 2026 16:26:44 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 4.158.2.129)
  smtp.mailfrom=arm.com; dkim=pass (signature was verified)
  header.d=arm.com;dmarc=pass action=none header.from=arm.com;
@@ -51,36 +51,36 @@ Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
  4.158.2.129 as permitted sender) receiver=protection.outlook.com;
  client-ip=4.158.2.129; helo=outbound-uk1.az.dlp.m.darktrace.com; pr=C
 Received: from outbound-uk1.az.dlp.m.darktrace.com (4.158.2.129) by
- DU2PEPF00028D12.mail.protection.outlook.com (10.167.242.26) with Microsoft
+ AMS0EPF00000199.mail.protection.outlook.com (10.167.16.245) with Microsoft
  SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.315.6
- via Frontend Transport; Fri, 7 Aug 2026 15:24:42 +0000
+ via Frontend Transport; Fri, 7 Aug 2026 16:26:44 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=nyb2Zb/LWU68b4QGwWAhlcQocb72STHW3uhfNyJ/g64lELJLAmSW96qAz/OMx/oWcaZqLK49ey50C0zOyinM7uz2f7t/rswIfJA3on937Xr6rhZb33gq8yhF4bo6zdBOVTLTTmBkHDZqbrhB1LfT98VZ4UuY+vRsvJGn47rpYM2oVFn7z917NcM2U9kmEetzF9c++WTMl6VCBZgLdoLH5eaGhWUVZSpGlwrGUhQRbJUXUyod4ZZbXfyj0kyvcfN7N4KwVdsxEpfT0a5ugq9b0gRmqdJdpiXUKBiRnGKrU20+fpbtbBQlvm3ws17MFXcdqwsLv/8+HoZLqlMT5UlyGA==
+ b=FBDF7vggKyg/P39qymfNUnPXNLSQX3uZtATlVOwaLtC8TwntOHJPr284gwOOE6pZfD9pmyFHAa1UmVfQW8bWlKsBhgNU/ouiGX+26VsQpjWXWZ03OJBCOzmApMN/ySTKE8mQDBvgdWMFtoxsru3C01DYlr7vL3iyKVBB5c54bw0QQucf/VJGVkwhwn0z/NmQitzGga1XjI0FH3FYglUvWzdpCvBaLvOiejWwJW7tBPnR8nOSG9qg1A/4DhkmlwKTNOGQjqPvIBUIIUSuFkWtbpulF3P6v2SWp5fzB49KalXQ7i7JhAcvUoHoajLSseZYDQIz+xv6ilzZFCFfYm3ztg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=214jEOHDvbqO65kJp7R9WvTe7aHGn+ywbFPey8CpPng=;
- b=Iq5uLCPRY95NgPG05ec3/v2umI3pqGev6OJlMs7JnoSZa/9RU2leY3JSX/bYvrQkD0I7P1+cm78rMIHmjbqvjBW7B9mXVoMfVYbF+opAu4V+XE2BHctMeSKfr2XeJY44FM3zl1dqPfSUlfEMG+B6CiPQfIIlotdibkE9UBosH1EJPtygjT0yjeDg+eI5L/m71FQd9x8g57J2U6XhfKwPEIWMwIrh1riSh2LF+rAZ7E22DOaKucwUf1CTatrBeX0rJ5Q5DU7hX6WqB6NmLRg7PAqNEZZ6AHGC1dUBwtSis4KZ/YYk69flyBa7kLy0fsZiiWBcyjtBZR0lPz6uPGvmLA==
+ bh=MS1lmnXLC+3vPC4LjFRguif+C4PkJMlmWukiMTyIh2c=;
+ b=RvoYgMTkY2CEpoffjFhgvcG6DOqoHwEYbJ3Ie40Y2aRdAowA7ORsQl6ZnFxPWEiRodcf+LQDB5UOCktktQ+uxJAXXkH3XltD1V1wzgI2rtyhQsrVcO8xIqGBAnRZ+pnWcT0zs6U3BkS0mNhhnOV96LiBzjqE7VbRskZWsDvkN+P1KzSRZcbvzKEh42wx0U5sjamKWFkxFTgC6XqVLLTJ//iITABk8mNNNio7hfW87kMwg27jLdrB+/9eJLsIyVTVEgYOvUXJ1zW80G/r81Ak3LDbRkKk/TMVrZf9o1etFK7qrsmJCJNLp2hUG362ZxNhsBXDxRQjMohSfbormJVZnQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
  header.d=arm.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=214jEOHDvbqO65kJp7R9WvTe7aHGn+ywbFPey8CpPng=;
- b=enPJXwJauFv1oQ+Zsu+QSANwW3vkwSHO6idG1f9lavXYCMDiQj7zALU9r7ZrSNwB83ddazzAia7berLLBPNVREmY+i8jUOiFiAzFgVdPhUoiSCQgYnEuLgSz9qoiTNaXORSa7/hhnbz2uAkAxi6hltZwGxaaMH2YsrtnaxNGBH4=
+ bh=MS1lmnXLC+3vPC4LjFRguif+C4PkJMlmWukiMTyIh2c=;
+ b=LbE4HoBxjfRtlY7c6ZHDXc95qdWRroP7GkPtXzaFqe+eQxYuiOQOAwMBr7zadR4TuTA5v2UTuXmiECUnpZtueKfuejTnnfUkBfLrYjyJgXAvWpK0ohfjKh71EC1IompC0jkrflMssKe0/wRqt9RdzegAqcf5Dc1XBW/fb9/q1tA=
 Authentication-Results-Original: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=arm.com;
 Received: from VI1PR08MB3421.eurprd08.prod.outlook.com (2603:10a6:803:80::16)
- by DU0PR08MB10360.eurprd08.prod.outlook.com (2603:10a6:10:417::16) with
+ by VI0PR08MB10655.eurprd08.prod.outlook.com (2603:10a6:800:209::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.23; Fri, 7 Aug
- 2026 15:24:04 +0000
+ 2026 16:26:07 +0000
 Received: from VI1PR08MB3421.eurprd08.prod.outlook.com
  ([fe80::e079:6bd:fbe0:89b4]) by VI1PR08MB3421.eurprd08.prod.outlook.com
  ([fe80::e079:6bd:fbe0:89b4%3]) with mapi id 15.21.0292.018; Fri, 7 Aug 2026
- 15:24:03 +0000
-Message-ID: <eef14e97-20cd-4b08-ae22-7636af049b09@arm.com>
-Date: Fri, 7 Aug 2026 16:24:00 +0100
+ 16:26:07 +0000
+Message-ID: <5c329236-7761-4e42-a549-b822e43b4358@arm.com>
+Date: Fri, 7 Aug 2026 17:26:04 +0100
 User-Agent: Mozilla Thunderbird
 Cc: usama.anjum@arm.com, Jani Nikula <jani.nikula@linux.intel.com>,
  Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
@@ -120,18 +120,18 @@ Cc: usama.anjum@arm.com, Jani Nikula <jani.nikula@linux.intel.com>,
  linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
  kasan-dev@googlegroups.com, linux-trace-kernel@vger.kernel.org,
  bpf@vger.kernel.org, linux-perf-users@vger.kernel.org, damon@lists.linux.dev
-Subject: Re: [PATCH 1/9] mm: introduce hw_pte_t for PTE table storage
+Subject: Re: [PATCH 6/9] mm: convert PTE table entry to pte
 To: Alexander Gordeev <agordeev@linux.ibm.com>
 References: <20260806083926.1807279-1-usama.anjum@arm.com>
- <20260806083926.1807279-2-usama.anjum@arm.com>
- <3db8233c-3785-444e-b2eb-3e5fc5cb2f17-agordeev@linux.ibm.com>
+ <20260806083926.1807279-7-usama.anjum@arm.com>
+ <fab9fc78-1e1d-4d5b-a9ca-92f3ebd04108-agordeev@linux.ibm.com>
 From: Muhammad Usama Anjum <usama.anjum@arm.com>
 Content-Language: en-US
-In-Reply-To: <3db8233c-3785-444e-b2eb-3e5fc5cb2f17-agordeev@linux.ibm.com>
+In-Reply-To: <fab9fc78-1e1d-4d5b-a9ca-92f3ebd04108-agordeev@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0612.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:314::6) To VI1PR08MB3421.eurprd08.prod.outlook.com
+X-ClientProxiedBy: LO4P123CA0420.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18b::11) To VI1PR08MB3421.eurprd08.prod.outlook.com
  (2603:10a6:803:80::16)
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
@@ -140,144 +140,108 @@ List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-TrafficTypeDiagnostic:
-	VI1PR08MB3421:EE_|DU0PR08MB10360:EE_|DU2PEPF00028D12:EE_|VI0PR08MB10800:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7b1f1875-57fb-491d-136b-08def4980165
+	VI1PR08MB3421:EE_|VI0PR08MB10655:EE_|AMS0EPF00000199:EE_|PAXPR08MB7442:EE_
+X-MS-Office365-Filtering-Correlation-Id: 18b46daa-e409-4390-8a75-08def4a0abaf
 x-checkrecipientrouted: true
 NoDisclaimer: true
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam-Untrusted:
- BCL:0;ARA:13230040|23010399003|366016|1800799024|376014|7416014|22082099003|18002099003|56012099006|4143699003|11063799006|10067099003|6133799003;
+ BCL:0;ARA:13230040|366016|1800799024|7416014|376014|23010399003|18002099003|22082099003|4143699003|11063799006|56012099006|3023799007|10067099003;
 X-Microsoft-Antispam-Message-Info-Original:
- 2t3nqJ+jv2XLoMl6etGaV134C/dZQIRkfbXAbpMvG3W60rxh9JNS7vnG7JumwZOuXshH8/Khuk3XFmNjAOvraHt1FiMxY6SDqUc2bwJ7gjYZ8RtOPYKcClF0QM+zYRhnM2CHCrpr7hoXmeUcNK1NloD1WpyVejEgA1J4jgFzdItq9u6OyZXdImufdWj+LEBGS6IBmv+6/BB4ye4g2SKWQIknvPuEDBuj1QJcOVK16BBecyhY/ujuWGSnNHP185oWRvXeO9VonLi2CbWPODWWJ6+GNA1EHlmq0Q4ZqO2p+w3c5VO7/ibcU56cA9Zm1BPAr5gV3dSiIY5gBrrO0GhJM/Nz6RG84n0RW8uE6xU5lIhiU0aD67U5Nv3EgUz3WjaosLO/zSgKYoBUWVByOz+9Priy7ZB1ksCjLvXt3lJinMQPrFeYsVK6CNwe9nME7chQkisUZPHEKJn9+l8p6tsQWo4cFJaBq/z/0EYkPFoVR0A8yv0iaX3Wc+ux7aTJ/42G09Rj3Dead4InmbspUi+Ht3U8qdwytMOXQUE/LL9p10Moqf0AmvqZoPncIsUwaQ4XpIbvzZ39tWHKbpiuDcdyBJ5WqoGT7NG2PDYTvLuVLzk29GuoAKjCGC+s6nyChN0n+dYaspSn0T4UGPXwMasE55ULyoI/4NgyGnNil4b9eEY=
+ 1mEC+1GW7muqv9YRUa+5/AFrrrerVojSEnd0ecaTJkfa3ovLhwzSUtq/5/iXk3EltNs1VIgCRf8Zh7GTAr6czHLzj1LlHiHnMTDT5Dcb24wAlC09Mw+6D5YHPspvL2sx1EVI20obl2sTrjQoXjDCgA7aBVp0HoJDluRDuV7/B58aAjYrXiLYtdilyVB/c4ILJZct9XSAPErba2JDglH3GKJD4ype/UD4mcHzequXHk1JMOE06O16tguwAUEIG0u+MJ8ggTWNqgYTzNOd6MVIq6sd2hHoWdX2Y2qjuTpQTX+YA2OBeZDzPK349/Ui6sl0RztQtbMC3yY/MuAf8RC0UbnnCeYg8DCCD41dNdhUatK+JRo5T3IK1KmdaqJIqc1SsTX08C88FG2Lg8b1iyt7B2jUsYSIVllojrtRN+9N6ntm73XxGeP7W/EKk2HijMVLt/zJ00cBPF+s6ehrAwUuLcXR3bFWdCxqikr9Hu5qgLqNLiBeQyU9LZ3Rn0uE/AjKJr7KxBolhiCVsfoUtLoROh7bFHlrC6EFaGGtVgi1y6ZHnr30Pd2XXuuZe89Ym83TMhdg1ihZmFB2EXbHj6gKjLziMPVkfqXTj4k6Xt+iMxg68NNxRNU+gVap/tVp0ZnjQsNUaocWwqx1SokpwWWnu8VdsKL2mjWzZqYQVxBsrn0=
 X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR08MB3421.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(366016)(1800799024)(376014)(7416014)(22082099003)(18002099003)(56012099006)(4143699003)(11063799006)(10067099003)(6133799003);DIR:OUT;SFP:1101;
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR08MB3421.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(23010399003)(18002099003)(22082099003)(4143699003)(11063799006)(56012099006)(3023799007)(10067099003);DIR:OUT;SFP:1101;
 X-Exchange-RoutingPolicyChecked:
- dlDyhQkPRofMsLRSwwlNt05buGPmBxT0qhTwS66CFq8RqMH9JnrYeuRl/dIwLMTa3S0/tZc6rtzklCAqGaMnZaEqdUOy9ty+kky5eI4h+1Wf1WKIT0YHlFeHr0vRqQZTfCnso0G6QzigOOedxx6gMxysMT0bK0ziCJd0J1RyfKzdTW8odKVbcKEuWC5tBK5BP8pSTpUvb9bqjJt22KWmnNAWz2ZwHUnOCAJKWRrFwk8vXvlbNdJcHpB5C7uykx7jnsyv/KXKYdJZ+mj0wHCvlqXKkXG1OQs27M0t8YC/n8p+GVaGFyr5QH2Su5t2Nu/Vrv2mfXu8Eux58avYedux6w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR08MB10360
+ dn/YewereVVzC5A5tIWzHJtVSWhBYpgpDSi5ALQzfsiowfVbPFqVXI1S32+w2Gf3hBalkT4ScA+EB4sUwudcOtIJhjhR9aueBLUTgRnHXPmr0dbhEUDZJ+v2rrucvP3u7iERclCslQl2A5NyoZhvKU3h4jrT3J9OorOozCFUP/qcN/HdbFVtvnLxCOyew+JGCZ6WkqiuZJrWgmbPl2r9U72xSp7bx/EmXd8DnNf3SnfIcujY2BMitEtNTLz7u55xSDP2vPsc11Dyxs/oe8ZFQ05c4AHjsCyEnqkcV8VIhBM96NYmH5IBO7uCDB0P5KyPkh6gWTBXXIEFZ97AzZVXsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR08MB10655
 X-EOPAttributedMessage: 0
 X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- DU2PEPF00028D12.eurprd03.prod.outlook.com
+ AMS0EPF00000199.eurprd05.prod.outlook.com
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	78010af5-117a-4010-9bc3-08def497e9d7
+	0a4a3d81-f480-4118-d51a-08def4a09582
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|23010399003|82310400026|35042699022|14060799003|376014|7416014|1800799024|36860700016|4143699003|10067099003|11063799006|56012099006|6133799003|22082099003|18002099003;
+	BCL:0;ARA:13230040|14060799003|7416014|82310400026|23010399003|376014|35042699022|1800799024|36860700016|13003099007|10067099003|11063799006|56012099006|4143699003|3023799007|18002099003|22082099003;
 X-Microsoft-Antispam-Message-Info:
-	x2l+m/+TZiN5WDcR3BKopXymxFpy1n/w8zewuFb2y9Ds335w4O4Ipg3KOXg2n4Xh8Z6ZlmT7QUcRkLaff92m3Ne0kmAudKqF1i7KCM0DsFpx3DuUqfjaP7aF7OmXLIxPwJDeNR1W4aFtqQsMzj6mGeLYmKeqqcSPNPzag2ub2GOj2/bK/1pDOYTo1K/k4bk0vhAynOwzYNa1Nx7/1WC7PI3jL/TJiYXFCp8dpLng+J/aNdOXoAm/RLQNmFW4ljg84owYqlCIOCcbCANBBRVgveRdJU0JPGD82Od0h/a0+Oq0aW9pFkmA0o2dCO+bzsekY0s+7XFX1ZHLlI1HQN6ViBp6bPK1ybVXLSu1PwTi4Vv4eNXkBTJx5fk3hzwhU3PHuJhxB8mxgL9ZTTpSgQzsxo0vJKN+HlDTJEuEoUX6pfOPCHlhyvD80zyfKVHQsdUVjHubTkpPRxB7j+LSyo5f9JriQn5T2mpl7uwyUXioFUweqjQAZskVMuoQcyTxNU0O/sqBdp2Ce9+PHxvT6pLO2MVwmDJigEVSUruzu7+RQG81CMOio5AB+p4ZhsqB7FVhLbsM5WPYVMbMbGTGhrHYk4RU/s8FcW61yPwCV/Jr+M0S2432PHauUfoUr4fKduq/SZoY6dd/CSw7MzOR563j+j2GQhVfmsDKgWE1s4d62IKk5MiyhpQkdB08qiAYJIzxAsYqQudlQv3BkGSoxsFW4w==
+	3ee23sDBvCMpGWS4TDHQCLYyUuSwv+AYpmfNHpcECbYwo+er0pcuW0YBJ/JGlzMVJsYwX+sABSXsOIooXGv1Z0M+CPTlgjlg8l/Ty/wmwVr9lgrVojIjexEIkm6+ajX+jCaGQkEO1zUJo0wXkMoWdebOCQaVpddKqpa301BXJrr6TFCTFHFnP4U3N8xqK/Yw3VDWz/HR+Tmja6qer8yUgdSzdJJOcu3WoyKS89aiOVle25K9alBtrNPHYoQoWKJ06NlFBf751x6aeo652mwomwBFkHSiU2zKXMeAFWuaxSYXq1glMto7hAF/gOGGTL2KsodAfMs/ljrXF2CelpRYmy7dwl871eDCtbhP7HZoQm95AyQDVHiuS6igbUrWVHInoFmIcSSYQ/pKGROsSzIS9uHKiT7mjVo4I+Jt8RhdN6Qu7v9+iowjNrvL73d5s7jF/NcJvL+dVY88XcquKU700NMF0mYZsemFR7s3WLsgCe9H7NzHlwj0UTfVbvv+b/p3fSGye2GK0W+Cf5h6XQwGCOInM1gxaeD2SAmf6gEEMx0eI5VC946Ussig+Y5WXGfBzdXeBSVELZFMUB3Mrj0zZ87rzh8sgxNwXrn0iQFJEUDkZkzpkge9bwfairbgtuVQtzayx75zCTl1VV7FA1Sk9FfxIDz8ceClCSD8heLSBoia02CVnceaJ5LQ/HpxSzWGxbG6EIome9u0k4ClWpNNmw==
 X-Forefront-Antispam-Report:
-	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(23010399003)(82310400026)(35042699022)(14060799003)(376014)(7416014)(1800799024)(36860700016)(4143699003)(10067099003)(11063799006)(56012099006)(6133799003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(14060799003)(7416014)(82310400026)(23010399003)(376014)(35042699022)(1800799024)(36860700016)(13003099007)(10067099003)(11063799006)(56012099006)(4143699003)(3023799007)(18002099003)(22082099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	g6sLusA9X41u1ejA18zr5/0Hh+oxjNblxuqvfooYrhKJWuytwsqkYM4RBDsVD6JUPG5ejrRcqnr5/e7tppZJbWyjdo7t0o+y6z68tsoif+F1MBaBmgNHyyctH3CIoA/SkECaXcG16VOwlN9BPUQ0jemKU5fquWEAgHzOiZRFYVgG6EPWjni/TQvwedDSSGb8Razw3w014ZbBUH6R3/c0wWm24LvnYzQv+O7tSwf+LD8ovZuboPDpk0K2qUMKcAzXRFN5Agl8K8bfESJXk4tJL+oyf7av+q6WK2Br07wYwX8iCuY6olsVmayuluAaae4jxdx6l7Rfd0Sxs1FZSgFIEBdpvTlmClNis1jG6i1BiVLn1AWIPxbDqedfdPJx2hH9vhU5ko2RaVILr1JHK4cc51ZlbJ7gAPev9zfv7mGajHlpjSLdLi8QeNSS211id+sa
+	d+88svJ5Haq6WSE5QYn4CZJyPMiUwhrt6t1V2RHk3Ee1c9prJyx4tb+QtGTj3UbgmutI/PnhCtEHsr35ZeMYJIjsJ1kttUusNFj9C44KxueqFhTUJy1pVRJjR7gJbqZb0XMMkZZBV8qaszUzoOYuG3Fmn74WxXMTHpIniau7xxMzQqqH+IEnWJ+LM/afEF7mm1UuFtpi61Es1j6qU/6DdzZefnT+s7uMDbLXE75755Yr3IgrwazWn4HlBUcwVZSyzmwFVXX+7IB10zw772A9Uc0UPJ5QKASwy6/zQ3PJ05eo7i0EfLOboN8P005OBeG3KiQdN6k/85+GF3+NgIOzozCldvxfEbHC+2lhiRP1hysiIPiJVK+xNnkfisRuPDTC/zUrbgJfQU3UTvywsjWWCl89sfVDR1zg4iJA8cEZxL45be/o2DGrtvgTNcV8TyCA
 X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2026 15:24:42.8031
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2026 16:26:44.4840
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b1f1875-57fb-491d-136b-08def4980165
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18b46daa-e409-4390-8a75-08def4a0abaf
 X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[4.158.2.129];Helo=[outbound-uk1.az.dlp.m.darktrace.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DU2PEPF00028D12.eurprd03.prod.outlook.com
+	AMS0EPF00000199.eurprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR08MB10800
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR08MB7442
 
-On 07/08/2026 8:09 am, Alexander Gordeev wrote:
-> On Thu, Aug 06, 2026 at 09:38:39AM +0100, Muhammad Usama Anjum wrote:
->> pte_t is used both for logical PTE values and for entries stored in a PTE
->> table, so pte_t * does not distinguish a pointer to a copied value from a
->> pointer to table storage.
->>
->> Introduce hw_pte_t as the generic name for a PTE table element. Define it
->> as a macro alias of pte_t by default. When an architecture selects
->> ARCH_HAS_HW_PTE_T, define it as a structure containing a pte_t instead.
->> This preserves the representation while allowing converted architectures
->> to enforce the distinction at compile time.
->>
->> Keep the C type definitions behind an __ASSEMBLY__ check because
->> architecture assembly sources can include this header indirectly. Include
->> asm/page.h so consumers such as linux/vmalloc.h retain the page definitions
->> they previously obtained from that header.
+On 07/08/2026 7:58 am, Alexander Gordeev wrote:
+> On Thu, Aug 06, 2026 at 09:38:44AM +0100, Muhammad Usama Anjum wrote:
+>> The non-MMU stub receives hw_pte_t but returns a logical pte_t
+>> value. Convert the stored entry through __pte_from_hw() before
+>> returning.
 >>
 >> Signed-off-by: Muhammad Usama Anjum <usama.anjum@arm.com>
 >> ---
->> Changes since RFC v1:
->> - Add the ARCH_HAS_HW_PTE_T opt-in and generic wrapper definition.
->> - Exclude the C type definitions from assembly sources.
->> - Update the description for the new opt-in model.
->> ---
->>  MAINTAINERS                   |  1 +
->>  include/linux/pgtable_types.h | 17 +++++++++++++++++
->>  mm/Kconfig                    |  3 +++
->>  3 files changed, 21 insertions(+)
->>  create mode 100644 include/linux/pgtable_types.h
+>>  include/linux/hugetlb.h | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
 >>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index e9c8567308a75..7169bea968cf5 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -16982,6 +16982,7 @@ F:	include/linux/mmu_notifier.h
->>  F:	include/linux/pagewalk.h
->>  F:	include/linux/pgalloc.h
->>  F:	include/linux/pgtable.h
->> +F:	include/linux/pgtable_types.h
->>  F:	include/linux/ptdump.h
->>  F:	include/linux/vmpressure.h
->>  F:	include/linux/vmstat.h
->> diff --git a/include/linux/pgtable_types.h b/include/linux/pgtable_types.h
->> new file mode 100644
->> index 0000000000000..70c3edd00a01b
->> --- /dev/null
->> +++ b/include/linux/pgtable_types.h
->> @@ -0,0 +1,17 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef _LINUX_PGTABLE_TYPES_H
->> +#define _LINUX_PGTABLE_TYPES_H
->> +
->> +#include <asm/page.h>
->> +
->> +#ifndef __ASSEMBLY__
->> +
->> +#ifdef CONFIG_ARCH_HAS_HW_PTE_T
->> +typedef struct { pte_t __pte; } hw_pte_t;
+>> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+>> index bc0b9c65aa1d0..9e8b391aa4bc9 100644
+>> --- a/include/linux/hugetlb.h
+>> +++ b/include/linux/hugetlb.h
+>> @@ -1283,7 +1283,7 @@ static inline pte_t huge_ptep_clear_flush(struct vm_area_struct *vma,
+>>  #ifdef CONFIG_MMU
+>>  	return ptep_get(ptep);
+>>  #else
+>> -	return *ptep;
+>> +	return __pte_from_hw(*ptep);
 > 
-> On s390 it fails to compile once we do typedef hw_pte_t *pgtable_t
-> in asm/page.h. m68k, powerpc and sparc may also have such problem.
-> 
-> The below declaration helps to resolve it using forward declaration
-> and without meddling with headers, though I do not like it much:
-> 
-> typedef struct __hw_pte_t { pte_t __pte; } hw_pte_t;
-Thank you for testing it out on s390.
+> But this is a direct dereferencing, which breaks the whole point, isn't it?
+Yes, this is particular line is for non MMU. In this case, CONIFG_ARCH_HAS_HW_PTE
+would never be defined. Hence hw_pte_t is just pte_t and direct dereference is
+allowed. I'd thought a lot about it; is better to leave direct dereference here
+or use some helper. Then used __pte_from_hw() was already being used in generic
+ptep_get().
 
-As __hw_pte_t isn't being used yet in this series, would s390 enablement
-patches add __hw_pte_t to this definition?
-
-This could have been avoided if each architecture defined its own hw_pte_t.
-But for now we are keeping the generic definition of hw_pte_t.
+There are only two users of __pte_from_hw() at this time. 
 
 > 
->> +#else
->> +#define hw_pte_t pte_t
->> +#endif
->> +
->> +#endif /* !__ASSEMBLY__ */
->> +
->> +#endif /* _LINUX_PGTABLE_TYPES_H */
->> diff --git a/mm/Kconfig b/mm/Kconfig
->> index 331daf7fcfab5..31ba9ebf4aafd 100644
->> --- a/mm/Kconfig
->> +++ b/mm/Kconfig
->> @@ -1316,6 +1316,9 @@ comment "GUP_TEST needs to have DEBUG_FS enabled"
->>  config GUP_GET_PXX_LOW_HIGH
->>  	bool
+> What about introducing something like pte_t ptep_get_sw(hw_pte_t *ptep)
+> to be used in exactly situations like this? With that the semantics of
+> hw_pte_t pointers becomes straightforward and closes the still ongoing
+> "storage vs lifetime" discussion:
+> 
+> hw_pte_t*     points to HW-formatted page table entries
+> 
+> ptep_get()    is used to obtain HW-linked/attached entries, and may wire
+>               extra code like [1] or [2]
+> 
+> ptep_get_sw() is used to obtain HW-unlinked/unattached entries and in
+>               most cases is just a direct dereference
+ptep_get_sw() or ptep_get_deref() is better name here?
+
+I thought __pte_from_hw() is ugly enough that if someone tries to use it
+wrongly, it'll be noticed pretty easily. I'm fine with any other name.
+
+> 
+> The caller should always know whether the entry is attached or not, so
+> confusions like [3] are avoided.
+> 
+> 1. https://lore.kernel.org/linux-mm/20260526-kpkeys-v8-21-eaaacdacc67c@arm.com/
+> 2. https://lore.kernel.org/linux-s390/650903a4-0dd9-4e6b-9d4b-3c32c5657236-agordeev@linux.ibm.com/
+> 3. https://lore.kernel.org/linux-s390/b44e071d-7c9d-4e7e-a84d-4af3499a5a05@arm.com/
+> 
+>>  #endif
+>>  }
 >>  
->> +config ARCH_HAS_HW_PTE_T
->> +	bool
->> +
->>  config DMAPOOL_TEST
->>  	tristate "Enable a module to run time tests on dma_pool"
->>  	depends on HAS_DMA
 >> -- 
 >> 2.47.3
 >>
