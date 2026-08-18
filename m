@@ -1,892 +1,215 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC3C3D9046;
-	Tue, 18 Aug 2026 04:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF988327BFA;
+	Tue, 18 Aug 2026 09:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787025685; cv=none; b=J8beqnjxZ3ze1LAMn5TBUE/dPjr83cD3A90ybHVsK4ExZL86VhDOyJU8yb8id7MREVfRS1PbsAEyz20bsRkPVJ+PJ/Pj/hVV2A1urF/p8z5SV/8hsx6TYoBLY81apQ1aWhcKAfnpZQmqLTba6HGlUT6QpxKQpyJosidHELElajc=
+	t=1787046428; cv=none; b=QRSfdTIrYzMnui774qdywavd0vkYonm866bHlnpLWSO7/B2tx0Bx+8fts/60DQcI9Sx448O7hp0VzpUUSzTJpykjFWRHY4grxttjufxn4jY7+PZxQ+5vugBEWRBIsGm+eQuSfL5+5228OuWP6ACukWBJ98DL6MY3oE/n5Flh/K4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787025685; c=relaxed/simple;
-	bh=VXkQ8gce3aT+k3tl+QfET7YmsboJlaat2XzK5kco1VI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jxeUlF6icyKTofIS3DILohvzB3lp4+gdu6Sn84+t0cFNyg8OgH0XX4jKpTPQ2MF/RYxNkVkKRDzCX3R5PcUAsoH+7rSUj8oAYi8jcYypz0M7AgYfYJJb+ZoV7Z6RrG9rT5t/nkqHGEwFPgaprRnDzjapcXW7czMM+262JhNrfJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=AJjXKuDa; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	s=arc-20240116; t=1787046428; c=relaxed/simple;
+	bh=Tj4yWRVyyTFv4ZVXXReDQpx7jgTdu22C5BzOB0JzV68=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=H6i33s20wjEnDT6OOMHGs1WqlF16s9f2vt/LMh3VZFiX/5IBJohq1P1Rc/dOC6oF9EdeZaXgArYqB5Eo/tNQVSqVGqzGDckJg0rToFmv/x1fQ+jXYbQujNmq3y7gXD/5RSDw8xtdVpdZrxobGiQrLhOnVE+/ZHnsTJqeI5q9s8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=jlLndzqv; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="AJjXKuDa"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A24DB1A2D;
-	Mon, 17 Aug 2026 21:01:11 -0700 (PDT)
-Received: from localhost (a085714.arm.com [10.164.19.28])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5608C3F66F;
-	Mon, 17 Aug 2026 21:01:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1787025675; bh=VXkQ8gce3aT+k3tl+QfET7YmsboJlaat2XzK5kco1VI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AJjXKuDaJBXLUB61GiMT8+O584oS9DF0aZ3No96tNnGPYRrlF7bxXzVbHjEYS4qVS
-	 EWbbv0FL0A3+toFIlGEo+RDODvBvOk8BgYpacdh1Cc8iuy4Ao5GJpT488lPhY5RfiK
-	 dbpTaN0b/35POAsvjMiYP+22FM9/9TZNcfVuTe9U=
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-To: linux-mm@kvack.org,
-	akpm@linux-foundation.org,
-	david@kernel.org
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	linux-alpha@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [RFC V3 8/8] mm: Drop pxd_ERROR()
-Date: Tue, 18 Aug 2026 09:30:41 +0530
-Message-ID: <20260818040041.1891769-9-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260818040041.1891769-1-anshuman.khandual@arm.com>
-References: <20260818040041.1891769-1-anshuman.khandual@arm.com>
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="jlLndzqv"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1787046415; x=1787651215; i=deller@gmx.de;
+	bh=qXchaRQrbLW7lziiTUC6VPhAZr97hE7dGAvF3KqJ+2w=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=jlLndzqvXDrlGSuXUjnHPebOZ6klOk+OnnLfSqSl8d8hV+hICnsSwBu+seD8BfI7
+	 ZDW2PevMGydRSNzYOS5JUCu/RcSZskj6B82UeK3/fClLpb38ZUgg7lGxNvNr/DYx4
+	 BnA1tNdLGlzCfKvE+NRHx4EciFp8UQwLqNr/I9k2dwXeam0yeeeF/qQyjXpA1koGE
+	 1Tn2yEgOMj5mfJrL+pCSz8m+fqByq+YIqSCDtBrv3/OhTwrXLK91KIFRRdZt9WnXM
+	 3sdcIWC0LU3crP7uHOPgxCMs3koLiP2JFQa+gC4xqu5Omngaq30T8F4glnSfBpRHi
+	 p8YW2tq7ERVavuqJ8A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M7sDg-1x1EDs3LWM-00G977; Tue, 18
+ Aug 2026 11:46:54 +0200
+Message-ID: <afa004cd-3228-49e4-87e9-93eb4bc47db7@gmx.de>
+Date: Tue, 18 Aug 2026 11:46:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] parisc: eisa: Fix infinite loop when parsing invalid IRQ
+ value
+To: Pei Xiao <xiaopei01@kylinos.cn>, James.Bottomley@HansenPartnership.com,
+ linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <53b759a86aafd200d7477675a77a0fae9dbf188f.1786937310.git.xiaopei01@kylinos.cn>
+Content-Language: en-US
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <53b759a86aafd200d7477675a77a0fae9dbf188f.1786937310.git.xiaopei01@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XXVtXfkpwsbs/iizLPqZsJZa2pS4PpWt8SvsFfAA5XTfnl1RC+l
+ ui5/em02zbfixDRDOCppiqbzltsgCUB7ylWND8ecgqikUby23E2Q92l2lncDw+8ID8iFrYY
+ x5NcBtA1iyXlVQeLGB9uxU7BDlehJ1ewPwqhdInneB+8lrFBMrqpfPuyj+NKTuKEVTWwK4a
+ m/GyuQXWp3C2zTl6iScGA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:FFGeJurgeCU=;0/ZFytCkcJCLWGh249Lhx3LZtkU
+ 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
 
-There are no more users left for any pxd_ERROR() either in generic MM or in
-the platform MM. Hence all these platform macros along with their generic
-fallback could be dropped across the tree.
+On 8/17/26 05:29, Pei Xiao wrote:
+> When an invalid value is passed via the "eisa_irq_edge=3D" kernel
+> command line parameter (e.g. "eisa_irq_edge=3D16,5"), eisa_irq_setup()
+> prints an error message and continues without advancing the current
+> position.  As a result the same invalid value is parsed again and
+> again, causing an infinite loop while the kernel boots.
+>=20
+> Advance to the next comma-separated entry, or stop parsing when there
+> is no next entry, before continuing so that the remaining entries are
+> processed normally.
+>=20
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Pei Xiao <xiaopei01@kylinos.cn>
+> ---
+>   drivers/parisc/eisa.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+applied.
 
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-snps-arc@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-csky@vger.kernel.org
-Cc: linux-hexagon@vger.kernel.org
-Cc: loongarch@lists.linux.dev
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-openrisc@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-riscv@lists.infradead.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: linux-arch@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-Changes in RFC V3
-
-- Moved ptrval_to_str() as header in a [PATCH 1/8]
-- Stopped using pxd_ERROR() in generic MM in [PATCH 2/8]
-- Dropped pxd_ERRO() macros from all platforms in this patch
-
- arch/alpha/include/asm/pgtable.h               |  7 -------
- arch/arc/include/asm/pgtable-levels.h          | 11 -----------
- arch/arm/include/asm/pgtable.h                 |  7 -------
- arch/arm/kernel/traps.c                        | 17 -----------------
- arch/arm64/include/asm/pgtable.h               | 15 ---------------
- arch/csky/include/asm/pgtable.h                |  4 ----
- arch/hexagon/include/asm/pgtable.h             |  3 ---
- arch/loongarch/include/asm/pgtable.h           | 11 -----------
- arch/m68k/include/asm/mcf_pgtable.h            |  6 ------
- arch/m68k/include/asm/motorola_pgtable.h       |  8 --------
- arch/m68k/include/asm/sun3_pgtable.h           |  7 -------
- arch/microblaze/include/asm/pgtable.h          |  7 -------
- arch/mips/include/asm/pgtable-32.h             | 10 ----------
- arch/mips/include/asm/pgtable-64.h             | 13 -------------
- arch/nios2/include/asm/pgtable.h               |  7 -------
- arch/openrisc/include/asm/pgtable.h            |  7 -------
- arch/parisc/include/asm/pgtable.h              |  9 ---------
- arch/powerpc/include/asm/book3s/32/pgtable.h   |  2 --
- arch/powerpc/include/asm/book3s/64/pgtable.h   |  7 -------
- arch/powerpc/include/asm/nohash/32/pgtable.h   |  2 --
- .../powerpc/include/asm/nohash/64/pgtable-4k.h |  3 ---
- arch/powerpc/include/asm/nohash/64/pgtable.h   |  5 -----
- arch/riscv/include/asm/pgtable-64.h            |  9 ---------
- arch/riscv/include/asm/pgtable.h               |  4 ----
- arch/s390/include/asm/pgtable.h                | 11 -----------
- arch/sh/include/asm/pgtable-3level.h           |  3 ---
- arch/sh/include/asm/pgtable_32.h               |  8 --------
- arch/sparc/include/asm/pgtable_32.h            |  3 ---
- arch/sparc/include/asm/pgtable_64.h            | 10 ----------
- arch/um/include/asm/pgtable-2level.h           |  7 -------
- arch/um/include/asm/pgtable-4level.h           | 13 -------------
- arch/x86/include/asm/pgtable-2level.h          |  5 -----
- arch/x86/include/asm/pgtable-3level.h          | 11 -----------
- arch/x86/include/asm/pgtable_64.h              | 18 ------------------
- arch/xtensa/include/asm/pgtable.h              |  4 ----
- include/asm-generic/pgtable-nop4d.h            |  1 -
- include/asm-generic/pgtable-nopmd.h            |  1 -
- include/asm-generic/pgtable-nopud.h            |  1 -
- 38 files changed, 277 deletions(-)
-
-diff --git a/arch/alpha/include/asm/pgtable.h b/arch/alpha/include/asm/pgtable.h
-index 8e00cf9dc39d..7cac8241ee67 100644
---- a/arch/alpha/include/asm/pgtable.h
-+++ b/arch/alpha/include/asm/pgtable.h
-@@ -357,13 +357,6 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
- 	return pte;
- }
- 
--#define pte_ERROR(e) \
--	printk("%s:%d: bad pte %016lx.\n", __FILE__, __LINE__, pte_val(e))
--#define pmd_ERROR(e) \
--	printk("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
--#define pgd_ERROR(e) \
--	printk("%s:%d: bad pgd %016lx.\n", __FILE__, __LINE__, pgd_val(e))
--
- extern void paging_init(void);
- 
- /* We have our own get_unmapped_area */
-diff --git a/arch/arc/include/asm/pgtable-levels.h b/arch/arc/include/asm/pgtable-levels.h
-index c8f9273372c0..167b82fcfafe 100644
---- a/arch/arc/include/asm/pgtable-levels.h
-+++ b/arch/arc/include/asm/pgtable-levels.h
-@@ -98,8 +98,6 @@
- /*
-  * 1st level paging: pgd
-  */
--#define pgd_ERROR(e) \
--	pr_crit("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
- 
- #if CONFIG_PGTABLE_LEVELS > 3
- 
-@@ -115,9 +113,6 @@
- /*
-  * 2nd level paging: pud
-  */
--#define pud_ERROR(e) \
--	pr_crit("%s:%d: bad pud %08lx.\n", __FILE__, __LINE__, pud_val(e))
--
- #endif
- 
- #if CONFIG_PGTABLE_LEVELS > 2
-@@ -137,9 +132,6 @@
- /*
-  * 3rd level paging: pmd
-  */
--#define pmd_ERROR(e) \
--	pr_crit("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, pmd_val(e))
--
- #define pmd_pfn(pmd)		((pmd_val(pmd) & PMD_MASK) >> PAGE_SHIFT)
- #define pfn_pmd(pfn,prot)	__pmd(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
- 
-@@ -165,9 +157,6 @@
- /*
-  * 4th level paging: pte
-  */
--#define pte_ERROR(e) \
--	pr_crit("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
--
- #define PFN_PTE_SHIFT		PAGE_SHIFT
- #define pte_none(x)		(!pte_val(x))
- #define pte_present(x)		(pte_val(x) & _PAGE_PRESENT)
-diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
-index 982795cf4563..8dd17d20faa3 100644
---- a/arch/arm/include/asm/pgtable.h
-+++ b/arch/arm/include/asm/pgtable.h
-@@ -44,13 +44,6 @@
- #define LIBRARY_TEXT_START	0x0c000000
- 
- #ifndef __ASSEMBLY__
--extern void __pte_error(const char *file, int line, pte_t);
--extern void __pmd_error(const char *file, int line, pmd_t);
--extern void __pgd_error(const char *file, int line, pgd_t);
--
--#define pte_ERROR(pte)		__pte_error(__FILE__, __LINE__, pte)
--#define pmd_ERROR(pmd)		__pmd_error(__FILE__, __LINE__, pmd)
--#define pgd_ERROR(pgd)		__pgd_error(__FILE__, __LINE__, pgd)
- 
- /*
-  * This is the lowest virtual address we can permit any user space
-diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
-index afbd2ebe5c39..ad04c806cc9d 100644
---- a/arch/arm/kernel/traps.c
-+++ b/arch/arm/kernel/traps.c
-@@ -753,23 +753,6 @@ void __readwrite_bug(const char *fn)
- }
- EXPORT_SYMBOL(__readwrite_bug);
- 
--#ifdef CONFIG_MMU
--void __pte_error(const char *file, int line, pte_t pte)
--{
--	pr_err("%s:%d: bad pte %08llx.\n", file, line, (long long)pte_val(pte));
--}
--
--void __pmd_error(const char *file, int line, pmd_t pmd)
--{
--	pr_err("%s:%d: bad pmd %08llx.\n", file, line, (long long)pmd_val(pmd));
--}
--
--void __pgd_error(const char *file, int line, pgd_t pgd)
--{
--	pr_err("%s:%d: bad pgd %08llx.\n", file, line, (long long)pgd_val(pgd));
--}
--#endif
--
- asmlinkage void __div0(void)
- {
- 	pr_err("Division by zero in kernel.\n");
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 27689c62bd25..93557f52ae69 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -107,9 +107,6 @@ static inline void arch_leave_lazy_mmu_mode(void)
- 	__flush_tlb_range(vma, address, address + PMD_SIZE, PMD_SIZE, 2,	\
- 			  TLBF_NOBROADCAST | TLBF_NONOTIFY | TLBF_NOWALKCACHE)
- 
--#define pte_ERROR(e)	\
--	pr_err("%s:%d: bad pte %016llx.\n", __FILE__, __LINE__, pte_val(e))
--
- #ifdef CONFIG_ARM64_PA_BITS_52
- static inline phys_addr_t __pte_to_phys(pte_t pte)
- {
-@@ -865,9 +862,6 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
- 
- #if CONFIG_PGTABLE_LEVELS > 2
- 
--#define pmd_ERROR(e)	\
--	pr_err("%s:%d: bad pmd %016llx.\n", __FILE__, __LINE__, pmd_val(e))
--
- #define pud_none(pud)		(!pud_val(pud))
- #define pud_bad(pud)		((pud_val(pud) & PUD_TYPE_MASK) != \
- 				 PUD_TYPE_TABLE)
-@@ -959,9 +953,6 @@ static inline bool mm_pud_folded(const struct mm_struct *mm)
- }
- #define mm_pud_folded  mm_pud_folded
- 
--#define pud_ERROR(e)	\
--	pr_err("%s:%d: bad pud %016llx.\n", __FILE__, __LINE__, pud_val(e))
--
- #define p4d_none(p4d)		(pgtable_l4_enabled() && !p4d_val(p4d))
- #define p4d_bad(p4d)		(pgtable_l4_enabled() && \
- 				((p4d_val(p4d) & P4D_TYPE_MASK) != \
-@@ -1087,9 +1078,6 @@ static inline bool mm_p4d_folded(const struct mm_struct *mm)
- }
- #define mm_p4d_folded  mm_p4d_folded
- 
--#define p4d_ERROR(e)	\
--	pr_err("%s:%d: bad p4d %016llx.\n", __FILE__, __LINE__, p4d_val(e))
--
- #define pgd_none(pgd)		(pgtable_l5_enabled() && !pgd_val(pgd))
- #define pgd_bad(pgd)		(pgtable_l5_enabled() && \
- 				((pgd_val(pgd) & PGD_TYPE_MASK) != \
-@@ -1216,9 +1204,6 @@ p4d_t *p4d_offset_lockless_folded(pgd_t *pgdp, pgd_t pgd, unsigned long addr)
- 
- #endif  /* CONFIG_PGTABLE_LEVELS > 4 */
- 
--#define pgd_ERROR(e)	\
--	pr_err("%s:%d: bad pgd %016llx.\n", __FILE__, __LINE__, pgd_val(e))
--
- #define pgd_set_fixmap(addr)	((pgd_t *)set_fixmap_offset(FIX_PGD, addr))
- #define pgd_clear_fixmap()	clear_fixmap(FIX_PGD)
- 
-diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
-index bafcd5823531..5ca77ff89ef9 100644
---- a/arch/csky/include/asm/pgtable.h
-+++ b/arch/csky/include/asm/pgtable.h
-@@ -23,10 +23,6 @@
- #define PTRS_PER_PMD	1
- #define PTRS_PER_PTE	(PAGE_SIZE / sizeof(pte_t))
- 
--#define pte_ERROR(e) \
--	pr_err("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, (e).pte_low)
--#define pgd_ERROR(e) \
--	pr_err("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
- 
- #define PFN_PTE_SHIFT	PAGE_SHIFT
- #define pmd_pfn(pmd)	(pmd_phys(pmd) >> PAGE_SHIFT)
-diff --git a/arch/hexagon/include/asm/pgtable.h b/arch/hexagon/include/asm/pgtable.h
-index 27b269e2870d..2fdb27afe703 100644
---- a/arch/hexagon/include/asm/pgtable.h
-+++ b/arch/hexagon/include/asm/pgtable.h
-@@ -94,9 +94,6 @@
- #endif
- 
- /*  Any bigger and the PTE disappears.  */
--#define pgd_ERROR(e) \
--	printk(KERN_ERR "%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__,\
--		pgd_val(e))
- 
- /*
-  * Page Protection Constants. Includes (in this variant) cache attributes.
-diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
-index a32a8fff70c1..c575e29c0b48 100644
---- a/arch/loongarch/include/asm/pgtable.h
-+++ b/arch/loongarch/include/asm/pgtable.h
-@@ -128,17 +128,6 @@ struct vm_area_struct;
- #define ptep_get(ptep) READ_ONCE(*(ptep))
- #define pmdp_get(pmdp) READ_ONCE(*(pmdp))
- 
--#ifndef __PAGETABLE_PMD_FOLDED
--#define pmd_ERROR(e) \
--	pr_err("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
--#endif
--#ifndef __PAGETABLE_PUD_FOLDED
--#define pud_ERROR(e) \
--	pr_err("%s:%d: bad pud %016lx.\n", __FILE__, __LINE__, pud_val(e))
--#endif
--#define pgd_ERROR(e) \
--	pr_err("%s:%d: bad pgd %016lx.\n", __FILE__, __LINE__, pgd_val(e))
--
- extern pte_t invalid_pte_table[PTRS_PER_PTE];
- 
- #ifndef __PAGETABLE_PUD_FOLDED
-diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
-index 189bb7b1e663..f45a882238db 100644
---- a/arch/m68k/include/asm/mcf_pgtable.h
-+++ b/arch/m68k/include/asm/mcf_pgtable.h
-@@ -137,12 +137,6 @@ static inline int pmd_bad2(pmd_t *pmd) { return 0; }
- #define pmd_present(pmd) (!pmd_none2(&(pmd)))
- static inline void pmd_clear(pmd_t *pmdp) { pmd_val(*pmdp) = 0; }
- 
--#define pte_ERROR(e) \
--	printk(KERN_ERR "%s:%d: bad pte %08lx.\n",	\
--	__FILE__, __LINE__, pte_val(e))
--#define pgd_ERROR(e) \
--	printk(KERN_ERR "%s:%d: bad pgd %08lx.\n",	\
--	__FILE__, __LINE__, pgd_val(e))
- 
- /*
-  * The following only work if pte_present() is true.
-diff --git a/arch/m68k/include/asm/motorola_pgtable.h b/arch/m68k/include/asm/motorola_pgtable.h
-index dcf6829b3eab..d9393b310add 100644
---- a/arch/m68k/include/asm/motorola_pgtable.h
-+++ b/arch/m68k/include/asm/motorola_pgtable.h
-@@ -131,14 +131,6 @@ static inline void pud_set(pud_t *pudp, pmd_t *pmdp)
- #define pud_clear(pudp)		({ pud_val(*pudp) = 0; })
- #define pud_page(pud)		(mem_map + ((unsigned long)(__va(pud_val(pud)) - PAGE_OFFSET) >> PAGE_SHIFT))
- 
--#define pte_ERROR(e) \
--	printk("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
--#define pmd_ERROR(e) \
--	printk("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, pmd_val(e))
--#define pgd_ERROR(e) \
--	printk("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
--
--
- /*
-  * The following only work if pte_present() is true.
-  * Undefined behaviour if not..
-diff --git a/arch/m68k/include/asm/sun3_pgtable.h b/arch/m68k/include/asm/sun3_pgtable.h
-index 80ca185a18a1..704442a391fd 100644
---- a/arch/m68k/include/asm/sun3_pgtable.h
-+++ b/arch/m68k/include/asm/sun3_pgtable.h
-@@ -119,13 +119,6 @@ static inline int pmd_present2 (pmd_t *pmd) { return pmd_val (*pmd) & SUN3_PMD_V
- #define pmd_present(pmd) (!pmd_none2(&(pmd)))
- static inline void pmd_clear (pmd_t *pmdp) { pmd_val (*pmdp) = 0; }
- 
--
--#define pte_ERROR(e) \
--	pr_err("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
--#define pgd_ERROR(e) \
--	pr_err("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
--
--
- /*
-  * The following only work if pte_present() is true.
-  * Undefined behaviour if not...
-diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
-index 7678c040a2fd..72708f9af1c0 100644
---- a/arch/microblaze/include/asm/pgtable.h
-+++ b/arch/microblaze/include/asm/pgtable.h
-@@ -103,13 +103,6 @@ extern pte_t *va_to_pte(unsigned long address);
- #define USER_PGD_PTRS (PAGE_OFFSET >> PGDIR_SHIFT)
- #define KERNEL_PGD_PTRS (PTRS_PER_PGD-USER_PGD_PTRS)
- 
--#define pte_ERROR(e) \
--	printk(KERN_ERR "%s:%d: bad pte "PTE_FMT".\n", \
--		__FILE__, __LINE__, pte_val(e))
--#define pgd_ERROR(e) \
--	printk(KERN_ERR "%s:%d: bad pgd %08lx.\n", \
--		__FILE__, __LINE__, pgd_val(e))
--
- /*
-  * Bits in a linux-style PTE.  These match the bits in the
-  * (hardware-defined) PTE as closely as possible.
-diff --git a/arch/mips/include/asm/pgtable-32.h b/arch/mips/include/asm/pgtable-32.h
-index 92b7591aac2a..ef1001ab09c5 100644
---- a/arch/mips/include/asm/pgtable-32.h
-+++ b/arch/mips/include/asm/pgtable-32.h
-@@ -104,16 +104,6 @@ extern int add_temporary_entry(unsigned long entrylo0, unsigned long entrylo1,
- # define VMALLOC_END	(FIXADDR_START-2*PAGE_SIZE)
- #endif
- 
--#ifdef CONFIG_PHYS_ADDR_T_64BIT
--#define pte_ERROR(e) \
--	printk("%s:%d: bad pte %016Lx.\n", __FILE__, __LINE__, pte_val(e))
--#else
--#define pte_ERROR(e) \
--	printk("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
--#endif
--#define pgd_ERROR(e) \
--	printk("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
--
- extern void load_pgd(unsigned long pg_dir);
- 
- extern pte_t invalid_pte_table[PTRS_PER_PTE];
-diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
-index 6e854bb11f37..785fc37bab94 100644
---- a/arch/mips/include/asm/pgtable-64.h
-+++ b/arch/mips/include/asm/pgtable-64.h
-@@ -151,19 +151,6 @@
- #define MODULES_END	(FIXADDR_START-2*PAGE_SIZE)
- #endif
- 
--#define pte_ERROR(e) \
--	printk("%s:%d: bad pte %016lx.\n", __FILE__, __LINE__, pte_val(e))
--#ifndef __PAGETABLE_PMD_FOLDED
--#define pmd_ERROR(e) \
--	printk("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
--#endif
--#ifndef __PAGETABLE_PUD_FOLDED
--#define pud_ERROR(e) \
--	printk("%s:%d: bad pud %016lx.\n", __FILE__, __LINE__, pud_val(e))
--#endif
--#define pgd_ERROR(e) \
--	printk("%s:%d: bad pgd %016lx.\n", __FILE__, __LINE__, pgd_val(e))
--
- extern pte_t invalid_pte_table[PTRS_PER_PTE];
- 
- #ifndef __PAGETABLE_PUD_FOLDED
-diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pgtable.h
-index d389aa9ca57c..272707d48f1b 100644
---- a/arch/nios2/include/asm/pgtable.h
-+++ b/arch/nios2/include/asm/pgtable.h
-@@ -223,13 +223,6 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
- 	return pmd_val(pmd);
- }
- 
--#define pte_ERROR(e) \
--	pr_err("%s:%d: bad pte %08lx.\n", \
--		__FILE__, __LINE__, pte_val(e))
--#define pgd_ERROR(e) \
--	pr_err("%s:%d: bad pgd %08lx.\n", \
--		__FILE__, __LINE__, pgd_val(e))
--
- /*
-  * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
-  * are !pte_none() && !pte_present().
-diff --git a/arch/openrisc/include/asm/pgtable.h b/arch/openrisc/include/asm/pgtable.h
-index 6b89996d0b62..13afcc0bd863 100644
---- a/arch/openrisc/include/asm/pgtable.h
-+++ b/arch/openrisc/include/asm/pgtable.h
-@@ -338,13 +338,6 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
- #define pte_pfn(x)		((unsigned long)(((x).pte)) >> PAGE_SHIFT)
- #define pfn_pte(pfn, prot)  __pte((((pfn) << PAGE_SHIFT)) | pgprot_val(prot))
- 
--#define pte_ERROR(e) \
--	printk(KERN_ERR "%s:%d: bad pte %p(%08lx).\n", \
--	       __FILE__, __LINE__, &(e), pte_val(e))
--#define pgd_ERROR(e) \
--	printk(KERN_ERR "%s:%d: bad pgd %p(%08lx).\n", \
--	       __FILE__, __LINE__, &(e), pgd_val(e))
--
- extern pgd_t swapper_pg_dir[PTRS_PER_PGD]; /* defined in head.S */
- 
- struct vm_area_struct;
-diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
-index 467b8547ac8b..f6899375cb43 100644
---- a/arch/parisc/include/asm/pgtable.h
-+++ b/arch/parisc/include/asm/pgtable.h
-@@ -75,15 +75,6 @@ extern void __update_cache(pte_t pte);
- 
- #endif /* !__ASSEMBLER__ */
- 
--#define pte_ERROR(e) \
--	printk("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
--#if CONFIG_PGTABLE_LEVELS == 3
--#define pmd_ERROR(e) \
--	printk("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, (unsigned long)pmd_val(e))
--#endif
--#define pgd_ERROR(e) \
--	printk("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, (unsigned long)pgd_val(e))
--
- /* This is the size of the initially mapped kernel memory */
- #if defined(CONFIG_64BIT) || defined(CONFIG_KALLSYMS)
- #define KERNEL_INITIAL_ORDER	26	/* 1<<26 = 64MB */
-diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/include/asm/book3s/32/pgtable.h
-index e18a4fa282a1..835e84caee13 100644
---- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-@@ -203,8 +203,6 @@ void unmap_kernel_page(unsigned long va);
- /* Bits to mask out from a PGD to get to the PUD page */
- #define PGD_MASKED_BITS		0
- 
--#define pgd_ERROR(e) \
--	pr_err("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
- /*
-  * Bits in a linux-style PTE.  These match the bits in the
-  * (hardware-defined) PowerPC PTE as closely as possible.
-diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
-index e67e64ac6e8c..94ce6529652c 100644
---- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-@@ -991,13 +991,6 @@ static inline pmd_t *pud_pgtable(pud_t pud)
- 	return (pmd_t *)__va(pud_val(pud) & ~PUD_MASKED_BITS);
- }
- 
--#define pmd_ERROR(e) \
--	pr_err("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, pmd_val(e))
--#define pud_ERROR(e) \
--	pr_err("%s:%d: bad pud %08lx.\n", __FILE__, __LINE__, pud_val(e))
--#define pgd_ERROR(e) \
--	pr_err("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
--
- static inline int map_kernel_page(unsigned long ea, unsigned long pa, pgprot_t prot)
- {
- 	if (radix_enabled()) {
-diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
-index 496ecc65ac25..f17afde89fa1 100644
---- a/arch/powerpc/include/asm/nohash/32/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
-@@ -51,8 +51,6 @@
- 
- #define USER_PTRS_PER_PGD	(TASK_SIZE / PGDIR_SIZE)
- 
--#define pgd_ERROR(e) \
--	pr_err("%s:%d: bad pgd %08llx.\n", __FILE__, __LINE__, (unsigned long long)pgd_val(e))
- 
- /*
-  * This is the bottom of the PKMAP area with HIGHMEM or an arbitrary
-diff --git a/arch/powerpc/include/asm/nohash/64/pgtable-4k.h b/arch/powerpc/include/asm/nohash/64/pgtable-4k.h
-index fb6fa1d4e074..75cf3c331b92 100644
---- a/arch/powerpc/include/asm/nohash/64/pgtable-4k.h
-+++ b/arch/powerpc/include/asm/nohash/64/pgtable-4k.h
-@@ -82,9 +82,6 @@ extern struct page *p4d_page(p4d_t p4d);
- 
- #endif /* !__ASSEMBLER__ */
- 
--#define pud_ERROR(e) \
--	pr_err("%s:%d: bad pud %08lx.\n", __FILE__, __LINE__, pud_val(e))
--
- /*
-  * On all 4K setups, remap_4k_pfn() equates to remap_pfn_range() */
- #define remap_4k_pfn(vma, addr, pfn, prot)	\
-diff --git a/arch/powerpc/include/asm/nohash/64/pgtable.h b/arch/powerpc/include/asm/nohash/64/pgtable.h
-index 661eb3820d12..446dde8b6ead 100644
---- a/arch/powerpc/include/asm/nohash/64/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/64/pgtable.h
-@@ -159,11 +159,6 @@ static inline void huge_ptep_set_wrprotect(struct mm_struct *mm,
- 	__young;							\
- })
- 
--#define pmd_ERROR(e) \
--	pr_err("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, pmd_val(e))
--#define pgd_ERROR(e) \
--	pr_err("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
--
- /*
-  * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
-  * are !pte_none() && !pte_present().
-diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
-index 6e789fa58514..ae23182b572c 100644
---- a/arch/riscv/include/asm/pgtable-64.h
-+++ b/arch/riscv/include/asm/pgtable-64.h
-@@ -264,15 +264,6 @@ static inline unsigned long _pmd_pfn(pmd_t pmd)
- 	return __page_val_to_pfn(pmd_val(pmd));
- }
- 
--#define pmd_ERROR(e) \
--	pr_err("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
--
--#define pud_ERROR(e)   \
--	pr_err("%s:%d: bad pud %016lx.\n", __FILE__, __LINE__, pud_val(e))
--
--#define p4d_ERROR(e)   \
--	pr_err("%s:%d: bad p4d %016lx.\n", __FILE__, __LINE__, p4d_val(e))
--
- static inline void set_p4d(p4d_t *p4dp, p4d_t p4d)
- {
- 	if (pgtable_l4_enabled)
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index 5d5756bda82e..993a6505eb8f 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -559,10 +559,6 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- 	return __pte((pte_val(pte) & _PAGE_CHG_MASK) | newprot_val);
- }
- 
--#define pgd_ERROR(e) \
--	pr_err("%s:%d: bad pgd " PTE_FMT ".\n", __FILE__, __LINE__, pgd_val(e))
--
--
- /* Commit new configuration to MMU hardware */
- static inline void update_mmu_cache_range(struct vm_fault *vmf,
- 		struct vm_area_struct *vma, unsigned long address,
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index 859ce7c7d454..46b2a1adc2ae 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -68,17 +68,6 @@ extern unsigned long zero_page_mask;
- 
- /* TODO: s390 cannot support io_remap_pfn_range... */
- 
--#define pte_ERROR(e) \
--	pr_err("%s:%d: bad pte %016lx.\n", __FILE__, __LINE__, pte_val(e))
--#define pmd_ERROR(e) \
--	pr_err("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
--#define pud_ERROR(e) \
--	pr_err("%s:%d: bad pud %016lx.\n", __FILE__, __LINE__, pud_val(e))
--#define p4d_ERROR(e) \
--	pr_err("%s:%d: bad p4d %016lx.\n", __FILE__, __LINE__, p4d_val(e))
--#define pgd_ERROR(e) \
--	pr_err("%s:%d: bad pgd %016lx.\n", __FILE__, __LINE__, pgd_val(e))
--
- /*
-  * The vmalloc and module area will always be on the topmost area of the
-  * kernel mapping. 512GB are reserved for vmalloc by default.
-diff --git a/arch/sh/include/asm/pgtable-3level.h b/arch/sh/include/asm/pgtable-3level.h
-index d1ce73f3bd85..3f4d747f30f4 100644
---- a/arch/sh/include/asm/pgtable-3level.h
-+++ b/arch/sh/include/asm/pgtable-3level.h
-@@ -25,9 +25,6 @@
- 
- #define PTRS_PER_PMD	((1 << PGDIR_SHIFT) / PMD_SIZE)
- 
--#define pmd_ERROR(e) \
--	printk("%s:%d: bad pmd %016llx.\n", __FILE__, __LINE__, pmd_val(e))
--
- typedef union {
- 	struct {
- 		unsigned long pmd_low;
-diff --git a/arch/sh/include/asm/pgtable_32.h b/arch/sh/include/asm/pgtable_32.h
-index c8eb9a7a4c4c..cde1bf0c6734 100644
---- a/arch/sh/include/asm/pgtable_32.h
-+++ b/arch/sh/include/asm/pgtable_32.h
-@@ -400,14 +400,6 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
- #define pmd_pfn(pmd)		(__pa(pmd_val(pmd)) >> PAGE_SHIFT)
- #define pmd_page(pmd)		(virt_to_page(pmd_val(pmd)))
- 
--#ifdef CONFIG_X2TLB
--#define pgd_ERROR(e) \
--	printk("%s:%d: bad pgd %016llx.\n", __FILE__, __LINE__, pgd_val(e))
--#else
--#define pgd_ERROR(e) \
--	printk("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
--#endif
--
- /*
-  * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
-  * are !pte_none() && !pte_present().
-diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm/pgtable_32.h
-index f89b1250661d..5a5f54a090f5 100644
---- a/arch/sparc/include/asm/pgtable_32.h
-+++ b/arch/sparc/include/asm/pgtable_32.h
-@@ -40,9 +40,6 @@ void load_mmu(void);
- unsigned long calc_highpages(void);
- unsigned long __init bootmem_init(unsigned long *pages_avail);
- 
--#define pte_ERROR(e)   __builtin_trap()
--#define pmd_ERROR(e)   __builtin_trap()
--#define pgd_ERROR(e)   __builtin_trap()
- 
- #define PTRS_PER_PTE    	64
- #define PTRS_PER_PMD    	64
-diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
-index 74ede706fb32..9b0ac8722a46 100644
---- a/arch/sparc/include/asm/pgtable_64.h
-+++ b/arch/sparc/include/asm/pgtable_64.h
-@@ -96,16 +96,6 @@ bool kern_addr_valid(unsigned long addr);
- #define PTRS_PER_PUD	(1UL << PUD_BITS)
- #define PTRS_PER_PGD	(1UL << PGDIR_BITS)
- 
--#define pmd_ERROR(e)							\
--	pr_err("%s:%d: bad pmd %p(%016lx) seen at (%pS)\n",		\
--	       __FILE__, __LINE__, &(e), pmd_val(e), __builtin_return_address(0))
--#define pud_ERROR(e)							\
--	pr_err("%s:%d: bad pud %p(%016lx) seen at (%pS)\n",		\
--	       __FILE__, __LINE__, &(e), pud_val(e), __builtin_return_address(0))
--#define pgd_ERROR(e)							\
--	pr_err("%s:%d: bad pgd %p(%016lx) seen at (%pS)\n",		\
--	       __FILE__, __LINE__, &(e), pgd_val(e), __builtin_return_address(0))
--
- #endif /* !(__ASSEMBLER__) */
- 
- /* PTE bits which are the same in SUN4U and SUN4V format.  */
-diff --git a/arch/um/include/asm/pgtable-2level.h b/arch/um/include/asm/pgtable-2level.h
-index 14ec16f92ce4..fa625f5b5ef7 100644
---- a/arch/um/include/asm/pgtable-2level.h
-+++ b/arch/um/include/asm/pgtable-2level.h
-@@ -24,13 +24,6 @@
- #define USER_PTRS_PER_PGD ((TASK_SIZE + (PGDIR_SIZE - 1)) / PGDIR_SIZE)
- #define PTRS_PER_PGD	1024
- 
--#define pte_ERROR(e) \
--        printk("%s:%d: bad pte %p(%08lx).\n", __FILE__, __LINE__, &(e), \
--	       pte_val(e))
--#define pgd_ERROR(e) \
--        printk("%s:%d: bad pgd %p(%08lx).\n", __FILE__, __LINE__, &(e), \
--	       pgd_val(e))
--
- static inline int pgd_needsync(pgd_t pgd)	{ return 0; }
- static inline void pgd_mkuptodate(pgd_t pgd)	{ }
- 
-diff --git a/arch/um/include/asm/pgtable-4level.h b/arch/um/include/asm/pgtable-4level.h
-index 7a271b7b83d2..ff82f99c80fa 100644
---- a/arch/um/include/asm/pgtable-4level.h
-+++ b/arch/um/include/asm/pgtable-4level.h
-@@ -42,19 +42,6 @@
- 
- #define USER_PTRS_PER_PGD ((TASK_SIZE + (PGDIR_SIZE - 1)) / PGDIR_SIZE)
- 
--#define pte_ERROR(e) \
--        printk("%s:%d: bad pte %p(%016lx).\n", __FILE__, __LINE__, &(e), \
--	       pte_val(e))
--#define pmd_ERROR(e) \
--        printk("%s:%d: bad pmd %p(%016lx).\n", __FILE__, __LINE__, &(e), \
--	       pmd_val(e))
--#define pud_ERROR(e) \
--        printk("%s:%d: bad pud %p(%016lx).\n", __FILE__, __LINE__, &(e), \
--	       pud_val(e))
--#define pgd_ERROR(e) \
--        printk("%s:%d: bad pgd %p(%016lx).\n", __FILE__, __LINE__, &(e), \
--	       pgd_val(e))
--
- #define pud_none(x)	(!(pud_val(x) & ~_PAGE_NEEDSYNC))
- #define	pud_bad(x)	((pud_val(x) & (~PAGE_MASK & ~_PAGE_USER)) != _KERNPG_TABLE)
- #define pud_present(x)	(pud_val(x) & _PAGE_PRESENT)
-diff --git a/arch/x86/include/asm/pgtable-2level.h b/arch/x86/include/asm/pgtable-2level.h
-index e9482a11ac52..83427765cfbf 100644
---- a/arch/x86/include/asm/pgtable-2level.h
-+++ b/arch/x86/include/asm/pgtable-2level.h
-@@ -2,11 +2,6 @@
- #ifndef _ASM_X86_PGTABLE_2LEVEL_H
- #define _ASM_X86_PGTABLE_2LEVEL_H
- 
--#define pte_ERROR(e) \
--	pr_err("%s:%d: bad pte %08lx\n", __FILE__, __LINE__, (e).pte_low)
--#define pgd_ERROR(e) \
--	pr_err("%s:%d: bad pgd %08lx\n", __FILE__, __LINE__, pgd_val(e))
--
- /*
-  * Certain architectures need to do special things when PTEs
-  * within a page table are directly modified.  Thus, the following
-diff --git a/arch/x86/include/asm/pgtable-3level.h b/arch/x86/include/asm/pgtable-3level.h
-index dabafba957ea..d6729911e09a 100644
---- a/arch/x86/include/asm/pgtable-3level.h
-+++ b/arch/x86/include/asm/pgtable-3level.h
-@@ -8,17 +8,6 @@
-  *
-  * Copyright (C) 1999 Ingo Molnar <mingo@redhat.com>
-  */
--
--#define pte_ERROR(e)							\
--	pr_err("%s:%d: bad pte %p(%08lx%08lx)\n",			\
--	       __FILE__, __LINE__, &(e), (e).pte_high, (e).pte_low)
--#define pmd_ERROR(e)							\
--	pr_err("%s:%d: bad pmd %p(%016Lx)\n",				\
--	       __FILE__, __LINE__, &(e), pmd_val(e))
--#define pgd_ERROR(e)							\
--	pr_err("%s:%d: bad pgd %p(%016Lx)\n",				\
--	       __FILE__, __LINE__, &(e), pgd_val(e))
--
- #define pxx_xchg64(_pxx, _ptr, _val) ({					\
- 	_pxx##val_t *_p = (_pxx##val_t *)_ptr;				\
- 	_pxx##val_t _o = *_p;						\
-diff --git a/arch/x86/include/asm/pgtable_64.h b/arch/x86/include/asm/pgtable_64.h
-index ce45882ccd07..c861f3832bed 100644
---- a/arch/x86/include/asm/pgtable_64.h
-+++ b/arch/x86/include/asm/pgtable_64.h
-@@ -29,24 +29,6 @@ extern pgd_t init_top_pgt[];
- extern void paging_init(void);
- static inline void sync_initial_page_table(void) { }
- 
--#define pte_ERROR(e)					\
--	pr_err("%s:%d: bad pte %p(%016lx)\n",		\
--	       __FILE__, __LINE__, &(e), pte_val(e))
--#define pmd_ERROR(e)					\
--	pr_err("%s:%d: bad pmd %p(%016lx)\n",		\
--	       __FILE__, __LINE__, &(e), pmd_val(e))
--#define pud_ERROR(e)					\
--	pr_err("%s:%d: bad pud %p(%016lx)\n",		\
--	       __FILE__, __LINE__, &(e), pud_val(e))
--
--#define p4d_ERROR(e)					\
--	pr_err("%s:%d: bad p4d %p(%016lx)\n",		\
--	       __FILE__, __LINE__, &(e), p4d_val(e))
--
--#define pgd_ERROR(e)					\
--	pr_err("%s:%d: bad pgd %p(%016lx)\n",		\
--	       __FILE__, __LINE__, &(e), pgd_val(e))
--
- struct mm_struct;
- 
- #define mm_p4d_folded mm_p4d_folded
-diff --git a/arch/xtensa/include/asm/pgtable.h b/arch/xtensa/include/asm/pgtable.h
-index f00a879dc298..60fb67a99729 100644
---- a/arch/xtensa/include/asm/pgtable.h
-+++ b/arch/xtensa/include/asm/pgtable.h
-@@ -204,10 +204,6 @@
-  */
- #ifndef __ASSEMBLER__
- 
--#define pte_ERROR(e) \
--	printk("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
--#define pgd_ERROR(e) \
--	printk("%s:%d: bad pgd entry %08lx.\n", __FILE__, __LINE__, pgd_val(e))
- 
- #ifdef CONFIG_MMU
- extern pgd_t swapper_pg_dir[PAGE_SIZE/sizeof(pgd_t)];
-diff --git a/include/asm-generic/pgtable-nop4d.h b/include/asm-generic/pgtable-nop4d.h
-index 03b7dae47dd4..fbd032aa4315 100644
---- a/include/asm-generic/pgtable-nop4d.h
-+++ b/include/asm-generic/pgtable-nop4d.h
-@@ -22,7 +22,6 @@ static inline int pgd_none(pgd_t pgd)		{ return 0; }
- static inline int pgd_bad(pgd_t pgd)		{ return 0; }
- static inline int pgd_present(pgd_t pgd)	{ return 1; }
- static inline void pgd_clear(pgd_t *pgd)	{ }
--#define p4d_ERROR(p4d)				(pgd_ERROR((p4d).pgd))
- 
- #define pgd_populate(mm, pgd, p4d)		do { } while (0)
- #define pgd_populate_safe(mm, pgd, p4d)		do { } while (0)
-diff --git a/include/asm-generic/pgtable-nopmd.h b/include/asm-generic/pgtable-nopmd.h
-index 8ffd64e7a24c..d107a9f03b97 100644
---- a/include/asm-generic/pgtable-nopmd.h
-+++ b/include/asm-generic/pgtable-nopmd.h
-@@ -33,7 +33,6 @@ static inline int pud_present(pud_t pud)	{ return 1; }
- static inline int pud_user(pud_t pud)		{ return 0; }
- static inline int pud_leaf(pud_t pud)		{ return 0; }
- static inline void pud_clear(pud_t *pud)	{ }
--#define pmd_ERROR(pmd)				(pud_ERROR((pmd).pud))
- 
- #define pud_populate(mm, pmd, pte)		do { } while (0)
- 
-diff --git a/include/asm-generic/pgtable-nopud.h b/include/asm-generic/pgtable-nopud.h
-index eb70c6d7ceff..868218f3210c 100644
---- a/include/asm-generic/pgtable-nopud.h
-+++ b/include/asm-generic/pgtable-nopud.h
-@@ -29,7 +29,6 @@ static inline int p4d_none(p4d_t p4d)		{ return 0; }
- static inline int p4d_bad(p4d_t p4d)		{ return 0; }
- static inline int p4d_present(p4d_t p4d)	{ return 1; }
- static inline void p4d_clear(p4d_t *p4d)	{ }
--#define pud_ERROR(pud)				(p4d_ERROR((pud).p4d))
- 
- #define p4d_populate(mm, p4d, pud)		do { } while (0)
- #define p4d_populate_safe(mm, p4d, pud)		do { } while (0)
--- 
-2.43.0
-
+Thanks!
+Helge
