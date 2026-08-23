@@ -1,104 +1,63 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208E23176EE;
-	Sun, 23 Aug 2026 17:17:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB1A3AC0F6;
+	Sun, 23 Aug 2026 19:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787505468; cv=none; b=JVUH0c52CXtTxRl32ZD/A31CkFOTxIy2LIxQkExvPRq7sDa5iftkS/3r+qPQyWNExEcjYdpsmweeaCJK9nenGeJzES12w6d6IwqY16LG5zytm2Mkwo6B8852I5c7qR5qlCdqJaW/1ARSC+I/N+cc8jMd9tdVTjE9lIXyYywL360=
+	t=1787512827; cv=none; b=o56eU80Onw1WeBSnQIxLkg3CrTp+a5a1sv4L4Yhl5mQQMv+Ec8FCSEcf8xIhfFNB30EuhphloU0AosfVQPHGvMdeDdRJqWSvxw0avaOi+uiLm8QEyszw/OhaMF7hTas+gKaQah8YanozyojnAXgDapiNElbyT0LHudon5EgaZlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787505468; c=relaxed/simple;
-	bh=9EG5PtgBiVoddVATnsVdbL+9L6J3JuZMmqv7X0K2VQ4=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Gbyoe7l7m5wgLRscFDNXevxrdxX2bOXwbWpG8+y+PbgMFMU6ZKh3ZSAITGD9SufQuFf5BkihL/GgYoPUP/E+EQktXz5ABHUC6Q8dY8TSl6kSgahsWvdBp7qucMtPEnjZFgqZjz3vm8oX7GIj+XzrWiqEs5lG9w5L7T0aTumCrmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hm+Rvmwv; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1787512827; c=relaxed/simple;
+	bh=eudr1bGLK6mlwz6THZdmqUPtjjOx4jOH7emAAM+qAC8=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=I9uBE7hDdrIcJaxeigIPs1WL2WMPpUX58iNRzQjefoCqt3dmxMXhIriQ1AvYQ8qBsTnaYQ5T4su0JgNC9Z7nBFT1AyleBvYLq4RTlsobKL0/2KA8VMLx/8ezMNF49WnkYp3Aw37d5NKvMQAkp5H6A//2lf2JAIPfyQOOrp10sXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BM5i7Gno; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hm+Rvmwv"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ECAF1F000E9;
-	Sun, 23 Aug 2026 17:17:41 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BM5i7Gno"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 350571F000E9;
+	Sun, 23 Aug 2026 19:20:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787505463;
-	bh=mBmlMw7A+WRXoferIWkVAPqteu5QBD1DzST2gSzU31A=;
-	h=Date:From:To:Subject;
-	b=Hm+RvmwvZRPZ81w+xqDwo8aVCGuRchAbuOwv7hA5MkICXpHh56iLOzut3O123zF1N
-	 Te2L8fPo5gco9rZzjUHsOjWXa3zbQcAPFIHUfAgHo7c8c0vAM1ycUkfUmEmNcdYzyO
-	 9iqc4dYWg5WDOSdHUe9ywnw4Hv34hq7+kzBDY14r+Fu15MvgvVnIiXYtdowrdP9Vkf
-	 tAY2kdmrfCejSY8vkl0WJWDhEJuigCxBEkAC+RkQ0zBxXIGEDgMlPnVmJrU/APc6no
-	 CnPmRZW1b6aNJVBm7v/fxNu/Rq6L5aPp0bHXsrIyaoLwBMx2c90YKaO4YzydK+SmFl
-	 +plzjkNKJdqMw==
-Date: Sun, 23 Aug 2026 19:17:39 +0200
-From: Helge Deller <deller@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	John David Anglin <dave.anglin@bell.net>
-Subject: [GIT PULL] parisc architecture fixes and updates for v7.3-rc1
-Message-ID: <aosrM-t2ji3ONNMG@p100>
+	s=k20260515; t=1787512826;
+	bh=XEXZIYenlqy1XHSX64NZrGFC7zK04qoINDwVntrLOms=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc;
+	b=BM5i7GnopCRrE+9eJFoAxpUtLeJQaZhReALkr5ZxMCyz6Ma+0OXQoQY6woodtaH/t
+	 Jy+owsQatojLeYAwCrfemh0w9hlbGIfF+U6N2c2zLJG7ZMkX4Ak/T4JuqS6tfgI3pX
+	 HwgIhZAwbBEZ5M/lmID2u2I3jUEuayCtXYQ8zQMUdb5YU6xWGObtr7jNDn3iPko7VX
+	 +ZS4y/AQThq01eIxj2wx37ZGVD0ecY3f/sSXgNn4y/EunNy6bqC4tof/2R+vn3UKii
+	 3BRn0GuM4Y/9UijxsUZrIKC+50tMKRKO5X/np7ExGlQqz08cOpsjo/5M/ahhtuUxca
+	 GjVbxDWhAunlQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 939E7380AA78;
+	Sun, 23 Aug 2026 19:19:35 +0000 (UTC)
+Subject: Re: [GIT PULL] parisc architecture fixes and updates for v7.3-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <aosrM-t2ji3ONNMG@p100>
+References: <aosrM-t2ji3ONNMG@p100>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <aosrM-t2ji3ONNMG@p100>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-7.3-rc1
+X-PR-Tracked-Commit-Id: 8b585431a16cfb9d8f2955a9fa0787ce3dceb3c2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b6b019a1d9b90ac51174f0ca15b1338b61506bf9
+Message-Id: <178751277413.2120410.3267820203972646672.pr-tracker-bot@kernel.org>
+Date: Sun, 23 Aug 2026 19:19:34 +0000
+To: Helge Deller <deller@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, James Bottomley <James.Bottomley@hansenpartnership.com>, John David Anglin <dave.anglin@bell.net>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-Hi Linus,
+The pull request you sent on Sun, 23 Aug 2026 19:17:39 +0200:
 
-please pull the fixes and updates for parisc for kernel 7.3-rc1.
+> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-7.3-rc1
 
-Nothing exciting this time, just usual small fixes and cleanups.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b6b019a1d9b90ac51174f0ca15b1338b61506bf9
 
-Thanks!
-Helge
+Thank you!
 
-----------------------------------------------------------------
-The following changes since commit 075b74841bd0065a3bda3440873c747938e69b68:
-
-  Linux 7.2-rc6 (2026-08-02 16:24:24 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-7.3-rc1
-
-for you to fetch changes up to 8b585431a16cfb9d8f2955a9fa0787ce3dceb3c2:
-
-  parisc: eisa: Fix infinite loop when parsing invalid IRQ value (2026-08-18 11:43:05 +0200)
-
-----------------------------------------------------------------
-parisc architecture fixes and updates for kernel v7.3-rc1:
-
-- Drop PER_HPUX personality from UAPI headers
-- Infinite loop fix when parsing IRQ value in eisa code
-- Switch to use asm-generic/serial.h
-- Prevent possible unaligned asm code in head.S
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      parisc: superio: Spelling s/Peterson/Petersen/
-
-Helge Deller (2):
-      UAPI: Drop PER_HPUX personality
-      parisc: Fix alignment of asm statements in head.S
-
-Jean Delu (1):
-      parisc: eisa_eeprom: Add missing MODULE_DESCRIPTION()
-
-Muhammad Usama Anjum (1):
-      parisc: sba_iommu: Remove dead DEBUG_DMB_TRAP code
-
-Pei Xiao (1):
-      parisc: eisa: Fix infinite loop when parsing invalid IRQ value
-
-Thorsten Blum (1):
-      parisc: Use asm-generic/serial.h
-
- arch/parisc/include/asm/serial.h |  8 --------
- arch/parisc/kernel/head.S        |  1 +
- drivers/parisc/eisa.c            |  5 +++++
- drivers/parisc/eisa_eeprom.c     |  1 +
- drivers/parisc/sba_iommu.c       | 21 ---------------------
- drivers/parisc/superio.c         |  2 +-
- include/uapi/linux/personality.h |  1 -
- 7 files changed, 8 insertions(+), 31 deletions(-)
- delete mode 100644 arch/parisc/include/asm/serial.h
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
