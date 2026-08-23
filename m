@@ -1,63 +1,83 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB1A3AC0F6;
-	Sun, 23 Aug 2026 19:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from mail.sf-mail.de (mail.sf-mail.de [116.202.16.50])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id E975A37BE70
+	for <linux-parisc@vger.kernel.org>; Sun, 23 Aug 2026 19:26:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.202.16.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787512827; cv=none; b=o56eU80Onw1WeBSnQIxLkg3CrTp+a5a1sv4L4Yhl5mQQMv+Ec8FCSEcf8xIhfFNB30EuhphloU0AosfVQPHGvMdeDdRJqWSvxw0avaOi+uiLm8QEyszw/OhaMF7hTas+gKaQah8YanozyojnAXgDapiNElbyT0LHudon5EgaZlc=
+	t=1787513177; cv=none; b=toD5itN85P0hkr04OciyYpA9anbpCWXPnZ6DhunGcWhc9zsnepJ3+S5iGM5ZSWRh7GEkW0LdevRAV3XgmSpM0kYAg27WjJf7JawYiawK3WpO4p1u3V3o1L3os0h031zWwWE3J/58YU7hOSS63m69RmURSxCE17GBb6Mx2ZXD9Zs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787512827; c=relaxed/simple;
-	bh=eudr1bGLK6mlwz6THZdmqUPtjjOx4jOH7emAAM+qAC8=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=I9uBE7hDdrIcJaxeigIPs1WL2WMPpUX58iNRzQjefoCqt3dmxMXhIriQ1AvYQ8qBsTnaYQ5T4su0JgNC9Z7nBFT1AyleBvYLq4RTlsobKL0/2KA8VMLx/8ezMNF49WnkYp3Aw37d5NKvMQAkp5H6A//2lf2JAIPfyQOOrp10sXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BM5i7Gno; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BM5i7Gno"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 350571F000E9;
-	Sun, 23 Aug 2026 19:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787512826;
-	bh=XEXZIYenlqy1XHSX64NZrGFC7zK04qoINDwVntrLOms=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc;
-	b=BM5i7GnopCRrE+9eJFoAxpUtLeJQaZhReALkr5ZxMCyz6Ma+0OXQoQY6woodtaH/t
-	 Jy+owsQatojLeYAwCrfemh0w9hlbGIfF+U6N2c2zLJG7ZMkX4Ak/T4JuqS6tfgI3pX
-	 HwgIhZAwbBEZ5M/lmID2u2I3jUEuayCtXYQ8zQMUdb5YU6xWGObtr7jNDn3iPko7VX
-	 +ZS4y/AQThq01eIxj2wx37ZGVD0ecY3f/sSXgNn4y/EunNy6bqC4tof/2R+vn3UKii
-	 3BRn0GuM4Y/9UijxsUZrIKC+50tMKRKO5X/np7ExGlQqz08cOpsjo/5M/ahhtuUxca
-	 GjVbxDWhAunlQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 939E7380AA78;
-	Sun, 23 Aug 2026 19:19:35 +0000 (UTC)
-Subject: Re: [GIT PULL] parisc architecture fixes and updates for v7.3-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <aosrM-t2ji3ONNMG@p100>
-References: <aosrM-t2ji3ONNMG@p100>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <aosrM-t2ji3ONNMG@p100>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-7.3-rc1
-X-PR-Tracked-Commit-Id: 8b585431a16cfb9d8f2955a9fa0787ce3dceb3c2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b6b019a1d9b90ac51174f0ca15b1338b61506bf9
-Message-Id: <178751277413.2120410.3267820203972646672.pr-tracker-bot@kernel.org>
-Date: Sun, 23 Aug 2026 19:19:34 +0000
-To: Helge Deller <deller@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, James Bottomley <James.Bottomley@hansenpartnership.com>, John David Anglin <dave.anglin@bell.net>
+	s=arc-20240116; t=1787513177; c=relaxed/simple;
+	bh=iSXgNK29f6Qd/XOrAsiFDPTPBmFy66RC8U0m8EGO++I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Xtlq1DTAbCjYiryURPFQ6u53qpQ/me/hrtRcVjt+Slpy3L0+K2VJUr/FaYir9AABzwOSsqMElbKEc0jkmcgRGox0REdrFf3oFchGLLnlZPlTUEbg1OlUDDBEfkncL+SamMy1niUrqKdFm3doTXTETZkt1N0cvHYtLvm+ZfltYkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sf-tec.de; spf=pass smtp.mailfrom=sf-tec.de; arc=none smtp.client-ip=116.202.16.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sf-tec.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sf-tec.de
+Received: (qmail 159433 invoked from network); 23 Aug 2026 19:26:15 -0000
+Received: from unknown ([2001:9e8:6dec:6400:1c7a:74ff:feab:3a03]:37034 HELO eto.sf-tec.de) (auth=eike@sf-mail.de)
+	by mail.sf-mail.de (Qsmtpd 0.39dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
+	for <jeandelu@tutamail.com>; Sun, 23 Aug 2026 21:26:15 +0200
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+To: jeandelu@tutamail.com
+Cc: Linux Kernel <linux-kernel@vger.kernel.org>,
+ Linux Parisc <linux-parisc@vger.kernel.org>, Helge Deller <deller@gmx.de>
+Subject:
+ Re: [PATCH] parisc: eisa_enumerator: Fix out-of-bounds reads of the EEPROM
+ buffer
+Date: Sun, 23 Aug 2026 21:26:08 +0200
+Message-ID: <2531343.FHFDcahYGt@eto.sf-tec.de>
+In-Reply-To: <OzWfYcD--F-9@tutamail.com>
+References: <OzWfYcD--F-9@tutamail.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart23836544.IJoHohA0GJ";
+ micalg="pgp-sha1"; protocol="application/pgp-signature"
 
-The pull request you sent on Sun, 23 Aug 2026 19:17:39 +0200:
+--nextPart23836544.IJoHohA0GJ
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"; protected-headers="v1"
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+To: jeandelu@tutamail.com
+Date: Sun, 23 Aug 2026 21:26:08 +0200
+Message-ID: <2531343.FHFDcahYGt@eto.sf-tec.de>
+In-Reply-To: <OzWfYcD--F-9@tutamail.com>
+References: <OzWfYcD--F-9@tutamail.com>
+MIME-Version: 1.0
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-7.3-rc1
+> @@ -491,6 +492,13 @@ int eisa_enumerator(unsigned long eeprom_addr,
+> printk(KERN_INFO "Enumerating EISA bus\n");
+>   
+> eh = (struct eeprom_header*)(eeprom_buf);
+> +	/*
+> +	* The EEPROM contents are not to be trusted: clamp the number of
+> +	* slots so that all slot records fit into eeprom_buf.
+> +	*/
+> +	eh->num_slots = min_t(u8, eh->num_slots,
+> +			     (HPEE_MAX_LENGTH - sizeof(*eh)) /
+> +			     sizeof(struct eeprom_eisa_slot_info));
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b6b019a1d9b90ac51174f0ca15b1338b61506bf9
+I wonder if that should write out any sort of warning message about a broken 
+EEPROM here.
 
-Thank you!
+Greetings,
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Eike
+--nextPart23836544.IJoHohA0GJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iFwEABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCaotJUAAKCRBcpIk+abn8
+Tq46AJj0fUmYxztYmJ6jUrwFRpqsRGm9AJ45oAHxyvx4lQFR3VtmOXUAqFK8Dw==
+=OyIJ
+-----END PGP SIGNATURE-----
+
+--nextPart23836544.IJoHohA0GJ--
+
+
+
