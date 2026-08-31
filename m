@@ -1,69 +1,30 @@
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11B832824B
-	for <linux-parisc@vger.kernel.org>; Sun, 30 Aug 2026 20:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10E03B4E9B;
+	Mon, 31 Aug 2026 04:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788123196; cv=none; b=FRvRfAw7XDAMzMab9Gl8tymRZ2wMmjEXwS8OkOx9Y/SdnqDecGrpCQGpBzFznh32C7oeaMyGQ68T/Ig9dRNuuKiCo8AIZllAAbNcEKmJXGBQYsBuulnzGRliWadm0l0uMNd8L6G7+X4lDJS0J0T9zpYhfiZUR4jp2T5U1RKkUBI=
+	t=1788150749; cv=none; b=dltjnDBMcMO+svt0PjmktBYqfuccNQG3RVaKoqi4hBKxSVmLMTYZgYZb5amaJjiQDqW3AIEpSPEh8JP0nF/LjEmsfkezcFQ1rkze6HKmPe3hd1xwxjjO+HO8XSVnYeBtXFxVWJsSJgY1s8uR8bwJpw/WYRZh0nlBnUGq+Oyl7fQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788123196; c=relaxed/simple;
-	bh=23/J+3gDoDVZml6rrky5zUoFra+g0uhnHf6Qlc/3LG0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Lb3uJlLUDd1xKn4OA0lr1Wy1NPQrVA5p0Z3utBKAd9D5d0pC1MyEKocvz23TPH4eJIzmrj9m7agp2MB9Y0KpJpbz1RDaUVl2NJuGNszp+OTBN3frs0Z/vxYWGg8uwwr7fwlUiItJRqUDBgmuHC4eGHp0LNzrZENZyYA05VBH0gY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HLG90q1n; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1788150749; c=relaxed/simple;
+	bh=oizJKRTqyDh/VbZUTBgNcKUXsdPManz6vBIVNJXSxME=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=cQ7SIEc3DFXozPaT6eW0ntzL20EDNoJlxeuySggsO472QlkIl3jqrLxlh59QsuuvdnQzO3CL9gvvZ3ZoIyVAc4cFUZBONN0uynToonJGHGIz7Tk5CDdxmORd+LZEylcDqDkMH/EybaBKK+t+eyPX45JIYX0SKn+HZYo2BjDtWws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=EtXQrxcE; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HLG90q1n"
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-ca80d708489so1886666a12.1
-        for <linux-parisc@vger.kernel.org>; Sun, 30 Aug 2026 13:53:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788123184; x=1788727984; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=UDmUbvUq5gus03tv1ZZ+Ru3jkSSxaXW9u1MMK1TfK1M=;
-        b=HLG90q1n9NfiZ0jTc3uS8Bu24RQ401hDn1PEKJc4P4I+TZDxDTZsfN08Fm/GdTIYAw
-         PFLVcVDkp1XjH16KQRkM9Wh/ke6D6mTWkMAgcSBxHBeJ6vKHL//ogA+gFDRgIjAkup/z
-         ex7kPXIa8FMtdU52zuZgERfxD7vMyobTw5sF7jkF/QjYFyQFfl1zYiPhw52w00tl+JyG
-         A3AYOFhDBd92cBNENjC+eWDzklw7MEZ4kREpxpw5gOBzc6nao52Z98B0MrmDJ/o6l+QM
-         JhmLreb/7UtdxJF8vCPTj1TlRkgs5XMiqSw5vozcbxV5b51Z60fTtKZacb6DTTjv8vwR
-         awvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788123184; x=1788727984;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=UDmUbvUq5gus03tv1ZZ+Ru3jkSSxaXW9u1MMK1TfK1M=;
-        b=dPlE8t+qoI3t0QgMSLfRjQpVy8RUj7uFuH17hcCnU2GZALuLe1HH9esgAO8m/EDndW
-         b1+s4cEvT3QpTUQLpM1VE4a/Fa2bH3QNQQBoawzo5xPRrKf5VIKMvQPG0taj8R8p2/Ib
-         qweH9/4bYIxCc0/qv0J0SSfMuK5CXp0r6B7Kvcr5Iw+67QN225zGcH/TA+GkyAPl17wV
-         Jqi9fTk9johoP76mdC9RBYqAeQ0IVN6+PTsGUNtQqbmhmR9Nal57wFvVNYf1JmEQsqoS
-         cydbdPwv21crH11JEnXCPxVhOSPmPfrINpzyjHIPBZBE2MTuNe7l6dyZrgT4Oiqg75d9
-         AW/w==
-X-Forwarded-Encrypted: i=1; AHgh+RqNHUFWzdLv3tCO9LOkUmvWE6eWg/na+HrOWzhgOQRzhMPD/1bJuEpdjyPxt5yNfPpjAf76ADLzMg299SY=@vger.kernel.org
-X-Gm-Message-State: AFuF++nxg1O8e265+MpPw+kg3xoqYGsUKu/O0lmTlloJnsAuXZaBdj+l
-	baoIOPHiBu004TTobreUHaLKAGUGRDZoq1NG73JsL7+Nci8utUFxE7s+
-X-Gm-Gg: AR+sD121RGzoxTfmeXFexY84Sb9tNgyJ+Rfonqh/Xs2MSW012Om0IN871IyIWAQERXc
-	tPh4zGfAOrTWOvytqvOJ2NTcjKBNSKr+YL1hcZmapXZ6OQu3Muz2Pi2g9yRpolwPwWhXhpXK0Z1
-	cFHCkeexumEIWTWIR04J7QLsLTM7wzjBFZO0XKNlr0wiJCeW9y8X66//zkK08Pa/2nkrHVeJmY9
-	BOzCJEFywRn6lis4ina2g83FDmIsIkDEtbkKhCGE1wZ7wz8xxnSY+t+PA6BzrWf85rdrysHX1L/
-	nSqTJPcrrZXIq0OAgYVwFq7EK7cpKjPub5aEtKa8TDu54MDafN0Msf3ajWBESML2tORe0uxMfYO
-	lAmbjyYxKLfS/7s+HaEdMYZxCuoE9JdJFAR3iM7TvWe1SlF18LlvyMIGyCBEAUiNKrfBr3wBCBT
-	k5hjpImiPtlQRREcM9RYCx2lmeSyELCIXrxsUikCkiSMrX1SuwryH1bqTHAzTnkBrHskH5iYzbH
-	sk4LjaquDQKhPoGQgU7jKhsPZK95BP5MtvhXpUR3SwYlG/9A8yEjX176HYaAA==
-X-Received: by 2002:a05:6a21:7e84:b0:3d3:3dca:f0a3 with SMTP id adf61e73a8af0-3d5d787403dmr2821879637.8.1788123183999;
-        Sun, 30 Aug 2026 13:53:03 -0700 (PDT)
-Received: from dtor-ws.sjc.corp.google.com ([2a00:79e0:2ebe:8:c021:485f:75be:3c7])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3286f9e3cf8sm26849437eec.24.2026.08.30.13.53.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Aug 2026 13:53:03 -0700 (PDT)
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Date: Sun, 30 Aug 2026 13:52:52 -0700
-Subject: [PATCH 7/7] Input: gscps2 - drop busy-wait and manual interrupt
- pump on transmit
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="EtXQrxcE"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1788150737;
+	bh=oizJKRTqyDh/VbZUTBgNcKUXsdPManz6vBIVNJXSxME=;
+	h=From:Date:Subject:To:Cc:From;
+	b=EtXQrxcE6F4N0n/2vipf/0Fpgfoc83jnzsCBcYj7UdA61sPh7r28mWIuddVqWMLQa
+	 +b0VsXskkZYS9bmrYy7BfNHCAiJMpvbKJ+x1qbYXOvV5dIv1HDQmCIcwzGiFN1dqil
+	 ntY56RcpdkTZdo46QrFaDf6h9FtsnvX9aKp31M00=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Mon, 31 Aug 2026 06:32:13 +0200
+Subject: [PATCH v2] tools/nolibc: add 64-bit parisc support
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -71,57 +32,211 @@ List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260830-gscps2-v1-7-c733d4cae7f9@gmail.com>
-References: <20260830-gscps2-v1-0-c733d4cae7f9@gmail.com>
-In-Reply-To: <20260830-gscps2-v1-0-c733d4cae7f9@gmail.com>
-To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+Content-Transfer-Encoding: 8bit
+Message-Id: <20260831-nolibc-parisc64-v2-1-022f9beff7a6@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/2WOQQ6CMBBFr0K6tqZUpOjKexgWbR3sGFOwU1BDu
+ LsFTFy4fJP//5uREQQEYsdsZAEGJGx9ArnJmHXaX4HjJTGTQpaiEIr79o7G8k4HJFsWfGe12Bf
+ KSt0cWGp1ARp8LYvnemXqzQ1snGe+iQCPPqniL+aQYhveyx9DPl9XZSXFn3LIec5FqcCAshU05
+ vQEJCLrerf1EFk9TdMH7ocm+NoAAAA=
+X-Change-ID: 20260407-nolibc-parisc64-3ca0547c2af9
+To: Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
  Helge Deller <deller@gmx.de>
-Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
- linux-parisc@vger.kernel.org, sashiko-bot@kernel.org
-X-Mailer: b4 0.16-dev-b242f
+Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-parisc@vger.kernel.org, David Laight <david.laight.linux@gmail.com>, 
+ Rolf Eike Beer <eike-kernel@sf-tec.de>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788150738; l=7161;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=oizJKRTqyDh/VbZUTBgNcKUXsdPManz6vBIVNJXSxME=;
+ b=OcFARBw3I+rBUtDzAIwbI3xthnUKWY+y3RppF3LtyOrAgnuD42ZlqjFqs7fslXQWu5d+w7kYg
+ f5HgRZ10gdPC6pCzFF7Gh5viGIIsahv4oas6cO2OoQDTzRseVoIheRo
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-In gscps2_writeb_output(), after writing data to GSC_XMTDATA, the driver
-explicitly executed mdelay(6) and manually called gscps2_interrupt() as a
-polling mechanism to accelerate command responses (such as keyboard ACK
-or LED updates).
+Extend the existing parisc support to also handle 64-bit mode.
 
-On PA-RISC, the PS/2 controller asserts a level interrupt to the system
-ASIC whenever received data arrives in hardware, and the input/serio
-subsystem handles command responses asynchronously via completions.
-Busy-waiting for 6 ms on every transmitted byte introduces significant
-unnecessary latency during multi-byte command sequences and complicates
-interrupt handler locking.
+Some peculiarities:
+* The nonstandard ftruncate64 system call requires a workaround.
+* The linker defaults to main() as entry point, which needs to be
+  switched to _start() explicitly.
+* The linker defaults to dynamic linking, which needs to be disabled
+  explicitly.
+* With the default -Os, gcc does not use 64-bit multiplication
+  instructions, requiring libgcc. Use -O2 instead.
+* There is no qemu-user available.
+* CONFIG_COMPAT needs to be disabled to avoid build errors due to a
+  missing 32-bit vDSO compiler.
 
-Remove mdelay(6) and the manual invocation of gscps2_interrupt() from
-gscps2_writeb_output(), relying on normal hardware interrupt delivery.
-
-Reported-by: sashiko-bot@kernel.org
-Assisted-by: LLM
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- drivers/input/serio/gscps2.c | 7 -------
- 1 file changed, 7 deletions(-)
+Changes in v2:
+- Rebase on latest nolibc/for-next.
+- Fix typo in comment.
+- Reorder conditions in run-tests.sh.
+- Fix llvm=1 check in run-tests.sh.
+- Link to v1: https://patch.msgid.link/20260820-nolibc-parisc64-v1-1-067ebe7c8efb@weissschuh.net
+---
+ tools/include/nolibc/arch-parisc.h             | 26 +++++++++++++++++++++++---
+ tools/include/nolibc/stdlib.h                  |  2 +-
+ tools/testing/selftests/nolibc/Makefile.nolibc |  5 +++++
+ tools/testing/selftests/nolibc/run-tests.sh    | 10 +++++++---
+ 4 files changed, 36 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/input/serio/gscps2.c b/drivers/input/serio/gscps2.c
-index 2afd53a163ff..985539f1d088 100644
---- a/drivers/input/serio/gscps2.c
-+++ b/drivers/input/serio/gscps2.c
-@@ -356,13 +356,6 @@ static inline int gscps2_writeb_output(struct gscps2port *ps2port, u8 data)
- 	scoped_guard(spinlock_irqsave, &ps2port->lock)
- 		writeb(data, addr + GSC_XMTDATA);
+diff --git a/tools/include/nolibc/arch-parisc.h b/tools/include/nolibc/arch-parisc.h
+index 417043ecbc53..5c595ef88a62 100644
+--- a/tools/include/nolibc/arch-parisc.h
++++ b/tools/include/nolibc/arch-parisc.h
+@@ -7,9 +7,7 @@
+ #ifndef _NOLIBC_ARCH_PARISC_H
+ #define _NOLIBC_ARCH_PARISC_H
  
--	/* this is ugly, but due to timing of the port it seems to be necessary. */
--	mdelay(6);
--
--	/* make sure any received data is returned as fast as possible */
--	/* this is important e.g. when we set the LEDs on the keyboard */
--	gscps2_interrupt(0, NULL);
--
- 	return 1;
+-#if defined(__LP64__)
+-#error 64-bit not supported
+-#endif
++#include <linux/unistd.h>
+ 
+ #include "compiler.h"
+ #include "crt.h"
+@@ -167,9 +165,15 @@
+ void __attribute__((weak, noreturn)) __nolibc_entrypoint __nolibc_no_stack_protector _start(void)
+ {
+ 	__asm__ volatile (
++#ifdef __LP64__
++		".import __gp\n"               /* Set up the dp register */
++		"ldil L%__gp, %dp\n"
++		"ldo R%__gp(%r27), %dp\n"
++#else
+ 		".import $global$\n"           /* Set up the dp register */
+ 		"ldil L%$global$, %dp\n"
+ 		"ldo R%$global$(%r27), %dp\n"
++#endif
+ 
+ 		"b _start_c\n"                 /* Call _start_c, the load below is executed first */
+ 
+@@ -182,4 +186,20 @@ void __attribute__((weak, noreturn)) __nolibc_entrypoint __nolibc_no_stack_prote
  }
+ #endif /* NOLIBC_NO_RUNTIME */
  
++#ifdef __LP64__
++/*
++ * This override is normally only meant for 32-bit architectures.
++ * But parisc 64-bit has __NR_ftruncate64, so this path is taken.
++ * Add an unused second argument to satisfy the calling convention.
++ */
++static __attribute__((unused))
++int _sys_ftruncate64(int fd, uint64_t length, uint64_t unused)
++{
++	(void)unused;
++
++	return __nolibc_syscall2(__NR_ftruncate64, fd, length);
++}
++#define _sys_ftruncate64 _sys_ftruncate64
++#endif
++
+ #endif /* _NOLIBC_ARCH_PARISC_H */
+diff --git a/tools/include/nolibc/stdlib.h b/tools/include/nolibc/stdlib.h
+index 1816c2368b68..6c3c620a04cf 100644
+--- a/tools/include/nolibc/stdlib.h
++++ b/tools/include/nolibc/stdlib.h
+@@ -230,7 +230,7 @@ int _nolibc_u64toa_base(uint64_t in, char *buffer, unsigned int base, uint64_t r
+ 
+ 	/* Generate least significant digit first */
+ 	do {
+-#if defined(__SIZEOF_INT128__) && !defined(__mips__) && !defined(__sparc__)
++#if defined(__SIZEOF_INT128__) && !defined(__mips__) && !defined(__sparc__) && !defined(__hppa__)
+ 		q = ((unsigned __int128)in * recip) >> 64;
+ #else
+ 		uint64_t p = (uint32_t)in * (recip >> 32);
+diff --git a/tools/testing/selftests/nolibc/Makefile.nolibc b/tools/testing/selftests/nolibc/Makefile.nolibc
+index d8b71cbfc173..3ca473ec35ef 100644
+--- a/tools/testing/selftests/nolibc/Makefile.nolibc
++++ b/tools/testing/selftests/nolibc/Makefile.nolibc
+@@ -65,6 +65,7 @@ ARCH_sparc32     = sparc
+ ARCH_sparc64     = sparc
+ ARCH_sh4         = sh
+ ARCH_parisc32    = parisc
++ARCH_parisc64    = parisc64
+ ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
+ 
+ # kernel image names by architecture
+@@ -113,6 +114,7 @@ EXTRACONFIG_sparc32   = -e CONFIG_TMPFS
+ EXTRACONFIG_m68k      = -e CONFIG_BLK_DEV_INITRD
+ EXTRACONFIG_sh4       = -e CONFIG_BLK_DEV_INITRD -e CONFIG_CMDLINE_FROM_BOOTLOADER
+ EXTRACONFIG_alpha     = -e CONFIG_BLK_DEV_INITRD
++EXTRACONFIG_parisc64  = -d CONFIG_COMPAT
+ EXTRACONFIG           = $(EXTRACONFIG_$(XARCH))
+ 
+ # optional tests to run (default = all)
+@@ -134,6 +136,7 @@ QEMU_ARCH_loongarch  = loongarch64
+ QEMU_ARCH_sparc32    = sparc
+ QEMU_ARCH_openrisc   = or1k
+ QEMU_ARCH_parisc32   = hppa
++QEMU_ARCH_parisc64   = hppa
+ QEMU_ARCH            = $(or $(QEMU_ARCH_$(XARCH)),$(XARCH))
+ 
+ QEMU_ARCH_USER_ppc64le = ppc64le
+@@ -175,6 +178,7 @@ QEMU_ARGS_m68k       = -M virt -append "console=ttyGF0,115200 panic=-1 $(TEST:%=
+ QEMU_ARGS_sh4        = -M r2d -serial file:/dev/stdout -append "console=ttySC1,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_openrisc   = -M virt -m 512M -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_parisc32   = -M B160L -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
++QEMU_ARGS_parisc64   = -M C3700 -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_alpha      = -M clipper -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS            = -m 1G $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_BIOS) $(QEMU_ARGS_EXTRA)
+ 
+@@ -193,6 +197,7 @@ CFLAGS_x32 = -mx32
+ CFLAGS_arm = -marm
+ CFLAGS_armthumb = -mthumb -march=armv6t2
+ CFLAGS_parisc32 = -mfast-indirect-calls
++CFLAGS_parisc64 = -Wl,--no-dynamic-linker -Wl,--entry=_start -O2
+ CFLAGS_ppc = -m32 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
+ CFLAGS_ppc64 = -m64 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
+ CFLAGS_ppc64le = -m64 -mlittle-endian -mno-vsx $(call cc-option,-mabi=elfv2)
+diff --git a/tools/testing/selftests/nolibc/run-tests.sh b/tools/testing/selftests/nolibc/run-tests.sh
+index af2a6f510d1d..2844fed26df1 100755
+--- a/tools/testing/selftests/nolibc/run-tests.sh
++++ b/tools/testing/selftests/nolibc/run-tests.sh
+@@ -29,7 +29,7 @@ all_archs=(
+ 	sparc32 sparc64
+ 	m68k
+ 	sh4
+-	parisc32
++	parisc32 parisc64
+ 	alpha
+ 	hexagon
+ )
+@@ -122,6 +122,7 @@ crosstool_arch() {
+ 	sparc*) echo sparc64;;
+ 	x32*) echo x86_64;;
+ 	parisc32) echo hppa;;
++	parisc64) echo hppa64;;
+ 	*) echo "$1";;
+ 	esac
+ }
+@@ -206,11 +207,14 @@ test_arch() {
+ 			exit 1
+ 	esac
+ 	printf '%-15s' "$arch:"
+-	if [ "$llvm" = "1" ] && [ "$arch" = "m68k" -o "$arch" = "sh4" -o "$arch" = "openrisc" -o "$arch" = "parisc32" -o "$arch" = "alpha" ]; then
++	if [ "$llvm" = "1" ] && \
++	   [ "$arch" = "m68k" -o "$arch" = "sh4" -o "$arch" = "openrisc" \
++	     -o "$arch" == "parisc32" -o "$arch" == "parisc64" -o "$arch" = "alpha"  \
++	]; then
+ 		echo "Unsupported configuration"
+ 		return
+ 	fi
+-	if [ "$test_mode" = "user" ] && [ "$arch" = "x32" ]; then
++	if [ "$test_mode" = "user" ] && [ "$arch" = "x32" -o "$arch" = "parisc64" ]; then
+ 		echo "Unsupported configuration"
+ 		return
+ 	fi
 
--- 
-2.55.0.897.gb25b4bd76c-goog
+---
+base-commit: 9c47af906bc655c8f45aaf1f156656239c2c5073
+change-id: 20260407-nolibc-parisc64-3ca0547c2af9
+
+Best regards,
+--  
+Thomas Weißschuh <linux@weissschuh.net>
 
