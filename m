@@ -1,97 +1,37 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mail-m49197.qiye.163.com (mail-m49197.qiye.163.com [45.254.49.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5174A3F35
-	for <linux-parisc@vger.kernel.org>; Wed,  2 Sep 2026 14:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509E74A5ECA;
+	Wed,  2 Sep 2026 15:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788360431; cv=none; b=P2BQFqNZBYDLuopAuFXUpg+W7R6WRH5Y+/ObmLQ+v+nOBTpsC0LbVxXe2VE29rOaZ7PKHV14NsZ1La882MVg2vY9h76ffYdsWGQ2nOGvhMbQ5a8mA2+sNAtHdqQmekG3S40QLdjFX2Ox4BROv4alHkGM12MPhtHGYNaomS7BWIc=
+	t=1788363628; cv=none; b=O9YfDS5vXvjK8SCWstRit5f0giR0JknCOIMv1lLlzOZ6yAkEQ3Ny8dJYHZ5htdOaMHP69TTPz5JAL5ptp3AI5qiNmfOGChl0oeCUuF0+iP+QBhVouStJgcgr8vxJAnSP8ADp+k3GWpyx+5Co+v7co5Bj9VcRPyZfhd0vy+DHL74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788360431; c=relaxed/simple;
-	bh=kfiDLo+BxdeMyd7DwCKHFv96MicNeVsjL5sGevnIHXM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kE85/uYDlvokIbWSdPKPpacp2avvR+LLAwsXoXmUfFme+JQ16xSGMS+X5sCyNti1VqYahZrxT0C8gw92OvdLUmdZXUaGCSqvF4anCl/asLWn4wXjdgF32kPMUErFZhwPuGPcnd70e5V51L0UxLdmx/+SOLdG/rUXdBDtifpeEXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AQdrQpuA; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1788363628; c=relaxed/simple;
+	bh=aczohct9yKCF/gDFNPJuLt57FKa91AhPpXKUrUkE634=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=i+Abq9gO9tffojhdCIhsH99TP15SDKQtvZRymIJ7zcA1GQvOLu7BN5Us49EZa3lZOPBk0lrZTKbny/xJqUdWX7pYGwX1izh2/8xWtpIKVrT/cAJx9ScQrHgPQRMWDLRs8X01zNeu2lrSNRBu2j6qSws3VW/2oMZ/M1/dPRho2gA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn; spf=pass smtp.mailfrom=seu.edu.cn; dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b=OMyL4QjC; arc=none smtp.client-ip=45.254.49.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seu.edu.cn
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AQdrQpuA"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1788360429;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nZoYau2WBD6IZMmGu3u7wBhLPz0DgKCouySyNxSkIQc=;
-	b=AQdrQpuAXfibkSrEnYdG2aXpoqkQ31Zh/wQ1lvQY6hX0jcLT2JTNZ3cWkV0czzIn4HpGBB
-	Pi8hjsCEDkrwMxE55aWqFNn5a/nNIZzjbxivA8J5FmMHcgMUVJSecMSWLRXgAnyb+LbRVx
-	xojkZKNkMQ6PUAVXb7EJtmxkIo/qM4I=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-501-6y8aj7x6Pwq6ejExRIcZDg-1; Wed,
- 02 Sep 2026 10:47:04 -0400
-X-MC-Unique: 6y8aj7x6Pwq6ejExRIcZDg-1
-X-Mimecast-MFC-AGG-ID: 6y8aj7x6Pwq6ejExRIcZDg_1788360419
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6C6DE19539B7;
-	Wed,  2 Sep 2026 14:46:59 +0000 (UTC)
-Received: from wsxc.redhat.com (unknown [10.96.134.11])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id F080B1800643;
-	Wed,  2 Sep 2026 14:46:47 +0000 (UTC)
-From: Ricardo Robaina <rrobaina@redhat.com>
-To: audit@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-alpha@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
+	dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b="OMyL4QjC"
+Received: from PC-202605011814.localdomain (unknown [222.191.246.242])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 4c49d2c9f;
+	Wed, 2 Sep 2026 23:40:11 +0800 (GMT+08:00)
+From: Runyu Xiao <runyu.xiao@seu.edu.cn>
+To: "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	bpf@vger.kernel.org
-Cc: paul@paul-moore.com,
-	eparis@redhat.com,
-	sgrubb@redhat.com,
-	oleg@redhat.com,
-	richard.henderson@linaro.org,
-	mattst88@gmail.com,
-	linmag7@gmail.com,
-	linux@armlinux.org.uk,
-	catalin.marinas@arm.com,
-	will@kernel.org,
-	guoren@kernel.org,
-	monstr@monstr.eu,
-	tsbogend@alpha.franken.de,
-	jonas@southpole.se,
-	stefan.kristiansson@saunalahti.fi,
-	shorne@gmail.com,
-	James.Bottomley@HansenPartnership.com,
-	deller@gmx.de,
-	ysato@users.sourceforge.jp,
-	dalias@libc.org,
-	glaubitz@physik.fu-berlin.de,
-	davem@davemloft.net,
-	andreas@gaisler.com,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	chris@zankel.net,
-	jcmvbkbc@gmail.com,
-	tglx@kernel.org,
-	peterz@infradead.org,
-	luto@kernel.org,
-	Ricardo Robaina <rrobaina@redhat.com>
-Subject: [PATCH v2 13/13] xtensa: pass pt_regs to audit_syscall_entry()
-Date: Wed,  2 Sep 2026 11:43:46 -0300
-Message-ID: <c484b749374ae3768e57f4e7148324c4a730bef2.1788351089.git.rrobaina@redhat.com>
-In-Reply-To: <cover.1788351089.git.rrobaina@redhat.com>
-References: <cover.1788351089.git.rrobaina@redhat.com>
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Runyu Xiao <runyu.xiao@seu.edu.cn>,
+	Jianhao Xu <jianhao.xu@seu.edu.cn>
+Subject: [PATCH] Input: hp_sdc: shut down kicker timer on module exit
+Date: Wed,  2 Sep 2026 23:40:04 +0800
+Message-Id: <20260902154004.3595416-1-runyu.xiao@seu.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -99,32 +39,48 @@ List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+X-HM-Tid: 0aa062c71ee203a1kunm0ab02d801b0733
+X-HM-MType: 10
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWRgWCB1ZQUpXWS1ZQUlXWQ8JGhUIEh9ZQVlCTUMYVk1KQkNJHkpCGUJLT1YeHw
+	5VEwETFhoSFyQUDg9ZV1kYEgtZQVlJSUlVSkJKVUlPTVVJT0lZV1kWGg8SFR0UWUFZT0tIVUpLSE
+	pPSExVSktLVUpCS0tZBg++
+DKIM-Signature: a=rsa-sha256;
+	b=OMyL4QjCQhjW3/UcsaqVn843K9GAIEDvGzR0z700BCrsIZIkSpurJat61x2xs8lmU2bPbyxzfPf/fmMgyVZjBokgCJrhYRr5JPxcfzBlUyDlp7xlCThdYLSifiwS91gUwQ9fTli3TfiOjCXsA2rzlgshHUClHu1Yq4qpAt2tf00=; s=default; c=relaxed/relaxed; d=seu.edu.cn; v=1;
+	bh=vAakssGCtG39enDgVvStTDDufueg/9BNtNaMgv4i4Wc=;
+	h=date:mime-version:subject:message-id:from;
 
-audit_syscall_entry() now takes a pointer to pt_regs and extracts
-the syscall arguments itself via syscall_get_arguments(). Drop the
-individual argument registers from the call and pass regs instead.
+hp_sdc_kicker() rearms hp_sdc.kicker with mod_timer() after scheduling the
+tasklet.  The module exit path uses timer_delete_sync().  That waits for a
+callback already running but can still leave the timer rearmed.
 
-Signed-off-by: Ricardo Robaina <rrobaina@redhat.com>
+A callback can therefore leave the timer pending while hp_sdc_exit() tears
+down the driver, allowing timer activity to access dismantled driver state.
+
+Use timer_shutdown_sync() for final teardown.  It waits for a running
+callback and prevents rearming after module exit begins.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Assisted-by: Codex:GPT-5
+Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
 ---
- arch/xtensa/kernel/ptrace.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/input/serio/hp_sdc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/xtensa/kernel/ptrace.c b/arch/xtensa/kernel/ptrace.c
-index 364e4fdabb00..327e00c2ebde 100644
---- a/arch/xtensa/kernel/ptrace.c
-+++ b/arch/xtensa/kernel/ptrace.c
-@@ -561,9 +561,7 @@ int do_syscall_trace_enter(struct pt_regs *regs)
- 	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
- 		trace_sys_enter(regs, syscall_get_nr(current, regs));
+diff --git a/drivers/input/serio/hp_sdc.c b/drivers/input/serio/hp_sdc.c
+index 1461ef319..ecf5347b6 100644
+--- a/drivers/input/serio/hp_sdc.c
++++ b/drivers/input/serio/hp_sdc.c
+@@ -981,7 +981,7 @@ static void hp_sdc_exit(void)
+ 	free_irq(hp_sdc.irq, &hp_sdc);
+ 	write_unlock_irq(&hp_sdc.lock);
  
--	audit_syscall_entry(regs->syscall, regs->areg[6],
--			    regs->areg[3], regs->areg[4],
--			    regs->areg[5]);
-+	audit_syscall_entry(regs->syscall, regs);
- 	return 1;
- }
+-	timer_delete_sync(&hp_sdc.kicker);
++	timer_shutdown_sync(&hp_sdc.kicker);
+ 
+ 	tasklet_kill(&hp_sdc.task);
  
 -- 
-2.55.0
+2.34.1
 
