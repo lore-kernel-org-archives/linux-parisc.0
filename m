@@ -1,72 +1,78 @@
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F9E237A829
-	for <linux-parisc@vger.kernel.org>; Fri,  4 Sep 2026 12:13:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D24486BBA
+	for <linux-parisc@vger.kernel.org>; Fri,  4 Sep 2026 12:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788524020; cv=none; b=ixJCwto8tVLvqaeTjEQeM37gpE/RcpvdqsjbmqNPzcw6GA9V2HtnNZHuXj+czHGJjiTzYCIrJQ2/9zTObllI4zSuEkqpBlzjlXwRUfxJmCeZhVgPoL9QwkFJk87CWarWRThw68c/MPMI4dhWLeizNENFuMFINmJsWkGXwCcqHMs=
+	t=1788525733; cv=none; b=M1Tmpti9EWBZ1lFdzqDyVhlVpmSgNUSxqTcP5edzPZutOliF8ZXkT0pHpnh9nyAVGAoOGRviO3Vve3gaU3OhhHGb9SmSZ9d/lXsI9Ib4SU89F/JU9rrEJdZmCKdyX41ICSdr954hfujqFFXo4ybmfgIpXRH8LU3ti03oWqFl9Bo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788524020; c=relaxed/simple;
-	bh=1u6/EMRTa8tz41IdzgfjnzF7CkxxXk1pyfZ97JneKMw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HTjB9xc8IUCVTXGHTXA4IVWP20+VntPnwB2sfcPD6k1E1jyV6LEFS+EKONR6Ij7zZkAYKUoeIBPCy/tczAXXDDXnSeFpGxsjYYokZjOuoy3HaTAR9rC5Xb8rclcbOx9OstjdLHLLhHNKRk+OjHBtlpFRlyJEx4eWFc16O8IfjKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DZkrOQVG; arc=none smtp.client-ip=209.85.161.47
+	s=arc-20240116; t=1788525733; c=relaxed/simple;
+	bh=v0JD9QnS+O1C1mIX70Krfgrobq49KVwuNtB8eJuqwKk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rfBQdMpK8mGdSBNDqD5HBHkGpJMMjdf7zLmm9U6CzgY2Iy8fGcVBGCtNnij9TZPhvlccUTF92/3u2xf6fD3gBkDUSYXssax65WoLDVy+dEMiZxMzr/Qk8qvqI2PAFYP+mY6FYjKpzKCaIKCe1bPCP8Ues4gDIjPwdFWwy9PLQMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jQCuXQ1b; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DZkrOQVG"
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-6b1497f0453so696878eaf.3
-        for <linux-parisc@vger.kernel.org>; Fri, 04 Sep 2026 05:13:39 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jQCuXQ1b"
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-c255c58156bso177959266b.3
+        for <linux-parisc@vger.kernel.org>; Fri, 04 Sep 2026 05:42:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788524018; x=1789128818; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1788525729; x=1789130529; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=jIo4bPJ9SfRkauZwwJTkYue9aHFLRcYCEIj23gks7mM=;
-        b=DZkrOQVGWI8nXA565rWLFRg+CSoZtUpaHhI06wudEZFuHPb7rsM30t/VYQuCf/ULA5
-         2JaIyYxykBHTPH5erw+aD36LKYp0Ye5vyWsQA9TlIIF3yLfGINgWxVQUreb6aT+3gQjc
-         LNw5vQCNCJqRf7aoM/Uku2195FENJRIlF0w8dO6GcuGTRqH3kECfNyhEv9kzuBcc4KMb
-         FkTPD/L1i4uHh4LRdmoh3yr/yld6Zy9E/T/OkDhw1spw6XjcN7O+5bXYSHM8LKZ3iPEb
-         6xNVxx6W7w/XdCcnwE4CLzFnBApg7bh8vhCRC5iG01m8UdzqxLvePqXq4yFfKm/a1oY6
-         tXyA==
+        bh=+GfpIcZOfBSRWB0S64d7KBcs9ltI3HwY4NYL2qubRE0=;
+        b=jQCuXQ1bdK+exN+TNnnnaxp4ocrP3EXGSQhrMn5gmYDtmqoeNJHxQdiWKTseoeKhxL
+         MYBHn08olZf1vxOU2N1eGw0ofvtclD6/9ZRrnmSiYI8iZZm+342VynfjkuI7RSZZQ8HZ
+         Fk/vPF+glKmh67vv5u9Y5p3KBx+CN0ZaQbJ04X8jJ2NIE4DyvfMHpq220gIQv+V3PbTY
+         XF4wjm3lgwZ4N9/mAnHjNO2fV5WxDw7QgPyPIlDeS23RZlz34Ge0YRtXP+z3W/AEAsB1
+         8/95w2RjBmJaOup1muaaOLLPtFaolNvYzovEKuw8DWr5nZLYlhzY1Q3WhRZI2M0bXDS/
+         HH4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788524018; x=1789128818;
+        d=1e100.net; s=20251104; t=1788525729; x=1789130529;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=jIo4bPJ9SfRkauZwwJTkYue9aHFLRcYCEIj23gks7mM=;
-        b=qARN7QnNRHw4X/4IQAvJBYCS9Jeq1yW94kgifg1HSIpyUoD5DVi4W5ElAwSxqI9dNa
-         AGXHbqp1JFbx8nmdhys3UPAvmE19SjH3hHByLwKmt1A+RnT6q3kguIw68nPyrPijS9vs
-         6LP7a8gvi8IbmeUgEeA2I+aJ0UElku+83foE52apWcH0JVLtA4knBI2bLPFh+BlGJU0/
-         O6p7/TukrpV+kEZcHXEz8vqvU+BHMhgToDJK33l2cqNIfPwv2dtY4MJLHy/oB6Q5RTMd
-         Ty+/CqEpMUMayXNUCOwfsPgC7Fu1WPCOmch1W+Yu9a3i64vl0q/Cu6WaJWd6n7SG3lgA
-         M29w==
-X-Forwarded-Encrypted: i=1; AKwUvByXlQPbm+wgscgMimjOw8Zi1oR1TvVtiHuDjFq8u6OtzNQdI2uACSjUAt1dVvSCUwMxpVjGQRG7VT99NUI=@vger.kernel.org
-X-Gm-Message-State: AFuF++k36lBh/ugmn8357V7VG0KFIbVT3sUsuRrDRmNFsU8CKWSqefiB
-	lXfRpj387sslcwVODMW2HdRolyP1n4yEclgzfRsFSz2m7HKeCJF+fF2i
-X-Gm-Gg: AYBFou3fhzLR71y+lxfjZJIH1vKvnqZ2iSactaan2UFh90KUzT/6Y0g+GxQ+1w0PHO5
-	9kJ9cgSeqcPEoRThV6ZRmzkMbWFUyrC/RwmjmPefIzJKrSG5FCvZtLxvEcLF9KGDS6RakN1sRIT
-	tv32SXO8Rj41hzFZo8HNDSgedeuPrhQWkdy18BijLQpLDbRhD3YmkWZab7cMEKVRbZFYae8olrU
-	2/NP2H5DMq2fNpqivOM6ssWli9VqoMocITsHIy7zZ5LdmWjsLCB1pw+3l3wlgUmop6MJrXxLjCC
-	g3ZcMi2dSm8qTmRdPXo7hbDgDEkyei4+Tsc9/KuU1upZoUrplx5E8p5NVdmU0qtfZ8jN/FnUZbk
-	g/PfeiDcxu2KLUg2B+rHfM1gYHOyFAIsUGVN7lnysplC9gwKy9ez5CXCLGeJz8kX+hu3OcktD/I
-	XmrhSPfM6ZUrA9PcIXsv8jAlXxGNj9lXdilQqL/ZUi10Pl7aLFDdMgy7C2tltY4oFi5uLzja6b2
-	E8WrgTfzKQA1dQMy58uqST3XGzeQaiw/YSUsw==
-X-Received: by 2002:a05:6820:1987:b0:6b7:46fa:16a2 with SMTP id 006d021491bc7-6b746fa1a6bmr2188478eaf.55.1788524017796;
-        Fri, 04 Sep 2026 05:13:37 -0700 (PDT)
-Received: from volcano9f6e-hostos.amd.com ([165.204.217.251])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3339bdf26c5sm6241225eec.27.2026.09.04.05.13.35
+        bh=+GfpIcZOfBSRWB0S64d7KBcs9ltI3HwY4NYL2qubRE0=;
+        b=NgCMXujlHVxu6zFL+gP35rWaKGHaXAaRALwZgWT14S78vqvcbB8Jd1m4XfNEV8RYMB
+         rX8XixD+AKH9xSfpvVTuGpQalenwR0HJixYuip8uT0gnSvf1BYbjPp9bxIIXbAFxSyvU
+         /S8DL1uuX1badtkS81dTIIgA5K8+53NQNfsbTBYKPZmwqf+5N2IP+50skS0FE8KtWmHy
+         nPm6a450K1KUzm+t+dyuwFOLZsFXW6+qRld2vBs4FqP/S1aCJuzqa8RjzPl4fWdWjec2
+         ++ZxMmiSwtXFjSh3xrNBNqUdLigm/zqmjM9MV3gOM7ongciJeVBCh7xXLtrtUOqoEhK1
+         Oo+A==
+X-Forwarded-Encrypted: i=1; AKwUvBzwdLHNHcSObunEKH3b5EwUkoHI3JRxBWQT80lGkLcDbn7LveKIqlOMsv76wpFfjaMRXPcuFCVhpksZhAI=@vger.kernel.org
+X-Gm-Message-State: AFuF++nhmRyuHofM05Rs4n6pr+2z7XWKjfYwr+cMRZpvHB4ujxt9hHfc
+	Me1N+xVEZMq77y0ffgp7hp8cPL3AweyKfXGzsZ9b1ifUX7gQY7OWHq16
+X-Gm-Gg: AYBFou3p53WMJHKbLucxZ7ashLbDlQD2HMOZY+MlkxFwVTiVERYxyvSnrhaFEhVQod5
+	Wx+ZkY5ZewJufC7FFxhXJiJPZAZkdkFdcDbb87lvykkIJ1AA7X9/M4O/A62c2tWUi7Mb2NjoZ7r
+	7oPLLyHe4SNCg2d6RNU8Ji6+77E/WufI4bAXKGx5xq7dhVec8zvEcxmz2tW/lRknABFFV2TjJPD
+	1RAS5CKtC2JTQGYEYHNL6n5qUSNam66uOlF6/DkmAJXLl35ceYZuLS2o9TTFV6BkI9Zc6O/Hcvk
+	bhyiFdA322QYdAnFhvkmH1uPdqMu/TDSI1MaQSQYoj0mx/r0SVGu2M8hzYICFXeemV4CfNiaC7y
+	zd+MlBpvmnJq11Q8yLFtWwiGYEIqmeyHiWAKUJbTbaxaFQcpTuD6T/I5Kpr+TSGhsg5KEvysg7Y
+	0f/C8lHrTnjL9e2nQeIm3qbt3lpghYczUFc+r0uiQiaPjC05mI9UyM5CPiTbRrxJXcEork55TfN
+	lxFwGq69DGb9Pj38Iiw4AiMHDOgaqo=
+X-Received: by 2002:a17:907:d206:b0:c26:19de:9ac6 with SMTP id a640c23a62f3a-c2619dea68emr107601266b.30.1788525728401;
+        Fri, 04 Sep 2026 05:42:08 -0700 (PDT)
+Received: from buildhost.darklands.se ([2001:9b1:ff:d701:51eb:176f:63d9:53f8])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c260d582304sm102558466b.43.2026.09.04.05.42.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2026 05:13:37 -0700 (PDT)
-From: Hemanth Selam <hemanth.selam@gmail.com>
-To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org
-Subject: [PATCH] parisc: fix typos in comments
-Date: Fri,  4 Sep 2026 17:43:28 +0530
-Message-ID: <20260904121332.23565-1-hemanth.selam@gmail.com>
-X-Mailer: git-send-email 2.48.1
+        Fri, 04 Sep 2026 05:42:07 -0700 (PDT)
+From: Magnus Lindholm <linmag7@gmail.com>
+To: andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netdev@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	Magnus Lindholm <linmag7@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] net: tulip: use mod_timer() in t21142_lnk_change()
+Date: Fri,  4 Sep 2026 14:36:11 +0200
+Message-ID: <20260904123843.375633-1-linmag7@gmail.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -75,173 +81,95 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fix typos in comments, reported by scripts/checkpatch.pl using the
-misspelling list in scripts/spelling.txt.  Only touches comments, no code
-changes.
+t21142_lnk_change() is called from tulip_interrupt(), i.e. in hardirq
+context. On a link-fail or NWay renegotiation event it calls
+timer_delete_sync(&tp->timer) before rescheduling the timer, which is
+exactly what
 
-Assisted-by: Cursor:claude-opus-5
-Signed-off-by: Hemanth Selam <hemanth.selam@gmail.com>
+  WARN_ON(in_hardirq() && !(timer->flags & TIMER_IRQSAFE));
+
+in __timer_delete_sync() exists to catch, since tp->timer is not
+TIMER_IRQSAFE:
+
+  WARNING: kernel/time/timer.c:1611 at __timer_delete_sync+0x13c/0x150
+  ...
+  [<...>] t21142_lnk_change+...
+  [<...>] tulip_interrupt+...
+
+This isn't teardown, it's just rescheduling the media timer, which is
+exactly what mod_timer() is for. mod_timer(timer, expires) is
+documented as equivalent to timer_delete(); timer->expires = expires;
+add_timer(), and as the only safe way to change the timeout when a
+timer has multiple unserialized concurrent users. That is the case
+here: t21142_media_task(), scheduled by this same timer's callback,
+already ends with its own mod_timer() call on tp->timer, with a
+comment noting it synchronizes against add_timer() calls from
+interrupts. Using mod_timer() in t21142_lnk_change() as well, instead
+of an unprotected timer_delete()+add_timer() pair, matches that
+existing concurrency model instead of racing against it.
+
+Update the comment in tulip_interrupt() accordingly. pnic2_lnk_change()
+still calls timer_delete_sync() from the same hardirq path, but its timer
+callback re-arms the timer directly with mod_timer(), so fixing that path
+requires separate consideration of the callback/reschedule race.
+
+The warning was reproduced during a link-state change at boot on an
+Alpha UP2000+ running v7.3-rc1 with:
+
+  0001:02:08.0 Ethernet controller: Digital Equipment Corporation
+  DECchip 21142/43 (rev 30)
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Signed-off-by: Magnus Lindholm <linmag7@gmail.com>
 ---
- arch/parisc/include/asm/pdcpat.h        | 4 ++--
- arch/parisc/include/asm/special_insns.h | 2 +-
- arch/parisc/include/uapi/asm/mman.h     | 2 +-
- arch/parisc/kernel/perf_images.h        | 4 ++--
- arch/parisc/lib/memcpy.c                | 2 +-
- drivers/parisc/ccio-dma.c               | 2 +-
- drivers/parisc/dino.c                   | 2 +-
- drivers/parisc/pdc_stable.c             | 2 +-
- drivers/parisc/sba_iommu.c              | 2 +-
- drivers/parport/parport_gsc.c           | 2 +-
- 10 files changed, 12 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/dec/tulip/21142.c     | 8 ++------
+ drivers/net/ethernet/dec/tulip/interrupt.c | 5 ++---
+ 2 files changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/arch/parisc/include/asm/pdcpat.h b/arch/parisc/include/asm/pdcpat.h
-index ec97eefa4ef6..6014fa004b89 100644
---- a/arch/parisc/include/asm/pdcpat.h
-+++ b/arch/parisc/include/asm/pdcpat.h
-@@ -54,7 +54,7 @@
- #define PAT_GMMIO           2         /* > 4G MMIO Space */
- #define PAT_NPIOP           3         /* Non Postable I/O Port Space */
- #define PAT_PIOP            4         /* Postable I/O Port Space */
--#define PAT_AHPA            5         /* Addional HPA Space */
-+#define PAT_AHPA            5         /* Additional HPA Space */
- #define PAT_UFO             6         /* HPA Space (UFO for Mariposa) */
- #define PAT_GNIP            7         /* GNI Reserved Space */
- 
-@@ -292,7 +292,7 @@ struct pdc_pat_pd_addr_map_entry {
- * ----------------------------------------------------------
- * Bit  0 to 51 - conf_base_addr
- * Bit 52 to 62 - reserved
--* Bit       63 - endianess bit
-+* Bit       63 - endianness bit
- ********************************************************************/
- #define PAT_GET_CBA(value) ((value) & 0xfffffffffffff000UL)
- 
-diff --git a/arch/parisc/include/asm/special_insns.h b/arch/parisc/include/asm/special_insns.h
-index 1013eeba31e5..9a54df5eb4f4 100644
---- a/arch/parisc/include/asm/special_insns.h
-+++ b/arch/parisc/include/asm/special_insns.h
-@@ -34,7 +34,7 @@
- 
- /**
-  * prober_user() - Probe user read access
-- * @sr:		Space regster.
-+ * @sr:		Space register.
-  * @va:		Virtual address.
-  *
-  * Return: Non-zero if address is accessible.
-diff --git a/arch/parisc/include/uapi/asm/mman.h b/arch/parisc/include/uapi/asm/mman.h
-index b6a709506987..aca942f1386c 100644
---- a/arch/parisc/include/uapi/asm/mman.h
-+++ b/arch/parisc/include/uapi/asm/mman.h
-@@ -55,7 +55,7 @@
- #define MADV_HUGEPAGE	14		/* Worth backing with hugepages */
- #define MADV_NOHUGEPAGE 15		/* Not worth backing with hugepages */
- 
--#define MADV_DONTDUMP   16		/* Explicity exclude from the core dump,
-+#define MADV_DONTDUMP   16		/* Explicitly exclude from the core dump,
- 					   overrides the coredump filter bits */
- #define MADV_DODUMP	17		/* Clear the MADV_NODUMP flag */
- 
-diff --git a/arch/parisc/kernel/perf_images.h b/arch/parisc/kernel/perf_images.h
-index 7afa2fd550bf..6fd5b3c434f1 100644
---- a/arch/parisc/kernel/perf_images.h
-+++ b/arch/parisc/kernel/perf_images.h
-@@ -574,7 +574,7 @@ static uint32_t onyx_images[][PCXU_IMAGE_SIZE/sizeof(uint32_t)] __ro_after_init
- 0xffffffff,0xffffffff,0xffffffff,0xffffffff,
- 0xffffffff,0xffffffff},
- 
--/* isnt
-+/* isn't
-  *
-  * ctr0: counts the total number of cycles for which iside_notrans is asserted 
-  * ctr1: counts the number of times iside_notrans is asserted for 1-4 cycles 
-@@ -2645,7 +2645,7 @@ static uint32_t cuda_images[][PCXW_IMAGE_SIZE/sizeof(uint32_t)] __ro_after_init
-    },
- 
- 
--/* isnt image  (Image 13)
-+/* isn't image  (Image 13)
-  * 
-  * ctr0 : Total number of cycles for which iside_notrans is asserted. 
-  * ctr1 : Total number of times iside_notrans is asserted for 1-4 cycles. 
-diff --git a/arch/parisc/lib/memcpy.c b/arch/parisc/lib/memcpy.c
-index 03165c82dfdb..93d4e17d7e68 100644
---- a/arch/parisc/lib/memcpy.c
-+++ b/arch/parisc/lib/memcpy.c
-@@ -47,7 +47,7 @@ unsigned long raw_copy_from_user(void *dst, const void __user *src,
- 			break;
- 		}
- 		start += PAGE_SIZE;
--		/* align to page boundry which may have different permission */
-+		/* align to page boundary which may have different permission */
- 		start = PAGE_ALIGN_DOWN(start);
- 	}
- 	return len - newlen + pa_memcpy(dst, (void __force *)src, newlen);
-diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index dc1b6d11f9ab..a85efc41ce27 100644
---- a/drivers/parisc/ccio-dma.c
-+++ b/drivers/parisc/ccio-dma.c
-@@ -415,7 +415,7 @@ ccio_alloc_range(struct ioc *ioc, struct device *dev, size_t size)
-  * @pages_mapped: The requested number of pages to be freed from the
-  * I/O Pdir.
-  *
-- * This function frees the resouces allocated for the iova.
-+ * This function frees the resources allocated for the iova.
-  */
- static void
- ccio_free_range(struct ioc *ioc, dma_addr_t iova, unsigned long pages_mapped)
-diff --git a/drivers/parisc/dino.c b/drivers/parisc/dino.c
-index 4b96d9fda49a..286f4f75dba7 100644
---- a/drivers/parisc/dino.c
-+++ b/drivers/parisc/dino.c
-@@ -590,7 +590,7 @@ dino_card_fixup(struct pci_dev *dev)
- 	dino_cfg_write(dev->bus, dev->devfn, PCI_INTERRUPT_LINE, 1, dev->irq); 
- }
- 
--/* The alignment contraints for PCI bridges under dino */
-+/* The alignment constraints for PCI bridges under dino */
- #define DINO_BRIDGE_ALIGN 0x100000
- 
- 
-diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
-index 16f4496bca95..6b567a74fc2c 100644
---- a/drivers/parisc/pdc_stable.c
-+++ b/drivers/parisc/pdc_stable.c
-@@ -586,7 +586,7 @@ static ssize_t pdcs_autosearch_read(struct kobject *kobj,
-  * @attr: The kobject attributes.
-  * @buf: The output buffer to write to.
-  *
-- * The value of the timer field correponds to a number of seconds in powers of 2.
-+ * The value of the timer field corresponds to a number of seconds in powers of 2.
-  */
- static ssize_t pdcs_timer_read(struct kobject *kobj,
- 			       struct kobj_attribute *attr, char *buf)
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index e0a148ab5876..ecc7bb7a8468 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -599,7 +599,7 @@ sba_io_pdir_entry(__le64 *pdir_ptr, space_t sid, phys_addr_t pba,
-  * corresponding IO TLB entry. The Ike PCOM (Purge Command Register)
-  * is to purge stale entries in the IO TLB when unmapping entries.
-  *
-- * The PCOM register supports purging of multiple pages, with a minium
-+ * The PCOM register supports purging of multiple pages, with a minimum
-  * of 1 page and a maximum of 2GB. Hardware requires the address be
-  * aligned to the size of the range being purged. The size of the range
-  * must be a power of 2. The "Cool perf optimization" in the
-diff --git a/drivers/parport/parport_gsc.c b/drivers/parport/parport_gsc.c
-index e5e8054a1af8..0a9f7fdb25bc 100644
---- a/drivers/parport/parport_gsc.c
-+++ b/drivers/parport/parport_gsc.c
-@@ -348,7 +348,7 @@ static int __init parport_init_chip(struct parisc_device *dev)
- 	 */
- 	if (boot_cpu_data.cpu_type > pcxt && !pdc_add_valid(port+4)) {
- 
--		/* Initialize bidirectional-mode (0x10) & data-tranfer-mode #1 (0x20) */
-+		/* Initialize bidirectional-mode (0x10) & data-transfer-mode #1 (0x20) */
- 		pr_info("%s: initialize bidirectional-mode\n", __func__);
- 		parport_writeb ( (0x10 + 0x20), port + 4);
- 
+diff --git a/drivers/net/ethernet/dec/tulip/21142.c b/drivers/net/ethernet/dec/tulip/21142.c
+index 76767dec216d..da701f325783 100644
+--- a/drivers/net/ethernet/dec/tulip/21142.c
++++ b/drivers/net/ethernet/dec/tulip/21142.c
+@@ -216,20 +216,16 @@ void t21142_lnk_change(struct net_device *dev, int csr5)
+ 		    (csr12 & 2) == 2) ||
+ 		   (tp->nway && (csr5 & (TPLnkFail)))) {
+ 		/* Link blew? Maybe restart NWay. */
+-		timer_delete_sync(&tp->timer);
+ 		t21142_start_nway(dev);
+-		tp->timer.expires = RUN_AT(3*HZ);
+-		add_timer(&tp->timer);
++		mod_timer(&tp->timer, RUN_AT(3 * HZ));
+ 	} else if (dev->if_port == 3  ||  dev->if_port == 5) {
+ 		if (tulip_debug > 1)
+ 			dev_info(&dev->dev, "21143 %s link beat %s\n",
+ 				 medianame[dev->if_port],
+ 				 (csr12 & 2) ? "failed" : "good");
+ 		if ((csr12 & 2)  &&  ! tp->medialock) {
+-			timer_delete_sync(&tp->timer);
+ 			t21142_start_nway(dev);
+-			tp->timer.expires = RUN_AT(3*HZ);
+-			add_timer(&tp->timer);
++			mod_timer(&tp->timer, RUN_AT(3 * HZ));
+ 		} else if (dev->if_port == 5)
+ 			iowrite32(csr14 & ~0x080, ioaddr + CSR14);
+ 	} else if (dev->if_port == 0  ||  dev->if_port == 4) {
+diff --git a/drivers/net/ethernet/dec/tulip/interrupt.c b/drivers/net/ethernet/dec/tulip/interrupt.c
+index 0a12cb9b3ba7..6ed4b68ad86c 100644
+--- a/drivers/net/ethernet/dec/tulip/interrupt.c
++++ b/drivers/net/ethernet/dec/tulip/interrupt.c
+@@ -698,9 +698,8 @@ irqreturn_t tulip_interrupt(int irq, void *dev_instance)
+ 				dev->stats.rx_errors++;
+ 				tulip_start_rxtx(tp);
+ 			}
+-			/*
+-			 * NB: t21142_lnk_change() does a timer_delete_sync(), so be careful
+-			 * if this call is ever done under the spinlock
++			/* NB: pnic2_lnk_change() does a timer_delete_sync(), so be careful
++			 * if this call is ever done under the spinlock.
+ 			 */
+ 			if (csr5 & (TPLnkPass | TPLnkFail | 0x08000000)) {
+ 				if (tp->link_change)
 -- 
-2.48.1
+2.53.0
 
