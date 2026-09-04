@@ -1,175 +1,164 @@
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D24486BBA
-	for <linux-parisc@vger.kernel.org>; Fri,  4 Sep 2026 12:42:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788525733; cv=none; b=M1Tmpti9EWBZ1lFdzqDyVhlVpmSgNUSxqTcP5edzPZutOliF8ZXkT0pHpnh9nyAVGAoOGRviO3Vve3gaU3OhhHGb9SmSZ9d/lXsI9Ib4SU89F/JU9rrEJdZmCKdyX41ICSdr954hfujqFFXo4ybmfgIpXRH8LU3ti03oWqFl9Bo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788525733; c=relaxed/simple;
-	bh=v0JD9QnS+O1C1mIX70Krfgrobq49KVwuNtB8eJuqwKk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rfBQdMpK8mGdSBNDqD5HBHkGpJMMjdf7zLmm9U6CzgY2Iy8fGcVBGCtNnij9TZPhvlccUTF92/3u2xf6fD3gBkDUSYXssax65WoLDVy+dEMiZxMzr/Qk8qvqI2PAFYP+mY6FYjKpzKCaIKCe1bPCP8Ues4gDIjPwdFWwy9PLQMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jQCuXQ1b; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69EE8511E9F
+	for <linux-parisc@vger.kernel.org>; Fri,  4 Sep 2026 17:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788542484; cv=pass; b=XldqF0HnpIgfb+POOtvTDH4afamYbBuiYUkpMsp98xSQhhyo760F3w/f/avK9uuPg16nCSslqJxVdexTpkdiBV3akAka1KLzB0k9h9lBWj/kAEgKmQLNECv3A+ge2lnqoRyCzCJN4cNuUji3dZX22XC9SR24MaA8TJD2M/E/epU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788542484; c=relaxed/simple;
+	bh=AFNBiWCRpUcEoXNChHss1VconiHm4hB8qaeZxdrK+Dg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GBnlLlVq5UIWW3TjjKYHW9Qv46moBCMxk+tsm5LpbI5Wl8pETh+BxMyBOdUJl+jR6jutsQ8p50Z4UAukXHyS9cy9A5V2zo46V1JtgFeXIiHAiBezVPvVVpg5t2jjRDARxiQzMhCQmDecBXh9oohg+13nJ0pjUeaz2FghHOwTB/g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S+5ZMHHh; arc=pass smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jQCuXQ1b"
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-c255c58156bso177959266b.3
-        for <linux-parisc@vger.kernel.org>; Fri, 04 Sep 2026 05:42:10 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S+5ZMHHh"
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-6a68aaf4840so2892857a12.0
+        for <linux-parisc@vger.kernel.org>; Fri, 04 Sep 2026 10:21:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1788542480; cv=none;
+        d=google.com; s=arc-20260327;
+        b=pAgjaCK9PZuQbtyjHKR1/aeKosM4O5/7nOoK6L3cHKN6YOZaSZDxLWc4CikiARIKKJ
+         VkGUv46QtIibjYA5I8RnoGmwAZe2tCUweig0cU5RX7DwrCfK2f4q7aV+FBKX29t8Mvp8
+         hXXa7LHB4Dxnk4Gx+Wvyt2dmHxoiQPKgkvgXIdKozYfiAZqf5hHqpfZup/Q7iia/OqQj
+         42G9D+C9sj6+xwDty1fCEFj5WaRZw/4mAxjdEnqXtL6GbhWvTBgmYtHwzRWHdiASB68I
+         a1aPun1SmVm3abOE9dL1cYpfSMB7q4PogXnh/qStxRZ0OPSc+7k1KiHRZmimkTa8hPi6
+         AxiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=xbP84TB5YSyUcPTlSRXVzwOJ5KiLCluO2L3qZFE4rqU=;
+        fh=BB1w1ea//7Wk7cj797CH81p/G1+A6C5Rq7MkdhyfNQE=;
+        b=XyTIgNXJ2zl+Vb7kzzQIXx9vdGjJxGhR9Nw95lnu7hr8311YNkIoHdI03hz0Q1CLy1
+         XG00PzDUieJN9QaXvOMa3tR53XfX+A03jyvzooTUkGjHYuXKiLVUrVH1cxAFgLcC+Gfw
+         p8ptvF/7HDR4ashfsmBy9DVFa/lkxzopMA10UtSzngQmwz6Y4VCwBcyPbmgeTmSFQVnW
+         3iKjo5yKIhKj4KGGILj8pFp6tAupx/K69LR3WNp+evFgHqHNRWx7gymkF348s3I/6y1s
+         pLFrja828gmMGWr9H5M5h+qbCNDQucgUyRTmsoG7gD59D4JkrTrv2uuc/wxTclMnYRi8
+         sddg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788525729; x=1789130529; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=+GfpIcZOfBSRWB0S64d7KBcs9ltI3HwY4NYL2qubRE0=;
-        b=jQCuXQ1bdK+exN+TNnnnaxp4ocrP3EXGSQhrMn5gmYDtmqoeNJHxQdiWKTseoeKhxL
-         MYBHn08olZf1vxOU2N1eGw0ofvtclD6/9ZRrnmSiYI8iZZm+342VynfjkuI7RSZZQ8HZ
-         Fk/vPF+glKmh67vv5u9Y5p3KBx+CN0ZaQbJ04X8jJ2NIE4DyvfMHpq220gIQv+V3PbTY
-         XF4wjm3lgwZ4N9/mAnHjNO2fV5WxDw7QgPyPIlDeS23RZlz34Ge0YRtXP+z3W/AEAsB1
-         8/95w2RjBmJaOup1muaaOLLPtFaolNvYzovEKuw8DWr5nZLYlhzY1Q3WhRZI2M0bXDS/
-         HH4w==
+        d=gmail.com; s=20251104; t=1788542480; x=1789147280; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=xbP84TB5YSyUcPTlSRXVzwOJ5KiLCluO2L3qZFE4rqU=;
+        b=S+5ZMHHhfGjA+IdWmeugDDHgBwHG5bBYSPYfCEow+5chkn8MQle82UmWyVbxLiEN7d
+         ijcv6053WNTu2RqyJ6VR+Q1MSk4Vxz4n7ZKFRrjYrPqEbaWeUeae4OgCiLykWRLNUDRA
+         ZH/X93kZSKA1/wbKpcmxavHteq0Ow+JKUXYEkMsejbWI7AKmmLzp7rDEpD05dDMzdu05
+         qx2RS3AgstzLvoN8v5AUqAPOvMKc+nz/J8n2Lte3Wf5wq5bPQVeGs2cRbGv15hnp0TgY
+         EW5NlkkUE9iLPQcY1GiopKTuEm/IxQzvNCCThYHaycwvH5N4Y2kyLdCZ7Tyzs3tF5f6h
+         EH1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788525729; x=1789130529;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=+GfpIcZOfBSRWB0S64d7KBcs9ltI3HwY4NYL2qubRE0=;
-        b=NgCMXujlHVxu6zFL+gP35rWaKGHaXAaRALwZgWT14S78vqvcbB8Jd1m4XfNEV8RYMB
-         rX8XixD+AKH9xSfpvVTuGpQalenwR0HJixYuip8uT0gnSvf1BYbjPp9bxIIXbAFxSyvU
-         /S8DL1uuX1badtkS81dTIIgA5K8+53NQNfsbTBYKPZmwqf+5N2IP+50skS0FE8KtWmHy
-         nPm6a450K1KUzm+t+dyuwFOLZsFXW6+qRld2vBs4FqP/S1aCJuzqa8RjzPl4fWdWjec2
-         ++ZxMmiSwtXFjSh3xrNBNqUdLigm/zqmjM9MV3gOM7ongciJeVBCh7xXLtrtUOqoEhK1
-         Oo+A==
-X-Forwarded-Encrypted: i=1; AKwUvBzwdLHNHcSObunEKH3b5EwUkoHI3JRxBWQT80lGkLcDbn7LveKIqlOMsv76wpFfjaMRXPcuFCVhpksZhAI=@vger.kernel.org
-X-Gm-Message-State: AFuF++nhmRyuHofM05Rs4n6pr+2z7XWKjfYwr+cMRZpvHB4ujxt9hHfc
-	Me1N+xVEZMq77y0ffgp7hp8cPL3AweyKfXGzsZ9b1ifUX7gQY7OWHq16
-X-Gm-Gg: AYBFou3p53WMJHKbLucxZ7ashLbDlQD2HMOZY+MlkxFwVTiVERYxyvSnrhaFEhVQod5
-	Wx+ZkY5ZewJufC7FFxhXJiJPZAZkdkFdcDbb87lvykkIJ1AA7X9/M4O/A62c2tWUi7Mb2NjoZ7r
-	7oPLLyHe4SNCg2d6RNU8Ji6+77E/WufI4bAXKGx5xq7dhVec8zvEcxmz2tW/lRknABFFV2TjJPD
-	1RAS5CKtC2JTQGYEYHNL6n5qUSNam66uOlF6/DkmAJXLl35ceYZuLS2o9TTFV6BkI9Zc6O/Hcvk
-	bhyiFdA322QYdAnFhvkmH1uPdqMu/TDSI1MaQSQYoj0mx/r0SVGu2M8hzYICFXeemV4CfNiaC7y
-	zd+MlBpvmnJq11Q8yLFtWwiGYEIqmeyHiWAKUJbTbaxaFQcpTuD6T/I5Kpr+TSGhsg5KEvysg7Y
-	0f/C8lHrTnjL9e2nQeIm3qbt3lpghYczUFc+r0uiQiaPjC05mI9UyM5CPiTbRrxJXcEork55TfN
-	lxFwGq69DGb9Pj38Iiw4AiMHDOgaqo=
-X-Received: by 2002:a17:907:d206:b0:c26:19de:9ac6 with SMTP id a640c23a62f3a-c2619dea68emr107601266b.30.1788525728401;
-        Fri, 04 Sep 2026 05:42:08 -0700 (PDT)
-Received: from buildhost.darklands.se ([2001:9b1:ff:d701:51eb:176f:63d9:53f8])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c260d582304sm102558466b.43.2026.09.04.05.42.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2026 05:42:07 -0700 (PDT)
-From: Magnus Lindholm <linmag7@gmail.com>
-To: andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-alpha@vger.kernel.org,
-	Magnus Lindholm <linmag7@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] net: tulip: use mod_timer() in t21142_lnk_change()
-Date: Fri,  4 Sep 2026 14:36:11 +0200
-Message-ID: <20260904123843.375633-1-linmag7@gmail.com>
-X-Mailer: git-send-email 2.53.0
+        d=1e100.net; s=20251104; t=1788542480; x=1789147280;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=xbP84TB5YSyUcPTlSRXVzwOJ5KiLCluO2L3qZFE4rqU=;
+        b=FZQzkKXRgDtgyuvlVfgZs7qTS6lVV7WhfJuFRnBOcDsbTO3cozLmL4KmE4mZuPElHw
+         hRkcF9rowboSl5SUVI/nZVZ7Qt+3FK86F0n/17kL+qRD0Y+FZ2hYeuzUFDrdxPNwAiCK
+         Tc+gyjllQ5T9nLFijVUwQF/DEfi0RzdRnZC+Igunql4jn1KtrRgrzmVl+Im/YG2MCLOQ
+         JhG5tJjVQ/zYt2dAtYY3BZJhXUmoh6LjSswB6Ikb0bsKNa8jxTpIb3ZP32Vsbh5pR/Rn
+         /tuP40W+v5gg7ttNazMfZCRhbWaPISwvfDQ9M8GmY6zprKDp5EWiLk1+9qqOcwQI1piu
+         EA3Q==
+X-Forwarded-Encrypted: i=1; AKwUvBx7sQK8Bsf+Uv0iG8KFjRiPySXZ76bVF+XdOeDWtbjhTBMyQzxeZPFp7Ewvt3xTpNxYpJF6chQTqPogEgs=@vger.kernel.org
+X-Gm-Message-State: AFuF++kuE9U7oJVlQOCLeqPqkjCIDUMaoMwWVILADN/FKbqOmDz7o5s6
+	QtYYWw4eNLd2XwWklifcxElRnR3hj+7D6EzlscaGcvBHMqP50+Z3MkWJ1UN2X2XKR8a+wLB02+k
+	JqTTD5GykBV31J2K6OXlB31n9RzfcsyM=
+X-Gm-Gg: AYBFou0Ucl//QiC72ykZLAgoPTJ+q4UBJBphjqDZdozF9qz/dfeademVLgvFOsNMHed
+	JS9n7kO0KqzgxmSZ6N00UkMygOzo1CVW8evCUZAvK+OAHyzXxLqrp+KOqDvnxGG2ETz+2x6tr2u
+	iBF0oNwTks81PwaB9wJcybu33aBMKah8eYEwKp2JqayQ0R4ZoW493iY6l1PNXStWeR0QXvng80S
+	+sEmfsphfiDS7Ri1qUHzS1cxpTXm+siLKek5IIqxzSfaF1Ga+riB8jD+p3HQpsEvf2NMggHPNlM
+	Z274U0jmBXATMUa5VWH6IA1NdkIWRZu5UGQz/Q4AYPMCpj6N5HjhU72+swwhlSrtykS0gE+CxQo
+	/wbzmWpavhes5qK01dwKb5vF0s9Dz0aI=
+X-Received: by 2002:a05:6402:a252:20b0:6a6:9368:73a0 with SMTP id
+ 4fb4d7f45d1cf-6a696a73aa1mr4363499a12.6.1788542479338; Fri, 04 Sep 2026
+ 10:21:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1788351089.git.rrobaina@redhat.com> <4ada9fcbb93af8d5c1c9bfe2c83d94fc10bfe327.1788351089.git.rrobaina@redhat.com>
+In-Reply-To: <4ada9fcbb93af8d5c1c9bfe2c83d94fc10bfe327.1788351089.git.rrobaina@redhat.com>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Fri, 4 Sep 2026 19:21:07 +0200
+X-Gm-Features: AcwNN1WpEQ0Y6eKbtA6wNzDHeYOBs1Tconhq7C15XjRhFKDXvjk4jMYrR9OFExk
+Message-ID: <CA+=Fv5T4826T2sd0Gbh-nfZsqcWK_phdBKy4BLWOvDTt92t5Eg@mail.gmail.com>
+Subject: Re: [PATCH v2 02/13] alpha: pass pt_regs to audit_syscall_entry()
+To: Ricardo Robaina <rrobaina@redhat.com>
+Cc: audit@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org, bpf@vger.kernel.org, paul@paul-moore.com, 
+	eparis@redhat.com, sgrubb@redhat.com, oleg@redhat.com, 
+	richard.henderson@linaro.org, mattst88@gmail.com, linux@armlinux.org.uk, 
+	catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, monstr@monstr.eu, 
+	tsbogend@alpha.franken.de, jonas@southpole.se, 
+	stefan.kristiansson@saunalahti.fi, shorne@gmail.com, 
+	James.Bottomley@hansenpartnership.com, deller@gmx.de, 
+	ysato@users.sourceforge.jp, dalias@libc.org, glaubitz@physik.fu-berlin.de, 
+	davem@davemloft.net, andreas@gaisler.com, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, chris@zankel.net, 
+	jcmvbkbc@gmail.com, tglx@kernel.org, peterz@infradead.org, luto@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-t21142_lnk_change() is called from tulip_interrupt(), i.e. in hardirq
-context. On a link-fail or NWay renegotiation event it calls
-timer_delete_sync(&tp->timer) before rescheduling the timer, which is
-exactly what
+Hi Ricardo,
 
-  WARN_ON(in_hardirq() && !(timer->flags & TIMER_IRQSAFE));
+On Wed, Sep 2, 2026 at 4:44=E2=80=AFPM Ricardo Robaina <rrobaina@redhat.com=
+> wrote:
+>
+> audit_syscall_entry() now takes a pointer to pt_regs and extracts
+> the syscall arguments itself via syscall_get_arguments(). Drop the
+> individual argument registers from the call and pass regs instead.
+>
+> Signed-off-by: Ricardo Robaina <rrobaina@redhat.com>
+> ---
+>  arch/alpha/kernel/ptrace.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/alpha/kernel/ptrace.c b/arch/alpha/kernel/ptrace.c
+> index fc8f6cedbb28..8a39c0473297 100644
+> --- a/arch/alpha/kernel/ptrace.c
+> +++ b/arch/alpha/kernel/ptrace.c
+> @@ -496,8 +496,7 @@ asmlinkage unsigned long syscall_trace_enter(void)
+>         }
+>
+>  #ifdef CONFIG_AUDITSYSCALL
+> -       audit_syscall_entry(syscall_get_nr(current, regs),
+> -               regs->r16, regs->r17, regs->r18, regs->r19);
+> +       audit_syscall_entry(syscall_get_nr(current, regs), regs);
+>  #endif
+>         return syscall_get_nr(current, regs);
+>  }
+> --
+> 2.55.0
+>
+This doesn't apply on top of my "alpha: enable GENERIC_ENTRY" series
 
-in __timer_delete_sync() exists to catch, since tp->timer is not
-TIMER_IRQSAFE:
+https://lore.kernel.org/linux-alpha/20260902184058.198679-1-linmag7@gmail.c=
+om/T/#t
 
-  WARNING: kernel/time/timer.c:1611 at __timer_delete_sync+0x13c/0x150
-  ...
-  [<...>] t21142_lnk_change+...
-  [<...>] tulip_interrupt+...
+That series moves alpha's syscall entry onto the generic entry
+framework and removes syscall_trace_enter() and its direct
+audit_syscall_entry() call entirely - verified with git am against
+GENERIC_ENTRY applied, it fails at exactly this hunk.
+You don't need a replacement alpha patch, though. Once GENERIC_ENTRY
+lands, alpha's syscall entry goes through
+syscall_enter_from_user_mode_randomize_stack(), which already calls
+syscall_enter_audit() as part of the shared entry helpers
+(include/linux/entry-common.h). I applied patch 1/13 alone on top of
+GENERIC_ENTRY and confirmed alpha's entry path already routes through
+the updated __audit_syscall_entry() - no alpha-specific code needed.
+So for alpha, you can drop this patch in the next revision rather
+than rebase it.
 
-This isn't teardown, it's just rescheduling the media timer, which is
-exactly what mod_timer() is for. mod_timer(timer, expires) is
-documented as equivalent to timer_delete(); timer->expires = expires;
-add_timer(), and as the only safe way to change the timeout when a
-timer has multiple unserialized concurrent users. That is the case
-here: t21142_media_task(), scheduled by this same timer's callback,
-already ends with its own mod_timer() call on tp->timer, with a
-comment noting it synchronizes against add_timer() calls from
-interrupts. Using mod_timer() in t21142_lnk_change() as well, instead
-of an unprotected timer_delete()+add_timer() pair, matches that
-existing concurrency model instead of racing against it.
-
-Update the comment in tulip_interrupt() accordingly. pnic2_lnk_change()
-still calls timer_delete_sync() from the same hardirq path, but its timer
-callback re-arms the timer directly with mod_timer(), so fixing that path
-requires separate consideration of the callback/reschedule race.
-
-The warning was reproduced during a link-state change at boot on an
-Alpha UP2000+ running v7.3-rc1 with:
-
-  0001:02:08.0 Ethernet controller: Digital Equipment Corporation
-  DECchip 21142/43 (rev 30)
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Signed-off-by: Magnus Lindholm <linmag7@gmail.com>
----
- drivers/net/ethernet/dec/tulip/21142.c     | 8 ++------
- drivers/net/ethernet/dec/tulip/interrupt.c | 5 ++---
- 2 files changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/ethernet/dec/tulip/21142.c b/drivers/net/ethernet/dec/tulip/21142.c
-index 76767dec216d..da701f325783 100644
---- a/drivers/net/ethernet/dec/tulip/21142.c
-+++ b/drivers/net/ethernet/dec/tulip/21142.c
-@@ -216,20 +216,16 @@ void t21142_lnk_change(struct net_device *dev, int csr5)
- 		    (csr12 & 2) == 2) ||
- 		   (tp->nway && (csr5 & (TPLnkFail)))) {
- 		/* Link blew? Maybe restart NWay. */
--		timer_delete_sync(&tp->timer);
- 		t21142_start_nway(dev);
--		tp->timer.expires = RUN_AT(3*HZ);
--		add_timer(&tp->timer);
-+		mod_timer(&tp->timer, RUN_AT(3 * HZ));
- 	} else if (dev->if_port == 3  ||  dev->if_port == 5) {
- 		if (tulip_debug > 1)
- 			dev_info(&dev->dev, "21143 %s link beat %s\n",
- 				 medianame[dev->if_port],
- 				 (csr12 & 2) ? "failed" : "good");
- 		if ((csr12 & 2)  &&  ! tp->medialock) {
--			timer_delete_sync(&tp->timer);
- 			t21142_start_nway(dev);
--			tp->timer.expires = RUN_AT(3*HZ);
--			add_timer(&tp->timer);
-+			mod_timer(&tp->timer, RUN_AT(3 * HZ));
- 		} else if (dev->if_port == 5)
- 			iowrite32(csr14 & ~0x080, ioaddr + CSR14);
- 	} else if (dev->if_port == 0  ||  dev->if_port == 4) {
-diff --git a/drivers/net/ethernet/dec/tulip/interrupt.c b/drivers/net/ethernet/dec/tulip/interrupt.c
-index 0a12cb9b3ba7..6ed4b68ad86c 100644
---- a/drivers/net/ethernet/dec/tulip/interrupt.c
-+++ b/drivers/net/ethernet/dec/tulip/interrupt.c
-@@ -698,9 +698,8 @@ irqreturn_t tulip_interrupt(int irq, void *dev_instance)
- 				dev->stats.rx_errors++;
- 				tulip_start_rxtx(tp);
- 			}
--			/*
--			 * NB: t21142_lnk_change() does a timer_delete_sync(), so be careful
--			 * if this call is ever done under the spinlock
-+			/* NB: pnic2_lnk_change() does a timer_delete_sync(), so be careful
-+			 * if this call is ever done under the spinlock.
- 			 */
- 			if (csr5 & (TPLnkPass | TPLnkFail | 0x08000000)) {
- 				if (tp->link_change)
--- 
-2.53.0
-
+Regards
+Magnus
