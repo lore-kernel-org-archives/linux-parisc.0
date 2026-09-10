@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F963F6C3E;
-	Thu, 10 Sep 2026 10:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B55A40B36D;
+	Thu, 10 Sep 2026 10:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789036266; cv=none; b=hvtaEPCZ5RMg1zpBWIl2kCLOQTQroHK/Q/Q/8Z0+HlLuBD+2z5Izd1TqTZztRH+NkqnmSKfJ3/qo0gfce9kV6WYFCL93U/SUsC4jiF38t3PWkpFZTDZczPGrDMaCtR4x63F1Y8NRkclTYthfPVMlx/Uz/zUkEjJlpjrOmtmPD7c=
+	t=1789036333; cv=none; b=lVIRHjsyUql1LIAvarG62gJaKCALWI4Xi+PrDvq+mpcojFqgSUesEL8wpB1WgkiFFsyliJs0uNc3kgpOeSKi++rD0xGwAPei0ummq8lUdyHh0hNYE+c3likNnUpRKaCCouINBBQ/asf2S5sQZ0r0cynEo45x/3Pg2QjsOufqaT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789036266; c=relaxed/simple;
-	bh=wuBYGHfLvBeHgbg5Ca7CP251ZhffCW2qaaO6tZUHoVs=;
+	s=arc-20240116; t=1789036333; c=relaxed/simple;
+	bh=V2vhy65ipyK1teB6lk2kYBwi2igXEQekTpVnNrvEA1o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oBNCjNJE/40ZcGFACxH9rsR3hu+un5jtk0Bbx7Q/YwNO7iPDqZHhFQyKUHMHcVUuD+b0n+UwHv2sOnTv1FbWwuaNAxWHrNLG4yjxgNe0QfWSz8VbrA/4unHXVHw0WJ1v3DE4DpZX+unWIR1HhjcXumDN5z+Gmw/Zwyk2GGPgMBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mpoFtE5b; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=DG6WAEzlKfOAi2CrMmF5y1z/020JzagMoEtKuMp/8rhy17KXRIYP3fecAgk7wnxmqTXXN9uEduZ7uqog/+1pW3OEIeCkQfBHm2VhzNjFHQLpulsdkZ1oiMl1O0X9oYWMb4Ki9S/TgbgZvhFJyeWNL7RTpZ2hzRV8Ynip6LCQxns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jZreZ4/N; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mpoFtE5b"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 875C11F000FF;
-	Thu, 10 Sep 2026 10:30:51 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jZreZ4/N"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BF591F000FF;
+	Thu, 10 Sep 2026 10:31:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789036256;
-	bh=z5tt/vZICXYotB8Ov4sxRHc76HIObnUdWrqEICEmI+4=;
+	s=k20260515; t=1789036324;
+	bh=C7HvCb71weYQ/NOoQNM3djQKtH6Nl3mKnKGj1C/6bO4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=mpoFtE5bJ1xDM3TQ3yyWIgKLdNeODO0ftV5eZAFo/Tams4jQnJJ0EWELrYwtiqI9U
-	 4o0lNTHcri4/WN+GzA6ZKbWJL8UbvAz+KgCNYw9vSFMH/arhR71+6t3+HOekJEd4w5
-	 EerrtgsFnyGebjCwOVHrBSjq08KbyYRHkwO2fazhSh2vi2/mGozXFZ/9CIBUDiBIR5
-	 g52FeLV63HRSjRb902gKfcVR1K1CSxqkZSqHndTKlvpiJ8LaLru8ZXCbjwIdLHGonD
-	 +wVNCSY6aTFyG22pkvcTIrz4ITwQw+UgvdO3OlTaIiB3ZYLCSCdMqoXT6nBUT69vyT
-	 xqUI2FH0RzvLg==
-Date: Thu, 10 Sep 2026 11:30:49 +0100
+	b=jZreZ4/NiTWZmQu+4xgSv3RsAlU2d+Iitt9d2uhSa1/bVELbT1LAxNMGoopKV7RdJ
+	 GaT2JuTQXhxZgfhOU+qL5sTDVZDavLErtClLapXZytUiZdypqr4/r9Ru/s/CWdH8DH
+	 QH9BWCrGZ2eZAXxMsGvNuRKRy+UE5ZFXOi1IgH+Ksqnhd3qWnn07Q5gs7h9zGS6ErC
+	 4J2oCAhA8sy8M8s2zB0KZWwMnIp/y9LM3hxZNm+O+ZKdd8gWvuQwynoH7f7Bji5BTA
+	 0c9VWIJ3JGCScEwzL7zyTJtyfmVdwAAXBTIQLN+7enBAFvzF0Tn3F8OU8QvhVhl+61
+	 XytdHaYnGptzA==
+Date: Thu, 10 Sep 2026 11:31:57 +0100
 From: Simon Horman <horms@kernel.org>
 To: Hemanth Selam <hemanth.selam@gmail.com>
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -51,10 +51,10 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org, linux-parisc@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v3 04/10] net: cavium: fix typos in comments
-Message-ID: <20260910103049.GW40544@horms.kernel.org>
+Subject: Re: [PATCH net-next v3 05/10] net: qlogic: fix typos in comments
+Message-ID: <20260910103157.GX40544@horms.kernel.org>
 References: <20260908052602.27497-1-hemanth.selam@gmail.com>
- <20260908052602.27497-5-hemanth.selam@gmail.com>
+ <20260908052602.27497-6-hemanth.selam@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -63,9 +63,9 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260908052602.27497-5-hemanth.selam@gmail.com>
+In-Reply-To: <20260908052602.27497-6-hemanth.selam@gmail.com>
 
-On Tue, Sep 08, 2026 at 10:55:56AM +0530, Hemanth Selam wrote:
+On Tue, Sep 08, 2026 at 10:55:57AM +0530, Hemanth Selam wrote:
 > Fix misspellings in comments, found with scripts/checkpatch.pl using
 > the misspelling list in scripts/spelling.txt.  Comments only, no code
 > changes.
