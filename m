@@ -1,180 +1,130 @@
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2285848380C
-	for <linux-parisc@vger.kernel.org>; Thu, 10 Sep 2026 12:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B3448664A;
+	Thu, 10 Sep 2026 15:41:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789043413; cv=none; b=TWHOjwX8aC4PihbSz76EBjlJfdzD+Cuy6AHfw+TdqLPArWoFY1lnrYHf+8+NB9SdHU+JNKelkWPZBWD88Xkqln5SBT9SC0vMeBBZxXo4daRS+aHR/k321yTdH/eHdIC5a0ZpbgRG/UffPwEJCdr7ttl4+kD6lpqSjdkmkN5Ap+M=
+	t=1789054873; cv=none; b=iLu/wE38PhhX2rTPoPPqAzghVjCjA8p+4M3TZeztIji3Nty47wjNo4JF9T6/IDGykql2Jm5fhco5itr7mnIvX3ELrlQKg2Y+cFHUDpzNIvbD5sP9EqgrrhWcGLLxNNolSurwoKgC9TSWVitXFgSb5avUSSYrWtjGxajhhnPo5BY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789043413; c=relaxed/simple;
-	bh=8Q0ze4ZDX2GHsiZDFfKXC9i9aMSp57Cl9GGwUJvpLkg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WGZfsDUJkclHE0xTSnI0X40roTkM6WT/OudyXDYcUg2o2HzhEgtRfnxLoPcslcS6mgBGYSS7+j0LtXIZ7l+0h2J/qj0tp6CUZhysdLU4RwW3M9bQATefoSDz0CHvJ6/p06bMl9gDg8IEC2ayFteHArl0OR/wU/rV/fb1QiizAVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VMD79ML5; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	s=arc-20240116; t=1789054873; c=relaxed/simple;
+	bh=38iNAKbKJDNm7y94oFhd+Hh2UDcpYGGHN+ODnfGKfzs=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=oDWiibF8WUXGN7L2hLeE4nNtdO7Qv0hJsNPRheqVN+MQFuBp5rG4PRfhiI9+WEtn53BAo3fFk5XbFRdBPw/WFEF+f4mGYtKnbj7qWCxH1jybIQGSfY2htwt199m0gY/oAIF+854Nwe+EGHcAmwBaiJudDof8uTs0lq1m8zXhw0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZPT1gMlQ; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VMD79ML5"
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-4843e397f74so590548f8f.1
-        for <linux-parisc@vger.kernel.org>; Thu, 10 Sep 2026 05:30:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1789043406; x=1789648206; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=ARPEqhavuvd4sEo+R5C4AUtofUWM0B/7wgknn65mA9s=;
-        b=VMD79ML5yXjolU2L6ZiyyKpEEPErjJGdlOnuiDnq7l2rahcJQfgc6vP9LP2EGfTJWa
-         aT2JprphxBNTCh88V74+4xPdrNMM2ndYwqenC4TJrUvGnPE6vyfNiNO9Cv/9RskMPA9+
-         jFHNX5w/zemxo19genVp4VuGChmeXGGa19kjbG8Oux3wpPnIG/s8xgHl9NBwGcYNj/gD
-         lkRLWFPeQtecihKk9mKRfvMJtNsauW4m5vdpMxuzbJYewV7PAXyaeTjQWx3J8JMyU5XU
-         4K12SLdIv59wkClf0Bl8LyY7y1OF/kox6Aug7rLPkBFmQtOHec45+SPKFRBsvbA5S2Jj
-         qF7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789043406; x=1789648206;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=ARPEqhavuvd4sEo+R5C4AUtofUWM0B/7wgknn65mA9s=;
-        b=YgYlvGl3l+vK6hmnuPqOeHId5K8co6mHZW78N9XJHHA7WdnGf9pyyX/cD2jZP2c3Eg
-         rKcOoT/fCu4pf6OX/LxHgJ9PoC/snWqvGb+qSreAfR3T7YCb8iGbGM75tkYsfr9sYqXl
-         DlbOd97bYohbwmWLvbB000U939d4ip/AqhDDjhVOeel9bYLdqtpZXzd3LOBsnJd3n9EM
-         uWH6Y7pEZuKZP8nFW6kvdqfZ99GTeZj8Z4UtU2pthAUOFLZV4ezu3vtjlsQu8/qtG6Z6
-         J+0yTWucLZNhxmgRXaaNXjJOt219R5LCDiDNv+sP1GY2F6pMxfIzEOWDZm6mCF8OvTke
-         ciJw==
-X-Forwarded-Encrypted: i=1; AKwUvBzk0YX0Y+DTltuvZCcwA4jqrEUNdgqOwxgTuLjCa9M94XYbOYJ9GWA1H9zSuLcEEt5Gqgp7LF9YuvqYt2U=@vger.kernel.org
-X-Gm-Message-State: AFuF++no28qAGycYvay51xUrTcQqyxJF4uE9sOKCdRHF25eaUIU7ODyS
-	XIsDAbSQak4QGv6DDo6E/Ac6pKnbDdaG+aw69i3ggW1pfCEV7bhqskYkvS0AqoATVIo=
-X-Gm-Gg: AYBFou3sHV+ya/xTcINFbDjS2r5XHdRRNCIw0FCqSM9mlhghpO5w23AjpYGAvg1X6Yx
-	wifgQ0X8TFnmtUDggRlFPdn67U7+VPB14Up9h1egcezVcLM+n7hMpt5wlt4w0HeNji6PxxFcDV/
-	J7GQ7Y/1KvyMUDkdHNSs+wju/NIdFTS4o2MeuT6WpLJtIeeESOdL36U0M1ffkFQVUi6T06VuWoU
-	QUQmai8L3vBqBqBMJKw/SusBR2EVimOOQ6lOH/UmLKd0X3gfCZidiUN9mX7uPB8ytGMbdwjGvQu
-	wk5bHJfz5js1AluwLP79gzzRqDrZZDi5VzFVqin3WBbWDYarZPFkke/6ywBCPi9VutRqngsTCDj
-	N8/+GVzKQzpFXXUbAWp5+wbECQ8NJCBnw9Al2meTqPkGFSqNkDpPrN57ex0XLA2eV2eueayJ5wV
-	hL5EngBlKK/1x+e5Mj2KUnHptBNqSHYRbk8LdJMDvzgFesQAW/7Dnqrojc559mPasxIRCc6Is9W
-	sN0npeSKGA6Uc+9U7kRef59afVPKHdoaeg=
-X-Received: by 2002:a05:6000:29cb:b0:485:8df2:6460 with SMTP id ffacd0b85a97d-486e0f776c3mr3738554f8f.20.1789043406106;
-        Thu, 10 Sep 2026 05:30:06 -0700 (PDT)
-Received: from ?IPV6:2a07:de40:8100:0:89a9:fd0e:583d:4a53? ([2001:af0:8000:1409:193:86:92:181])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-485883c6ba4sm55987457f8f.25.2026.09.10.05.30.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2026 05:30:05 -0700 (PDT)
-Message-ID: <65b2a754-c180-42a3-b6fd-f8714804c043@suse.com>
-Date: Thu, 10 Sep 2026 14:30:04 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZPT1gMlQ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 675981F000FF;
+	Thu, 10 Sep 2026 15:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789054872;
+	bh=wPcCiBBITeASDRG4XzbQSWp2WzppaOy28h2ruAqwXi8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=ZPT1gMlQYCE5N332MSVM0S9U6d4FLGUsbQCPoHUb5X9ttBkjazudHOj9UQKHqJd9D
+	 oCxLRURVb5tbXz224n1kpk9IHDZKYSVtYQLgyTtMMjylmSzWSojqj/lBSwJf/HCe10
+	 8eK+ueByj4l9PPmFbUW99Ru6kp/Esl/vw0Jow4TK/QeBk7pNtQko/5Rzw55iFnQRCy
+	 JpF435LHDVBZH2psN6u4pDeISC01VD3AFrU0Nt8kyUXTDMID7VVYLIU0mj9/Qyipnb
+	 S4Y4lP/lzFr9Zd89xKt5hBEQanbRxpuXnz3U+wIwdzHcUBWviuJXTGM3h4In4P2Nn0
+	 jqW8F+/u1JH4A==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 19B95380CEF9;
+	Thu, 10 Sep 2026 15:40:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] module: reject out-of-range relocation target indices
-To: Helge Deller <deller@gmx.de>, Karl Mehltretter <kmehltretter@gmail.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, Daniel Gomez <da.gomez@kernel.org>,
- Sami Tolvanen <samitolvanen@google.com>, Aaron Tomlin <atomlin@atomlin.com>,
- Ard Biesheuvel <ardb@kernel.org>, Nicolas Pitre <nico@fluxnic.net>,
- Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
- Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-modules@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
- linux-riscv@lists.infradead.org, loongarch@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20260908230815.78409-1-kmehltretter@gmail.com>
- <a8f29668-be71-4679-a95d-55dfbd9b5c61@gmx.de>
-Content-Language: en-US
-From: Petr Pavlu <petr.pavlu@suse.com>
-In-Reply-To: <a8f29668-be71-4679-a95d-55dfbd9b5c61@gmx.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v3 00/10] net: fix typos and repeated words in
+ comments
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <178905480977.1504082.16408401600046600222.git-patchwork-notify@kernel.org>
+Date: Thu, 10 Sep 2026 15:40:09 +0000
+References: <20260908052602.27497-1-hemanth.selam@gmail.com>
+In-Reply-To: <20260908052602.27497-1-hemanth.selam@gmail.com>
+To: Hemanth Selam <hemanth.selam@gmail.com>
+Cc: davem@davemloft.net, andrew+netdev@lunn.ch, bbhushan2@marvell.com,
+ bcm-kernel-feedback-list@broadcom.com, chris.snook@gmail.com,
+ edumazet@google.com, florian.fainelli@broadcom.com,
+ GR-Linux-NIC-Dev@marvell.com, gakula@marvell.com, kuba@kernel.org,
+ shenjian15@huawei.com, shaojijie@huawei.com, manishc@marvell.com,
+ marcin.s.wojtas@gmail.com, pabeni@redhat.com, rahulv@marvell.com,
+ rkannoth@marvell.com, linux@armlinux.org.uk, shshaikh@marvell.com,
+ shuah@kernel.org, horms@kernel.org, sbhatta@marvell.com,
+ skalluru@marvell.com, sgoutham@marvell.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-parisc@vger.kernel.org,
+ netdev@vger.kernel.org
 
-On 9/10/26 12:59 PM, Helge Deller wrote:
-> On 9/9/26 01:08, Karl Mehltretter wrote:
->> apply_relocations() skips relocation sections whose sh_info target index
->> is outside the section table. ARM, ARM64, LoongArch, PA-RISC and RISC-V
->> use sh_info earlier in module_frob_arch_sections(), before this check.
->>
->> ARM, ARM64, LoongArch and RISC-V use the unchecked index to read
->> sh_flags outside the section header table. PA-RISC uses it to index an
->> e_shnum-sized heap array for a read and an update. QEMU reproduced
->> page-fault Oopses on ARM, ARM64, LoongArch and RISC-V, and a Data TLB
->> miss on the PA-RISC array read.
->>
->> Validate sh_info for SHT_REL and SHT_RELA sections in
->> elf_validity_cache_sechdrs(). Reject the module with ENOEXEC before
->> architecture code can use the index.
->>
->> Fixes: c298be74492b ("parisc: fix module loading failure of large kernel modules")
->> Fixes: 7d485f647c1f ("ARM: 8220/1: allow modules outside of bl range")
->> Fixes: fd045f6cd98e ("arm64: add support for module PLTs")
->> Fixes: ab1ef68e5401 ("RISC-V: Add sections of PLT and GOT for kernel module")
->> Fixes: fcdfe9d22bed ("LoongArch: Add ELF and module support")
->> Cc: stable@vger.kernel.org
->> Assisted-by: LLM
->> Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
->> ---
->>
->> A custom harness for upstream Frama-C 33.0 (Arsenic) Eva found the
->> ARM32 instance in a source-identical ARM module_frob_arch_sections()
->> slice. Eva reported the out-of-range section-table pointer and sh_flags
->> access.
->>
->> The analysis and ARM32 A/B test ran at Linux b9b3e33b70b7 ("Merge tag
->> 'trace-v7.2-rc6' of
->> git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace"). The
->> PA-RISC, ARM64, RISC-V, LoongArch and x86_64 A/B tests ran at the
->> declared base commit, 28924df2a08f. arch/arm/kernel/module-plts.c and
->> the touched loop in kernel/module/main.c are identical between the two
->> commits.
->>
->> Each A/B test changed only a relocation section's sh_info to
->> 0x10000000. The same configurations and modules were used before and
->> after the change. All controls loaded before and after the change. The
->> fixed kernels rejected the malformed modules with ENOEXEC.
->>
->> Original-kernel results with QEMU 10.2.1 TCG:
->>
->> - ARM32, virt/Cortex-A15, GCC 15.2.0, multi_v7_defconfig plus
->>    VMSPLIT_2G: page fault at module_frob_arch_sections()+0x160.
->> - ARM64, virt/Cortex-A57, GCC 15.2.0, defconfig: page fault at
->>    module_frob_arch_sections()+0x110.
->> - PA-RISC, B160L, hppa-linux-gcc 8.1.0, binutils 2.30,
->>    generic-32bit_defconfig: Data TLB miss at
->>    module_frob_arch_sections()+0x11c on the stub_entries read for a
->>    counted R_PARISC_PCREL17F relocation.
->> - RISC-V, virt, GCC 15.2.0, defconfig plus RELOCATABLE with
->>    MODULE_SECTIONS enabled: page fault at
->>    module_frob_arch_sections()+0xe4.
->> - LoongArch, virt/LA464, LLVM 21.1.8, loongson64_defconfig: page fault
->>    at module_frob_arch_sections()+0x1b8.
->>
->> On x86_64, which has no vulnerable early sh_info access, the original
->> kernel loaded both modules. The fixed kernel loaded the control and
->> rejected the malformed module with ENOEXEC. The test used pc/qemu64,
->> x86_64_defconfig and GCC 15.2.0.
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue,  8 Sep 2026 10:55:52 +0530 you wrote:
+> Fix misspellings and repeated words in comments across the networking
+> code, found with scripts/checkpatch.pl using the misspelling list in
+> scripts/spelling.txt.  Comments only, no code changes.
 > 
-> Interesting.
-> So, this patch helps to prevent loading modules with buggy entries,
-> even if the module was e.g. loaded on x86-64 before.
+> Changes since v2:
+>  - v2 put 184 changes in a single patch.  Andrew Lunn asked for it to be
+>    split by vendor, which comes to 54 patches, so this is the first
+>    batch.  maintainer-netdev.rst asks for no more than 15 patches
+>    outstanding against a tree at a time and I have five in flight
+>    already, so this batch is 10.  The rest will follow as these are
+>    applied.
+>  - patches 1 and 2 are unchanged from v2 and carry Andrew's
+>    Reviewed-by.  They are resent because the v2 series was marked
+>    superseded, so they would otherwise be dropped on the floor.
+>  - dropped the sfc mcdi_pcol.h patch (v2 4/6) even though Andrew had
+>    reviewed it.  Edward Cree pointed out that header and the Siena copy
+>    are generated from the firmware definitions, so an edit here would be
+>    overwritten the next time they are regenerated; he has forwarded the
+>    typos to the firmware team instead.  The sfc changes outside pcol are
+>    unaffected and will come in a later batch.
+>  - dropped the 8390 patch, the driver is Orphan / Obsolete in
+>    MAINTAINERS.
+>  - dropped one octeontx2 hunk, in otx2_pf.c, because the comment holding
+>    the typo has since been rewritten upstream.  The remaining octeontx2
+>    typos are still fixed in the marvell patch.
+>  - dropped an "amount of times" to "number of times" change in qed_dev.c.
+>    That is a wording fix rather than a misspelling, so it does not belong
+>    in this series.
+>  - v2 6/6 (net: usb, "Medium Mode mode") is not in this batch.  Andrew
+>    asked me to check the data sheet for that one, and I will answer on
+>    that thread before resending it.
+>  - rebased onto net-next.
 > 
-> For me the patch is OK, but it only adds one random sanitizing check,
-> and where would we stop to check?
+> [...]
 
-Loading a module should normally at least get through the signature and
-blacklist checks without crashing due to a corrupted module ELF file.
-After that point, I believe the ELF data should be trusted, similar to
-how the actual module code is expected to be correct.
+Here is the summary with links:
+  - [net-next,v3,01/10] net: llc: fix repeated word 'all' in comment
+    https://git.kernel.org/netdev/net-next/c/2d2c2ea6650e
+  - [net-next,v3,02/10] selftests: net: fix repeated word 'use' in comment
+    https://git.kernel.org/netdev/net-next/c/a2c9decb21b2
+  - [net-next,v3,03/10] net: broadcom: fix typos in comments
+    https://git.kernel.org/netdev/net-next/c/a08b0a9e5e5f
+  - [net-next,v3,04/10] net: cavium: fix typos in comments
+    https://git.kernel.org/netdev/net-next/c/405829119fdc
+  - [net-next,v3,05/10] net: qlogic: fix typos in comments
+    https://git.kernel.org/netdev/net-next/c/12ae2a2b298a
+  - [net-next,v3,06/10] net: fddi: fix typos in comments
+    https://git.kernel.org/netdev/net-next/c/ef7ed063b48f
+  - [net-next,v3,07/10] net: marvell: fix typos in comments
+    https://git.kernel.org/netdev/net-next/c/36ca708b7cc7
+  - [net-next,v3,08/10] net: hisilicon: fix typos in comments
+    https://git.kernel.org/netdev/net-next/c/1b4109e4a024
+  - [net-next,v3,09/10] net: atheros: fix typos in comments
+    https://git.kernel.org/netdev/net-next/c/eeea715379b2
+  - [net-next,v3,10/10] net: dec: fix typos in comments
+    https://git.kernel.org/netdev/net-next/c/f36cb539fd97
 
-module_frob_arch_sections() is called later in the module-loading
-process, after the signature and blacklist checks, so I think this patch
-is not strictly necessary.
-
+You are awesome, thank you!
 -- 
-Thanks,
-Petr
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
