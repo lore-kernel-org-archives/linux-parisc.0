@@ -1,320 +1,220 @@
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEB1647AF63
-	for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 08:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658C547CA6E;
+	Tue, 15 Sep 2026 09:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789460910; cv=none; b=P0P4gK5l8hxqyer4pSQKPyTDlqYDfUrtMdToyHIKTk/bIqF9WgAISA61HTVjQUo32vD7xYBVmQZv/6osMs7mB5EpLKN7J8KmfBHwc6IQ4/7NwcTjlKj+OATTLppcTmzRh5BHcRHVsd7R48OZH6E1+DKtICRInNOxPQmmV0feaTM=
+	t=1789465893; cv=none; b=dHAlJjMFxUisHlhW81x040C1mQArgXFrnKPScpUnN3/+phi4X7wSdok99q/fPYBmG/T4aAoaLt5yO76IKq5sMLMLuIiXGvkqbP8nDlgQl0ZWUq2glmsgIMevVdumtFyY0QW/PSE5avqs/FZrM733UoQ8gF0KHC3IHk2vrblZICk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789460910; c=relaxed/simple;
-	bh=Te8HD9YkwxCOhstie9EUJ32KLA4oNHtDIGXeNIM9YkI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=kRZiZ6r46yvEEkY+/qXbJyPJE0tESS8K3knpG1gwmkIh3A5jN/oXQfv22+IFWb+GY/1YTP8NG2zx7AFFQtPR3lUlze5TGW0mSrX5GuNQPAmnG3UGDryU5F+8T03FKdHGqIBRegS8JYh75FQO1e1XCV6nDbsRk59RDTHNDmfK034=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=keqJ7o77; arc=none smtp.client-ip=209.85.210.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com
+	s=arc-20240116; t=1789465893; c=relaxed/simple;
+	bh=XSAH1l/hvusT0hS3lDTl1Sludph66OmEzZ+R9LSMFF8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WiSSMfbpzqNmBqa1lOFiAITxP6QpEqyubY9HcVTPh6jgxb3SjCouIX8fmlm+zut08A8Lg2oMVqt2zRTv4T20+T5EK09nmqEMXxaAs1BA1RAgYkD6UpgVjnP0ceuUPcS2dwardjyO7ZOvtG7p3MSBoFBytod/Eu4sgAwkyo/FgZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=VuOIjqoI; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="keqJ7o77"
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-7ec6685adabso5572723a34.0
-        for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 01:28:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1789460908; x=1790065708; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:from:subject
-         :message-id:references:mime-version:in-reply-to:date:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=aUeRHnlHuLyd8Os/OfUYHyanuI/6gSGpcAdXKzgjG1A=;
-        b=keqJ7o773rCS9KtnLmJI/taYDu+WY7vIB10DYo+Ubx4pyS5AtTkCNnKVV0jPTpXf9v
-         9OPtkBXVObuTy6h+TYMHT4NN/TtPrwHN/hBaH/cRtaYcQAIx2MFqeNcAnul/KbtUYLlL
-         LIPPGDSIvggjFljdCV+UcLnZoxBEXIQ2nXyLPo0f/oCXSy/LWNNTz5GbgyBWU0qrg+XJ
-         y0n398bBEGeKBrZKXMRBBgbqa0jeaLEv/3lFf3Bbn95tmlMtLpFQKH0FCBzS7HxByOmk
-         Sw706FvHH0roJqIKF2JAVmV86h0zohxlWCJMjswhozOF9VJ4TLzyE/J5Ac19CoIu2g2U
-         OUGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789460908; x=1790065708;
-        h=content-transfer-encoding:content-type:cc:to:from:subject
-         :message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=aUeRHnlHuLyd8Os/OfUYHyanuI/6gSGpcAdXKzgjG1A=;
-        b=Z6hMFRmp30UqYi3cGFZaLNGB8gyKEE1AO29oJdy476ewzNCboYYKaaobqZA9z+gysd
-         XE7VaSzU4X8grJKfag1aNfpxoxQXprmSWZBvMTgNng7X7cE/5ABbur4D7Z8GSQ0Gm8MK
-         NbdC6HlXsaqtvQ/FrK1GB+jFT7yLf/HKFSsxbda6nIPsj2OpK5xw79Q+CtMwlyiuPK/R
-         ctoYZ6J0d8qB776lYshwOuTDujQ5vZefozxcCgMAHu45YxiwEwS5L+8te4wBOjdIHIpQ
-         vKxuwlOxtOflLPC7Du9jINam5HzX57uH0s1OGb4s2kb/+5tmZYJa7KReYwAjk8zF6e5a
-         MkAQ==
-X-Forwarded-Encrypted: i=1; AKwUvBy0jVNWwbEWt+S8e9JsecGNWQKHJsD9miHfDp2kpT4vASScc9bxOKMW6Y669JH9GdaFZl+c1n+xcZKMQPA=@vger.kernel.org
-X-Gm-Message-State: AFuF++npJzLaksrHFZlWlbdbqSfOi4sFJuH5z96HJeJzx4ImYPRvMssY
-	2ekwLSLzcwo98nYamxfOzTrIoL9tgMVSDjO7ssjZEz7jcEbeqXpfDomEDIRZTTEpoUDI+nP3YXs
-	k
-X-Received: from plbmz16.prod.google.com ([2002:a17:903:3510:b0:2dd:2adc:aa80])
- (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:a8b:b0:2d9:26b3:547
- with SMTP id d9443c01a7336-2dd83882243mr420135ad.20.1789460414438; Tue, 15
- Sep 2026 01:20:14 -0700 (PDT)
-Date: Tue, 15 Sep 2026 08:18:40 +0000
-In-Reply-To: <20260915081910.4142719-1-morbo@google.com>
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="VuOIjqoI"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1789465889; x=1790070689; i=deller@gmx.de;
+	bh=xcQ/Ir0JwxIe+sMUqrjFHUZ8S6oDSraz0mqQ83Lss9w=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=VuOIjqoInjQqFy8QuMy3KIklQiF6THHmJaZCjB09rV8uTEJQGoDpKhSXaq6JLDXK
+	 YxGvt9HQO4k8sHg4HmxxS16wYv/rkz054x49mETF1xQRE4Y1axjissOJpIuPdGFAh
+	 zn12inZh4i0TdWqfpRiiRWUSgTeu0axlUzfTGEALtVXLLP/6/smL4R5Dzsz5Qypdf
+	 P8xROvFXSfjQuKZsmSexlu5Q65da7ZUd0XjpCkF77VlK7BpV3IKIOJcxBRDfTJ4pU
+	 vApRk25w/gbcZgC/8ZT1hMKrpklO7J8CV+sJGnrfJEDgF0i19xxtzuqm+FPic4yI3
+	 K5n4gDXVh2m818EdCQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MC30Z-1wwHL20R37-00AHNt; Tue, 15
+ Sep 2026 11:51:29 +0200
+Message-ID: <4cc9fe4b-c3c3-46ff-a32f-d2a86c0ce077@gmx.de>
+Date: Tue, 15 Sep 2026 11:51:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20260915081910.4142719-1-morbo@google.com>
-X-Mailer: git-send-email 2.55.0.1032.g73a4cd73de-goog
-Message-ID: <20260915081910.4142719-24-morbo@google.com>
-Subject: [PATCH 23/28] Input: synaptics_usb - use seq_buf and snprintf() for
- name and phys
-From: Bill Wendling <morbo@google.com>
-To: linux-kernel@vger.kernel.org
-Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com, 
-	Russell King <linux@armlinux.org.uk>, Huacai Chen <chenhuacai@kernel.org>, 
-	WANG Xuerui <kernel@xen0n.name>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Ian Abbott <abbotti@mev.co.uk>, 
-	H Hartley Sweeten <hsweeten@visionengravers.com>, Tony Luck <tony.luck@intel.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Matthew Brost <matthew.brost@intel.com>, 
-	"=?UTF-8?q?Thomas=20Hellstr=C3=B6m?=" <thomas.hellstrom@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Matthias Schwarzott <zzam@gentoo.org>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Arend van Spriel <arend.vanspriel@broadcom.com>, Rob Herring <robh@kernel.org>, 
-	Saravana Kannan <saravanak@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Sylwester Nawrocki <s.nawrocki@samsung.com>, Peter Griffin <peter.griffin@linaro.org>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Linus Walleij <linusw@kernel.org>, 
-	Anil Gurumurthy <anil.gurumurthy@qlogic.com>, 
-	Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>, "Martin K. Petersen" <mkp@kernel.org>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Kees Cook <kees@kernel.org>, 
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, Chuck Lever <cel@kernel.org>, 
-	Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, 
-	Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>, 
-	Kanglong Wang <wangkanglong@loongson.cn>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	Qiang Ma <maqianga@uniontech.com>, Randy Dunlap <rdunlap@infradead.org>, 
-	Pengpeng Hou <pengpeng@iscas.ac.cn>, Ard Biesheuvel <ardb@kernel.org>, Breno Leitao <leitao@debian.org>, 
-	Thorsten Blum <blum@kernel.org>, Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Lyude Paul <lyude@redhat.com>, 
-	Ashutosh Desai <ashutoshdesai993@gmail.com>, Imre Deak <imre.deak@intel.com>, 
-	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, Johan Hovold <johan@kernel.org>, 
-	Johannes Berg <johannes.berg@intel.com>, 
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>, 
-	Alexander Stein <alexander.stein@ew.tq-group.com>, 
-	Cryolitia PukNgae <cryolitia@uniontech.com>, Jiaming Zhang <r772577952@gmail.com>, 
-	Will Porter <mrwillporter@gmail.com>, Cen Zhang <zzzccc427@gmail.com>, 
-	"=?UTF-8?q?C=C3=A1ssio=20Gabriel?=" <cassiogabrielcontato@gmail.com>, Rong Zhang <i@rong.moe>, 
-	Arun Raghavan <arunr@valvesoftware.com>, linux-arm-kernel@lists.infradead.org, 
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-edac@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, intel-xe@lists.freedesktop.org, 
-	linux-input@vger.kernel.org, linux-media@vger.kernel.org, 
-	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev, 
-	brcm80211-dev-list.pdl@broadcom.com, devicetree@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	linux-scsi@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	devel@lists.orangefs.org, linux-hardening@vger.kernel.org, 
-	linux-sound@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/7] Input: gscps2 - clean up driver code style and
+ structure
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-parisc@vger.kernel.org
+References: <20260830-gscps2-v1-0-c733d4cae7f9@gmail.com>
+ <20260830-gscps2-v1-1-c733d4cae7f9@gmail.com>
+Content-Language: en-US
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ xsFNBF3Ia3MBEAD3nmWzMgQByYAWnb9cNqspnkb2GLVKzhoH2QD4eRpyDLA/3smlClbeKkWT
+ HLnjgkbPFDmcmCz5V0Wv1mKYRClAHPCIBIJgyICqqUZo2qGmKstUx3pFAiztlXBANpRECgwJ
+ r+8w6mkccOM9GhoPU0vMaD/UVJcJQzvrxVHO8EHS36aUkjKd6cOpdVbCt3qx8cEhCmaFEO6u
+ CL+k5AZQoABbFQEBocZE1/lSYzaHkcHrjn4cQjc3CffXnUVYwlo8EYOtAHgMDC39s9a7S90L
+ 69l6G73lYBD/Br5lnDPlG6dKfGFZZpQ1h8/x+Qz366Ojfq9MuuRJg7ZQpe6foiOtqwKym/zV
+ dVvSdOOc5sHSpfwu5+BVAAyBd6hw4NddlAQUjHSRs3zJ9OfrEx2d3mIfXZ7+pMhZ7qX0Axlq
+ Lq+B5cfLpzkPAgKn11tfXFxP+hcPHIts0bnDz4EEp+HraW+oRCH2m57Y9zhcJTOJaLw4YpTY
+ GRUlF076vZ2Hz/xMEvIJddRGId7UXZgH9a32NDf+BUjWEZvFt1wFSW1r7zb7oGCwZMy2LI/G
+ aHQv/N0NeFMd28z+deyxd0k1CGefHJuJcOJDVtcE1rGQ43aDhWSpXvXKDj42vFD2We6uIo9D
+ 1VNre2+uAxFzqqf026H6cH8hin9Vnx7p3uq3Dka/Y/qmRFnKVQARAQABzRxIZWxnZSBEZWxs
+ ZXIgPGRlbGxlckBnbXguZGU+wsGRBBMBCAA7AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
+ FiEERUSCKCzZENvvPSX4Pl89BKeiRgMFAl3J1zsCGQEACgkQPl89BKeiRgNK7xAAg6kJTPje
+ uBm9PJTUxXaoaLJFXbYdSPfXhqX/BI9Xi2VzhwC2nSmizdFbeobQBTtRIz5LPhjk95t11q0s
+ uP5htzNISPpwxiYZGKrNnXfcPlziI2bUtlz4ke34cLK6MIl1kbS0/kJBxhiXyvyTWk2JmkMi
+ REjR84lCMAoJd1OM9XGFOg94BT5aLlEKFcld9qj7B4UFpma8RbRUpUWdo0omAEgrnhaKJwV8
+ qt0ULaF/kyP5qbI8iA2PAvIjq73dA4LNKdMFPG7Rw8yITQ1Vi0DlDgDT2RLvKxEQC0o3C6O4
+ iQq7qamsThLK0JSDRdLDnq6Phv+Yahd7sDMYuk3gIdoyczRkXzncWAYq7XTWl7nZYBVXG1D8
+ gkdclsnHzEKpTQIzn/rGyZshsjL4pxVUIpw/vdfx8oNRLKj7iduf11g2kFP71e9v2PP94ik3
+ Xi9oszP+fP770J0B8QM8w745BrcQm41SsILjArK+5mMHrYhM4ZFN7aipK3UXDNs3vjN+t0zi
+ qErzlrxXtsX4J6nqjs/mF9frVkpv7OTAzj7pjFHv0Bu8pRm4AyW6Y5/H6jOup6nkJdP/AFDu
+ 5ImdlA0jhr3iLk9s9WnjBUHyMYu+HD7qR3yhX6uWxg2oB2FWVMRLXbPEt2hRGq09rVQS7DBy
+ dbZgPwou7pD8MTfQhGmDJFKm2jvOwU0EXchrcwEQAOsDQjdtPeaRt8EP2pc8tG+g9eiiX9Sh
+ rX87SLSeKF6uHpEJ3VbhafIU6A7hy7RcIJnQz0hEUdXjH774B8YD3JKnAtfAyuIU2/rOGa/v
+ UN4BY6U6TVIOv9piVQByBthGQh4YHhePSKtPzK9Pv/6rd8H3IWnJK/dXiUDQllkedrENXrZp
+ eLUjhyp94ooo9XqRl44YqlsrSUh+BzW7wqwfmu26UjmAzIZYVCPCq5IjD96QrhLf6naY6En3
+ ++tqCAWPkqKvWfRdXPOz4GK08uhcBp3jZHTVkcbo5qahVpv8Y8mzOvSIAxnIjb+cklVxjyY9
+ dVlrhfKiK5L+zA2fWUreVBqLs1SjfHm5OGuQ2qqzVcMYJGH/uisJn22VXB1c48yYyGv2HUN5
+ lC1JHQUV9734I5cczA2Gfo27nTHy3zANj4hy+s/q1adzvn7hMokU7OehwKrNXafFfwWVK3OG
+ 1dSjWtgIv5KJi1XZk5TV6JlPZSqj4D8pUwIx3KSp0cD7xTEZATRfc47Yc+cyKcXG034tNEAc
+ xZNTR1kMi9njdxc1wzM9T6pspTtA0vuD3ee94Dg+nDrH1As24uwfFLguiILPzpl0kLaPYYgB
+ wumlL2nGcB6RVRRFMiAS5uOTEk+sJ/tRiQwO3K8vmaECaNJRfJC7weH+jww1Dzo0f1TP6rUa
+ fTBRABEBAAHCwXYEGAEIACAWIQRFRIIoLNkQ2+89Jfg+Xz0Ep6JGAwUCXchrcwIbDAAKCRA+
+ Xz0Ep6JGAxtdEAC54NQMBwjUNqBNCMsh6WrwQwbg9tkJw718QHPw43gKFSxFIYzdBzD/YMPH
+ l+2fFiefvmI4uNDjlyCITGSM+T6b8cA7YAKvZhzJyJSS7pRzsIKGjhk7zADL1+PJei9p9idy
+ RbmFKo0dAL+ac0t/EZULHGPuIiavWLgwYLVoUEBwz86ZtEtVmDmEsj8ryWw75ZIarNDhV74s
+ BdM2ffUJk3+vWe25BPcJiaZkTuFt+xt2CdbvpZv3IPrEkp9GAKof2hHdFCRKMtgxBo8Kao6p
+ Ws/Vv68FusAi94ySuZT3fp1xGWWf5+1jX4ylC//w0Rj85QihTpA2MylORUNFvH0MRJx4mlFk
+ XN6G+5jIIJhG46LUucQ28+VyEDNcGL3tarnkw8ngEhAbnvMJ2RTx8vGh7PssKaGzAUmNNZiG
+ MB4mPKqvDZ02j1wp7vthQcOEg08z1+XHXb8ZZKST7yTVa5P89JymGE8CBGdQaAXnqYK3/yWf
+ FwRDcGV6nxanxZGKEkSHHOm8jHwvQWvPP73pvuPBEPtKGLzbgd7OOcGZWtq2hNC6cRtsRdDx
+ 4TAGMCz4j238m+2mdbdhRh3iBnWT5yPFfnv/2IjFAk+sdix1Mrr+LIDF++kiekeq0yUpDdc4
+ ExBy2xf6dd+tuFFBp3/VDN4U0UfG4QJ2fg19zE5Z8dS4jGIbLg==
+In-Reply-To: <20260830-gscps2-v1-1-c733d4cae7f9@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:giab1+Oj+gI7TOTSJhFWAnhw375Q+XTEX6Bk8w9wruvrfJ8l+Uj
+ zfSJ1izKSF8KJdnnIDaeuDkF2WtGcCDrO9wzgwZLkphJllvv9f8+a68DuAWeDgXIfXKQ/yw
+ p2Ap6YCzwqLe5vl1EGVtE8COsCp6OPq2+lXJ91FGCIFGFXLK28J4A6sTcZQ4rMUK7nVLaNq
+ 4yvJITjHB2vujNSe1iHmA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:g/f1uvD+5Gg=;80/WiX/hSPzm72I+L2faBNhxvsB
+ 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
+ V0n27I/f/UnBtV3fn5E/hE
 
-synusb_probe() constructs the device name and physical path using a mix of
-strscpy(), strlcat(), and snprintf().
+Hi Dmitry,
 
-In preparation for removing the deprecated strlcat() API[1], use struct
-seq_buf to incrementally build synusb->name, and format synusb->phys with
-snprintf() after generating the USB path.
+On 8/30/26 22:52, Dmitry Torokhov wrote:
+> Clean up code style issues and function ordering in the gscps2 driver:
+> - Reorder functions to place gscps2_interrupt() before its callers,
+>    allowing removal of its forward declaration.
+> - Change gscps2_enable() to accept a boolean parameter and remove the
+>    ENABLE and DISABLE macro definitions.
+> - Convert printk() calls to dev_dbg() and dev_warn().
+> - Fix operator spacing and multi-variable assignment.
+> - Add spinlock comment and use cpu_relax() in spin-wait loop.
+>=20
+> Assisted-by: LLM
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+>   drivers/input/serio/gscps2.c | 208 +++++++++++++++++++----------------=
+=2D-------
+>   1 file changed, 91 insertions(+), 117 deletions(-)
+you may add for the whole series:
 
-Link: https://github.com/KSPP/linux/issues/370 [1]
-Cc: codemender-patching+linux@google.com
-Assisted-by: Gemini:1.5-Pro-002 [editor_update_file, make_kernel_build_sing=
-le_file, test_runner_run_kunit_test]
-Signed-off-by: Bill Wendling <morbo@google.com>
----
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Thomas Gleixner <tglx@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: x86@kernel.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ian Abbott <abbotti@mev.co.uk>
-Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: David Airlie <airlied@gmail.com>
-Cc: Simona Vetter <simona@ffwll.ch>
-Cc: Matthew Brost <matthew.brost@intel.com>
-Cc: "Thomas Hellstr=C3=B6m" <thomas.hellstrom@linux.intel.com>
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Matthias Schwarzott <zzam@gentoo.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc: Rob Herring <robh@kernel.org>
-Cc: Saravana Kannan <saravanak@kernel.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Peter Griffin <peter.griffin@linaro.org>
-Cc: Alim Akhtar <alim.akhtar@samsung.com>
-Cc: Linus Walleij <linusw@kernel.org>
-Cc: Anil Gurumurthy <anil.gurumurthy@qlogic.com>
-Cc: Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>
-Cc: "Martin K. Petersen" <mkp@kernel.org>
-Cc: Trond Myklebust <trondmy@kernel.org>
-Cc: Anna Schumaker <anna@kernel.org>
-Cc: Mike Marshall <hubcap@omnibond.com>
-Cc: Martin Brandenburg <martin@omnibond.com>
-Cc: Kees Cook <kees@kernel.org>
-Cc: Jiri Pirko <jiri@resnulli.us>
-Cc: Simon Horman <horms@kernel.org>
-Cc: Chuck Lever <cel@kernel.org>
-Cc: Jeff Layton <jlayton@kernel.org>
-Cc: NeilBrown <neil@brown.name>
-Cc: Olga Kornievskaia <okorniev@redhat.com>
-Cc: Dai Ngo <Dai.Ngo@oracle.com>
-Cc: Tom Talpey <tom@talpey.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Bill Wendling <morbo@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-Cc: Kanglong Wang <wangkanglong@loongson.cn>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Qiang Ma <maqianga@uniontech.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Pengpeng Hou <pengpeng@iscas.ac.cn>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Breno Leitao <leitao@debian.org>
-Cc: Thorsten Blum <blum@kernel.org>
-Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Lyude Paul <lyude@redhat.com>
-Cc: Ashutosh Desai <ashutoshdesai993@gmail.com>
-Cc: Imre Deak <imre.deak@intel.com>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
-Cc: Johan Hovold <johan@kernel.org>
-Cc: Johannes Berg <johannes.berg@intel.com>
-Cc: Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: Cryolitia PukNgae <cryolitia@uniontech.com>
-Cc: Jiaming Zhang <r772577952@gmail.com>
-Cc: Will Porter <mrwillporter@gmail.com>
-Cc: Cen Zhang <zzzccc427@gmail.com>
-Cc: "C=C3=A1ssio Gabriel" <cassiogabrielcontato@gmail.com>
-Cc: Rong Zhang <i@rong.moe>
-Cc: Arun Raghavan <arunr@valvesoftware.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: loongarch@lists.linux.dev
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-edac@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: intel-xe@lists.freedesktop.org
-Cc: linux-input@vger.kernel.org
-Cc: linux-media@vger.kernel.org
-Cc: intel-wired-lan@lists.osuosl.org
-Cc: netdev@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org
-Cc: brcm80211@lists.linux.dev
-Cc: brcm80211-dev-list.pdl@broadcom.com
-Cc: devicetree@vger.kernel.org
-Cc: linux-samsung-soc@vger.kernel.org
-Cc: linux-gpio@vger.kernel.org
-Cc: linux-scsi@vger.kernel.org
-Cc: linux-nfs@vger.kernel.org
-Cc: devel@lists.orangefs.org
-Cc: linux-hardening@vger.kernel.org
-Cc: linux-sound@vger.kernel.org
----
- drivers/input/mouse/synaptics_usb.c | 29 +++++++++++++++++------------
- 1 file changed, 17 insertions(+), 12 deletions(-)
+Acked-by: Helge Deller <deller@gmx.de>
+Tested-by: Helge Deller <deller@gmx.de>
 
-diff --git a/drivers/input/mouse/synaptics_usb.c b/drivers/input/mouse/syna=
-ptics_usb.c
-index 880a0c79148c..d13d2d6202ee 100644
---- a/drivers/input/mouse/synaptics_usb.c
-+++ b/drivers/input/mouse/synaptics_usb.c
-@@ -41,6 +41,7 @@
- #include <linux/usb.h>
- #include <linux/input.h>
- #include <linux/usb/input.h>
-+#include <linux/seq_buf.h>
-=20
- #define USB_VENDOR_ID_SYNAPTICS	0x06cb
- #define USB_DEVICE_ID_SYNAPTICS_TP	0x0001	/* Synaptics USB TouchPad */
-@@ -278,6 +279,8 @@ static int synusb_probe(struct usb_interface *intf,
- 	struct input_dev *input_dev;
- 	unsigned int intf_num =3D intf->cur_altsetting->desc.bInterfaceNumber;
- 	unsigned int altsetting =3D min(intf->num_altsetting, 1U);
-+	struct seq_buf s;
-+	char path[64];
- 	int error;
-=20
- 	error =3D usb_set_interface(udev, intf_num, altsetting);
-@@ -334,27 +337,29 @@ static int synusb_probe(struct usb_interface *intf,
- 			 ep->bInterval);
- 	synusb->urb->transfer_flags |=3D URB_NO_TRANSFER_DMA_MAP;
-=20
-+	seq_buf_init(&s, synusb->name, sizeof(synusb->name));
-+
- 	if (udev->manufacturer)
--		strscpy(synusb->name, udev->manufacturer,
--			sizeof(synusb->name));
-+		seq_buf_puts(&s, udev->manufacturer);
-=20
- 	if (udev->product) {
- 		if (udev->manufacturer)
--			strlcat(synusb->name, " ", sizeof(synusb->name));
--		strlcat(synusb->name, udev->product, sizeof(synusb->name));
-+			seq_buf_puts(&s, " ");
-+		seq_buf_puts(&s, udev->product);
- 	}
-=20
--	if (!strlen(synusb->name))
--		snprintf(synusb->name, sizeof(synusb->name),
--			 "USB Synaptics Device %04x:%04x",
--			 le16_to_cpu(udev->descriptor.idVendor),
--			 le16_to_cpu(udev->descriptor.idProduct));
-+	if (!seq_buf_used(&s))
-+		seq_buf_printf(&s, "USB Synaptics Device %04x:%04x",
-+			       le16_to_cpu(udev->descriptor.idVendor),
-+			       le16_to_cpu(udev->descriptor.idProduct));
-=20
- 	if (synusb->flags & SYNUSB_STICK)
--		strlcat(synusb->name, " (Stick)", sizeof(synusb->name));
-+		seq_buf_puts(&s, " (Stick)");
-=20
--	usb_make_path(udev, synusb->phys, sizeof(synusb->phys));
--	strlcat(synusb->phys, "/input0", sizeof(synusb->phys));
-+	seq_buf_str(&s);
-+
-+	usb_make_path(udev, path, sizeof(path));
-+	snprintf(synusb->phys, sizeof(synusb->phys), "%s/input0", path);
-=20
- 	input_dev->name =3D synusb->name;
- 	input_dev->phys =3D synusb->phys;
---=20
-2.55.0.1032.g73a4cd73de-goog
-
+Thank you!
+Helge
