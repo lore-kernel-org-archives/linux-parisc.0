@@ -1,57 +1,57 @@
 Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com [209.85.219.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8274A0144
-	for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 08:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D6064A0EFF
+	for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 08:27:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789460852; cv=none; b=ko4HTweo5kACPHCYX2G84IGfstUZoTcMTzG/FuZTUySepIMTj+RbTYJOzU+yj1ZIePbZGcOMwsYeuHJrZR0LPzoOyarfo4UqEQIY301f6m9VjiyY1hFKsI1f8hJ0Z3aJy3gB6a7op5E840/T1C5K1h6LITDywMiMYFpzn0E+zrE=
+	t=1789460858; cv=none; b=KZ1BP0i6bPIb2/gA58uNJiqcDTPT36yO8jWo60rfAgnfPzk6KY7EYoWSk+XfGXAMv7UMG9/gzLuUSKPWHa0jO3qm18mlBu0w/xiOKdrGtbr2bBooW9TQfAYQt5DpPQG+iElMzdAjSSeNzOAnKucNLOLLCTG6QNZA8cqFBauqTdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789460852; c=relaxed/simple;
-	bh=Uf7uxHQ/vmaAoZCZZPN2XUoRZ9miHwSqTeOUYXKdUpY=;
+	s=arc-20240116; t=1789460858; c=relaxed/simple;
+	bh=lI3TjsMof+VUseu3jlc4aD2v6CaqWDV2PaTkxHX+GRE=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=OjRrWeoogD6Ivb36EeqwgVrODDCBGPg//44kgM+sFMUXJlt+rPhGAq0IM1IrMBE5mxgUSz070RyiIkTYpwnB1W+JbDCw9BAuMwaCtaEm6OU31pQyX8waIDYZrBgyAl9Fp5PmXM37EHqpKkCAWoAA7BGs2LP5Pt+9UXGoy2mYfSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tBexKsRS; arc=none smtp.client-ip=209.85.219.70
+	 To:Cc:Content-Type; b=e7iUjD00iet3AvSl6h39844aQJ/bE8Fa7lfwb/a/fjaga7kPsIth6Df0IrbeQzVty8tGYs+RrDU6JQ/CjUa8mtOPcZdz6M2CC2xbeIkn1TiOuxL4NWaNNCs+LCe5+ZRFrbYXg2DxnRgmG8wD+mX/ziwGqZdsk/BWsSTgMQIRhXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Rub2A9VD; arc=none smtp.client-ip=209.85.219.70
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tBexKsRS"
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-90c8da50f8dso115627526d6.2
-        for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 01:27:30 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Rub2A9VD"
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-91219341db7so75234356d6.1
+        for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 01:27:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1789460849; x=1790065649; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1789460855; x=1790065655; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=LcsuffwFDxj4u6SThnIq1nFzZdsoWr9GB9tsbe2KVjo=;
-        b=tBexKsRSW71trIrq2Ff6laDxMiXsxX/bMmXo5f9z5/oT5pvod6JGGw/Lcl2RNMSWzp
-         nMJj5E2fzUcAvnOrNQioyJDfBHbKTeBzTAmAdLk0hAgi/8khwG/BZgwdfojVUSeay21V
-         30GaQueGJJ3X/lbl0Yh0eSPMSOocYjvh5Crzm7uhoVQbbsWi0miB/z2xX3h2nwIx5adb
-         aUhlG7LFxGogSp5hQJLGrcLXPXy692ZkO3bcKCwRkPeYFQSodouSpZxHPjSoOVI2xTLl
-         2ebCEhZUNIKD3BabfETUpiMHm3eqSVLVpTN1Xv8zZrWQid8S/x/xW1PE28duUtdYzFJc
-         sbcg==
+        bh=jD1fGYdmSfmtHfbCTu69NC0iIcRgu3QWne7aaYuG46g=;
+        b=Rub2A9VDrHmpKgLmiaMBErwpVZQPGmrF+e9rO1q6I94mvS7lC22OHLvhxKZbdl3EYX
+         /2BzOsOqCZ2tQUIygQ/QNdGGoQAmqEnKscfD/WDaZeGIzHZpOovPbwLjqEXRt8GdPdJo
+         8UZT01jwWJwDxFYLkWAfpMUVlCFoaedzNX27KRInw6LQzfWi+zwouo8KOrovi2jmDm8F
+         /TLN87jU4ZWOk32iz36Ze5RIDJdKe04UvduWO7L+QWYCAoWZcTIwLA7jmBxqjjOzR6dj
+         DJ6xo8m0GfQhNjTVYdhlIOZ7ocfou/m6YgxHejErdrq1JHmLbTuTmKYCcBrO9ppyApHw
+         gVVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789460849; x=1790065649;
+        d=1e100.net; s=20260707; t=1789460855; x=1790065655;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=LcsuffwFDxj4u6SThnIq1nFzZdsoWr9GB9tsbe2KVjo=;
-        b=yKJ6rOp+amXdxxFMvpZCg+92198OlYPsWVDZjRDEEzJWIe+9ZR3ETMsjGy8qYImrBE
-         ABCVvO1YHiO4SR33viGLtnwjRGAuqqZ2lJIfW6M5Dft5zcSgeU53D91XW5+cSE0oz3Op
-         +mabzMrvCvK6gcE+9GcGT30y6N5O9NTvk7a8cHnP5+/gOnsJenOUEjOOb0d05r1MqRFg
-         gltrWN9tDXzV56/56jeLmoZcfPRKJ5oDtwnMYp4VfIMjrMEhmM0IQvs6DluxAyb8ZmtH
-         xG81TSuK8tAlTaC+6pCRgs0EL6WllfId8aHozHMff+tJtIB3ZNbzJ47D2GG4QOOdRZFu
-         yYxQ==
-X-Forwarded-Encrypted: i=1; AKwUvBx4kJEnmCLs+IDXtNPbS2A8+Ul9JL5PlYviHKmvJWzTXQCoeRvDUYM4MBK1tj6r535Ua7dGn2FZT+aDox4=@vger.kernel.org
-X-Gm-Message-State: AFuF++kAspFAX6j1Bmd3XDxyj2ZTnptnigpRMMAsDSAL983dj14WCA4C
-	wfRKjenm+zqNNA06/1T107KFPHuRz5E2zg5HUClsJYW3+LmIarUhFo+hJHjul3Qy56hY1P5+XxR
-	b
-X-Received: from plxm10.prod.google.com ([2002:a17:902:db0a:b0:2d9:7bf:6891])
- (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:1b50:b0:2db:8ae7:a5d2
- with SMTP id d9443c01a7336-2dd6c5f39camr129000865ad.9.1789460415373; Tue, 15
- Sep 2026 01:20:15 -0700 (PDT)
-Date: Tue, 15 Sep 2026 08:18:41 +0000
+        bh=jD1fGYdmSfmtHfbCTu69NC0iIcRgu3QWne7aaYuG46g=;
+        b=XmjmUJVtjXU4q1fLaGwJqdGs1z0fgfabE8Xp2/8jqbrHMNMvUgKZ4kFxeWGX1U9Nz4
+         NppiQh3lIBGGicCdExSrdMjdfQ0UM6BzsXOmLWWG+HIpGI1EH+GKdFTDAScOmOjbyW/i
+         VIqgAeGZDhba0WDhDuf5mWPRL3CnTwOCnO6tFYcXj/Ivficit6e+aG3jttZt7TOfIPM0
+         KzwDZ7MOhXU0r+4VpSoEHhEXTfKqj/niw53PnHUNxhELkl10WtnmPwTzRtNncW9vH1b0
+         brkBjrKATFgjc5DO/i0AwZu7Y+3d8PFQazLJxr1L0g65LQME8SLEw6Vrq3sG24uzXREQ
+         fKqg==
+X-Forwarded-Encrypted: i=1; AKwUvBwgMyggYduvsX1ln+er8waXT6lOBLvjHgTrJ2yO+LpbDTh4DdXGRaLqFmWVwwEwHdvVUFoYbhjuZQEK668=@vger.kernel.org
+X-Gm-Message-State: AFuF++kyIvnG7GdtTTpneXtuAFXLRa9c0F19IvOT2AcBvyVM4TTQC+j6
+	wRa2/CTSnV2HDU5gxmJeyHUPd2uvAbqBr6bnox9i0SjbC7sS6k4/XEB0LhRJQYcP6uOrQej94QW
+	Y
+X-Received: from plbkq15.prod.google.com ([2002:a17:903:284f:b0:2dd:1c44:fe2])
+ (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:1a0c:b0:2d9:464f:d45f
+ with SMTP id d9443c01a7336-2dd6c5ba2f0mr129830935ad.5.1789460408347; Tue, 15
+ Sep 2026 01:20:08 -0700 (PDT)
+Date: Tue, 15 Sep 2026 08:18:33 +0000
 In-Reply-To: <20260915081910.4142719-1-morbo@google.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
@@ -61,13 +61,13 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260915081910.4142719-1-morbo@google.com>
 X-Mailer: git-send-email 2.55.0.1032.g73a4cd73de-goog
-Message-ID: <20260915081910.4142719-25-morbo@google.com>
-Subject: [PATCH 24/28] EDAC/thunderx: Fix stale error context in thunderx_l2c_threaded_isr()
+Message-ID: <20260915081910.4142719-17-morbo@google.com>
+Subject: [PATCH 16/28] pinctrl: samsung: Use snprintf() to construct pin bank names
 From: Bill Wendling <morbo@google.com>
 To: linux-kernel@vger.kernel.org
-Cc: Bill Wendling <morbo@google.com>, Russell King <linux@armlinux.org.uk>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com, 
+	Russell King <linux@armlinux.org.uk>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
 	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, 
 	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
@@ -123,17 +123,17 @@ Cc: Bill Wendling <morbo@google.com>, Russell King <linux@armlinux.org.uk>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-thunderx_l2c_threaded_isr() computes "tail" and "ctx" once before entering
-the loop that drains the L2C error ring, and never updates them on
-subsequent iterations. When multiple errors are queued, every iteration
-reports the first ring entry rather than advancing through the ring,
-causing subsequent hardware errors in a batch to go unreported.
+samsung_banks_node_get() constructs each pin bank node name by copying
+bank->name with strscpy() and appending the suffix with strlcat().
 
-Recompute "tail" and "ctx" at the start of each loop iteration, matching
-the sibling thunderx_ocx_com_threaded_isr() and
-thunderx_ocx_lnk_threaded_isr() handlers.
+In preparation for removing the deprecated strlcat() API[1], format the
+node name in a single snprintf() call, which preserves the existing
+truncation check against sizeof(node_name).
 
-Fixes: 41003396f932 ("EDAC, thunderx: Add Cavium ThunderX EDAC driver")
+Link: https://github.com/KSPP/linux/issues/370 [1]
+Cc: codemender-patching+linux@google.com
+Assisted-by: Gemini:Pro [editor_update_file, make_kernel_build_single_file,=
+ checkpatch_run]
 Signed-off-by: Bill Wendling <morbo@google.com>
 ---
 Cc: Russell King <linux@armlinux.org.uk>
@@ -247,24 +247,26 @@ Cc: devel@lists.orangefs.org
 Cc: linux-hardening@vger.kernel.org
 Cc: linux-sound@vger.kernel.org
 ---
- drivers/edac/thunderx_edac.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/pinctrl/samsung/pinctrl-samsung.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/edac/thunderx_edac.c b/drivers/edac/thunderx_edac.c
-index 9c0a1e48f96f..e7c335ca0c36 100644
---- a/drivers/edac/thunderx_edac.c
-+++ b/drivers/edac/thunderx_edac.c
-@@ -1880,6 +1880,9 @@ static irqreturn_t thunderx_l2c_threaded_isr(int irq,=
- void *irq_id)
+diff --git a/drivers/pinctrl/samsung/pinctrl-samsung.c b/drivers/pinctrl/sa=
+msung/pinctrl-samsung.c
+index 5ecc9ed4c44d..0d639eec689c 100644
+--- a/drivers/pinctrl/samsung/pinctrl-samsung.c
++++ b/drivers/pinctrl/samsung/pinctrl-samsung.c
+@@ -1155,8 +1155,7 @@ static void samsung_banks_node_get(struct device *dev=
+, struct samsung_pinctrl_dr
 =20
- 	while (CIRC_CNT(l2c->ring_head, l2c->ring_tail,
- 			ARRAY_SIZE(l2c->err_ctx))) {
-+		tail =3D ring_pos(l2c->ring_tail, ARRAY_SIZE(l2c->err_ctx));
-+		ctx =3D &l2c->err_ctx[tail];
-+
- 		snprintf(msg, L2C_MESSAGE_SIZE,
- 			 "%s: %s: %016llx, %s: %016llx",
- 			 l2c->edac_dev->ctl_name, reg_int_name, ctx->reg_int,
+ 	bank =3D d->pin_banks;
+ 	for (i =3D 0; i < d->nr_banks; ++i, ++bank) {
+-		strscpy(node_name, bank->name, sizeof(node_name));
+-		len =3D strlcat(node_name, suffix, sizeof(node_name));
++		len =3D snprintf(node_name, sizeof(node_name), "%s%s", bank->name, suffi=
+x);
+ 		if (len >=3D sizeof(node_name)) {
+ 			dev_err(dev, "Too long pin bank name '%s', ignoring\n",
+ 				bank->name);
 --=20
 2.55.0.1032.g73a4cd73de-goog
 
