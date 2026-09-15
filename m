@@ -1,133 +1,98 @@
-Received: from mail-pj2-f11.google.com (mail-pj2-f11.google.com [74.125.227.139])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D04E3E95A4
-	for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 02:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCF4285CB9;
+	Tue, 15 Sep 2026 03:13:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789440373; cv=none; b=cg58ZFTt4AYfBnL8stAVcO8NQDZoZ3kBOjM7nkMXqEsPtW0vWi3+gMAX8rn9FuR9Lpe0PgO8EyRYyVgclOoy2j4WzRiT+Bghm/Lh1XQfK9aICa+SRrCr4UDByI9E3Z2K7ppB+sf5K1A791g/pmmcrPzoe9IF+Hunk3qOfrO/UOA=
+	t=1789441992; cv=none; b=nCELsmXUANPKk3ucPM/o2OdzYgmtgvDp/z53RB3S1wCAcoIxFUo/4GQ/qZmit+GtluKpvLqe6Q7WMN4FbPtSeXRS8tLmUTyoXcMjFjw8DyeO7puHYc7XRF0cJflWYPzuVIizkXZeVeXPWiqfy5o1Vlw1rUknN6tsYR8gXsOfDDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789440373; c=relaxed/simple;
-	bh=ToJwOPk2WK8z4t0Q/cg/SldPxvCjqaZQsoAtu1CrDoU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HX/8lxRpTFjCNbxEmKPf/EHZT1wgdIpdzIyTGdrIACSYMljUtWxiFQ11CbUDNl0C/Tu5pqyVygEk9YS/q2XO+LaKB0gSfIkdAdXtu37mGL7uwRaLnrFLoj2qyNO42zYacorz3Bup6MvnGKpFGmVMpghqgnwHb4JXMUa2hkGMM2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VRgxholv; arc=none smtp.client-ip=74.125.227.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1789441992; c=relaxed/simple;
+	bh=9spURXFnhUEOE6ectUrU4Mx+hFIK7BnXqVFjIwIadHw=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=Ii+14vV8ZhRJ58G0LMc2DezSQ+WDGq8eSJYih1hbjvsATmVhjNxMkO+fkv0Kp9MbqOSyprcBlYpIbQzIZKdE7HieZro6gwLVXWJHXvGRRuKg1aUeTbB5JFfoPLIrU1dArm4xsFmXiD6nwMd0rAfHnNd+6y6W6iEtYx83jCtGJlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JsMgusAH; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VRgxholv"
-Received: by mail-pj2-f11.google.com with SMTP id 98e67ed59e1d1-396a51b2605so2012614a91.0
-        for <linux-parisc@vger.kernel.org>; Mon, 14 Sep 2026 19:46:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789440370; x=1790045170; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=GgURIhAvbD9pnXkZkHKGIs3ciuxgkl5nV58X39EDlbY=;
-        b=VRgxholvyPXZuxJXVgVZVP775CV8GwuKJX759LAeyfIgkKL7uzFr3Fn0vjkdMbfdG1
-         Y/aGGECPzS++K/cvmuvsrLg04Qm7lelQz3DiHpr/6kHVUB0yfG3lfYaz1apQy3Yl9NHI
-         XKghiriC89C/EJ5nlhRAK3GD0DF4OcJEJEbMrzTPJIDTFdxhcxd+TNxOcE1i7jTzJKXq
-         Pclixyr7v/wcqAa/e08NmovtvPKizjt+QeKPambK4K/r8rcdXhSq/3hytkpVXCE+MStJ
-         E8C9OhBm2jGSP6FvLwr78vQ0FFpZzptaaRFe7zk0nI+n2RWEKIrTcMs5JH09a/EMm/cu
-         0Syw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789440370; x=1790045170;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=GgURIhAvbD9pnXkZkHKGIs3ciuxgkl5nV58X39EDlbY=;
-        b=bsbnjY8yA6eIkttRQ7JKdvoZD8o5iLHomJzy2w3JYutotaeUvh0ei5wLw/TE/SAJaK
-         QFRg6Yg0+K7RKqD5jww4K9eXhqt3VcqPzCoi5Zu6NXtb1pHstAJmwq34tRXsOtiqxGOB
-         KMtJ2BFwvfFYxueancxY9MrR44q/hyEj1BkbtfqLYonqXeQRBivgh/EuzqftN7jrMQN/
-         vTJkEfziDGFc928bNoPhFkCwZ48wYEi4ekYAa9G4ZCYPhFsyjPZH4svELu/CAD12m3X2
-         EEAYO+MA+LyyaPaeMWSIvPoQu04SYVYLVHtCF3823dM6Mxo7YlWXobZuvjaOxeNGUHY1
-         QbcA==
-X-Forwarded-Encrypted: i=1; AKwUvBx+zn9cYpePSRdl2THY4+0XD0XDXRCaxk2rkkmTd73Z06VDgSby+tyFi8kOoRJV7+aqtO2CDMU38MPDiLE=@vger.kernel.org
-X-Gm-Message-State: AFuF++mGe01PWlegy2MTIAuJcOHvFs9i23L6cSlHXO8/LExJP4qlHCfW
-	RYGHYGvz2bcoG+2Yssqxp0FWBqjINgspn9oHj12v/S0c+0tfFtJgS1Xj
-X-Gm-Gg: AYBFou1lgEEkVr4a18yykVvuVcWlUnNDAc5gJ4zRhnC0Jbmcs90gujNxeC1H8hQ1H9g
-	3+boIQHqyUwNIuaFbv4l5eu+UIB9LikvYQ1za+79VJ9uicKRVc6FwlBMfNMi1me715pkVeRludF
-	I5QoDj2XYFAjK67x1aHSsIkhJ8lohvCC7AfIZyn2lSoK3c6fn5mwAImayFlgX4A/t46AZrBhT7B
-	pulZ6GKJefesVvF0cOWBG9jgUxe739OQub50X956OMkPmI4KmGeqN+Z+FWtqsYRaHXdSdwn8+64
-	xQR/D24hJfJPqfdYOU5EzCwCUy2VIPO250Cx+FxYxVZCaBpfII3dOmu2ADBPvEQoggE6lM5v8dY
-	FucSujOcsKZ6t9NnagQ1eZlwkGnrFfRCfDtPdGWE3r5S1lrBJ61r0G98nwDCuAFhvPOHHw08fBt
-	MqOBKAkwyXrnManQsbJBKbZ9HYA9W5pbp5HVq4eYAsRwc127ycjP8rQ64qPEzxra2ArMc+tj8JC
-	MQhTrjVp5H3BUyvzgGtqBFX46uajNOCU2g+/VsMFaObcK4XY9BhubhTnRqeF2Lyr2TG+Q4WdaTD
-	7QcpPRrRAkMfeG2IwKJ82zPZRCl7k5/pH7G21ipdtmnCazhBcbXmrkzU0W9LlhBgxMo=
-X-Received: by 2002:a17:90b:35d1:b0:39d:f189:48d6 with SMTP id 98e67ed59e1d1-39df1894982mr8808021a91.4.1789440369772;
-        Mon, 14 Sep 2026 19:46:09 -0700 (PDT)
-Received: from ethan-latitude5420.. (host-127-24.cafrjco.fresno.ca.us.clients.pavlovmedia.net. [68.180.127.24])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-14365b78d59sm26779949c88.8.2026.09.14.19.46.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2026 19:46:09 -0700 (PDT)
-From: Ethan Nelson-Moore <enelsonmoore@gmail.com>
-To: Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-	Jijie Shao <shaojijie@huawei.com>,
-	Petr Machata <petrm@nvidia.com>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig=20=28The=20Capable=20Hub=29?= <u.kleine-koenig@baylibre.com>,
-	netdev@vger.kernel.org,
-	linux-parisc@vger.kernel.org
-Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Michael Grzeschik <mgr@kernel.org>
-Subject: [PATCH] net: tulip: winbond-840: remove never-true 486 CPU check
-Date: Mon, 14 Sep 2026 19:45:47 -0700
-Message-ID: <20260915024551.196126-1-enelsonmoore@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JsMgusAH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D24B01F000FF;
+	Tue, 15 Sep 2026 03:13:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789441990;
+	bh=ViR8JggVtC0w9yFDIbiooQtd0VS8UfWsVm77wUEmMEc=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date;
+	b=JsMgusAHOEvg6C2ux+VTY/a7sJAb9fLBvB9I3pP8WvnczISFiy7+SMd0JoY7d+A36
+	 46FkVNzWR9uSBsrQyKXCD/7IcNExqo4c4roCQchC0gGcbzJ7rynqD7H+DgWyFyRV0B
+	 FSnuwhguUspI86R9oPiossrmeBfLVYe6DdPYhahdzMoBV97+D/QOuCfoJia2Z4LsGP
+	 RCnQekEVLJ1UxFrEM37ZolP2U5WLWHKDbEu4+8lIVqwKSCOoKBZKwzBn+P3Bhdv8FO
+	 5R2CBl3IfnAd3/9doQ1lsIBjEqkdUPi6UuYtp4sD+OkDk4aYNkELJ0i3IIc3w+JtBL
+	 JVuL657MHQj6w==
+Content-Type: multipart/mixed; boundary="===============0010365477308784097=="
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <491fb0b335c0814e914b3d041b8cee9fda122c37567bd20e456fd3758fb51568@mail.kernel.org>
+In-Reply-To: <20260915022905.1535566-3-main.kalliope@gmail.com>
+References: <20260915022905.1535566-3-main.kalliope@gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf, parisc: Add support for BPF_SDIV and BPF_SMOD in the parisc32 JIT
+From: bot+bpf-ci@kernel.org
+To: main.kalliope@gmail.com,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,eddyz87@gmail.com,memxor@gmail.com,James.Bottomley@HansenPartnership.com,deller@gmx.de
+Cc: martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,jolsa@kernel.org,emil@etsalapatis.com,ihor.solodrai@linux.dev,bpf@vger.kernel.org,linux-parisc@vger.kernel.org,linux-kernel@vger.kernel.org,visitorckw@gmail.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,mason@kernel.org,ihor.solodrai@linux.dev
+Date: Tue, 15 Sep 2026 03:13:09 +0000 (UTC)
 
-The winbond-840 driver contains a check for boot_cpu_data.x86 <= 4.
-This field encodes the x86 generation (3 = 386, 4 = 486, etc).
-Therefore, since 486 support was removed from the kernel in commit
-8b793a92d862 ("x86/cpu: Remove M486/M486SX/ELAN support"), the
-condition is always true. Remove the check.
+--===============0010365477308784097==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+> commit 78e60eb41cf96a6559947f9582f1a6e1e10551af
+> Author: Nicholas Dudar <main.kalliope@gmail.com>
+>
+>     bpf, parisc: Add support for BPF_SDIV and BPF_SMOD in the parisc32 JIT
+>
+>     emit_alu_r32() and emit_alu_r64() call the unsigned millicode
+>     ($$divU/$$remU) and libgcc-style (hppa_div64()/hppa_div64_rem())
+>     divide/remainder helpers for BPF_DIV and BPF_MOD regardless of the
+>     BPF instruction's signedness, so the parisc32 JIT does not implement
+>     signed BPF_SDIV and BPF_SMOD (off == 1). Signed ALU32 and ALU64
+>     div/mod get an unsigned quotient and remainder rather than the
+>     verifier's and the interpreter's signed result for negative operands.
+>
+>     Thread is_signed = (insn->off == 1) through emit_alu_r32()/
+>     emit_alu_r64(), and on the signed path use the $$divI/$$remI signed
+>     millicode routines (32-bit) or the hppa_sdiv64()/hppa_sdiv64_rem()
+>     helpers added in patch 1 (64-bit) instead of their unsigned
+>     counterparts. $$divI and $$remI are extern-declared and exported next
+>     to $$divU/$$remU in arch/parisc/kernel/parisc_ksyms.c.
+>     bpf_do_misc_fixups() rewrites the zero-divisor and INT_MIN/-1 cases out
+>     of the instruction stream before the JIT runs.
+>
+>     Acked-by: Helge Deller <deller@gmx.de>
+>     Tested-by: Helge Deller <deller@gmx.de>
+>     Assisted-by: Claude:claude-opus-4-8
+>     Signed-off-by: Nicholas Dudar <main.kalliope@gmail.com>
+
+This looks like a bug fix for the parisc32 JIT's handling of signed
+division and modulo operations. Should this include a Fixes: tag?
+
+  Fixes: 847b98421362 ("adding ci files")
+
+This isn't a bug, but would it be worth naming the sibling commit (or
+saying "the previous patch") instead of "patch 1" here, so the reference
+still makes sense once the series is applied?
+
+>     helpers added in patch 1 (64-bit) instead of their unsigned
+
+The "patch 1" reference is only resolvable while the series is on the
+list. Once the commits land, git history has no "patch 1" for later
+readers or anyone doing archaeology on this code.
+
+
 ---
- drivers/net/ethernet/dec/tulip/winbond-840.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
-index a5581f1d0141..c42eaf0eef64 100644
---- a/drivers/net/ethernet/dec/tulip/winbond-840.c
-+++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
-@@ -876,24 +876,14 @@ static void init_registers(struct net_device *dev)
- 	i |= 0x02;		/* give Rx priority */
- 
- 	/* Configure the PCI bus bursts and FIFO thresholds.
--	   486: Set 8 longword cache alignment, 8 longword burst.
--	   586: Set 16 longword cache alignment, no burst limit.
-+	   Set 16 longword cache alignment, no burst limit.
- 	   Cache alignment bits 15:14	     Burst length 13:8
- 		0000	<not allowed> 		0000 align to cache	0800 8 longwords
- 		4000	8  longwords		0100 1 longword		1000 16 longwords
- 		8000	16 longwords		0200 2 longwords	2000 32 longwords
- 		C000	32  longwords		0400 4 longwords */
- 
--#if defined (__i386__) && !defined(MODULE) && !defined(CONFIG_UML)
--	/* When not a module we can work around broken '486 PCI boards. */
--	if (boot_cpu_data.x86 <= 4) {
--		i |= 0x4800;
--		dev_info(&dev->dev,
--			 "This is a 386/486 PCI system, setting cache alignment to 8 longwords\n");
--	} else {
--		i |= 0xE000;
--	}
--#elif defined(__powerpc__) || defined(__i386__) || defined(__alpha__) || defined(__ia64__) || defined(__x86_64__)
-+#if defined(__powerpc__) || defined(__i386__) || defined(__alpha__) || defined(__ia64__) || defined(__x86_64__)
- 	i |= 0xE000;
- #elif defined(CONFIG_SPARC) || defined (CONFIG_PARISC) || defined(CONFIG_ARM)
- 	i |= 0x4800;
--- 
-2.43.0
-
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/34922459599
+--===============0010365477308784097==--
