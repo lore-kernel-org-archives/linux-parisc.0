@@ -1,57 +1,57 @@
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BEAA4734CD
-	for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 08:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CFAE46D572
+	for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 08:20:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789460467; cv=none; b=Qi4qlmsfaLiBUayAn8Aq8tqVnFpOY07m972VnmrmQH0naGry3yMeBU4xAPmwQTIPnJEPQ9WaZc/FziWbI5cJ/OW0W3SkDs7ldgF6S6t/R8qVIO4B/xvdLvtFPrwRIy86YItrFAsC3bGkjEaJOnCnh3hMdWaLPigMFcw4L1IbCfA=
+	t=1789460472; cv=none; b=OCoa1pnfSJ6gOovlMvJZ3ppqwWEJ7hEC9q9JvM0hfBcnf68gkdh3Hjfot5YAS0SlqEUwLD6si7imNe1XUOwWq33KWPi2xHI7/aXKLGiy3H1WqzrsL7SWO5LNOQaHjwDYLI7Y1Dy21z3uO+pbvlKB1LhTuZ+yjZ2VnrzKFr6msSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789460467; c=relaxed/simple;
-	bh=EqxPY8uDyH4sIF56bisQGVYV4UgUVWe6Fa26kaXaoOs=;
+	s=arc-20240116; t=1789460472; c=relaxed/simple;
+	bh=EN6EGME+huegbOxDBjKH7V67mh976lOmZoZq43U+s0w=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=TLMjxtbV8VuvHo9QdRfdH74NtmkbQXMAwTCcmt3gooJfbNrMl1s+3HVV6UwebWy0IG+gHy1ZvTBxonvkV3VcfDBCcHadkX4CkzPGsqTHxqF2jwNOpWEUch1q2tsUbZ7OMirgPMvGTN1HSwc89r2VVQuS92zgBub3d+rSZw3eNEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oAQ/C1UY; arc=none smtp.client-ip=209.85.214.198
+	 To:Cc:Content-Type; b=bW2hqt7v/1CBYD6beJbywPwcu9LQeqaGXitJlXOyWw6IxWqew/NOvfvjhmTjrOIzeRa0y42AdftTZ79njNSHPDidTYIUcV3VXNkXtt0mRD6ThPfbeVKwfJcO8+tWBL9yXfNZwUUBV873n4aVUNmJgdxlTzJziJMdh5o3+6EchFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IN7mFECf; arc=none smtp.client-ip=209.85.214.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--morbo.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oAQ/C1UY"
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2d6df0a1e18so82546315ad.1
-        for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 01:20:17 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IN7mFECf"
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-2db3d832827so52312685ad.2
+        for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 01:20:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1789460412; x=1790065212; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1789460399; x=1790065199; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=XkXp/XZtfYpYjiXJEDXdoQGA1NlHq2kVyqBGidLpG58=;
-        b=oAQ/C1UYbC4EnqfFvZvyuVezkFqgc9cNQDgtAI8vUpM5JPaSP1bm9HT+VlIo/kbt5k
-         7+KLZYuZ6EC3y8a3TdjzhnCt1lrAFuwJU6P+KAXNWiDyiOIOAjLubjNzeq2LafCXwz/g
-         guRJjz9BCunMssVSQN1dwdnGD+V99XD1oauCcDV7lj5wf/EJhrPHlq3ah1zzRC2zC17a
-         fCopklhW5lmpYQwGrDhb1J9IB79ZeHW0m5yt2I00gDkL7DAtIiBJyVtCM739TdEh5xP5
-         PT6zWmhCEW7katUCjeLpcL9On0QFUolqMFMB9yowChecDcGj6hlWSW0BhBJQQijZrS2i
-         860A==
+        bh=EgFMWIs3mUJyaWhldMFLFql9frpSc6deV3MqyJ0yzUw=;
+        b=IN7mFECf+lQARLCCu20shBJaZb8YTnUewxaKE/yWKSD5Vbgf9UY3RdZ3rRDjLRVZaE
+         yK7wbGvW4DIK+Vg0pjnsTrq22hbGV2BRSba/TrVdqeWM1/jsTbhFlUQkcZVvberBxd1d
+         SaDNtYVCwLgiVRfYGfpGb254t+/EUVUSeEWbVrLCcxNClqxguZ20/H8WwMKCwQ+moQgN
+         YX7dmX/fn5/SKtLJ+iwgTCzv3y5aPqff1Ajewyb3RPZpBd9ZPzG21xtxZqD0s6WsVYTN
+         wMYLfnEDv0wRIJ75lLG2IgBPGu//T9hW+jeC8Cxg2o/3gR1///x0IMDj8zJgaRJkqvIT
+         FCYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789460412; x=1790065212;
+        d=1e100.net; s=20260707; t=1789460399; x=1790065199;
         h=content-transfer-encoding:content-type:cc:to:from:subject
          :message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=XkXp/XZtfYpYjiXJEDXdoQGA1NlHq2kVyqBGidLpG58=;
-        b=MS2EE0j4D85H2k38zBW9YmOQaeurB3VQjHslYkcEO77qwK4Pu5yuyr7GyPJMA7rAI9
-         tcYE3tgMv+1VKg+zKKisTib2+4fPSR/ZF0PzSIQZltUXLGM6PGaYs5hDJZUnWemdviQm
-         K39z/oXQ5VcDVT/4yFImSTFR/5fjnxAsVWbIFh3LNgcWLHf+FPrE8NKHheelFvAkx/6/
-         vsMN5XNuNzb6ytC2cfdUPCrVJo0RX34gdjWSFyjWo1ThsjSGvufTP/FgBdfsoidUOFkP
-         x2nKZMDFAcasRGqOnmtN2FflZbRhvh4Y9uDvPLJvqHzCP4lxaPYL7ApP//TTu4yIdJtw
-         u7QQ==
-X-Forwarded-Encrypted: i=1; AKwUvBwXZ76oyEFBmT71kMr+YyjsuKQGWIeksMb2AtDX5GnURhy6zZEJi+nPD0WHzD5RUNwPaDdDLVCMsHSMGjQ=@vger.kernel.org
-X-Gm-Message-State: AFuF++n2Eys4mIgELduCJs8xYahBPAS90ezQKP2IGIo25G6IIqvdTJKS
-	3vp4jI298All65Qtnj0IxZ34AMpkT0g4J279kiihR2VxKLsHaM/v0SneE4I4qnofwnMeCeSy6tl
-	E
-X-Received: from plbkc7.prod.google.com ([2002:a17:903:33c7:b0:2dd:630:cea4])
- (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:1965:b0:2d3:716e:e2ae
- with SMTP id d9443c01a7336-2dd6c5ef019mr154580855ad.6.1789460411846; Tue, 15
- Sep 2026 01:20:11 -0700 (PDT)
-Date: Tue, 15 Sep 2026 08:18:37 +0000
+        bh=EgFMWIs3mUJyaWhldMFLFql9frpSc6deV3MqyJ0yzUw=;
+        b=xm+BDbjxyF5uLZEm+HAO6ZWOvr5aEnaCJU8zTB1ePPO6fdADW+K6HM8OfPm9pfswd3
+         4JBV92krmArJUIU4fBxpai0hVdLqrEyjwuhydGPe8I44VXDIJnichiL3cJlDLsxsryWS
+         M/8H4+JmPGNJYisr58XtyhbdU9KJE8NS9gW/JWJqYvNDEf6QV9DGm7ofxNt8LzJKSQ4T
+         niUW93M/rbO5FL4z0OUrAdHoItVoIsn4BrJzauEOw2RFFgPgp1bGig8YyxHwhbvXYFf1
+         5W26plzhNkFB5VVsUNLTLVakrUQ0im4f2Kps0Ri/HRlLNsmgJUvkgPf1kmCiEGifqsuM
+         I0PQ==
+X-Forwarded-Encrypted: i=1; AKwUvBzcAHsylk0bIebrCdHRGoUhS8qwey4budGyYCmTnHA3BfAq+1b2DG8t8rzbK11MhbUWuXgqsQSP6CLEMhs=@vger.kernel.org
+X-Gm-Message-State: AFuF++lqzWLQZCNrp4BDRT52nTKgvk0djXb6E5FpHP55dVGmwFT0uYPy
+	LiAUXTVp4fZMwf5jE4oCn+gQj0q8LsuoL1gShmgC7+uK0J4UrEbondRHbjM9lyZMRNX57T379OL
+	s
+X-Received: from plrf13.prod.google.com ([2002:a17:902:ab8d:b0:2d9:21a2:1910])
+ (user=morbo job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:32cc:b0:2db:3d84:effc
+ with SMTP id d9443c01a7336-2dd6c5d600fmr121011565ad.6.1789460398023; Tue, 15
+ Sep 2026 01:19:58 -0700 (PDT)
+Date: Tue, 15 Sep 2026 08:18:28 +0000
 In-Reply-To: <20260915081910.4142719-1-morbo@google.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
@@ -61,8 +61,8 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260915081910.4142719-1-morbo@google.com>
 X-Mailer: git-send-email 2.55.0.1032.g73a4cd73de-goog
-Message-ID: <20260915081910.4142719-21-morbo@google.com>
-Subject: [PATCH 20/28] parisc: Refactor strlcat() to seq_buf in setup_cmdline()
+Message-ID: <20260915081910.4142719-12-morbo@google.com>
+Subject: [PATCH 11/28] wifi: brcmfmac: Replace strlcat() with snprintf() in brcmf_fw_alloc_request()
 From: Bill Wendling <morbo@google.com>
 To: linux-kernel@vger.kernel.org
 Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com, 
@@ -123,16 +123,17 @@ Cc: Bill Wendling <morbo@google.com>, codemender-patching+linux@google.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-setup_cmdline() uses multiple strlcat() calls to conditionally append
-default console and earlycon parameters to boot_command_line.
+brcmf_fw_alloc_request() constructs firmware file paths by chaining
+strscpy() and multiple strlcat() calls for the module parameter path,
+separator, base name, and extension.
 
-In preparation for removing the deprecated strlcat() API[1], initialize a
-struct seq_buf with the existing boot_command_line contents and use
-seq_buf_printf() to append the console parameters.
+In preparation for removing the deprecated strlcat() API[1], format the
+complete firmware path in a single snprintf() call.
 
 Link: https://github.com/KSPP/linux/issues/370 [1]
 Cc: codemender-patching+linux@google.com
-Assisted-by: CoPilot:Gemini-1.5-Pro [editor_update_file, shell_command_run]
+Assisted-by: SecurityEngineer:GPT-4o [editor_update_file, make_kernel_build=
+_single_file, shell_command_run]
 Signed-off-by: Bill Wendling <morbo@google.com>
 ---
 Cc: Russell King <linux@armlinux.org.uk>
@@ -246,57 +247,45 @@ Cc: devel@lists.orangefs.org
 Cc: linux-hardening@vger.kernel.org
 Cc: linux-sound@vger.kernel.org
 ---
- arch/parisc/kernel/setup.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ .../broadcom/brcm80211/brcmfmac/firmware.c    | 21 +++++++------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index d3e17a7a8901..fa3efc82ad87 100644
---- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -17,6 +17,7 @@
- #include <linux/init.h>
- #include <linux/console.h>
- #include <linux/seq_file.h>
-+#include <linux/seq_buf.h>
- #define PCI_DEBUG
- #include <linux/pci.h>
- #undef PCI_DEBUG
-@@ -42,6 +43,7 @@ static char __initdata command_line[COMMAND_LINE_SIZE];
- static void __init setup_cmdline(char **cmdline_p)
- {
- 	extern unsigned int boot_args[];
-+	struct seq_buf s;
- 	char *p;
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c b/=
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+index 22ff326f1924..2f74a952599e 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+@@ -845,22 +845,17 @@ brcmf_fw_alloc_request(u32 chip, u32 chiprev,
+ 	fwreq->n_items =3D n_fwnames;
 =20
- 	*cmdline_p =3D command_line;
-@@ -54,19 +56,21 @@ static void __init setup_cmdline(char **cmdline_p)
- 	strscpy(boot_command_line, (char *)__va(boot_args[1]),
- 		COMMAND_LINE_SIZE);
-=20
-+	s.buffer =3D boot_command_line;
-+	s.size =3D COMMAND_LINE_SIZE;
-+	s.len =3D strlen(boot_command_line);
-+
- 	/* autodetect console type (if not done by palo yet) */
- 	p =3D boot_command_line;
- 	if (!str_has_prefix(p, "console=3D") && !strstr(p, " console=3D")) {
--		strlcat(p, " console=3D", COMMAND_LINE_SIZE);
--		if (PAGE0->mem_cons.cl_class =3D=3D CL_DUPLEX)
--			strlcat(p, "ttyS0", COMMAND_LINE_SIZE);
--		else
--			strlcat(p, "tty0", COMMAND_LINE_SIZE);
-+		seq_buf_printf(&s, " console=3D%s",
-+			       PAGE0->mem_cons.cl_class =3D=3D CL_DUPLEX ?
-+			       "ttyS0" : "tty0");
+ 	for (j =3D 0; j < n_fwnames; j++) {
+-		fwreq->items[j].path =3D fwnames[j].path;
+-		fwnames[j].path[0] =3D '\0';
+ 		/* check if firmware path is provided by module parameter */
+ 		if (brcmf_mp_global.firmware_path[0] !=3D '\0') {
+-			strscpy(fwnames[j].path, mp_path,
+-				BRCMF_FW_NAME_LEN);
+-
+-			if (end !=3D '/') {
+-				strlcat(fwnames[j].path, "/",
+-					BRCMF_FW_NAME_LEN);
+-			}
++			snprintf(fwnames[j].path, BRCMF_FW_NAME_LEN, "%s%s%s%s",
++				 mp_path, (end =3D=3D '/') ? "" : "/",
++				 mapping_table[i].fw_base,
++				 fwnames[j].extension);
++		} else {
++			snprintf(fwnames[j].path, BRCMF_FW_NAME_LEN, "%s%s",
++				 mapping_table[i].fw_base,
++				 fwnames[j].extension);
+ 		}
+-		strlcat(fwnames[j].path, mapping_table[i].fw_base,
+-			BRCMF_FW_NAME_LEN);
+-		strlcat(fwnames[j].path, fwnames[j].extension,
+-			BRCMF_FW_NAME_LEN);
+ 		fwreq->items[j].path =3D fwnames[j].path;
  	}
 =20
- 	/* default to use early console */
- 	if (!strstr(p, "earlycon"))
--		strlcat(p, " earlycon=3Dpdc", COMMAND_LINE_SIZE);
-+		seq_buf_printf(&s, " earlycon=3Dpdc");
-=20
- #ifdef CONFIG_BLK_DEV_INITRD
- 	/* did palo pass us a ramdisk? */
 --=20
 2.55.0.1032.g73a4cd73de-goog
 
