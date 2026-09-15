@@ -1,179 +1,131 @@
-Received: from mail-vs2-f42.google.com (mail-vs2-f42.google.com [74.125.227.42])
+Received: from mail-ej2-f26.google.com (mail-ej2-f26.google.com [74.125.228.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5122E44238F
-	for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 19:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.227.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51DA455194
+	for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 19:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.228.154
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789500654; cv=pass; b=r5yCOM9WkwVYPdTyFK1LhZfneOuHTgVXcOv8wjJTfydQUSvhJuttl0/SHDVJHf8iY5rUE1KavEL8pPYhRmb5K+S7ZJ7F/UMpjOnbsFkhpYZR1aHPEY6gldjcppOPGGAiuZ6rnOvshot67I5XGBOsZnSsJOmLHLcPNDWVLWrXBdY=
+	t=1789502299; cv=pass; b=APogp8N8vH+NETwQ1Rx2UmLw0Rsby0dI8YWBJn5VAoJaYlZUBb9cNvRcHUDmcl9VeiWVv9vJOix3iFPO2ZZagpasazaJ5GksZxb3jobQpbbbqoBUpo+8POCGEzkkRyCNl6YD8pjTgK4rxVOOy93Z/h9n/gLgeQZ8XIgOS1PaVOI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789500654; c=relaxed/simple;
-	bh=RfxsKW+gWzHzPnl0VGV4sp1JrOew5XduTAso8G35GXs=;
+	s=arc-20240116; t=1789502299; c=relaxed/simple;
+	bh=FAzpqMwwi6sl1VtdlXZIoUcU/qbo27j0XppRaT5WpEM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fJGnOWcB8jeLp9ANmHYhJXZXpnIY6Uh5UlSSn3UIQzL+AdnBqLcfrOs2zdCN5jT16F0SSW0DcOOkrK4NrXx9A/Wr1AR0PTssam8SwwEJtGpEaC/k2qpjHouRH162kNOSpB6s5DYYBqOmbRyghaTt0HZC+2iMAIPs+XM/g/eYS+8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mHQpOIQY; arc=pass smtp.client-ip=74.125.227.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	 To:Cc:Content-Type; b=ENRUQ56JmQwrhCbWPlzGLLB/w+5jNzMXuiu6CcirC3HnzOQfc6X3pV/mtTe7sS0i0TVOaZx3/RFrlJgsne69Iu6baH55yIBCHq6iAymvwiui4vdIg4JXGr4XT8gn8lZcjNNFX6/7VHGDH94Zdh3n1MnefLk4/T84Jkjxjn4Kygw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HikUK9bw; arc=pass smtp.client-ip=74.125.228.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mHQpOIQY"
-Received: by mail-vs2-f42.google.com with SMTP id 71dfb90a1353d-5c67e4fffc0so70521e0c.0
-        for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 12:30:50 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789500649; cv=none;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HikUK9bw"
+Received: by mail-ej2-f26.google.com with SMTP id a640c23a62f3a-c2940ef15d3so35654666b.2
+        for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 12:58:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789502295; cv=none;
         d=google.com; s=arc-20260327;
-        b=GrpLblKXnSlMRmSDGHajoTRYo9yNUPSGPigkzgfpj9IweRp3S76dabfNxwF5YAvsqc
-         OCA8DLgnGA3Ql2PDVh4Ivrrd8vgoNACji/uEgZkLjateERC3issl0ZsgHxBQ8RZ8Msv+
-         9yCWS4qpuxdgUQezrzsjmmxW385bSW6tZiNgxWd/hUXAUWuupdMeXw9sYkszKjTf5keo
-         NGnX9SrN7jqKX9PWUkFiw2Yrj9NLHmWyS+GNv6SjLc7KWI23te25oaDPz3k2Ku0CPAEV
-         Y3319yxONFYvhi6qiW2hoUl9jiN4zreBH4UdnHu3/MvOhdm5gczgPoMFFhLWUgZD8ov7
-         oviA==
+        b=ldOeFfPQ58NcbYWSnL88OajzK8sP5Bryk+FQxBs0xIt3MpjmXIgJqcNRV+otv7qm8n
+         usRISK/Si+cXaXXJWKxr3z5hcb12a6JrfMSnIq9qLgVvJzvErBBMU5xKkKx4S4ZTTbdz
+         0hTa3oUSlN8EwKfrFgNcQhqWQlzNpiGEV61vAUogm4E3duGBPTRHgLiZnph6rIUGgiiD
+         Z4rcPBuVnaO09rTKpf6esCYTZJjtnpnx9ZjusgQnDAqa885eusyE1+9675E3tP2u3YhT
+         C9G56JJUVLHwILp/0xY3le2H0hgGPud1+NyHX2VOqapIlWWe2iYpMxEgeYzPCSAfLVx5
+         wZUg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=bRLtXj28C7ZetbPCXePmHpMel3/nm53ij0hFxwsbjIQ=;
-        fh=zdeXdeSfEHbaLVfMJwe+iTzk45s52VLDb236760Z8sc=;
-        b=FCNp+Y/8YIgLOwDmS9cQGTYEIcnRUaBXKdCfhrlhRR3Pjsk/OtC1wPWz8fmNljShl8
-         eXcYspGY4oIL0OCQYVWyMfJM2k3zJm5tgt/+VHUJ9NfmkZaHxNAe+9sXwzE386yfmZed
-         e4SXM/6k0sWCLd+iNZ3UFr7hVf1XN+WcmRRT5erDXZMHQfa0WL1ge82pP+ReKlDl7TAD
-         hipM9VUPnYa175ybIHU/LGJxeMBLK51BzXhcIz+yiVr4qJFqz3bjmek9F72F998KiV5k
-         xnL3bDT6iyMX+hnO2pV0qxsMWGtKHdiXCP9lZ/BCsHziLPT9pLQqHl0RH8BjpQ0BtirN
-         TyFg==;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=VgDjIW7K6yfw9H2uuq39mJuCV9xfXKip2q8+G3ZS+/Q=;
+        fh=OarHmhUUfTpleQOUgs55qZgftYM0DY4qLSH04zv7IIw=;
+        b=gCX9HjXG80kgtq4C8tb6Kq84rsDJiJ+vvvt3nmUmt60Bedb5rxVBzBfPsYI/OhmI3f
+         ISg/ETDEJSeGml+mlXKiMux1NWOtrBOkoIY6EjyKw1K9SHL9NaAjqIVOOoqydzk7Vc95
+         4RbMcoZqKFBdR32xXj9G2/T6JL0tVZ6S3jor8toVS7ZT2Uu/EiSn9fS3uE0/ychiKZJ4
+         wOxCriHIML7MmricsvWL26oPJkPKGBLfPsAaGtPs8/u8dsJD/m5IuQqKcEzTyHVn1Cph
+         zMOjoeXMhAqc/aJdpsugbP2xc7maCiXzJqCnnQPWEQDasvFkTZZoEieeid2uYLZlDgCi
+         UhYw==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1789500649; x=1790105449; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=bRLtXj28C7ZetbPCXePmHpMel3/nm53ij0hFxwsbjIQ=;
-        b=mHQpOIQYcK/f3LO6suOWFn0Cy720wLrLpDZ76Y2mpOM3+C9DQTQajqMKss2+8vswyu
-         6kP5JbXC/uQnmjFeNyvbn7ykDMjEjp2433FP2tusVe+U1jFmELny3ub1VOqaeQk4+bmw
-         tGfgnCt0FH77KKNFK/CBvajJjeEiwDPenSWUOdNQWc6FxW5qw9OoucUz3vPurhja7+2W
-         SRX2li+U/pB+n68jTLoULDYN4LWrOMyMYUPvz3nmRdNTo7uPdox+mGt4Z2VuXMis+C7M
-         e3WQC4JCEtRXPwtZDWEutENmL8gBQ5snBkXOOLsO675Xs4UrytQv+QbVij8iLiq/Acss
-         xb9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789500649; x=1790105449;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+        d=gmail.com; s=20251104; t=1789502295; x=1790107095; darn=vger.kernel.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=bRLtXj28C7ZetbPCXePmHpMel3/nm53ij0hFxwsbjIQ=;
-        b=QY3MnMAQ0MqZ/ECPDkMUaydBkZurhFmTripiEY1/lAz/TEzGu1e9hfpy09DKNYP1qf
-         KI8e+zt7qQ/StcWf/Y6U7R1bj4sze23hRXffKx2e2/tTLjatB9Nbn7CWxtYFXY8C4via
-         udrzSfFx78Ien73WQZnohQljCWEqSOizUsAvGpN70FTdPjqWyXW68IBzjq9Sr+WIEr0h
-         xJVYsoMY0crxb1YJ6jEHCvu2rq0YBVuQbEM7mz86MYEPNNqqazi0p6eqLl7Oy5HiQxoz
-         AzP7JL/TY9GgpEvyCl871QJPnZNqiA+bVtSGnZn18oJP7bmbmxlzOb/kvG3xFfkOQxKq
-         soRQ==
-X-Forwarded-Encrypted: i=1; AKwUvByEtgQmKKiMEIYS5w/hf/Z1PGe91TiA67+/pEEFq6KgiJ6BZ4WVDr213mvE8UMFP/Ug0S3DoBAIPyW3apk=@vger.kernel.org
-X-Gm-Message-State: AFuF++kePcoZUCLBUmA32TVmtTkoE/93fQmTEfVCmLYAgyuKS5gwr2QQ
-	Dk8m7aPaMRWTCsLqQHpkljF5zHR2fIVHCTxJx5tgkwor2zohc44rJ6nan3IC2P/VlmDBgARjE8G
-	wfMxwSlNCE4BXNYL2YOEF9NCj19oIpkkhreMLXyA=
-X-Gm-Gg: AYBFou3EYyrzmEaVO/w0f1jFvqBAX0gCB3z6A1Nu1B7E3q6D8TEFZ3sqzfDGn6VmaFP
-	47SynFDSrkxBtSxAkDywII+5fg+YNJra9uR2MySOCGBfDuw75AkuSCtqQbFhsN0C88hN4eZZyg1
-	ep3f6WPbOFXMmqvxae7SzaN5Mp6oZob8J/1PHSTnC9/P4C8VBwrmwTpMPLzRFfFGZNIhQz/7fy5
-	9wJbGptN8ga2bJptsdV8koWvjIYf2ABvHE3e0zDqHoR15AbDXe8r+FJ+JyxlrpNWP/uzB6C7Y/e
-	qDoLM91/CD9Syds6XjwJJRSoVsNA5VNp3JVUu5HXO6ogONSxKOHf2X1UxWNTCeUW/nXTcast8eG
-	tmtcZvifaOsHQchpNbA0sSA0KxmFJSgfTatLvqPNrOs6PapbPcCAMt7VjkuUhstg=
-X-Received: by 2002:a05:6122:8d4:b0:5c8:3697:9289 with SMTP id
- 71dfb90a1353d-5c993b49b7cmr4231155e0c.8.1789500648289; Tue, 15 Sep 2026
- 12:30:48 -0700 (PDT)
+        bh=VgDjIW7K6yfw9H2uuq39mJuCV9xfXKip2q8+G3ZS+/Q=;
+        b=HikUK9bwFipO7qeORpqKUhq/UGbHnkvXJ9iKuc4JiGJ+MAze5OqHKubqBOaOuAvWnG
+         gIpuqCaI9uwqxYXbgyDaQkHfKfUJuxLR+GJ8o0XeR4CVZGKBei5RhA5f3ZP9ywuAdYDd
+         X28ATabr4ia4s1N47mnDqdJ719BBiKAizUbeLbEE40tEJ9aqziVn1uX7v9n4WZ0KidEl
+         980zf0r0d6ECTUtNI6LAO9UnhTlK8lf/xpT6YabKgke3QAg7JVyltx2aQ5kfeqyRURkP
+         EPBA1Z5eKGYOsyTk7feJSg5tMu0EX5ZY8GLCmjTVGrE0LksHcJayLBh1+j6PQM+hEVjM
+         2xlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789502295; x=1790107095;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=VgDjIW7K6yfw9H2uuq39mJuCV9xfXKip2q8+G3ZS+/Q=;
+        b=WwsG3cDazZzizjmtlN3omykr00JgT2KE/gM7VfbjstWPId0kKzjcdGNdYtITia0/8a
+         ChDaMTuG2uxsmXiQMFWeWCgCeI9fcAwAerhjfpqVNp+yJQOggda2UcT7/O+ztSTJrKnV
+         cK79Y1GINHyS9Z++/KNfYiBQQ/mWehpI/+ejoZBuDp13nKePTvObVmFfY5RvoaugsoON
+         jGHbJTgtYyLBPGoXywNHroljauiy2sIwV9hkqfZX7o3AiVMSZXa6HjnQOqG7Eblkkff8
+         ztDu0KxKhSlOuRgzZicQWUMTU8BnwDHOEFqTO/TJecAhjdYkyMKSunbgWuoqfr7Qi4b5
+         Cplg==
+X-Forwarded-Encrypted: i=1; AKwUvBxt230ZEamXd72nr98Ajcpk1bvzgpZFv5qrJz2AMpcvih+Tokg7ouQGvztUhAlK8bH1Mo/Ln2VuHIUto24=@vger.kernel.org
+X-Gm-Message-State: AFuF++lLr14xlosOTVSsg9t/NkEdR1bTsEk6Ow2BZ1Xuufo2J6PJUG8R
+	2SxSBV5RlflB1tmfU24EdK6XdowZfsITm9+xT1gHRyiqV7E6il1GUqSJbtXJVAnpAq+iX7nuLLL
+	arlIn2m5bwiRa7MWfrRtIARZyNYs8j7g=
+X-Gm-Gg: AYBFou2bV9kGDxBWCmCxel3WtH3dQe9GwVWeQs8g7WpH1+LP+TFP0u+ZKBQuFdmnVzn
+	uQOjzKXrSoggYNvK1trKCjLQzExvs4OydmB45QdmzAMpLEgoRZ4EPTcecru7z9j0EsgLkVs+nL4
+	DQdGEQl/cInFnX9tDKMGP5Cpqwj8W3aeb5p45sCL9ItcMHV5AsAZDyc6I4orycEabuCN2VrfPPT
+	ul6L6H34dk8q9JTX0AnChCvBkbg3olhkvmRL3Lvh6KQ+HXDzLUlvt3aMwXskZLfnTtUDDpdQexb
+	KvKKJIrdG0RrKcq3QnU7YlE5gAiFpdOUp/+imue7lcvg2cG7KLV7Bg==
+X-Received: by 2002:a17:907:a089:b0:c25:c7a9:7b8a with SMTP id
+ a640c23a62f3a-c29b86b80b0mr897677666b.12.1789502294655; Tue, 15 Sep 2026
+ 12:58:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260915081910.4142719-1-morbo@google.com> <20260915081910.4142719-22-morbo@google.com>
- <202609151147.C5B45CB@keescook>
-In-Reply-To: <202609151147.C5B45CB@keescook>
-From: Bill Wendling <morbo@google.com>
-Date: Tue, 15 Sep 2026 12:30:31 -0700
-X-Gm-Features: AcwNN1W7vYosDgc2DMy2_OinBNj1qeEQ35WOY6PL8-NHlzjaHMOKmE1leyIGWNs
-Message-ID: <CAGG=3QXYtmJqE5oy5ZD0-G0=GNxK71KKYurusNJvLQNqR-o6+A@mail.gmail.com>
-Subject: Re: [PATCH 21/28] NFS: nfsroot: Refactor root_nfs_cat() to use snprintf()
-To: Kees Cook <kees@kernel.org>
-Cc: nikitash.mariiaw@gmail.com, linux-kernel@vger.kernel.org, 
-	codemender-patching+linux@google.com, Russell King <linux@armlinux.org.uk>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Ian Abbott <abbotti@mev.co.uk>, 
-	H Hartley Sweeten <hsweeten@visionengravers.com>, Tony Luck <tony.luck@intel.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Matthew Brost <matthew.brost@intel.com>, 
-	=?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>, 
-	Rodrigo Vivi <rodrigo.vivi@intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Matthias Schwarzott <zzam@gentoo.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Arend van Spriel <arend.vanspriel@broadcom.com>, Rob Herring <robh@kernel.org>, 
-	Saravana Kannan <saravanak@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, 
-	Sylwester Nawrocki <s.nawrocki@samsung.com>, Peter Griffin <peter.griffin@linaro.org>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Linus Walleij <linusw@kernel.org>, 
-	Anil Gurumurthy <anil.gurumurthy@qlogic.com>, 
-	Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>, "Martin K. Petersen" <mkp@kernel.org>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Simon Horman <horms@kernel.org>, Chuck Lever <cel@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
-	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
-	Tom Talpey <tom@talpey.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>, 
-	Kanglong Wang <wangkanglong@loongson.cn>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	Qiang Ma <maqianga@uniontech.com>, Randy Dunlap <rdunlap@infradead.org>, 
-	Pengpeng Hou <pengpeng@iscas.ac.cn>, Ard Biesheuvel <ardb@kernel.org>, Breno Leitao <leitao@debian.org>, 
-	Thorsten Blum <blum@kernel.org>, Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Lyude Paul <lyude@redhat.com>, 
-	Ashutosh Desai <ashutoshdesai993@gmail.com>, Imre Deak <imre.deak@intel.com>, 
-	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, Johan Hovold <johan@kernel.org>, 
-	Johannes Berg <johannes.berg@intel.com>, 
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>, 
-	Alexander Stein <alexander.stein@ew.tq-group.com>, 
-	Cryolitia PukNgae <cryolitia@uniontech.com>, Jiaming Zhang <r772577952@gmail.com>, 
-	Will Porter <mrwillporter@gmail.com>, Cen Zhang <zzzccc427@gmail.com>, 
-	=?UTF-8?Q?C=C3=A1ssio_Gabriel?= <cassiogabrielcontato@gmail.com>, 
-	Rong Zhang <i@rong.moe>, Arun Raghavan <arunr@valvesoftware.com>, 
-	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linux-edac@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	intel-xe@lists.freedesktop.org, linux-input@vger.kernel.org, 
-	linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
-	netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com, 
-	devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, devel@lists.orangefs.org, 
-	linux-hardening@vger.kernel.org, linux-sound@vger.kernel.org
+References: <20260915022905.1535566-3-main.kalliope@gmail.com> <491fb0b335c0814e914b3d041b8cee9fda122c37567bd20e456fd3758fb51568@mail.kernel.org>
+In-Reply-To: <491fb0b335c0814e914b3d041b8cee9fda122c37567bd20e456fd3758fb51568@mail.kernel.org>
+From: Nicholas Dudar <main.kalliope@gmail.com>
+Date: Tue, 15 Sep 2026 15:58:03 -0400
+X-Gm-Features: AcwNN1X8inw4eXVBgVo2LOS-mWKdLjd8l2uN2YGRgK2WHAH0Wh8vRRWq_n5o6G4
+Message-ID: <CAJZwKkj62Oq+rdXWboGYTucw0mDYqFB=M1MhcjaGumyLTyYLgA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf, parisc: Add support for BPF_SDIV and
+ BPF_SMOD in the parisc32 JIT
+To: bot+bpf-ci@kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
+	memxor@gmail.com, James.Bottomley@hansenpartnership.com, deller@gmx.de, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	jolsa@kernel.org, emil@etsalapatis.com, ihor.solodrai@linux.dev, 
+	bpf@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, visitorckw@gmail.com, martin.lau@kernel.org, 
+	mason@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 15, 2026 at 11:52=E2=80=AFAM Kees Cook <kees@kernel.org> wrote:
+On Tue, Sep 15, 2026, bot+bpf-ci@kernel.org wrote:
+> This looks like a bug fix for the parisc32 JIT's handling of signed
+> division and modulo operations. Should this include a Fixes: tag?
 >
-> On Tue, Sep 15, 2026 at 08:18:38AM +0000, Bill Wendling wrote:
-> >  fs/nfs/nfsroot.c | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
->
-> This collides with:
-> https://lore.kernel.org/all/27956255dde39f58d73a7b51cb53cbe3d7804f54.1786=
-411026.git.mariianikitash@google.com/
->
-> > +     ret =3D snprintf(dest + len, destlen - len, "%s%s",
-> > +                    (len && dest[len - 1] !=3D ',') ? "," : "", src);
->
-> I prefer Mariia's version because this inline ternary is difficult
-> to read.
->
-Agreed. I was trying to not stomp on her work. Please ignore this patch.
+>   Fixes: 847b98421362 ("adding ci files")
 
--bw
+847b98421362 only adds CI files, not parisc JIT changes.
 
-> I was expecting to land hers soon if the NFS folks don't pipe up. It is
-> one of the rare cases of still being open-coded, but the strlen() usage
-> was pre-existing to check for the trailing comma, so it's not a clean
-> seq_buf() conversion candidate...
->
-> --
-> Kees Cook
+I submitted this as missing instruction support to bpf-next without Fixes,
+following the RV32/i386 guidance [1,2], as explained on parisc v1 [3].
+The current unsigned results for signed operations are still incorrect.
+
+> This isn't a bug, but would it be worth naming the sibling commit (or
+> saying "the previous patch") instead of "patch 1" here, so the reference
+> still makes sense once the series is applied?
+
+Agreed. Please replace "helpers added in patch 1 (64-bit)" with
+"signed 64-bit helpers" when applying. The preceding text already names
+hppa_sdiv64() and hppa_sdiv64_rem().
+
+BPF maintainers: please consider both patches for stable after mainline
+inclusion, patch 2 needs patch 1's helpers. Per the BPF guide, I'm requesting
+this here rather than adding a Cc: stable trailer.
+
+Thank you,
+Nicholas
+
+[1] https://lore.kernel.org/bpf/fa8a040f-64c4-484f-9538-fb0ec287639f@huawei.com/
+[2] https://lore.kernel.org/bpf/alWEj2hDtxz8RW-l@google.com/
+[3] https://lore.kernel.org/bpf/CAJZwKkgG2Ct3KipN4cRgg4v=QQwj9LhA8pveqQvT_gQ_GpzJ3w@mail.gmail.com/
