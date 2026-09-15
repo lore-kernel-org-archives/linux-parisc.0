@@ -1,170 +1,132 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf2-f12.google.com (mail-lf2-f12.google.com [74.125.229.204])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64FB4B5157;
-	Tue, 15 Sep 2026 19:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1AC32D7398
+	for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 19:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.229.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789498821; cv=none; b=FDnaBcsFlabd+XjBfgNOIYpWDjq4fsMeJcCcRdIhS3FE9sFf3sgcUQKBMyISt/3VNFJPj7U8TcFTBm6JNFwksv4l2lHKtlVjZKI16YaJpZU1fp/S19Kw/HR2ZGY1GhHMjoWIkVCCr+koSVaE0jHp6A00snK8EFN8pwY2KDRYlis=
+	t=1789499708; cv=none; b=It8UZvnE3uTsuc5zRqq0oaWBNf+wqebbEaAPEmWS6yHorxrv0x1zYlD2BbmTYLTHBhDT7l6eSKDz1C5R/aovw0OzefHilBHgb75EQ913vQScD9NY874Kb6b/OX3yVPXUxM/5+0hcno3FMX5AX0x1HfGcArxZTB2MlNK29INToiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789498821; c=relaxed/simple;
-	bh=/pxPtBDRL/rubNz3T85ru1lxCUdEgL1csnJGWfVKvsw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GqmGZ+D+b0m16WrZ+LAU4nCNq7ZeqY8/MkYDWu7U8ZexwCzwKZMJHnBobpJLv1Y7OedjvbrLV4gt3JE5DLSw1kPRr7qVLfc/fQ1o+XSlxmD98yWl+6iUXp7iCHF8kKIPpRvIieZi+ah2VKfvPPY2DtWTTyfIVZV3L5Jv22r+pR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j0iSBaet; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789499708; c=relaxed/simple;
+	bh=AGk4y8oFpNibhByHKIxcRS7KnQx6z20Q8VC6dFl1tNo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rWJzPV4b/ZkKM+bHDIyfYi3adPtSy1INA0L58cm3FPr2IJ6JJh7tgQnhw9I472+d51qwbbyYc0xGfXYj0diqMpHYzYdjvSlbf9FH2tm2Y7UNh4penkYWSMUprQnTdSo9zX3IQbWJQfLyuvRyVQOu7/sg0lW/FCWENv6ygOJAclg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=QUTdUDEC; arc=none smtp.client-ip=74.125.229.204
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j0iSBaet"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48ECC1F00893;
-	Tue, 15 Sep 2026 19:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789498819;
-	bh=bH9D6fx46WAVM8PGx4wEKkSYBjKGmw5AvziupNUvWGk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=j0iSBaetC/3YCi18xNuSeB+n+7VnOF+QOgAvJx7ktLSNyWzdoyXHzZ/YPBs5rtm+n
-	 WA6gaCeYDOM7G68qSWfRsHvbbAN1voKYHzwbAYckQsRPEBWlfdZePBmdFPmQ1OMU/N
-	 sUCxn5+r/cR7FN5oCIcXoHFsLztawdQ7lZ2pVlHqL5qvTKh/9Qqc0Ta8A275Irt74k
-	 zf/eAGrgknulaZr5ylmpMNiuL5cL1xjelXuos4e0Xj/d9MPGQhh5E4WSCnRmy8X7rs
-	 HaD3mC4eIWM8qko0PgiUDZhDxobQu7+Yi4Weeos/5iSyNoUm6TMJqr9E5mfS6sKjxo
-	 y4BshIH81fNpw==
-Date: Tue, 15 Sep 2026 12:00:19 -0700
-From: Kees Cook <kees@kernel.org>
-To: Bill Wendling <morbo@google.com>
-Cc: linux-kernel@vger.kernel.org, codemender-patching+linux@google.com,
-	Russell King <linux@armlinux.org.uk>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Thomas Gleixner <tglx@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Ian Abbott <abbotti@mev.co.uk>,
-	H Hartley Sweeten <hsweeten@visionengravers.com>,
-	Tony Luck <tony.luck@intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Matthias Schwarzott <zzam@gentoo.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Rob Herring <robh@kernel.org>,
-	Saravana Kannan <saravanak@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Peter Griffin <peter.griffin@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Linus Walleij <linusw@kernel.org>,
-	Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-	Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-	"Martin K. Petersen" <mkp@kernel.org>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Chuck Lever <cel@kernel.org>, Jeff Layton <jlayton@kernel.org>,
-	NeilBrown <neil@brown.name>,
-	Olga Kornievskaia <okorniev@redhat.com>,
-	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
-	Kanglong Wang <wangkanglong@loongson.cn>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Qiang Ma <maqianga@uniontech.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Pengpeng Hou <pengpeng@iscas.ac.cn>,
-	Ard Biesheuvel <ardb@kernel.org>, Breno Leitao <leitao@debian.org>,
-	Thorsten Blum <blum@kernel.org>,
-	Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Lyude Paul <lyude@redhat.com>,
-	Ashutosh Desai <ashutoshdesai993@gmail.com>,
-	Imre Deak <imre.deak@intel.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>,
-	Johan Hovold <johan@kernel.org>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Cryolitia PukNgae <cryolitia@uniontech.com>,
-	Jiaming Zhang <r772577952@gmail.com>,
-	Will Porter <mrwillporter@gmail.com>,
-	Cen Zhang <zzzccc427@gmail.com>,
-	=?iso-8859-1?Q?C=E1ssio?= Gabriel <cassiogabrielcontato@gmail.com>,
-	Rong Zhang <i@rong.moe>, Arun Raghavan <arunr@valvesoftware.com>,
-	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-edac@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
-	devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
-	linux-hardening@vger.kernel.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH 03/28] ARM: atags: Replace strlcat() with snprintf() for
- cmdline extend
-Message-ID: <202609151155.CC22827@keescook>
-References: <20260915081910.4142719-1-morbo@google.com>
- <20260915081910.4142719-4-morbo@google.com>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="QUTdUDEC"
+Received: by mail-lf2-f12.google.com with SMTP id 2adb3069b0e04-5b74e0c2e4dso142173e87.0
+        for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 12:15:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1789499704; x=1790104504; darn=vger.kernel.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=XFFk9jJtDswBQpA8QWIooO6lLG4HdlvPT/LqykRjG+U=;
+        b=QUTdUDEC4QHS9GKM4OCphl9CLC9VWy78EdqI9MVr/ZNhyab8P9vidCjut3gCrTLJBA
+         2R3fCgb3ot9ilDZjmroMV3AFYd9PCxxuxbVF5jxjLL0O8HNLUYjS+yOcbbAzZLW3LzYD
+         au3+gaHjizklAVzwZjSL3zAqZiGozxvUi3U9Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789499704; x=1790104504;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=XFFk9jJtDswBQpA8QWIooO6lLG4HdlvPT/LqykRjG+U=;
+        b=uEJ9cjknWjjLeBF14u36/fHFatoE5H5XTuAaBiuCCrmsNIZQYAzrFQpwK273A0n4JG
+         oPh48SA9Kqs68Rcwd5r5pv824R7nBEbQq4WpFgRYi6vLTOJ+eja9d3XAMDbeHULM93yf
+         ikBwVHIYTf1hka+uPLELMvHSIzWsEKurzYH81RYomATlnin470M5yt0IA/oVrevUZxZr
+         OC9aff2XgdL5xqL1VUHwBlk+RU5p0bCGeaQTIsLwFwy6iizAKdFxs+rIOqLoYU/OEQF0
+         mROvz5IzRnR1vPoHqvP67VQu6B6+WycugkHIsUmH8Ypx4rf08AhaXXpX+xz9QcedCmUc
+         mb6g==
+X-Forwarded-Encrypted: i=1; AKwUvBxFgQetelkJOLhzU3mQqKgVGiSsLqUSKHBP7qBaByt4tflUnmM+uTHoxQwybe0j9GG94BuWewQd2XdXL24=@vger.kernel.org
+X-Gm-Message-State: AFuF++lzBzwZ+UD/n8poehpw1B1+CHxjpG0E8gLZrh5kpANNZzqtQJ50
+	DS7tpwbfrBUx9D3xlPyzaZl6l/D2MgEsW269JlCHdXhvRghGe3/BSUQkfwstOY2QxIs/49u7Wbn
+	vQWDgV3iREK5/
+X-Gm-Gg: AYBFou3c8bQfTHjg21m06qleab8Z5thCuWZIBS8xLEKsyDXoG6ktF/oFMmFz+9T8jzK
+	sDLFQcxMJEXXgQa7K8tdT9ASyPQwaDirq3zB4dNJq4PZ2cHwYcD1x0/fgjvN+PHtscA5iTHi1i7
+	GgJswNJoLMifwt1RysTaJihdh9mElIjWvn4QFQVvxS8PP9aDgefWqh4FGsHKiXlyp1dOfZ8aud9
+	rYHTKSm3wt/0GqehlHaOJyqIqN1Jccdjx7Klrv3nVdS1GT8kEiT44TmxjVdnCL+ub7j478bGV+b
+	HRAkvRc8zgdsY2Bmc5QCzOt7Xc5MHMuH0xp5I9pz7CPyY6n1TolBtj49oUYLkYwuudCedF1SJ4a
+	Sz8XEI0fYmdD4XWii29dLbbQK7cdkAsUgEYGYPjOvLwLSrXm//IsUCUrsGgBdRebc1piH9kAQ6c
+	G2wGxYyXhe7Q4DEi/Y+gj0OF8NUxWhH9kHUhbFGmLkQFnyRRCZd4W2gmyVwuuGrFfsS/fslnC3i
+	Kpq3tWQY3zHl2ZTegmG9ZoGn4XFOvRdVaaJTBGvmcRJN+Zy903HYuRb/kL7
+X-Received: by 2002:ac2:4c4e:0:b0:5b5:e265:5215 with SMTP id 2adb3069b0e04-5b8ae6af066mr4454116e87.22.1789499703544;
+        Tue, 15 Sep 2026 12:15:03 -0700 (PDT)
+Received: from mail-lf2-f12.google.com (mail-lf2-f12.google.com. [74.125.229.204])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5b8b57ee959sm164565e87.84.2026.09.15.12.15.02
+        for <linux-parisc@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2026 12:15:02 -0700 (PDT)
+Received: by mail-lf2-f12.google.com with SMTP id 2adb3069b0e04-5b5e4f15b78so93272e87.2
+        for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 12:15:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBwzMZP3D7zyfB83HKUTqmsvz6RoubTEfDRpNqAHOHolunCegNel2aHLwmVoBfBWwjU4O1Ozx3suHcGhxNQ=@vger.kernel.org
+X-Received: by 2002:a17:906:7309:b0:c25:47a4:fedc with SMTP id
+ a640c23a62f3a-c29b839a057mr1176039766b.2.1789499355710; Tue, 15 Sep 2026
+ 12:09:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260915081910.4142719-4-morbo@google.com>
+References: <20260915-work-fd-reserve-unify-folded-v1-0-4d5217d6b246@kernel.org>
+ <CAG48ez1RsdT=O=-0city3vjgWhDvY424KtTmrCJntWy5ds3HBQ@mail.gmail.com>
+In-Reply-To: <CAG48ez1RsdT=O=-0city3vjgWhDvY424KtTmrCJntWy5ds3HBQ@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 15 Sep 2026 12:08:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi3Kkqgfg6zUTHpQoZNL2VOB4vYqpi6RX0WNO++29UtyQ@mail.gmail.com>
+X-Gm-Features: AcwNN1VCm0LMG7z3Jned014oJh6WBcf4uOx0OBk98_hrtHKbrhcQiMMJ_A-fmB0
+Message-ID: <CAHk-=wi3Kkqgfg6zUTHpQoZNL2VOB4vYqpi6RX0WNO++29UtyQ@mail.gmail.com>
+Subject: Re: [PATCH RFC POC 00/50] file: handle files on syscall exit
+To: Jann Horn <jannh@google.com>
+Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Oleg Nesterov <oleg@redhat.com>, linux-alpha@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org, Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org, 
+	netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, bpf@vger.kernel.org, 
+	David Airlie <airlied@redhat.com>, virtualization@lists.linux.dev, kvm@vger.kernel.org, 
+	kexec@lists.infradead.org, linux-hyperv@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Sep 15, 2026 at 08:18:20AM +0000, Bill Wendling wrote:
-> --- a/arch/arm/kernel/atags_parse.c
-> +++ b/arch/arm/kernel/atags_parse.c
-> @@ -121,9 +121,10 @@ __tagtable(ATAG_REVISION, parse_tag_revision);
->  static int __init parse_tag_cmdline(const struct tag *tag)
->  {
->  #if defined(CONFIG_CMDLINE_EXTEND)
-> -	strlcat(default_command_line, " ", COMMAND_LINE_SIZE);
-> -	strlcat(default_command_line, tag->u.cmdline.cmdline,
-> -		COMMAND_LINE_SIZE);
-> +	size_t len = strlen(default_command_line);
-> +
-> +	snprintf(default_command_line + len, COMMAND_LINE_SIZE - len,
-> +		 " %s", tag->u.cmdline.cmdline);
->  #elif defined(CONFIG_CMDLINE_FORCE)
->  	pr_warn("Ignoring tag cmdline (using the default kernel command line)\n");
->  #else
+On Tue, 15 Sept 2026 at 10:52, Jann Horn <jannh@google.com> wrote:
+>
+> Is this mainly about stuff like "we installed a file descriptor and
+> then the following put_user() failed"? Because if so, I think a nicer
+> fix would be to have a policy of "if userspace provides unwritable
+> memory to a syscall, just keep going and pretend the access worked",
+> and maybe have a sysctl that kills the process when this happens to
+> emphasize that userspace should not be doing this.
 
-It's pretty clear we have a pattern of "simple append" that is needed,
-and while strlcat() does that, it's horrible. I feel like we need an
-appending scnprintf(), and it needs to return like strscpy() does (i.e.
--E2BIG on truncation).
+We've done that before, where we just ignore put_user() errors and the
+user gets whatever the user gets.
 
-My goal would be:
+It is maybe not optimal, but it's fine. You can find quite a lot of
+unchecked put_user() calls with a pattern like
 
-- don't open-code string length math
-- never leave the destination unterminated
-- allow for format strings
-- yes/no return indication for "did this truncate?"
+        git grep '^[[:space:]]*put_user(.*);'
 
-Initializing a whole seq_buf struct for these small cases is too much
-overhead...
+and some of them are in core code - see the two in kernel/fork.c, for example.
 
-For both cases (small without seq_buf, large with seq_buf), it is also
-frequently needed to know the resulting strlen. seq_buf doesn't do this
-right today, and a strscpy-style return value also doesn't tell us. :(
+One of them says "if userspace has not set up a proper pointer then
+tough luck". The other one doesn't even bother with a comment.
 
--- 
-Kees Cook
+The scheduler has two cases too, although one of them is admittedly
+for another error case.
+
+So yes, saying "if you pass bogus arguments, you get what you get" is
+a valid model. It's perhaps not the *preferred* model, but it's not
+wrong.
+
+It *would* be wrong to take code that already has error handling and
+remove the error handling, though.
+
+                  Linus
