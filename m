@@ -1,63 +1,63 @@
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+Received: from mail-qk2-f13.google.com (mail-qk2-f13.google.com [74.125.230.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634743CFF6B
-	for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 02:29:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EBB53CF217
+	for <linux-parisc@vger.kernel.org>; Tue, 15 Sep 2026 02:29:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.230.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789439356; cv=none; b=sX2EiMwzNMD+37/cDnuhQTWOB+lEk6EoKiUDZWsedR7O2rflQmWuKVtbol5gwIP+Xn+qS1ZcyUT9tnBcSUkyYCyCWq0TuWUCgQwEfBv00WmzqXfv6kSt8dPKiTZxPwCHmCZTemIbfLs1Dk9rYO3S+1fG4/fe5rCBfArmji3gjMM=
+	t=1789439359; cv=none; b=Fego3GhNMG+1Z30MffH35JJRh36CHpS2GtZVxoz+K4b3QluMJF9zqJ7hQIRhNZajG40Bp7yXaftuwcPzOS64a+SSHtL/nuafTr5DIKNdYZxBQ4EUgyHTLFB2nitcXaBlZHNFh+/OVkegLOBvzdDe5j1t+sOx4XEQ/h1aB1OYc6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789439356; c=relaxed/simple;
-	bh=Cn5e8xZQRc6b8WoFy3hCWfwv30WkooJ5m58H2SQg+WE=;
+	s=arc-20240116; t=1789439359; c=relaxed/simple;
+	bh=Qc2w8Bn8jjebsauvnltyZuoDR8Orfa6XZngLN1P+7rw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fKCB9IXelgmA3/W78bHR23WpxdcMxEZQwChEpDa6Q7HLaeV5LXJOEQFQix19/Zg9mL0Nj3/IOkSLFYOWdZq/mDxwQyO/GJ0CY0PjRhZaf8UpsVR77ry8q3p1GHQdZr+Cxgh7C9V89cMgSFibI1+MCYw/InHTR24kMsLiZpi0cR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RPfWgx3R; arc=none smtp.client-ip=209.85.219.53
+	 MIME-Version; b=fvwB7+qAcvJfSrpTgtPZtrk06oKihBdk74luBANkJZ4rtvVDVtC7JTMRlifOvTiRrNtnyas3TsUDmC5jNAu/dFkvSqSrI0zTAlnJ/pFytnOaQ3dP02stjBUug64qYovlf/o9PsJmx5vJSi0EMyya84sXAbGMcfaaYrqQ1qAzW1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=oxayK17C; arc=none smtp.client-ip=74.125.230.205
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RPfWgx3R"
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-912333a94fdso8367636d6.3
-        for <linux-parisc@vger.kernel.org>; Mon, 14 Sep 2026 19:29:14 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oxayK17C"
+Received: by mail-qk2-f13.google.com with SMTP id d75a77b69052e-530c602630bso29349071cf.3
+        for <linux-parisc@vger.kernel.org>; Mon, 14 Sep 2026 19:29:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789439353; x=1790044153; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1789439357; x=1790044157; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=xbifEBXXlaTPl7iHr8VuKt08GP8Un/dGLxM2o5dy9WQ=;
-        b=RPfWgx3RJjQ8ZziZrwWz7sAQLJrG2i1VH320m6YovRQsK+GeM3f7amy0vpK42gPm05
-         fw6gbnSjc2rV7w8ROsSPuEBKJluo2H4u6U2a+pWTm2+KhITv7mTdDfCTHn8kaZdps+bt
-         rmhxMXZtTX+bN1JKujFrgl0Sy/FmyCKq8FHdkIztLO/kZ9zFEU7hbkSB2aQseEWhiLyj
-         hGIeXiIz643tnlPAbuiB/Up+cuf0AZhCDi09dm2IUwCB8jmmNd9ReBIhpCoEQqJwS3nE
-         vuvHBHf4woQvcGTBWKP6epZ9Zx0UzVOWJrVWzheZMCPZwUXpOMfNz0ubavhUcQGz7jLu
-         MSYg==
+        bh=Zvdh8OpoPsqhiuVwU1AEGCetGNPdpdBiLFHYCom0W8U=;
+        b=oxayK17CAqKQMSVUsx/DyL0yMSPjHDShQJilhkPAMzW/iy+UQVe9ExFuDaCacRp6xS
+         raU1dTVE7+BpU7KXrdjrspFl/ISWX4Yqb+FqBwsLuUx5L3wAufYVFazBp/W6cje5gkYV
+         TV1rHG/V16meTDPK27XWTWQApYApV03avwQSR+jQLGInx/WgB5DYNtqP4IcSu/rKwRRi
+         hQjHXItGkQW1PfPoIkpBDG5ktcmhZdkFqxaaL2bTMp6iOoILyJmQ3nC9sa0LdAppVhmq
+         8awV+YAwp7dghbumvnU/XO9tDUEyUEQKzGnrNqZyXo1J5FArzZKy/VDa2qX+iJprIjQe
+         YF4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789439353; x=1790044153;
+        d=1e100.net; s=20260707; t=1789439357; x=1790044157;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=xbifEBXXlaTPl7iHr8VuKt08GP8Un/dGLxM2o5dy9WQ=;
-        b=GA+bYqQf8g7Xt/PGTS1yWVAAc0OM3ipUQlq0DS5kGqhx2UaXGCa6LQV6qbmbgHCNQm
-         E7PcYnNfwkDXMGdfE+joqSTJ9YFLncumycfhUMDpyxXxKuDTIzxg5nlHojLpLHba9sFe
-         SszKH96/flC4OUiQFE0cbwSV/TBWPX5xQfitMWzptylGv9y0cIylCfuZTbf/ezibcgpc
-         IaSpzStIe0XphmbzVDE89p+sR4uKqe3f1iWGHM7YaHv+PGnUlBM2Gey27UpU3Hy6lq8S
-         4qt+NC5F+374SyJyVp9w9msUuMO1PJwElqPSFqz+GADUDp8kRSQc7RJg3qjl8iDYDIJS
-         OZKg==
-X-Forwarded-Encrypted: i=1; AKwUvByQcOwhswciiBChxOGkQEM5tnsFJJoaCB+1o++6VUN3aDd8sJrMVp0N61ttNBhuZoJ48e8n99Jxp0R1Fr8=@vger.kernel.org
-X-Gm-Message-State: AFuF++nfhwMeRx7ISaqTT23RugfC8f2Ag+dNM8gzRJkM1My5azgwyJfN
-	ioWWXEzDMt7OJGMADdrn20ipw6yB9yyHCbzrdSF4l+qp3sk5RkNqFeC1
-X-Gm-Gg: AYBFou0skrHOcDHAn5e8SBjLsLWvA94+xQ14Yb1xbePcFhFWBExX9rpN5Ojt0OCYtvh
-	lh4Up+vxukNFmOvoTh7f8Q8Yodd2fPoZx/ii/2PRYnk5RU4OkV9ra6e/q80eVROfflq5Qe2OiyG
-	RJk6Wpku0wAO7syJWX34Nff7uxIJ6/2L8YQWwBvYfHCj5v95L8279IOwmYBrfJA/SRYGw2qNEHC
-	GGJzUNfvSOytTm9g3GJBT0J7dQqnB9i1qwIzanoNuhvF2yk82KDVsLFsW3yA6/wj2LrIDiPVK1/
-	86Nbud0vT1JNtWi4QNnQdoXmNhcV45Nz+C0yRg5i3BK6ZKSZpP8+mHQoSvycq611jNdCLuPIvUM
-	qrtGGljtgeZGlKS9L6djU6zD3/Ce7UpZ5VcFLvflDtt665iNct7nIms5fzWc+gznnZQH2AjkE/b
-	hICStWM+lAyBW8vmoui5yO+9cV2TWMmbK24AHv8ay1E2WlcL8GUgVXRja4EFU7Wujn
-X-Received: by 2002:a05:6214:5c08:b0:910:345c:b7e5 with SMTP id 6a1803df08f44-9122e69758cmr88235586d6.36.1789439353357;
-        Mon, 14 Sep 2026 19:29:13 -0700 (PDT)
+        bh=Zvdh8OpoPsqhiuVwU1AEGCetGNPdpdBiLFHYCom0W8U=;
+        b=BTkfzVe9TS6XlVzJbcnkCEPHRNMu9f8NFLgFQpBWbgQ+bM3OGzuIQcogYp/fHIso4H
+         HoO67nfnqz3dWarsAWy6QrU6m08ABqAcgDp7LoEVAZNdcGAqTre9mwA2dA8/AmTanGM2
+         Vwg4ekPmA9XPfW4J9H/SQI4OXEFZ5PS/r9dwiEpJXAS/vfCfnXRjd0ff2AGOmSqEi6A0
+         0t7fetI3mFMZR/ehWEcgL/wQKbmqSYHYRXK7Lq5ewV/ojGJGVE7WC66ekjmBuMpx5xXU
+         JszWXSNNyjLKcTJulad8zRIqFV90tLqKFzYRiGYheYS5wPFgFPgKMhoWqoy84j1gCsXm
+         tc/A==
+X-Forwarded-Encrypted: i=1; AKwUvBz26FFa9+AqBh1jq8xvR3urgyO8IyjqnTF31pWSfA5cBvuSpop0G0+Bw0K3e+yzZgh/R7yzWu8k5mO9q/w=@vger.kernel.org
+X-Gm-Message-State: AFuF++mE8DiUGRrOITnJ/L0zI7MkZOaJnUv+Rysj1o51SiVT4IyX0Q5M
+	QPBNkzr/nJzTIs8v5qzYFWaEcfBfIB4djogFgBak3gHVhCKDIwDfJ07l
+X-Gm-Gg: AYBFou0Mzl9nXTaVb3R/hyYTqRKtpGGRx/ifQyjt/CN7YP9B2iQzve4oh3LBJ0T5ur3
+	axEXXQYiY+pCdQhK+l1xPCJWGcWzKsFU6eYUEhmDpSbVXksRIwrFsgJo0F6HvwrSb4gaIJ5R2OT
+	RKA53Y8POq0nNDtLG6W2c813+a2DmfPSqZPz1d6NhbFfAiUsBfyfH2bfsMrjWqC+x7chNzqv2gC
+	rn8H9G768TW8sfcr7YvQULseURCftcTgWmMj7uElDBLxjSeRkIpKZ9wUEQpo5n3VkcVqOoZUpUJ
+	9/3wgA6VdRcCxOtgOwTENNgDRZS9OjTnXohoszr5Y2on6caRfHMq6XqC2FtvzA9ND57PBS8Zv/l
+	ErtCBS0P0y3aUollAFXY6Skwhuc46zQxWxep+gc08yl4zjfuZ7wIMn98ZygstlZmTRCFXyLVd4v
+	79dYj6SttPUGkp2fsbaXEWsms7P73lJy1cjCs0MJOw3EOJ4Rcjc4TrbAI7c7UYNpoP
+X-Received: by 2002:a05:622a:96:b0:530:b2e4:d598 with SMTP id d75a77b69052e-5310d061f0bmr78040911cf.51.1789439356980;
+        Mon, 14 Sep 2026 19:29:16 -0700 (PDT)
 Received: from Turin ([187.15.143.6])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-9121a4fb3e4sm90358906d6.24.2026.09.14.19.29.11
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-9121a4fb3e4sm90358906d6.24.2026.09.14.19.29.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2026 19:29:12 -0700 (PDT)
+        Mon, 14 Sep 2026 19:29:16 -0700 (PDT)
 From: Nicholas Dudar <main.kalliope@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -76,9 +76,9 @@ Cc: martin.lau@linux.dev,
 	linux-parisc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	visitorckw@gmail.com
-Subject: [PATCH bpf-next v2 1/2] bpf, parisc: Add support for BPF_SDIV and BPF_SMOD in the parisc64 JIT
-Date: Mon, 14 Sep 2026 22:29:04 -0400
-Message-ID: <20260915022905.1535566-2-main.kalliope@gmail.com>
+Subject: [PATCH bpf-next v2 2/2] bpf, parisc: Add support for BPF_SDIV and BPF_SMOD in the parisc32 JIT
+Date: Mon, 14 Sep 2026 22:29:05 -0400
+Message-ID: <20260915022905.1535566-3-main.kalliope@gmail.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260915022905.1535566-1-main.kalliope@gmail.com>
 References: <20260915022905.1535566-1-main.kalliope@gmail.com>
@@ -90,17 +90,20 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-emit_call_libgcc_ll() zero-extends the ALU32 operands and calls the
-unsigned hppa_div64()/hppa_div64_rem() helpers regardless of the BPF
-instruction's signedness, so the parisc64 JIT does not implement
+emit_alu_r32() and emit_alu_r64() call the unsigned millicode
+($$divU/$$remU) and libgcc-style (hppa_div64()/hppa_div64_rem())
+divide/remainder helpers for BPF_DIV and BPF_MOD regardless of the
+BPF instruction's signedness, so the parisc32 JIT does not implement
 signed BPF_SDIV and BPF_SMOD (off == 1). Signed ALU32 and ALU64
 div/mod get an unsigned quotient and remainder rather than the
 verifier's and the interpreter's signed result for negative operands.
 
-Add hppa_sdiv64()/hppa_sdiv64_rem() wrapping div64_s64(), thread
-is_signed = (insn->off == 1) through the div/mod emit sites, and on the
-signed path sign-extend the ALU32 operands (and the immediate divisor)
-instead of zero-extending them before calling the signed helpers.
+Thread is_signed = (insn->off == 1) through emit_alu_r32()/
+emit_alu_r64(), and on the signed path use the $$divI/$$remI signed
+millicode routines (32-bit) or the hppa_sdiv64()/hppa_sdiv64_rem()
+helpers added in patch 1 (64-bit) instead of their unsigned
+counterparts. $$divI and $$remI are extern-declared and exported next
+to $$divU/$$remU in arch/parisc/kernel/parisc_ksyms.c.
 bpf_do_misc_fixups() rewrites the zero-divisor and INT_MIN/-1 cases out
 of the instruction stream before the JIT runs.
 
@@ -109,125 +112,108 @@ Tested-by: Helge Deller <deller@gmx.de>
 Assisted-by: Claude:claude-opus-4-8
 Signed-off-by: Nicholas Dudar <main.kalliope@gmail.com>
 ---
- arch/parisc/net/bpf_jit.h        |  2 ++
- arch/parisc/net/bpf_jit_comp64.c | 35 ++++++++++++++++++++++++--------
- arch/parisc/net/bpf_jit_core.c   | 14 +++++++++++++
- 3 files changed, 42 insertions(+), 9 deletions(-)
+ arch/parisc/net/bpf_jit_comp32.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/arch/parisc/net/bpf_jit.h b/arch/parisc/net/bpf_jit.h
-index 8b8896959f044..074115c93c909 100644
---- a/arch/parisc/net/bpf_jit.h
-+++ b/arch/parisc/net/bpf_jit.h
-@@ -467,6 +467,8 @@ static inline u32 hppa_t21_insn(u8 opcode, u8 r2, u8 r1, u8 ext8, u8 t)
+diff --git a/arch/parisc/net/bpf_jit_comp32.c b/arch/parisc/net/bpf_jit_comp32.c
+index 5ff0cf925fe95..eea0a34a3bfee 100644
+--- a/arch/parisc/net/bpf_jit_comp32.c
++++ b/arch/parisc/net/bpf_jit_comp32.c
+@@ -321,6 +321,8 @@ static void bpf_put_reg32(const s8 *reg, const s8 *src,
+ extern void $$mulI(void);
+ extern void $$divU(void);
+ extern void $$remU(void);
++extern void $$divI(void);
++extern void $$remI(void);
  
- u64 hppa_div64(u64 div, u64 divisor);
- u64 hppa_div64_rem(u64 div, u64 divisor);
-+u64 hppa_sdiv64(u64 div, u64 divisor);
-+u64 hppa_sdiv64_rem(u64 div, u64 divisor);
- 
- /* Helper functions that emit HPPA instructions when possible. */
- 
-diff --git a/arch/parisc/net/bpf_jit_comp64.c b/arch/parisc/net/bpf_jit_comp64.c
-index 54b0d5e25e024..c326fa737ec8c 100644
---- a/arch/parisc/net/bpf_jit_comp64.c
-+++ b/arch/parisc/net/bpf_jit_comp64.c
-@@ -502,14 +502,19 @@ static void emit_call(u64 addr, bool fixed, struct hppa_jit_context *ctx)
- 	emit_hppa_copy(HPPA_REG_RET0, regmap[BPF_REG_0], ctx);
+ static void emit_call_millicode(void *func, const s8 arg0,
+ 		const s8 arg1, u8 opcode, struct hppa_jit_context *ctx)
+@@ -562,12 +564,14 @@ static void emit_alu_i32(const s8 *dst, s32 imm,
  }
  
--static void emit_call_libgcc_ll(void *func, const s8 arg0,
--		const s8 arg1, u8 opcode, struct hppa_jit_context *ctx)
-+static void emit_call_libgcc_ll(void *func, const s8 arg0, const s8 arg1,
-+		u8 opcode, bool is_signed, struct hppa_jit_context *ctx)
+ static void emit_alu_r64(const s8 *dst, const s8 *src,
+-			 struct hppa_jit_context *ctx, const u8 op)
++			 struct hppa_jit_context *ctx, const u8 op,
++			 bool is_signed)
  {
- 	u64 func_addr;
- 
- 	if (BPF_CLASS(opcode) == BPF_ALU) {
--		emit_hppa64_zext32(arg0, HPPA_REG_ARG0, ctx);
--		emit_hppa64_zext32(arg1, HPPA_REG_ARG1, ctx);
-+		if (is_signed) {
-+			emit_hppa64_sext32(arg0, HPPA_REG_ARG0, ctx);
-+			emit_hppa64_sext32(arg1, HPPA_REG_ARG1, ctx);
-+		} else {
-+			emit_hppa64_zext32(arg0, HPPA_REG_ARG0, ctx);
-+			emit_hppa64_zext32(arg1, HPPA_REG_ARG1, ctx);
-+		}
- 	} else {
- 		emit_hppa_copy(arg0, HPPA_REG_ARG0, ctx);
- 		emit_hppa_copy(arg1, HPPA_REG_ARG1, ctx);
-@@ -600,6 +605,8 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct hppa_jit_context *ctx,
- 	u8 rd = -1, rs = -1, code = insn->code;
- 	s16 off = insn->off;
- 	s32 imm = insn->imm;
-+	bool is_signed;
+ 	const s8 *tmp1 = regmap[TMP_REG_1];
+ 	const s8 *tmp2 = regmap[TMP_REG_2];
+ 	const s8 *rd;
+ 	const s8 *rs = bpf_get_reg64(src, tmp2, ctx);
 +	void *func;
  
- 	init_regs(&rd, &rs, insn, ctx);
- 
-@@ -656,29 +663,39 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct hppa_jit_context *ctx,
- 		fallthrough;
- 	case BPF_ALU | BPF_MUL | BPF_X:
- 	case BPF_ALU64 | BPF_MUL | BPF_X:
--		emit_call_libgcc_ll(__muldi3, rd, rs, code, ctx);
-+		emit_call_libgcc_ll(__muldi3, rd, rs, code, false, ctx);
- 		if (!is64 && !aux->verifier_zext)
- 			emit_zext_32(rd, ctx);
+ 	if (op == BPF_MOV)
+ 		rd = bpf_get_reg64_ref(dst, tmp1, false, ctx);
+@@ -604,10 +608,12 @@ static void emit_alu_r64(const s8 *dst, const s8 *src,
+ 		emit_call_libgcc_ll(__muldi3, rd, rs, op, ctx);
  		break;
- 	case BPF_ALU | BPF_DIV | BPF_K:
- 	case BPF_ALU64 | BPF_DIV | BPF_K:
--		emit_imm(HPPA_REG_T1, is64 ? (s64)(s32)imm : (u32)imm, HPPA_REG_T2, ctx);
-+		is_signed = (off == 1);
-+		emit_imm(HPPA_REG_T1,
-+			 is64 || is_signed ? (s64)(s32)imm : (u32)imm,
-+			 HPPA_REG_T2, ctx);
- 		rs = HPPA_REG_T1;
- 		fallthrough;
- 	case BPF_ALU | BPF_DIV | BPF_X:
- 	case BPF_ALU64 | BPF_DIV | BPF_X:
--		emit_call_libgcc_ll(&hppa_div64, rd, rs, code, ctx);
-+		is_signed = (off == 1);
+ 	case BPF_DIV:
+-		emit_call_libgcc_ll(&hppa_div64, rd, rs, op, ctx);
 +		func = is_signed ? &hppa_sdiv64 : &hppa_div64;
-+		emit_call_libgcc_ll(func, rd, rs, code, is_signed, ctx);
- 		if (!is64 && !aux->verifier_zext)
- 			emit_zext_32(rd, ctx);
++		emit_call_libgcc_ll(func, rd, rs, op, ctx);
  		break;
- 	case BPF_ALU | BPF_MOD | BPF_K:
- 	case BPF_ALU64 | BPF_MOD | BPF_K:
--		emit_imm(HPPA_REG_T1, is64 ? (s64)(s32)imm : (u32)imm, HPPA_REG_T2, ctx);
-+		is_signed = (off == 1);
-+		emit_imm(HPPA_REG_T1,
-+			 is64 || is_signed ? (s64)(s32)imm : (u32)imm,
-+			 HPPA_REG_T2, ctx);
- 		rs = HPPA_REG_T1;
- 		fallthrough;
- 	case BPF_ALU | BPF_MOD | BPF_X:
- 	case BPF_ALU64 | BPF_MOD | BPF_X:
--		emit_call_libgcc_ll(&hppa_div64_rem, rd, rs, code, ctx);
-+		is_signed = (off == 1);
+ 	case BPF_MOD:
+-		emit_call_libgcc_ll(&hppa_div64_rem, rd, rs, op, ctx);
 +		func = is_signed ? &hppa_sdiv64_rem : &hppa_div64_rem;
-+		emit_call_libgcc_ll(func, rd, rs, code, is_signed, ctx);
- 		if (!is64 && !aux->verifier_zext)
- 			emit_zext_32(rd, ctx);
++		emit_call_libgcc_ll(func, rd, rs, op, ctx);
  		break;
-diff --git a/arch/parisc/net/bpf_jit_core.c b/arch/parisc/net/bpf_jit_core.c
-index 172770132440d..a2f93202a2ef9 100644
---- a/arch/parisc/net/bpf_jit_core.c
-+++ b/arch/parisc/net/bpf_jit_core.c
-@@ -190,3 +190,17 @@ u64 hppa_div64_rem(u64 div, u64 divisor)
- 	div64_u64_rem(div, divisor, &rem);
- 	return rem;
+ 	case BPF_LSH:
+ 		emit_call_libgcc_ll(__ashldi3, rd, rs, op, ctx);
+@@ -630,7 +636,8 @@ static void emit_alu_r64(const s8 *dst, const s8 *src,
  }
-+
-+u64 hppa_sdiv64(u64 div, u64 divisor)
-+{
-+	s64 sdiv = div64_s64((s64)div, (s64)divisor);
-+
-+	return (u64)sdiv;
-+}
-+
-+u64 hppa_sdiv64_rem(u64 div, u64 divisor)
-+{
-+	s64 sdiv = div64_s64((s64)div, (s64)divisor);
-+
-+	return (u64)((s64)div - sdiv * (s64)divisor);
-+}
+ 
+ static void emit_alu_r32(const s8 *dst, const s8 *src,
+-			 struct hppa_jit_context *ctx, const u8 op)
++			 struct hppa_jit_context *ctx, const u8 op,
++			 bool is_signed)
+ {
+ 	const s8 *tmp1 = regmap[TMP_REG_1];
+ 	const s8 *tmp2 = regmap[TMP_REG_2];
+@@ -666,10 +673,12 @@ static void emit_alu_r32(const s8 *dst, const s8 *src,
+ 		emit_call_millicode($$mulI, lo(rd), lo(rs), op, ctx);
+ 		break;
+ 	case BPF_DIV:
+-		emit_call_millicode($$divU, lo(rd), lo(rs), op, ctx);
++		emit_call_millicode(is_signed ? $$divI : $$divU,
++				    lo(rd), lo(rs), op, ctx);
+ 		break;
+ 	case BPF_MOD:
+-		emit_call_millicode($$remU, lo(rd), lo(rs), op, ctx);
++		emit_call_millicode(is_signed ? $$remI : $$remU,
++				    lo(rd), lo(rs), op, ctx);
+ 		break;
+ 	case BPF_LSH:
+ 		emit(hppa_subi(0x1f, lo(rs), HPPA_REG_T0), ctx);
+@@ -1163,12 +1172,12 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct hppa_jit_context *ctx,
+ 			emit_imm32(tmp2, imm, ctx);
+ 			src = tmp2;
+ 		}
+-		emit_alu_r64(dst, src, ctx, BPF_OP(code));
++		emit_alu_r64(dst, src, ctx, BPF_OP(code), off == 1);
+ 		break;
+ 
+ 	/* dst = -dst */
+ 	case BPF_ALU64 | BPF_NEG:
+-		emit_alu_r64(dst, tmp2, ctx, BPF_OP(code));
++		emit_alu_r64(dst, tmp2, ctx, BPF_OP(code), false);
+ 		break;
+ 
+ 	case BPF_ALU64 | BPF_MOV | BPF_K:
+@@ -1211,7 +1220,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct hppa_jit_context *ctx,
+ 			emit_imm32(tmp2, imm, ctx);
+ 			src = tmp2;
+ 		}
+-		emit_alu_r32(dst, src, ctx, BPF_OP(code));
++		emit_alu_r32(dst, src, ctx, BPF_OP(code), off == 1);
+ 		break;
+ 
+ 	/* dst = dst OP imm */
+@@ -1236,7 +1245,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct hppa_jit_context *ctx,
+ 		 * src is ignored---choose tmp2 as a dummy register since it
+ 		 * is not on the stack.
+ 		 */
+-		emit_alu_r32(dst, tmp2, ctx, BPF_OP(code));
++		emit_alu_r32(dst, tmp2, ctx, BPF_OP(code), false);
+ 		break;
+ 
+ 	/* dst = BSWAP##imm(dst) */
