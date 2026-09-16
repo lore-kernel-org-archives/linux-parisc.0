@@ -1,171 +1,174 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua2-f12.google.com (mail-ua2-f12.google.com [74.125.226.204])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2BB4DE711;
-	Wed, 16 Sep 2026 20:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789591754; cv=none; b=IEmY5IHLV3CQWnSzuS1PA3U4jBjpuJEBKLl3kMCNW0PE/u9QfmfTvi3pCB2JYdqt0Al/1msxFFC2HpoKOX+9cmV1NJaSLxINWE6EbTmAzsNFs3h5sCbN8nwRuG+jjG0THGMHh6SZPT+L82UKs/H6fn0Qp4weRLBnn0/RoNPuw2M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789591754; c=relaxed/simple;
-	bh=jZm7cvYebjdOTnoSV4XmNqE6abVT7cPvhG1TYilIYzM=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Ne/RxlgbIIj/nQbdVoOYbep2qrkhj4dN/ByPQ/9rCnmndo6Ni15rgb5wjjNHxfuFuJyw7+yCThH9ZADPoIAx10lPrhSnogKoAE7iV4fLWitixAmQ0gvhNA5Iw2qvc1hP4JwBozizmIUfHVWmGEn4LfNJqHz4duZrax3Oz+6hZas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O0IYniTl; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62EA44A43F5
+	for <linux-parisc@vger.kernel.org>; Wed, 16 Sep 2026 21:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.226.204
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789595068; cv=pass; b=eAvSeZnkWUOAB6csHjNo2tw16h1AnFLfzw7ZnmS9PYhy2tY9pHoYsjmkcVQO7vYiVFmHLdUt8v/tuaCcdfvDJ0woZy806Uq+3Nj1JgNSJHmeWBLJ54ifEUZMn/vkG+jd4YeFVm3VkEXioWKvbXBLP2gnzN2DkhVjlGBRqCSloS0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789595068; c=relaxed/simple;
+	bh=+TMWi8xF1c/GpLGSJWBDMGttEHh102/5Ofx0+5TAWdU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ql6PTSIJ4Vw6Wax96tRXdue2xWq6jGeyBEhPan2k4ZEumPnndm9O27+C/M6MsCndJxc4aVFo1AT+veohXM3xV3VdMUdJEEplXRw3XrtcgRMgOFoiXIv0sLPzE13LFuPwUx/LVLJ2oqvD5+VT/Ql+fTcfpd+fHkR552pJSVoZu3A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PhRvxyDc; arc=pass smtp.client-ip=74.125.226.204
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O0IYniTl"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 574311F000FF;
-	Wed, 16 Sep 2026 20:48:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789591735;
-	bh=5RbcbbDHx5wP8CLc8jRAe7E9kzoDFjTjj5s6whZ9fYo=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=O0IYniTlbLxlQm4+uJr3vyJlIUA8aTbGgbe2MnqSvUeTznfyUiFZcdrAPywankfDY
-	 NrUNcwGMy1y0s0/cQevpCLLWtdVrF3ucfPmS0lW34laUT6H/+YoJQB3trjPjU6Wm/+
-	 kpjs8m2AiPZHdbObJ0Mms3rXBrFvRdQwvq347iTHZws7n9jN8DhHJAWwxYl9L5OD4I
-	 Bu0K6FqwLGHVmsuTzakPCo+BHNO7jksZuQ2CCLHchZ3kAbTRRciZ3jflj/GiqtloBH
-	 qCVO4y7Bc0VWYJ5/ioIX//4nLz6ZRZhVT/CnOjynivneE8yCxqCrYtdKH3HvZBAXfi
-	 g7W/jY8FzmHmA==
-Subject: Re: [PATCH] net: tulip: winbond-840: remove never-true 486 CPU check
-From: netdev-bot+sashiko@kernel.org
-To: enelsonmoore@gmail.com
-Cc: arend.vanspriel@broadcom.com, aleksandr.loktionov@intel.com,
- shaojijie@huawei.com, petrm@nvidia.com, jacob.e.keller@intel.com,
- u.kleine-koenig@baylibre.com, netdev@vger.kernel.org,
- linux-parisc@vger.kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, mgr@kernel.org
-Date: Wed, 16 Sep 2026 20:48:53 +0000
-Message-ID: <178959173388.22033.1828981129063538898@kernel.org>
-In-Reply-To: <20260915024551.196126-1-enelsonmoore@gmail.com>
-References: <20260915024551.196126-1-enelsonmoore@gmail.com>
-X-sashiko-severity: Medium
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PhRvxyDc"
+Received: by mail-ua2-f12.google.com with SMTP id a1e0cc1a2514c-980b6159d30so52146241.0
+        for <linux-parisc@vger.kernel.org>; Wed, 16 Sep 2026 14:44:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1789595057; cv=none;
+        d=google.com; s=arc-20260327;
+        b=IHXu4iczYkbMUfCKcxkUnMGVR/2/YAi/Xff3ikG63it0DvadUl47EhfOKAC6mQW06d
+         BPnAXirx3xjRCcXiaJuhbWSRcO2M/q99OalddvhlBXO3BrUB4F5iTN9mW842ZIhnAfEH
+         GQXTrIWUrsGH4npzRx3Mv2LaKgPlRwUT/FNxwCg//uQevSu0lGD3LOL6GrK3oNjedNq2
+         t/69+NYR19G73ubLOOMXAwJ1BojvuT7DnslBoIl8O7JpvUTQeGOS+ukupzsEi96j2ms8
+         nw4vLVJYBcSsGSSuCmVJCDNKKfFqPwER+klO1efLOg+Hn2HrSoRuJe8X5nfIcgnuLdLJ
+         yjAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=+TMWi8xF1c/GpLGSJWBDMGttEHh102/5Ofx0+5TAWdU=;
+        fh=weH73q6HbI6FsjnZSjVfFjRBoMunhYAYyuxJ+pmYh1Y=;
+        b=rnArZCm6bwPVmD6msD85IBgo33rSyZgeyijh+zc+TzJaJpDpcxTqqffURmUN4MmJrn
+         1jaM43MwziGqhdZrRn26OuBwbYPl2D1yXTIvQc3Q/HywVkCnV4HtLT04uZznBl6jxemU
+         fLVuPZsSofQjUN7F7vlgarQH6t8/KiJF0fXSKfHlcIxv/d52F6cllm4e3xKIm/uc02nv
+         CqeFTLbRwbvs/SLyxRunWYl08AorSTA03iYOfnKl2SBPv/Zk58Dx8nBXkMKzB+p2ikYZ
+         AxuY7n2XXxjgzFTVGgE6xPZtE/3J/puv0faacMb9zKH062E6mthRA7al+kVSA4svMZkJ
+         Qu1A==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1789595057; x=1790199857; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=+TMWi8xF1c/GpLGSJWBDMGttEHh102/5Ofx0+5TAWdU=;
+        b=PhRvxyDcEKpo82rz7bjO1wDQ8uBdzgmqFw/6qMLJ6ysl579NXOSm57qPRzt39pD3oV
+         RQb6cdMJNN/Ek0B5W2zGNfO0RqIoSKMqtIpUc7eAhIfyNHQGufGBDtCJwInLu+pX9hxn
+         J9cpThCkU1tmfCxsOJRLdZFf8wYm3kRlo/yoPwYzsu2PbhjQqcSKR20KyEdhLP8618yJ
+         5CmZfZeIm2+Na8mFl/ktZ3dXA1iPW6HhEYtD+ujAGpNgWXor7U3Ki4cMIqiM6LMBSHL9
+         ktggN+6MCwK15bvCxc3iBeUikkFZwpbRMOG0Pyt60U5y0YJFcb8fm4EhJ+LQPrX9SbDv
+         Tdmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789595057; x=1790199857;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=+TMWi8xF1c/GpLGSJWBDMGttEHh102/5Ofx0+5TAWdU=;
+        b=voKE0YJ1Yj7tTAVZU82zL+SxI6i7ALeLx7dmeSc6onbOkmQJb8o9KixVavHfrY1n6Z
+         MlW8h9hjfcT5M6GWDIEVfQINvHKnw14+rgCxwdJ0wq1JO2wlv7GgvT0wGH3hiPm+Ykxi
+         Wo/UkPN56CdVGzNXnUHvQNgr0wd2mH4ly2+SJqvMjXJzn/CfgmGxGQX+RuHrsQRfIqxz
+         gAlBFhc1EbzuArHoDhJsYC8GK7OZYv0DakjgGaq4/3AnM0pusdJPiojYxDqJ6P8nWNQC
+         oxa2CwjxG1TMEDfySik8+wLWHOXfVvdbXIlGT5npEQ5bXYFee1BnsCbWmzKXeUbeontP
+         Cwxg==
+X-Forwarded-Encrypted: i=1; AKwUvBxDFaZzSBIc3BWqvYSNAkCDrwj7vMKYUXl6VOsTWSUoBFDDxrC7qdk6IARmb0CLLalURbcQgH8+yEBCsic=@vger.kernel.org
+X-Gm-Message-State: AFuF++m9A3jgdp7l7RKc/Ng2RBNSb4EqLgB++SDYV4eQvu4N7Uml7itW
+	X+6tVwltDyq+lEkYFz1znfCn7OpX0SjKJYWHLqbyP/cZmjM8Ah0Br8TsevRxLa6v82L00wb1R5f
+	iUjdgfaiSrtA56Pa+F2+fVz6rRy/Py1kWmm13uZE=
+X-Gm-Gg: AYBFou1kJTBuFcxgZyGJV6LKXI03EvWTWdBoCbyESdBfKVcBjEyQDjtrBEOnILB9x6F
+	2uJvmjjO/lchW/hLlOMVxj6N1PdjFQ7emsUz/fJ8b8KkNFE5kBrJT8gsBRDoXK9SVLmv/M316Im
+	tBPeJS3V3+IzEt2zuazt+GjQ8Y0YY3Lmtm9IC1Y9zGXvCQbTKfw0Tz14CwKGXqT+DroB/wszwef
+	QFSjV8KGo5hzU5/ZK0ejrvsz+wuv5jEZa3wVH7h5IHjDlLeEVHWtvR8P6L9MTEj41kdZEp0PQF1
+	Cb2Fjw6Rn/yUFuJL2uQuRbkIi0T7RARFmetd73RDy8Y1/kfOG+240RwRragKC02U0xz9bpdK77t
+	SR2Q0UnBHt9LDW8768/h9
+X-Received: by 2002:a05:6102:a85:b0:7a2:2a6b:e7b4 with SMTP id
+ ada2fe7eead31-7a22a6be8efmr62586137.2.1789595055938; Wed, 16 Sep 2026
+ 14:44:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20260915081910.4142719-1-morbo@google.com> <20260915081910.4142719-26-morbo@google.com>
+ <202609151258.5FC01072@keescook> <20260916010945.GEaqnsWSZ-DTMyTO25@fat_crate.local>
+In-Reply-To: <20260916010945.GEaqnsWSZ-DTMyTO25@fat_crate.local>
+From: Bill Wendling <morbo@google.com>
+Date: Wed, 16 Sep 2026 14:43:59 -0700
+X-Gm-Features: AcwNN1XbboPOY3deKY79Gty15vkSErYIT9HTgeQdVXaDzFhBvm8_kiOA449bIqU
+Message-ID: <CAGG=3QVZRCJ94+DOfSsSDhsrXVYf-ec01NZBy299nYiCAYfXKg@mail.gmail.com>
+Subject: Re: [PATCH 25/28] EDAC/thunderx: Replace strlcat() with seq_buf
+To: Borislav Petkov <bp@alien8.de>
+Cc: Kees Cook <kees@kernel.org>, linux-kernel@vger.kernel.org, 
+	codemender-patching+linux@google.com, Russell King <linux@armlinux.org.uk>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Ian Abbott <abbotti@mev.co.uk>, 
+	H Hartley Sweeten <hsweeten@visionengravers.com>, Tony Luck <tony.luck@intel.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+	Matthew Brost <matthew.brost@intel.com>, 
+	=?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>, 
+	Rodrigo Vivi <rodrigo.vivi@intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Matthias Schwarzott <zzam@gentoo.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Arend van Spriel <arend.vanspriel@broadcom.com>, Rob Herring <robh@kernel.org>, 
+	Saravana Kannan <saravanak@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, 
+	Sylwester Nawrocki <s.nawrocki@samsung.com>, Peter Griffin <peter.griffin@linaro.org>, 
+	Alim Akhtar <alim.akhtar@samsung.com>, Linus Walleij <linusw@kernel.org>, 
+	Anil Gurumurthy <anil.gurumurthy@qlogic.com>, 
+	Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>, "Martin K. Petersen" <mkp@kernel.org>, 
+	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
+	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Simon Horman <horms@kernel.org>, Chuck Lever <cel@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
+	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+	Tom Talpey <tom@talpey.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>, 
+	Kanglong Wang <wangkanglong@loongson.cn>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	Qiang Ma <maqianga@uniontech.com>, Randy Dunlap <rdunlap@infradead.org>, 
+	Pengpeng Hou <pengpeng@iscas.ac.cn>, Ard Biesheuvel <ardb@kernel.org>, Breno Leitao <leitao@debian.org>, 
+	Thorsten Blum <blum@kernel.org>, Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Lyude Paul <lyude@redhat.com>, 
+	Ashutosh Desai <ashutoshdesai993@gmail.com>, Imre Deak <imre.deak@intel.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, Johan Hovold <johan@kernel.org>, 
+	Johannes Berg <johannes.berg@intel.com>, 
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>, 
+	Alexander Stein <alexander.stein@ew.tq-group.com>, 
+	Cryolitia PukNgae <cryolitia@uniontech.com>, Jiaming Zhang <r772577952@gmail.com>, 
+	Will Porter <mrwillporter@gmail.com>, Cen Zhang <zzzccc427@gmail.com>, 
+	=?UTF-8?Q?C=C3=A1ssio_Gabriel?= <cassiogabrielcontato@gmail.com>, 
+	Rong Zhang <i@rong.moe>, Arun Raghavan <arunr@valvesoftware.com>, 
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-edac@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	intel-xe@lists.freedesktop.org, linux-input@vger.kernel.org, 
+	linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
+	netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com, 
+	devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, devel@lists.orangefs.org, 
+	linux-hardening@vger.kernel.org, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for your contribution! Sashiko AI review found 3 potential
-issue(s) to consider:
+On Tue, Sep 15, 2026 at 6:11=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrot=
+e:
+>
+> On Tue, Sep 15, 2026 at 01:00:00PM -0700, Kees Cook wrote:
+> > Seems like seq_buf would be better her? But yes, at the very least, thi=
+s
+> > needs to be scnprintf, not snprintf (or add the checks as you have
+> > here).
+> >
+> > The rest of the seq_buf conversions look right.
+>
+> This driver has been an orphan for a while now (we just made it official)=
+ so
+> I'd prefer it if we don't do anything here.
+>
+I'll remove those changes from future emails.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 2
+> And yes, that mega CC list is just gross.
+>
+Apologies. :-(
 
-- [Medium] Inverted rationale in the commit message.
-- [Low] Stale `#include <asm/processor.h>` with a now-false self-
-  documenting comment.
-- [Low] Comment/code mismatch introduced by the comment rewrite in
-  init_registers().
-
---
-
-net: tulip: winbond-840: remove never-true 486 CPU check
-
-This removes the runtime boot_cpu_data.x86 <= 4 test in init_registers()
-of the winbond-840 driver and collapses the surrounding preprocessor
-chain so that the i386 non-module case now falls into the generic
-architecture branch.  The comment describing the two cache alignment
-cases is reworded at the same time.
-
-> net: tulip: winbond-840: remove never-true 486 CPU check
-
-[Severity: Medium]
-The subject and the message body say the condition is always true:
-
-    Therefore, since 486 support was removed from the kernel in commit
-    8b793a92d862 ("x86/cpu: Remove M486/M486SX/ELAN support"), the
-    condition is always true. Remove the check.
-
-Is the polarity backwards here?  boot_cpu_data.x86 holds the CPU family
-(3 = 386, 4 = 486, 5 = 586), and after 8b793a92d862 the minimum family
-for 32-bit builds is 5:
-
-arch/x86/Kconfig.cpu:
-    config X86_MINIMUM_CPU_FAMILY
-            int
-            default "64" if X86_64
-            default "6" if X86_32 && (MPENTIUM4 || ...)
-            default "5"
-
-So a family <= 4 CPU can no longer boot the kernel and the predicate is
-never true, which is consistent with the patch keeping i |= 0xE000 (the
-else branch) rather than i |= 0x4800.
-
-Should the wording be something like "the condition is never true, so
-the else branch is always taken"?  As written, a reader or a stable
-backporter would expect 0x4800 to be the value preserved for i386
-built-in builds.
-
-> diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
-> index a5581f1d01417..c42eaf0eef642 100644
-> --- a/drivers/net/ethernet/dec/tulip/winbond-840.c
-> +++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
-> @@ -876,24 +876,14 @@ static void init_registers(struct net_device *dev)
->  	i |= 0x02;		/* give Rx priority */
->  
->  	/* Configure the PCI bus bursts and FIFO thresholds.
-> -	   486: Set 8 longword cache alignment, 8 longword burst.
-> -	   586: Set 16 longword cache alignment, no burst limit.
-> +	   Set 16 longword cache alignment, no burst limit.
-
-[Severity: Low]
-Does this single unconditional line still match the code below it?  Two
-different values are still programmed, and neither one is "16 longword
-cache alignment, no burst limit" (which the table just below decodes as
-0x8000):
-
-    #if defined(__powerpc__) || defined(__i386__) || ...
-            i |= 0xE000;    /* C000 = 32 longwords | 2000 = 32 longword burst */
-    #elif defined(CONFIG_SPARC) || defined (CONFIG_PARISC) || defined(CONFIG_ARM)
-            i |= 0x4800;    /* 4000 = 8 longwords | 0800 = 8 longword burst */
-    #else
-            i |= 0x4800;
-
-The deleted "486:" line is the one that described 0x4800 accurately, and
-that value is still programmed on SPARC, PARISC, ARM and the unknown-arch
-fallback.  Would it be better to drop the prose entirely, or restate it
-for both remaining cases?
-
-The 0xE000 half of the mismatch predates this patch; the new part is that
-the wording is now unconditional and also covers the 0x4800 branches.
-
->  	   Cache alignment bits 15:14	     Burst length 13:8
->  		0000	<not allowed> 		0000 align to cache	0800 8 longwords
->  		4000	8  longwords		0100 1 longword		1000 16 longwords
->  		8000	16 longwords		0200 2 longwords	2000 32 longwords
->  		C000	32  longwords		0400 4 longwords */
->  
-> -#if defined (__i386__) && !defined(MODULE) && !defined(CONFIG_UML)
-> -	/* When not a module we can work around broken '486 PCI boards. */
-> -	if (boot_cpu_data.x86 <= 4) {
-> -		i |= 0x4800;
-> -		dev_info(&dev->dev,
-> -			 "This is a 386/486 PCI system, setting cache alignment to 8 longwords\n");
-> -	} else {
-> -		i |= 0xE000;
-> -	}
-> -#elif defined(__powerpc__) || defined(__i386__) || defined(__alpha__) || defined(__ia64__) || defined(__x86_64__)
-> +#if defined(__powerpc__) || defined(__i386__) || defined(__alpha__) || defined(__ia64__) || defined(__x86_64__)
->  	i |= 0xE000;
-
-[Severity: Low]
-With boot_cpu_data gone, is the header include at the top of
-drivers/net/ethernet/dec/tulip/winbond-840.c now stale?
-
-    #include <asm/processor.h>		/* Processor type for cache alignment. */
-
-That was the only user of asm/processor.h in this file, and after the
-patch the cache alignment selection in init_registers() is purely
-compile-time arch conditionals, so the comment no longer describes
-anything the code does.  Should the include (or at least the comment) be
-dropped in the same change?
-
-> #elif defined(CONFIG_SPARC) || defined (CONFIG_PARISC) || defined(CONFIG_ARM)
->  	i |= 0x4800;
-
-[ ... ]
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260915024551.196126-1-enelsonmoore%40gmail.com
+-bw
