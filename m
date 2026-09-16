@@ -1,243 +1,171 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A7D4B8290;
-	Wed, 16 Sep 2026 17:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2BB4DE711;
+	Wed, 16 Sep 2026 20:49:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789578039; cv=none; b=JIA4zkSN3JvVgJ3jTlPT5shRN7CVG/ykDeLyX9ivN+6dDckbGJeXvCNoRK/fz1RE1G08PosQqv7PPmy+aqrJrg4xw4N68JruhKqkVc1DhAP3fH0BUw2HgEa4zvMLLWXxh/PMI7XpAQMwyyvT/WfAhDCj5mZgWrakir7EQrDoE6k=
+	t=1789591754; cv=none; b=IEmY5IHLV3CQWnSzuS1PA3U4jBjpuJEBKLl3kMCNW0PE/u9QfmfTvi3pCB2JYdqt0Al/1msxFFC2HpoKOX+9cmV1NJaSLxINWE6EbTmAzsNFs3h5sCbN8nwRuG+jjG0THGMHh6SZPT+L82UKs/H6fn0Qp4weRLBnn0/RoNPuw2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789578039; c=relaxed/simple;
-	bh=xTR83EDr3GJ1gs6LtXBNUd0wwxqijXMTgP0OcHKvJSc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RPFayXyJlIxEyePLjrvS4UqE9pYw6b7jYF1xLqMTb7BGvoPrHr0cTH7Tuv2RD23lIW3CbFTnIBFQ9fos3q7niWdvQR3pq0cCgamFtUjt6pMoOHQ+/2l+7v3puwZv5+UcP55Me45Ecu1THSHtYPcFOiO9Bg6GjpG1PxjmErCCmCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PmVw4wXS; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789591754; c=relaxed/simple;
+	bh=jZm7cvYebjdOTnoSV4XmNqE6abVT7cPvhG1TYilIYzM=;
+	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Ne/RxlgbIIj/nQbdVoOYbep2qrkhj4dN/ByPQ/9rCnmndo6Ni15rgb5wjjNHxfuFuJyw7+yCThH9ZADPoIAx10lPrhSnogKoAE7iV4fLWitixAmQ0gvhNA5Iw2qvc1hP4JwBozizmIUfHVWmGEn4LfNJqHz4duZrax3Oz+6hZas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O0IYniTl; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PmVw4wXS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4114D1F000FF;
-	Wed, 16 Sep 2026 16:59:55 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O0IYniTl"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 574311F000FF;
+	Wed, 16 Sep 2026 20:48:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789578016;
-	bh=JNZtWdKCogaGrWtyvhM6z027Qg7RFwkG7Shw9zuVQhE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=PmVw4wXS/r9CpHfAOn2amzHMwnGPXSnlrGas83Xpi7dsydIKsArkblukiVIHwBAY6
-	 ubpGfFGa7kqrykL1Pa6q3MkO4GKMCQQXpCmITVG/PeoahA3HJxtDyVnKBlsOT5y6Mm
-	 wozpolIxCIhxuWjx0aQRah90ZewUiZ9k5Elj1dLiF8CCivxp3p7w6OaDY/5H9Oq45S
-	 O6mv0zYlNEHZcdRLCgzvK/ZrOJVz1jz48dKYZvJ7Oi+o5KCdWId8DKOgPiN8pVOlBz
-	 jm/9rlekEwQE9XCQ+GkKAffM26w81NuZfKTTB+nUUF3sGMC9I2pcmKHTHWSj4DPFxw
-	 A9hfwpouwGpWQ==
-Date: Wed, 16 Sep 2026 17:59:52 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett" <liam@infradead.org>, 
-	Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
-	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
-	Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, Guo Ren <guoren@kernel.org>, 
-	Brian Cain <bcain@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>, 
-	Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
-	Stafford Horne <shorne@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
-	Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
-	Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
-	Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin <npiggin@gmail.com>, 
-	Peter Zijlstra <peterz@infradead.org>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>, 
-	Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
-	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>
-Subject: Re: [PATCH v3 01/12] mm/huge_memory: zap deposited page tables after
- an RCU grace period
-Message-ID: <aqrAflIQbwcNKlQL@gremlin>
-References: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
- <20260911-rcu-pagetable-freeing-v3-1-7b8c86103821@kernel.org>
- <467b6599-b73a-4f58-a29a-b6c6d1ffc3a5@kernel.org>
+	s=k20260515; t=1789591735;
+	bh=5RbcbbDHx5wP8CLc8jRAe7E9kzoDFjTjj5s6whZ9fYo=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=O0IYniTlbLxlQm4+uJr3vyJlIUA8aTbGgbe2MnqSvUeTznfyUiFZcdrAPywankfDY
+	 NrUNcwGMy1y0s0/cQevpCLLWtdVrF3ucfPmS0lW34laUT6H/+YoJQB3trjPjU6Wm/+
+	 kpjs8m2AiPZHdbObJ0Mms3rXBrFvRdQwvq347iTHZws7n9jN8DhHJAWwxYl9L5OD4I
+	 Bu0K6FqwLGHVmsuTzakPCo+BHNO7jksZuQ2CCLHchZ3kAbTRRciZ3jflj/GiqtloBH
+	 qCVO4y7Bc0VWYJ5/ioIX//4nLz6ZRZhVT/CnOjynivneE8yCxqCrYtdKH3HvZBAXfi
+	 g7W/jY8FzmHmA==
+Subject: Re: [PATCH] net: tulip: winbond-840: remove never-true 486 CPU check
+From: netdev-bot+sashiko@kernel.org
+To: enelsonmoore@gmail.com
+Cc: arend.vanspriel@broadcom.com, aleksandr.loktionov@intel.com,
+ shaojijie@huawei.com, petrm@nvidia.com, jacob.e.keller@intel.com,
+ u.kleine-koenig@baylibre.com, netdev@vger.kernel.org,
+ linux-parisc@vger.kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, mgr@kernel.org
+Date: Wed, 16 Sep 2026 20:48:53 +0000
+Message-ID: <178959173388.22033.1828981129063538898@kernel.org>
+In-Reply-To: <20260915024551.196126-1-enelsonmoore@gmail.com>
+References: <20260915024551.196126-1-enelsonmoore@gmail.com>
+X-sashiko-severity: Medium
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <467b6599-b73a-4f58-a29a-b6c6d1ffc3a5@kernel.org>
 
-On Wed, Sep 16, 2026 at 04:42:04PM +0200, David Hildenbrand (Arm) wrote:
-> On 9/11/26 21:36, Lorenzo Stoakes (ARM) wrote:
-> > When an anonymous mapping is collapsed for THP, a PTE page table is
-> > 'deposited' with the installed PMD entry.
->
-> Right. Or when we allocate an anon THP.
+Thank you for your contribution! Sashiko AI review found 3 potential
+issue(s) to consider:
 
-That case doesn't interact with page walking though, as they're
-just-allocated right?
+Critical: 0 · High: 0 · Medium: 1 · Low: 2
 
-Am focusing on collapse case for that reason rather than listing all
-possible places deposit can happen.
-
->
-> >
-> > This is done in order that a split can be performed without needing to
-> > allocate additional memory.
-> >
-> > The freeing occurs in zap_deposited_table() and is done directly without
-> > any delay via pte_free().
-> >
-> > This is currently not a problem as existing page table walks are protected
-> > by the mmap or anon rmap lock.
->
-> Or VMA lock?
-
-Yup indeed, can update on respin/ask Andrew to add VMA lock here.
-
->
-> >
-> > However this becomes problematic in a future where RCU-only page table
-> > walkers exist, as there is nothing to prevent a page table walker that
-> > started the walk prior to collapse having its PTE table freed underneath
-> > it.
->
->
-> Wait, but wouldn't it be really problematic to punch a page table that is still
-
-Punch? You mean deposit?
-
-> being walked into the deposited list where it can just be allocated from another
-> PMD->PTE split?
-
-In general, RCU-only page table walkers are _only_ guaranteed that the page
-tables are not freed from underneath them, as per the cover letter:
-
-	"As a result, page table walks can now be performed safely under RCU without
-	 any risk of page tables being freed underneath a walker.
-
-	However, this is the only guarantee that this work provides - page table
-	walkers must still ensure that page table entries are as expected
-	throughout."
-
-So this series doesn't actually have to answer that :)
-
-But a PTE PTL -> pmd_same() check will flag anything like that,
-a.k.a. pte_offset_map_lock().
-
-The RCU lock replaces stablisation on stuff other than VMA/mmap or rmap
-lock.
-
-If the walker needs to be sure the PTE is actually valid and belongs to the
-expected walk then further is required.
-
-Alternatively (like GUP-fast) if you wanted to avoid locking at all, IRQs
-off would be required paired with the tlb_remove_table_sync_one() in
-collapse_huge_page().
-
-Another strategy could be used I guess with looped checks but it gets a bit
-sketchy with timing etc.
-
-But actually maybe we can avoid all that...
-
->
-> Note that pgtable_trans_huge_withdraw() just dequeues *some* PTE page table in
-> the list attached to the PMD table.
->
-> Something is odd here.
-
-...Since this code path already allocates (the huge folio), so allocation
-here isn't an issue (as long as done outside of lcosk), why not have it
-also allocate a new PTE to deposit and RCU-free the existing PTE instead?
-
-That eliminates the one place in the kernel (afaik) where a
-page-table-walker-visible table can just get yoinked over somewhere else.
-
-Then a lockless PMD check works.
-
-E.g. something like the below?
-
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index f49a6710933b..d9cb6b406ebb 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1293,7 +1293,7 @@ static enum scan_result collapse_huge_page(struct mm_struct *mm, unsigned long s
- 	LIST_HEAD(compound_pagelist);
- 	pmd_t *pmd, _pmd;
- 	pte_t *pte = NULL;
--	pgtable_t pgtable;
-+	pgtable_t pgtable = NULL;
- 	struct folio *folio;
- 	spinlock_t *pmd_ptl, *pte_ptl;
- 	enum scan_result result = SCAN_FAIL;
-@@ -1310,6 +1310,12 @@ static enum scan_result collapse_huge_page(struct mm_struct *mm, unsigned long s
- 		goto out_nolock;
- 	}
-
-+	if (is_pmd_order(order)) {
-+		pgtable = pte_alloc_one(mm);
-+		if (!pgtable)
-+			goto out_nolock;
-+	}
-+
- 	mmap_read_lock(mm);
- 	result = hugepage_vma_revalidate(mm, pmd_addr, /*expect_anon=*/ true,
- 					 &vma, cc, order);
-@@ -1433,8 +1439,8 @@ static enum scan_result collapse_huge_page(struct mm_struct *mm, unsigned long s
- 	spin_lock(pmd_ptl);
- 	VM_WARN_ON_ONCE(!pmd_none(*pmd));
- 	if (is_pmd_order(order)) {
--		pgtable = pmd_pgtable(_pmd);
- 		pgtable_trans_huge_deposit(mm, pmd, pgtable);
-+		pgtable = NULL;
- 		map_anon_folio_pmd_nopf(folio, pmd, vma, pmd_addr);
- 	} else {
- 		/*
-@@ -1453,6 +1459,9 @@ static enum scan_result collapse_huge_page(struct mm_struct *mm, unsigned long s
- 	}
- 	spin_unlock(pmd_ptl);
-
-+	if (is_pmd_order(order))
-+		pte_free_defer(mm, pmd_pgtable(_pmd));
-+
- 	folio = NULL;
-
- 	result = SCAN_SUCCEED;
-@@ -1463,6 +1472,8 @@ static enum scan_result collapse_huge_page(struct mm_struct *mm, unsigned long s
- 		anon_vma_unlock_write(vma->anon_vma);
- 	mmap_write_unlock(mm);
- out_nolock:
-+	if (pgtable)
-+		pte_free(mm, pgtable);
- 	if (folio)
- 		folio_put(folio);
- 	trace_mm_collapse_huge_page(mm, result == SCAN_SUCCEED, result, order);
-
-
->
-> --
-> Cheers,
->
-> David
+- [Medium] Inverted rationale in the commit message.
+- [Low] Stale `#include <asm/processor.h>` with a now-false self-
+  documenting comment.
+- [Low] Comment/code mismatch introduced by the comment rewrite in
+  init_registers().
 
 --
-Cheers, Lorenzo
+
+net: tulip: winbond-840: remove never-true 486 CPU check
+
+This removes the runtime boot_cpu_data.x86 <= 4 test in init_registers()
+of the winbond-840 driver and collapses the surrounding preprocessor
+chain so that the i386 non-module case now falls into the generic
+architecture branch.  The comment describing the two cache alignment
+cases is reworded at the same time.
+
+> net: tulip: winbond-840: remove never-true 486 CPU check
+
+[Severity: Medium]
+The subject and the message body say the condition is always true:
+
+    Therefore, since 486 support was removed from the kernel in commit
+    8b793a92d862 ("x86/cpu: Remove M486/M486SX/ELAN support"), the
+    condition is always true. Remove the check.
+
+Is the polarity backwards here?  boot_cpu_data.x86 holds the CPU family
+(3 = 386, 4 = 486, 5 = 586), and after 8b793a92d862 the minimum family
+for 32-bit builds is 5:
+
+arch/x86/Kconfig.cpu:
+    config X86_MINIMUM_CPU_FAMILY
+            int
+            default "64" if X86_64
+            default "6" if X86_32 && (MPENTIUM4 || ...)
+            default "5"
+
+So a family <= 4 CPU can no longer boot the kernel and the predicate is
+never true, which is consistent with the patch keeping i |= 0xE000 (the
+else branch) rather than i |= 0x4800.
+
+Should the wording be something like "the condition is never true, so
+the else branch is always taken"?  As written, a reader or a stable
+backporter would expect 0x4800 to be the value preserved for i386
+built-in builds.
+
+> diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
+> index a5581f1d01417..c42eaf0eef642 100644
+> --- a/drivers/net/ethernet/dec/tulip/winbond-840.c
+> +++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
+> @@ -876,24 +876,14 @@ static void init_registers(struct net_device *dev)
+>  	i |= 0x02;		/* give Rx priority */
+>  
+>  	/* Configure the PCI bus bursts and FIFO thresholds.
+> -	   486: Set 8 longword cache alignment, 8 longword burst.
+> -	   586: Set 16 longword cache alignment, no burst limit.
+> +	   Set 16 longword cache alignment, no burst limit.
+
+[Severity: Low]
+Does this single unconditional line still match the code below it?  Two
+different values are still programmed, and neither one is "16 longword
+cache alignment, no burst limit" (which the table just below decodes as
+0x8000):
+
+    #if defined(__powerpc__) || defined(__i386__) || ...
+            i |= 0xE000;    /* C000 = 32 longwords | 2000 = 32 longword burst */
+    #elif defined(CONFIG_SPARC) || defined (CONFIG_PARISC) || defined(CONFIG_ARM)
+            i |= 0x4800;    /* 4000 = 8 longwords | 0800 = 8 longword burst */
+    #else
+            i |= 0x4800;
+
+The deleted "486:" line is the one that described 0x4800 accurately, and
+that value is still programmed on SPARC, PARISC, ARM and the unknown-arch
+fallback.  Would it be better to drop the prose entirely, or restate it
+for both remaining cases?
+
+The 0xE000 half of the mismatch predates this patch; the new part is that
+the wording is now unconditional and also covers the 0x4800 branches.
+
+>  	   Cache alignment bits 15:14	     Burst length 13:8
+>  		0000	<not allowed> 		0000 align to cache	0800 8 longwords
+>  		4000	8  longwords		0100 1 longword		1000 16 longwords
+>  		8000	16 longwords		0200 2 longwords	2000 32 longwords
+>  		C000	32  longwords		0400 4 longwords */
+>  
+> -#if defined (__i386__) && !defined(MODULE) && !defined(CONFIG_UML)
+> -	/* When not a module we can work around broken '486 PCI boards. */
+> -	if (boot_cpu_data.x86 <= 4) {
+> -		i |= 0x4800;
+> -		dev_info(&dev->dev,
+> -			 "This is a 386/486 PCI system, setting cache alignment to 8 longwords\n");
+> -	} else {
+> -		i |= 0xE000;
+> -	}
+> -#elif defined(__powerpc__) || defined(__i386__) || defined(__alpha__) || defined(__ia64__) || defined(__x86_64__)
+> +#if defined(__powerpc__) || defined(__i386__) || defined(__alpha__) || defined(__ia64__) || defined(__x86_64__)
+>  	i |= 0xE000;
+
+[Severity: Low]
+With boot_cpu_data gone, is the header include at the top of
+drivers/net/ethernet/dec/tulip/winbond-840.c now stale?
+
+    #include <asm/processor.h>		/* Processor type for cache alignment. */
+
+That was the only user of asm/processor.h in this file, and after the
+patch the cache alignment selection in init_registers() is purely
+compile-time arch conditionals, so the comment no longer describes
+anything the code does.  Should the include (or at least the comment) be
+dropped in the same change?
+
+> #elif defined(CONFIG_SPARC) || defined (CONFIG_PARISC) || defined(CONFIG_ARM)
+>  	i |= 0x4800;
+
+[ ... ]
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260915024551.196126-1-enelsonmoore%40gmail.com
