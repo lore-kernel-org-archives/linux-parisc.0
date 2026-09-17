@@ -1,95 +1,84 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15843469FC;
-	Thu, 17 Sep 2026 07:41:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D11E4A7CB4;
+	Thu, 17 Sep 2026 09:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789630869; cv=none; b=YiCUTjnwUnLmujMeoLTUIVB/1IRVhFi24BHVPUAsXR21qncW5hp3F81T84RdDj+GH/s2OCZ79SWnVn9HdhZla8+ttdF6ZgvpSbeCDYVmkNV4V6/TfugdgNcTdfNB8HuoF8PtYH/UrTiDXEdtsudF7P4Ple8BPKlwNBn9+7Ho3eA=
+	t=1789636800; cv=none; b=OFCxsAecQ7VhYxvkVvnV9PnO/d5ymBIgNvgalmTM7JAX0YruwT4FFCiwrD6gMkcZCgM+4dGbGVkhR7RVAK4DExhWOhj48OCduiRiISADgdyx0gLlXivafV1CaBaKBOzhvgIIKVlR+Vov1NLkNPEvowag4dUi4a7WsgdgCEMVfjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789630869; c=relaxed/simple;
-	bh=ODu4TBlU145Yy0CHkOOJrtHC8EHycFWF7w6wzjvsB3c=;
-	h=MIME-Version:Content-Type:Subject:From:To:Cc:In-Reply-To:
-	 References:Date:Message-Id; b=lThtL9f2GV2GxFuVJ6J691RibYyb5ENLLYQOpm2QUrLDMalwNpivBi5lsiZHs8JReIwz7nO1ggTLtoy3Z2pEQRZBNxV2LROL14Jhwfml96lxVe6bE/tm+H8zyoo2wlUNINGoqIQqyMH6bL4xk/AT2iSzDFPWWYPA7oLTc4O8vZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VCKcHToy; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789636800; c=relaxed/simple;
+	bh=ZQ/929b3BXM+aG41rDbwxkr0pM14Qh4yVfTaS4XVUAI=;
+	h=In-Reply-To:References:From:To:Cc:Subject:Mime-Version:
+	 Content-Type:Date:Message-ID; b=E2vWXT/UBB15Hpv4Kbkftux6EeOzaZBfqEki+VUdc3emP6huSmiFcEU51WN3eRkZ/6dgYDp74uNTaZ1udtJ+ad6O5faPi5DRhzf23rgYnYe+h4ZPin3grsvQUv4asQdPFyQ6IRWhUAZ9Df+cdGxHUbGabnOI1FOs1oA7tYhrqUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=DicIUklx; arc=none smtp.client-ip=203.205.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VCKcHToy"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2678A1F000FF;
-	Thu, 17 Sep 2026 07:41:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789630868;
-	bh=unHzs8AmLeied82z5XajBgVCmX9rGOIH63gfwiwzlEw=;
-	h=Subject:From:To:Cc:In-Reply-To:References:Date;
-	b=VCKcHToykQHUK3KLMsFOfJi52WtYj2xDx3YhcffiTyYFiTbT6rrW1T5/H8XRz9fsd
-	 LwPark6HFPoxdThTzS6OjSLTavEOAzfI4e6KFNCjcc6t68ZN5YdbcsukTWnFLPqikw
-	 kk5B+/tgSEHiHx89VgzD8r/RrqJ6Xt9JvPtghBnZsrhePaUSTIGEwwYF+50ivLUeKC
-	 NdAmMTPpwmtziWognzeSs1qypOIVOh1Cl5O17iYd7c079S+3BMFDCo7FWvPjfaTYNc
-	 sGRsIhNTs+gKnb+GhDLX/tJU+MChR5gernDXVU4gEJMEJqpXTmpgpSF5uSSSz7BKNO
-	 RCfUNUBOB/o9w==
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="DicIUklx"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1789636787; bh=ZQ/929b3BXM+aG41rDbwxkr0pM14Qh4yVfTaS4XVUAI=;
+	h=In-Reply-To:References:From:To:Cc:Subject:Date;
+	b=DicIUklx3OEf3RMhVXzxD+5fVdmprJWSpoD/ylRR0FBpIOQtsGrEmoq4KIX073OLv
+	 j4/favWUhiTPM9/5to23LFma/YrFvlLGcI+iR1g18YokapYdt53NEYQRXhUHpHpHWn
+	 HwDg0FuAIw1ZvSPqwMTaV2iGtcrli1ClozJ3h7ro=
+X-QQ-FEAT: oHWrrGTW1dCGJEu1CuC8+nIWkvSYK6n9
+X-QQ-SSF: 00000000000000F0000000000000
+X-QQ-XMRINFO: NS+P29fieYNwqS3WCnRCOn9D1NpZuCnCRA==
+X-QQ-XMAILINFO: M/7aYRxQgGxsZXeCbMYAWUelb60lOYUJYvqx6936emieKnrpY9QRsNjdmf+/sq
+	 rNtkLhPANqaHq0sgZKb/WmpLko42XKqhQQeoIrKF3bYLHXOSJHJH5ytAIw/w+p9k762jdTPbFwfuU
+	 yB77Ipwn0NvigQk8eEyVd50nwoCOnf/dfdSjYZaSo9w2+7hMiAxaUAUNSU+bWpoUbOs4HvE4H6Nob
+	 EEs2kasCn8xXtUpF4eEhmWFhuiStgrzXLY+elartIU/aHLApOH7TLNLZUYATyZDpxtsW/6fkVdOi9
+	 ut4EfnGr1J0Lgg64K/PP0mxnUI15muDDS5u0FVwlLtk0gEoZD81oLIRG2NST4bBnB3ll7nOvW43zW
+	 hUncG/wMumbUirJ7Hs6ZsG1TCL13WAmWRXVUx6imr2i3nZacyNxx5pocrGIIxz927CafI7KO7GcFE
+	 /xzCY+ic/RiNNGX3L9tf+T8Us4xWGY7SJjKm5oRKj9/tmPc6fsZ4ZBxzc1qnd2F7vSYIxv1FRQAoJ
+	 ZcK0zdlspcIgB2qf34XvoZWIE/mQXLOeSx1Yah6tyO20r1FnqGkW6rSAqUJ9WIhL4zVpKr9dB4pWB
+	 WEuliBpZEuil1A5shW/wyBoxMS4tBAGcL6NqbOteZBFa3dGgicTAkvYtI1Jzf9s+v+guZYYa4xhfP
+	 0vxhbZPDqpt4v4zoMZmndmAT+qeh6mqEvHH36rmSPHsFxmDUDFK/umkBGGlqEx27q5mPALBYhrTZW
+	 W7D5mh5nnAjutznNUfbOAZR0CBCEHjJO40ZcjNi7jsjrmngPP1rt5eTk1/RJtaToZ6EqfwNBCGyn+
+	 Jv+hPlYMbcyVZum5Riv869QexeivzkGtLiV9DipfGyPJCdEZJonnBXGilleScBcyHPdbL39ZdmN+2
+	 pu2vxqmYltymNmj57Rqpeyp/Cjd4m+YTgKHDeDg+4ORVMoX32cHt2cJDUVQMn4seFJPodfB5u4mbP
+	 WsEWUm8eDvBk9P/DqwT5yHd1lAIUfTT0+ZDiMq9/+N7BdkdMiw4/8LydETy0/3535w/UcHTZjqAwj
+	 aZySe9/C+3oxtVbO+R+hTVfwO+KKUKmFSOgx7Z2HCe3OEj0y6zLese1RE72n4r0MhLvpiSQ/dizRB
+	 F/o=
+X-HAS-ATTACH: no
+X-QQ-BUSINESS-ORIGIN: 2
+In-Reply-To: <178963086483.2200502.14463144472620315064.b4-reply@b4>
+References: <20260917062837.558251-1-zhenghui.hao@qq.com>
+ <tencent_0490E1CAA4336214AB70F813325F3020A608@qq.com>
+	<178963086483.2200502.14463144472620315064.b4-reply@b4>
+X-QQ-STYLE: 
+X-QQ-mid: webmail339t1789636786t633797
+From: "=?ISO-8859-1?B?emhlbmdodWkuaGFv?=" <zhenghui.hao@qq.com>
+To: "=?ISO-8859-1?B?TWlrZSBSYXBvcG9ydA==?=" <rppt@kernel.org>
+Cc: "=?ISO-8859-1?B?QW5kcmV3IE1vcnRvbg==?=" <akpm@linux-foundation.org>, "=?ISO-8859-1?B?bGludXgtbW0=?=" <linux-mm@kvack.org>, "=?ISO-8859-1?B?bGludXgtcGFyaXNj?=" <linux-parisc@vger.kernel.org>, "=?ISO-8859-1?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/2] init, hugetlb: fix early parameter ordering
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Subject: [PATCH 0/2] init, hugetlb: fix early parameter ordering
-From: Mike Rapoport <rppt@kernel.org>
-To: Zhenghui Hao <zhenghui.hao@qq.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
- linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <tencent_0490E1CAA4336214AB70F813325F3020A608@qq.com>
-References: <20260917062837.558251-1-zhenghui.hao@qq.com>
- <tencent_0490E1CAA4336214AB70F813325F3020A608@qq.com>
-Date: Thu, 17 Sep 2026 10:41:04 +0300
-Message-Id: <178963086483.2200502.14463144472620315064.b4-reply@b4>
-X-Mailer: b4 0.17-dev
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: base64
+Date: Thu, 17 Sep 2026 17:19:46 +0800
+X-Priority: 3
+Message-ID: <tencent_770E6207ABD8F875322130E7A6D5E1CDA408@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
 
-Hi,
-
-On 2026-09-17 14:55 +0800, Zhenghui Hao wrote:
-> hugetlb records its command line parameters from early_param()
-> handlers and consumes them later from hugetlb_bootmem_alloc().
-> 
-> Commit d49004c5f0c1 ("arch, mm: consolidate initialization of nodes,
-> zones and memory map") moved that consumer into mm_core_init_early(),
-> which runs before the generic parse_early_param() call in
-> start_kernel().  Architectures that call parse_early_param() from
-> setup_arch() are not affected, but on parisc the parameters are then
-> recorded after they have already been consumed and are silently
-> dropped.
-
-Since parisc is one of very few architectures that does not call
-parse_early_param() from setup_arch(), I think an easier fix would be
-local to parisc.
-
-And there is another related question more to parisc maintainers: do we
-really need hugetlb on parisc these days?
-
-> Patch 1/2 moves parse_early_param() before mm_core_init_early(),
-> together with jump_label_init() and static_call_init() so that the
-> "parameters may set static keys" guarantee still holds.
-> 
-> Patch 2/2 makes this class of ordering problem non-silent.  It cannot
-> fire once 1/2 is applied; if you would rather take only the fix,
-> please drop 2/2.
-> 
-> Not tested on parisc hardware.
-> 
-> Zhenghui Hao (2):
->   init: parse early parameters before memory initialization
->   hugetlb: report cmdline parameters recorded too late
-> 
->  init/main.c  |  8 ++++----
->  mm/hugetlb.c | 14 ++++++++++++++
->  2 files changed, 18 insertions(+), 4 deletions(-)
-> 
-> 
-> base-commit: 9b87fdc9af2fbfcdb5c24a64139685ef80f6573f
-> -- 
-> 2.53.0
-> 
-> 
-
+SGksCgomZ3Q7IFNpbmNlIHBhcmlzYyBpcyBvbmUgb2YgdmVyeSBmZXcgYXJjaGl0ZWN0dXJl
+cyB0aGF0IGRvZXMgbm90IGNhbGwKJmd0OyBwYXJzZV9lYXJseV9wYXJhbSgpIGZyb20gc2V0
+dXBfYXJjaCgpLCBJIHRoaW5rIGFuIGVhc2llciBmaXggd291bGQgYmUKJmd0OyBsb2NhbCB0
+byBwYXJpc2MuCgpBZ3JlZWQsIHRoYXQgaXMgc2ltcGxlci4KCldoZXRoZXIgYSBmaXggaXMg
+bmVlZGVkIGF0IGFsbCBkZXBlbmRzIG9uIHRoZSBhbnN3ZXIgdG8geW91ciBzZWNvbmQKcXVl
+c3Rpb24uICBJZiBodWdldGxiIGlzIG5vdCBuZWVkZWQgb24gcGFyaXNjIGFueW1vcmUsIHRo
+ZXJlIGlzIG5vdGhpbmcKbGVmdCB0byBmaXggYW5kIEkgd2lsbCBkcm9wIHRoaXMgc2VyaWVz
+LiAgSWYgaXQgc3RheXMsIEkgd2lsbCBzZW5kIHYyCndpdGggdGhlIGNoYW5nZSBpbnNpZGUg
+cGFyaXNjJ3Mgc2V0dXBfYXJjaCgpLCBrZWVwaW5nIDIvMiBzbyB0aGF0IHRoZQpzYW1lIGtp
+bmQgb2Ygb3JkZXJpbmcgcHJvYmxlbSB3b3VsZCBhdCBsZWFzdCBzaG93IHVwIGluIHRoZSBs
+b2cuCgpTbyBJIHdpbGwgd2FpdCBmb3IgdGhlIHBhcmlzYyBtYWludGFpbmVycyBvbiB0aGF0
+IG9uZS4KClRoYW5rcywKWmhlbmdodWk=
 
