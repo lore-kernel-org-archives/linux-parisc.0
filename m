@@ -1,147 +1,95 @@
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022BC448CE0;
-	Thu, 17 Sep 2026 06:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15843469FC;
+	Thu, 17 Sep 2026 07:41:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789628180; cv=none; b=sTcCs4eFhh2BAJbbUI3IazZyTd4LGdI9ZMJmNYt9bIuCI2S6+zL6g85XWORHg2pzGyk5yl6UCnL8HcMtwvcFL9rW+0r/U+uteyiR7puxmPXP+If5FosMo/yKK1IxFxrKEMFQqHPTs3xMuTK5Qj/l5ai995fXHrKNHMhP4YcJkG8=
+	t=1789630869; cv=none; b=YiCUTjnwUnLmujMeoLTUIVB/1IRVhFi24BHVPUAsXR21qncW5hp3F81T84RdDj+GH/s2OCZ79SWnVn9HdhZla8+ttdF6ZgvpSbeCDYVmkNV4V6/TfugdgNcTdfNB8HuoF8PtYH/UrTiDXEdtsudF7P4Ple8BPKlwNBn9+7Ho3eA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789628180; c=relaxed/simple;
-	bh=HkFyXU3GrMDWZj6lwB6sbWO20HmdluEGTiSCcMBCJNo=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=jBv5nulsuhRK6DSymGujbN9MvtQQVQEZQ0yofTJGWG2sPeYKhspuZACJn6XJqXWtim127Siri/l8yuAQM89c+mjxBkxXlqeb/0xbpUQ3IYg6rhnUvWxjZ9V0jRUiqG7FdY59QAU4dQTpINROn+iwoXsuIGSdfbzOPQwLzVt7LBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=PqGbtwEU; arc=none smtp.client-ip=162.62.57.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1789630869; c=relaxed/simple;
+	bh=ODu4TBlU145Yy0CHkOOJrtHC8EHycFWF7w6wzjvsB3c=;
+	h=MIME-Version:Content-Type:Subject:From:To:Cc:In-Reply-To:
+	 References:Date:Message-Id; b=lThtL9f2GV2GxFuVJ6J691RibYyb5ENLLYQOpm2QUrLDMalwNpivBi5lsiZHs8JReIwz7nO1ggTLtoy3Z2pEQRZBNxV2LROL14Jhwfml96lxVe6bE/tm+H8zyoo2wlUNINGoqIQqyMH6bL4xk/AT2iSzDFPWWYPA7oLTc4O8vZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VCKcHToy; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="PqGbtwEU"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1789628168; bh=j1Fc/4Xsm/exGsgjT4jGufeye/rOfxrIgfcyhzDzAv8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=PqGbtwEUZZ1TIzE2q2KtgcGmeDRG7GF1XifWTaxo8RyPwWmc+DnDpFiV6gDL9cMTx
-	 UYW0uBNIeahEDiuhlxqerECXl16CnLdnklbh/HdhlsroSq0FMxw+WT1sY3OOEpFwVO
-	 pJE8kaTfaXHvwILlruPS7+s1hiC5Rr/QM/rnU7Hg=
-Received: from XJSH01426.meizu.com ([210.13.72.171])
-	by newxmesmtplogicsvrsza53-0.qq.com (NewEsmtp) with SMTP
-	id E0103260; Thu, 17 Sep 2026 14:56:01 +0800
-X-QQ-mid: xmsmtpt1789628165tsbw3z5sx
-Message-ID: <tencent_7359E1D8A4256237AB06F816324B30F3A608@qq.com>
-X-QQ-XMAILINFO: M+CCxu5Z1xuSmDX1Vf8Y3UUXjh2hdOApX30dVrTbenI56A0V2HKRBcztpEorbn
-	 KdHXoWD/z15JTjp5JIHGshfa0dMRK7XW7NjfacimCl4tUqdlPIpNKElcKl2UK6wfI15JyZyf0z9b
-	 IwqfunUwyQQ+FWUdJKo68WGVNS6t46KQtA6DlXBhMOMJBycEMb3Q6K/isHD52BQ+ivUkrlp4Rccr
-	 7TzS1EKh6cbBdqa0Lae/Ks6pMXhOFKLfiQ6dxXWUq4sbqa5a4osdj+J7kTVUxTHdzLcO0Jhh5aOX
-	 +bX1jX5PTiHC5Qkob+j+5G1t+p0yi0sGkJMEE47v+uAVyw2WhQVekrvUbXNfSSvDm8n8gupM4fpw
-	 0bMI5GrRwRjXboBvbBXxzo/VIzJFbdsswsuzNdyjgM7Didz5gkxjXQoRwwS0fsXKesMefN46HwEL
-	 L3L8T7SgAyyO28PSg/Y5CrC+elV4BSL/SI7ibbzdgf5w3fcA0NtcmxV6FeBwHS8lmdZ3FvP9AguO
-	 pYloSwZ/pLE/piKcio2VvM0Ha3CdCYV9N+jaC3pHmGo5ozZJq8V4xZLopwtKpTSlHwKJVmxTFi21
-	 JZJleZnl7GB44WWJ/pYUK/AVgoqVMn6LKaJn7zFw5MDAO7sEflggbReT2NlR4431QPsepAfnU4aT
-	 Izx7A20BsOz6BNvhQRqtKSLsQ5T4OtLevnC1DuksIuTbMeKW49xlM8v7usk47y/57gF7M+Q3upL3
-	 x3LABGuUuFN6M0mbfK7qIbDmsVnzc+xyYirZQoZinIvXRgvZRPbay/fSz9ksSvdNbUWsogSZJuLL
-	 eWP5q2l6kH5uI/GAW+Yd6d19YbGPebW3zRdWec9fej+ZdZ8GC7K30KIPcotkyqH02Emi2SNTUrgD
-	 wUnWQ+E1IC05z3sINOpQuQuRbbxIFmYqDFXaWZD2BqFo8nHQkyxB4yvmn9xaDB4BXuzdjeZ7q8yl
-	 w/SYkkvgFhiK9p7HT8BJrxZx2LHP+6dhHMs26MZPHQok9rMMzDzr47LJcEZqSugEYJsHwM5usRI3
-	 oHBLAZpCUGSVMx9aIHzUETM8/BWnyIZU0EZJN38G9FFF+jSkewInoaiUWmTYhg8LDS5nFbfgFkxw
-	 j2kTw5xMXQ8MJHKNqHGgafIRSOBzs5QrNDQivtt12fw8sObpkJdqonr+FqKMSQAI51rkOJC2KWjt
-	 oFnoA=
-X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
-From: Zhenghui Hao <zhenghui.hao@qq.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org,
-	linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
-	Helge Deller <deller@gmx.de>,
-	Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	David Hildenbrand <david@kernel.org>
-Subject: [PATCH 2/2] hugetlb: report cmdline parameters recorded too late
-Date: Thu, 17 Sep 2026 14:55:57 +0800
-X-OQ-MSGID: <20260917065600.564083-3-zhenghui.hao@qq.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260917065600.564083-1-zhenghui.hao@qq.com>
-References: <20260917062837.558251-1-zhenghui.hao@qq.com>
- <20260917065600.564083-1-zhenghui.hao@qq.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VCKcHToy"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2678A1F000FF;
+	Thu, 17 Sep 2026 07:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789630868;
+	bh=unHzs8AmLeied82z5XajBgVCmX9rGOIH63gfwiwzlEw=;
+	h=Subject:From:To:Cc:In-Reply-To:References:Date;
+	b=VCKcHToykQHUK3KLMsFOfJi52WtYj2xDx3YhcffiTyYFiTbT6rrW1T5/H8XRz9fsd
+	 LwPark6HFPoxdThTzS6OjSLTavEOAzfI4e6KFNCjcc6t68ZN5YdbcsukTWnFLPqikw
+	 kk5B+/tgSEHiHx89VgzD8r/RrqJ6Xt9JvPtghBnZsrhePaUSTIGEwwYF+50ivLUeKC
+	 NdAmMTPpwmtziWognzeSs1qypOIVOh1Cl5O17iYd7c079S+3BMFDCo7FWvPjfaTYNc
+	 sGRsIhNTs+gKnb+GhDLX/tJU+MChR5gernDXVU4gEJMEJqpXTmpgpSF5uSSSz7BKNO
+	 RCfUNUBOB/o9w==
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Subject: [PATCH 0/2] init, hugetlb: fix early parameter ordering
+From: Mike Rapoport <rppt@kernel.org>
+To: Zhenghui Hao <zhenghui.hao@qq.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+ linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <tencent_0490E1CAA4336214AB70F813325F3020A608@qq.com>
+References: <20260917062837.558251-1-zhenghui.hao@qq.com>
+ <tencent_0490E1CAA4336214AB70F813325F3020A608@qq.com>
+Date: Thu, 17 Sep 2026 10:41:04 +0300
+Message-Id: <178963086483.2200502.14463144472620315064.b4-reply@b4>
+X-Mailer: b4 0.17-dev
 
-hugetlb command line parameters are recorded by the early_param()
-handlers registered through hugetlb_early_param() and consumed later by
-hugetlb_parse_params(), which is called from hugetlb_bootmem_alloc().
+Hi,
 
-Since commit d49004c5f0c1 ("arch, mm: consolidate initialization of nodes,
-zones and memory map") that consumer runs from mm_core_init_early(),
-which is called before the generic parse_early_param() in start_kernel().
+On 2026-09-17 14:55 +0800, Zhenghui Hao wrote:
+> hugetlb records its command line parameters from early_param()
+> handlers and consumes them later from hugetlb_bootmem_alloc().
+> 
+> Commit d49004c5f0c1 ("arch, mm: consolidate initialization of nodes,
+> zones and memory map") moved that consumer into mm_core_init_early(),
+> which runs before the generic parse_early_param() call in
+> start_kernel().  Architectures that call parse_early_param() from
+> setup_arch() are not affected, but on parisc the parameters are then
+> recorded after they have already been consumed and are silently
+> dropped.
 
-On architectures that do not call parse_early_param() from setup_arch(),
-such as parisc, the parameters are recorded only after they have been
-consumed, so they are dropped without any diagnostics: do_early_param()
-stays quiet because the handlers return 0, and obsolete_checksetup()
-treats early parameters as already handled.
+Since parisc is one of very few architectures that does not call
+parse_early_param() from setup_arch(), I think an easier fix would be
+local to parisc.
 
-Warn in that case instead of dropping the parameter silently.
-Returning non-zero from the wrapper would also work, but it makes
-do_early_param() print "Malformed early option", which points at the
-command line instead of at the ordering problem, so print an accurate
-message and return 0.
+And there is another related question more to parisc maintainers: do we
+really need hugetlb on parisc these days?
 
-The check cannot produce false positives: the wrappers are reachable
-only from do_early_param(), and hugetlb_parse_params() is called exactly
-once, so once hugetlb_cmdline_consumed is set, any further recording is
-by construction too late to be honored.
+> Patch 1/2 moves parse_early_param() before mm_core_init_early(),
+> together with jump_label_init() and static_call_init() so that the
+> "parameters may set static keys" guarantee still holds.
+> 
+> Patch 2/2 makes this class of ordering problem non-silent.  It cannot
+> fire once 1/2 is applied; if you would rather take only the fix,
+> please drop 2/2.
+> 
+> Not tested on parisc hardware.
+> 
+> Zhenghui Hao (2):
+>   init: parse early parameters before memory initialization
+>   hugetlb: report cmdline parameters recorded too late
+> 
+>  init/main.c  |  8 ++++----
+>  mm/hugetlb.c | 14 ++++++++++++++
+>  2 files changed, 18 insertions(+), 4 deletions(-)
+> 
+> 
+> base-commit: 9b87fdc9af2fbfcdb5c24a64139685ef80f6573f
+> -- 
+> 2.53.0
+> 
+> 
 
-Not tested on parisc hardware.
-
-Cc: Mike Rapoport (Microsoft) <rppt@kernel.org>
-Cc: Helge Deller <deller@gmx.de>
-Signed-off-by: Zhenghui Hao <zhenghui.hao@qq.com>
----
- mm/hugetlb.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 4f6f58bf3db6..bda8af614a70 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -91,12 +91,24 @@ static char hstate_cmdline_buf[COMMAND_LINE_SIZE] __initdata;
- static int hstate_cmdline_index __initdata;
- static struct hugetlb_cmdline hugetlb_params[HUGE_MAX_CMDLINE_ARGS] __initdata;
- static int hugetlb_param_index __initdata;
-+/*
-+ * Set once hugetlb_bootmem_alloc() has consumed the recorded parameters.
-+ * A parameter recorded after that point can never be honored, so report it
-+ * instead of dropping it silently.  This happens if an architecture calls
-+ * parse_early_param() only after mm_core_init_early().
-+ */
-+static bool hugetlb_cmdline_consumed __initdata;
- static __init int hugetlb_add_param(char *s, int (*setup)(char *val));
- static __init void hugetlb_parse_params(void);
- 
- #define hugetlb_early_param(str, func) \
- static __init int func##args(char *s) \
- { \
-+	if (hugetlb_cmdline_consumed) { \
-+		pr_warn("HugeTLB: %s=%s recorded too late to be honored, ignoring\n", \
-+			str, s ?: ""); \
-+		return 0; \
-+	} \
- 	return hugetlb_add_param(s, func); \
- } \
- early_param(str, func##args)
-@@ -4491,6 +4503,8 @@ void __init hugetlb_bootmem_alloc(void)
- 		INIT_LIST_HEAD(&huge_boot_pages[i]);
- 
- 	hugetlb_parse_params();
-+	/* Anything recorded from here on can no longer be honored. */
-+	hugetlb_cmdline_consumed = true;
- 
- 	for_each_hstate(h) {
- 		h->next_nid_to_alloc = first_online_node;
--- 
-2.53.0
 
