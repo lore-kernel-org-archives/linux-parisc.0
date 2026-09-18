@@ -1,196 +1,114 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj2-f8.google.com (mail-pj2-f8.google.com [74.125.227.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D20F5208A1
-	for <linux-parisc@vger.kernel.org>; Thu, 17 Sep 2026 16:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=170.10.129.124
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789663663; cv=pass; b=sVYJkxjrzSH0Uempjx31qTe9FHWiQN8UHD4XMDVqdDbCQuxCLYyWbB5IJV5Nh8hGGmV4Ao1fURMnQd4sq5GFpbBFYVTW58eIUqLqJQhOA+PDTZgcBS2SYTr7RJyn3WiBX6UNuWGXAypaop3SwUT/tz3DBEk4UW7vsmxTU0a49zk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789663663; c=relaxed/simple;
-	bh=OXoyJpegabl0ocESy43SWOAVnutZsDrl9ix8aJurgKM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AI20Y/J0u1DxIAIZxAFMZs7yRrNGctio/5cF2hWIDi/37c1tXpTkH0CRJrR/l6kBwB7ySjuKnOJAb9zXbwPQCqSwxqqeSKje8vFgh29JeoHOdgoSiMBEzphxOW69Qq/Gc06H8KiSBFySwM2gUk8JwRsnGG+Q5JD39jvWo6e82jI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h/C9mgWL; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=dKGKnJD3; arc=pass smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86ADA3D75BE
+	for <linux-parisc@vger.kernel.org>; Fri, 18 Sep 2026 03:04:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.136
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789700671; cv=none; b=uYMVZUFmL5xttj6CIaESsGvW44RCSRko7bQPO0t4vRyE1wVljcVgt0oBFIh70EcsnpdOjdU2QUHHFzh2DySqJu5E8sTaLTyUVqkXaJUiAyGPrZG70TovZt0ysWJeEAIMzSHCYTvwTh4THEFHZksrIhmwJBZkazKzv2jyfcdKCQY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789700671; c=relaxed/simple;
+	bh=pWXqVyPkZ1SwGp/BgZ2+TVrhDjg3TKwNRtZ+6tAh2AY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QtnbNxBOAxvmIOoVDRznX0Z71RV9iOjrn9qx6xnj1GIvQmlrnnDaqWzuWpLYhHbmetR+PUbrkwgO7fNKoR+RQSVFEbpR5Z8nSKWm7Rl7ROzDReDoFeD1Dnu7wCHPJe0Cw2BDw3aUiAUJ6LdBx9Nd16OkeMwKXsgO8aMxOziVOjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BdsowFYn; arc=none smtp.client-ip=74.125.227.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h/C9mgWL";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="dKGKnJD3"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1789663660;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ghsNMjszr/YVVrzwI9L3VChkEhVa9VAV3CWSeRoOujg=;
-	b=h/C9mgWLVKUE3XGeurN8VBjS/UsjoM5ZJ9tPSlsW3dzKSEAFnd4gOI4xE4ErfI2eOvIN4S
-	1xiJOWqAUg3ahtdZBoIQpTeKpK7kQL5ctrbOz1AE33GVCC/fChAbPFI/5ecAUhXRVRV1+g
-	akJs722ULOhvBfgMe2Kgrdhy6k8idRY=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-319-ZjZUaRbkP_S_5OIGNAeheg-1; Thu, 17 Sep 2026 12:47:38 -0400
-X-MC-Unique: ZjZUaRbkP_S_5OIGNAeheg-1
-X-Mimecast-MFC-AGG-ID: ZjZUaRbkP_S_5OIGNAeheg_1789663658
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-c293a65b577so117390866b.2
-        for <linux-parisc@vger.kernel.org>; Thu, 17 Sep 2026 09:47:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789663658; cv=none;
-        d=google.com; s=arc-20260327;
-        b=avV4zY2bSBE6EEJva83ERB7TR2PFDEMx2VSoiNeu3gL3afZxpmcZLZivs0zUm17IT3
-         ABJ6e7QIMabWE1vgBzJYyHBMjNTJ3NbYnkGsTd2OZHIgovRNrKCSb/Uudne51EONfAxj
-         1kuLjX9f1tH6ItdrY8zA6b6miOXBRzV83iVZ8hDh9XkxIoOAJxqxsvsZD/lwCzcY92G5
-         NIgre/iFj1rakYvHYZNa6IM9ufbjk0J/dbBNzHA2NSue2Yuj2GWuut8xwQVFWPNyw15d
-         2yDchYovVVC7BGmiI6LQ1JReXKsXB4hag1D2tpXFiAiATvBYv/yhtN2tTBea3UF2Tr3y
-         IlwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=ghsNMjszr/YVVrzwI9L3VChkEhVa9VAV3CWSeRoOujg=;
-        fh=Lol+pIAF5EFwXYVk7y6YD2tyzTMr73R77iqckF6s8Ik=;
-        b=r0rGaSdbRPYfgxFeGip5mw6mHVJyBvLfBLrUOlpVmIezgVzexYGZAO6qPL6q6ABcJZ
-         CqwPcjJ07y3ruEyXKvOmWaquWfPvUoz2onuQYg5XvtIJ7ZpNEglSKGlcgxx7M7Rjq0Qa
-         5micqSVvyMecv4Fuw6D3hcVMOPAKoI+cDnARRFFJ3fVcDQxd1y50ADGd/zJ7bZDVJI/V
-         nbn70DuZR05cxnq2GfCHvtCIfIWT/rfBkI9r8IO++a9EIq/5Ee67oAOTj4ezyChApJGq
-         ILszpMgJRvRKn0EZymaXAq7hKb6MxfW2xrP5YpPpuFDgnHEaqRpw+o57S5H4Vw9aOCkt
-         f9rQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BdsowFYn"
+Received: by mail-pj2-f8.google.com with SMTP id d9443c01a7336-2db33361b2fso2295255ad.1
+        for <linux-parisc@vger.kernel.org>; Thu, 17 Sep 2026 20:04:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1789663658; x=1790268458; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=ghsNMjszr/YVVrzwI9L3VChkEhVa9VAV3CWSeRoOujg=;
-        b=dKGKnJD38WiZGeDo9G7w61tJE8iA6+vSv3+VhV/+0BSAMznrhvPVqnGGKYQ4PLBA6I
-         0x6n1uxTHhGhrERHIq4n2fwx7oBAGeJ0UH2xKBLCAHlcgYVJbSGdqkRY1bIrFojj6Vu2
-         1xzNeV3ObTyMCYkO5MWwX8CYgFeVi4bWCgXmC4n+onP+bI4+jZOOu0utxMpLFY4bJHAr
-         EnjiwLBgjs87fs6PxCZOmw1IRvyMdPyrIn9tJRRP/SWbFlBMtaD4DAF8BTLubz0gyLzg
-         wVbhbv7VzQr/+jzG98EbBOOsFR5Vdnw7E8gs5KXES7CruX20+ZZXuAPdluYPVbk+dg7Y
-         c55A==
+        d=gmail.com; s=20251104; t=1789700666; x=1790305466; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=8NGcJIqHMvpXOCe+nwNp2JIkFFxkvjqUC5Jh84lAv4c=;
+        b=BdsowFYn1/NwsP+wTbNLsH1dfcHMPhicaL1IfsE1i4Tc3SMppU2mPYI9wvtHQ9MY1q
+         Kfw6jpfWw/iz1EYzY+Rrk+hVWWR2+kBMTt4gRr4f1T3tlwgY3yp9cBbd7V5HJ3qSy67s
+         QAcCqvsvgD9n1G/bCB0xLjA4drP+L1GAjmvHbkZhEcYeOZltPJcE5jWFyvw8w3nb+cIG
+         VUE7swSd0Yl5tdb7QTEDXBl2YjDNdP3AjcUMcK3kcbMfLgt8RJJaQntIoleqKnYC3O4g
+         +F/gUo93DP+V+UeZLF/BMXNoi0CRAjFhw0tiXz7X5QKat4ONT/3jpMxS/udoMDyEfmqV
+         /14w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789663658; x=1790268458;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=ghsNMjszr/YVVrzwI9L3VChkEhVa9VAV3CWSeRoOujg=;
-        b=VMVI6TwofNgAEzV/RTmA0LboqY9KeDWYDfOH7ezN2hYi1QKBjcJSNPkMmn3g9EdGCa
-         Jazs+s767A/4sNLTrXIVugC4vjSPxYRrSGEEcRO+rcHjY21HGok/endYSjCaef7bNtYa
-         mgp6bPq3EfIW0ettniUxY/+DUqpW0pIgaItYfF03WdckMCDQgxTFGibM1PSARSyrK8NU
-         BicyCjXg8z4aJFSYyA4AkxTbITiiTS17GSwg0r8cTa16ywc3eea6YzyM4GhCqS+bMEzl
-         28U1a5N/e1MUUHvqIk2xM+Hv2glNOE0uM4CMP1maZwCPLHbtpcC8lo9N8le+y5bW6Z2l
-         6Sjw==
-X-Forwarded-Encrypted: i=1; AKwUvBxpvHU+4z3R0OcOQ8HnB9dP3UDMeak7rnxRomE0IiZbJA+3RK9ZGYhXjvPYuAgA4i3IR+XDmYHSiozpdnY=@vger.kernel.org
-X-Gm-Message-State: AFuF++k49ohozBNp2zC6qfZJgcmRi8PQmFb0olfR8Ob7hnJrXuHLrL/7
-	gXINqPGHljt7rU9fdRmscRA/rxTvyfdlZMgABMgePN7Hcl61iuFIeS+PPUoZQEwUCKz+CW0U0Sq
-	TFq5MdVl/oirwNEKZ9BgvaKR/QzVytiTPg2gviB9FdH4dikhty6eHeq+W9KJ+dZ5H/Fst0NAqvy
-	xy41WGLAyGKH63L6a7CtdoLwk6SG7AiZ6NFIGSkK3W
-X-Gm-Gg: AYBFou1OYk15Ao6fdo3Hm9L5iZzdPo8FaJFdyiBk8elD28TnaZq5iaBUwShXTADXRgs
-	vVRMaUate9XIgGnskxnGoBvzFYega5s/+o+bDfBfPIOJnfihJtm2WxQXDJzy2zkaJDLg+2VzY8j
-	3Yjrc+OpfiVuGOMrlgU2FETsSCLZSG6SqEz3lxUqTQbbsJp9mIIm/xLrbs2A1J7lj8tsKX7+CZb
-	ygXifJ6J1hdPXq7cFHDPvADxpbsD3jLaMfohCsNjdlOA9nHYkcp2tF7KG8VbO+YAmIE2qulyKZ1
-	vfA=
-X-Received: by 2002:a17:907:1c29:b0:c25:fdbc:52df with SMTP id a640c23a62f3a-c29e5244c19mr627702166b.10.1789663657736;
-        Thu, 17 Sep 2026 09:47:37 -0700 (PDT)
-X-Received: by 2002:a17:907:1c29:b0:c25:fdbc:52df with SMTP id
- a640c23a62f3a-c29e5244c19mr627698766b.10.1789663657315; Thu, 17 Sep 2026
- 09:47:37 -0700 (PDT)
+        d=1e100.net; s=20260707; t=1789700666; x=1790305466;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=8NGcJIqHMvpXOCe+nwNp2JIkFFxkvjqUC5Jh84lAv4c=;
+        b=QmlTYTSAdYiLZHh9j6+g4jn8GNwpFeotJQmA1U4M1z9KYK2x20rKswqAL6sdMNkEHq
+         oPfsoD0OPz9SgHYGBF4jqhYL7kHCkVR7y37sc8SteQ6/2I9ZhoWr8Uhmg6OOdjOcJvgu
+         1yKx2jWFcYACdZDA+21PlA8+ZhrAUWC2rwofqM/jQjp5hhaKRAIdtknhecyVM6og1oVJ
+         mMcZYtnt+BWL3Ei0mf0+LQ+5inN1mDUGTWI7DitLzlH9Vjz2mMc+PuUA4kngantGzyKs
+         ZqbLoK9WT903rtf7ITU78BhlNEoFSNzMaesgRhBGxn6wiqqISQVgvecl2dPvkmwkvYNj
+         DPyA==
+X-Gm-Message-State: AFuF++kjMHoiXdkCvGUFwBVmqQM58SQ5/wHZqclczj6oSdd3hHhrlEuC
+	f5piufWYydEL9qf/mc6sgjsoZCYFaVQfTDnSC+wjFQYgKsuAHnn2xNoQQi/fcA1IvkE=
+X-Gm-Gg: AYBFou2zWHFvyVh5syVXqUKajgtMr/BdYYvK2BKcoWOZfxa6baFTMbmK8RM62rpnj6w
+	uvppPR0RT9mo0rJqWRcusJVre6qfWgh9SewbkRcErirAMm6g2g6J/owmTsCtV8Hg9zi2Vm0Owv8
+	qEK9MvzLlmTRjJpNALNCQlpqf//EsNBPswSVP+7L3/GoOgb5A3/rmL/bjWau0HfbK+XNLYou7zm
+	aLqgEp8k+4lj6Sg6GB7Iz8dQI3X+M6aXAEDCLvs7pUemDIJtalBfoNRBJ4dQD3aJZCE0XkaJTOs
+	+Glgn/JVpBh0stmObD6L1YDfSTe4UKf7eJWPFxYLFKGA4UgHTy8QqHgjoP5qVfc3NK05IucCEVs
+	uXaSi09r2acY4i8Xx8FJI4rn3wSwrp+gVYMT4ak8/a5UTo3zlyVM5TtT+GcNOLWOwi3nszDYReB
+	1Z/LSGkm8fDj7ETwdFVcvG2Kp4uB1qL63UP8/7WC3liAfijN32F5+aOYFZw+6YrDGed0EfVhlV5
+	EcJxwAvzijU23t6gKT5gHn48+6nTL1+PgjjbGpi8cNeQVI/GpAwrgr3hFDfYN9/eVYtmLMamSNg
+	PTu0zlG2CLJI+SUMonar/nrcvfdqKoLEAwSugChuaS/TTi0+L+0FWckcHgEiMnk/E01nY2x7MDM
+	f
+X-Received: by 2002:a17:903:2f0f:b0:2dd:88b4:6920 with SMTP id d9443c01a7336-2ddb1b9818dmr23699965ad.22.1789700665970;
+        Thu, 17 Sep 2026 20:04:25 -0700 (PDT)
+Received: from ethan-latitude5420.. (host-127-24.cafrjco.fresno.ca.us.clients.pavlovmedia.net. [68.180.127.24])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-33c2876a52esm417457eec.20.2026.09.17.20.04.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2026 20:04:25 -0700 (PDT)
+From: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+To: linux-parisc@vger.kernel.org
+Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>
+Subject: [PATCH] parisc: remove unused <asm/compat_ucontext.h> header
+Date: Thu, 17 Sep 2026 20:04:14 -0700
+Message-ID: <20260918030420.408737-1-enelsonmoore@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1788351089.git.rrobaina@redhat.com> <4ada9fcbb93af8d5c1c9bfe2c83d94fc10bfe327.1788351089.git.rrobaina@redhat.com>
- <CA+=Fv5T4826T2sd0Gbh-nfZsqcWK_phdBKy4BLWOvDTt92t5Eg@mail.gmail.com>
-In-Reply-To: <CA+=Fv5T4826T2sd0Gbh-nfZsqcWK_phdBKy4BLWOvDTt92t5Eg@mail.gmail.com>
-From: Ricardo Robaina <rrobaina@redhat.com>
-Date: Thu, 17 Sep 2026 13:47:26 -0300
-X-Gm-Features: AcwNN1UQ-9H3EW5aAPKYI2mYiHxV9kMvBFdM8jP3WAhZbefwH7qcxYHE69PGYDs
-Message-ID: <CAABTaaAUBzp1uaLve2piMhEB1R5po5n5+Sy+U0mbbe70Ak-SUw@mail.gmail.com>
-Subject: Re: [PATCH v2 02/13] alpha: pass pt_regs to audit_syscall_entry()
-To: Magnus Lindholm <linmag7@gmail.com>
-Cc: audit@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-csky@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org, bpf@vger.kernel.org, paul@paul-moore.com, 
-	eparis@redhat.com, sgrubb@redhat.com, oleg@redhat.com, 
-	richard.henderson@linaro.org, mattst88@gmail.com, linux@armlinux.org.uk, 
-	catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, monstr@monstr.eu, 
-	tsbogend@alpha.franken.de, jonas@southpole.se, 
-	stefan.kristiansson@saunalahti.fi, shorne@gmail.com, 
-	James.Bottomley@hansenpartnership.com, deller@gmx.de, 
-	ysato@users.sourceforge.jp, dalias@libc.org, glaubitz@physik.fu-berlin.de, 
-	davem@davemloft.net, andreas@gaisler.com, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, chris@zankel.net, 
-	jcmvbkbc@gmail.com, tglx@kernel.org, peterz@infradead.org, luto@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 4, 2026 at 2:21=E2=80=AFPM Magnus Lindholm <linmag7@gmail.com> =
-wrote:
->
-> Hi Ricardo,
->
-> On Wed, Sep 2, 2026 at 4:44=E2=80=AFPM Ricardo Robaina <rrobaina@redhat.c=
-om> wrote:
-> >
-> > audit_syscall_entry() now takes a pointer to pt_regs and extracts
-> > the syscall arguments itself via syscall_get_arguments(). Drop the
-> > individual argument registers from the call and pass regs instead.
-> >
-> > Signed-off-by: Ricardo Robaina <rrobaina@redhat.com>
-> > ---
-> >  arch/alpha/kernel/ptrace.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/arch/alpha/kernel/ptrace.c b/arch/alpha/kernel/ptrace.c
-> > index fc8f6cedbb28..8a39c0473297 100644
-> > --- a/arch/alpha/kernel/ptrace.c
-> > +++ b/arch/alpha/kernel/ptrace.c
-> > @@ -496,8 +496,7 @@ asmlinkage unsigned long syscall_trace_enter(void)
-> >         }
-> >
-> >  #ifdef CONFIG_AUDITSYSCALL
-> > -       audit_syscall_entry(syscall_get_nr(current, regs),
-> > -               regs->r16, regs->r17, regs->r18, regs->r19);
-> > +       audit_syscall_entry(syscall_get_nr(current, regs), regs);
-> >  #endif
-> >         return syscall_get_nr(current, regs);
-> >  }
-> > --
-> > 2.55.0
-> >
-> This doesn't apply on top of my "alpha: enable GENERIC_ENTRY" series
->
-> https://lore.kernel.org/linux-alpha/20260902184058.198679-1-linmag7@gmail=
-.com/T/#t
->
-> That series moves alpha's syscall entry onto the generic entry
-> framework and removes syscall_trace_enter() and its direct
-> audit_syscall_entry() call entirely - verified with git am against
-> GENERIC_ENTRY applied, it fails at exactly this hunk.
-> You don't need a replacement alpha patch, though. Once GENERIC_ENTRY
-> lands, alpha's syscall entry goes through
-> syscall_enter_from_user_mode_randomize_stack(), which already calls
-> syscall_enter_audit() as part of the shared entry helpers
-> (include/linux/entry-common.h). I applied patch 1/13 alone on top of
-> GENERIC_ENTRY and confirmed alpha's entry path already routes through
-> the updated __audit_syscall_entry() - no alpha-specific code needed.
-> So for alpha, you can drop this patch in the next revision rather
-> than rebase it.
->
-> Regards
-> Magnus
->
+The last use of arch/parisc/include/asm/compat_ucontext.h was removed
+in commit d313d4e72df3 ("parisc: remove unused compat_rt_sigframe.h
+header") but it was left behind. Remove it.
 
-Hi Magnus,
+Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+---
+ arch/parisc/include/asm/compat_ucontext.h | 18 ------------------
+ 1 file changed, 18 deletions(-)
+ delete mode 100644 arch/parisc/include/asm/compat_ucontext.h
 
-Thanks for reviewing this patch! Ok, I'll drop this patch from the series.
-
-Thanks!
--Ricardo
+diff --git a/arch/parisc/include/asm/compat_ucontext.h b/arch/parisc/include/asm/compat_ucontext.h
+deleted file mode 100644
+index c606f1bc891d..000000000000
+--- a/arch/parisc/include/asm/compat_ucontext.h
++++ /dev/null
+@@ -1,18 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _ASM_PARISC_COMPAT_UCONTEXT_H
+-#define _ASM_PARISC_COMPAT_UCONTEXT_H
+-
+-#include <linux/compat.h>
+-
+-/* 32-bit ucontext as seen from an 64-bit kernel */
+-struct compat_ucontext {
+-	compat_uint_t uc_flags;
+-	compat_uptr_t uc_link;
+-	compat_stack_t uc_stack;	/* struct compat_sigaltstack (12 bytes)*/	
+-	/* FIXME: Pad out to get uc_mcontext to start at an 8-byte aligned boundary */
+-	compat_uint_t pad[1];
+-	struct compat_sigcontext uc_mcontext;
+-	compat_sigset_t uc_sigmask;	/* mask last for extensibility */
+-};
+-
+-#endif /* !_ASM_PARISC_COMPAT_UCONTEXT_H */
+-- 
+2.43.0
 
