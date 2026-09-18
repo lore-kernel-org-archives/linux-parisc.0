@@ -1,72 +1,60 @@
-Received: from mail-pj2-f8.google.com (mail-pj2-f8.google.com [74.125.227.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86ADA3D75BE
-	for <linux-parisc@vger.kernel.org>; Fri, 18 Sep 2026 03:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD474503FB;
+	Fri, 18 Sep 2026 05:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789700671; cv=none; b=uYMVZUFmL5xttj6CIaESsGvW44RCSRko7bQPO0t4vRyE1wVljcVgt0oBFIh70EcsnpdOjdU2QUHHFzh2DySqJu5E8sTaLTyUVqkXaJUiAyGPrZG70TovZt0ysWJeEAIMzSHCYTvwTh4THEFHZksrIhmwJBZkazKzv2jyfcdKCQY=
+	t=1789710628; cv=none; b=dPy0OWMoIUv2spOyYEdNI/A4/LZJZsPy5uHmpN8SuflvcS4Bj3RM4V2wvM+EGbCQXFM/gU3xP6Dzc+73hqD7/42E1MwjvuykmiSEgLJH+4jC3V03FZLuRe+Ltx0QsqGlKSiyxevmbCJ8MeABm6Lp2Kk1GakoZsIK6dCDwdf9dpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789700671; c=relaxed/simple;
-	bh=pWXqVyPkZ1SwGp/BgZ2+TVrhDjg3TKwNRtZ+6tAh2AY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QtnbNxBOAxvmIOoVDRznX0Z71RV9iOjrn9qx6xnj1GIvQmlrnnDaqWzuWpLYhHbmetR+PUbrkwgO7fNKoR+RQSVFEbpR5Z8nSKWm7Rl7ROzDReDoFeD1Dnu7wCHPJe0Cw2BDw3aUiAUJ6LdBx9Nd16OkeMwKXsgO8aMxOziVOjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BdsowFYn; arc=none smtp.client-ip=74.125.227.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1789710628; c=relaxed/simple;
+	bh=8MufMY9lIRnGTi5h9BPJYfykr099yQoG0Pih9buPj40=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=mKBF+HWclrVP/gi3qQEaMUmO+OnGPYKaAK+A3FQOOkaUxGf5caa8wjSW7F7qMh2Z4eiLxfSwjyZgQDdfJMhxVxNeGiziV0EZvWQCCev7MfhFmHx6Ib0SJGM02ny9++JLtgd8EAvNSsjCwpCR+vNhhXaKHspXtRCoSfAtW7okHuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=QAt/GI0q; arc=none smtp.client-ip=162.62.58.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BdsowFYn"
-Received: by mail-pj2-f8.google.com with SMTP id d9443c01a7336-2db33361b2fso2295255ad.1
-        for <linux-parisc@vger.kernel.org>; Thu, 17 Sep 2026 20:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789700666; x=1790305466; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=8NGcJIqHMvpXOCe+nwNp2JIkFFxkvjqUC5Jh84lAv4c=;
-        b=BdsowFYn1/NwsP+wTbNLsH1dfcHMPhicaL1IfsE1i4Tc3SMppU2mPYI9wvtHQ9MY1q
-         Kfw6jpfWw/iz1EYzY+Rrk+hVWWR2+kBMTt4gRr4f1T3tlwgY3yp9cBbd7V5HJ3qSy67s
-         QAcCqvsvgD9n1G/bCB0xLjA4drP+L1GAjmvHbkZhEcYeOZltPJcE5jWFyvw8w3nb+cIG
-         VUE7swSd0Yl5tdb7QTEDXBl2YjDNdP3AjcUMcK3kcbMfLgt8RJJaQntIoleqKnYC3O4g
-         +F/gUo93DP+V+UeZLF/BMXNoi0CRAjFhw0tiXz7X5QKat4ONT/3jpMxS/udoMDyEfmqV
-         /14w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789700666; x=1790305466;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=8NGcJIqHMvpXOCe+nwNp2JIkFFxkvjqUC5Jh84lAv4c=;
-        b=QmlTYTSAdYiLZHh9j6+g4jn8GNwpFeotJQmA1U4M1z9KYK2x20rKswqAL6sdMNkEHq
-         oPfsoD0OPz9SgHYGBF4jqhYL7kHCkVR7y37sc8SteQ6/2I9ZhoWr8Uhmg6OOdjOcJvgu
-         1yKx2jWFcYACdZDA+21PlA8+ZhrAUWC2rwofqM/jQjp5hhaKRAIdtknhecyVM6og1oVJ
-         mMcZYtnt+BWL3Ei0mf0+LQ+5inN1mDUGTWI7DitLzlH9Vjz2mMc+PuUA4kngantGzyKs
-         ZqbLoK9WT903rtf7ITU78BhlNEoFSNzMaesgRhBGxn6wiqqISQVgvecl2dPvkmwkvYNj
-         DPyA==
-X-Gm-Message-State: AFuF++kjMHoiXdkCvGUFwBVmqQM58SQ5/wHZqclczj6oSdd3hHhrlEuC
-	f5piufWYydEL9qf/mc6sgjsoZCYFaVQfTDnSC+wjFQYgKsuAHnn2xNoQQi/fcA1IvkE=
-X-Gm-Gg: AYBFou2zWHFvyVh5syVXqUKajgtMr/BdYYvK2BKcoWOZfxa6baFTMbmK8RM62rpnj6w
-	uvppPR0RT9mo0rJqWRcusJVre6qfWgh9SewbkRcErirAMm6g2g6J/owmTsCtV8Hg9zi2Vm0Owv8
-	qEK9MvzLlmTRjJpNALNCQlpqf//EsNBPswSVP+7L3/GoOgb5A3/rmL/bjWau0HfbK+XNLYou7zm
-	aLqgEp8k+4lj6Sg6GB7Iz8dQI3X+M6aXAEDCLvs7pUemDIJtalBfoNRBJ4dQD3aJZCE0XkaJTOs
-	+Glgn/JVpBh0stmObD6L1YDfSTe4UKf7eJWPFxYLFKGA4UgHTy8QqHgjoP5qVfc3NK05IucCEVs
-	uXaSi09r2acY4i8Xx8FJI4rn3wSwrp+gVYMT4ak8/a5UTo3zlyVM5TtT+GcNOLWOwi3nszDYReB
-	1Z/LSGkm8fDj7ETwdFVcvG2Kp4uB1qL63UP8/7WC3liAfijN32F5+aOYFZw+6YrDGed0EfVhlV5
-	EcJxwAvzijU23t6gKT5gHn48+6nTL1+PgjjbGpi8cNeQVI/GpAwrgr3hFDfYN9/eVYtmLMamSNg
-	PTu0zlG2CLJI+SUMonar/nrcvfdqKoLEAwSugChuaS/TTi0+L+0FWckcHgEiMnk/E01nY2x7MDM
-	f
-X-Received: by 2002:a17:903:2f0f:b0:2dd:88b4:6920 with SMTP id d9443c01a7336-2ddb1b9818dmr23699965ad.22.1789700665970;
-        Thu, 17 Sep 2026 20:04:25 -0700 (PDT)
-Received: from ethan-latitude5420.. (host-127-24.cafrjco.fresno.ca.us.clients.pavlovmedia.net. [68.180.127.24])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-33c2876a52esm417457eec.20.2026.09.17.20.04.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2026 20:04:25 -0700 (PDT)
-From: Ethan Nelson-Moore <enelsonmoore@gmail.com>
-To: linux-parisc@vger.kernel.org
-Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>
-Subject: [PATCH] parisc: remove unused <asm/compat_ucontext.h> header
-Date: Thu, 17 Sep 2026 20:04:14 -0700
-Message-ID: <20260918030420.408737-1-enelsonmoore@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="QAt/GI0q"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1789710614; bh=l4vt2RgI+Np3N8Wg3Ybz8eb3RVuLRt/R9ZyL/paN+7M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=QAt/GI0qpUZxHkcaVyoYAuH6efpCDGtTUbC1kXn4i+4/QNTnXEn3Y4m8MQ6bN/JGt
+	 6XpnqTh1r0AUXpbbnEsasXnWuGdLiUKCCY/aj7/fmRVUmEhLl8x3iDA5SPAK571c1A
+	 nZETciNH4aHiOQW3BLmMOUll9L0X2q5G7cj4Qq8g=
+Received: from XJSH01426.meizu.com ([210.13.72.171])
+	by newxmesmtplogicsvrszc50-0.qq.com (NewEsmtp) with SMTP
+	id BB1B8E26; Fri, 18 Sep 2026 13:46:49 +0800
+X-QQ-mid: xmsmtpt1789710409t0a17l4zi
+Message-ID: <tencent_25C26948D9C4B056CBF12565F0600C4C2509@qq.com>
+X-QQ-XMAILINFO: Od++Svt5p/ChIvJnY7Kp28UcdL91q3n2D9numSKrnNEc2IY/xjBuIKrvEotTQj
+	 gEZNGpjuPNRZ8PFx9KagA/iudpU/dosFH62M9gixDs/kBd4fMSt8OP/vFpJCRMVFFTLsmM+zxHp8
+	 nO7+NY1dmwIQri+NyAsYuU8XTx0FZeuwU7Bm7ZL4EpfjCyO3rreLyF3dgX2aNGZixCNctE0PcrOB
+	 /Bdsn8Ni8nTHIuset3NyKibNhq1hjR3Z0gD+Fso8fQ4nTA7N/kUkN31szqQVijSemSGEXFC1yq+w
+	 BaMshHw+mOxOT/qY01v8LEdoyJXejhKgpmzKO69zrHWlhaPuimwbpCMnmls6utvMLZwge37JS5r5
+	 lq7WwoXuO+xS+STQrgNFFczLxq+U3y8RQa64XUwX0Q1hsIZIwqq9fJM0Y4oZvdg962nJ1ySE08S3
+	 MM4VsXNVLXdTVwls0UIQTZEtqAyyn/WebpczM+iM+iLQ4E4haoHQ1/1L6/84Z7YKTvHTAEkME1D2
+	 w0kNZbVv4cav7jubQodWVMkIq+AmlB9AEExvh/pc+fI4T6+rLkEIj0mE/XipLL52XGjk/vj6qQbp
+	 CJcAQceP+4tDt6ZRooyU8hUgLq1BMzed+6m+kXhAl5MwpVxFLOXkjWJ+YaL4ahkeEiRL+POdOU77
+	 ap7bckstJRMbKwM8iY5KLcg3E1wrM4KFk/GK+w2Hqoka4Ikdx+QLfRii9Bm+bPPUYB1zqEaMq+qG
+	 SfkjkcXXKe6WUTuG3weVqUq27+00jACGIZAt4U1+e3EVCWS5vEM1WRwBgh5STel59xojExMlTXVD
+	 ILGYIPV0ZkZUf+dnDs42mxcm/hs9Xz0/3Ea23rogNHSWNsQWJKOq9MaMxcxKgPm1vGgHRjeMyi/q
+	 EqVizJQ1Stttl8VpRHXJgZ/v92T8chD9s9KfghdknZ5i/vXAJsebW23aU7Qw6E3HdRpyCwYLWZAO
+	 pL+3R819jEazbCH2aD6ZSEpKEI1K0l1gDrPOl4xFd4d0Rnk96z3dY7quwqmmRP+MlM6H8K+Ro+cq
+	 gp7w1LRB6gMvd/tBXAI2KjoaSCFHo8jG3d3Hw+BA==
+X-QQ-XMRINFO: MSVp+SPm3vtSI1QTLgDHQqIV1w2oNKDqfg==
+From: Zhenghui Hao <zhenghui.hao@qq.com>
+To: Helge Deller <deller@gmx.de>
+Cc: "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+	linux-parisc@vger.kernel.org,
+	Mike Rapoport <rppt@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH v2] parisc: parse early parameters in setup_arch()
+Date: Fri, 18 Sep 2026 13:46:49 +0800
+X-OQ-MSGID: <20260918054649.958466-1-zhenghui.hao@qq.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <7c90662b-903e-4624-bc97-96b1187332c5@gmx.de>
+References: <7c90662b-903e-4624-bc97-96b1187332c5@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -75,40 +63,56 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The last use of arch/parisc/include/asm/compat_ucontext.h was removed
-in commit d313d4e72df3 ("parisc: remove unused compat_rt_sigframe.h
-header") but it was left behind. Remove it.
+parisc is one of the few architectures that does not call
+parse_early_param() from setup_arch().  That was mostly harmless until
+commit d49004c5f0c1 ("arch, mm: consolidate initialization of nodes,
+zones and memory map") moved the consumer of several hugetlb command
+line parameters into mm_core_init_early(), which runs before the
+generic parse_early_param() call in start_kernel().
 
-Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+As a result hugepages=, hugepagesz=, default_hugepagesz=, hugetlb_cma=
+and hugetlb_free_vmemmap= are recorded after they have already been
+consumed and are silently dropped on parisc.
+
+Call parse_early_param() from setup_arch(), after the command line has
+been set up and the memory inventory has been taken.  jump_label_init()
+must be called first because early parameter handlers may enable or
+disable static keys.  Both functions are safe to call more than once:
+the generic calls in start_kernel() remain in place and turn into no-ops.
+
+Suggested-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+Fixes: d49004c5f0c1 ("arch, mm: consolidate initialization of nodes, zones and memory map")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Zhenghui Hao <zhenghui.hao@qq.com>
 ---
- arch/parisc/include/asm/compat_ucontext.h | 18 ------------------
- 1 file changed, 18 deletions(-)
- delete mode 100644 arch/parisc/include/asm/compat_ucontext.h
+ arch/parisc/kernel/setup.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/arch/parisc/include/asm/compat_ucontext.h b/arch/parisc/include/asm/compat_ucontext.h
-deleted file mode 100644
-index c606f1bc891d..000000000000
---- a/arch/parisc/include/asm/compat_ucontext.h
-+++ /dev/null
-@@ -1,18 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_PARISC_COMPAT_UCONTEXT_H
--#define _ASM_PARISC_COMPAT_UCONTEXT_H
--
--#include <linux/compat.h>
--
--/* 32-bit ucontext as seen from an 64-bit kernel */
--struct compat_ucontext {
--	compat_uint_t uc_flags;
--	compat_uptr_t uc_link;
--	compat_stack_t uc_stack;	/* struct compat_sigaltstack (12 bytes)*/	
--	/* FIXME: Pad out to get uc_mcontext to start at an 8-byte aligned boundary */
--	compat_uint_t pad[1];
--	struct compat_sigcontext uc_mcontext;
--	compat_sigset_t uc_sigmask;	/* mask last for extensibility */
--};
--
--#endif /* !_ASM_PARISC_COMPAT_UCONTEXT_H */
+diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
+index d3e17a7a8901..4d3015a411d6 100644
+--- a/arch/parisc/kernel/setup.c
++++ b/arch/parisc/kernel/setup.c
+@@ -132,6 +132,18 @@ void __init setup_arch(char **cmdline_p)
+ 	parisc_cache_init();
+ 	paging_init();
+ 
++	/*
++	 * Parse early parameters before mm_core_init_early() runs.
++	 * Several early_param() handlers only record data that is consumed
++	 * from there - for example hugepages=, hugepagesz=,
++	 * default_hugepagesz=, hugetlb_cma= and hugetlb_free_vmemmap= - so
++	 * the generic parse_early_param() call in start_kernel() is too late
++	 * for them.  jump_label_init() must come first, since early param
++	 * handlers may enable or disable static keys.
++	 */
++	jump_label_init();
++	parse_early_param();
++
+ #ifdef CONFIG_PA11
+ 	dma_ops_init();
+ #endif
+
+base-commit: 4982d3552a3bf94de503acf93433277d08421de6
 -- 
-2.43.0
+2.53.0
 
