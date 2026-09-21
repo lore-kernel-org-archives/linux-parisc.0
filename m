@@ -1,36 +1,35 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A008420469
-	for <linux-parisc@vger.kernel.org>; Mon, 21 Sep 2026 20:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01181518125;
+	Mon, 21 Sep 2026 22:06:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790022090; cv=none; b=kkVClmhAESZTMx7VKnylu8jmeCWzdbkBQIxUQsfd2aG5pSDa9zxb185p8IjP9u9R1YhbLmm8JwvKdLSdrWmqeNJ4jZizBxd5247NvWUFsv+gSC3tsb4Gz3VBNnfPpON0odL8MNOfLpc6eEI5jfk8zU5nv3dJSawY+3SoVpGTKQw=
+	t=1790028418; cv=none; b=sp1rzszJ2/fcH8qFPD0DNjzhHuGRNunaCTJqPexHzQG9oRG0uydhwA82mKsH2dwegOlSweCw15616u9rLMQ4WfU7LBPtUw/g1+8TNqW0CG3hcbpTiUfA6Qyvdi7JKBm3kG+CndrAO56K19XscVK24dYlfi+CPNILTmDzLKoZ20I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790022090; c=relaxed/simple;
-	bh=6nMLbNhaQEgDo98muzZTjTviXY1YIjfT2om5I9WVDAY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=MvVqpDcw9+NxG2cWtV+2btucfvwMhl9JchzRW5qgOykRWoDNYspnZmOA7iGzMOufUdOSOMkwkVAZ3E5F6diHnATa4OOvV/o5ffIOopOrMd0LzQu5XPGvTnaPdN2TZn1wZ/yQ0LohGlNh4SF6jVrofGlEWYz7u4Xh5apzwJZ/aIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SCAgr0kC; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790028418; c=relaxed/simple;
+	bh=zI1vrnN3CSQaF4DZgFEXrc+wi+SOq+NtAQATjpMeOyI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=aNxgCW1gxJx00qlfyHRkehyLuo4qwk7C+21Es+nsebJhGi8S4zCYEz7K0sI65Ga58eXg4OzW7rZtzJbdPAh8DibMS3X7whbbN0GwnQZLrzoX70EDNjle8SjL+6zZUWzNiuXK/1oKntLPcQ2oWShZhtIhiZXJ4jHdELL8BOQOftg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a7KnewJb; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SCAgr0kC"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5664C1F000FF
-	for <linux-parisc@vger.kernel.org>; Mon, 21 Sep 2026 20:21:28 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a7KnewJb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF00D1F00898;
+	Mon, 21 Sep 2026 22:06:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790022088;
-	bh=FwAc80JT6guNDC7bETP+6RF8VzGTXT8JTae4EScH23A=;
-	h=From:To:Subject:Date;
-	b=SCAgr0kCb01ASCajJ/eQ5GHQ0+is9ndqzTfWoMn/wfYjJDBK28/LHaIvrnVW/1sA7
-	 lZnVa4oWkyTvq0bTampDm6c6BSyAjf7COcz70ZW8ORYbshwqtKDSug9/AOlwexRs7u
-	 DDlku1CKXJVuR4tVh2rxxNkNeC2MiKM2zL8ASMpUkv/sQwVxD4ulU3rgSMX4IX66BY
-	 b+pzkV3P0V1xMR93SEni+L9MbGPC7L3+Cxd+D9xCySmq4pl3fD9Z71Qmed9gXujBtY
-	 0E08cNzQO5KaWnSTdYB77aV02+YTSGy0HFv6cOxPa2GjEOr5Knl92LKr+ABiJzSxn3
-	 52fFw6bq95uTw==
-From: Helge Deller <deller@kernel.org>
-To: linux-parisc@vger.kernel.org
-Subject: [PATCH v2] parisc: Increase kernel stack size to 32kb
-Date: Mon, 21 Sep 2026 22:21:10 +0200
-Message-ID: <20260921202122.3102-1-deller@kernel.org>
-X-Mailer: git-send-email 2.54.0
+	s=k20260515; t=1790028416;
+	bh=Z25CwFYjwp770QGzsu5N6PzvULSR9SKzrkog69fab/E=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=a7KnewJbguPGVj774EEf1Q4AeAULQd63mDxhPqFk20yPYExLbRvH/LrAMkKXYi7EY
+	 7TSOQ9KflW8AgCM45c6dJmbqMrJyqIaXc/fnMEnBVKZbmDyOESIQTDSK+VrC1fcNkq
+	 +O1TFQygop/3mOBziM9iQ62txTjCQpZBC3u3EzhMymlvpwoZ/f2LpI0hX7UGue52GD
+	 CIbbtiC4U3QUrymQ8fP3cfBfLx6U3CFRIEkG7aJiIcZBfpoIttog/qsJLIF8V8juJR
+	 NpFklnyRZ3xTdNmf8uuSIYiqyt+9wQlmGHIgNn0yQ7AEWGTp0slsSWfvX6MFNkFe8W
+	 vmRRgyt4Jg60w==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 568E639D237B;
+	Mon, 21 Sep 2026 21:50:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -38,48 +37,47 @@ List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/2] bpf,
+ parisc: Add support for BPF_SDIV and BPF_SMOD in the parisc JITs
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <179002740489.3252619.2335577267163458285.git-patchwork-notify@kernel.org>
+Date: Mon, 21 Sep 2026 21:50:04 +0000
+References: <20260915022905.1535566-1-main.kalliope@gmail.com>
+In-Reply-To: <20260915022905.1535566-1-main.kalliope@gmail.com>
+To: Nicholas Dudar <main.kalliope@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ eddyz87@gmail.com, memxor@gmail.com, James.Bottomley@HansenPartnership.com,
+ deller@gmx.de, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, jolsa@kernel.org, emil@etsalapatis.com,
+ ihor.solodrai@linux.dev, bpf@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, visitorckw@gmail.com
 
-From: Helge Deller <deller@gmx.de>
+Hello:
 
-For 64-bit Linux kernels, increase the default kernel stack size
-(THREAD_SIZE_ORDER) to 32 kB, in order to avoid kernel crashes which have been
-triggered recently when building the debian vtk9 package with gcc 17:
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-stackcheck: kworker/u128:0 will most likely overflow kernel stack (sp:179a83af0, stk bottom-top:179a80000-179a84000)
-Kernel panic - not syncing: low stack detected by irq handler - check messages
-CPU: 2 UID: 0 PID: 30760 Comm: kworker/u128:0 Tainted: G W 6.18.46-dirty #1 NONE
-Tainted: [W]=WARN
-Hardware name: 9000/800/rp3440
-Workqueue: writeback wb_workfn (flush-259:0)
-Backtrace:
- [<000000004022f050>] show_stack+0x70/0x90
- [<000000004022378c>] dump_stack_lvl+0x124/0x190
- [<000000004022382c>] dump_stack+0x34/0x48
- [<000000004020212c>] vpanic+0x204/0x648
- [<00000000402025c4>] panic+0x54/0x58
- [<0000000040232230>] do_cpu_irq_mask+0x3f8/0x440
- [<0000000040227070>] intr_return+0x0/0xc
+On Mon, 14 Sep 2026 22:29:03 -0400 you wrote:
+> The parisc BPF JITs emit unsigned divide and remainder for signed
+> BPF_DIV and BPF_MOD (off == 1), so neither implements signed BPF_SDIV
+> and BPF_SMOD. Negative operands therefore produce unsigned results.
+> 
+> Patch 1 adds signed support to the parisc64 JIT and shared signed
+> 64-bit helpers. Patch 2 adds support to the parisc32 JIT, using those
+> helpers for ALU64 and the signed millicode routines for ALU32.
+> 
+> [...]
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Reported-by: John David Anglin <dave.anglin@bell.net>
-Cc: stable@vger.kernel.org # v6.18+
----
- arch/parisc/include/asm/thread_info.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here is the summary with links:
+  - [bpf-next,v2,1/2] bpf, parisc: Add support for BPF_SDIV and BPF_SMOD in the parisc64 JIT
+    https://git.kernel.org/bpf/bpf-next/c/32a7b17bc8e7
+  - [bpf-next,v2,2/2] bpf, parisc: Add support for BPF_SDIV and BPF_SMOD in the parisc32 JIT
+    https://git.kernel.org/bpf/bpf-next/c/dbda00ac6f0a
 
-diff --git a/arch/parisc/include/asm/thread_info.h b/arch/parisc/include/asm/thread_info.h
-index b283738bb6da..249370706242 100644
---- a/arch/parisc/include/asm/thread_info.h
-+++ b/arch/parisc/include/asm/thread_info.h
-@@ -24,7 +24,7 @@ struct thread_info {
- 
- /* thread information allocation */
- 
--#ifdef CONFIG_IRQSTACKS
-+#if defined(CONFIG_IRQSTACKS) && !defined(CONFIG_64BIT)
- #define THREAD_SIZE_ORDER	2 /* PA-RISC requires at least 16k stack */
- #else
- #define THREAD_SIZE_ORDER	3 /* PA-RISC requires at least 32k stack */
+You are awesome, thank you!
 -- 
-2.54.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
