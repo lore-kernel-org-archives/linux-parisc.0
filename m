@@ -1,111 +1,74 @@
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B9A94A2058;
-	Wed, 23 Sep 2026 14:20:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2046377AAD;
+	Wed, 23 Sep 2026 14:33:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790173238; cv=none; b=rpvvVoiuSVJPjY6hQ+aYLE0gVp5rmhG0fJk8Ex6oR9SU6/w9HB4eK4FEzJE1ktA4/jODKy3WicVB8TGaIyX84+fqDDg0yNY10kNxFF46OMc3yvFodnknoJ15VXukVu86RLjrvkXVFyXenpXvifwRY+AhjYbWDigBZ0AmZOT+1qU=
+	t=1790173984; cv=none; b=W2HaID4uLJTsETeWLnvtwr4PDrOd7q4+e+rB78RjRA+KA153uZJ5jDuik7whBFcCvzQb3fypnv50ym+Lm2TMiNo8aW0pj0gkxYmflVCY6aDVTZZZCmc4STDcGp51LaTC1GMLkH3QR6S1ey83yIU9YyNBH/7H6QM/Lj0ZSi4tdGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790173238; c=relaxed/simple;
-	bh=yZlZW0o9M7tWhbJVi4HlLGBka0QiOAMHmIX/t/c4r9Y=;
+	s=arc-20240116; t=1790173984; c=relaxed/simple;
+	bh=9ofp4hNr70z2lyv3ooh2c6m/rwRRgcegg3VMXAMXFDg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ijSGelvSeSwveARN6mVxt6oo8Ko4UGnO7G4I/FDjrB+mHeNZ1LFR+szvwxPAvnhyzJaBptomwNX60JDuukfsQGNzyR4UUc7gEn4kSuaI7+pF0AWYSokaxANKcyEmIsqcLCCVFIjhfjtLqr0S6BHf/3Ab/rI7GOKq2gzZwgXoySw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ayo5EVps; arc=none smtp.client-ip=148.163.156.1
+	 Content-Type:Content-Disposition:In-Reply-To; b=FJsX3doeM/mdm+Er5tc8qB7CRQRocS49Q444QQXUlU8iPoRy8Muac3QxNGi0KAcXGi02xfchpqQeXGMULgsYipFHhpcBMNOBMzmOb/uGqA9GuyC35jwPohKOQH/AoF3kUvD46b3AoplAoEXxZ/Y5zkdFDJhKYP+jBLGAJWoZpZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Qo88Uxoh; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ayo5EVps"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Qo88Uxoh"
 Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 68N8Zw1U1031879;
-	Wed, 23 Sep 2026 14:19:11 GMT
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 68N8Zoov1031364;
+	Wed, 23 Sep 2026 14:32:55 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=2QrGt4Pc68eDNguGqvx9OXhAmFpd9e
-	Q/n73e2TGYr7Y=; b=Ayo5EVpsou0Bg5ugqBjm1S51XWE2MeL2ndK2c3GelXo1lK
-	5hqPlah33xvQY5TiqA2OfPyJI1ZfTumV1sglYPdZ7J+lNyzWArp/be+tEWybqdm3
-	7Ve5yTDM8a3+Wg9738uiD6xhWxhhylckW5ZqezRi8Cc9Q5AEunEWV7aQhM7NO27B
-	Okbrx6sv1HOopcrolJiHRaZ338lgyLIYvzb9FxdGj5pvFeSaKMzAE4F41qbtjSQq
-	AV2hzyIV7EIC4N8FA7xw5n0/wfnzR+ZzBswzL4IaeXJmPTTJzIuRCesqj3zRD8qt
-	+Z1j6e4HHxla/ubKARuqvWe/47TX0HQ0l8xHnmJQ==
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4gske1useb-1
+	:references:subject:to; s=pp1; bh=dTLEWXxZ3/GILPnEIAr1GlznsBvHRZ
+	fvHZ70H1KLoLk=; b=Qo88UxohcNN8SpbSKUBr5cDAuLy9wsUReWb22/yAD3VEna
+	iaQcJhiJ3ARz3qC3Bza2bqx5LDMDY3fqjzGg0Y1Yx2giTnCYKV6/Cyu2YcD27Lb8
+	7RH7xqSNuxuGmHMviyp3364SThNgSF6jUNmX098C6rfX20Qf3os2ILUO4Vgou2xl
+	v7Wr2ATjzrYx1vDks3x+OSDJZPaJUXVM7pndrciNEZxmioJ7ayTFXMhN5SKtw07u
+	948FpPzhD5Qot2aHLbq4T9CRmW9/W2c9sVRB2ECc3RENETXjqNal/kUkXqN/kr9d
+	9mQLELOmeQ8FjtGJvU0+1CraPYger0G5Sdmm1Zgw==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4gske1uv8k-1
 	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Wed, 23 Sep 2026 14:19:11 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id 68NCp1Qt007936;
-	Wed, 23 Sep 2026 14:19:10 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4gvbt2s7yt-1
+	Wed, 23 Sep 2026 14:32:54 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id 68NCLiiQ008504;
+	Wed, 23 Sep 2026 14:32:53 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4gvb8jse13-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 23 Sep 2026 14:19:10 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 68NEJ8X148628044
+	Wed, 23 Sep 2026 14:32:53 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 68NEWntm16384288
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 23 Sep 2026 14:19:08 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1776520040;
-	Wed, 23 Sep 2026 14:19:08 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5C68F20043;
-	Wed, 23 Sep 2026 14:19:07 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.224.92.206])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 23 Sep 2026 14:19:07 +0000 (GMT)
-Date: Wed, 23 Sep 2026 16:19:06 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Muhammad Usama Anjum <usama.anjum@arm.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tursulin@ursulin.net>,
-        David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Oscar Salvador <osalvador@suse.de>,
+	Wed, 23 Sep 2026 14:32:49 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9913020049;
+	Wed, 23 Sep 2026 14:32:49 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 28D3220040;
+	Wed, 23 Sep 2026 14:32:49 +0000 (GMT)
+Received: from osiris (unknown [9.111.16.152])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 23 Sep 2026 14:32:49 +0000 (GMT)
+Date: Wed, 23 Sep 2026 16:32:47 +0200
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-mm@kvack.org, David Hildenbrand <david@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Liam R. Howlett" <liam@infradead.org>,
-        Lorenzo Stoakes <ljs@kernel.org>, Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-        Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        David Hildenbrand <david@kernel.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>, SJ Park <sj@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Jan Kara <jack@suse.cz>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@gentwo.org>, Mike Rapoport <rppt@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, ziy@nvidia.com, pfalcato@suse.de,
-        ryan.roberts@arm.com, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, damon@lists.linux.dev
-Subject: Re: [PATCH v2 0/8] mm: distinguish PTE table storage from PTE values
-Message-ID: <5a0c73a1-6875-49fc-8f85-28808cd6be19-agordeev@linux.ibm.com>
-References: <20260903103002.1091859-1-usama.anjum@arm.com>
- <1401e907-04ff-4ee5-ad03-00d88531a091-agordeev@linux.ibm.com>
- <e4bf62ca-886e-429b-a268-3c0ef7903bc8@arm.com>
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+        Helge Deller <deller@gmx.de>, loongarch@lists.linux.dev,
+        linux-s390@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] s390/mm: Drop all pxdp_get()
+Message-ID: <20260923143247.9636Cf1-hca@linux.ibm.com>
+References: <20260923043226.331880-1-anshuman.khandual@arm.com>
+ <20260923043226.331880-2-anshuman.khandual@arm.com>
+ <20260923091629.9636A36-hca@linux.ibm.com>
+ <echvqvjj435meeh6gcrqewysdqbtkrsgayvsyfcr3q6h3bh7fn@hsa7xh22l4rj>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -114,26 +77,27 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e4bf62ca-886e-429b-a268-3c0ef7903bc8@arm.com>
+In-Reply-To: <echvqvjj435meeh6gcrqewysdqbtkrsgayvsyfcr3q6h3bh7fn@hsa7xh22l4rj>
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jvicsneNpoTmGgGlWjYDZudGR7T2so9J
-X-Authority-Analysis: v=2.4 cv=EOCTQFZC c=1 sm=1 tr=0 ts=6ab3dfdf cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-ORIG-GUID: pB-ITqb9sOi216kpDP6qFr_AkUfA0YiO
+X-Authority-Analysis: v=2.4 cv=EOCTQFZC c=1 sm=1 tr=0 ts=6ab3e316 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
  a=kj9zAlcOel0A:10 a=VdqzKS8jKosA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=m85HiHUexkU1pPaUjCgA:9
+ a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=s6_hAop9O4wJoUa2jvYA:9
  a=CjuIK1q_8ugA:10
-X-Proofpoint-Spam-Info: AW1haW4tMjYwOTIzMDA1NiBTYWx0ZWRfX9B/05+SWggVO
- 7agvUqd8dhoypg0FPuJExRBm8O+PxCJzpiY8LotmGeU/DhT6/xu2/Uj3hl/SR7hiQoNSed7OI9+
- TYVYgcC+u3rRF7SNRXDHxINKwsUMnTo=
-X-Proofpoint-GUID: jvicsneNpoTmGgGlWjYDZudGR7T2so9J
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTIzMDA1NiBTYWx0ZWRfX4HZcFdO5tIXY
- snGn2A3Db+S3OG1OjdgVbfGZEGUTHcIaKBobABDkMlLHsfwV9fFr8s4ZCTnpAdQPz9gYCpcRvNL
- meevVhPsIY2xb+UjLfiuVZTJR5I9Zgb+lOAD2ZqjDqXobpTi1VgByCxa+Ljb1FmoZoT62x64nIQ
- fdbmdyOp5uOBulJ9CpL0SOdFeWBnq23WXXdkmA4qDJBSelEfQbx6eUpb5+qNjYHhR6WCsLgthO5
- OBtuzT2aI8D749f3QJiK8fKsdS96je+rKxtHth8BGDr1UF7hBJcUQiLfUmB5WMY7DowN0JvY/Jx
- 4rIY70z4mFoa/Tic/6RAu9AhrTMaPpFzTTPwaqBT8FJxQwKV98aap20VP54g4vtUBeIGWlNiLHY
- vnukgu+KUPBn3PwkU+WliZg6ZldU5ChvdsqyiDG96cfqv7YaCvZMLzqxSd3YW2i1WLbfmVoGiqY
- oe0K7aX7lcrg4NwlsCQ==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwOTIzMDA1NiBTYWx0ZWRfX22wASEXzLiou
+ PfFsvMfHjLR3w9yAsIv0VoV1k3rQ1tg1VGpyHFdoCSG77Z4UvPhFSm4mrr3cFl+H5R/R3beTz47
+ rGtl+Y6RwJokrmDgrV2vhG9hrs2x4lI=
+X-Proofpoint-GUID: wKSs8eQ0tSZ4i-GNyRYMRcD2K4LE2JQz
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTIzMDA1NiBTYWx0ZWRfXwHPABW50L+fB
+ IloTBWxVRpe3zLFf6xTiqsudch9JpP0gjXsS4DmzoU/vzgS4sgktPxavXKEfcdW8kC7+6nhhNo0
+ +ry4ndBZtugMek7C7B9frVH+AWPJcbCrAxzGdQl3Jyc5yxA6x2UhotqdvLyFzBr4VACaFOy1I8c
+ Lxo46K1swYjr84QTmBRS23JSimQbO3FRlkEQAhanoWdL6LlrPUfg8oLM63o0TwU714EM+D5Y/ZE
+ +Sin01SfRk6lvimzFutahVWSPeOECK2DnDfIX0mcx+i7unp47bpzcHK9JuNNcgxVVNq8Z7C+7IA
+ Yj7wDw07WYlMCiuH4BDtliirABQ5Nkou11UoHxnH51CyrimCAS+nYS8cTtx7TAhRPeRuCho2tah
+ JenhoBlym3Gro7kuMLcmkKAtppeSJ0VRp2PCMG0bXWI+NE03hKMTQdMHRmpGLKw5NialfhVw56n
+ Vj0Qi3gQIrmLdBUVP9w==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
  definitions=2026-09-23_04,2026-09-21_02,2025-10-01_01
@@ -143,18 +107,29 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2609040000 definitions=main-2609230056
 
-On Wed, Sep 23, 2026 at 02:47:08PM +0100, Muhammad Usama Anjum wrote:
-> > However, is there a particular reason this series is against mm-new?
-> > Should it be against the master, it would be easier for me to try it in our CI.
+On Wed, Sep 23, 2026 at 05:42:00PM +0530, Anshuman Khandual wrote:
+> On Wed, Sep 23, 2026 at 11:16:29AM +0200, Heiko Carstens wrote:
+> > On Wed, Sep 23, 2026 at 10:02:20AM +0530, Anshuman Khandual wrote:
+> > > +static inline pte_t ptep_get(const pte_t *ptep);
+> > > +static inline pud_t pudp_get(const pud_t *pudp);
+> > > +static inline p4d_t p4dp_get(const p4d_t *p4dp);
+> > > +static inline pgd_t pgdp_get(const pgd_t *pgdp);
+...
+> > > -#define ptep_get ptep_get
+> > > -static inline pte_t ptep_get(pte_t *ptep)
+> > > -{
+> > > -	return READ_ONCE(*ptep);
+> > > -}
+> > 
+> > As reported by Sashiko, this results in a compile error due to conflicting
+> > types; but I don't see too much value with this patch if a forward declaration
+> > of the common code implementation needs to be added instead. Looks like s390
+> > would be the only architecture which would have that.
 > 
-> I think, mm-new is the branch in which this series would be picked up. This is
-> why its based on that. Are you referring to mm/master?
+> We could move pxdp_get() caller functions from this header inside C files
+> like other platform changes proposed here. Would that be better instead ?
 
-No, to the Linus master.
-I will try to backport it and give it a try.
+That would make pud_clear() & friends real functions calls instead of being
+inlined. Function calls are more expensive, so I would like to avoid that.
 
-> -- 
-> Thanks,
-> Usama
-
-Thanks!
+I would prefer to drop this patch.
