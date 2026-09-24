@@ -1,63 +1,82 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D318B3B895A;
-	Wed, 23 Sep 2026 22:31:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8373BADA9;
+	Thu, 24 Sep 2026 02:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790202674; cv=none; b=VeafcdHTNj9/MooHSrSb0ykMRvoOhdSFWqfoMYsiyzG1TFJe0ZYtjWxOnqtOX9ipfhpm4rKkyp3Yf/jl0I0Mmjf322fnv+72UJxcKmVuSTAxPXKScXuKv3SJzD2fvdO3hcM5Nqn5hFvAacXjKR5xXrue+JIuuF4jwQhBN2jWTPo=
+	t=1790217445; cv=none; b=PpDVGxOSvjyTKaQZq35NwCPt1GufkkoK1Xpe4xe3t7hF/2CzvO854ol/R26wRE6DQHct8HzgLYQhmtG9+3oVJD6+Ng8syMAhzzDGQjPvmxCXYMajdsViUCY1lBf4xp65Q1en10GBZ+le1O7Bakm30T99fx6WhuYfYAK1X5kKeKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790202674; c=relaxed/simple;
-	bh=w7XfjU9UnIxLGFJJlSAtKQj5p4cHkRASZDMPWhJgZmE=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=WrBuZClA6707lURH+B9GiTqt2naBgX/6elULzmIrt3JKyvNTmd7JPmasEGJhOjLh8YmkuKLpfkkimHjzlca3dKgDBxayfGnEdScF4qymWJX7kNhyehkCN4XtPAQdaHC/rVOEyeOBU2cNT2x00CIhs6BTs1dSuRHF/Mxx5sJiCKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gJl0KE7i; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790217445; c=relaxed/simple;
+	bh=GiKDHzPpFLpGJ+NyI2Fn3PGxG+LBOmciezdoBuMh62s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tv8TajReBCa0RSThuuLp9XKxqA06J8hD1ofcw9/AyJhMloHT3mOID6KD1FtJW9OKeUvKNvWG1Iab+3PRAwoPnTXTRlmYhaFqKC0ILVlyLkH7L39ljRqjMxP7cYNc4OpZaqhH72R5LRuu/BLm2IXmnRep2O5Hp3J1nTZyzgn0gk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=JdwQyTYy; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gJl0KE7i"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20F201F000FF;
-	Wed, 23 Sep 2026 22:31:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790202673;
-	bh=Z1gFQFsVERABFG9WhtIQJgkmxjNq/ASJj/MHbTXisW8=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc;
-	b=gJl0KE7iMVJQfW7Oxx91VW5K7jtOMu+0tFPyeqtBuv4qvxucXn6WBirVbYtAL3moa
-	 3tlSMvyv484iee0gXOTDaaXFxD/wcNVM01wba1pcH62zBVSiS0DX5wtwc2SzxLz+q6
-	 MMkhYUxcLRsqsu3UIlK9OSu951Eo36aLBO574Xi+4v4x3L4yXUhd/0yO4YVETPtRY/
-	 lutw1O0cG+rj3axGzvL+W/LCenWBztZp0z9AS9ity4rR9yrSItP5awj2mmgQmiWAhT
-	 QYcrp6LtuGA/5PyzqQxqxUXbceNBO/uozs8O3DbKBxsdF+ZbrnyKtxTzv0wAKlymLz
-	 IUIBQPHWG2psg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 198D939E8A7F;
-	Wed, 23 Sep 2026 22:30:04 +0000 (UTC)
-Subject: Re: [GIT PULL] parisc architecture fixes for v7.3-rc5
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <arQ_8PdL1PPCVXh_@p100>
-References: <arQ_8PdL1PPCVXh_@p100>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <arQ_8PdL1PPCVXh_@p100>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-7.3-rc5
-X-PR-Tracked-Commit-Id: 94b7e3a7e871ae27d4935c76959dfc61829f27f9
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 62f4c998b297cf233997a2b4cd6fc2d2df0319c9
-Message-Id: <179020260281.732882.12624055437465903504.pr-tracker-bot@kernel.org>
-Date: Wed, 23 Sep 2026 22:30:02 +0000
-To: Helge Deller <deller@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, John David Anglin <dave.anglin@bell.net>
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="JdwQyTYy"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BFC8152B;
+	Wed, 23 Sep 2026 19:37:16 -0700 (PDT)
+Received: from localhost (a085714.arm.com [10.164.19.28])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5029B3F632;
+	Wed, 23 Sep 2026 19:37:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1790217440; bh=GiKDHzPpFLpGJ+NyI2Fn3PGxG+LBOmciezdoBuMh62s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JdwQyTYyCLq2dAuQ3V7VCWTu7ZEUpTZ5e32h5cPG3Zz1eFNKdLIfN2dBRnFOvwzm5
+	 rVWcH6DnePga5DgN3Bo9/TWjlLCe275AZ9dIPbh6NN7n6gwtT2c5DnIbABUnJVjQQD
+	 OCsyLaai6eUN0qCz9hghvtEi1pBzfk6yIuiOFGYk=
+Date: Thu, 24 Sep 2026 08:07:16 +0530
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: linux-mm@kvack.org, David Hildenbrand <david@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>, Helge Deller <deller@gmx.de>, loongarch@lists.linux.dev, 
+	linux-s390@vger.kernel.org, linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] s390/mm: Drop all pxdp_get()
+Message-ID: <scg5ftqczjhpoa4k3htrm7bzdf6rbxrk3dtwvgdfzg537is5dk@hykspk4yq2en>
+References: <20260923043226.331880-1-anshuman.khandual@arm.com>
+ <20260923043226.331880-2-anshuman.khandual@arm.com>
+ <20260923091629.9636A36-hca@linux.ibm.com>
+ <echvqvjj435meeh6gcrqewysdqbtkrsgayvsyfcr3q6h3bh7fn@hsa7xh22l4rj>
+ <20260923143247.9636Cf1-hca@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260923143247.9636Cf1-hca@linux.ibm.com>
 
-The pull request you sent on Wed, 23 Sep 2026 23:09:04 +0200:
+On Wed, Sep 23, 2026 at 04:32:47PM +0200, Heiko Carstens wrote:
+> On Wed, Sep 23, 2026 at 05:42:00PM +0530, Anshuman Khandual wrote:
+> > On Wed, Sep 23, 2026 at 11:16:29AM +0200, Heiko Carstens wrote:
+> > > On Wed, Sep 23, 2026 at 10:02:20AM +0530, Anshuman Khandual wrote:
+> > > > +static inline pte_t ptep_get(const pte_t *ptep);
+> > > > +static inline pud_t pudp_get(const pud_t *pudp);
+> > > > +static inline p4d_t p4dp_get(const p4d_t *p4dp);
+> > > > +static inline pgd_t pgdp_get(const pgd_t *pgdp);
+> ...
+> > > > -#define ptep_get ptep_get
+> > > > -static inline pte_t ptep_get(pte_t *ptep)
+> > > > -{
+> > > > -	return READ_ONCE(*ptep);
+> > > > -}
+> > > 
+> > > As reported by Sashiko, this results in a compile error due to conflicting
+> > > types; but I don't see too much value with this patch if a forward declaration
+> > > of the common code implementation needs to be added instead. Looks like s390
+> > > would be the only architecture which would have that.
+> > 
+> > We could move pxdp_get() caller functions from this header inside C files
+> > like other platform changes proposed here. Would that be better instead ?
+> 
+> That would make pud_clear() & friends real functions calls instead of being
+> inlined. Function calls are more expensive, so I would like to avoid that.
+> 
+> I would prefer to drop this patch.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-7.3-rc5
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/62f4c998b297cf233997a2b4cd6fc2d2df0319c9
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Alright, thanks for your review.
