@@ -1,267 +1,334 @@
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F4E44AB97;
-	Fri, 25 Sep 2026 11:43:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C63443E2D;
+	Fri, 25 Sep 2026 20:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790336610; cv=none; b=kZJaY2ZYQrsWaIvauydyx61yZnU+OPIvRXxN8CsDiWeK4boZgezq5chA6h+oNFTRwN/YyrbXPQQ2oWZ2eb//bY9LvOT/4R4EAsquv1OOPnL5AkqiJMyNpvbw7XYXYogIPycuZBoQODT0skxRsxJlhmUbivB8v3T4hAe7fzQRWIo=
+	t=1790367028; cv=none; b=fJYcmKTk7jCP3sUezmmBflx+0ODtEWkU+MpQygVWuTUDjbD+iJu6CVX1XzJgSRr5aRJGHNZbmtxuZssW8oQavucSi1FS5mL96+jEwBsvBUTevHPevqmcOeXsOQVnBf9umoFt9CBfaLgFimOm4lJmgMUH91PnYArb4ybL0wzP/9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790336610; c=relaxed/simple;
-	bh=rfVq31cP2YSbDAGF6XUIrjIv9+n8hE00DYqthoHMGoo=;
-	h=From:Subject:Date:Message-Id:MIME-Version:To:Cc:Content-Type:
-	 References; b=pkmZ9fFKkRNu/k23SRerqbLhT+dKdAq33xkcZBJINDrnc0Drx4NXmck++t4SESQeXXcifeJ3UJ7oFF14IqGf+gCPKayujeUomdl5vmvyaxHT1LXDXbYcTsDGdNNneKam+0nP6YsLr9VtwPw4beywaDhJTulGjf/v0CwsSe08smg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=SD8t4TBS; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+	s=arc-20240116; t=1790367028; c=relaxed/simple;
+	bh=IwHL+gGhq7mbp81GXRrzD1tZw+JpDoikNpXoqfAEqUg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=qMSUzQzVJeECAQIgML2oknhq3WSawMDftxQJPedh4vbVPFDJ4VEzry3OEaHZj2T9zekeue2lfObgZHrIme9WU7WRfWfqJoJuRpY6ADKiP1M5ygcSm9HmlVUPNIL2TPLVgHXlOpkuXxSDukpIvsh91C0hmZoRLAKjQLz6zvOT8d4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bbFAznLC; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="SD8t4TBS"
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20260925113451euoutp01cc47361ba05fcc9fcb3b693e8e3a2d45~YjTBvQ5e43035330353euoutp01t;
-	Fri, 25 Sep 2026 11:34:51 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20260925113451euoutp01cc47361ba05fcc9fcb3b693e8e3a2d45~YjTBvQ5e43035330353euoutp01t
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1790336091;
-	bh=+Oczzkl+ZPxzE8AFJwStgEnhU0TPYb/al4158VyjdKo=;
-	h=From:Subject:Date:To:Cc:References:From;
-	b=SD8t4TBS4zLynMpoJ+XZO5G7obvN2+9pjLb3nh5+FgWwcA40u9Y78IEGJ2rQ+0LXM
-	 iqZbOlJt5wElT8Ubuw0ShuJdSbQpAfam6aezbkmehoWybA9pxvVkq9g/3n5eufu/x0
-	 wFGDKiTBtjc9yrWXe/HL6N2CH3OxHI6iigZnAz2o=
-Received: from eusmtip2.samsung.com (unknown [203.254.199.222]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20260925113450eucas1p2fcf838f00f35e1bce0ca04a694cd0cd2~YjTBUNGyK1156811568eucas1p2k;
-	Fri, 25 Sep 2026 11:34:50 +0000 (GMT)
-Received: from AMDC4942.eu.corp.samsungelectronics.net (unknown
-	[106.210.136.40]) by eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20260925113448eusmtip2654acd08b88fee7c049616f2c0eed0d2~YjS-y0y__2286422864eusmtip2B;
-	Fri, 25 Sep 2026 11:34:48 +0000 (GMT)
-From: Michal Wilczynski <m.wilczynski@samsung.com>
-Subject: [PATCH RFC 0/9] lib/lz4: stop forking upstream LZ4, vendor it
- instead
-Date: Fri, 25 Sep 2026 13:27:30 +0200
-Message-Id: <20260925-lz4-vendor-upstream-v1-0-1c7ffbe21c4b@samsung.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bbFAznLC"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C36621F000FF;
+	Fri, 25 Sep 2026 20:09:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790367005;
+	bh=Yf1gqZywkOXToshDhJWRxPyIwRuJ1sOWbNbWLeQRwh0=;
+	h=From:Subject:Date:To:Cc;
+	b=bbFAznLC6/ZtUIxVhCluWB/j0yFpBiuWNLNJymRhr2bPbGWnWHQ716ymvalB5EJSi
+	 prnFLZtfOQ3rZdWXjAozyC5Lpovr1k8FfiOhJ4b+APef41PfCG3fCl8bjzPCrMEktu
+	 fx4USFfCGWBdKvMZttQUYjqnfNhXLn0LxRrjjYU/9ViwEOvqW/g0K9K9UPvZ2QMrbT
+	 Mr5715uFuRKs9Erlv4YRtXRjaWt51g96bu3pSlOaSl3lk2lVpJGlkFXaXLgnAd4RFT
+	 SzgvMuGps3b+k4dDQIIM210j/mry+b2LM2z711t9KAGCjgkaK8WG2GMkjLt9j8Vtxa
+	 h3E1vGIUbbkEA==
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+Subject: [PATCH v5 00/12] mm: make userland page table freeing RCU-safe
+Date: Fri, 25 Sep 2026 21:09:35 +0100
+Message-Id: <20260925-rcu-pagetable-freeing-v5-0-31e91065fea4@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAKJatmoC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
-	vPSU3UzU4B8JSMDIzMDSwMT3ZwqE92y1LyU/CLd0oLikqLUxFxdk6RkI6CCFIO0tGQloM6CotS
-	0zAqwqdFKQW7OSrG1tQAwfPrdagAAAA==
-X-Change-ID: 20260904-lz4-vendor-upstream-4bc2202d0ffc
-To: Michal Wilczynski <m.wilczynski@samsung.com>,  Nathan Chancellor
-	<nathan@kernel.org>,  Nick Desaulniers <ndesaulniers@google.com>,  Bill
-	Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,  Russell
-	King <linux@armlinux.org.uk>,  Thomas Bogendoerfer
-	<tsbogend@alpha.franken.de>,  "James E.J. Bottomley"
-	<James.Bottomley@HansenPartnership.com>,  Helge Deller <deller@gmx.de>,
-	Heiko Carstens <hca@linux.ibm.com>,  Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>,  Christian Borntraeger
-	<borntraeger@linux.ibm.com>,  Sven Schnelle <svens@linux.ibm.com>, Thomas
-	Gleixner <tglx@kernel.org>,  Ingo Molnar <mingo@redhat.com>, Borislav Petkov
-	<bp@alien8.de>,  Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Minchan Kim <minchan@kernel.org>,  Sergey
-	Senozhatsky <senozhatsky@chromium.org>, Jens Axboe <axboe@kernel.dk>, 
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, 
-	linux-block@vger.kernel.org, Yann Collet <yann.collet.73@gmail.com>,  Nick
-	Terrell <terrelln@meta.com>, Gao Xiang <xiang@kernel.org>,  Chao Yu
-	<chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,  Herbert Xu
-	<herbert@gondor.apana.org.au>,  Phillip Lougher <phillip@squashfs.org.uk>,
-	Sungguk <sungguk.na@samsung.com>,  Jaehoon Chung <jh80.chung@samsung.com>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, linux-erofs@lists.ozlabs.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org
-X-Mailer: b4 0.15-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8607;
-	i=m.wilczynski@samsung.com; h=from:subject:message-id;
-	bh=rfVq31cP2YSbDAGF6XUIrjIv9+n8hE00DYqthoHMGoo=;
-	b=owEBbQGS/pANAwAKASw99I2nQptuAcsmYgBqtlxPvYGoEOWx8z6fD2Wm9AY/MPYvOQ/+J3tI2
-	JWI5pSAVTOJATMEAAEKAB0WIQR2xBTdTO5XfoUTSOYsPfSNp0KbbgUCarZcTwAKCRAsPfSNp0Kb
-	bokBB/4lhWKPyvHooP1nezrGPjCk/0xH1ec9m/tifVEV6KSuIzwgPylAi6HyP0FPrxcod9B6Rin
-	nS7s5B97LD/FZKmx0ukSpNpkL1IQmR+a3oleVjGd5W5qgqDav/c58w09MCpiR9bOv6sqZAgl/IR
-	HOfZicvcks74I2CBq7m1Zl7XxqSXamBk3X2XUgh0Kv7WGsvjw28USiDphcDL3wjPgRuglooM0iG
-	2trbPsvCyfSAN44iVpPvCS8E5IB8tedPRQPbct0UezB8wVDLNUHXlx9I0yGUWnUioiekpCt2x4W
-	hDyc+KcdDvgQV7Dj4aVeBrECkXOcSES/T8yQ3wvcoVErAwCb
-X-Developer-Key: i=m.wilczynski@samsung.com; a=openpgp;
-	fpr=76C414DD4CEE577E851348E62C3DF48DA7429B6E
-X-CMS-MailID: 20260925113450eucas1p2fcf838f00f35e1bce0ca04a694cd0cd2
-X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20260925113450eucas1p2fcf838f00f35e1bce0ca04a694cd0cd2
-X-EPHeader: CA
-X-CMS-RootMailID: 20260925113450eucas1p2fcf838f00f35e1bce0ca04a694cd0cd2
-References: <CGME20260925113450eucas1p2fcf838f00f35e1bce0ca04a694cd0cd2@eucas1p2.samsung.com>
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/3XOQW7CMBAF0Ksgr2vkGTtmyop7oC5sMw5uUYLsE
+ LVCuXsd2AShLL/05/25i8I5cRH7zV1kHlNJfVdD87ER4ey6lmU61SxQoVWkQeZwk1fX8uD8hWX
+ MzKlrJRlvPZNWjErU22vmmH4f7vHrmcvNf3MYZmxunFMZ+vz3GB5h7j03PtXaxghSycY01hEEQ
+ sDDD+eOL9s+t2IeGXHJ0BqDlYFolbeGaUf8xugFA6vf6MrsPAWyoHR9540xCwZxjTGViQzuBBF
+ YK/3CTNP0DxRL+lGiAQAA
+X-Change-ID: 20260831-rcu-pagetable-freeing-84b6be830e20
+To: Andrew Morton <akpm@linux-foundation.org>, 
+ David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
+ Baolin Wang <baolin.wang@linux.alibaba.com>, 
+ "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, 
+ Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
+ Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
+ Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, 
+ Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Dinh Nguyen <dinguyen@kernel.org>, 
+ Simon Schuster <schuster.simon@siemens-energy.com>, 
+ Jonas Bonn <jonas@southpole.se>, 
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
+ Stafford Horne <shorne@gmail.com>, Rich Felker <dalias@libc.org>, 
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+ Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
+ Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
+ Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
+ Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+ Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Andreas Larsson <andreas@gaisler.com>, 
+ Richard Henderson <richard.henderson@linaro.org>, 
+ Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
+ Catalin Marinas <catalin.marinas@arm.com>, 
+ Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
+ WANG Xuerui <kernel@xen0n.name>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, 
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, 
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+ Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
+ Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+ Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+ John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, 
+ Yoshinori Sato <ysato@users.sourceforge.jp>, 
+ Shakeel Butt <shakeel.butt@linux.dev>, Jonathan Corbet <corbet@lwn.net>, 
+ Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+ linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
+ linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
+ linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, 
+ linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
+ linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+ linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
+ Qi Zheng <qi.zheng@linux.dev>, linux-doc@vger.kernel.org, 
+ "Lorenzo Stoakes (ARM)" <ljs@kernel.org>, 
+ Greg Ungerer <gerg@linux-m68k.org>
+X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9918; i=ljs@kernel.org;
+ h=from:subject:message-id; bh=IwHL+gGhq7mbp81GXRrzD1tZw+JpDoikNpXoqfAEqUg=;
+ b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLK2XWXuuNHfv3et0NIEW62XOhf3zFwUdmX+5SPFuhdfx
+ 5fXeVya3FHKwiDGxSArpsjy/Iv4/iCRsHmdF/zdYOawMoEMYeDiFICJOJkxMjx3uDp5ErPgnCa/
+ VcdXKLxRalwdXiX5+O28Z5d7UwqrvPgYGeYvYCgWfBOeN/1y3PMP2hNkuzvWWak/O3Tz9+ZJ/Fe
+ 0ZbkB
+X-Developer-Key: i=ljs@kernel.org; a=openpgp;
+ fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
 
-The in-kernel LZ4 is a fork. The decompressor was last synced with
-upstream v1.8.3 in 2018 and the compressor with v1.7.3 in 2017, both by
-hand. Upstream has made 488 commits against lib/ since, and the gap is
-maintained one cherry-pick at a time.
+The majority of architectures in the kernel defer page table freeing until
+an RCU grace period has elapsed, this series converts all remaining
+architectures to do so too and eliminates CONFIG_MMU_GATHER_RCU_TABLE_FREE
+altogether.
 
-That has left real bugs in place for example the forked
-LZ4_decompress_fast() has no bounds checks, so corrupted input runs off
-the output buffer in both directions. 
+This is important because it enables safe lockless page table walking under
+RCU alone.
 
-This series vendors the upstream sources unmodified and adapts them at
-build time, so a re-sync becomes a directory copy:
+Doing so allows for reduced lock contention, avoids lock ordering concerns
+and enables fast, efficient and correct page table walking as a result.
 
-  upstream/lz4.c, upstream/lz4.h    verbatim upstream sources
-  upstream/lz4hc.c, upstream/lz4hc.h
-  lz4_deps.h                        the build environment
-  lz4_kernel_api.h                  hands the LZ4 names back
-  freestanding/                     ISO C headers -nostdinc drops
-  lz4_compress.c                    the kernel's entry points
-  lz4_decompress.c
-  lz4hc_compress.c
+Additionally it removes a bunch of code and architecture-specific behaviour
+which is always a beneficial thing to do.
 
-Patch 1 imports the sources. Patch 2 backports the one upstream fix the
-kernel's warning flags require. Patch 3 adds the build environment.
-Patch 4 puts the freestanding headers on the pre-boot decompressor path.
-Patches 5-7 convert the compressor, HC compressor and decompressor in
-turn. Patch 8 folds away the last duplicated prototype list. Patch 9
-gives lib/lz4 a MAINTAINERS entry, which it has never had.
+There has been much recent work on this:
 
-The exported API changes in three ways.
+* In 2023 Hugh Dickins RCU-deferred khugepaged page table retraction in
+  commit 13cf577e6b66 ("mm/pgtable: add pte_free_defer() for pgtable as
+  page").
 
-The three stream types become incomplete. <linux/lz4.h> spelled out their
-layout for the fork's benefit, upstream headers define the same types and
-lib/decompress_unlz4.c ends up with both in one translation unit. Callers
-allocate LZ4_MEM_COMPRESS, LZ4HC_MEM_COMPRESS or LZ4_MEM_DECOMPRESS bytes
-instead of sizeof() every caller but zram already did. Each conversion
-patch makes its own type incomplete so no step leaves the tree broken.
+* Qi Zheng has done most of the work that made this possible starting with
+  the critical commit 718b13861d22 ("x86: mm: free page table pages by RCU
+  instead of semi RCU").
 
-Sixteen macros go with them: the hash geometry (LZ4_HASHLOG,
-LZ4_HASHTABLESIZE, LZ4_HASH_SIZE_U32, LZ4HC_DICTIONARY_LOGSIZE, LZ4HC_MAXD,
-LZ4HC_MAXD_MASK, LZ4HC_HASH_LOG, LZ4HC_HASHTABLESIZE, LZ4HC_HASH_MASK) and
-the sizes derived from it (LZ4_MEMORY_USAGE, LZ4_STREAMSIZE{,_U64},
-LZ4_STREAMHCSIZE{,_SIZET}, LZ4_STREAMDECODESIZE{,_U64}). They existed to
-lay out structures the fork defined here none has an in tree user outside
-lib/lz4. LZ4_compressBound() goes too a static inline whose only caller
-was lib/decompress_unlz4.c, now using the LZ4_COMPRESSBOUND() macro.
+* Qi then went on to convert a large number of architectures in commit
+  e3ecf7c7d082 ("mm: pgtable: convert some architectures to use
+  tlb_remove_ptdesc()"), commit 44b079583f7d ("alpha: mm: enable
+  MMU_GATHER_RCU_TABLE_FREE") and the series to which it belongs.
 
-LZ4_MEM_DECOMPRESS and LZ4HC_CLAMP_CLEVEL are new.
+* Qi then introduced the important CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE
+  option in commit 086498aed3f6 ("mm: convert __HAVE_ARCH_TLB_REMOVE_TABLE
+  to CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE config").
 
-There are some behaviour changes. All of them come from upstream rather
-than from this series and I have kept them rather than patching them
-out: a local fix on top of vendored sources is exactly the divergence
-this series exists to remove.
+* Finally, and critically, Lance Yang then converted the batch allocation
+  fallback case to be RCU-safe in commit 1fb3d8c20bfa ("mm/mmu_gather:
+  replace IPI with synchronize_rcu() when batch allocation fails").
 
- - LZ4HC levels 10 and up are clamped to 9. Upstream routes them to its
-   optimal parser, whose ~64K opt[] does not fit a kernel stack. The
-   fork had no optimal parser at all - level only scaled search depth -
-   so its levels 10-16 beat its own level 9 by 0.01%. Clamping rather
-   than rejecting keeps existing f2fs and zram settings working.
+The work I do here is only possible due to the work Hugh, Qi, Lance and
+others have done previously.
 
- - LZ4_decompress_fast() stops running off the output buffer.
-   Upstream routes it through LZ4_decompress_unsafe_generic(), which
-   bounds-checks. 
+An initial task this series addresses is to deposit a freshly allocated PTE
+page table and RCU-free the existing PTE page table. Not doing so is
+currently safe, but for page table walkers relying on RCU alone, it would
+not be.
 
- - LZ4_decompress_safe_partial() with a zero-length target returns 0
-   rather than -1, matching upstream since 725cb0aafdf7. No in-tree
-   caller passes zero.
+Additionally, it makes it possible to implement lockless RCU-only page
+table walkers which otherwise would have required the PTE PTL.
 
- - The compressors require wrkmem aligned to 8 bytes. Upstream checks
-   this and LZ4_initStream() returns NULL, which the stateless entry
-   points cannot report, so a misaligned buffer faults rather than
-   failing cleanly. Every in-tree caller uses kmalloc() or vmalloc() and
-   is already aligned; <linux/lz4.h> now documents the requirement.
-   Turning upstream's LZ4_ALIGN_TEST off would trade a loud failure for
-   a silent one.
+The changes are largely mechanical - the majority of arches already have
+the machinery required to support CONFIG_MMU_GATHER_RCU_TABLE_FREE and
+simply needed configuration changes or small implementation changes to
+switch over.
 
-The layout follows lib/zstd, which keeps upstream's sources in a
-subdirectory and the kernel glue on top. zstd has an upstream import
-tool and an upstream zstd_deps.h; LZ4 has neither, so the kernel glue
-here lives outside the vendored files.
+However some arches required extra attention - sh-X2, m68k-motorola and
+sparc32.
 
-The import is the v1.10.0 release tag. It does not build under
--Wmissing-prototypes without upstream commit 5ef1f16929b5, which patch 2
-backports; that is the only deviation from the tag. The decoder fixes
-in PR #1753 landed after v1.10.0 and do not backport cleanly; they will
-come with the next release.
+sh-X2 allocates PMDs from the slab allocator and PTEs as normal. Therefore
+CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE is set to customise page table freeing
+and the LSB is used to encode which page table level is used, with
+__tlb_remove_table() doing the right thing depending on this.
 
-checkpatch reports some 3500 errors against patch 1: upstream's coding
-style, and no SPDX tags, in files kept verbatim.
+This pattern is repeated for m68k-motorola and sparc32 to account for
+different page table levels. In each case, the page tables are aligned such
+that sufficient bits are available in each case for encoding this
+information.
 
-Measured in the kernel: three kernels differing only in lib/lz4, booted
-one core under KVM, each reading 1.3GB of kernel source from an LZ4
-erofs image with the page cache dropped before every pass. Median of 21
-passes. The middle column is upstream v1.10.0 with LZ4_FAST_DEC_LOOP=0,
-to separate the version bump from the decode loop upstream added in
-v1.9.0.
+m68k-motorola required the biggest change - since RCU page table freeing
+uses call_rcu(), this means page table freeing can arise from softirq
+context.
 
-                        erofs read, MB/s
-  erofs cluster    today   v1.10.0   + fast loop    net
-             4K     2363      2404          2630   +11%
-            64K     2788      2904          3168   +14%
+This was fixed with a BH-disabling spin lock used in both get_pointer_table()
+and free_pointer_table() (softirq being the only asynchronous context in which
+the lock is taken).
 
-The same three decoders at the library level, each block decompressed
-on its own the way zram treats a page. x86_64, the fork's and upstream's
-sources built with the kernel's code generation flags (so no SSE), all
-decoding the same compressed input, median of 21 interleaved runs. The
-first corpus is upstream's tests/datagen with a fixed seed, so it is
-byte-identical anywhere; the second is a tar of kernel sources:
+As part of this change, the logic for allocation of a new pointer table was
+separated out into add_pointer_table() to make the locking more obviously
+correct.
 
-                                 decompression, MB/s
-  corpus           block  ratio    today   v1.10.0  + fast loop   net
-  datagen -s0 -P60   4K  1.09x     4588      4702         5086   +11%
-                    16K  1.34x     3950      4016         4779   +21%
-                    64K  1.90x     4761      4866         5588   +17%
-                   256K  1.92x     6596      6714         7258   +10%
-  kernel source tar  4K  2.29x     3694      3830         4190   +13%
-                    16K  2.57x     3653      3842         4091   +12%
-                    64K  2.80x     3655      3818         4039   +11%
-                   256K  2.95x     4072      4231         4542   +12%
+Finally, sparc32 was similar to m68k-motorola in that locking was required,
+however this was already implemented via a spinlock, and only had to be
+updated to be IRQ-safe.
 
-The cost is size: lib/lz4 grows from 45K to 89K of text on x86_64,
-lz4hc most (12K to 39K). That is upstream code the fork never had, and
-the optimal parser the level clamp leaves unreachable is only 6K of it.
+Additionally, the nocache pool's bit_map lock was updated to be IRQ-safe
+for softirq frees.
 
+Separately, the PTE path can't take mm->page_table_lock from softirq (no mm
+there), which is fine because the page reference count transitions are
+atomic and fully ordered.
+
+The series finally removes CONFIG_MMU_GATHER_RCU_TABLE_FREE and all related
+configurations and code that supported !CONFIG_MMU_GATHER_RCU_TABLE_FREE.
+
+As a result, page table walks can now be performed safely under RCU without
+any risk of page tables being freed underneath a walker.
+
+However, this is the only guarantee that this work provides - page table
+walkers must still ensure that page table entries are as expected
+throughout.
+
+All changes have been build tested. As most of the conversions are simply
+utilising existing mechanics that are known to work, this suffices for most
+cases.
+
+However those arches where significant changes have been made -
+m68k-motorola, sparc32 and sh-X2 - have been tested further.
+
+For each of these a boot test and stress test has been performed - fork 400
+children, each mmap()'ing 2 MiB and touching every page then partially
+munmap()'ing then exiting to trigger as much page table freeing as
+possible.
+
+All were found to be working correctly.
+
+(Note that sparc32 LEON SMP is not possible to emulate.)
+
+v5:
+* Collected tags (thanks all! :)
+* Updated 1/12 to correctly set result to SCAN_ALLOC_HUGE_PAGE_FAIL should
+  the page table allocation fail, as per Lance.
+* Updated 1/12 to rename alloc_deposit_pte() to alloc_deposit_pte_table()
+  and dropped the powerpc hash MMU paragraph from the commit message, as
+  per David.
+* Updated 9/12 to use a BH-disabling spinlock rather than an IRQ-safe one,
+  as per Matthew.
+* Updated the subject line of 11/12 to clarify that the patch removes
+  now-unneeded code, as per David.
+* Updated 12/12 documentation as per David, Lance.
+
+v4:
+* Updated the 1st patch to allocate a new page table on PTE deposit rather
+  than deposit a page table that might currently be being walked by an
+  RCU-only page table walker, as per David.
+https://lore.kernel.org/r/20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org
+
+v3:
+* Added Kiryl's tag to series (thanks! :)
+* Corrected commit message, comment indentation in 11/12 as per Kiryl.
+* Corrected 12/12 documentation as per Kiryl.
+https://lore.kernel.org/r/20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org
+
+v2:
+* Updated commit message to reflect CONFIG_MMU dependency for xtensa as per
+  Suren.
+* Updated 12/12 to correctly describe the new contract re: readers/writes
+  as per Kiryl. Also fixed up typos there as per Kiryl, Suren and slightly
+  reworded for clarity, and updated commit message to reflect.
+* Updated 11/12 to reflect the fact the change is for userland only as per
+  Kiryl, also added a note about write locks similarly to 12/12.
+* Fixed bug as reported by sashiko for the sparc32 change (10/12) - the
+  refcounts are insufficient on their own, so replace the page_table_lock
+  altogether with an IRQ-safe spinlock.
+https://lore.kernel.org/r/20260908-rcu-pagetable-freeing-v2-0-1f60b64e878e@kernel.org
+
+v1:
+https://patch.msgid.link/20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org
+
+Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 ---
-Michal Wilczynski (9):
-      lib/lz4: import upstream LZ4 sources verbatim
-      lib/lz4: backport upstream's -Wmissing-prototypes fix
-      lib/lz4: add the build environment for the vendored sources
-      arch: boot: put the LZ4 freestanding headers on the decompressor path
-      lib/lz4: switch the compressor to the vendored sources
-      lib/lz4: switch the HC compressor to the vendored sources
-      lib/lz4: switch the decompressor to the vendored sources
-      lib/lz4: fold lz4_kernel_api.h into <linux/lz4.h>
-      MAINTAINERS: add an entry for the LZ4 compression library
+Lorenzo Stoakes (ARM) (12):
+      mm/khugepaged: deposit a newly allocated page table on collapse
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for most 2-level architectures
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for MMU riscv
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for MMU arm
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for arc, microblaze, xtensa
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for sparc64
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for m68k-coldfire
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for sh-X2
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for m68k-motorola
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for sparc32
+      mm: userland pgtable freeing is RCU-safe now, remove leftover bits
+      mm: change the contract for free_pgtables(), update docs
 
- MAINTAINERS                          |    6 +
- arch/arm/boot/compressed/Makefile    |    3 +
- arch/mips/boot/compressed/Makefile   |    4 +
- arch/parisc/boot/compressed/Makefile |    3 +
- arch/s390/boot/Makefile              |    3 +
- arch/x86/boot/compressed/Makefile    |    3 +
- drivers/block/zram/backend_lz4.c     |    8 +-
- drivers/block/zram/backend_lz4hc.c   |    4 +-
- include/linux/lz4.h                  |  151 +-
- lib/decompress_unlz4.c               |    4 +-
- lib/lz4/Makefile                     |   15 +-
- lib/lz4/freestanding/limits.h        |   14 +
- lib/lz4/freestanding/stddef.h        |   15 +
- lib/lz4/freestanding/stdint.h        |   14 +
- lib/lz4/freestanding/string.h        |   14 +
- lib/lz4/lz4_compress.c               |  941 +----------
- lib/lz4/lz4_decompress.c             |  718 +--------
- lib/lz4/lz4_deps.h                   |   96 ++
- lib/lz4/lz4_kernel_api.h             |   35 +
- lib/lz4/lz4defs.h                    |  247 ---
- lib/lz4/lz4hc_compress.c             |  785 +---------
- lib/lz4/upstream/lz4.c               | 2829 ++++++++++++++++++++++++++++++++++
- lib/lz4/upstream/lz4.h               |  884 +++++++++++
- lib/lz4/upstream/lz4hc.c             | 2192 ++++++++++++++++++++++++++
- lib/lz4/upstream/lz4hc.h             |  414 +++++
- 25 files changed, 6748 insertions(+), 2654 deletions(-)
+ Documentation/mm/process_addrs.rst       |  11 +++
+ arch/Kconfig                             |   8 ---
+ arch/alpha/Kconfig                       |   1 -
+ arch/arc/include/asm/pgalloc.h           |   6 +-
+ arch/arm/Kconfig                         |   1 -
+ arch/arm64/Kconfig                       |   1 -
+ arch/loongarch/Kconfig                   |   1 -
+ arch/m68k/Kconfig                        |   1 +
+ arch/m68k/include/asm/mcf_pgalloc.h      |   5 +-
+ arch/m68k/include/asm/motorola_pgalloc.h |   9 +--
+ arch/m68k/mm/motorola.c                  | 119 ++++++++++++++++++++-----------
+ arch/microblaze/include/asm/pgalloc.h    |   2 +-
+ arch/mips/Kconfig                        |   1 -
+ arch/parisc/Kconfig                      |   1 -
+ arch/powerpc/Kconfig                     |   1 -
+ arch/riscv/Kconfig                       |   1 -
+ arch/s390/Kconfig                        |   1 -
+ arch/sh/Kconfig                          |   1 +
+ arch/sh/include/asm/pgalloc.h            |   6 +-
+ arch/sh/mm/pgtable.c                     |  20 ++++++
+ arch/sparc/Kconfig                       |   4 +-
+ arch/sparc/include/asm/pgalloc_32.h      |   7 +-
+ arch/sparc/include/asm/pgalloc_64.h      |   8 ---
+ arch/sparc/include/asm/tlb_64.h          |   2 -
+ arch/sparc/lib/bitext.c                  |  14 ++--
+ arch/sparc/mm/srmmu.c                    |  32 +++++++--
+ arch/um/Kconfig                          |   1 -
+ arch/x86/Kconfig                         |   1 -
+ arch/xtensa/include/asm/tlb.h            |   2 +-
+ include/asm-generic/tlb.h                |  66 +++--------------
+ mm/Kconfig                               |   2 +-
+ mm/gup.c                                 |   5 +-
+ mm/khugepaged.c                          |  34 ++++++++-
+ mm/mmu_gather.c                          |  30 ++------
+ mm/pgtable-generic.c                     |  15 ++--
+ 35 files changed, 228 insertions(+), 192 deletions(-)
 ---
-base-commit: 93f51579e7df248780214094418f205253383cc5
-change-id: 20260904-lz4-vendor-upstream-4bc2202d0ffc
+base-commit: 88297631d4d42f6004cb39c0ba3da7d2d10a616f
+change-id: 20260831-rcu-pagetable-freeing-84b6be830e20
 
 Best regards,
 -- 
-Michal Wilczynski <m.wilczynski@samsung.com>
+Lorenzo Stoakes (ARM) <ljs@kernel.org>
 
