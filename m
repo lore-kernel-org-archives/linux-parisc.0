@@ -1,63 +1,63 @@
-Received: from mail-pj2-f41.google.com (mail-pj2-f41.google.com [74.125.227.169])
+Received: from mail-pz2-f40.google.com (mail-pz2-f40.google.com [74.125.228.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8D73B3BE7
-	for <linux-parisc@vger.kernel.org>; Mon, 28 Sep 2026 05:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C448947729B
+	for <linux-parisc@vger.kernel.org>; Mon, 28 Sep 2026 08:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.40
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790574510; cv=none; b=T/HH1RbEsECFQTvAXa2wJIqMj2rMzvWAu8OT0aNbhLGSv5Vko9Y+A5mvBt9SDz9REE67JVnAIjalZizqGWJGGLVVMD7x6wL4B4+/FlqC9Q6M8tE1mrA5rqsDw2Wb6d5bJSk5XhCXSPMrhDoqltfkzUD8JyPwqqMWRsOgTvfXX3w=
+	t=1790584055; cv=none; b=OvhmfL20IRv92a/7tPnlbGnkYqfY+HZ57xIosTR1+amR4hjdq7UF6Tpql8dZtJZBzpe2IMybKNZSrssqMNB9+mXzS9h783DVcbtoX4asGGD0TV2Y6hu+70ABHA7PWwrtiqACPdpO2RBXdlC1/9Uu/5FAWUqTS7RUHGQyTCYqzC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790574510; c=relaxed/simple;
-	bh=iMYszCd2Q2GkfRGunaTTlbLJABOPePOXot6uhYku9yA=;
+	s=arc-20240116; t=1790584055; c=relaxed/simple;
+	bh=qAKPddpqFgfHmTQw4mD4LolSxZQhiX47J3WLDmhJNXc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=szWjHyPoM2epnBDe9xT3ROx5lDV8KHLAeXIcgx6IGIbOAkebUiVU+7FijdpdAT7MRHHjvQDrWeRECY2W0a9I5r78izynvsVOvKqQg1PAJ/rOEhIay2Gg6itM3WlYIHzP3/nAK6LvCOvr8sd+63dUTkwzilZfD9M5TGre0fEwARo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bxSu473o; arc=none smtp.client-ip=74.125.227.169
+	 Content-Type:Content-Disposition:In-Reply-To; b=uxQprENDGhRw3xk1KOQpNe/ujPfJ+VsDZw0VgI6dqagRk0yMMYOU7y6qLVwcMsTOLJmI5Cv3cvkhyqzx+ZX8jW60u335sD5utoWEiJ9cp2sniCOVYeOhrilY9XsL3b/slMQZK4ufpzUu1kwPbZMpC7MxHkcp3Qi4MLjIY1uq2Vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LU0862Q2; arc=none smtp.client-ip=74.125.228.40
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bxSu473o"
-Received: by mail-pj2-f41.google.com with SMTP id 98e67ed59e1d1-3a0bcdf41a3so1309321a91.2
-        for <linux-parisc@vger.kernel.org>; Sun, 27 Sep 2026 22:48:26 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LU0862Q2"
+Received: by mail-pz2-f40.google.com with SMTP id d2e1a72fcca58-87c90648f99so2101205b3a.0
+        for <linux-parisc@vger.kernel.org>; Mon, 28 Sep 2026 01:27:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1790574505; x=1791179305; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1790584053; x=1791188853; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=kWV/wHWLQfhp6L6mSocYwp2pbMQ9zmUarPxSrrFDYg8=;
-        b=bxSu473ocLXfE6sENO6UDQCfPbZYu9DTkKv7SzG0U2ent1wE55DvXVZrKbPwgxoTSi
-         HFx73BSqIiVKSUS7gxUnPTz/Kkc68NvdKaga6clGtTJ/PFcrNDAoFOz9HrToRPEuY7JB
-         w5SzVZBiHKy3ICHS569p+1/EZqyvkGv23nnzc=
+        bh=XfTNwTEf8cXEoiVJjaR2wzaM0AVgLL//fGyHvTOkwQs=;
+        b=LU0862Q2vbkM8L70ECClA6fPi7+gq6ZxFDngKIrBT1sWsKXYt7AxZveVgNS+4JaQhy
+         lJOMXW681dRW8Xtvr/0MGGXEV0h2vmvn6xXc4TQD8jvvHVHow0M747uwJW6/XauN8QOV
+         6lShKGYxn5my6xEmfiRRNtCxRBdJ5KQlc9T1Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790574505; x=1791179305;
+        d=1e100.net; s=20260707; t=1790584053; x=1791188853;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=kWV/wHWLQfhp6L6mSocYwp2pbMQ9zmUarPxSrrFDYg8=;
-        b=Pv7tooG3JcP8l0zoBRQJydwD+oE/Vv8nAaryovlf8sBLesv6cjEM8v1syoI4DvfwcN
-         fFmKb6Feajyz4EN2aQ0EW2DTuh9Q4hW3u6w+ZfWWCt9MNUCy8/TQUU6yeebiFGk6ifvr
-         a7lqnUt8fQ0kpUYFh6ZjI9kHRqbwajBepa1s9cy+aPyH8VMGluie39c8tD1PCRvWSbn8
-         coyt2/8BuptaR9cJ0eGtS/uMCuUlVUhfyuDrS9n/2kAftsyDpqCQMm5oubZzOzXXJk4R
-         ahE3Prh6o0m6wneBKehHPEU/caG/sGbzxgDOS7KI8wvPbKdVdkmOxBZJCqENgecXq61u
-         P8Rg==
-X-Forwarded-Encrypted: i=1; AKwUvBz9/vDUsT9cSHnuUg0I1q3Lh+bR93/3ojol+T/m0jIsNniskiz6F8BAVBmwluFKoWOo19Jm1ILDEBh66Oo=@vger.kernel.org
-X-Gm-Message-State: AFq9FYJgXKtKRjavGqONCqUyJZO9ZPt57Zwoef9/sHqz8D4KHxwCIEaS
-	i9OxZTfgm5kG3lVZzpfUp6pnq2Sla37tMGb7Yr2GUquR4dNV4DRIwPNHishQJ9dkcw==
-X-Gm-Gg: AYBFou0K/d0B1XkML5Jp9B8SMa86JrySPONSk/uRgK/9CR6zXhJhG50AMXZytUibvKx
-	U8SfMtJsR2fpVZMV72LxKJdAzcS2NDiWwo+VzR3/gvgMiL+DStHGq45YgiuU8GWn7QRPXVvPTn7
-	tOhtggpIyevSuFcU7le+Qnvkq3fhz1XMvne67IFgt3MoDF0sOYn8Rl4Ukqce/XuzIOAgBJuQ3l+
-	X6na9/s+NhSa43PciJWHJx8mnNDJJSGsN6jaOYrrB5vLcVFOFRK+I4ZBj0qx1jIFqvuAX7gmhY7
-	dpLLIzMa49/81OJU/DE72vmmKdJ5oY+EM0UqTrcY8Sr0QqssBxBbfziONqwSXvN9FMdFSfrPrAA
-	IJJx0Ybx0n40G6ngvV4OzIZtxQO1fKnN3p4aNS0U4j7S2Wd/yenYp2IScuiOBswsI2uX6NgBp+e
-	X0HSYTAGBaDvxl1fZ0sQ8zXRX/jSHZbu3FITnLiBa0jYIFnjg8PnoayTOPDIJ8C0lW1W/Z4pu1u
-	eAR58AaS8K3UefFJp2SpjYu95/vuH2I3Bb3R5++2VV+AV0DcA==
-X-Received: by 2002:a17:90b:3888:b0:3a0:cc33:2287 with SMTP id 98e67ed59e1d1-3a0cc3324ccmr6256726a91.6.1790574505299;
-        Sun, 27 Sep 2026 22:48:25 -0700 (PDT)
+        bh=XfTNwTEf8cXEoiVJjaR2wzaM0AVgLL//fGyHvTOkwQs=;
+        b=Xal4TLg28LMJ+VXnM7o4B2wecPcUNO7b/78YelB0lYhUGUwNVsLDiLAo3MFUV8VaPY
+         fhtwkb+HmgT/zi/YwVtPC8ok7X/PaRY+q4w0e45vo/D0qdw1IQMVKp9wngxXo2ownhOm
+         wbq5JfE8Q2Y0iKtzfFxrc02IJ7AVAikKrIpKdER3oX6gUiw+pKgSMZvTFsSBvPWS1sw4
+         93Dnz2EtPflEuh3olga9FymfN3od6SXDRYCWeli9iy09FA+JyW1h0+y6shDew3LW26m2
+         HDoVuMZy5GxCjyzD5td4HvqiNODr6ytvfpkGGKbbJj8IzKUmf3r4dtnyWvYjs8oaH/NZ
+         sQ8w==
+X-Forwarded-Encrypted: i=1; AKwUvBytgVg0NvBcccEONBT2p57A2t69R9ZykjSjiE+dWTIZ3rVcc0SbC98hTB2y0TX5ogdBf92uapHJvKFko8g=@vger.kernel.org
+X-Gm-Message-State: AFuF++msBNTMgqEuipwMt/qE9yOydJDbZgXNYJwPXb5ALzpS/Z8uIL+f
+	bil8A9KPDVHs7qUT3AHbBrJRHmfZVJt+bxK9mQKG4NnYzo0i3b4uPAU5Gm2jfIe3EQ==
+X-Gm-Gg: AYBFou3vvbBWcz3L9EHn6a/JnRwH8Zoh1cwGFE9KvL0ooDkuJScSXO2b0ihAdrdJhB5
+	KNGEzoZp2Cjp2fEYiThs2TqbihQcuDPJKahWlsBcSFwmvKCLdCVTMyidNlMW7YNsUV9J4TM+AGZ
+	j1GK0PJ98gsh9vR3m/Cl3CnySnmz7O+0X2ZVaRKEzxXQSx0wlETQ3tlAwGhG0KTI5BrZx9luG4s
+	rWyKpNl2ZcCH56ySjvClp3sNnTBomppTf2ZeA7/DAQwmFI9o60kdAR/RIR88uWwQmGqL7E+JskN
+	LRcSqUQB2IFCTrVykP8MC+BzNo9BwmkszICtvHPAtvWAN1iMQsvUxWrG9Ars2MqZmMBATyvac+b
+	ypj1+h9NfcaX/53hHyPz/MH5fl4butZ2ThTCAMyg+7nZQkM9b6hXZ3vVuc0zkzNAfIdIgQmyXhr
+	SqjODACQEt5E2o8HmdMNHZKz/GiSmvJzLML/7nlMCAGwm89T/+W8yVFWVYpduGqLZjsJjAQd3Oj
+	sO5FpVfRLS9InAZw36KKMIDriBoUvRGAesIxAQ=
+X-Received: by 2002:a05:6a00:7619:b0:880:8fe8:a3ea with SMTP id d2e1a72fcca58-8808fe8a798mr3659738b3a.45.1790584053122;
+        Mon, 28 Sep 2026 01:27:33 -0700 (PDT)
 Received: from google.com ([2a00:79e0:2031:6:fdbe:318b:98fe:bd96])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a0bec30aaasm17853889a91.15.2026.09.27.22.48.18
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-87feae8d827sm3676965b3a.36.2026.09.28.01.27.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2026 22:48:24 -0700 (PDT)
-Date: Mon, 28 Sep 2026 14:48:15 +0900
+        Mon, 28 Sep 2026 01:27:32 -0700 (PDT)
+Date: Mon, 28 Sep 2026 17:27:23 +0900
 From: Sergey Senozhatsky <senozhatsky@chromium.org>
 To: Michal Wilczynski <m.wilczynski@samsung.com>
 Cc: Nathan Chancellor <nathan@kernel.org>, 
@@ -69,23 +69,23 @@ Cc: Nathan Chancellor <nathan@kernel.org>,
 	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
 	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Minchan Kim <minchan@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
-	Jens Axboe <axboe@kernel.dk>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, 
-	linux-block@vger.kernel.org, Yann Collet <yann.collet.73@gmail.com>, 
-	Nick Terrell <terrelln@meta.com>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Phillip Lougher <phillip@squashfs.org.uk>, Sungguk <sungguk.na@samsung.com>, 
-	Jaehoon Chung <jh80.chung@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
-	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH RFC 3/9] lib/lz4: add the build environment for the
- vendored sources
-Message-ID: <arn9tK5MxxxfH7OW@google.com>
-References: <20260925-lz4-vendor-upstream-v1-0-1c7ffbe21c4b@samsung.com>
- <CGME20260925113456eucas1p136c3cd1f08be7201ad6b3f7b0e8ff02d@eucas1p1.samsung.com>
- <20260925-lz4-vendor-upstream-v1-3-1c7ffbe21c4b@samsung.com>
+	Minchan Kim <minchan@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-block@vger.kernel.org, 
+	Yann Collet <yann.collet.73@gmail.com>, Nick Terrell <terrelln@meta.com>, Gao Xiang <xiang@kernel.org>, 
+	Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, Phillip Lougher <phillip@squashfs.org.uk>, 
+	Sungguk <sungguk.na@samsung.com>, Jaehoon Chung <jh80.chung@samsung.com>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, linux-erofs@lists.ozlabs.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org, 
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCH RFC 0/9] lib/lz4: stop forking upstream LZ4, vendor it
+ instead
+Message-ID: <arokqo4gVQVglkBa@google.com>
+References: <CGME20260925113450eucas1p2fcf838f00f35e1bce0ca04a694cd0cd2@eucas1p2.samsung.com>
+ <20260925-lz4-vendor-upstream-v1-0-1c7ffbe21c4b@samsung.com>
+ <arnr-Su0uJdK_rOb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -94,14 +94,22 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260925-lz4-vendor-upstream-v1-3-1c7ffbe21c4b@samsung.com>
+In-Reply-To: <arnr-Su0uJdK_rOb@google.com>
 
-On (26/09/25 13:27), Michal Wilczynski wrote:
-[..]
-> +
-> +/* LZ4_decompress_fast() and LZ4_resetStream() are still kernel API. */
-> +#define LZ4_DISABLE_DEPRECATE_WARNINGS 1
+On (26/09/28 13:25), Sergey Senozhatsky wrote:
+> On my x86_64 build .text size change seems to be quite significant:
+> 
+>  ./scripts/bloat-o-meter lib/lz4/lz4_compress-old.ko lib/lz4/lz4_compress.ko
+> add/remove: 0/2 grow/shrink: 5/1 up/down: 8022/-1755 (6267)
+> Function                                     old     new   delta
+> LZ4_compress_fast_continue                  6028   10486   +4458
+> LZ4_compress_destSize                        158    3112   +2954
+> LZ4_compress_fast_extState                  4078    4597    +519
+> LZ4_saveDict                                  82     153     +71
+> __UNIQUE_ID_modinfo_466                       52      72     +20
+> __pfx_LZ4_compress_destSize_generic           16       -     -16
+> LZ4_loadDict                                 261     204     -57
+> LZ4_compress_destSize_generic               1682       -   -1682
+> Total: Before=14756, After=21023, chg +42.47%
 
-Is this upstream code?  As far as I understand it, LZ4_decompress_fast*()
-deprecated upstream and are strongly discouraged.  Do we want to suppress
-deprecation warnings?
+D'oh you actually point that out in the commit message, sorry for the noise.
