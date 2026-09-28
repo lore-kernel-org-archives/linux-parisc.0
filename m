@@ -1,63 +1,63 @@
-Received: from mail-pz2-f40.google.com (mail-pz2-f40.google.com [74.125.228.40])
+Received: from mail-pj2-f41.google.com (mail-pj2-f41.google.com [74.125.227.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BFAC37CD59
-	for <linux-parisc@vger.kernel.org>; Mon, 28 Sep 2026 05:19:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8D73B3BE7
+	for <linux-parisc@vger.kernel.org>; Mon, 28 Sep 2026 05:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790572753; cv=none; b=FCvFvHsEADU/uDRf8IK0HKhL7k5uoFrUQc4U1hsA5jGX+vp1OFBA1ikE8H899AqEus8jFH0K1vQMRXtpl+JcT5uZRGM40MWtWB2lKl+21tsvCCHr+vM7SGd2Y8l3MB2wXKdWqYFo7h39MWnCebs75+rGkPLO5vKGtlPVWVSpwb8=
+	t=1790574510; cv=none; b=T/HH1RbEsECFQTvAXa2wJIqMj2rMzvWAu8OT0aNbhLGSv5Vko9Y+A5mvBt9SDz9REE67JVnAIjalZizqGWJGGLVVMD7x6wL4B4+/FlqC9Q6M8tE1mrA5rqsDw2Wb6d5bJSk5XhCXSPMrhDoqltfkzUD8JyPwqqMWRsOgTvfXX3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790572753; c=relaxed/simple;
-	bh=If6eyZW189bAWCED7HJ77WUzjEmoh3HbC+AtCUG98As=;
+	s=arc-20240116; t=1790574510; c=relaxed/simple;
+	bh=iMYszCd2Q2GkfRGunaTTlbLJABOPePOXot6uhYku9yA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nsR7h4Sxhm0JjuOLnKPMjRX1PDMNt4hWnsM1n7erldWEbU899n/jJVXiALRl64xINcgJ3P+qvapmCnRMqG8X9I3NyR0wVHkJGPaOl5N+q7nulHriDe83VQhZ9JesQzkjs7qvH3gccD5fsz4gS7WPePUVepmWWQSypdTFxxp0IXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VLsnHB05; arc=none smtp.client-ip=74.125.228.40
+	 Content-Type:Content-Disposition:In-Reply-To; b=szWjHyPoM2epnBDe9xT3ROx5lDV8KHLAeXIcgx6IGIbOAkebUiVU+7FijdpdAT7MRHHjvQDrWeRECY2W0a9I5r78izynvsVOvKqQg1PAJ/rOEhIay2Gg6itM3WlYIHzP3/nAK6LvCOvr8sd+63dUTkwzilZfD9M5TGre0fEwARo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bxSu473o; arc=none smtp.client-ip=74.125.227.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VLsnHB05"
-Received: by mail-pz2-f40.google.com with SMTP id 41be03b00d2f7-cc750a1482fso1387937a12.2
-        for <linux-parisc@vger.kernel.org>; Sun, 27 Sep 2026 22:19:11 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bxSu473o"
+Received: by mail-pj2-f41.google.com with SMTP id 98e67ed59e1d1-3a0bcdf41a3so1309321a91.2
+        for <linux-parisc@vger.kernel.org>; Sun, 27 Sep 2026 22:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1790572751; x=1791177551; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1790574505; x=1791179305; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=aE4CNeMPjoyGqhac0qEjC0MrhT1ea2sjSdxYtuXCv0E=;
-        b=VLsnHB057PEqj83Cxn2yIfI+0MQoBNKmIded6dZ0nn1+ILxJUjWxutQUwC+y2sPiNA
-         aI7sKbUXLH4zAqRUFKE7Jh67iQkWCvWPsKsZ4AQZlLlrBT68v5eADSnOMWla3s139WAC
-         f50tjpI4WgqLGRh6nrmNJNv75RsAaiuO0tq8c=
+        bh=kWV/wHWLQfhp6L6mSocYwp2pbMQ9zmUarPxSrrFDYg8=;
+        b=bxSu473ocLXfE6sENO6UDQCfPbZYu9DTkKv7SzG0U2ent1wE55DvXVZrKbPwgxoTSi
+         HFx73BSqIiVKSUS7gxUnPTz/Kkc68NvdKaga6clGtTJ/PFcrNDAoFOz9HrToRPEuY7JB
+         w5SzVZBiHKy3ICHS569p+1/EZqyvkGv23nnzc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790572751; x=1791177551;
+        d=1e100.net; s=20260707; t=1790574505; x=1791179305;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=aE4CNeMPjoyGqhac0qEjC0MrhT1ea2sjSdxYtuXCv0E=;
-        b=Kth+RKDgcG9RmpxsaNuBkuNxGaqMXkd6VkZxsW0AOifAPpTQF3YHemEuE1OMqequ2m
-         fmuDqOgVSG7WcqrkpTfsO8mlFYN5e+VmfnONEFgXmCw2dTY267TsB1hWAAWFDmx1/bQq
-         Ki8moKf/CfswIIdTaWDFWWBkS9uqYSp6sshekQVvLCItJ/nV653Xjqzcrmc0yr83qL6w
-         INGQEnK7h0OXtyZS2c+5ctQXMru3+oYN2pQ+cfFMnfYjTjMS+J6qqyeut0TAdCw0wrGx
-         Ti4rBJtEHukawatutRshGdfdf9s0Xi1aVXPrASbNXtT5dca6BYMkXO4SXUW+8ASKWDXb
-         R/1g==
-X-Forwarded-Encrypted: i=1; AKwUvBziFpyAV4lYKpec1mkyMHly2mxLmE1FLGb/yosmsPfoTHx5GAuWHTaN84QCUBDtmAvvT8G7qtogZ1IuCPw=@vger.kernel.org
-X-Gm-Message-State: AFq9FYLfk4nPSxNUvHpE+2sSLjdA/bofoyQWWuJhjcfta27uKLUO+cGa
-	GqzFGpWQ2ZPu1217EVlNPkXO1hZkyqVov80j0yoCWJ+rPwOpiAgu9xg/tpbDSf+7cQ==
-X-Gm-Gg: AYBFou3J/yhusV/TT1L2bpk93oxrW3Adh1lhRUI097dKiAntgWo40XepwUeYAP0kp1X
-	x5h34EvlSRTl0cXjWQJcmPjaYIw4SwDb0saLY2oiouRVxUI2LcEWJKo39fecC99NprnHtWjx6HS
-	K7aKUOvG9Zxr01onVWBK6OGUAeuhwhk8lIQLlYEyqyzPfGn/JMkurekDdw2gCoOmprWS0bslOTe
-	nAFP0m8R3pYzpkNzloKD7ZKdZIag7pp+og1ZXVsDWXMe3fat/Rem6/5YTubbxltUDbCmveOntZK
-	NefYP4hfk0olXTUPDTHRvyoHpwSK3NvW/dEtL/Vd9XUAbWu7YSfoBv5bnQFxh8Wpt5G1SXo01JZ
-	SNrwF/MqUpm7qMbfR8AotIbDG+NdLl/Bdk+bC/ug+DpVHQxR9ERu1yUeuq4DVvAxUVReBJohmcH
-	KwNAvepoGjsvwUDaU9peRBtJ6j1VFoDZ6EFyVma16k+N+8vyLIUYl1pCks45Q0bpg5u4eWlXBGq
-	AqUkgqePnz2McPhYnmm10knvmM+pXhUtxDc9IQ=
-X-Received: by 2002:a17:90a:597:b0:3a0:a055:1759 with SMTP id 98e67ed59e1d1-3a0bb60e55amr5032133a91.40.1790572751469;
-        Sun, 27 Sep 2026 22:19:11 -0700 (PDT)
+        bh=kWV/wHWLQfhp6L6mSocYwp2pbMQ9zmUarPxSrrFDYg8=;
+        b=Pv7tooG3JcP8l0zoBRQJydwD+oE/Vv8nAaryovlf8sBLesv6cjEM8v1syoI4DvfwcN
+         fFmKb6Feajyz4EN2aQ0EW2DTuh9Q4hW3u6w+ZfWWCt9MNUCy8/TQUU6yeebiFGk6ifvr
+         a7lqnUt8fQ0kpUYFh6ZjI9kHRqbwajBepa1s9cy+aPyH8VMGluie39c8tD1PCRvWSbn8
+         coyt2/8BuptaR9cJ0eGtS/uMCuUlVUhfyuDrS9n/2kAftsyDpqCQMm5oubZzOzXXJk4R
+         ahE3Prh6o0m6wneBKehHPEU/caG/sGbzxgDOS7KI8wvPbKdVdkmOxBZJCqENgecXq61u
+         P8Rg==
+X-Forwarded-Encrypted: i=1; AKwUvBz9/vDUsT9cSHnuUg0I1q3Lh+bR93/3ojol+T/m0jIsNniskiz6F8BAVBmwluFKoWOo19Jm1ILDEBh66Oo=@vger.kernel.org
+X-Gm-Message-State: AFq9FYJgXKtKRjavGqONCqUyJZO9ZPt57Zwoef9/sHqz8D4KHxwCIEaS
+	i9OxZTfgm5kG3lVZzpfUp6pnq2Sla37tMGb7Yr2GUquR4dNV4DRIwPNHishQJ9dkcw==
+X-Gm-Gg: AYBFou0K/d0B1XkML5Jp9B8SMa86JrySPONSk/uRgK/9CR6zXhJhG50AMXZytUibvKx
+	U8SfMtJsR2fpVZMV72LxKJdAzcS2NDiWwo+VzR3/gvgMiL+DStHGq45YgiuU8GWn7QRPXVvPTn7
+	tOhtggpIyevSuFcU7le+Qnvkq3fhz1XMvne67IFgt3MoDF0sOYn8Rl4Ukqce/XuzIOAgBJuQ3l+
+	X6na9/s+NhSa43PciJWHJx8mnNDJJSGsN6jaOYrrB5vLcVFOFRK+I4ZBj0qx1jIFqvuAX7gmhY7
+	dpLLIzMa49/81OJU/DE72vmmKdJ5oY+EM0UqTrcY8Sr0QqssBxBbfziONqwSXvN9FMdFSfrPrAA
+	IJJx0Ybx0n40G6ngvV4OzIZtxQO1fKnN3p4aNS0U4j7S2Wd/yenYp2IScuiOBswsI2uX6NgBp+e
+	X0HSYTAGBaDvxl1fZ0sQ8zXRX/jSHZbu3FITnLiBa0jYIFnjg8PnoayTOPDIJ8C0lW1W/Z4pu1u
+	eAR58AaS8K3UefFJp2SpjYu95/vuH2I3Bb3R5++2VV+AV0DcA==
+X-Received: by 2002:a17:90b:3888:b0:3a0:cc33:2287 with SMTP id 98e67ed59e1d1-3a0cc3324ccmr6256726a91.6.1790574505299;
+        Sun, 27 Sep 2026 22:48:25 -0700 (PDT)
 Received: from google.com ([2a00:79e0:2031:6:fdbe:318b:98fe:bd96])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a0b94936ddsm18408378a91.7.2026.09.27.22.19.04
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a0bec30aaasm17853889a91.15.2026.09.27.22.48.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2026 22:19:10 -0700 (PDT)
-Date: Mon, 28 Sep 2026 14:19:02 +0900
+        Sun, 27 Sep 2026 22:48:24 -0700 (PDT)
+Date: Mon, 28 Sep 2026 14:48:15 +0900
 From: Sergey Senozhatsky <senozhatsky@chromium.org>
 To: Michal Wilczynski <m.wilczynski@samsung.com>
 Cc: Nathan Chancellor <nathan@kernel.org>, 
@@ -80,11 +80,12 @@ Cc: Nathan Chancellor <nathan@kernel.org>,
 	Jaehoon Chung <jh80.chung@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
 	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
 	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH RFC 1/9] lib/lz4: import upstream LZ4 sources verbatim
-Message-ID: <arn3TC7BgjTXWmdG@google.com>
+Subject: Re: [PATCH RFC 3/9] lib/lz4: add the build environment for the
+ vendored sources
+Message-ID: <arn9tK5MxxxfH7OW@google.com>
 References: <20260925-lz4-vendor-upstream-v1-0-1c7ffbe21c4b@samsung.com>
- <CGME20260925113452eucas1p170bfdb34dfbf670a14a6f8f0c2f5094a@eucas1p1.samsung.com>
- <20260925-lz4-vendor-upstream-v1-1-1c7ffbe21c4b@samsung.com>
+ <CGME20260925113456eucas1p136c3cd1f08be7201ad6b3f7b0e8ff02d@eucas1p1.samsung.com>
+ <20260925-lz4-vendor-upstream-v1-3-1c7ffbe21c4b@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -93,20 +94,14 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260925-lz4-vendor-upstream-v1-1-1c7ffbe21c4b@samsung.com>
+In-Reply-To: <20260925-lz4-vendor-upstream-v1-3-1c7ffbe21c4b@samsung.com>
 
 On (26/09/25 13:27), Michal Wilczynski wrote:
 [..]
-> +int LZ4_compress_fast_extState(void* state, const char* source, char* dest, int inputSize, int maxOutputSize, int acceleration)
-> +{
-> +    LZ4_stream_t_internal* const ctx = & LZ4_initStream(state, sizeof(LZ4_stream_t)) -> internal_donotuse;
-> +    assert(ctx != NULL);
+> +
+> +/* LZ4_decompress_fast() and LZ4_resetStream() are still kernel API. */
+> +#define LZ4_DISABLE_DEPRECATE_WARNINGS 1
 
-Probably in some other places as well:
-
-LZ4_initStream() can return NULL, but the code immediately derefs
-the pointer.  The assert() check seems to be misplaced, unless I'm
-missing something.
-
-I suppose those need to be decoupled.  First LZ4_initStream() call and
-NULL check, then stream->internal_donotuse.
+Is this upstream code?  As far as I understand it, LZ4_decompress_fast*()
+deprecated upstream and are strongly discouraged.  Do we want to suppress
+deprecation warnings?
