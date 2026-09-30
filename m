@@ -1,125 +1,140 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pz2-f39.google.com (mail-pz2-f39.google.com [74.125.228.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59AFC4F4043
-	for <linux-parisc@vger.kernel.org>; Tue, 29 Sep 2026 14:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C271031AF07
+	for <linux-parisc@vger.kernel.org>; Wed, 30 Sep 2026 06:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790691128; cv=none; b=AR9BZd3xRIhj02Hi1yYcUNK2xezqG6CEc6H8zdqwUZDHrR64PJc88qzyynpD+kqWqPcm2ra4hvxsa1WzcXYrVwQtRK7qQcUQH21Bl8ErB7HhuDMCznXPYAzS7PLU3gIeWZpWjsKixczVu1CqvdZBGwZ1rssWFcd4Qrsv9rw204M=
+	t=1790748489; cv=none; b=uBJ2AvZpWCaszmMuhk66cFE5Ma8+6AjJlnb70NnxBLxH9aFy1/G07PDF/8N3tXJx8Fjj3iZJOrqwgRCEK843z7J2FEG22FNEyXT4KhjtWve6j/PGWneBwyt5RDcdHOCH/qIlW/Bf5ZRg1duc1WbfCcgXi/FxX+rrTNjNTjBrrh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790691128; c=relaxed/simple;
-	bh=GeatX/mSgt8EYGKrJweaQ6M1vHW/l+J78fDDVRnanZo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=PpKRf0UlNUym+NkzaE4BKrhkaKWcM+yHhB4eyZ3X15BITqkmfu8u+4fC6lpJ7AscdM0fxYv8I6EG6+kj6LmjM+I9GcHfz+451Bh6mIxQTP6uNw8IPkzXXTA7fKYPyBEQe5XGoZNsxV36BE0Kx/txz+ilVSyIkVJAK60/DVPBRPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H1EYkwrL; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=YkfMBEbQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1790748489; c=relaxed/simple;
+	bh=FQT7C9mEtUI9zyQeAiy/rz7mwvm/L9IqR2P4MCxmtag=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pJKDZcnzH+2jAyESJOMvJIV1HdvjF1agxe5SafmTeM9n0q/8vSTUX+88Eua4APy0+qFZRjitunv+YBUJOF5DxENddmyN7D4LljRjSudi+ZNbHNJfGh6Ma1ZU9C+Xe/tABGs1wI1JM78/MJYD9oVRjThIv0fEOdqpKPjpDiDzf0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GpLOQ885; arc=none smtp.client-ip=74.125.228.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H1EYkwrL";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="YkfMBEbQ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1790691126;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2p0mpabVoWXtlpkN0tOfNpGONGhlkPF/zvbxue/ki/k=;
-	b=H1EYkwrLh1K64D1ORfCA+jn3QucTk/WRIWynoqwC0W711bpfz95k6C0M0cfd9Iu3qJ1ZuZ
-	31z0xwo6bOqTx9Xm4Xl+QufXA24QOqyNRf4DF6EB0w86aQ4CFW+fMROHVygN0BKwrr5u9b
-	PJWAgv1073MLfCkBv2ECHlpYUfUlG+4=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-593-N-2bVjM4NfSLMfJ5CWe5Ig-1; Tue, 29 Sep 2026 10:12:05 -0400
-X-MC-Unique: N-2bVjM4NfSLMfJ5CWe5Ig-1
-X-Mimecast-MFC-AGG-ID: N-2bVjM4NfSLMfJ5CWe5Ig_1790691124
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-49e6683d48fso46150775e9.0
-        for <linux-parisc@vger.kernel.org>; Tue, 29 Sep 2026 07:12:04 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GpLOQ885"
+Received: by mail-pz2-f39.google.com with SMTP id 41be03b00d2f7-cc78d59bb02so1884234a12.1
+        for <linux-parisc@vger.kernel.org>; Tue, 29 Sep 2026 23:08:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1790691124; x=1791295924; darn=vger.kernel.org;
-        h=content-type:mime-version:user-agent:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=2p0mpabVoWXtlpkN0tOfNpGONGhlkPF/zvbxue/ki/k=;
-        b=YkfMBEbQrf6BdVVZ4feI8A8i1jiQcRaDPObyAwKTaohvmnqhJuEGI4l5b6hCIc8kI0
-         fSZwUG9pt6ZWozcGsMRzp3miSNlImyiNI+Hr90r2i5+OhZStUw2ZDyw3RFbsjAGknsFn
-         08YpOn6FkgE/SVxDbnfMHCNJpvK13LBq0mGx3jK1ZJ8Nm4QeVw4nEa/1QEaIcrfz82kq
-         ayPmfulXTMcCEyeLVTx5FY4ubhrIxFFFpivchcIlWf4pAc5dODTppJUq8Kl+THtUNjBb
-         hFyLei3EekM/SiWPqZO/SS/eJD3T71TOA7Q2m4fMKY0DezU6XBzImdwOdCDfwaiQUJHJ
-         VXng==
+        d=chromium.org; s=google; t=1790748487; x=1791353287; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=CgFmFj2igJGpmbRflOSd7wans++uMlq7r70gUY54Vy0=;
+        b=GpLOQ885YueQnMRr7aYksbM090881sDEr8Fe1usp/q0pr6fKEwx2Cglw8wGIeuqXfo
+         z9+qdro7WLQlY5O7IK5f2JeUGmrO0obUFcd+Na/uUiQIuolwIOhoYcdmwDhyJuUCflos
+         uNc3Zr3tAz8ZSh0r82sTNNcJOP6oSeRIpn2Zg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790691124; x=1791295924;
-        h=content-type:mime-version:user-agent:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to:content-type;
-        bh=2p0mpabVoWXtlpkN0tOfNpGONGhlkPF/zvbxue/ki/k=;
-        b=BSaD/RkMyK7LTrWbGJ1ImyTxSm7laxsZKyDakppt8DemBnBqueO2/24zmUJ2F8MhtJ
-         oYb1dNoap2NOmgRrQY4EGGB0HavQLAp6Awoq3TFOIEZMB/puPbC4sUkcLUB2D7bHBadv
-         6dRt0sALjfOm3U4ufVol2viHzhP4qb6cPfWzYc6sbYNB19NBqA0uwqiSDtsHh0pqJA9b
-         z4IWNP+y/vuRSm5tfN7wHy/usXZWuWc+zBv4qDxm/VWsJIfk5urH8DEBgmj4hZNwtIab
-         FWy4YS+4Dy1PqgSuwH3u0v58qm7TohSUwMCY7G9l9RO/c++Qr1CrMHuSZ2PGiRpM3S7+
-         gTqg==
-X-Forwarded-Encrypted: i=1; AKwUvByV0VJZtwTG7F36Y+jB1eklu1BPXM++srV+j/D4JFyBRnTr/mPJsDam3Ld+o4BdK5O9x288VWq2+3WYisY=@vger.kernel.org
-X-Gm-Message-State: AFuF++mxehPRJtMXQos/4QnVcmvydPKFYv4ocJjCS+vcePAO3QY/6k0h
-	06FGKwDqVDaIfBghatt+z9UjMx5IL100Df2CyrjsiAOZ9jK4RAKJUAU739S7A1pcOpDoEnJgHdB
-	v9DPMu4gm4MGs8G+vOT26WrsvKkY8ef1ZphRg24xgcUMcMhBN81JNpVHGsNZFt1I5M4xSb2NJuO
-	zco5K2lhvTCmXWjhQKJedXoenjwVW7vVbF7BR0wMrG39540Ecy6oI=
-X-Gm-Gg: AYBFou3nO5AdIoM1/Vuzyacljjwef5ovqn8P/jOLBVekevy7hymorAJ1OG1KjtdXdao
-	jHU/tejbU23AlYmpwbFXaEBsRUYOTNx4F9Nzn19eYabDZF2GeMB7ENo7u0gQnX0/9drhfjxANM5
-	lwK5pnMscPn2J8HuOMhqPsBeESncLvaSMnVed24qC7AqVl8mWisO3MLE1Q8vAHnr9pA+NzZpaU3
-	JHvXXpgbfi9LEgQaOJ8GFcEidplXxL0LXG5FjiLT1ULsNtvP20LZKpiVEz8OuZh7Me/hldmLmk9
-	TRlMCwMWu3iRUYOY3of6FXxMY4atEgCZkWUCjjlFRt8UL8t7jiSRuKOx/1Eurp9WUy50RlGdhNi
-	ArKqWPlwTH99EPt0vvj+nmTDkl4j7/h0=
-X-Received: by 2002:a05:600c:46cc:b0:4a0:857:a3a5 with SMTP id 5b1f17b1804b1-4a00857a46amr82578915e9.16.1790691123840;
-        Tue, 29 Sep 2026 07:12:03 -0700 (PDT)
-X-Received: by 2002:a05:600c:46cc:b0:4a0:857:a3a5 with SMTP id 5b1f17b1804b1-4a00857a46amr82578175e9.16.1790691123350;
-        Tue, 29 Sep 2026 07:12:03 -0700 (PDT)
-Received: from aconole-thinkpadt14gen4.rmtusnh.csb ([24.151.142.216])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a013c64fecsm6760665e9.0.2026.09.29.07.11.59
+        d=1e100.net; s=20260707; t=1790748487; x=1791353287;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=CgFmFj2igJGpmbRflOSd7wans++uMlq7r70gUY54Vy0=;
+        b=PhTJMJ4/dLvOppyqpSb35BzOnSvO4pEBvHY/4k7EXoc2f0gLJidL+Wsvx5hyODZHhT
+         zUsKIXD+2wBrHvVL+R062DNdT3YXtSQCHYm3//kOocF3wB+IfjM59S+2jDuOAOFXjeW8
+         TYi7oVkdOvKPxmeQQMFxBmcgdMBDOnLoCLv7sL9zN+xvYPNqB9Hr5mumPdqc2Mf2Uaoh
+         jMMZNb9Y5wcNYl3PM1nYxoQ8YJ407NlpxlwdFFTsZQQ12fYSZBvFEmqcFXdcfKGajwsl
+         5Et41Ze5Qof7vayAuFySj76Ln3J7lQZKNmo042m/iXl2jovvuJ6s1J6RGF6RHdUe2EBa
+         mhDw==
+X-Forwarded-Encrypted: i=1; AKwUvBwnE0fhHX3LGKAdW/Nd6afIdkaJU5Hp/9oNgCbQsIk64XkXtjpURu6YgFnVM8S2uqQYqR/9w23dZ1/zpmw=@vger.kernel.org
+X-Gm-Message-State: AFuF++ny12H642WMVmLS1C0tSBFAV82ThDJ6yjaYkAp2xDkvShu5HVkS
+	60YpIfOmAv5qxOn15iYgh+lxkGu93mFEFVza6PBg+C1Mki82fa9RRZmIqMYl4/Wuaw==
+X-Gm-Gg: AYBFou3+6IwLBqyPJDaxBDGxI+cNPAkuYlXelqTFmOeumASqzYNZg01H1ZshKS8EaMX
+	fWbVHnhNk1uc80Uy0o/xygahwS2J0IsVy9kQQXaGomvuAtYodnm1eiKlGGXQtu2EjIA861hvmu9
+	C62HW3mL7FsLaFOlvgA7wPZacgkQs0lNAPlpjazWQwbQ/wPXVMvqM2bocH+yU03hdbpqrOedidf
+	W/wwWSnaqyxuYDztuzWCOUE3SuZ8IaTkSOU69vFv4UjCS8iPisPRO5ULsfC2U81ZdeWmMhtPokv
+	n4LrOU/TGaW6Pgrx97HpI44TbiWrVWSvM69L9oQoOBx1eHr2vdNOrWDrsN2zQcjBFm3IlQcavZM
+	jbeEAUEZ0ZKNqVwa1evERHWkWM1UrLjlBRBi+HGT6WMv88/eQxVSCqJY0iQLKFw1Z6lKMlEp4Ew
+	2eOup6d1DLVQCkB5jGbK/OaHN4UD/H0pzPex12eQ8UfVaUkG60906vUIUpGjaZCJ6UcJ1OiPiyY
+	08pcsRgx9T3M4NMqvE8kqDi45oxc04Sv1JxYDELY8SdGLGPzA==
+X-Received: by 2002:a05:6a21:492:b0:3de:3bd5:604c with SMTP id adf61e73a8af0-3de9e87f358mr387844637.41.1790748487167;
+        Tue, 29 Sep 2026 23:08:07 -0700 (PDT)
+Received: from google.com ([2a00:79e0:2031:6:31b3:f8c3:893a:d0bb])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-88725d68389sm247895b3a.39.2026.09.29.23.08.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2026 07:12:01 -0700 (PDT)
-From: Aaron Conole <aconole@redhat.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: davem@davemloft.net,  netdev@vger.kernel.org,  edumazet@google.com,
-  pabeni@redhat.com,  andrew+netdev@lunn.ch,  horms@kernel.org,
-  kernel@xen0n.name,  chenhuacai@kernel.org,  tsbogend@alpha.franken.de,
-  deller@gmx.de,  razor@blackwall.org,  idosch@nvidia.com,
-  ardb@kernel.org,  tim.bird@sony.com,  loongarch@lists.linux.dev,
-  linux-mips@vger.kernel.org,  linux-parisc@vger.kernel.org
-Subject: Re: [PATCH net-next 3/3] net: drop unused LLC-related includes
-In-Reply-To: <20260928190800.2521749-4-kuba@kernel.org> (Jakub Kicinski's
-	message of "Mon, 28 Sep 2026 12:08:00 -0700")
-References: <20260928190800.2521749-1-kuba@kernel.org>
-	<20260928190800.2521749-4-kuba@kernel.org>
-Date: Tue, 29 Sep 2026 10:11:53 -0400
-Message-ID: <f7tpkxw405y.fsf@aconole-thinkpadt14gen4.rmtusnh.csb>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Tue, 29 Sep 2026 23:08:06 -0700 (PDT)
+Date: Wed, 30 Sep 2026 15:07:56 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Michal Wilczynski <m.wilczynski@samsung.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Russell King <linux@armlinux.org.uk>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	Helge Deller <deller@gmx.de>, Heiko Carstens <hca@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Minchan Kim <minchan@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	Jens Axboe <axboe@kernel.dk>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, 
+	linux-block@vger.kernel.org, Yann Collet <yann.collet.73@gmail.com>, 
+	Nick Terrell <terrelln@meta.com>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, 
+	Jaegeuk Kim <jaegeuk@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Phillip Lougher <phillip@squashfs.org.uk>, Sungguk <sungguk.na@samsung.com>, 
+	Jaehoon Chung <jh80.chung@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
+	linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net, 
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH RFC 1/9] lib/lz4: import upstream LZ4 sources verbatim
+Message-ID: <aryehUJml8fTy0o-@google.com>
+References: <20260925-lz4-vendor-upstream-v1-0-1c7ffbe21c4b@samsung.com>
+ <CGME20260925113452eucas1p170bfdb34dfbf670a14a6f8f0c2f5094a@eucas1p1.samsung.com>
+ <20260925-lz4-vendor-upstream-v1-1-1c7ffbe21c4b@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260925-lz4-vendor-upstream-v1-1-1c7ffbe21c4b@samsung.com>
 
-Jakub Kicinski <kuba@kernel.org> writes:
+On (26/09/25 13:27), Michal Wilczynski wrote:
+[..]
 
-> The bridge and the openvswitch code include <net/llc.h>,
-> <net/llc_pdu.h> and <linux/llc.h> without using anything out of them.
-> parse_ethertype() is the one exception: it wants LLC_SAP_SNAP, which
-> comes from the uAPI header <linux/llc.h> pulls in, so flow.c keeps
-> that one. The LLC core has leftovers of its own - slab, string,
-> interrupt and net_namespace - which it has not used in a long time.
->
-> None of this is new, the type 2 removal has just shrunk the LLC
-> headers enough to make it easy to see.
->
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
+> +void LZ4_resetStream_fast(LZ4_stream_t* ctx) {
+> +    LZ4_prepareTable(&(ctx->internal_donotuse), 0, byU32);
+> +}
 
-The openvswitch changes look fine to me.  I guess it's just a minimal
-header adjustment so:
+[..]
 
-Acked-by: Aaron Conole <aconole@redhat.com>
+> +void LZ4_attach_dictionary(LZ4_stream_t* workingStream, const LZ4_stream_t* dictionaryStream)
+> +{
+> +    const LZ4_stream_t_internal* dictCtx = (dictionaryStream == NULL) ? NULL :
+> +        &(dictionaryStream->internal_donotuse);
+> +
+> +    DEBUGLOG(4, "LZ4_attach_dictionary (%p, %p, size %u)",
+> +             workingStream, dictionaryStream,
+> +             dictCtx != NULL ? dictCtx->dictSize : 0);
+> +
+> +    if (dictCtx != NULL) {
+> +        /* If the current offset is zero, we will never look in the
+> +         * external dictionary context, since there is no value a table
+> +         * entry can take that indicate a miss. In that case, we need
+> +         * to bump the offset to something non-zero.
+> +         */
+> +        if (workingStream->internal_donotuse.currentOffset == 0) {
+> +            workingStream->internal_donotuse.currentOffset = 64 KB;
+> +        }
+> +
+> +        /* Don't actually attach an empty dictionary.
+> +         */
+> +        if (dictCtx->dictSize == 0) {
+> +            dictCtx = NULL;
+> +        }
+> +    }
+> +    workingStream->internal_donotuse.dictCtx = dictCtx;
+> +}
 
-NOTE: I didn't review anything else in the series.
-
+Just a side note,
+there is a bunch of new helpful API added in this release.  Currently,
+we do some memcpy hacks to avoid re-init of lz4 C/D-dict in zram, but
+once this series lands I'll be happy to send some trivial EXPORT_SYMBOL
+patches so that zram (and other lz4 users) can use standard lz4 dict
+API instead of hacks.
