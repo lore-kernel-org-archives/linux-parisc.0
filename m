@@ -1,150 +1,127 @@
-Received: from mail-wr2-f34.google.com (mail-wr2-f34.google.com [74.125.225.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sunucu.ihale.com.tr (unknown [95.173.178.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67FA41443D
-	for <linux-parisc@vger.kernel.org>; Sun,  4 Oct 2026 08:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39892360EC3
+	for <linux-parisc@vger.kernel.org>; Mon,  5 Oct 2026 06:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.173.178.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791102843; cv=none; b=ARhlJPhhZ69/W7Ntiw5CCMePPLYA5bNJOe+WVID0aV47oTxg5Dko0l9167HCb0DPIHjN9WNNM8qWCKAG+vXmMjyqeEGWXOvqWDnE+jdlNplfQI/c0kwd2p3YADidlA0JcIFRSwNqShqZQ3cAKUw5DNXOQr0j/4xujMovvcwB6FE=
+	t=1791182287; cv=none; b=pd+MKW/G5TBGqU7lV1H+SPPsr3bjQzxGheEA+566bZudshQKAllnDxx1k2heZFoRv2ZSoFkGoWoOUBdQjyMnHp7N/sNwvvj6iJSLvY1HwMFVqaD/nrde/kBC0o8qKdRGaD26sRi9r0i3/ClISjwEuAb+J3bumu5W6Beiagg1daU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791102843; c=relaxed/simple;
-	bh=1sBv2SI3wnHyVQDHUJVigmIehBQG6EXZHnsM+TL5srs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NWh6tNneDyHbudRjKwkdpJsfOpPTjQHtS3F5d0lLnP+Go9Q237ct3k1s2uQTVVhDKk91neWAc+pssNjrFezcxoM8gkxYvyu4lvBUiTinD+s48vSYJnnitsVphsZapPNkhTtAFSCCW9BY373WahZlQ3ZOL1Eu4KL51TvvvObleNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NdkAUfd2; arc=none smtp.client-ip=74.125.225.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1791182287; c=relaxed/simple;
+	bh=GCuqivoAUOuohjs7VuXXiIbk8atlNTAptE1Sgr60/eU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XgdRISJkCof9Xddz5KJjnC0AgkLWq12OwXVdQcvjnP2s4Kfkvdpn2fOv6GMe6QEPUIvzX35dSx5QFoz3MN1oLyGTxp7wZRy/RNyMDHevC4UWWFmhCdEuGMkaMubjzyyIS44hw3lxG8Ukqs6Snre2aaq9Td79jRHxuMOAt9IG/us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=legendhomework.com; spf=pass smtp.mailfrom=legendhomework.com; dkim=pass (2048-bit key) header.d=legendhomework.com header.i=@legendhomework.com header.b=Ntql0S+X; arc=none smtp.client-ip=95.173.178.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=legendhomework.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=legendhomework.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NdkAUfd2"
-Received: by mail-wr2-f34.google.com with SMTP id ffacd0b85a97d-48b01c41135so478579f8f.0
-        for <linux-parisc@vger.kernel.org>; Sun, 04 Oct 2026 01:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791102840; x=1791707640; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=0HFDC0D77tUqEmXehAlYyAx2E0DK1wOzX1zKg1ym3bo=;
-        b=NdkAUfd2+KZTf3s9hEpqKwliTej8peJLCSWDISLUjLwt09egN/aiRz2XZCkpPnIhNC
-         aK2B8KkXrAsfSf5UqEl+SqvFza5LHgVUqAccsIdsuUTmlR+g8Uea5bMpAzd2qbdFBiCg
-         t8fADBhEweXTv2ZNQgB7eZ1zF3dsFM6vncUf/ADRkOjyLLHTRGIDP4eOp+lBBA8JuXeu
-         nBJoxu6110IVlbTfAnaegRILWMJ2WNttnECN9/fl0pH8w6q6eG9C43JEnC4p9zNrOs3x
-         cGQa4jIxiwUPFj88RAfsTL3tjVtRaEeC2g1Rjy8xyoFrbRQsWvwMztVhAx2Ih1bK6nsb
-         4faQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791102840; x=1791707640;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=0HFDC0D77tUqEmXehAlYyAx2E0DK1wOzX1zKg1ym3bo=;
-        b=2js98izvbOJ9lSQ68ASY9NChwOxTw/imE6RcC/V+gKoeZU8naeca0N9LH2EYPtyIte
-         cOc4PKPgN2nIE7IYHI6cjyJoEdv9FVkU8q4RnK0PGJwYI7pRyLMpiH1OeJ9HZccx/D6l
-         iVY7PwcWTzH0UDEuNvf3bLtsF5/fdkSxgMWlmftGUkSpjmNBEW4lAFmbn2rIXSyL33Su
-         tTbbY0uEMMOLVIYKPFoSTq6oDyOCrPTdHHIjWgOaGMIekNyijO1wqDn+WhsgurXTNGlC
-         gBl4WNLX8YUenzIXWPCyU1B4AVxeVeirH6aeevmtzBatfpS1T151wU5ZC77c9vZZbK6C
-         wxjw==
-X-Forwarded-Encrypted: i=1; AKwUvByMccu7Fpo1t/wPRNqIWAD1sLN2Qf+cT7O7wNQxci/tYavoAnILPpHnwk7+bsVb5Rxkizl1oCguszlW898=@vger.kernel.org
-X-Gm-Message-State: AFq9FYLxBSA9n5diUlxGvqa8Zm5jj+PDnqfd6OY9tqF6Jy821N6gsOt4
-	YM9xV71NfUcNApxOqsaELKeB1+pyUGgfVW4SFWjPXEA4ux540AGYXaGW
-X-Gm-Gg: AYBFou18VUW9TtKd8winUNylKyjo/CxN4H3gdLPHhFrJsB10Tzuvs+rGE9Q60KTSrBy
-	ibrREKr9UXC3eIhzahUEIYgWHRd0beeIXW9HJyo4Re/iK2KaVvSEcwTo9HhtMQfDTTkDqVMtLsd
-	WqGIXK7q2ounxuPpq/LN3HabstFAH4/9N/ZJ9T8OPWP+kD6ALyhCdoXXBW+j7xs28xTIlfiC87t
-	ROQ0B97vsyAelqymqeoX2emX9/CQZJJF+Rj6PAJcSHgi3p/3i6zSYv5RDUheLcgola9UB8Vnvdn
-	LDqpa4fEUlEO4MJWsM7cYnsZkDT3X64X7oVh3e2jLq0LafTDHSgO9HNe50xMvZcnk3SSs4jVnkN
-	/EEKHAOHJelbEqVwi6q/hEo91EXXOedmjyMRajCLlThRn1cmTbLUMnfn6tG/mIkOLjrckLSXKL9
-	WlNY4GOPaavyQ8xI57curm7FEYAZN5rtZXwTpVegZdUzQ3gmsq+1zoPcD6+2yL0TLc1wRqkpMfT
-	iStfx7v/SoZjZT8GDE62h3YQy7DDqeT/oR9nlHkKArRRQ==
-X-Received: by 2002:a5d:5d0f:0:b0:488:83f7:633a with SMTP id ffacd0b85a97d-48b12736b49mr11750202f8f.28.1791102839800;
-        Sun, 04 Oct 2026 01:33:59 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48b380f04f8sm17350793f8f.9.2026.10.04.01.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2026 01:33:59 -0700 (PDT)
-Date: Sun, 4 Oct 2026 09:33:57 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Michal Wilczynski <m.wilczynski@samsung.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, Nathan Chancellor
- <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Bill
- Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, Russell
- King <linux@armlinux.org.uk>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger
- <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Thomas
- Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, Minchan Kim <minchan@kernel.org>, Jens
- Axboe <axboe@kernel.dk>, Andrew Morton <akpm@linux-foundation.org>,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-block@vger.kernel.org, Yann Collet <yann.collet.73@gmail.com>, Nick
- Terrell <terrelln@meta.com>, Gao Xiang <xiang@kernel.org>, Chao Yu
- <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>, Herbert Xu
- <herbert@gondor.apana.org.au>, Phillip Lougher <phillip@squashfs.org.uk>,
- Sungguk <sungguk.na@samsung.com>, Jaehoon Chung <jh80.chung@samsung.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, linux-erofs@lists.ozlabs.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH RFC 1/9] lib/lz4: import upstream LZ4 sources verbatim
-Message-ID: <20261004093357.33a124b4@pumpkin>
-In-Reply-To: <fac0f401-bbd3-444b-a755-53cc393673de@samsung.com>
-References: <20260925-lz4-vendor-upstream-v1-0-1c7ffbe21c4b@samsung.com>
-	<CGME20260925113452eucas1p170bfdb34dfbf670a14a6f8f0c2f5094a@eucas1p1.samsung.com>
-	<20260925-lz4-vendor-upstream-v1-1-1c7ffbe21c4b@samsung.com>
-	<arn3TC7BgjTXWmdG@google.com>
-	<fac0f401-bbd3-444b-a755-53cc393673de@samsung.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	dkim=pass (2048-bit key) header.d=legendhomework.com header.i=@legendhomework.com header.b="Ntql0S+X"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=legendhomework.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Unsubscribe-Post:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=5lmJJ0mEKCC15dQaupFmVY6/ZNMzkad8UFLiXk6+8uk=; b=Ntql0S+XpL7vKWe2tiDUZpekoP
+	7W84UgnEuep32XEaQPMrw7e8UZDdoA5MPJfT7TeVPjuzBFn3eF7jS8HJIxvhBFB0JZkPoBU6xos5m
+	PQTGSneifgaimXvrJFIiStujwfiXD/q4rt9glOGRSBiUY59QMr9sEwhlR2iz+12Y2DI4kW1IFmZoV
+	Fp33yZSTMoDvaBx4eU8ukN7APjexG8Eg7MpYtrejQwqtNSkTDMTMv0vIKYTjKZAEBHF2NWm+lq1va
+	GZBv3OqSF8XovqT93trD2tOUFv32R9BvkqKAL3phF4xT7jvifugDB0d0IpZAjUXKBB+UmLIOqaHGy
+	G029gs8g==;
+Received: from [154.120.97.226] (port=65251 helo=legendhomework.com)
+	by 95-173-178-186.cprapid.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.100.1)
+	(envelope-from <info-llhm@legendhomework.com>)
+	id 1xDcKg-0000000CQ2N-3QLm
+	for linux-parisc@vger.kernel.org;
+	Mon, 05 Oct 2026 09:37:57 +0300
+Reply-To: perrymail@tutamail.com
+From: info-llhm@legendhomework.com
+To: linux-parisc@vger.kernel.org
+Subject: Your Consent
+Date: 04 Oct 2026 23:37:55 -0700
+Message-ID: <20261004233755.A60CC0BC9CF1C3A7@legendhomework.com>
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - 95-173-178-186.cprapid.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - legendhomework.com
+X-Get-Message-Sender-Via: 95-173-178-186.cprapid.com: authenticated_id: info-llhm@legendhomework.com
+X-Authenticated-Sender: 95-173-178-186.cprapid.com: info-llhm@legendhomework.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-On Sun, 4 Oct 2026 01:50:39 +0200
-Michal Wilczynski <m.wilczynski@samsung.com> wrote:
+Greetings,
 
-> On 9/28/26 07:19, Sergey Senozhatsky wrote:
-> > On (26/09/25 13:27), Michal Wilczynski wrote:
-> > [..]  
-> >> +int LZ4_compress_fast_extState(void* state, const char* source, char* dest, int inputSize, int maxOutputSize, int acceleration)
-> >> +{
-> >> +    LZ4_stream_t_internal* const ctx = & LZ4_initStream(state, sizeof(LZ4_stream_t)) -> internal_donotuse;
-> >> +    assert(ctx != NULL);  
-> > 
-> > Probably in some other places as well:
-> > 
-> > LZ4_initStream() can return NULL, but the code immediately derefs
-> > the pointer.  The assert() check seems to be misplaced, unless I'm
-> > missing something.
-> > 
-> > I suppose those need to be decoupled.  First LZ4_initStream() call and
-> > NULL check, then stream->internal_donotuse.  
-> 
-> Good catch, this assert() is a noop in the kernel (as any build without
-> LZ4_DEBUG), so a NULL, undersized or misaligned wrkmem oopses in
-> LZ4_compress_fast(), and LZ4_compress_destSize() and LZ4_resetStreamHC()
-> carry on with an uninitialised state.
+My name is Dr. Innocent Bariate Barikor, Director-General of the=20
+National Environmental Standards and Regulations Enforcement=20
+Agency Nigeria - (NESREA).
 
-The assert() is also just a waste of code.
-Debugging the NULL pointer dereference is just as easy.
+As part of my official responsibilities, I monitor environmental=20
+compliance and pollution associated with oil and gas exploration,=20
+drilling, and production activities in the Niger Delta and=20
+submits relevant findings to the Presidency.
 
-David 
- 
-> 
-> No in-tree caller hits it (all use kmalloc/vmalloc), and I listed the
-> alignment requirement as a behaviour change in the cover letter. Still,
-> the vendored files need to stay verbatim.
-> 
-> So in v2 our own entry points can check alignment with a WARN_ON_ONCE()
-> and bail out early. It might be something that we can fix upstream as
-> well.
-> 
-> 
-> >   
-> 
-> Best regards,
+In the course of carrying out these responsibilities, my=20
+investigations identified significant environmental compliance=20
+concerns involving four major oil-producing companies:
 
+1.      Shell Petroleum Development Company Limited
+
+2.      Mobil Producing Nigeria Unlimited / Esso Exploration &=20
+Production Nigeria Limited
+
+3.      Chevron Nigeria Limited / Texaco Overseas
+
+4.      Elf Petroleum Limited / Total Exploration Limited.
+
+The four companies were subsequently assessed penalties of=20
+US$1.2Billion, with the applicable sanctions providing for the=20
+potential revocation of their operating licenses in the event of=20
+non-compliance. Given the importance of their operating licenses=20
+to their continued activities in Nigeria, the four companies=20
+appealed for a reduction or waiver of the assessed penalties.=20
+Their requests were subsequently considered by the Federal=20
+Government, and the applicable fines were reduced to US$800=20
+Million.
+
+The companies have since settled the revised penalties with the=20
+Ministry of Environment. They have also indicated their intention=20
+to provide a US$50,000,000.00 payment in recognition of my role=20
+in the process. However, as a senior public official, I am=20
+subject to the applicable Code of Conduct and therefore cannot=20
+maintain or operate a foreign bank account for the receipt of=20
+such funds. Consequently, I am unable to provide a foreign=20
+account for this purpose. In view of the foregoing, I am unable=20
+to personally receive or facilitate the transfer of any such=20
+payment because of the restrictions applicable to my position as=20
+a public official.
+
+I therefore seek your assistance in identifying a resourceful and=20
+transparent mechanism through which the matter in relation to the=20
+gratification can be addressed without any traces to me=20
+considering the fact that I am still in active service. Any=20
+proposed arrangement should be properly documented and, where=20
+required, discussed with a financial facilitator locally without=20
+mentioning names; so that all parties are adequately protected=20
+and the transaction is handled through the proper channels.
+
+I would appreciate your guidance and cooperation in resolving=20
+this matter in a manner that is fully compliant with existing=20
+financial regulations.
+
+Best regards,
+
+Dr. Innocent Bariate Barikor
+Director General
+NESREA.
+Direct Phone/Whatsapp: +2349019779152
