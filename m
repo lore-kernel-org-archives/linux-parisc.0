@@ -1,66 +1,156 @@
-Received: from mx0a-00617f01.pphosted.com (mx0a-00617f01.pphosted.com [205.220.165.167])
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E724217D6
-	for <linux-parisc@vger.kernel.org>; Wed,  7 Oct 2026 00:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CC141A4E7
+	for <linux-parisc@vger.kernel.org>; Wed,  7 Oct 2026 11:00:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791331697; cv=none; b=ZcFCoKS2NQm+mfAumAyOMw/0e6j4e3DEzvACQBKQQpNC6REAmj7AdJGUtjjaX9T3NlYjQNvb3TMFsIPttfrR4m8zZIXolqS0BifTQmMi1X6ALF6rJkeh5DZ2WjHy0TI38JdJGNg4ZLQT0kdJqlgBR1CUumHlosMHvkUYh7OUQ74=
+	t=1791370836; cv=none; b=rrPe8fFBAit3/5jNVWngMNIPBDPC6NwL6y96b0R54JpHgcq2qZP4mzIzDOnl6mtYkPFMv+gDN6/J1CjVv2RI16UrOcmGtjHxh/CP/B+OYY2DC2bJWJqwbZ1BXvfkEQw/zc1PethHMi/N2sfzKEG//fNAdiEUCWuywtGV9EpSTEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791331697; c=relaxed/simple;
-	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SdFBJfS6ctWe53K5QfaSJgm0NWZZigXQw26H7EfdkZR61Kut6YCNGyNWGs/dh1Q7wdYUrUTqAuz40YzEWkd/iQNJ1SW2EB1o0wK6z25dFIZxjE9+HFliXEehckW5d25DMuIlJSfAEVZifx3DADNWUIJ5A13uwe/8Ip9PWAbZ4fo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=psmicorp.com; spf=pass smtp.mailfrom=psmicorp.com; arc=none smtp.client-ip=205.220.165.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=psmicorp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=psmicorp.com
-Received: from pps.filterd (m0247527.ppops.net [127.0.0.1])
-	by mx0a-00617f01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69700GeG3310426
-	for <linux-parisc@vger.kernel.org>; Tue, 6 Oct 2026 20:08:14 -0400
-Received: from egc-exch2.psmicorp.com (webmail.psmicorp.com [38.142.134.66] (may be forged))
-	by mx0a-00617f01.pphosted.com (PPS) with ESMTPS id 4h5b5e00qf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-parisc@vger.kernel.org>; Tue, 06 Oct 2026 20:08:14 -0400 (EDT)
-Received: from EGC-EXCH2.psmicorp.com (10.1.1.111) by EGC-EXCH2.psmicorp.com
- (10.1.1.111) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.61; Tue, 6 Oct
- 2026 17:55:51 -0400
-Received: from psmicorp.com (10.1.1.107) by EGC-EXCH2.psmicorp.com
- (10.1.1.111) with Microsoft SMTP Server (version=TLS1_0,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.1.2507.61 via Frontend
- Transport; Tue, 6 Oct 2026 17:55:50 -0400
-Reply-To: <greg@gospelmusicuniversity.com>
-From: Evans Thomas <_us@psmicorp.com>
-To: <linux-parisc@vger.kernel.org>
-Subject: fund transfer opportunity,Reply..
-Date: Tue, 6 Oct 2026 23:55:47 +0200
-Message-ID: <20261006235547.F1B7E96AF4F91DB9@psmicorp.com>
+	s=arc-20240116; t=1791370836; c=relaxed/simple;
+	bh=Y9bpFOM1VUhnaOWBbYrZlpU+30dY39GCJjPIDQtXR3w=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=T3HCKgmXTcqRhT3KUbECoZniJGIWzmCaNnH7dZi5cxqWUEher2liPeWEu5TrREZZcfrQJDTJ1gDKz2r8mPdldcRxQSBOLhObjKzQklwJhX7P7j2HT8BLqBkKdwoUFbOcj7ttkSmwJI6zc8gr7K+pAaPmFL6sh74Ok1u1PAbYoQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=m8DPf50w; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SrVzVUSs; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="m8DPf50w";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SrVzVUSs"
+Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 1C00514000DB
+	for <linux-parisc@vger.kernel.org>; Wed,  7 Oct 2026 07:00:10 -0400 (EDT)
+Received: from ams-imap-03 ([10.64.2.23])
+  by ams-compute-02.internal (MEProxy); Wed, 07 Oct 2026 07:00:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1791370803;
+	 x=1791457203; bh=LDG3xjPOJ2obgXVD18HUKbMq4LTvYDGG9OdLOFRm7do=; b=
+	m8DPf50wuhguwYdW3zRPocZq96c03weW3wYv8iCddrOULN4WBw7StPKPb5H0k0+j
+	MJmNc6AWDGdM1yjDJR93o6ixEfVbYZHx/gpq2UJK1/5iR87sgzKab5X226RdB7zv
+	MXnvaDN1+GPSxpVSPEKR/taPFKhLbtWyfcaUu7Vuu3ex4iigpXARtFQ5aBCekCU0
+	AHLizgNmX4Vk2CpAG5pytlKuZtmropm6qMTFvMgnrP8dgWq0ocAMntmLc3tg8XgU
+	BaKEuzrePnwT6KIAZHdYhwldwu82tD2RpbRZWkI8FH4rEBHHS8NH2Ft/ObQkB97D
+	u+rMUyDShB/oI0dQwv7oAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1791370803; x=
+	1791457203; bh=LDG3xjPOJ2obgXVD18HUKbMq4LTvYDGG9OdLOFRm7do=; b=S
+	rVzVUSs8CQTBx07XpvR376VEFaFGMDX1AqrnuV8EaIuryiPoM3M7xc0Ja6yLS0JA
+	H+h2rb9mqeOANOZv/AhPAbJ5pcfhKJx5+CVtf9p5H5T9IB7V/jh+fwbKkRAngFEe
+	t/1U0rmN4YGg/PT3P333LruFcyVzp6K2wvqFpPAU3XHXiq/Olmp3SDHipjP+UBS4
+	kUVAMOXGaM1ZyAOuzFvhNxEFDao41l+sBZQJ75r4SVf/NjniGAMdhK47DOlkzPUx
+	yJJ75eAiIeqqHaBU9MsecFtDpLOi02peln+TiKfAsF4IvyCTtAzaeyn2he345PTF
+	mg1WfJOuWNPunO3VhFAoQ==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-10-04; sw=lmtpprox;
+	action=sign d=arndb.de a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1791370803; d=arndb.de;
+	mf=PGFybmRAYXJuZGIuZGU+;
+	rt=PGxpbnV4LXBhcmlzY0B2Z2VyLmtlcm5lbC5vcmc+;
+	s=fm1:rsa-sha256:U3savT3xUXjlSM8EoIQlcPIrg4uPvtI5CModdlLoq1lzVgz
+	kVRNthLiP8++QmI2dbWUcN8tDo3nm1yqSGsInRvnSMUehBF/dc4OjYR+FHINb4Cp
+	Fvy6XdCcjvQNn8N1eVkErg00zoZ0tl1HikSH9fGtNi0gLTTStQL/0/xk7Yb3rUTL
+	0m11/7LMVtznWZiewYFp/1ll5WmcLUz4516ZRcD8O+Ii3RUudBE/6dhYbbNIPNbR
+	oWoloaOLdyCElB+7jhszs7284lA8RwkjlgVTQJlNra5HQUdVWCd965Ng2rstE5oL
+	P/xynvIrMk4eFHOatZnprnFdmybkyOnLBNph9Kw==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-10-04; sw=lmtpprox;
+	action=mi-m=1; hc=12;
+	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
+	from,in-reply-to,message-id,mime-version,references,subject,to;
+Message-Instance: m=1; h=sha256:vCT1nfdBQj3oXWwaSi3lCGALNtaYDGzayYnhnDtPRjo=:Y9bpFOM1VUhnaOWBbYrZlpU+30dY39GCJjPIDQtXR3w=;
+X-ME-Sender: <xms:LSbGarkWn698_dJyqRA673k9qNZW1ll0_EcbAizMgFc7nBR32L6-iQ>
+    <xme:LSbGapq2QfEImjVr-jSMpRTlsr7pjVkMrutbtRxBQiYXvTlCFHQvWC8xOMgE0Wx5E
+    lwHJqazqEc96Tftiskl8Xl15DsWzICSDOLgInLCpr_XcFqT9mY1YCSe>
+X-ME-Proxy-Cause: dmFkZTGEDCjvNfWDKrRH2lIdXWpDMQQKRGHdOAgLDdnvttQ2Nh/6e7YhPKrOpL13jQWw/2
+    9hUx4R5faPZnfScnlXtZ/Ehvpq9grx2ik2bnnmb+uUIVqno40FnNR5Gzr59YGz/XV9WioM
+    SCM7mdikVFll5h7hI4GYrdvGZa1pXTdewJV/N+rzujJQNrmcy1l//DEOPfnWsbsbSwvfJ7
+    O/4B7ZU7y1BA+ZmN70Ss6qvH/KElvXczmM8ddR3ejWX8z7mxKFHNcj0LzmHwmAtnxTdlqN
+    d6NkTBf9dfFGUha7ibheEVgO+laHUmcVaq2zDalqPHWEfTdlmO0tT3ZHb+m254FspA2Cj6
+    2YNqndHibOYKpcPFOgeSmiLwKebtF4b1cRLOcmvV8yAid5+GXr0Tih/mtRDn1XHquHeVCF
+    nEbTVc7GmutpR3L+jpqtEDM6Yv7/pBqM39w80GlMPx5MVtHSwU/gXavOt8T4xDFC7bs7OF
+    vT+/wHV1eIw9wO359Dm9BZqmTefBGjSkPLB5kmsC2q4ZgUKK+iRoE1DrRkIt3opdUTQDp7
+    N5x+gNtrWSaXGjhVwHSYUTTMZDj/0xSz1bLfje6X5EHP8AHSBy6NRjoOY4g7IdsOZ9j0M3
+    kuGoJYa1EL++lxEnlVN+6UKpGjfHc/2qOlpdkr745xuCTNMO/wlkuxLgdNpg
+X-ME-Proxy: <xmx:LybGagcSU6hl5pS0tBYAdJuwpHk0nA1F1Q6k-0yRtXruDXVXG6C_PA>
+    <xmx:LybGapzGllSG-2QI_CHu-meNz9wkVTImQp-pdDwXkQRnD4bg7dnsIg>
+    <xmx:LybGahLDHfWE2MQJ8m5MKSbbKT0oL1JhDySJ8jHaWT2t7P0IkzS28g>
+    <xmx:LybGaiuaOT91slmt37NDQcfa0ZKn_h-OrlrxE0j305qdtjcbFGY2zA>
+    <xmx:MybGau9EEJ20Z9m3dtOrYclxAFB15Ww8GYwo1EcO1Z6x409JXUJ4YTmh>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.ams.internal (Postfix, from userid 501)
+	id 3BB9F32A008E; Wed,  7 Oct 2026 06:59:57 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-ThreadId: AICZ2hJ9SF6o
+Date: Wed, 07 Oct 2026 12:59:16 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Marc Kleine-Budde" <mkl@pengutronix.de>,
+ "Stefan Kerkmann" <s.kerkmann@pengutronix.de>
+Cc: "Ian Rogers" <irogers@google.com>,
+ "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+ "Helge Deller" <deller@gmx.de>, "Andy Lutomirski" <luto@kernel.org>,
+ "Thomas Gleixner" <tglx@linutronix.de>,
+ "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+ "Arnaldo Carvalho de Melo" <acme@redhat.com>, linux-parisc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "Eric Biggers" <ebiggers@google.com>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>
+Message-Id: <2f6094ff-f585-4b8b-8c25-20c11d1bfc7d@app.fastmail.com>
+In-Reply-To: <20261006-dynamic-succinct-woodpecker-a36c7f-mkl@pengutronix.de>
+References: <20251016205126.2882625-1-irogers@google.com>
+ <20251016205126.2882625-3-irogers@google.com>
+ <47f8c30b-e326-4ff0-a2bc-5683209a9e2d@pengutronix.de>
+ <20261006-dynamic-succinct-woodpecker-a36c7f-mkl@pengutronix.de>
+Subject: Re: [Regression] [PATCH v5 2/4] vdso: Switch get/put unaligned from packed
+ struct to memcpy
 Content-Type: text/plain
-X-Proofpoint-GUID: MqgBukb34CMuEHAVJGrp3e2Emzys04Ut
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDA3MDAwMCBTYWx0ZWRfXxy1952N/2K44
- NB74IafFe0Q4PvAnojUkQl99YO1pgZBXbRapR34sjnXfc0h4G7FGIQMegMBl2e5yMdV+IjG6Aad
- ZYBYGY71jAGLk7BX9mwVZJUTmpeBl1ez5AVJWtIgsJAcTh86AIKgbe9cnsSJurzsPTNT4tWPSXJ
- oe7fNvrQH1fANxqDyGjc/M9/Yvc1qaDCPtCXpICASkzjzSMrmD+jjC8K/krJOxvX8Gu25jYkR3k
- RxHaXJxHjlb+nJSqtU47w0csBDHVM7qC29eujj+W3p7hpTj0P/K+ORcPDWwUXTYK13KhkAs7qU8
- ssWRKzmBq/Saqynl2afMmkNY0y4g0aPsPKqhZ5D6i0imAhKdtJbYqTmH1lxxpGBLOn7UV1svG9y
- iHrXFwB2TdfbSTV09YwgASzrfLG7jmP2a8wwogxds5LtaZ2+RwisG6cQbNwV5x5GEbPZi/R+1mt
- OV0Ak32+JbgtkCgHXcw==
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMDA3MDAwMCBTYWx0ZWRfX8rJZH2KogKHL
- +BmfJ8sdSDD56gkYj1oSZdAHzmaF4FJucAUV4NUogaQ6xNzqb4m3hCTs8fz13q9v8O2LeCmJ+UB
- Jy7SyAtFAQV5rRN/IikO8zol389mCI69I9H0NJn12enaYee3goqh
-X-Authority-Analysis: v=2.4 cv=GvTXaU1C c=1 sm=1 tr=0 ts=6ac58d6e cx=c_pps
- a=sNj4pI0fii9qGHoVqNzRVg==:117 a=sNj4pI0fii9qGHoVqNzRVg==:17
- a=660iZSQnnn4A:10 a=VkNPw1HP01LnGYTKEx00:22 a=ZHGAjPH774soz-f4Le74:22
- a=GfZueQGhKz3ujf-POmTq:22 a=tclcd6dtLQvEqt9_mmAA:9
-X-Proofpoint-ORIG-GUID: MqgBukb34CMuEHAVJGrp3e2Emzys04Ut
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015 impostorscore=0
- phishscore=0 malwarescore=0 priorityscore=1501 suspectscore=0 adultscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2610020000 definitions=main-2610070000
+Content-Transfer-Encoding: 7bit
 
+On Tue, Oct 6, 2026, at 14:31, Marc Kleine-Budde wrote:
+> Cc+ Arnd
+
+Thanks for the Cc!
+
+> On 28.09.2026 17:39:15, Stefan Kerkmann wrote:
+>> Hi Ian,
+>>
+>> On 10/16/25 22:51, Ian Rogers wrote:
+>> > Type punning is necessary for get/put unaligned but the use of a
+>> > packed struct violates strict aliasing rules, requiring
+>> > -fno-strict-aliasing to be passed to the C compiler. Switch to using
+>> > memcpy so that -fno-strict-aliasing isn't necessary.
+>> >
+>> > Signed-off-by: Ian Rogers <irogers@google.com>
+>> > ---
+>
+>> Is this an accepted trade-off? My understanding is that the kernel is always
+>> built with -fno-strict-aliasing, so the packed-struct type punning was well
+>> defined there, and the __packed annotation is what lets GCC generate valid
+>> code for the unaligned access.
+
+The previous upstream version was the result of endless discussions, and it
+looks like changing it to the memcpy version was premature. At the time we
+unified all architectures to use a common implentation, this was the only one
+that resulted in correct and fast code on all architectures, so I don't
+understand why this was just applied without including everyone who was
+involved in coming up with the version that was replaced.
+
+My feeling is that we should just revert this. I'm not sure about the
+motivation for the change. It sounds like this was meant to be
+used in userland code, and that clashed with assumptions we make
+in the kernel, but I don't think that is sufficient reason for
+regressing kernel code.
+
+       Arnd
