@@ -1,211 +1,246 @@
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from fhigh-b5-smtp.messagingengine.com (fhigh-b5-smtp.messagingengine.com [202.12.124.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F064D7977;
-	Sun, 18 Oct 2026 16:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4330F30F7FA
+	for <linux-parisc@vger.kernel.org>; Mon, 19 Oct 2026 11:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792340853; cv=none; b=S5GiTtQTdmoJOYC3UTqduWFebRqffotJG3gVd7cRClYmJp5JYgtbJ9+pXakP1/S/Ii7pjfdayLtzh7LUAxF2XyhB058izfuYN11jJbllybbhvH8g4tfFn+RvkMDwfiy9L245B/Ndcw/zqfCeULK9/Hwycg7/CUDK15Zmurub+6I=
+	t=1792408626; cv=none; b=QvJfgc+btmLUgB/vl0YOdzB9HIahupfxRVAx6ddao8evrly7ixXj5wNm0GuRhmzlr9xU1QtKNhkH05gH22YcbrHcXIfzd7u5okl/ajENn+BRY9elyrLfGCXLY2gI9CWLR/BAlF9aVsGum0cbJm1fDvT4LtjleBcFQ381BR2ttjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792340853; c=relaxed/simple;
-	bh=IWBW393roTtyH+SoJ3yYIuklktL7zbs17Q3aYUO/OFs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y9BMIe6SSS4NRbOxjQr1NyujQvb2U0b7Xa4RorsO0KT6chJOoaeYAeh31UW4T2Z15vLarrGi53vI7qy52owxw5DQJRlVkjRkHjlZlZMlrzUeG/Gn84FsyH7r1ErUarfbtHtLC2EPkt6f0v+Jmrk8/N4rwWYE3BCReu0lyR2QiHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=nn6VQYm1; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+	s=arc-20240116; t=1792408626; c=relaxed/simple;
+	bh=O+NWByob2gVZL0+tsbFgHWpFXaQuqITlhKc4tDqFErw=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=HZZi8qbPZLOTQpKZRGkMkqN8qOnfKoqoKgwY4OlLFXzNhO34v9/xTzUKLyRQXI5l4Q6Syp35ssKcqgR9T6yINB4ylXBHb5M1hGHAnymqSvGVoi/KJ4gPsDmbJZO1i1BadPM7M9JdaCN/iBmG3bUG14Z6DO/F2riOgu6+lWvbE78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=b9d7dDhE; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=rDB3KOnx; arc=none smtp.client-ip=202.12.124.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="nn6VQYm1"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1792340843; x=1792945643; i=deller@gmx.de;
-	bh=l+gw9wSK8gDxLvx6rt0fbJ3kIRU1JGeghdDxIQ2MK/0=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=nn6VQYm1lx0QFMIXqC9ryckmRLEU1yQwWQF6xr0lbAiT8tk+ruuE0y5FeJ6iPKQF
-	 8BFi/GgC3zyAPSFt5ReOSQfJ+/UiWsqWsRnH4JE+Drkg7lfJq7XzbofIo3uvAGaAc
-	 XzUWpkV8Ft89V/R1d4XGbMh9jR9ocJOJGtumlVpF0hvd+4W2+nZ4uGXlzh3g2Lrid
-	 lhbcJFdTjaEIEpKCSVArw3qXqr99R6wbuslYmTVgidRE25+zv4fdqF1t43Av4og5i
-	 N8T3b4DWioxmUP54KcCjBrtmMH56uDBrjJewYq1U9Z62xPuBtJOIGk9caw4oocuKm
-	 IABQYbhZdPL11nMocw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from client.hidden.invalid by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mzhj9-1wNKhu3FZp-014afd; Sun, 18
- Oct 2026 18:27:23 +0200
-Message-ID: <de5737d1-5760-43fe-a852-2910c1bf9d9f@gmx.de>
-Date: Sun, 18 Oct 2026 18:27:22 +0200
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="b9d7dDhE";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="rDB3KOnx"
+Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 40E347A00BA
+	for <linux-parisc@vger.kernel.org>; Mon, 19 Oct 2026 07:17:01 -0400 (EDT)
+Received: from ams-imap-03 ([10.64.2.23])
+  by ams-compute-02.internal (MEProxy); Mon, 19 Oct 2026 07:17:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1792408615;
+	 x=1792495015; bh=zgLYa/JnxT/8EIQ/TE2CX6B+wBarwWr0qwjQhA9dpNI=; b=
+	b9d7dDhE9PatOGwZBYyfkXv3N3OjEFxIPcP3FItJP4pZeMhgK9InPcYIaBjpDOtq
+	d+FKaldDcFyG6HsPEjdruPhwf/rhWdfenmcIQWxN2M7Qn/QKcI8AJNgw8nolYIsK
+	DTGExytUlEnhp0xBt81fHxzcRUQ9oCHG8PuzUQexVOfVA4fjfkUuRksqs1admKbs
+	nWP33JQCAWF1VOnM6wk2x0CzGkBRr+r4SVb9HkWvNtPmGYwfN/FphQzxzd0s++3A
+	mFF1EdItiemGEvO0PN9jQm7KUeA7lA8kx2MneLi8J/VERryhqT5TgcdoOBSDYzaV
+	6MaLNbD2m+VG+U0SyQkkEg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1792408615; x=
+	1792495015; bh=zgLYa/JnxT/8EIQ/TE2CX6B+wBarwWr0qwjQhA9dpNI=; b=r
+	DB3KOnxG8B8v7pIH2IVJwBK6wpdcjQl1Rr5eZjm2eVJrvU5Eel78XLQOP0QWnl5E
+	VFct/6DAZOU7ozsnfU+nPmpi/4U7dOqcDpa2PGLigpf3dPKyKFb2sizoCJlzxZcA
+	6638nm7LgI41Jp+ElTp6OxN/jc/Kbh8MMLGcY9k2/97fn3esDoMvy90+ZxS6w+Hx
+	Z8uS2qNH1IBsLVryeS6ciLmyca0GOMJGu34urEui/ka1AgkUoM8l06jxVNhOh+Or
+	AA9YfqAuZ1WOCOAGqL5n/TzJYcmxumjxhJYJn+iQKVmeNEGCrJgHJYdDHRt2AxRw
+	9c53KgKiX/V700NJvz1IA==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-10-08; sw=lmtpprox;
+	action=sign d=arndb.de a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1792408615; d=arndb.de;
+	mf=PGFybmRAYXJuZGIuZGU+;
+	rt=PGxpbnV4LXBhcmlzY0B2Z2VyLmtlcm5lbC5vcmc+;
+	s=fm1:rsa-sha256:CNnYQskKnfdeamCHNL0BBbXvsSn0OHw4NH02yBgNM3jQE6v
+	6AJ+D5Aq63uCY7NTvHGB1ABC2xXE8wcR5oURwNjBxiDZaLO72WVV+uXhidrinzFx
+	BDDa/pyMOtMxAJn4t3F/8U6J2KkwMVoArXzPCL0A13ADdKChKcNhSTneg1g6tjI2
+	YXG7nf8cOnCCnenuOaUMJyJhiSGYiXio7cchpfM0VgkdRBiTMSGYo9hCS9ek22vQ
+	lx7wKuMCPZ8+PIfqouRDT2uLcTxqxMhuvEbrLruTkVVlMgFWL2g3/3cdtEqLwnH/
+	vVEGoxZB01FCjR8F6BgqIsk+K6RpRIul/bRxlCw==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-10-08; sw=lmtpprox;
+	action=mi-m=1; hc=12;
+	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
+	from,in-reply-to,message-id,mime-version,references,subject,to;
+Message-Instance: m=1; h=sha256:zJKx6kBh4q2kkDyKsibzk02wNoyknxOpIXYcNiMoR90=:O+NWByob2gVZL0+tsbFgHWpFXaQuqITlhKc4tDqFErw=;
+X-ME-Sender: <xms:I_zVarT5Lgv-2DoJUZgLQMZFY97RfuFlkPOeDxLbChcpwDkB2Qksvg>
+    <xme:I_zVannd1hxnR8nmeYawmXognSuRkBoL3a_hs9rbym3hZQJt8IjFV1glt28N99gQY
+    fu6w9bRmiYXB-nWDWe1G6hFJ-SghD1tmgYdCicUU8KWRLCeQT4tpufs>
+X-ME-Proxy-Cause: dmFkZTEePN2YjTBxNqBq6SGh7R9IGsuxzB9KQLpmOmK8t2xw8fGIOVtNR0QZoXk1P/Q/g8
+    OZkIR4pW2xOs+HI1XHcf+t3+iGN20YB/VTDRi4vrloTts1K8NgzN7aN5327SNIuAdTv0Q+
+    5Ecv0zod5j88/5rvNstwTWrgPmUQCScJJlL6HsmGB9E4+Rn5sVUO3X32XsclpFyb50Vsmf
+    MDGOrh8xHZmUqqduCMKeCeXdnrT2XpHr1ajdCNwUikRiFq8J+7h/2XWE5S/qFlSpZPUwBe
+    o5UPjj51lL0iGsTrdo2NNCpri1PwEv6O2DvJpnWeqk2HX0AGUcLvuxKBmaeeuV7JCfy3Z7
+    6NBS/rrbaeTm8NwGyEwtTfVp0wMI6Cuf5GhOq1BoBYD/8a1ZoTEJtGZcAYkueo0jSq/zzA
+    Y9V6WDXeM6wQrG9B9vYcuphhepJHG4ekCh1ZGYTOetk22buwMQVjBMyT7CUsS/LwXo/+er
+    /Df7BxOS2YRh2E+zDNem3o3CNOV0C9PEX7Jy3k33LXVU7hSMkZ3wopMqF3jeHmDEcFrNWM
+    Mlj3yB6zOtWaruwSGlFZUK6WV66erjBVjCEyUskQ3owvfv9iiLHZAFfvWIoEvsuQ3AU+SD
+    c0pGq6O1qaHeG3qT88Uu4eqisdG9ZLZhSAwYM8log1bxF8ZXMuAO3rMqC+DQ
+X-ME-Proxy: <xmx:JfzValXUnZpTpDusRZV1vLvtQNbAWaxKSU_Ak8W6Lc_-sq4oelrcog>
+    <xmx:JfzVai-ecXK3lnBb4vQ-CR1vgF378ComkXeXPHiPsaIpauZrZ1Bx-Q>
+    <xmx:JfzVaosL1TyTy9XB4kT8GI18YvMZt0yb62eACVS7DlxHs2B85iIcDQ>
+    <xmx:JfzVai01-RAq6QmJxGw7hgGwPqm4wTvrzdsD_gLN5rNWuOW874IkTg>
+    <xmx:J_zVajy6JIXpwrovofzYrk4T4uBzCgl6TpTFIuJIaSYYt_YkaFgkYAtw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.ams.internal (Postfix, from userid 501)
+	id 6352A32A008E; Mon, 19 Oct 2026 07:16:51 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/7] vt: Add con_unblank callback to struct consw
-To: Thomas Zimmermann <tzimmermann@suse.de>, gregkh@linuxfoundation.org,
- jirislaby@kernel.org, James.Bottomley@HansenPartnership.com, simona@ffwll.ch
-Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux-parisc@vger.kernel.org
-References: <20261016093357.33294-1-tzimmermann@suse.de>
- <20261016093357.33294-2-tzimmermann@suse.de>
-Content-Language: en-US
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <20261016093357.33294-2-tzimmermann@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:c8t3OzAkYkJ9zYid+KamL7ZfOTSqfW7Z1owjCyLRcfqag7hhdE1
- bfw4IyxkF8wyj1mPxLEQoyxbRL6UVkXtB2jvZS591piE4e4rR7Pkx5Z1BPMRM/9n+ob5/XZ
- RC97SDv8y//uM8/iHUxd2UxlsbLOutud66XJ/Kg4350NopLhvclyzKrm3sDOPMYCb7emmaj
- 0tWQr5QDdXC7+MplsNCaQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:BVKo1tkciNI=;pnDhyWeI2/OndM6oKEizqdMdtof
- GGxzeQiqLYgEgYZAFSPlLnp0rUhwYIBYooztHhjSmIzpEzgYeiaO1ZR7LpHuKMzmyE14VEiu8
- mrhs1QqTe6p7KH2ylP+DCVxRhFH1+Q2fGZsM7O918CCU15aCi0+vjqEhcpcH19HUhCwOODD11
- MQtyLeOp4e6otkXxiPIAflzByun/9U+dIkumtNg190Y0ugVXg/MCG6ow98KSA2eFAqYwOHbZw
- VIG25TWFwfsog8B5D/Ri8HRfrTO4wzCyDqjH5Mz7C/9JydpjZLLHHvFe65vBjcXE5Z3d4UJwE
- sa+4JDV9VviSOjhVaSUBKOfkdV7YS6pGXLl5IdEj2fGtKG7I/sozJhPxeeVgt9fDLncIY07PB
- 9Rif1o96bAqM0VQ8Ne++YRqLTJVhGQfOdYTGX3oxDvCYRaxyR32eGxyt4WP6UT3uZoNE/cn+/
- qG2yvdqACLNp94i8tOHDA8m7pa9bF2mKHbHzUhNuvuafBy/hpYcfnFm7mfL7QNL3GQxIJBB5O
- 7gJGL+7durtUsY+yf3pwqqNFnetKhflxHr2IBdeCAJTNfXKXjON2q1n2Hw3lF93ibUHVZlgpi
- ebdxxkMybLQgqXrODG2fcP8jgp0kHBtFUDtXQ6UiSd9yeJZ0GuKcHoGUBlz/uOObrIEyPgIHi
- d16vwJtEuTa4fmlFtcebry09C8N4Ewri/lpucPD8AWRRly2j+5LDId7QEXlKMbjriawKUweHn
- eDZBajNm7BQJ4vBEuLzSH/MFsXFWjDny8X8LN4gRnoN3phR3j2HVjhnnlIX7jvF6ca93KWU8l
- D1AVNt0wZ0CszzEFjXsx7anPu1vzvVi5SfMWgoGiEq0Qnb2mNG+vTuC+LCuQRJ0U2HXyPFG/N
- DjAFqIyy7Lnx75NDKCOemffGP6IC0f9PYwf/xLIJtueT9UnYK/4K8T4SKVqiJs46QQwzTViuw
- 3e5HT65YpuoGAktG4VrsZ9o1el+AAJIIh8OdKUHBllh0KXPRlFF3yuoDKYHGNSIUVfw05VEeD
- IgWbzMgr+wISEVoUF7e74ilq2V7TM5YtWyiOAhafTRoX5+wckEHHKxiSRIDnL2DtSFiFsmIbn
- O6JEe4re1H6CT7HU8m7LfMNk7ztuqGQOkc4or/LUXfcebqHgGu8NLbuGGrgZP6S987nQ3PeuQ
- GejbRdHsgq9NFvhf21wil7vQHXVn+yx3qLRGasQ13xZaAOAuiq+7h3zEZb4XTV8/Lg0v9qx5I
- uqZb0Jz98FmqfpgO7MUDIi8Syjn/9y8ZJtFnwr43HNUJJyKwVC4waxdqDLwo0z7c2RDLiW58U
- rQhNFiTtHIy19wRXMF68kzskOcGtkBQOESNcblnocQ0DdTBwkHYalycTb4TS2TxpELn+eFFUB
- QfI1a/647gb0SWkdKUSdXGuV1mL+WG0DZZ7tkTv0WjdfJsOBCAPtqXDJWOX5LFkB2o5yPPDwc
- ethknWCKBRkT8iVp/sODZpPN4IaRdE+qMsftn3zaQRuz2/4Rtkphh3X3TDaWhcIR8OA2Dt9HO
- kJDJxwshdLuP4XS4qhmWKnXNznt4hls2xpGzBVBiI3i/jqICWfKvVLaseIati9LahaJZ5btS5
- kRPPlWSNhIgea12ai8i8mQkCXqJyBDAYthGMRyEPBZD1DZkRwH87ehM93i2gLK8BKoQD6qn/f
- bCaaEsGy5vRnVYpATRepFV1SVeDrIGBuURCMhNgK9kE28y/MxT1v7YB6AWv1O/baWXlkyPph4
- dIi0LXF63ug41+A/hob2N0drWYJHOyJDRX/4lNwaJqgNB9J9KWATNGsszwHUa5c2uyhYvHuXU
- 8n/y9c4PybM5k2b5g1i6q319xqhywqAt2TK+Gc1yXToxk81Y1CHIckcQnj1YiK7F/Cu4xjS59
- iW/tY9bspLVFXbPTcr8//086B3yTYb+FVdwBbOndwcdI0vFTcfa9iWMrNVwt9a9RRG7mREhzt
- ZqvuTQ19PfxuibI6j1s+5nv6vVmWoCW5zjmyY2+/xcjE4J5ZxxXXB/gQMce8h2Fq6/3ZI8iMt
- VqvLRAWWIHFlAoqQGkthZ+RBL61gShInG/PI20yBoe2W1rztcNGCU3rUJriMJtPPNtUZEBZIH
- PbUFMbZ6emi6rBS1fHKROBW7BtyOEFEDe6KZwkiuARMavYa2XvI6m+wFxrF6FyKXDml2vrz8e
- n8JYnBhGMl82hj3S+We+uSGK3665wqW6gx716AnM09dWN2jKL2o5dSAaJnTT3H/TbDJ060Dpm
- yvm4y2qTK5uf3QPIQ6Gfi6IEHOKq0zPthVbsudmdZ0veHObTic/Hphv9lqplB0XZZXOjf/Bej
- 7Fyb7ZT+7v+avM3M8NutiqOsAD0oBnH2l8lN0cQfwzYiHMH57LfOS5etNUt3Z2LO/T4vs8ATC
- +iPozcFw2P+2Z/zOXfW4jBloyT1SZ8e8yOnztPkm4MV4IVQGXLmhzPo77gTAl1aWszTPoBpxJ
- 8bic7PsNFPs9pqMxtYYV8xfL0ZTxu3waceY9wro6NbH3KjyJIJ7A5k20+M7pYl85/tzWOarlN
- rApQQYx+yGfCO+WjnVK//Hnv4jk65xmOS0soW1A2O3d8toFH1XQ1pKlRwtHv0EUfAQxhc/Bjf
- eiEhNzNgOA6HZ1AzwChy4MJzhcwEZM0VdddRjJJb9zB2rjpnx7PGJ9yX6q3XbfEajTczB78pP
- 18Z07qX1eWeUONRnPVGjTMk6OgjjhghK61AGdfgyQ59YwOgQtc5F9ju5BjYqrbrpkUmuQ6Joo
- 1WFj3jB6Hg/4npGAKKgRzor5Q6ReoDzWhels6aLM1AYzsbGd4F5HP58+xqTS9a1MK+k509ZUZ
- ts7ENh+QUHNeUYRyDo4VF/ozp5+4dMCkAyhi1A7rNMkXCek++6eU9fRnI4KptCV6NT+McXh4P
- zNoswnGs/Vv8d1SFl8cc61b+kjxr6I1VGriwrUEE3El0z4cMSEi53/1d8fhN2fgID54eijokl
- JT3a6ZIAgSoL/YFWSW05DEkdJx8BwFTXq4TyR+ODMrfpAIXXQqmLj80J2JYDdlSttgio3a6Lp
- nqBr/RyfrbQ/zmyNnohAJbdmTTMeyfmpAzHrzWc05/8SLzex+TOaBNtsT6fSmJrc804IaYfAc
- Q+ZqO8Dhn23APGVekhhHIpznn8WyJAs/SXHPn/o+BiTLIoeGBHJx4ujLvnKl0gatN8Q2qcLBv
- 8kMmD/Goh+iTzYp0yKtpUz5ACMIgQ3xj7pOID9W5blUcYojf4SX/NJmWi4uIFvtw8+7fnTqEZ
- /ANQkh5wIoyYpSo/W9K8JPZds39qycs4GulqBS4J8fHZLOrbN6CPKG6QsMQWbA/OHazkvphp4
- KbsucreM5U7OY27Ar2dOD+WbPLo7eHDNvs9pWJ5Lk6l3Lp6q875jcQ11F2AhAQLxab8LfLJsm
- Ucdt9mHlbrIEoadsiYQguMjFruiexizFaAt4jcZesc/0P9Mqgbep5dE3lL1zl8sHj54S0Vc4S
- GhaHh4MS9zTIFTXOn3wHyYGcym1paAl2RCu/pXAKc1o4D1IIOxZIzvEPrkS58R1v1DMJ71jjV
- KxuebWeJ1cTM9jjf1TDoGDh20zrU92vCp4ID4FG/Cq7crQ3fHwN+iaEE4B8s8RBWDtvwEZonW
- A7PYx/WNCKC7wNh/CJcGK4SJ7JbNctj+skwtp7w4MiGEkUPhgQ9W0rpPaND3XqY5Xk/3d1i9w
- 1lLLBzbGMkeFY3v++tAD5Lv5ZoFT5jbR+L8sVLqlM8D5I8pqnQ42cXLijckQwKfLm9Dq2Y3Ax
- o92b8JNFZtIWkN1ozvFA0ppF+U/NYfvIswKHb2e5r7ZoSqBQGZA/lzSoSxH9JpG9zKW++2Q3L
- hlNdSU7ID/drZnT3ZIg6ZAmzqUacmXlZchq49RJsjLJA1gNpfaNvhBXv5I79NzC97pdff+49a
- Q3U6lSI3yl9J/A2Y1c6XGymwTsF0C/jHiqaL1itogRgui6PM7Et+9pTKhs5TyJLFlTUWlQf+H
- 9qeId5iGJNkMjeZI3F63ZNwVA0wLXSsGvEWNZsE8yAgITc2LshFKx16m0JgsbU5WOXU0HmAtm
- g8bhIrejBq8BW8Ghvtep1ArpbmuEzuDMG89L/Jj/Ec2xSMYqd2e2OtXAeHLRhQw84OQV5Z+2O
- iytE47wryZRIukO7pb/0a/5h5EFcVa33sBarl3yOtX1wAjjRovY2ZukQs3pMCEhXrgvpwgcD/
- Hewiu786NNFabYf0hFv7fNzQNa3gRe4RrJ04g+0cyJeiHK58Do/nt+I/WtjLdhro9r1+EuD8n
- +d8ksqjLbVnIP/D8gbPwVhw/xd1NUl1obNo+kFUEvxh2MmHlEolDFbnDQXvcahff6fxOMjVal
- BJoGBa0RlBXV9VTwiSDl/oMnTipuRiFDdLrffY73qyNekJZHFcnJn+gotTgQy6YPyapYJQ7hs
- UxxOy3JbBPOwAOS2t8EI3LmCBOM1tTKPHTufNT3mS8gm3V9SbPvS8u3YdjxDJilhhss1tYoLH
- mp8lu24Vw16jncPySBj/DB1NsXYfZQ6pyv6GsHg0TuzdudKi7Jai9OlPiZaOl3/y/RB5rqDRe
- yS9mIKRK0EvPBTUmnHsX/4CgvZxX5VoImM9n8BOg2ambgugnpd3Z0am+rlc1MdiUzfey0Mevl
- ybmADb7Ej17wB/xzR2qzX5SDwKWcCmq9Iep2ybARZaLtQTSNXKIR85Oe5ox+xEsVfwNmDYlSe
- 2joEYU3DR+Crq4ZQdMcX1wD2XaY1bLQoyl5Op+L8xHxe/0CSq/tG9Yb1ItwNC3xl6YtxCmCYj
- vQjAGgfF17izV3W9BzBp3AVMP+lriVD0vy+LST22G2r8YfxooEFiusNRQ3mC1gpFPrD6rJI24
- oHVRV/fCF7X/yg2S0gsJG5APyTOHbOg4fkFrXlD/L7IB9NALrcFWXsG4tB6M7e+1Yas8Tc/Qi
- 6PrbZkQddZysPqJ8ThfbirpljG08NbM3n018VyzZsMkPCJw41ldwEG43rXVvj0Tm7Pireip/Z
- BsicGb1Uqz5MlAFK/Qv5H1AUYGGX3fhKtWiMdAP/uOlAiT6DbuQJ+0zwk01++FNLMr62ALbn0
- C1mW9UjRcP20MIpjoBORoOgFUnlbNC+1efV0OMdZ0af4lR0QnBMnOLVHsEs5sdOnja9sZGyXz
- mIXzb1kSyBIe2Q+B1Xf31ixO5apz7Dh+FzAM3umwcvQzzLu+eQGLN8E+OZv32ogJdJJnm5sqg
- EbDyLasuf3XvO875mcjQIzj7NIAZcRBQUr/Wah8/6nfhlF1ymU07EnK+Nb0bHMSxvBoPZxanS
- JBHQs7bqH1euvbMgDzYUbl8O0ajjh0Zwsp3xrbjG4D4AJcfuAyLZVCSMx6jv84G/YqfrReQGe
- cgpMj7+9DbUqYX47tCqfaub6lJLy4gq9C6L21ey/oCJy6JoU62qvw+O8x5K4WY1MsxUvX1t8j
- B8A6yE8NG6A/7kPXzlRQxzZRVAJUPfxA9At88W10w0IMCRwcq0W/1es8RzZfmc02Y9WXIw+Th
- YAMPs+Mu0xqJg08B9u4K5m+xYgmIxletwJOZ7XrBH1KrZozYC/o/HW3f411cYKSxn2ZiFnVLU
- ZosBd4UnmQkwRm1CA+cDdbKtA+JDUrKZZ2kj32iZDa5Fsj59xJQiv+KlzFiIuLT9V8rRECI8f
- m4A8R3HxvbOOXYYCl5oKSoc3r2jBCBplLjvNSoQhnBP1yygwzIPrwzQwZ/lxkFlz3RiLme8Ww
- NqMqIo+yp4Q0QrJY6nzOW4OvYsapUMJX1iZS7z8XxSwyb/aB56b7bHBpHq4XsS7y/IoqnMFPo
- FZXRnAmH27scRlNdv5AE3EtavAwUHXfwIuzIT+OgviDb3tYSg70KBij+MoNfEe9QepnBYiKrl
- ohQBNXXnMSWs4Hy35qcHVcQdqmmbruR954y+mSaLYy8rOzbeGYAVR2EEbiShzutyODoVc3+eb
- Ci5s3A6E0hxdytHhU1Vrqb2W6VErH7UdnOzDciDGa44CTNLkK4LxZabeN53Vru2PmGRrOquCz
- oVj7AwHpezwGP6XhITwE8FQhipo64bH5GYRoIjzR9NryeJT8J1B2x+LfRcRYGRR8ttO4na8Mc
- cQ4d2SNzeKhoOxAI/vwOdLp8yK3Q/m5D3zl4J904YS5UTCYDdAMwtU5EfHS19FtO0wGw4fPH/
- cVsP98S+fa1kmkm4IPvCqciqaLWYZxgPW180LbYLeqOh2yVEekWL3kBNtaOwO0V1sspZmV6FP
- JEkfqzluPnF+axtC6CXFoGuFjF+QuQ8qwCoSSx93LiX6AHLCQlvBIzspPhZEui63lKSy4FOjD
- O7KMDxQbyceT/iC1vYrDxbXMv7Rdoha1Y1pM2Je3bDTp4xG8beFjDAIsb/QUQ40VOiCiQN5Z3
- c0/BGE3A77QMXDJKc44qk+JuKLBSwJHIT0QZHCPyW9DOhzbwEa3U3D2SV3uFxmb/gqctaAvSZ
- 7bbQi/Bas5Nrv9omTb9AKdlYp2gfWwqR6ZcmjQttQ9uKvdKN2tyVUDf9MaoLlyZTuEmj
+X-ThreadId: A2HaaWELKR9F
+Date: Mon, 19 Oct 2026 13:16:14 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
+ "Dinh Nguyen" <dinguyen@kernel.org>,
+ "schuster.simon@siemens-energy.com" <schuster.simon@siemens-energy.com>,
+ "Ley Foon Tan" <lftan@altera.com>
+Cc: linux-kernel@vger.kernel.org, "kernel test robot" <lkp@intel.com>,
+ linux-snps-arc@lists.infradead.org, linux-parisc@vger.kernel.org,
+ "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>
+Message-Id: <47eb6b48-d664-440f-84b6-ba09f34d5e08@app.fastmail.com>
+In-Reply-To: <20261019-nios2-mulsi3-v1-1-4fd75b1bacef@linutronix.de>
+References: <20261019-nios2-mulsi3-v1-1-4fd75b1bacef@linutronix.de>
+Subject: Re: [PATCH] nios2: ksyms: Declare __mulsi3 export
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 10/16/26 11:11, Thomas Zimmermann wrote:
-> Add struct consw.con_unblank as inverse operation to con_black.
+On Mon, Oct 19, 2026, at 11:49, Thomas Wei=C3=9Fschuh wrote:
+> GCC may emit libcalls to __mulsi3(). As modpost is not aware that this
+> function is provided through the linked in libgcc, it fails:
+>
+> ERROR: modpost: kernel/locking/test-ww_mutex.ko: symbol '__mulsi3' und=
+efined!
+> ERROR: modpost: kernel/time/test_udelay.ko: symbol '__mulsi3' undefine=
+d!
+> ERROR: modpost: kernel/resource_kunit.ko: symbol '__mulsi3' undefined!
+> ERROR: modpost: fs/fuse/virtiofs.ko: symbol '__mulsi3' undefined!
+> etc.
+>
+> Make sure modpost can see the symbol from libgcc.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes:=20
+> https://lore.kernel.org/oe-kbuild-all/202610171933.J4bFOfL8-lkp@intel.=
+com/
+> Fixes: 2fc8483fdcde ("nios2: Build infrastructure")
+> Signed-off-by: Thomas Wei=C3=9Fschuh <thomas.weissschuh@linutronix.de>
 
-typo: con_blank
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-Other than that, I've tested your patch series with the sticon
-console and blanking/unblanking works as expected.
+The patch looks correct to me, but it would also be nice to not use
+libgcc at all. What I see is that only arc, nios2, openrisc and
+parisc still link against the toolchain-provided libgcc, everything
+else uses the kernel's own runtime.
 
-You may add to this series:
-Acked-by: Helge Deller <deller@gmx.de>
-Tested-by: Helge Deller <deller@gmx.de>   # sticon
+It's probably not even that hard to do right, here is what I found
+is imported from libgcc.
 
-Thanks!
-Helge
+* Generic library helper exists, can be enabled through Kconfig:
+
+=3D=3D=3D __lshrdi3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+arch/nios2/kernel/nios2_ksyms.c
+arch/openrisc/kernel/or32_ksyms.c
+arch/parisc/kernel/parisc_ksyms.c
+-> lib/lshrdi3.c
+=3D=3D=3D __ashldi3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+arch/nios2/kernel/nios2_ksyms.c
+arch/openrisc/kernel/or32_ksyms.c
+arch/parisc/kernel/parisc_ksyms.c
+-> lib/ashldi3.c
+=3D=3D=3D __ashrdi3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+arch/nios2/kernel/nios2_ksyms.c
+arch/openrisc/kernel/or32_ksyms.c
+arch/parisc/kernel/parisc_ksyms.c
+-> lib/ashrdi3.c
+=3D=3D=3D __cmpdi2 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+-> lib/cmpdi2.c
+=3D=3D=3D __muldi3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+arch/nios2/kernel/nios2_ksyms.c
+arch/openrisc/kernel/or32_ksyms.c
+arch/parisc/kernel/parisc_ksyms.c
+-> lib/muldi3.c
+=3D=3D=3D __ucmpdi2 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+arch/nios2/kernel/nios2_ksyms.c
+arch/openrisc/kernel/or32_ksyms.c
+arch/parisc/kernel/parisc_ksyms.c
+-> lib/ucmpdi2.c
+
+* 64-bit division probably should not be provided on arc or
+  nios2 (and sparc32, which has a private copy).
+  parisc64 should get these from libgcc/libgcc2.c.
+
+=3D=3D=3D __divdi3 =3D=3D=3D
+arch/parisc/kernel/parisc_ksyms.c
+=3D=3D=3D __udivmoddi4 =3D=3D=3D
+arch/nios2/kernel/nios2_ksyms.c
+=3D=3D=3D __udivdi3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+arch/parisc/kernel/parisc_ksyms.c
+=3D=3D=3D __umoddi3 =3D=3D=3D
+arch/nios2/kernel/nios2_ksyms.c
+arch/parisc/kernel/parisc_ksyms.c
+=3D=3D=3D __moddi3 =3D=3D=3D
+arch/nios2/kernel/nios2_ksyms.c
+arch/parisc/kernel/parisc_ksyms.c
+
+* floating-point math should not be provided by kernel:
+
+=3D=3D=3D __divdf3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+=3D=3D=3D __divsf3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+=3D=3D=3D __fixunsdfsi =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+=3D=3D=3D __floatunsidf =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+=3D=3D=3D __floatunsisf =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+=3D=3D=3D __muldf3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+
+* no generic implementation in kernel, need to copy from
+  libgcc/lib1funcs.S code:
+
+=3D=3D=3D __divsi3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+arch/nios2/kernel/nios2_ksyms.c
+arch/openrisc/kernel/or32_ksyms.c
+-> arch/arm/lib/lib1funcs.S
+   arch/m68k/lib/divsi3.S
+   arch/microblaze/lib/divsi3.S
+   arch/xtensa/lib/divsi3.S
+=3D=3D=3D __modsi3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+arch/nios2/kernel/nios2_ksyms.c
+arch/openrisc/kernel/or32_ksyms.c
+-> arch/m68k/lib/modsi3.S
+   arch/microblaze/lib/modsi3.S
+   arch/xtensa/lib/modsi3.S
+=3D=3D=3D __udivsi3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+arch/nios2/kernel/nios2_ksyms.c
+arch/openrisc/kernel/or32_ksyms.c
+-> arch/arm/lib/lib1funcs.S
+   arch/m68k/lib/udivsi3.S
+   arch/microblaze/lib/udivsi3.S
+   arch/sh/lib/udivsi3.S
+   arch/xtensa/lib/udivsi3.S
+=3D=3D=3D __umodsi3 =3D=3D=3D
+arch/arc/kernel/arcksyms.c
+arch/nios2/kernel/nios2_ksyms.c
+arch/openrisc/kernel/or32_ksyms.c
+-> arch/arm/lib/lib1funcs.S
+   arch/m68k/lib/umodsi3.S
+   arch/microblaze/lib/umodsi3.S
+   arch/xtensa/lib/umodsi3.S
