@@ -1,111 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.12.124.159
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792427291;
-	b=nFy3JY6hvxj2ws1AoXK2dhgNomvycoj2a+btj7r76WJEMMenysF6KRxi9lQGlyrFj65g
-	 S3OYeD0crDP9pb91Mg/mLRyTJhqXm5WEPcEiV95ttqhrQwhElKYoImHWcLLZDDBeH9F2H
-	 xOF41YiQ0sv8BIBRVxNoacjFH5K4+rslDiK+UKDCpVhZTKK3xIUvl03gEh7K46HDxhUMY
-	 QDQRtwK6NVcLa09JrPUtwLNewtNyZ/nDwt3oxQ+ppzwsxA8xxg+VR0foxb5so1QRxQ+Ip
-	 4GiY3RVVqU4BNSrSjYpspOc/21K9PyilN8fXKv+8BWL4BsWOk0ObjfEJqjRAp7+CgaA==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792427291;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:DKIM-Signature:
-	 X-DKIM2-Info:DKIM2-Signature:X-DKIM2-Info:Message-Instance:
-	 X-ME-Sender:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
-	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
-	 References:Subject:Content-Type:Content-Transfer-Encoding;
-	bh=OYAxXAHChzwq19ITazfAmMFxiBIOg+xvz2L0B67usYo=;
-	b=23GefTvvL8hOt8vmY0jU6v98L4jwMNBq8nw7+s5Wnu+uFvwBIZITiNofpryX79oZMp7D
-	 4BA4F9pxblEH5NPobwCTRGMhvBjSa4RswpqFBD0shrfBX9VTb/3bU6uXdjgnL8pngxWLB
-	 cGkGvaCD8tIm2pice6khVeFUgzC0+5bmoUpxA7yeYVWdBBYHB2BKZ4rfXfWvrC4vtkia+
-	 YXQSmPrHfR0nKoLVbyKJCpJ44EpBboSE/H+w8XSwmUwl1u/yhP5dgyvjnBum7kP5sHZUM
-	 O+Mv/b1L0fipKlqWoYDoBtwEqqmrv1FuI9+SI9UkSDSmgbVUhIN6P1JlBlO1yl//4mQ==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=arndb.de;
-	spf=pass smtp.mailfrom=arndb.de;
-	dkim=pass header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm1 header.b=kZPyCDII;
-	dkim=pass header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm2 header.b=DITrwfJV;
-	arc=none smtp.remote-ip=202.12.124.159
-Received: from fhigh-b8-smtp.messagingengine.com (fhigh-b8-smtp.messagingengine.com [202.12.124.159])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.160.173
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792429513;
+	b=QOswuwPifCqzBmLavGYjd0E5+ZCJmNWUKFYDBsJNgOizery/pm9l2it7+Kxhr7iPRNsD
+	 2/Bt1dFjDVwMWf1JkHBW8FHD0QJeiz5LzYPInHxEZUDhZJtk9yP7iMUjxgWLwezylMjVH
+	 rbEJbrXfTti0wCYWHnCY0TfFJLdqoI79Q186IBvPZD3o+puFtEnBThTjcQ6lUOUwEMir1
+	 P36mRaeSf1kEk6Z+pV3ev65AljTfZX6bhIuBH8BvPnrYeg1gNYFwkefXq0+iOqjojvCwk
+	 YN0QKdyPMXnkqw1HpIbDT9PDjkxIs6/+Yw2WobUrAyqb57KbocOaOb46+ciOKaLF27g==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792429513;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=BkBjly+LHsknLECyAEOd0tYT9t7Wy38UeBkcMQMiCbY=;
+	b=lGDCLlfobS0juk+Ofr+ZYmwUVA80wpOAvdh8CbtBkcf6zVenGpwqxIUB9FNxLw+eCaIA
+	 sKWZNBbVz+hBeNvwfI4BoGCxaCccsknV+llttQst/LJ1XZkol1ak2w1Lj77Lwm0mxawSE
+	 MmrIkXmU+4FAQSI6pmOq3bci0XkqEB9GQoh0KcQP/0D7PmOAUTOaw5ys3F8EqNDtE+hnu
+	 T6b41jYVuyn5q860KXBLWbDCGKx+A3tsN32vwpxNqwQm//rFqb9fgHpYcd7xqLW5eAvV6
+	 aODsrjIWY+VXsrUYEvL1Krr9tTSXwKWidOCbV/jLGCuMZLpZJ7Xjjbxk9maj/1gQkoQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=google.com;
+	spf=pass smtp.mailfrom=google.com;
+	dkim=pass header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20251104 header.b=vVSHtBh7;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.160.173
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94AE7606AAEA
-	for <linux-parisc@vger.kernel.org>; Mon, 19 Oct 2026 16:28:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 94AE7606AAEA
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5461B606A31E
+	for <linux-parisc@vger.kernel.org>; Mon, 19 Oct 2026 17:05:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5461B606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256 header.s=fm1 header.b=kZPyCDII;
-	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm2 header.b=DITrwfJV
-Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id DF0ED7A00F9
-	for <linux-parisc@vger.kernel.org>; Mon, 19 Oct 2026 12:28:09 -0400 (EDT)
-Received: from ams-imap-03 ([10.64.2.23])
-  by ams-compute-02.internal (MEProxy); Mon, 19 Oct 2026 12:28:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1792427281;
-	 x=1792513681; bh=OYAxXAHChzwq19ITazfAmMFxiBIOg+xvz2L0B67usYo=; b=
-	kZPyCDIIdECQML6lFbFipcRH8teV1la78Y/HkjyvFsR0rsg/u7YB1UbKvM4DxWU3
-	0XJ9UzVhHE9X68/v8ncGhBBX3LPz1bFC3FvzszZeHkDYW+sh6d2Taa6ZtcHS5Qtp
-	FabXHQkjZBKcTpbTn8ul2QkC5Otk5hnIh9XKH1RRAf5DLdk3wd96JqDEPMg9+s6V
-	X7iOL00uDt41oEwVYFQJkQVREIJFHMJh74vje/W5wGyfjNrUrSUlvTdN0WyHB1qg
-	H7AIp2Po2XvtH7nDl1OK1uHiDYpq6WFdWgcWQDrBRkQ6jvlOTvvIZJFu72kVQbIc
-	WBnRuogKGkZ0uCttX5d1xQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1792427281; x=
-	1792513681; bh=OYAxXAHChzwq19ITazfAmMFxiBIOg+xvz2L0B67usYo=; b=D
-	ITrwfJVlUayYXzz+Oao+xKiHZsWAWPldpAZd96qV+83WKt0eAJyrBPUMvQNxZfBt
-	uaTD5k6sCjTMWAs8OdTcQXoWnja4gAMc8h5Q8tsGpFpR8k5sC4BEQmB98ZSiyjXR
-	h3tAcheHyb6gp+F4wyJsudXknilGw/OnabZfAi2m2TAA2YH1fzQrYOjxUk3MOLtW
-	CZUCf268LPCk80VGDVbPDVbBQENNjXW1MUmtSTUTyA0OOpzGLVTxO30lvsQFfGAn
-	VIamW8wB8lcAcSvlkecIGV9Pg7+rWTVXECgGQltqOtmYQEmdvAi5mM5blSIaAbQI
-	w6IHp+pjhomm7ybgK+6AQ==
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
-	repo=github.com/dkim2wg/interop; date=2026-10-08; sw=lmtpprox;
-	action=sign d=arndb.de a=rsa-sha256;
-DKIM2-Signature: i=1; m=1; t=1792427281; d=arndb.de;
-	mf=PGFybmRAYXJuZGIuZGU+;
-	rt=PGxpbnV4LXBhcmlzY0B2Z2VyLmtlcm5lbC5vcmc+;
-	s=fm1:rsa-sha256:Anu5NlJ2aEemf5bj6GD8VM9HttxMLogUwwMzdXRYv8UU07y
-	pTqbF44OGL0iV35HH0XIKgkCLG0BY3X2M3sMJnP19hy3vQWPoE9ygBXfH45+mPCa
-	3HJVcs49GXCkX8viHxHA9V2byPDEmsmvKjeJm6JbQ7ob7OktH51uHjDmfp7cVzI/
-	Q+fSlwr06pzPS9YrCCFK2bLQIvDKd/rgT2g9TQ9wCZG4KTo6hJEjGha4h7+lDrqx
-	zx+FuinZjkSkEEhxswcetCBFOjOjQi6NP8IA6X06Hv+yPWXXMSDLlF6rSQukksri
-	Mnsr0Z3qBYXMYvz/yOKD8a48YtLG6tSkuaePXVA==;
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
-	repo=github.com/dkim2wg/interop; date=2026-10-08; sw=lmtpprox;
-	action=mi-m=1; hc=12;
-	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
-	from,in-reply-to,message-id,mime-version,references,subject,to;
-Message-Instance: m=1; h=sha256:34GFDjvLArtfnWADUoaPQgZloLxHcy5Bflv6ev+9YW0=:ERfMJBiyhEUww2VEyu1sCCuWFpBa50FfIjjt/TQZjoA=;
-X-ME-Sender: <xms:C0XWapxCjJR7-qkt0O5ia1U_OBEc9uHr5YYgbxGkuDLkdZNPC80gJw>
-    <xme:C0XWakFY786LCZdas_dMnEw79LVu9RMLit0Ui09_LLvDXijeXi_nu8WvtcwGROK6B
-    B6HVECruX8XkyKjCuQWGX3Lu0-eCKrV0JtsM9L0vFfuHrB1JAtg1rU>
-X-ME-Proxy-Cause: dmFkZTEkXql2T2q+abWKOc0+2Ts0d7b576TXuycA4uElhpzutlWZFZdLpqSCxKDDHxNEqG
-    V6G7D9WClWGaRl3eMdeQxvIkI2giK1eRSKBN3VBeWjey27rjNtXdOCJMj8mr6Wxllm+Mnt
-    21e0tn3osIl8zISpbWHjLTPhM9Me0IRspLYeSU1bSafjUPCLAlAXJ7jjqf3yT00pG9ocBO
-    WX9Y7mnaiYUwJ2ZwxBkqzdpXC/vJROPJffutNBlu0u0kuif2kOdUcXJdkwSDI2ao4jDXZL
-    GE0Vs8X9yRfoXB91I9n4TEdZwD3IqM4Fy9do6bbog9n1fYzUIhj+83iKvdLS/dgqmbmil2
-    ATbjs3l4OWpL4I72rhRbR5uEm2jXedWSIjV45SpIj9fZNcftB7fjdkyp+9Uwu2RGBi+q18
-    +oeflP7Q5Q8A9Qv9/5EiZMsqM7AwPzMYVXSGJuIw0/279bYRjGSjHG7pY2I295agU8RTeS
-    JtZKWSDT6nQiB0FOQ5DD75OscbI+qLlsCKpKFWuvf/RfKtswQNZjxYc0qQvEpAv/kMVM7x
-    iwxSGSYXnYr+6umdFTiNNwzpHk5dDdv9cqyo2eK3MMof9Llfpx65Pivi3UB9cjZwYaO4qf
-    Yi8ZelW/zfwXWLIeU4rNcP1CznyvATTAyvrQxUZ4JPAWoMLQmdEtLzBfdGFw
-X-ME-Proxy: <xmx:DUXWapqJOlsYMK7afX0ZIiZ7xiFVCq44axjWsavH9ptT1bA66RcXGA>
-    <xmx:DUXWajPCFiymPvztQ8qtcmdbCw19D9eqEfFsR39oUg0cVX7gu4vUuQ>
-    <xmx:DUXWal2M2ZOXOLknpXeCIrvrVKXaTsTg6SfajUWP5HUC2RvRGkwAKA>
-    <xmx:DUXWahqxKyeM58KvWhnAjXkEX6WlF-uP_iEiIATRgWajkPWWm8IQBQ>
-    <xmx:EUXWaqYkffSOKslEfP3flvdK3zyCWS33I9Rbm6XyrhQ9ZdsTMPusgady>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.ams.internal (Postfix, from userid 501)
-	id 199E532A0098; Mon, 19 Oct 2026 12:27:55 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key, unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20251104 header.b=vVSHtBh7
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-535f598d126so161cf.1
+        for <linux-parisc@vger.kernel.org>; Mon, 19 Oct 2026 10:05:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1792429512; cv=none;
+        d=google.com; s=arc-20260327;
+        b=ifLxGN2b4LSPAyj232AxhH+RoiKb5GDthZ3fB71vb1bktUERWe2b6q+ptLutb8EfGR
+         VLzL3RJ+VOcTZiY+ktl7FhL0FP3Z2VX5E+YQXAPe3TBMTYkPjqW5K0ErD6ReGs4y5FC+
+         zilRivAj9JPgZE1XN4gCLIrP0hoOH3oTCKzKLT0h/ebiq2mP06ZWVPieaMspJSFJOkQT
+         Jzj2DzUKRCi06jsfVQAXXwphzGAoXOncOYUJbFSfuMzkvaV2u4jB+6hp4Dm9EAnXXq2U
+         7vkGPd2oeo33tz7ympr4OlKGPVCHa9COCDB5OwO48b3D7Cw1v7MnLTfHzbWiS8joV0lP
+         SLMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=BkBjly+LHsknLECyAEOd0tYT9t7Wy38UeBkcMQMiCbY=;
+        fh=OAURFHKAy1r8liSAPwjFJC60hn2XSdzbcuaWMod/HPs=;
+        b=Tl7TiuzmcHJsm23u5Uw1QySdHzQCSBYRpfCXEBWHlp3GzCWv5/nXmmWGX7xmEwngH3
+         HkUqvlnB1K0orCvMt1bkpHCk5D5J9jUqRX6n0jSF+ihXOzuHJtSzueUga/Oe6IsfVZq6
+         WabHZEgdFBb36Bgd6cm9jYG1fqwTEPP82G8kUl+WbuyCwFA+pfOFYfCF19fiILk5zaVz
+         5TeLBYJShcz0zmJt529juKzDUWRTDPzXa5AqLHnD9SZlYJvF7q9ymb30NPUvCNz0tNJx
+         wj0blrojGbRiMh1FxQnROCQ1vGZMu1fALMFcMMdqcs/lwxc7+uHKN/hy0edDn299iCWC
+         CkhA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1792429512; x=1793034312; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=BkBjly+LHsknLECyAEOd0tYT9t7Wy38UeBkcMQMiCbY=;
+        b=vVSHtBh7bA3USHSkkuSNXo8JSP6ERd30LPh3fYC/Uky8beFHXnryRPPyadGAuRzE8K
+         ULEpPk3C/DHo2iilr2/f4twQdL3dHs2S0FQY5OxeHagyh94uDxhVP/WczTy8IyINFMT/
+         uB23BBN5e9Jh1TifQHk9FBpHu1zeya8l03uSwEWwT7IjTzhBeX7Uy3tv2uu0BK3t9PJ9
+         lxyBhBsAKLLHzsQ76jPLpaGDiIvSv+CXqzAknkTaj1KmNVAmdMhAvWR+GDIadoXJxx5p
+         fJf3NV+3WmpOKfUVTrs7F66mI0xO38D8wvZSGHxFOeTMbL2UW7vqo5ZWRmFIPMoet79l
+         LpXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792429512; x=1793034312;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=BkBjly+LHsknLECyAEOd0tYT9t7Wy38UeBkcMQMiCbY=;
+        b=o9qje0bMQmVzVOK34GIVDBHkQRpC++IzsIocJvw3OwHooe2l99ibnCLxuMWctmQVwo
+         hvtggWJbhm6AG0UpjUqEXptGL1uX/dTL2lUv8A6BeIMX9wAFnkqIK6FDYKhIgjlnLGJa
+         FUOZZw4qKIfuK9qZyTz+Abs1t0QovrjlbwWyw/YB/42xSOmAwCVcfwEiTRcMcrLcH4t/
+         GKu/TVUUfdzfkPM+HADD0cLjm/2/vS+V3CixK7ulGlHHq2+bUdhzsmUpyVJ+tXDHN5T7
+         aQgQJzrRzDGJGbQjTDUr4Rt6HZAs4fl12U5K5uddLYTsjMT5rlZBRzTrHkATCVORJ4++
+         3Zkg==
+X-Forwarded-Encrypted: i=1; AKwUvBxgP0vLaNcbVwtXyUYmw9en6qHxt1Y2LqE2BW/2nqTaHB64aPGQlT/HiKQj1UuF8zqWn6gGPNpx/fCTaeA=@vger.kernel.org
+X-Gm-Message-State: AFq9FYJsOWyxc8XMJ3joj/Je9uK1HASKiv7AfDwjxWzHUEJCADois8rK
+	rYw0QSSQi63iUym/2Ryp9kOieztute4ia3jLYnR5mDQm4OKOXJmPGCXZzGmzpCBcsm6b1f8crNL
+	YDgZDBpV08SfWpxen6fTyTJ1VtR3fetU41/crV4c7
+X-Gm-Gg: AYBFou3t7k0O9ySp6Bdb1QMX/jIdIdlnbm1x/fk//06cirjo1qd7RMNnQzHBoX1z1N3
+	AFSRVwtkjTSvIN41vUUdKST4+TK4ZZFyZMTuQFTwiNHE/otU4XbN3lUrdod8X3o+C2eERik9MJp
+	qga12mHFvi7505FRp7vzfbi8CGpknv4tk6rp8rtzZy3wvJEWmaILas6zPw1/wEFVz/7woID326b
+	VB849hjMcoUojojaP0rIILOAtCf9k0hCpiwEKQu3FFjJYKcunIUuMHJ4Pzr7mnTgw9thwea26pl
+	5+ibWTBAGz5gtNbZsd3ibFFGNNArMjPZ+oRl1+qicYt22oqRHDXDFGeWrRLdHKinCxrRU1RIyqD
+	ZOP63uiW4cV4cxsfal9+d
+X-Received: by 2002:a05:622a:1312:b0:532:eff8:3491 with SMTP id
+ d75a77b69052e-5362b49596fmr1327911cf.14.1792429507178; Mon, 19 Oct 2026
+ 10:05:07 -0700 (PDT)
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -115,104 +104,138 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-ThreadId: AICZ2hJ9SF6o
-Date: Mon, 19 Oct 2026 18:27:24 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Ian Rogers" <irogers@google.com>,
- "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Thomas Gleixner" <tglx@linutronix.de>,
- "Stefan Kerkmann" <s.kerkmann@pengutronix.de>,
- "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
- "Helge Deller" <deller@gmx.de>, "Andy Lutomirski" <luto@kernel.org>,
- "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
- "Arnaldo Carvalho de Melo" <acme@redhat.com>, linux-parisc@vger.kernel.org,
- linux-kernel@vger.kernel.org, "Eric Biggers" <ebiggers@google.com>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Jason A . Donenfeld" <Jason@zx2c4.com>
-Message-Id: <18c92ae1-deaa-4c09-adca-157819cf005b@app.fastmail.com>
-In-Reply-To: 
- <CAP-5=fUwDOv9k1Ptz22h9kKYFJowg9UPa+LzWnnswJ72ptF8tA@mail.gmail.com>
-References: <20251016205126.2882625-1-irogers@google.com>
- <20251016205126.2882625-3-irogers@google.com>
- <47f8c30b-e326-4ff0-a2bc-5683209a9e2d@pengutronix.de>
- <20261006-dynamic-succinct-woodpecker-a36c7f-mkl@pengutronix.de>
- <2f6094ff-f585-4b8b-8c25-20c11d1bfc7d@app.fastmail.com>
- <CAP-5=fVt81pYz_EXj+QNG+hFGomb-xcpm-6=ZNzNm+c2sbP6UA@mail.gmail.com>
- <b2a50293-d6f7-41eb-854c-c43bc9874ffa@app.fastmail.com>
- <CAP-5=fW25k8uOeamGRhwbFUUZ8D0D1n5YK-NFF7_2JMJcGOsiw@mail.gmail.com>
+References: <20251016205126.2882625-1-irogers@google.com> <20251016205126.2882625-3-irogers@google.com>
+ <47f8c30b-e326-4ff0-a2bc-5683209a9e2d@pengutronix.de> <20261006-dynamic-succinct-woodpecker-a36c7f-mkl@pengutronix.de>
+ <2f6094ff-f585-4b8b-8c25-20c11d1bfc7d@app.fastmail.com> <CAP-5=fVt81pYz_EXj+QNG+hFGomb-xcpm-6=ZNzNm+c2sbP6UA@mail.gmail.com>
+ <b2a50293-d6f7-41eb-854c-c43bc9874ffa@app.fastmail.com> <CAP-5=fW25k8uOeamGRhwbFUUZ8D0D1n5YK-NFF7_2JMJcGOsiw@mail.gmail.com>
  <20261019-rapid-loutish-porpoise-ac4efb-mkl@pengutronix.de>
- <CAP-5=fUwDOv9k1Ptz22h9kKYFJowg9UPa+LzWnnswJ72ptF8tA@mail.gmail.com>
-Subject: Re: [Regression] [PATCH v5 2/4] vdso: Switch get/put unaligned from packed
- struct to memcpy
-Content-Type: text/plain; charset=utf-8
+ <CAP-5=fUwDOv9k1Ptz22h9kKYFJowg9UPa+LzWnnswJ72ptF8tA@mail.gmail.com> <18c92ae1-deaa-4c09-adca-157819cf005b@app.fastmail.com>
+In-Reply-To: <18c92ae1-deaa-4c09-adca-157819cf005b@app.fastmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 19 Oct 2026 10:04:55 -0700
+X-Gm-Features: AclHuK9s8M81LMMCa7xmlryJvuLxnVX-sdVr-aPQdHuwyY-V8mqF5fwa1fnyc5w
+Message-ID: <CAP-5=fV5OBeri3T5U9BsKyjDRUiFr7bgFiV62yQr7fO7Hf3rvA@mail.gmail.com>
+Subject: Re: [Regression] [PATCH v5 2/4] vdso: Switch get/put unaligned from
+ packed struct to memcpy
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	Stefan Kerkmann <s.kerkmann@pengutronix.de>, 
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andy Lutomirski <luto@kernel.org>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+	Arnaldo Carvalho de Melo <acme@redhat.com>, linux-parisc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Eric Biggers <ebiggers@google.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	"Jason A . Donenfeld" <Jason@zx2c4.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 19, 2026, at 17:10, Ian Rogers wrote:
-> On Mon, Oct 19, 2026 at 5:37=E2=80=AFAM Marc Kleine-Budde <mkl@pengutr=
-onix.de> wrote:
->> On 10.10.2026 08:04:42, Ian Rogers wrote:
+On Mon, Oct 19, 2026 at 9:28=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote=
+:
 >
-> It is a little more manual than automagic :-) When perf builds there
-> is a script that complains if the tools' version of files is
-> out-of-sync with the kernel's:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tre=
-e/tools/perf/check-headers.sh#n28
-> It doesn't break the perf build, it just adds noise to it.
+> On Mon, Oct 19, 2026, at 17:10, Ian Rogers wrote:
+> > On Mon, Oct 19, 2026 at 5:37=E2=80=AFAM Marc Kleine-Budde <mkl@pengutro=
+nix.de> wrote:
+> >> On 10.10.2026 08:04:42, Ian Rogers wrote:
+> >
+> > It is a little more manual than automagic :-) When perf builds there
+> > is a script that complains if the tools' version of files is
+> > out-of-sync with the kernel's:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/tools/perf/check-headers.sh#n28
+> > It doesn't break the perf build, it just adds noise to it.
+>
+> I see that the include/linux/unaligned.h and tools/include/linux/unaligne=
+d.h
+> headers have not been in sync for a long time, so maybe it's just not
+> a big deal there.
+>
+> > My understanding, biased by my opinions, is that the preferred option
+> > is to add a config variable controlling whether to use memcpy or a
+> > packed struct. My preference, to avoid undefined behavior, is to
+> > default to memcpy but set it to use packed structs for ARMv5. I will
+> > vibe code this up, and apologize in advance for any offense such a
+> > patch series may cause (ie I'm sure someone on LKML will want to
+> > complain at me for using memcpy at all and give me a lecture about
+> > strict aliasing being nonsense, etc.). Arnd or someone else may have a
+> > different preferred solution, to which I'm more than happy to defer.
+>
+> As I wrote, we need the packed struct version at least on mips32,
+> mips64, openrisc, riscv32, riscv64, sh4, sparc32, and sparc64 to avoid
+> the external library calls the same as on armv5, but I would prefer
+> to just always use that in the kernel. My guess is that this list
+> is actually the same as the architectures that lack unaligned word
+> access instructions in hardware, and armv5 is certainly not
+> a special case.
 
-I see that the include/linux/unaligned.h and tools/include/linux/unalign=
-ed.h
-headers have not been in sync for a long time, so maybe it's just not
-a big deal there.
+Is it more than conjecture that these architectures have regressed? I
+have a hard time believing the codegen on say riscv64 is lagging
+aarch64. When the series originally landed the issue was looked at and
+workarounds were added, for example, to PA-RISC.
 
-> My understanding, biased by my opinions, is that the preferred option
-> is to add a config variable controlling whether to use memcpy or a
-> packed struct. My preference, to avoid undefined behavior, is to
-> default to memcpy but set it to use packed structs for ARMv5. I will
-> vibe code this up, and apologize in advance for any offense such a
-> patch series may cause (ie I'm sure someone on LKML will want to
-> complain at me for using memcpy at all and give me a lecture about
-> strict aliasing being nonsense, etc.). Arnd or someone else may have a
-> different preferred solution, to which I'm more than happy to defer.
+> For 7.4 (and stable kernels) reverting the in-kernel header seems
+> best to me, and then we can think about what to use for the tools.
+>
+> Looking at the uses of get_unaligned() in the tools directory,
+> I notice that at least some of them should just not exist, e.g.
+> struct debug_entry in tools/perf/util/jitdump.h is just
+> needs a __packed attribute to correctly describe what it does,
+> and tools/testing/cxl/test/mem.c does not need the unaligned
+> helpers at all because the structs are all packed already.
 
-As I wrote, we need the packed struct version at least on mips32,
-mips64, openrisc, riscv32, riscv64, sh4, sparc32, and sparc64 to avoid
-the external library calls the same as on armv5, but I would prefer
-to just always use that in the kernel. My guess is that this list
-is actually the same as the architectures that lack unaligned word
-access instructions in hardware, and armv5 is certainly not
-a special case.
+There was supposed to be an 8-byte alignment requirement for perf
+events and unfortunately some events broke this and we added __packed
+as a workaround. The unaligned accesses wouldn't trip a sanitizer in
+our tests because we sadly lack testing on old perf.data files. There
+is a difference in using __packed as an attribute and using type
+punning to achieve an unaligned access.
 
-For 7.4 (and stable kernels) reverting the in-kernel header seems
-best to me, and then we can think about what to use for the tools.
+> I'm also a bit suspicious of the usage in
+> tools/testing/selftests/bpf/test_kmods/bpf_testmod.c, which
+> looks like it may run into a corner case:
+>
+> __bpf_kfunc int bpf_kfunc_test_uninit_alias(int *out__uninit, const int *=
+in)
+> {
+>         int value =3D get_unaligned(in);
+>         put_unaligned(42, out__uninit);
+>         return value;
+> }
+>
+> The current version of get_unaligned() turns into __builtin_memcpy(),
+> and the function prototype defines both arguments as pointers
+> to naturally aligned objects. Do you see anything that would
+> stop the compiler from replacing the __builtin_memcpy() with
+>  an invalid pointer dereference? This bit is probably fine
+> because of the way gcc handles __builtin_memcpy() optimization,
+> but I'm not sure if that's an implementation detail or required
+> by the C standard, especially if strict aliasing rules say
+> that the int* argument cannot overlap a misaligned int*.
 
-Looking at the uses of get_unaligned() in the tools directory,
-I notice that at least some of them should just not exist, e.g.
-struct debug_entry in tools/perf/util/jitdump.h is just
-needs a __packed attribute to correctly describe what it does,
-and tools/testing/cxl/test/mem.c does not need the unaligned
-helpers at all because the structs are all packed already.
+I agree the pointers should be aligned given their types, ubsan
+doesn't currently fail for this and waits for use of the pointer. So
+there is the specification and also what sanitizers enforce.
+For clang, when lowering from parsed C to machine code the compiler
+will use alloca to model local variables and memcpy as an intrinsic
+for aggregate copies. So:
 
-I'm also a bit suspicious of the usage in=20
-tools/testing/selftests/bpf/test_kmods/bpf_testmod.c, which
-looks like it may run into a corner case:
+  struct point { int x, y; } a, b;
+  a =3D b; // Compiler will generate a builtin memcpy to copy b into a
 
-__bpf_kfunc int bpf_kfunc_test_uninit_alias(int *out__uninit, const int =
-*in)
-{
-        int value =3D get_unaligned(in);
-        put_unaligned(42, out__uninit);
-        return value;
-}
+This is why I have a hard time believing the lowering is broken on so
+many architectures. Calling memcpy to copy aggregates everywhere would
+be madness. I believe, especially given the period of time this code
+has been in the kernel, that this problem is specific to GCC and
+ARMv5. Clearly fixing a bug in GCC and ARMv5 should be done, but in
+the meantime, a config option workaround in the kernel is pragmatic. I
+also don't want to start a religious war, a solid -fno-strict-aliasing
+stance, including with packed type punning quirks, I'm cool with. It
+is better than libbpf that has a no -fno-strict-aliasing but let's
+violate strict aliasing stance [1].
 
-The current version of get_unaligned() turns into __builtin_memcpy(),
-and the function prototype defines both arguments as pointers
-to naturally aligned objects. Do you see anything that would
-stop the compiler from replacing the __builtin_memcpy() with
- an invalid pointer dereference? This bit is probably fine
-because of the way gcc handles __builtin_memcpy() optimization,
-but I'm not sure if that's an implementation detail or required
-by the C standard, especially if strict aliasing rules say
-that the int* argument cannot overlap a misaligned int*.
+Thanks,
+Ian
 
-       Arnd
+[1] https://lore.kernel.org/linux-perf-users/CAADnVQLKv6LOQw5=3D8_ZagRXdU7d=
+RPYA+fxJsXiGncqJjZ2hK1w@mail.gmail.com/
+
+>        Arnd
