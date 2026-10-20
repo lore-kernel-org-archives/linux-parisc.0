@@ -1,84 +1,84 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.50
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792524468;
-	b=buxestlkAlTW/YBsHZDdsn6KG+PVxxBY8QaIE/oxqOllbEvLadNucvurMfawrNPI6yc7
-	 2NfUjye8D2IZmhg/BrH2kXm/+4YV6IMK1yKP3MX4Xo8Kio8WUJ2zC1mn6gvzi7TZrYDT+
-	 SUDPLUAdYohwFRF60dJx7K6C/SPpEWGJCl00NvNYj4ONDFjCNRGxC1qQbAi2Tjt/gMZNF
-	 XwnvDmfpbAiNAo1L/Q2hsY/KIke1pCCXVl16WdI/7GpbBwDo3ViLtgQ+Fg0tYq4iHyk1a
-	 Q0wq9bi3tRd08ciL70AmAuMKvxk7+LVGYwTZekGM8/KRiGqreu0AZ6sLD87xqlv+3Fg==
+	t=1792531213;
+	b=HEu2SrET6G8eUCx5hVf/8v9riYILM20CM5U9tMrgKP4+hXs/IQk64iBta1lSzgK6xs9Z
+	 P+F2Gs5S5qaZr9oYzIvv3XYGSWfoA40JNbjo1kuYEGLs84T3hOKjgh7e6mcYy4KqYiWjw
+	 +wG1WWvwYXgn447CEJfcG2WM3E9crrERya1X8onKm1c48uFesfPRRhM+5cdSOnY5cqmyw
+	 dVkgZKT/FJ5/w/B95A94SoNnFempoQfH2VnQnyuZNZEMHpRuLGD7jsEZm4b5SKEa3Ivg/
+	 rczXDyhcmiALpNoQlMVjAccCwDxTKzyY4UvpwNsEuXpNvSifOQDf+fthpAjg/+QiEGw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792524468;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792531213;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:X-Mailer:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=/TWt3YlpVeuXR4oSjIHHS1PhYu7Tj44EsQ+nSN9oMos=;
-	b=WwFucJlCLq3jXr5zZ2xF0fXt6Vkf53rhBQPfpx7u5wawqotEZ12hbrgj2mjyJXzLf3xM
-	 S3tvoX4y8gXmtzlZ9mhGJ+1pEgTai5/stUeF5QFKKRpzG6IKApihhVPmNsQ4s2E7F4P0w
-	 3f1xRHPkTSFXIE6SjiNVtgOk5VymXZ8fzyuyAxDTagYz6ewurJfZkr0cY53sHcK2aY4uY
-	 qQnedJGkF+ENdDZpi3k9XOeatfZWWC8V+jWtnVDbWOhO7/eMM0hJOtKKH3ET2dksXBLjg
-	 nTM2QAqWet+OE2Yz65NU/ItIUO3Je7H5OVkjlM0HQ6JW3rAuazj9ACTjR55geoyH8QA==
+	bh=wkyaExlLLt2nx7gNqNXwfDrIgcs0VQWcw2XolzKkMKU=;
+	b=nq5KdUq51FLVGu80AnfsLkt76wZuM3suu7cZWHkSetPgX2UuxiLgMytiqxHxn3483zSP
+	 oX1nbFEKprVXCI07gz2YHIIEp+4Xt65wfwEx4whJdz9b5DG62Xea5GJEukUqmDjZ2yiKo
+	 0x9aRBLD0S1lHGUDo5983pxF8lM4Gff8bgiWqaHR9zDPcttWI/yQNq+SSGeb6gHa2HO3c
+	 Xnk5FgCn9wxMtcxlcY86BP6ggMmsCnyLQ1b1Qdttk5UHkjfrBNO37G6nDFuY7uRcp6c/0
+	 0pFILzvdII7CM+OZzwJJ7K5nRWPj7NNFO+XAzEoR02y62FpihDkDvpUQqeS4KvQj/fw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=j+h6s1Pz;
-	arc=none smtp.remote-ip=209.85.128.54
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=SUS10gxO;
+	arc=none smtp.remote-ip=209.85.221.50
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CB0606A31E
-	for <linux-parisc@vger.kernel.org>; Tue, 20 Oct 2026 19:27:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E8CB0606A31E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA894606A321
+	for <linux-parisc@vger.kernel.org>; Tue, 20 Oct 2026 21:20:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CA894606A321
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=j+h6s1Pz
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4a0286c981dso35891915e9.2
-        for <linux-parisc@vger.kernel.org>; Tue, 20 Oct 2026 12:27:47 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=SUS10gxO
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-48dfc0421d9so52705f8f.1
+        for <linux-parisc@vger.kernel.org>; Tue, 20 Oct 2026 14:20:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792524466; x=1793129266; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1792531211; x=1793136011; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:mime-version:references
          :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=/TWt3YlpVeuXR4oSjIHHS1PhYu7Tj44EsQ+nSN9oMos=;
-        b=j+h6s1Pzp9AVjy8LfCILDfdN9HqdkiQDKOIE+gC7s4xu8h7ZpE5q9yUXsNRll/V7wH
-         rYTPoz9JdhLnpZhHofY62Ldurv5DlVQk9UMx7HUrGAi5PXqH+tMG93VJu26eIf0ZdLpE
-         Xcq9ASZgBC/WOCw3KJELRFz03euilK+lDDMfkI+i2snYYH/6AzZGRanLTi31nh+buifI
-         N/PCMb51mer2rDbhdKq2eiPDWaLVDDXGlVKlDRX7JNNaIUVk4qdfVa+5JSXTX2AJ67ay
-         PdhQ4fNtKBXanm/Ya6L+rfglQQ/V/2a+rXsOokxPDupk8VdPsfSBBwb6iJGd1seiA153
-         BnPQ==
+        bh=wkyaExlLLt2nx7gNqNXwfDrIgcs0VQWcw2XolzKkMKU=;
+        b=SUS10gxO62r557Q/YKDnnSdTSAxSrE3t+mP4K0wNuuw0F5n518AB6Q+kgUp0okUMeG
+         lR4dfUpW231vTgQhJxTNMnH/iFqiHpVlQuGRl+dmMBCwwycMakFXDM3BGUyEZLk/VwDD
+         +OsLVGVM8gDx/g8yeMsfrcorNXBKjrmpUGQ4OWN1vd6UCLKTTdQf/oJtSrDk6ZZjzgV/
+         RMIAvYQ9Wv/tr6zjrNWVKU+GCyMX0z9Y7hcvu76G6BGSkcVnW7lohCEGctKNyua+e4Vz
+         jkI+9mxqhlzt1vmhVCbWVfQmt2GuZelQMTnjq9sGbOvqG3QRhhpiacNi1FoXV5kNaQVu
+         WA/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792524466; x=1793129266;
+        d=1e100.net; s=20260707; t=1792531211; x=1793136011;
         h=content-transfer-encoding:content-type:mime-version:references
          :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=/TWt3YlpVeuXR4oSjIHHS1PhYu7Tj44EsQ+nSN9oMos=;
-        b=Du5LcES3I0npf+ZMtje3h1IhoqY1nyTB6UX4ipz26G/rmPYqUrLJeDoG+yqFBv3iS/
-         MDt1zZqlUjTOnuTkdKBDUOg00A/aC0iHf9Kx3eMlDb5x8Jgx2ZeBZluylHgj8e4+pcuK
-         Sstb+/lU7tb0uRVLFXvI52aKRyLwMaPLxZJ/WyJ1iApkuL4d9zBV0tftfs6NJhojDDcE
-         /weVBzhdiJJnvt3HgbD+TW8Fmb6WrKJMd5c/c/T15uDTkVtO9NvQ7ID+IBM3vvoAvBIv
-         66d5d8G6A3wXifMcEqsF2rCyVMDdKe3eMxvoXQ8pT7/ZGgauyBlTDwfwGGKxmvYt+dfZ
-         qwrw==
-X-Forwarded-Encrypted: i=1; AKwUvBx228NN8sR/NYKfbD6TSpVETrJPbirvQ/553abgAQENep1u4vw3srAkX2x4HgunfdOFliMj16lKQx+wMM8=@vger.kernel.org
-X-Gm-Message-State: AFq9FYJkNreMP6laYUgdpxJJq1HrVziGMWUdT2mo77kpGKoRjDRIJPqE
-	3X8X/ZMW45EHdj07dwQtbZwHMvNciKABJZUhMFZ1kdWCRqIGxgx6dWyE
-X-Gm-Gg: AYBFou0HKIQqllQpjJ6oQmrKrvt8n8AMwcKQVe7zBQuUC6/b/E8RYo64dZCp2KtNYEj
-	SE+Moyg4b+RWvM2iOKdgDXzmqWOJSM06WNkrN/MUaiMDhISdSaZvnxfHctWtkWqX8jXojRE11Jm
-	OpSgRoCGp/JyQSp5J540xo3njZQclkOvKtfVgbNxFySgJPlQxQEPa6f5PHy5LGPQm5wgCGkmQjC
-	SSi/TXo8JgoOT9Y8ea6TD77k3rgYrWSP8tjYDMGcrWirmpShU1Wh74iVwPrfazqGPKxMWBgJzPe
-	oNKFElqNjk0San6XwMcmfZOiLk/RcTF5n22jEokzZczWit6PEfxl3/AquJwIOHYZrpJB88BT+ck
-	DSZbIbhg7w9Syvh6N+o86etkyJUGpTzyO+MnCkcswywAguLPScLRZEJQQljP/93WiQskZbBE+dO
-	gs/zrzNKyxmzsvjCGOBPJPKbS2Q4rb45EGEK83RvSHuAJuijbrH04TsibnrwADrHS1CWxSEXGeI
-	nxC+RWC/eAD0dKgUNkjqNinniF660U6rXGiiksPdk+qPnc=
-X-Received: by 2002:a05:600c:a411:b0:4a1:f377:5c68 with SMTP id 5b1f17b1804b1-4a1f3775ec2mr58315675e9.34.1792524465947;
-        Tue, 20 Oct 2026 12:27:45 -0700 (PDT)
+        bh=wkyaExlLLt2nx7gNqNXwfDrIgcs0VQWcw2XolzKkMKU=;
+        b=hN/yjVkRHDBlqb+qL3dTCQ48qvBHkM6IIv3Fc/JO22e0MddAcPA+IsF4bZTn2FUWMk
+         JEITasYBY0SRqvwndy9qxwo2FDHFCBp0xQcq/FiDr0lxFqvODNc+ciVZ7h3SUlzXn393
+         535v3vK7QvSDgDS9C13IWKn4GQZXG2r9X/pHFq4CYwM1kBbtxDcNrN9xKBYGoXf9kPRO
+         HIufnPly6DUEHrCJFVcG1Gb32/SjCJ+DZ9YNZvTlcfo3xqHIvuMwgd+fqQ1QsM8oG7Qj
+         bZGdmi9HPcbR94E1VLq35p92lCO2RhS61Ulaxw4S675P78F/B287hRBddj6VEe/L/cLG
+         j+SQ==
+X-Forwarded-Encrypted: i=1; AKwUvBxVjU2AvPjnmRnHOqGmk1k4EmlpjHHbJVAVO5HInvarqmv7xdBGbCmuN5duOnXlWqVdRHD/2guGVB8Cb14=@vger.kernel.org
+X-Gm-Message-State: AFq9FYK+QAAcbS0gCotAjT0+/CkSMx27DTl/Xp4kM9uFMqiSjrTLNHqL
+	HaDbqfTgIWvcx1wA29ai06YVVL0xk5xTKQgLvv8d9FRpDdjSMRuqp0rt
+X-Gm-Gg: AYBFou0WoBvsslsJSzJxnlDrflh080iye9zMyHHRAqIuagS2+X5j9Ntv0FtBZBbh5Jd
+	OyN98Y608jreXvx+9lZHAsQBUGvw0maazO1qY4nZQaIHZK2dY3515YxT5siZYkobSEyl7jqRmG9
+	R7E4OcA4Tbkc5f9FMcZfDmx1lZf7yMem7E6YZO3og9m5ZhAYzIvJ1VfDsJXrluz45k+SxWkiPEg
+	sT7iecrsBrxGU+k80/oCWbFv18yqELeNx9oRNmrCCgTMjnnF1adw1as5/XZ23Is3U3JItc0YCrY
+	uTOUJDB0ngTfupfRHkY92s4gqKNBOf3FbfwmOXFlgtR1xxJ1fcleTV3uHMCn7lu4ElmkYRDEIiU
+	JMC4mWkgBniltQelKdc9Gs8KmhAHQ6yTjrGTDfLRi3aywed3vSNRLKZ0rZX8x6mq+PXho+zfZXZ
+	qp6sU7ZfMbyMOXl3WK7zL3mBZxfTNhYL9sPAA0YsSFDiKo/zg7cI7QNlERlVouSmkqJZ0uHCkyj
+	fbeSF9/z/LrEnJjZOwjGUGl/noRxEeWGsyJ
+X-Received: by 2002:a05:6000:260b:b0:48b:efb:4a64 with SMTP id ffacd0b85a97d-48e07f98a9bmr26362540f8f.37.1792531211037;
+        Tue, 20 Oct 2026 14:20:11 -0700 (PDT)
 Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1fc119cdesm8779635e9.2.2026.10.20.12.27.45
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e258424bcsm913222f8f.55.2026.10.20.14.20.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2026 12:27:45 -0700 (PDT)
-Date: Tue, 20 Oct 2026 20:27:44 +0100
+        Tue, 20 Oct 2026 14:20:10 -0700 (PDT)
+Date: Tue, 20 Oct 2026 22:20:09 +0100
 From: David Laight <david.laight.linux@gmail.com>
 To: Ian Rogers <irogers@google.com>
 Cc: Arnd Bergmann <arnd@arndb.de>, Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -93,10 +93,9 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Marc Kleine-Budde <mkl@pengutronix.de>,
  <Jason@zx2c4.com>
 Subject: Re: [Regression] [PATCH v5 2/4] vdso: Switch get/put unaligned from
  packed struct to memcpy
-Message-ID: <20261020202744.55c52a49@pumpkin>
-In-Reply-To: <CAP-5=fXQxGBYnCKbGpxvtaQxxhju2UXgzn1vy-8rcoNVOvSqyw@mail.gmail.com>
+Message-ID: <20261020222009.54f6d35a@pumpkin>
+In-Reply-To: <20261020202744.55c52a49@pumpkin>
 References: <20251016205126.2882625-1-irogers@google.com>
-	<20251016205126.2882625-3-irogers@google.com>
 	<47f8c30b-e326-4ff0-a2bc-5683209a9e2d@pengutronix.de>
 	<20261006-dynamic-succinct-woodpecker-a36c7f-mkl@pengutronix.de>
 	<2f6094ff-f585-4b8b-8c25-20c11d1bfc7d@app.fastmail.com>
@@ -111,6 +110,7 @@ References: <20251016205126.2882625-1-irogers@google.com>
 	<CAP-5=fWHDR0--hMYM5UHXaDfggctPbJKxNUnM0hjpupUSVNQ5w@mail.gmail.com>
 	<fe4c1225-d5bc-444c-b457-001799a3f648@app.fastmail.com>
 	<CAP-5=fXQxGBYnCKbGpxvtaQxxhju2UXgzn1vy-8rcoNVOvSqyw@mail.gmail.com>
+	<20261020202744.55c52a49@pumpkin>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -121,175 +121,34 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, 20 Oct 2026 09:21:47 -0700
-Ian Rogers <irogers@google.com> wrote:
+On Tue, 20 Oct 2026 20:27:44 +0100
+David Laight <david.laight.linux@gmail.com> wrote:
 
-> On Mon, Oct 19, 2026 at 3:05=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wro=
-te:
-> >
-> > On Mon, Oct 19, 2026, at 23:14, Ian Rogers wrote: =20
-> > > On Mon, Oct 19, 2026 at 2:00=E2=80=AFPM Arnd Bergmann <arnd@arndb.de>=
- wrote: =20
-> > >> On Mon, Oct 19, 2026, at 19:04, Ian Rogers wrote: =20
-> > >
-> > > Is there a reason that the compiler's instruction selection can't make
-> > > the same decision for the memcpy case as the __packed case? We can
-> > > work around the compiler bug with a config option.
-> > > The intent with using __builtin_memcpy, as opposed to memcpy, is to
-> > > avoid a library call. =20
-> >
-> > As far as I understand, the only difference between calling
-> > __builtin_memcpy() and memcpy() is the need for a prototype
-> > for the latter, I would expect the compiler to behave the exact
-> > same for for both otherwise. Whether any of the string.h functions
-> > are replaced by an inline alternative is a complex optimizer
-> > decision, not something you can enforce by calling the function
-> > by one name rather than the other. =20
->=20
-> So to repeat, relying on __packed and assuming __packed won't be
-> lowered to a memcpy(), memset(), etc. call by the compiler is false.
-> Both GCC and Clang lower __packed accesses and assignments to
-> out-of-line memcpy()/memset() calls in a variety of cases on
-> -mno-unaligned-access targets:
->=20
-> https://godbolt.org/z/qKWv6Gdav
->=20
-> Using the __packed definitions of get_unaligned() and put_unaligned():
->=20
->     #define __get_unaligned_t(type, ptr) ({                        \
->         const struct { type x; } __packed *__get_pptr =3D
-> (typeof(__get_pptr))(ptr); \
->         __get_pptr->x;                                \
->     })
->=20
->     #define __put_unaligned_t(type, val, ptr) do {                    \
->         struct { type x; } __packed *__put_pptr =3D
-> (typeof(__put_pptr))(ptr);    \
->         __put_pptr->x =3D (val);                            \
->     } while (0)
->=20
-> 1. 4-byte aggregate with __packed put_unaligned():
->=20
->     struct s4 { short a, b; };
->     void put_s4(struct s4 *p, struct s4 v)
->     {
->         put_unaligned(v, p);
->     }
->=20
-> Even though struct s4 is 4 bytes and passed in a single register (r1),
-> GCC with -O2 -mno-unaligned-access spills r1 to the stack and calls
-> memcpy() for 4 bytes:
->=20
->     put_s4:
->         str    lr, [sp, #-4]!
->         mov    r2, #4
->         sub    sp, sp, #12
->         str    r1, [sp, #4]
->         add    r1, sp, r2
->         bl    memcpy
->         add    sp, sp, #12
->         ldr    pc, [sp], #4
->=20
-> 2. Copying a 4-byte __packed struct containing a single int:
->=20
->     struct packed_int { int x; } __packed;
->     void copy_packed_int(struct packed_int *dst, const struct packed_int =
-*src)
->     {
->         *dst =3D *src;
->     }
->=20
-> Clang's frontend lowers *dst =3D *src directly to @llvm.memcpy(...,
-> align 1), and GCC with -O2 -mno-unaligned-access emits an out-of-line
-> call to memcpy(..., 4) (as does riscv64-linux-gnu-gcc -Os).
->=20
-> 3. struct debug_entry __packed (from tools/perf/util/jitdump.h):
->=20
->     struct debug_entry {
->         unsigned long long addr;
->         int lineno;
->         int discrim;
->     } __packed;
->=20
->     struct debug_entry get_entry(const void *p)
->     {
->         return get_unaligned((const struct debug_entry *)p);
->     }
->=20
->     void copy_entry(struct debug_entry *dst, const struct debug_entry *sr=
-c)
->     {
->         *dst =3D *src;
->     }
->=20
-> Whether accessed via the __packed get_unaligned() macro or via direct
-> assignment on a __packed struct, both GCC and Clang emit memcpy()
-> calls. In fact, with the __packed statement-expression macro, GCC
-> emits two back-to-back memcpy() calls in get_entry() (one into the
-> statement expression temporary on the stack, and a second from the
-> stack into the return slot).
->=20
-> 4. Loops of scalar int __packed get_unaligned() / put_unaligned():
->=20
->     void copy_8_ints(int * restrict dst, const int * restrict src)
->     {
->         for (int i =3D 0; i < 8; i++)
->             put_unaligned(get_unaligned(&src[i]), &dst[i]);
->     }
->=20
-> Even for a scalar int, loop idiom recognition in both GCC and Clang at
-> -O2 turns the __packed loads/stores into a call to memcpy(dst, src,
-> 32).
->=20
-> 5. Adjacent scalar __packed zero stores promoted to memset():
->=20
->     void zero_2_u64(long long *dst)
->     {
->         put_unaligned(0LL, &dst[0]);
->         put_unaligned(0LL, &dst[1]);
->     }
->=20
-> Even in straight-line code without a loop, Clang's MemCpyOpt merges
-> two adjacent 64-bit (or four 32-bit) __packed zero stores into
-> @llvm.memset(..., align 1), which lowers under -O2
-> -mno-unaligned-access to an out-of-line memset() call:
->=20
->     zero_2_u64:
->         mov    r1, #0
->         mov    r2, #16
->         b    memset
->=20
-> On the Kconfig patch, I have updated v2 so
-> CONFIG_VDSO_UNALIGNED_PACKED defaults to
-> !HAVE_EFFICIENT_UNALIGNED_ACCESS to cover all strict-alignment targets
-> rather than just CPU_32v5.
->=20
-> I continue to think that:
->=20
-> 1) given __packed implicitly can be turned into a memcpy, it is no
-> better than a memcpy;
+> I suspect it happens less often with __packed.
+> You can probably add volatile to stop the other merging.
+> 
+> It really might be necessary to give up on the C versions and use asm()
+> (at least for the unaligned access case).
 
-I suspect it happens less often with __packed.
-You can probably add volatile to stop the other merging.
+This probably works for unaligned 64bit - and is much better than the code
+the compiler generates:
 
-It really might be necessary to give up on the C versions and use asm()
-(at least for the unaligned access case).
+unsigned long get_u64_le(void *s)
+{
+    unsigned long p = (unsigned long)s;
+    unsigned int shift = 8 * (p & 7);
 
-David
+    return *(unsigned long *)(p & ~7) >> shift |
+        *(unsigned long *)((p + 7) & ~7) << (-shift & 63);
+}
 
-> 2) the __builtin_memcpy for efficient unaligned targets avoids type
-> punning, is more intention revealing, is clearer for compiler writers,
-> and is what compiler writers tell me they want.
->=20
-> That said, the code with a __packed or with a memcpy can be made to
-> work, optimized, etc. I'd like to be pragmatic and address Stefan and
-> Marc's problem so a revert works, I just think we can try to do a
-> little better.
->=20
-> Thanks,
-> Ian
->=20
+For native BE the two shifts need swapping.
 
+Not worth it for 32bit unless the alignment is known.
+(And neither gcc nor clang do that for misaligned members in aligned struct.)
+
+> 
+> David
