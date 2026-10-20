@@ -1,98 +1,113 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.46
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792489252;
-	b=hIvL4ZSSWspYBs87pd5GQ7QMBEL+2D2a/LcrWi3udH9yDkFQ7FyPCUM3h6wt1+G9V+K3
-	 jxuqqLg9+cM0sCTqaBsFvl1HDMoXbM5h+tIoSku3v1rsit5zBTcQK5NR4tiIfPwrX59yt
-	 k02MBQ8K9mM5oDA5pUcQ58eGJljILQwNuaKZbjwxT/QCJBJgr1R1QizQ9A8q0u4E5YD5Z
-	 b+83LZqE/3ShmUOFRooIRokrjFIFCbN1dEs00M6rUUQAYp4OU2OISD8TR3LM2i1RO9JwO
-	 /GutBCfL/TVvCAEJIvYg7To1iDQQn9oaN76UPPk/rmLE3/bTMTEOevSuog6MUd/vp7g==
+	t=1792490494;
+	b=NtNuU8PnAU3UUV22jtEa/F5Hm2VQ/0TLyFur+EFrkCaiHrvGFqc8ZYnF3MnP9t5ml3MD
+	 3Ur7V3Wzl8OYfHgzhzY+YtaTsOXZ6R3flDuAvZrd8zY6vvuyN4kwjIxIBm7/VdAjwsECP
+	 W58O2vUG20cCPer408sF0OLTRPuo+Sl0ccjsL1VDdVA3j+AUrEYW8EZdfM8hQumz1dBQ4
+	 mewenLHLCpKyDhuOryvS9AP389jEGYu6OJ6SZcSuW0y8UaSgaYG361jiZSNAZemdwq4pR
+	 fQ6GeqWGuH1q3QDDL/8YRQcsutaU53LSHRYnv90Q5c8FwrDq0dUyjb2ggw1rWsuu8zA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792489252;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792490494;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:X-Mailer:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=A75WOahLsxv+hidbJl57jAQmkr4ntTiQuJfofCyvgAA=;
-	b=rHMzXKBi8O3DyEHvWqXqP7PeCmgTXPZFYVZV+WGZh9CuYispmRCzjqtjL86jPQAqMuHI
-	 uskdc082EX09vmDhrKYbomD+9U6XdzHkSiruS5tDqt8P38P8cAzd6kTvZH2Ft/i9i6fhZ
-	 Ovpx0VYZHzZM1PHvnH3PyUNk5cTa0igxO0HeA4EZ2jvTdbBn3aNh8LNqkWvbCkEJRKZyI
-	 DzjcaqjykF70JTIWeJ5iDYZaV1jBTr+igPKjHq97j2WRhRGc6UeMfeOg8o8IbVQKSe5J2
-	 VRpGScXzFJJqzHCMKfMqWyo7HhmgSg8nh+oTqCS/9Jf+JEMhxGMI4UeftL3/IOVXd3w==
+	bh=0EBQ5zDoDvXhg9EZWNn3Z69o4Pu64kdEOghQ8cgTBOI=;
+	b=JJD6dVwGUcmhINJ3L4ptl+A6MaRDce553WzSX6YNV6QxqqeY6irmXXwjr+pLiu9lGK45
+	 32vGeCSFPvoYVy24DLQvHUAc5WxzNKsGNyzI80jJoyqWDQizZizNqfZcOOe85LUNYbSAx
+	 /kncCibeL6AdqYj4kC+zKnYSJMBXdIWHg7b911RYYRmbIk7wBBrESLl2DSgP4imssKzo4
+	 eOEiEBa51p8UIUu4zzZtO5VdNJ5oUgHnx8Xfa2MSQmEly4dt6hFOGQaopazRNZ9xGhnLQ
+	 SHZvGOEGb6vBNoQbZpI0BV0KhEq6GMtUtLPabiDcHai9uLcbP74/m7Dhgo+zBjUg9hA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=XV4Cvim9;
-	arc=none smtp.remote-ip=209.85.128.50
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=i9MgAnUv;
+	arc=none smtp.remote-ip=209.85.128.46
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C573360A3812
-	for <linux-parisc@vger.kernel.org>; Tue, 20 Oct 2026 09:40:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C573360A3812
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E077F606A320
+	for <linux-parisc@vger.kernel.org>; Tue, 20 Oct 2026 10:01:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E077F606A320
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=XV4Cvim9
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4a1698ea378so22597305e9.2
-        for <linux-parisc@vger.kernel.org>; Tue, 20 Oct 2026 02:40:51 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=i9MgAnUv
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4a180fbeef5so23352495e9.1
+        for <linux-parisc@vger.kernel.org>; Tue, 20 Oct 2026 03:01:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792489250; x=1793094050; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1792490492; x=1793095292; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:mime-version:references
          :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=A75WOahLsxv+hidbJl57jAQmkr4ntTiQuJfofCyvgAA=;
-        b=XV4Cvim9PGmRPYDYWPvQxtCfIVwqwnzysqMcwp5ZopGQIZiwPM2c/Blf4nJty23CBX
-         MUoruMd6T9T63oEUmvZDXPd3ykx9ceI+H/n0o6nSaYrKuLSBL+A4r1koIYW8OJJCy08d
-         ogtgHykli4AdY+EDDENGKkka9QeVdV+NA8+62bY2rUbUk7Mc4T++oXX5CZN1xWDiJP8D
-         ceMCkm7yuea88WI9Ugb7ISrBk64f7qcNE6jvwRziPHMQwGdJ+Zq++ik8gGD3PUVZNgkp
-         g6QyDPzCN8CfWcseqJAaXh7BiG+/dwz9S2vUmThYHmNrUxEZivkLhOZWN72QgpkyQDCn
-         daDg==
+        bh=0EBQ5zDoDvXhg9EZWNn3Z69o4Pu64kdEOghQ8cgTBOI=;
+        b=i9MgAnUvlMAvsPPtg/rnJRujJfiLh77GJyjTrlzu0E8ELwo7HGd9EJH2o5PcpkMQa5
+         HXZv/bO+5o6K+clkbQTAWDgyvBJJGRa4AXRTvAtPgyoZLTVJYjyLOxkbRdnpsilLzWPG
+         nt/NOJ7ZII59jalWoCrkgO6eq3JiKCF//P9vcZjypkoCrU5IT3iz2MFTp99iPRJBPDHI
+         k6ohkARiekfzl5GpcQ8Nwo0OPMRhcfOlkVeC493Yh2wppMmEsclPRLmIO0abHJBnjCQh
+         3y/QxvWKwP+nOaKLdqB1gpoRn8Zn536gcELkHYEV5fUdKyBAwfQRsAHnHZaAmTvp8xbM
+         0Bkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792489250; x=1793094050;
+        d=1e100.net; s=20260707; t=1792490492; x=1793095292;
         h=content-transfer-encoding:content-type:mime-version:references
          :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=A75WOahLsxv+hidbJl57jAQmkr4ntTiQuJfofCyvgAA=;
-        b=ZedpaVyqP7fgxDIOjv5ND7RlkrvYPxTp1Xie/dk1Nt5yAI3VtfPlmiG4t+ElQfSyFG
-         qGNcsB0OnBd//J0msmsJn7sdHDMshZmyAhe7DPVCmY4Qf9d74koYZwFY/shM8zsV6ysf
-         9IpgDYwauOS5FhLsS7Tr1MYd+MCbYmuU5c9sIwWpQJnuJrXzuNkGYECBp+TZp1JdznUI
-         PMh1d9RG9zTjANTV8b3i8c1hgo7X/XVD681O7D8ryWH0AmXwZM3kjkCukWijhh0LM1ey
-         TJL1IBBtp6nYw1jeeh3KQL7z4vdNZLmbKJbYiyYpsPk2wS4Ea5zhQwdthlNMR/krWNaF
-         KkuA==
-X-Forwarded-Encrypted: i=1; AKwUvBy0O+ryfNhPVZ8oAq8FpkVrTO+SqKq+ddZYqBjnoaVsnwKgtYorzIt1kDS7HHKcWCkYsLgStuSzw5IuOt4=@vger.kernel.org
-X-Gm-Message-State: AFq9FYJ0mLmpEHtrf3hPwTj3adgsagArl12NZp2a1n1ZoSj0XDwWJD7f
-	/ff5Dm4qj4t47FY8dm/kSwLzwKwa0JGkb+5G+d8vE9YGRMuldULMBw85
-X-Gm-Gg: AYBFou044fCUa5g8C3gJb/CBwDp51JAX53UqXKZwgqL9w/lUl+ZCDhdrQsliWF9p1yf
-	Fz4iB1kvoJ6J30TizvslxoWYBE2JeVlhp4sLdJIo4nOqQQWKf9QQYckjWcHUhfRJEwDWUb3/Cx0
-	/L5b771gCqkhTjn1xRb6ut1zns+8ef0xrKW6VtEQuI30RFHZI4kb0Y8/1JpfhdUMMMs+BtJN0IF
-	UGP/vzYRZBCUcKHFGKZuZCWR9ZVnYwy2nWI0hLcobfhYgkd3K7xhGGzXpE57PyyHkUskdKze0lz
-	zm2px3SO9vsjSRf9WRAih0yCyhGrXoqlN41jV68EU5enED/I3Mo75tzobxH9OK/gNPHrEvC+WgP
-	mfBoMZtpBDGVQcWWfO9qGO6mNLHpjQ3+xd7oQf7ACaZUnqReMjMzx4H6Az0FYdzsrOvN5Hvsp/v
-	Ea1JJbuPNCRcYlTRh0cP9UwLoGfSiJDtaSwKVAKFrpUDbAC+3F8SZmTQILE5vpa555CRgEkv+CT
-	yx0wUMOVuyTnd1Wv9S9tXlGF0IrE9uLTB4=
-X-Received: by 2002:a05:600c:4e11:b0:49f:e701:51c8 with SMTP id 5b1f17b1804b1-4a1d75f24b4mr211056285e9.9.1792489250061;
-        Tue, 20 Oct 2026 02:40:50 -0700 (PDT)
+        bh=0EBQ5zDoDvXhg9EZWNn3Z69o4Pu64kdEOghQ8cgTBOI=;
+        b=Ms85Q6g+7cr52w/9gbbQ2N3Zoyl829SjfDcxSzEuvAoG5niV4UMG5ZT6054tvvvyDF
+         YkjHPM6xDO2ZcI0yIZom+iB4EdlLPUdMlSy5Bn4LewjkVs1NnKQPOnUaRov67q8RYxHw
+         99ryeEUPVTXHDzp/G2an3dBh2J3a9PvLfyseqiJQHFyMUD7y/p0qXYH4F6tf6878xeJC
+         obq/+pAgmN2nkWJzrjPFJ8UkJavkWmz8YbVXTuoOrFN+uVKVzeJeRRETT7HZsiDe2pzX
+         dkjNk0W/Dz+fivotxafFoqGiYfcB1ukUBKwGNSuOhv4QeUwPyEkXuAgD1zpXNb7uxSG0
+         xqZQ==
+X-Forwarded-Encrypted: i=1; AKwUvBz5hqKmyPE5aSkE7HA0hgxU9TQFpBW+QkIanpijAAVoZbVeFtltGvDQe5dY0t6uQV3wC8bJIL1JE/NkzC4=@vger.kernel.org
+X-Gm-Message-State: AFq9FYLClv2/d4YyGG+d23yGfw/qvE4dMatyan852YULAXBBDuOjpbol
+	37J9ei+nGnr/Hiwm0p1F4tmDzeLsRnUUWolYBo3x3ku0oX7aFST47ouR
+X-Gm-Gg: AYBFou2IIErRdxLhn8zpVbKkbpzPRG+Zuyf81quSQVi0ZH88q8hgGNpecnHU3yN2PeB
+	CNxuGVSrZsvEqHOjLt+jMRXGy+pVJWlp+HVZyUCceXjV5vDJuxvJJ10hTAHSTGbwI0pJIEYcLd2
+	efgAIZDl21RA99EakAD6Z6+CX3y3nh6jPjEeDVCUH63T2+3MBgaGR372JiCHNwSZUjW9r/S51NK
+	iufD/SyJf8AN3v1YtJGYtK1b/I6mLjhsBA74GSjvpXQf9K2odBWuOS+geJ+DS3Ymb+vv0ePMgeh
+	6Z8+HkO1kuTMHzlyKAWH+KlcXwKlFsHxvPuYwEKinBf+Nn1ni+T1n6fXUsBSIO7H4zIWVBPM58s
+	TQV+tvaopwsOvVk35+vClHWZWxW8TGAnt25zyvrkMYOlC9IzpuLiszMD4NuT3tX0tD6dT4/F3EI
+	haUqM8xjeosHYN2cGFnnPWMvLW/fFteAAPSUha6PyhWSTsD7w1heCLMusr27z03M7QAseQnmTyD
+	wUxDDg3UCoWXssz337p4hxDR0qcj8MpRdA=
+X-Received: by 2002:a05:600c:81c9:b0:4a1:ac66:6ac6 with SMTP id 5b1f17b1804b1-4a1d7612994mr197564595e9.26.1792490491956;
+        Tue, 20 Oct 2026 03:01:31 -0700 (PDT)
 Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1f2cdc342sm64517275e9.13.2026.10.20.02.40.49
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1f2cb6d82sm55429065e9.5.2026.10.20.03.01.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2026 02:40:49 -0700 (PDT)
-Date: Tue, 20 Oct 2026 10:40:48 +0100
+        Tue, 20 Oct 2026 03:01:29 -0700 (PDT)
+Date: Tue, 20 Oct 2026 11:01:28 +0100
 From: David Laight <david.laight.linux@gmail.com>
-To: Dinh Nguyen <dinguyen@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?=
- <thomas.weissschuh@linutronix.de>, "schuster.simon@siemens-energy.com"
- <schuster.simon@siemens-energy.com>, Ley Foon Tan <lftan@altera.com>,
- linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
- linux-snps-arc@lists.infradead.org, linux-parisc@vger.kernel.org,
- "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>
-Subject: Re: [PATCH] nios2: ksyms: Declare __mulsi3 export
-Message-ID: <20261020104048.7b038bdd@pumpkin>
-In-Reply-To: <c32b7ed2-fa3f-4a58-9300-21efcc88f056@kernel.org>
-References: <20261019-nios2-mulsi3-v1-1-4fd75b1bacef@linutronix.de>
-	<47eb6b48-d664-440f-84b6-ba09f34d5e08@app.fastmail.com>
-	<c32b7ed2-fa3f-4a58-9300-21efcc88f056@kernel.org>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Cc: "Ian Rogers" <irogers@google.com>, "Marc Kleine-Budde"
+ <mkl@pengutronix.de>, "Thomas Gleixner" <tglx@linutronix.de>, "Stefan
+ Kerkmann" <s.kerkmann@pengutronix.de>, "James E . J . Bottomley"
+ <James.Bottomley@hansenpartnership.com>, "Helge Deller" <deller@gmx.de>,
+ "Andy Lutomirski" <luto@kernel.org>, "Vincenzo Frascino"
+ <vincenzo.frascino@arm.com>, "Arnaldo Carvalho de Melo" <acme@redhat.com>,
+ linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, "Eric Biggers"
+ <ebiggers@google.com>, "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>, "Jason A . Donenfeld"
+ <Jason@zx2c4.com>
+Subject: Re: [Regression] [PATCH v5 2/4] vdso: Switch get/put unaligned from
+ packed struct to memcpy
+Message-ID: <20261020110128.25d7e3e8@pumpkin>
+In-Reply-To: <100aecfe-f3f6-4058-9f3b-1eb942f23253@app.fastmail.com>
+References: <20251016205126.2882625-1-irogers@google.com>
+	<20251016205126.2882625-3-irogers@google.com>
+	<47f8c30b-e326-4ff0-a2bc-5683209a9e2d@pengutronix.de>
+	<20261006-dynamic-succinct-woodpecker-a36c7f-mkl@pengutronix.de>
+	<2f6094ff-f585-4b8b-8c25-20c11d1bfc7d@app.fastmail.com>
+	<CAP-5=fVt81pYz_EXj+QNG+hFGomb-xcpm-6=ZNzNm+c2sbP6UA@mail.gmail.com>
+	<b2a50293-d6f7-41eb-854c-c43bc9874ffa@app.fastmail.com>
+	<CAP-5=fW25k8uOeamGRhwbFUUZ8D0D1n5YK-NFF7_2JMJcGOsiw@mail.gmail.com>
+	<20261019-rapid-loutish-porpoise-ac4efb-mkl@pengutronix.de>
+	<CAP-5=fUwDOv9k1Ptz22h9kKYFJowg9UPa+LzWnnswJ72ptF8tA@mail.gmail.com>
+	<18c92ae1-deaa-4c09-adca-157819cf005b@app.fastmail.com>
+	<20261020093604.286e072a@pumpkin>
+	<100aecfe-f3f6-4058-9f3b-1eb942f23253@app.fastmail.com>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
@@ -103,62 +118,45 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, 19 Oct 2026 09:34:42 -0500
-Dinh Nguyen <dinguyen@kernel.org> wrote:
+On Tue, 20 Oct 2026 10:41:27 +0200
+"Arnd Bergmann" <arnd@arndb.de> wrote:
 
-> On 10/19/26 06:16, Arnd Bergmann wrote:
-> > On Mon, Oct 19, 2026, at 11:49, Thomas Wei=C3=9Fschuh wrote: =20
-> >> GCC may emit libcalls to __mulsi3(). As modpost is not aware that this
-> >> function is provided through the linked in libgcc, it fails:
-> >>
-> >> ERROR: modpost: kernel/locking/test-ww_mutex.ko: symbol '__mulsi3' und=
-efined!
-> >> ERROR: modpost: kernel/time/test_udelay.ko: symbol '__mulsi3' undefine=
-d!
-> >> ERROR: modpost: kernel/resource_kunit.ko: symbol '__mulsi3' undefined!
-> >> ERROR: modpost: fs/fuse/virtiofs.ko: symbol '__mulsi3' undefined!
-> >> etc.
-> >>
-> >> Make sure modpost can see the symbol from libgcc.
-> >>
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Closes:
-> >> https://lore.kernel.org/oe-kbuild-all/202610171933.J4bFOfL8-lkp@intel.=
-com/
-> >> Fixes: 2fc8483fdcde ("nios2: Build infrastructure")
-> >> Signed-off-by: Thomas Wei=C3=9Fschuh <thomas.weissschuh@linutronix.de>=
- =20
-> >=20
-> > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> >=20
-> > The patch looks correct to me, but it would also be nice to not use
-> > libgcc at all. What I see is that only arc, nios2, openrisc and
-> > parisc still link against the toolchain-provided libgcc, everything
-> > else uses the kernel's own runtime.
-> >=20
-> > It's probably not even that hard to do right, here is what I found
-> > is imported from libgcc.
-> >  =20
-> Patch applied!
->=20
-> Thanks for the suggestion Arnd, I'll work to on the NIOS2.
+> On Tue, Oct 20, 2026, at 10:36, David Laight wrote:
+> >
+> > Historically it has definitely done that.
+> > And you can't 'cast away' the alignment implicit in a type.
+> > The alignment can get tracked into an inlined function.
+> > Plenty of crashes on sparc32 from that one.
+> >
+> > Any structure that might be misaligned in memory better be packed.
+> >
+> > But what is actually wrong with using byte access? eg:
+> > u32 get_le32(u8 *p) { return p[0] | p[1] << 8 | p[2] << 16 | p[3] << 24; }
+> > On x86, arm64, ppc (etc) both gcc and clang generate a single memory read
+> > (byteswapped if necessary).
+> >
+> > https://godbolt.org/z/d33hvesr8  
+> 
+> IIRC this is one of the versions we had in the past on some architectures,
+> but the packed struct version ended up being better in some cases and
+> never worse. It is possible that on new compilers are just as good with this
+> version, and if someone can show that being true I think we can do
+> that here as well.
 
-Does the kernel support nios2 that don't have the optional multiply
-instructions? (including the ones that generate the high 32 bits).
+I was only looking that is generated reasonable code on x86.
+(Ok today, but I'm sure gcc didn't optimise it last time I looked, my
+memory must be going.)
 
-If the compiler knows they exist (it isn't the default) then it should
-just use them.
-The fpga almost certainly have plenty of 18x18 DSP multiplier blocks
-than can be used - so the resources are there.
-(The slow part of the multiply is actually the ripple adder that
-generates the high 46 bits.)
+An alternative would be to use OPTIMIZER_HIDE_VAR() on the pointer with
+a (partial) memory clobber and the packed struct version.
+(You need the memory clobber after the write as well as before.)
+That might add a register-register move (and so a spill).
 
-David=20
+David
 
->=20
-> Dinh
->=20
+> 
+>       Arnd
 
