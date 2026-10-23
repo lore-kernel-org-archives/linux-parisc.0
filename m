@@ -1,118 +1,102 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792761914;
-	b=E7hWp3RyVEgi7kTogBDNCYE6GWxDXKDS+FTz66pd1hFKaM6Ub0BHVeapPE/AZJrQ9bH3
-	 v0EGUEX7J6Ss681bUGfGdcgDzz/oiS3+g/QcGv+iP75LEt4D5GBJ2UAZ9TW2IicKYqE57
-	 3tLANHr7hwQKlDHoPAwg8yEbC0KKjO7pREBczXex42yr9R6Hvp9Fsmc2FWcZQi77trJOq
-	 rgslcX33OfzVwjGBBq6hgQyDEhcNkqMOmMKVZp6Obq7tA6Q8cVeEtN9iLjVnk4q2yyMHL
-	 9bI4mcxSJAzeoWlskxA2Oj/6mtvCH+NTTilPjX1fBUelZsKN6/pZ0tRz4ijGsKBaf0A==
+	t=1792762818;
+	b=IxfyoiofYocD74fQOtCLqP82TNbU63LhcIHJl8V0ozcPnAlME4ARZmJdSsvRLt8eO1lH
+	 cmxbhDG1xUUZZkS2yAeYKePkx46WeZpLI+uXwGMrqzjq9/oHsiCovyTToaJdeFpkvsqe1
+	 SNnHcc4TLe773EY9C9WqN9RWTxqHIUIymY1awXryJbnf1suyVlrYFcvwRX+9NZFpjKQb6
+	 o8FuyANXSxE7DOMJFLZpIQQgSciuuDNEFgWOhPVViIogda4CGJaZGkLgcOnFDGu9TZzpN
+	 6wIH+PvlcgoSbAgLiUmPA4RVGN6MgqPQSHOpKO+YkWPGvfLJL2Nq9Yx5CWJ21/7hOwg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792761914;
-	h=DMARC-Filter:Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
-	 DKIM-Signature:Received:Received:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:X-Spamd-Result:X-Spam-Score:X-Spam-Level:
-	 X-Spam-Flag;
-	bh=IcIDlGk0MsS2m3wJnJpyvorgRoOp2iBdRw5Yw+AtQMU=;
-	b=byHmQT8bMDw0heLlJMHv/QaqPa80uO5D5DrXq/W7g7i4h6jsG4fudqLV2e1u7JSx7tou
-	 ybwPoTBX1m6qCMEzQFGIfTclX/t89+fmfY9JdzlaLTDIO9IAluWzDIrvAzLDdzcD3CrSf
-	 I/VzH++ZjqqKAFLFknACNDgwU8LmRETneO65T6+OFEmO5txLEkNWF9fJelL00jF94REkW
-	 xdODT4IaIH5b8RJOmP5PKTEBWBf/Kc6SflyRP9KRydQHTU2oWPR2+UDkYvsL6qRb6fRXy
-	 iuatDS8KZkZFXL5QpXGfcRNCa1AdIvKdiEOvzdVKrWAioEcWfWk2awJAYk/KsLAfl7w==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792762818;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To;
+	bh=JSne534GRKySd/hPuhXIpMo4L1wNZz0o43yKbATYUSM=;
+	b=UuZ8ZZRHDNwlMgjC7zzj4fg6VdMwrmDGGA6zv8JI2UHo/Cko79qd1GVu9evyXMgoed//
+	 LGtNZT61xJJ0rtEMu9OC9J7bW4zJIaj0imtQn0fqKAmZd10+wMjwLnUVnOPJQqZniaRkR
+	 bdYqLMEoCo7ofeWsGP7QFcHWq2oezYK8oV20az+Fks1APndJVaBflDVs5OFsDO6S9n+yS
+	 29UBurtm5K8a3qWSQwWvSxvbmV19pcJue2EfvK3HCOzS9zIIsSBVLrDL9FKy8dPUvOeIC
+	 0W4zaqHhoKjx8xAUlKwiyENKyLEW8HsTxd5ON2AZSH/E/Mwk9FsoJeFkI1l6tmkm1Qg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=suse.de;
-	spf=pass smtp.mailfrom=suse.de;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=cR1N76og;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=SCA8i6+Z;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=cR1N76og;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=SCA8i6+Z;
-	arc=none smtp.remote-ip=195.135.223.130
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MsxhMa+8;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D64606A338;
-	Fri, 23 Oct 2026 13:24:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 69D64606A338
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4386606A31F;
+	Fri, 23 Oct 2026 13:40:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=cR1N76og;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=SCA8i6+Z;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=cR1N76og;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=SCA8i6+Z
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 89AAC21FC7;
-	Fri, 23 Oct 2026 13:24:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1792761894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IcIDlGk0MsS2m3wJnJpyvorgRoOp2iBdRw5Yw+AtQMU=;
-	b=cR1N76ogpdWP7f2HVIYNiszECcj2df5exjPWb58bwwLm23OyIMNm+vdOGIVN8lD4gkhxQ4
-	5VKNBsebuOOdgMSKSTPEe1+NW4ngmhm39ouff6WrtXV7YF4OYBLiJ/w4WUa4z7HowlwlwM
-	LY8JgeMdK+vJyp8llzCniYBClTqLrzg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1792761894;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IcIDlGk0MsS2m3wJnJpyvorgRoOp2iBdRw5Yw+AtQMU=;
-	b=SCA8i6+ZQXM6EhePbnWoiCgpd2FfchYIwxCwk0xbWZyQnp7VM1yrFM4od+KrZq7ZRioPp5
-	LGdMtwowIt7IINBA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1792761894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IcIDlGk0MsS2m3wJnJpyvorgRoOp2iBdRw5Yw+AtQMU=;
-	b=cR1N76ogpdWP7f2HVIYNiszECcj2df5exjPWb58bwwLm23OyIMNm+vdOGIVN8lD4gkhxQ4
-	5VKNBsebuOOdgMSKSTPEe1+NW4ngmhm39ouff6WrtXV7YF4OYBLiJ/w4WUa4z7HowlwlwM
-	LY8JgeMdK+vJyp8llzCniYBClTqLrzg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1792761894;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IcIDlGk0MsS2m3wJnJpyvorgRoOp2iBdRw5Yw+AtQMU=;
-	b=SCA8i6+ZQXM6EhePbnWoiCgpd2FfchYIwxCwk0xbWZyQnp7VM1yrFM4od+KrZq7ZRioPp5
-	LGdMtwowIt7IINBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 23E2E134E6;
-	Fri, 23 Oct 2026 13:24:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kolmHiNg22qfRQAAD6G6ig:T8
-	(envelope-from <tzimmermann@suse.de>); Fri, 23 Oct 2026 13:24:54 +0000
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	deller@gmx.de,
-	James.Bottomley@HansenPartnership.com,
-	simona@ffwll.ch
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-fbdev@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	sashiko-reviews@lists.linux.dev,
-	Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH v3 7/7] vt: Remove old-style con_blank
-Date: Fri, 23 Oct 2026 15:16:17 +0200
-Message-ID: <20261023132448.115747-8-tzimmermann@suse.de>
-X-Mailer: git-send-email 2.56.0
-In-Reply-To: <20261023132448.115747-1-tzimmermann@suse.de>
-References: <20261023132448.115747-1-tzimmermann@suse.de>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MsxhMa+8
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA9E21F01825;
+	Fri, 23 Oct 2026 13:40:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792762817;
+	bh=JSne534GRKySd/hPuhXIpMo4L1wNZz0o43yKbATYUSM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=MsxhMa+8RyiwJgrd29IwYvMrh1cHDsIzj8ShYsSP8l3MGgb0rGCLCUvRTv9kIxkte
+	 t0VZKOUDGbmY6X4T3Gw7XtuUlrbLQGSBSRtT6ZMxixd1345kiDmZsRdQw7kjtVNwhX
+	 yVbf1NZHIaJc+XOjIrrRoMJoY5ZgjxbvwdTadswH0wxvmeq8QB3Wt1/eZLhikw2cTA
+	 a4/kqD8BG6/dlzLTUoTX8d7Y9YqGUyp6Uqr631ey4In10G1wo1cW7k33IEWmejIFHk
+	 TOrqQvWrfH3PSsVDJzFucUAbvMtcO8eK/CiO0FoaiTl0NATRKo3vw3g+XN+zdK7puQ
+	 Ev7oA1CQstKaQ==
+Date: Fri, 23 Oct 2026 15:40:15 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Srikar Dronamraju <srikar@linux.ibm.com>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Scott Wood <oss@buserror.net>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Kees Cook <kees@kernel.org>, Jinjie Ruan <ruanjinjie@huawei.com>,
+	mrigendrachaubey <mrigendra.chaubey@gmail.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Pengjie Zhang <zhangpengjie2@huawei.com>,
+	Thierry Reding <treding@nvidia.com>, Xi Ruoyao <xry111@xry111.site>,
+	"Rafael J. Wysocki (Intel)" <rafael@kernel.org>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Rong Bao <rong.bao@csmantle.top>, Hui Wang <hui.wang@canonical.com>,
+	Thorsten Blum <thorsten.blum@linux.dev>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH] sched/hotplug: Remove unused idle_task_exit
+Message-ID: <attjv8zOftf9Hlqe@localhost.localdomain>
+References: <20261016095711.1364609-1-srikar@linux.ibm.com>
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -122,110 +106,26 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-15.80 / 50.00];
-	SUSE_INTERNAL_BYPASS(-9.00)[];
-	REPLY(-4.00)[];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FREEMAIL_TO(0.00)[linuxfoundation.org,kernel.org,gmx.de,HansenPartnership.com,ffwll.ch];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:email];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	R_RATELIMIT(0.00)[to_ip_from(RLqirfcw6gnbcr9a9yhi49fhi6)];
-	FREEMAIL_ENVRCPT(0.00)[gmx.de]
-X-Spam-Score: -15.80
-X-Spam-Level: 
-X-Spam-Flag: NO
+In-Reply-To: <20261016095711.1364609-1-srikar@linux.ibm.com>
 
-All consoles implement the new con_blank plus con_unblank. Remove
-the old semantics from con_blank. Always pass a VESA blank mode to
-the blank parameter.
+Le Fri, Oct 16, 2026 at 03:26:40PM +0530, Srikar Dronamraju a écrit :
+> Commit 21641bd9a7a7 ("lazy tlb: fix hotplug exit race with
+> MMU_LAZY_TLB_SHOOTDOWN") moved the handling previously performed by
+> idle_task_exit() into the scheduler CPU hotplug path using
+> sched_force_init_mm().
+> 
+> As a result, idle_task_exit() is now an empty stub and the remaining
+> architecture call sites have no effect.
+> 
+> Remove the calls to idle_task_exit() and the now unused stub.
+> 
+> Signed-off-by: Srikar Dronamraju <srikar@linux.ibm.com>
 
-v3:
-- keep con_blank's mode_switch parameter
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
----
- drivers/tty/vt/vt.c | 31 ++++++++-----------------------
- 1 file changed, 8 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 82885f357f76..7dbc0072a40a 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -4788,10 +4788,7 @@ void do_blank_screen(int entering_gfx)
- 	if (console_blanked) {
- 		if (blank_state == blank_vesa_wait) {
- 			blank_state = blank_off;
--			if (vc->vc_sw->con_unblank)
--				vc->vc_sw->con_blank(vc, vesa_blank_mode, 0);
--			else
--				vc->vc_sw->con_blank(vc, vesa_blank_mode + 1, 0);
-+			vc->vc_sw->con_blank(vc, vesa_blank_mode, false);
- 		}
- 		return;
- 	}
-@@ -4800,10 +4797,7 @@ void do_blank_screen(int entering_gfx)
- 	if (entering_gfx) {
- 		hide_cursor(vc);
- 		save_screen(vc);
--		if (vc->vc_sw->con_unblank)
--			vc->vc_sw->con_blank(vc, VESA_NO_BLANKING, 1);
--		else
--			vc->vc_sw->con_blank(vc, VESA_VSYNC_SUSPEND, 1);
-+		vc->vc_sw->con_blank(vc, VESA_NO_BLANKING, true);
- 		console_blanked = fg_console + 1;
- 		blank_state = blank_off;
- 		set_origin(vc);
-@@ -4824,12 +4818,9 @@ void do_blank_screen(int entering_gfx)
- 
- 	save_screen(vc);
- 	/* In case we need to reset origin, blanking hook returns 1 */
--	if (vc->vc_sw->con_unblank)
--		i = vc->vc_sw->con_blank(vc, vesa_off_interval ? VESA_NO_BLANKING :
--					 vesa_blank_mode, 0);
--	else
--		i = vc->vc_sw->con_blank(vc, vesa_off_interval ? VESA_VSYNC_SUSPEND :
--					 (vesa_blank_mode + 1), 0);
-+	i = vc->vc_sw->con_blank(vc,
-+				 vesa_off_interval ? VESA_NO_BLANKING : vesa_blank_mode,
-+				 false);
- 	console_blanked = fg_console + 1;
- 	if (i)
- 		set_origin(vc);
-@@ -4880,15 +4871,9 @@ void do_unblank_screen(int leaving_gfx)
- 	}
- 
- 	console_blanked = 0;
--	if (vc->vc_sw->con_unblank) {
--		if (vc->vc_sw->con_unblank(vc, leaving_gfx))
--			/* Low-level driver cannot restore -> do it ourselves */
--			update_screen(vc);
--	} else {
--		if (vc->vc_sw->con_blank(vc, VESA_NO_BLANKING, leaving_gfx))
--			/* Low-level driver cannot restore -> do it ourselves */
--			update_screen(vc);
--	}
-+	if (vc->vc_sw->con_unblank(vc, leaving_gfx))
-+		/* Low-level driver cannot restore -> do it ourselves */
-+		update_screen(vc);
- 	if (console_blank_hook)
- 		console_blank_hook(0);
- 	set_palette(vc);
 -- 
-2.56.0
-
+Frederic Weisbecker
+SUSE Labs
