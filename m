@@ -1,84 +1,118 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=195.135.223.130
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792760951;
-	b=KZfH0gx3msl/Bn7qRvB8RQW2seTqh9Bp0QLnqi787oj/4YukKaH9vS3g7ut4P7IBNdpQ
-	 EhgudNDSXZEHJA5wzPbZDGXyH9tpxx9SjPV93qk1fDFCs3oIX5iStaRADLv0jZUeLXukR
-	 zxZEb4ftIFOjGeEbDp98O/+Qf8fLqG2Mph8tkKRC1BVIhH+BSAuafvTFHJdGFtw02P970
-	 cXMSjn1CQdvF91A67TIFQUJY6wKOjeVuQyzWuza7LT++gZUWVtue5UI3gpqsW/OETOAZ0
-	 yfKn2qnzarNyQvoTcW/iITKbHKcYbrrIvBqXioTim+AMtNTGCx7ci68FUW3TH+LVV1A==
+	t=1792761894;
+	b=t+iZh2cyFmDiesVpW4sEf1TCK+Lwn7pO038zVsrnZoWamf98gJfrf0EpwQNRDS9Ifqy2
+	 HhXfGHCBr4T3KY+uPxbgkAeNvN+JUTodM5XDdFxqcmucBp6Z74tO4TAAUYnMT82yEdl9F
+	 0TALwt7GH0N5lM12pa2x4+4vZ0gshdlHaIjpa+n0O+2ySgiYdJMR7KBrc8V9hYT+q6qBO
+	 xJMyhZLkSQXEOBQRjb/dhBwNaJBUzjN5ljOhIjcwRroD2ZLijPL/Fb1YUaGQxU8iEzuXF
+	 4O3t4O70qnP9HRpe3E0Tq/xm0r3rO63Q/2naj7i/QBHSmPnH5LhIMqfFFh4pC/SUgZA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792760951;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:In-Reply-To:References:
-	 Date:Message-ID:MIME-Version:Content-Type;
-	bh=nlznPFw9V2Gc6GAfgQKy3QilQuYPxjyao4Hf2pcvcDM=;
-	b=s6KSrQF+WQc8RKQaqEzaenXXv1VNp+aIixnzryolWCvOntYBEc1JptESt3LXaid6bzct
-	 FCy745YM/+cn84xvdvdH5lHdkJIu8ENJOUqjMNIHhFSPbGAurB/kCT/+bld9rjOJWyuuZ
-	 b02aMjHAPyFKn2zhmLADYeAdPon1a7VyMf6Sw5jX4dn80fqdzt4GNNwGkcnZRh4T094Au
-	 vvkWubCv9dftr3BvCmjeNUQILsQXGbeyShElsKRZuxCTHC4PzYaQliX2JGczQxSs8e3x2
-	 QStNpcTxmip+WrFxhzvhSwRFYoE0w3/Ob/YD8p+sOB/CVzy0gtPa3e4wqTq6jtM41ew==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792761894;
+	h=DMARC-Filter:Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
+	 DKIM-Signature:Received:Received:From:To:Cc:Subject:Date:Message-ID:
+	 X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding:X-Spam-Flag:X-Spam-Level:X-Spamd-Result:
+	 X-Spam-Score;
+	bh=HYWEkYXITRdxx8PJL4BELKv4UkAeNlUxpZyOSi0kIQo=;
+	b=bLL0t10k/+19Cvwo8e6x5xOf86N88OIsXHU57knWakEP/LqCvhtuLPiesmnwu6Nk2rbe
+	 0mgAQtivf0TZXP8ZVR86rZ8yDW7PiYzIS7m3aedpICbprAjyk2HjIyBHE/fZOseZV2Vie
+	 HOPAt5NDtx3l9ITQNjzzUdJuoEU+dA9+uS6bwXnZDdPCxybJFCHet7UsSmVZJtyolOpWp
+	 /Qsdm6HjvgSm1KPhG/AY+C5yz5G9Vt+DRh0J9B3Nu/WF7WA4rVHhGbtsJ03DL/KDwS0b9
+	 xxobMyRJoyGQ2Djgu380P1TLNxfrIaKY+0saN2m7bmzPiktWQYlqKYIXis8TPTEXI+g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="m7RG/5lG";
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=suse.de;
+	spf=pass smtp.mailfrom=suse.de;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=FtAO877H;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=zhFGUzLM;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=FtAO877H;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=zhFGUzLM;
+	arc=none smtp.remote-ip=195.135.223.130
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24012606A31A;
-	Fri, 23 Oct 2026 13:09:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495E8606A322;
+	Fri, 23 Oct 2026 13:24:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 495E8606A322
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=m7RG/5lG
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEFE51F01825;
-	Fri, 23 Oct 2026 13:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792760950;
-	bh=nlznPFw9V2Gc6GAfgQKy3QilQuYPxjyao4Hf2pcvcDM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=m7RG/5lGWSbIc838b0jmvSS290uWfurhu3YNfo5bVNzSTvTPTC7ghSWC8leVP3nQ+
-	 b1I3jDHg/InxLf552w5eGHsTrs/J6pcIRU/3j2o4lXMu8kdY2pE31lXQZ6mDuOD9a9
-	 /bZSvE9+INNA1eyAemAPUHtpahZxa52CO1uiN/pTg/xq6n5EpQE55LyKwMgvscOovl
-	 vpke1gUvPTZai31N3aWvQD3q3fnksvGf8uxqyvKnNdAccPdM5DjsmOgJhH0dNQrOqX
-	 DgjQebBUKnbd01GrrL7MPL69Sel1P4/LLNB/kJOWZzm+JYUNtbLukoPTq27kTGyxJT
-	 /kgHrVGsqnwng==
-From: Thomas Gleixner <tglx@kernel.org>
-To: "H. Peter Anvin" <hpa@zytor.com>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
- Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
- <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
- <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
- Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
- Henderson <richard.henderson@linaro.org>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
- Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
- <richard@nod.at>, Chris Zankel <chris@zankel.net>,
- linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
- <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
- <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
- <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
- linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
- linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
- <msuchanek@suse.de>, Jonathan
- Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [patch 16/18] x86/entry: Get rid of the sys_ni_syscall()
- indirection
-In-Reply-To: <1149A39E-BEBA-46EA-94F4-4DFFC4733EF5@zytor.com>
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.493733289@kernel.org>
- <20261022142425.3Wx-RrU5@linutronix.de> <87fqxx1r80.ffs@fw13>
- <87cxt11ktr.ffs@fw13> <1149A39E-BEBA-46EA-94F4-4DFFC4733EF5@zytor.com>
-Date: Fri, 23 Oct 2026 15:09:07 +0200
-Message-ID: <871p9g1s3w.ffs@fw13>
+	dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=FtAO877H;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=zhFGUzLM;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=FtAO877H;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=zhFGUzLM
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9A15922176;
+	Fri, 23 Oct 2026 13:24:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1792761892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HYWEkYXITRdxx8PJL4BELKv4UkAeNlUxpZyOSi0kIQo=;
+	b=FtAO877Hb5sRzaL/qHjYMnifaB7F7HpqwZoOVfW4L1CY+epUs5SM3Vb6KK91DvNe3x5Hc9
+	RBGzt/dcuOsOug+KKbL385Q46cul2wX/ziIHy8gFnhMq02rD6BpSDhmQNjdNEfYSoNryMa
+	xPRFOYF090nCTlPbDACiOzCVV57Zau8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1792761892;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HYWEkYXITRdxx8PJL4BELKv4UkAeNlUxpZyOSi0kIQo=;
+	b=zhFGUzLMuQ2zv+oEedfJodd+TpcAXa/qLTuUrvcpOaRNye+gpsHYW29yyva0ZvBoKOZVvX
+	X8o03a4//ODemBDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1792761892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HYWEkYXITRdxx8PJL4BELKv4UkAeNlUxpZyOSi0kIQo=;
+	b=FtAO877Hb5sRzaL/qHjYMnifaB7F7HpqwZoOVfW4L1CY+epUs5SM3Vb6KK91DvNe3x5Hc9
+	RBGzt/dcuOsOug+KKbL385Q46cul2wX/ziIHy8gFnhMq02rD6BpSDhmQNjdNEfYSoNryMa
+	xPRFOYF090nCTlPbDACiOzCVV57Zau8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1792761892;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HYWEkYXITRdxx8PJL4BELKv4UkAeNlUxpZyOSi0kIQo=;
+	b=zhFGUzLMuQ2zv+oEedfJodd+TpcAXa/qLTuUrvcpOaRNye+gpsHYW29yyva0ZvBoKOZVvX
+	X8o03a4//ODemBDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2FBAF134E6;
+	Fri, 23 Oct 2026 13:24:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kolmHiNg22qfRQAAD6G6ig:T2
+	(envelope-from <tzimmermann@suse.de>); Fri, 23 Oct 2026 13:24:52 +0000
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: gregkh@linuxfoundation.org,
+	jirislaby@kernel.org,
+	deller@gmx.de,
+	James.Bottomley@HansenPartnership.com,
+	simona@ffwll.ch
+Cc: linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-fbdev@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	sashiko-reviews@lists.linux.dev,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v3 1/7] vt: Add con_unblank callback to struct consw
+Date: Fri, 23 Oct 2026 15:16:11 +0200
+Message-ID: <20261023132448.115747-2-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.56.0
+In-Reply-To: <20261023132448.115747-1-tzimmermann@suse.de>
+References: <20261023132448.115747-1-tzimmermann@suse.de>
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -88,41 +122,148 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spamd-Result: default: False [-15.80 / 50.00];
+	SUSE_INTERNAL_BYPASS(-9.00)[];
+	REPLY(-4.00)[];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_TO(0.00)[linuxfoundation.org,kernel.org,gmx.de,HansenPartnership.com,ffwll.ch];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,imap1.dmz-prg2.suse.org:helo];
+	FREEMAIL_ENVRCPT(0.00)[gmx.de]
+X-Spam-Score: -15.80
 
-On Thu, Oct 22 2026 at 17:22, H. Peter Anvin wrote:
-> On October 22, 2026 2:34:08 PM PDT, Thomas Gleixner <tglx@kernel.org> wrote:
->>-static __always_inline void do_syscall_x32(struct pt_regs *regs, unsigned long nr)
->>+static __always_inline bool do_syscall_x32(struct pt_regs *regs, unsigned long nr)
->> {
->>+	if (!IS_ENABLED(CONFIG_X86_X32_ABI))
->>+		return false;
->>+
->>+	/* Preserve the historic insanity of treating -1 special on x32 */
->>+	if (nr == ULONG_MAX)
->>+		return true;
->
-> It was never limited to x32...
+Add struct consw.con_unblank as inverse operation to con_blank.
 
-Tired brain misread the test output:
+If implemented invoke con_blank to turn the console from blanked to
+unblanked. Also update the semantics of con_blank in this case: The
+blank parameter of con_blank receives a VESA blank mode from enum
+vesa_blank_mode instead of the hybrid unblank/blank values it has
+used so far.
 
-[RUN]   Running tests under ptrace: modifying the default return
-[RUN]       Checking system calls with msb = 0 (0x0)
-[OK]                x32 syscalls 0:-64..-2 returned -ENOSYS as expected
-[OK]                x32 syscall 0:-1 returned MODIFIED_BY_PTRACE as expected
-[OK]                x64 syscalls 0:-64..-1 returned -ENOSYS as expected
+With con_unblank not implemented, invoke con_blank for blanking and
+unblanking as before.
 
-But that's because the "-1" on x32 is actually 0xFFFFFFFF while on x64
-it's 0x7FFFFFFF.
+The old semantics of con_blank will be removed when all consoles
+implement con_unblank.
 
-The whole mess comes from using -1 as indicator for syscall abort which
-is undistinguishable from a syscall(nr=-1).
+v3:
+- fix typo in commit description (Helge)
+- add mode_switch parameter to con_unblank
 
-Bah. Let me restore this nonsense.
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+---
+ drivers/tty/vt/vt.c     | 30 +++++++++++++++++++++++-------
+ include/linux/console.h | 10 +++++++---
+ 2 files changed, 30 insertions(+), 10 deletions(-)
 
-Thanks,
-
-        tglx
-
-
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 8415e274e4be..82885f357f76 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -4788,7 +4788,10 @@ void do_blank_screen(int entering_gfx)
+ 	if (console_blanked) {
+ 		if (blank_state == blank_vesa_wait) {
+ 			blank_state = blank_off;
+-			vc->vc_sw->con_blank(vc, vesa_blank_mode + 1, 0);
++			if (vc->vc_sw->con_unblank)
++				vc->vc_sw->con_blank(vc, vesa_blank_mode, 0);
++			else
++				vc->vc_sw->con_blank(vc, vesa_blank_mode + 1, 0);
+ 		}
+ 		return;
+ 	}
+@@ -4797,7 +4800,10 @@ void do_blank_screen(int entering_gfx)
+ 	if (entering_gfx) {
+ 		hide_cursor(vc);
+ 		save_screen(vc);
+-		vc->vc_sw->con_blank(vc, VESA_VSYNC_SUSPEND, 1);
++		if (vc->vc_sw->con_unblank)
++			vc->vc_sw->con_blank(vc, VESA_NO_BLANKING, 1);
++		else
++			vc->vc_sw->con_blank(vc, VESA_VSYNC_SUSPEND, 1);
+ 		console_blanked = fg_console + 1;
+ 		blank_state = blank_off;
+ 		set_origin(vc);
+@@ -4818,8 +4824,12 @@ void do_blank_screen(int entering_gfx)
+ 
+ 	save_screen(vc);
+ 	/* In case we need to reset origin, blanking hook returns 1 */
+-	i = vc->vc_sw->con_blank(vc, vesa_off_interval ? VESA_VSYNC_SUSPEND :
+-				 (vesa_blank_mode + 1), 0);
++	if (vc->vc_sw->con_unblank)
++		i = vc->vc_sw->con_blank(vc, vesa_off_interval ? VESA_NO_BLANKING :
++					 vesa_blank_mode, 0);
++	else
++		i = vc->vc_sw->con_blank(vc, vesa_off_interval ? VESA_VSYNC_SUSPEND :
++					 (vesa_blank_mode + 1), 0);
+ 	console_blanked = fg_console + 1;
+ 	if (i)
+ 		set_origin(vc);
+@@ -4870,9 +4880,15 @@ void do_unblank_screen(int leaving_gfx)
+ 	}
+ 
+ 	console_blanked = 0;
+-	if (vc->vc_sw->con_blank(vc, VESA_NO_BLANKING, leaving_gfx))
+-		/* Low-level driver cannot restore -> do it ourselves */
+-		update_screen(vc);
++	if (vc->vc_sw->con_unblank) {
++		if (vc->vc_sw->con_unblank(vc, leaving_gfx))
++			/* Low-level driver cannot restore -> do it ourselves */
++			update_screen(vc);
++	} else {
++		if (vc->vc_sw->con_blank(vc, VESA_NO_BLANKING, leaving_gfx))
++			/* Low-level driver cannot restore -> do it ourselves */
++			update_screen(vc);
++	}
+ 	if (console_blank_hook)
+ 		console_blank_hook(0);
+ 	set_palette(vc);
+diff --git a/include/linux/console.h b/include/linux/console.h
+index df23148987ee..cb8be9ea4a76 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -55,9 +55,12 @@ enum vc_intensity;
+  *		Invoked by csi_M and printing to the console.
+  * @con_switch: notifier about the console switch; it is supposed to return
+  *		true if a redraw is needed.
+- * @con_blank:  blank/unblank the console. The target mode is passed in @blank.
+- *		@mode_switch is set if changing from/to text/graphics. The hook
+- *		is supposed to return true if a redraw is needed.
++ * @con_blank:  blank the console. The preferred VESA blank mode is passed in
++ *		@blank. @mode_switch is set if changing from/to text/graphics.
++ *		The hook is supposed to return true if a redraw is needed.
++ * @con_unblank: unblank the console. The hook is supposed to return true if
++ *		a redraw is needed. @mode_switch is set if changing from/to
++ *		text/graphics.
+  * @con_font_set: set console @vc font to @font with height @vpitch. @flags can
+  *		be %KD_FONT_FLAG_DONT_RECALC. (optional)
+  * @con_font_get: fetch the current font on @vc of height @vpitch into @font.
+@@ -99,6 +102,7 @@ struct consw {
+ 	bool	(*con_switch)(struct vc_data *vc);
+ 	bool	(*con_blank)(struct vc_data *vc, enum vesa_blank_mode blank,
+ 			     bool mode_switch);
++	bool	(*con_unblank)(struct vc_data *vc, bool mode_switch);
+ 	int	(*con_font_set)(struct vc_data *vc,
+ 				const struct console_font *font,
+ 				unsigned int vpitch, unsigned int flags);
+-- 
+2.56.0
 
