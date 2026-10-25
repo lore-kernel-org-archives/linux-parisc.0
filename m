@@ -1,107 +1,105 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792933322;
-	b=rTGRpt9q41qsjkPrJOPMqy5a5rSurWtSskY7pz8WkdXdMW/0Wa0WVKjPRLLBUdrMSjaP
-	 Z+c1gGD8t9L2v9n+YF4IkA8o6eUcMiYJgK/LQBikdd1J8Y0EmPDm40ZTmSeO4VaK9eNx8
-	 wtzd0ajJAVEs/+nw1zbOtivjGTv4KvaxWLVz6h2dqqbISxNZn3gIoGivd2dNAVgAVppWT
-	 Oyh9y9bgJJurzbD6g206vXYQQXaBEiJNqC9Vgs+tVskkfSU5At99b8sQdnOoCOEUMZFpv
-	 5LU3njzUAMoIAlYCplRkZcDVL4r8nkFDAf9ZrPgJrWGmqbQJ9vlHDwnKnRRwSjhDmqw==
+	t=1792954058;
+	b=UDj0TcLegPGIb+NSQdzEoX6ogJ/pr4JZ15juckc45Gny/W/8cpi3W0trsN9/eDJB4Ngi
+	 Jhr9Lmp+8LR6vlb7k7cmB/BwQ4/rGJQhV/cB0hrZ1N2tqq+AzT7DUxzkT5pU2/DPc4lE9
+	 ePqnxRa/woN6aaHN2BTtVXAMBVgWmp0QfyXR4mwJHgdX5afNC6xaVK3aIhknS5A0Gei5N
+	 v8r6UpsfWHUF54jbkplGLB/wJxEuhLIcUjtNh8JBLhcXc3W2q2FE1P9ZFzN9KMsoYE5wk
+	 0As0aK7GgXm3KlL6IhZ2JLAOym25oodAmg13NUYIWR0KX2eCItS1tfcZMpQutuIt4dw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792933322;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:X-Mailer:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=NH6uaE3LJzdARQ+uy+rf0Zqa21dqbATNK0Q75TVfU1M=;
-	b=c8x2xm1QwxBynhmYcsVlg/aOyuzyae1RVCY+kNEAJ4tARjD8L8dGaHphwj3tzAasMQ/E
-	 ntbW3ct9RQkE9UOBia8yajwPgENraXyB4EXxylqYfAD6LUr3NXaRSJx92cA+Hu/3T62zN
-	 vTVFZtHZlGhqLwes4kKbEvK+klw2oVvrqRu4dRs6y9SYbcKRSYKdO3s9000sl6w9EzL0M
-	 aRclav929/aXZr9vpH2gNsHuti5/AauLTd9/MB8cs4trYuNprzsILb2KYzxR6YsgTNO9h
-	 Rtin5QzZ4+fN1nwBC0YM8L8tSv0uj6RhmaGhbXq7BqmsfAN9RaZ8Jp/1qTXiUMy4u7Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792954058;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To;
+	bh=5wnAqR12mDvQqCEE/MRBIlSMPEALxmmJZfIrTK2aMRo=;
+	b=oI8t25y2n3uUEUo5oZcz1ZhwNch0Zer9U2KJIUcGZxFJQlg09c+k01KATCClZitp7nVe
+	 QOpGuo43gqQs3bMRRJDQrc0EkmNQ/AmE9VzYDYqucXvSv2x/2i6lwiwrlZaagZ5mns35P
+	 1sgk98K5TOOrhJEM5poHi15RL2TVjhq2ow9zLUove1SWVRZslP3kwxpDa47ltRSE+mcP8
+	 J4LXWsvXDIIB+7wkS4snOpWPuollB6gV/R70FBmnrgnEhSSmIvSqQFZu2N1pZTAPw2FU1
+	 9wX1ISusI8e6nAL2kKacaN4zU39t2QY1pRbAmN0WczqXPPHMJW4pKsscU2Td1YKfpOw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=eFS8GKad;
-	arc=none smtp.remote-ip=209.85.128.41
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=J6C08BAV;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40ACC606A31D
-	for <linux-parisc@vger.kernel.org>; Sun, 25 Oct 2026 13:02:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 40ACC606A31D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A60606A31B;
+	Sun, 25 Oct 2026 18:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=eFS8GKad
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-49d05d51553so14967915e9.2
-        for <linux-parisc@vger.kernel.org>; Sun, 25 Oct 2026 06:02:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792933321; x=1793538121; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=NH6uaE3LJzdARQ+uy+rf0Zqa21dqbATNK0Q75TVfU1M=;
-        b=eFS8GKadMHZO7VVf1it3BX+BdQYUW9YGZDsRHgK0H/YkIAHv9P9XbAHTDNcJp8nyDJ
-         vHS6RoxLFLqmPITisd0Jap8WpXOslwjXC1naaB8SA/Xk0a/711zI/qt3sQD2hCoTCU7o
-         Of0BHuhT3ZROCX76Fg/eYhbRzRRBSjZW5W/DjXB6vgW9N9qcBL6nAz6P2KfwC7CHsoyn
-         LrHBdfmRqkVbJI3ddURzhpACLt3tvvmpmRg2B3qXkmZsk03YjOg+Jrhon1xQm1vveLqD
-         8pBaLCYU5x/fH2s34sFx4Rrmf9b7y5/dpU9ojMhpxhFi7ml3Dl94WSLlaAO+JYxPZi4I
-         FkCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792933321; x=1793538121;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=NH6uaE3LJzdARQ+uy+rf0Zqa21dqbATNK0Q75TVfU1M=;
-        b=eeO7eN60kndMtwVDcyk34UrjyfFILX8l8+J5G6MKueYsxE9ab9y+6YlDca2QaDl8m2
-         Q7uSQ8vlKL3Ssyto8YtkZX+2b+EEiLKGZr8a49njHOzlFj/3XodOukMLyU75F2ZshvKD
-         iDkvGHqau2Hm3uwzBnoKh5K0mcbbGkvcPE05ZsOHS79DZxlzIf6+mFlHuQcYVry0AMzT
-         n/LuNsidO4UsQakaVkdj4N4LeOai+K1eXeEkKISgcyzpp1wdr2COhWTHTLbz4/j8+o6m
-         5bhTx+UPdUgl8/vzACAxVlZgssWDD1ehmI7rDPUyK6KcIQKKvTT9rt9/HD/2DIK1e+nG
-         GjZA==
-X-Forwarded-Encrypted: i=1; AKwUvBwWN5hMlx3Cb9WWboLM7kXQfA9azR+AGONAuCELizx19od4S1xQDISK2108k91R6qP4YsGRaFg3nHTZMgM=@vger.kernel.org
-X-Gm-Message-State: AFq9FYKzIizIkzF2GfCWPS+pKQ8AElVoFWd0Nqi+D7W/AbVtqkJl82NR
-	chTUoLVVn0NL1lG4BDeq2uHF6FZxI7qwgPd8rXBSlQ6LD4YRRzXeQve7
-X-Gm-Gg: AYBFou3Zq3cxhwh1e8QClMxhKAqZI4NhYkCHxBGhCl7y/nSsYik8nR5VoHqoOQodve2
-	luJkpYE3V48ZjNje9rLcNOkx8Fu8QA0cuydUSmCers6Ya3ielD8ruQI3p6YhTrx2Dv++Yyo/UCB
-	auT9YIReQPo2ePJfglICtGG1RgmKN171REyupaZo1wDF3YDXLmRUQwXxnFnvFVBiJQ8lxJbm6Zl
-	CBgB91dCRCttsr7L5iJj/AWlRX+gI0I7DC0a5kRA8Zq8HtUl+1DA82ECO9LwYomQkYYhWBsw4Nn
-	42cMXoWDFgQg4FLdgSv3+mbnGZdurKkYzcAljm4Hv+rj6/ARAwMxE2T8a3ChjYJg5W12po/vuQg
-	gbh2H1NrfXwoLIqIQIBYpVe4q+/UYHTxSDDZmurmD4nzBMPDDPFQL7WsQoHpGTnHtzkKn89jW/J
-	KxUn5aVF0CnLykCQLYWRC99XS+7YcKRwGK62sVKxTjUlE1Igz9ek+C6HFI9Xp/G4bN4MtqFlLRM
-	Pa8NFzjbGI0l7+oHxdI6Qv7r91QSiyvEgLOqQSBKea5QJqk73RtOB1BEo5+MmB5qFyi4c+5CR/o
-	I1mR1kjko4Bf3QBx
-X-Received: by 2002:a05:600d:18:b0:4a4:f48e:78fa with SMTP id 5b1f17b1804b1-4a4f48e7b2cmr31818105e9.12.1792933320372;
-        Sun, 25 Oct 2026 06:02:00 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e3ecd37f4sm12035476f8f.44.2026.10.25.06.01.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Oct 2026 06:01:57 -0700 (PDT)
-Date: Sun, 25 Oct 2026 13:01:54 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: "Arnd Bergmann" <arnd@arndb.de>
-Cc: "Ian Rogers" <irogers@google.com>, "Andy Lutomirski" <luto@kernel.org>,
- "Thomas Gleixner" <tglx@kernel.org>, "Vincenzo Frascino"
- <vincenzo.frascino@arm.com>, "Arnaldo Carvalho de Melo" <acme@redhat.com>,
- "Stefan Kerkmann" <s.kerkmann@pengutronix.de>, "Marc Kleine-Budde"
- <mkl@pengutronix.de>, "Christophe Leroy" <chleroy@kernel.org>, "Helge
- Deller" <deller@gmx.de>, "James E . J . Bottomley"
- <James.Bottomley@hansenpartnership.com>, "Jason A . Donenfeld"
- <Jason@zx2c4.com>, "Alexander Viro" <viro@zeniv.linux.org.uk>, "Eric
- Biggers" <ebiggers@google.com>, linux-kernel@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-mmc@vger.kernel.org, "Jaehoon Chung"
- <jh80.chung@samsung.com>, "Shawn Lin" <shawn.lin@rock-chips.com>
-Subject: Re: [PATCH v2 1/2] vdso: Add VDSO_UNALIGNED_PACKED config option
-Message-ID: <20261025130154.16b54998@pumpkin>
-In-Reply-To: <5674ade0-db6d-45c4-9a0a-d032efa00667@app.fastmail.com>
-References: <20261020163210.742728-1-irogers@google.com>
-	<20261020190718.6cba898b@pumpkin>
-	<9ad54286-4337-4022-8657-65e1ed86b6df@app.fastmail.com>
-	<20261024093209.09367c73@pumpkin>
-	<5674ade0-db6d-45c4-9a0a-d032efa00667@app.fastmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=J6C08BAV
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D2E91F01828;
+	Sun, 25 Oct 2026 18:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792954057;
+	bh=5wnAqR12mDvQqCEE/MRBIlSMPEALxmmJZfIrTK2aMRo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=J6C08BAV+F3iiWM9FlcPNqjRNGrOHJtPKNVu3OUcI7HqHZFW2bJf7N0c8G+JK3kuC
+	 Q9nwKr5QZZOaBx04tv6bryafAtS3l8ddZSESLreLqFOuH9yUyY5YFa2WLyjKrfokOY
+	 I5aQbn4Z7ktlYAGGiVhADA+Z2owm484BBGS0MXEu9+8SJ1Xd+9nopeImLHezCjmbsI
+	 l+b9jyQmwALbi3HX0Fd2Od6jLx4uuOwo/I0r78SNRDtzRGmz0Z0w8l5bueq5IOCdWr
+	 lyimjYWJ1aQUhpScd4g5pAdhgA9k8TZ3KLStW1ngSWF9YCMs/TnFJYzxEr+8kDEq+3
+	 1F+kG3xlNHiHw==
+Date: Sun, 25 Oct 2026 19:47:34 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Srikar Dronamraju <srikar@linux.ibm.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Scott Wood <oss@buserror.net>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Kees Cook <kees@kernel.org>, Jinjie Ruan <ruanjinjie@huawei.com>,
+	mrigendrachaubey <mrigendra.chaubey@gmail.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Pengjie Zhang <zhangpengjie2@huawei.com>,
+	Thierry Reding <treding@nvidia.com>, Xi Ruoyao <xry111@xry111.site>,
+	"Rafael J. Wysocki (Intel)" <rafael@kernel.org>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Rong Bao <rong.bao@csmantle.top>, Hui Wang <hui.wang@canonical.com>,
+	Thorsten Blum <thorsten.blum@linux.dev>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH] sched/hotplug: Remove unused idle_task_exit
+Message-ID: <at5OxorR-UUIxlIe@pavilion.home>
+References: <20261016095711.1364609-1-srikar@linux.ibm.com>
+ <attjv8zOftf9Hlqe@localhost.localdomain>
+ <20261023165434.GX2823843@noisy.programming.kicks-ass.net>
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -111,159 +109,33 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20261023165434.GX2823843@noisy.programming.kicks-ass.net>
 
-On Sat, 24 Oct 2026 13:05:19 +0200
-"Arnd Bergmann" <arnd@arndb.de> wrote:
-
-> On Sat, Oct 24, 2026, at 10:32, David Laight wrote:
-> > On Fri, 23 Oct 2026 23:49:50 +0200 "Arnd Bergmann" <arnd@arndb.de> wrote:  
-> >> On Tue, Oct 20, 2026, at 20:07, David Laight wrote:  
-> >> > On Tue, 20 Oct 2026 09:32:09 -0700 Ian Rogers <irogers@google.com> wrote:    
-> >>
-> >> This is the traditional way we have been doing the unaligned access
-> >> in the kernel before the change. By annotating the structure as
-> >> __packed, we tell the compiler that it cannot rely on alignment here,
-> >> so it uses whatever method it knows to access unaligned data depending
-> >> on the architecture and flags.  
-> >
-> > That relies on the compiler not tracking the alignment through the casts.
-> > The only way the C language lets you get a 'foo *' pointer is taking the
-> > address of a 'foo' data item so it must be aligned.  
+Le Fri, Oct 23, 2026 at 06:54:34PM +0200, Peter Zijlstra a écrit :
+> On Fri, Oct 23, 2026 at 03:40:15PM +0200, Frederic Weisbecker wrote:
+> > Le Fri, Oct 16, 2026 at 03:26:40PM +0530, Srikar Dronamraju a écrit :
+> > > Commit 21641bd9a7a7 ("lazy tlb: fix hotplug exit race with
+> > > MMU_LAZY_TLB_SHOOTDOWN") moved the handling previously performed by
+> > > idle_task_exit() into the scheduler CPU hotplug path using
+> > > sched_force_init_mm().
+> > > 
+> > > As a result, idle_task_exit() is now an empty stub and the remaining
+> > > architecture call sites have no effect.
+> > > 
+> > > Remove the calls to idle_task_exit() and the now unused stub.
+> > > 
+> > > Signed-off-by: Srikar Dronamraju <srikar@linux.ibm.com>
+> > 
+> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 > 
-> I have definitely seen the reverse, where a u32 pointer dereference in
-> __raw_readl() gets turned into individual byte accesses because
-> the pointer originally came from a packed structure. This is
-> also bad because it breaks MMIO register access.
+> Excellent; less is more and all that. Shall I take this through the
+> scheduler tree?
 
-The code rather relies on the compiler not splitting a volatile access.
-But it is allowed to do that (eg 64bit accesses on 32bit) so it
-may be allowed all the time and the kernel just hopes it never does.
+Yes please :-)
 
-The whole thing is a bear pit :-)
-
-> 
-> We also know that the packed struct version works, either because
-> the standard requires a punned pointer to respect the minimum
-> alignment, or because the implementation is smart enough to only
-> ever lower the alignment for punned pointers.
-
-Or the implementation currently chooses to honour the lower alignment
-for punned pointers.
-
-The standard doesn't allow many casts at all. IIRC you can cast a pointer
-to 'void *' and then back to its original type, and you might be able to
-cast a 'pointer to struct' to a pointer to its first element.
-Remember it has to allow for word addressable systems where the offset
-of a char in the word is held in (say) the top 2 bits.
-(I doubt any such systems still exist...)
-
-> 
-> > So even if you cast it to another type that alignment can be assumed.
-> > I've seen crashes from memcpy() using word accesses when trying to
-> > copy from a misaligned pointer into an aligned copy of the structure.
-> > Now the current code must be avoiding that - but I think the compiler
-> > can do it.  
-> 
-> Right, especially the memcpy() without type punning seems dangerous.
-> We have had several instances of code breaking on armv7 where
-> CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is set but the stp/ldp
-> instructions for 64-bit objects still require alignment.
-
-I had the compiler unroll loops on x86 and had a 'sum += *buf++;'
-checksum crash when the buffer (mmap() of a file) was misaligned.
-
-> 
-> I don't see any instances of the exact issue you describe, but this
-> one is similar and definitely broken on armv7 (adding the dw_mmc
-> maintainers to Cc for information):
-> 
-> #ifndef readq
-> #define __raw_writeq(__value, __reg) \
->         (*(volatile u64 __force *)(__reg) = (__value))
-> #define __raw_readq(__reg) (*(volatile u64 __force *)(__reg))
-> #endif
-> #define mci_fifo_writeq(__value, __reg) __raw_writeq(__reg, __value)
-> static void dw_mci_push_data64(struct dw_mci *host, void *buf, int cnt)
-> {
-> ...
-> #ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
->         if (unlikely((unsigned long)buf & 0x7)) {
->                 while (cnt >= 8) {
->                         u64 aligned_buf[16];
->                         int len = min(cnt & -8, (int)sizeof(aligned_buf));
->                         int items = len >> 3;
->                         int i;
->                         /* memcpy from input buffer into aligned buffer */
->                         memcpy(aligned_buf, buf, len);
->                         buf += len;
->                         cnt -= len;
->                         /* push data from aligned buffer into fifo */
->                         for (i = 0; i < items; ++i)
->                                 mci_fifo_writeq(host->fifo_reg, aligned_buf[i]);
->                 }
->         } else
-> #endif
->         {
->                 u64 *pdata = buf;
-> 
->                 for (; cnt >= 8; cnt -= 8)
->                         mci_fifo_writeq(host->fifo_reg, *pdata++);
->                 buf = pdata;
->         }
-> 
-> The 'u64 *pdata = buf' cast is of course broken here since that
-> is not allowed for unaligned pointers on supported target regardless
-> of CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS. The else{...} portion
-> has to be written using get_unaligned_u64() here, as the #ifndef
-> branch should only optimize for performance and not be required
-> for correctness.
-> If '*buf' was a u64 pointer instead of void, I could see the
-> compiler messing this up in the way you describe, by optimizing
-> out the temporary array entirely.
-
-Jeepers that is horrid.
-The simple:
-	for (off = 0; off < cnt; off += 8)
-		mci_fifo_writeq(host->fifo_reg, get_unaligned_u64(buf + off));
-will generate better code.
-The compiler will usually optimise out 'off', decrement 'cnt' and
-increment 'buf'. It does that even when you try to use negative offsets
-from the end of the buffer - which generates the best code on x86.
-(And you might want to copy host->fifo_reg into a local.)
-
-It might be worth optimising for CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-being unset and the buffer being aligned (to sizeof long, not 8).
-But that isn't the conditional there.	
-
-> An unrelated problem is that the mci_fifo_writeq() definition
-> is not portable because the volatile u64 pointer dereference
-> does not guarantee that the two 32-bit halves are stored
-> in the order that the hardware register requires. Presumably
-> that was what led to DW_MMC_QUIRK_FIFO64_32.
-> 
-> >> The reason we need the struct here is that you cannot use __packed
-> >> as a qualifier on a variable, only on a type or struct member.  
-> >
-> > I know all about that.
-> > Somewhere it also says that you can only increase the alignment (I think
-> > of a type), but you can definitely have a type for 'u64 with 32bit
-> > alignment' and use it in a structure.  
-> 
-> Right, we do rely on that in e.g. x86
-> 
-> typedef s64 __attribute__((aligned(4))) compat_s64;
-> 
-> We cannot use this in a macro though because there is no
-> way to define a local typedef inside of a function or
-> to change the alignment of pointer without the struct.
-
-I think it could be inside the cast - the same as the struct definition.
-But that is not really any different to the packed struct.
-
-David
-
-> 
->        Arnd
-
+-- 
+Frederic Weisbecker
+SUSE Labs
