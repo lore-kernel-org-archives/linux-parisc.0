@@ -1,105 +1,52 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792954058;
-	b=UDj0TcLegPGIb+NSQdzEoX6ogJ/pr4JZ15juckc45Gny/W/8cpi3W0trsN9/eDJB4Ngi
-	 Jhr9Lmp+8LR6vlb7k7cmB/BwQ4/rGJQhV/cB0hrZ1N2tqq+AzT7DUxzkT5pU2/DPc4lE9
-	 ePqnxRa/woN6aaHN2BTtVXAMBVgWmp0QfyXR4mwJHgdX5afNC6xaVK3aIhknS5A0Gei5N
-	 v8r6UpsfWHUF54jbkplGLB/wJxEuhLIcUjtNh8JBLhcXc3W2q2FE1P9ZFzN9KMsoYE5wk
-	 0As0aK7GgXm3KlL6IhZ2JLAOym25oodAmg13NUYIWR0KX2eCItS1tfcZMpQutuIt4dw==
+	t=1792959146;
+	b=L8erfSgEwrR774c4XVYr2v/K/KrFAGrKeVQFC4PayONb9Ol03VopUWzRfNP7APj08SSE
+	 z/4IgH7B9cbp69D/VINfqWa+fwVLLvRouU+khTwgAeTUqdtv3k6qJ2Hfk7szalMlbSVaU
+	 Zb7kuBlUduMFPr29gzmfCuPlLidQivLNkYOg9on77g3lQ6reJ0sMRyHPS9RjWtlnvgYtq
+	 Z8e1IzIxLNb0GkjiS7iDAp8mpZNqs16Hh+j4DHctfoOSkAzMi2g8kwmKxHJ3cLMMjA8je
+	 ktpbs7mRDQJ6ni6Hrxc5IBET5LZJyw3AVjLLCu821+HaLu2yfcKUV1pMKJei15AzeUw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792954058;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To;
-	bh=5wnAqR12mDvQqCEE/MRBIlSMPEALxmmJZfIrTK2aMRo=;
-	b=oI8t25y2n3uUEUo5oZcz1ZhwNch0Zer9U2KJIUcGZxFJQlg09c+k01KATCClZitp7nVe
-	 QOpGuo43gqQs3bMRRJDQrc0EkmNQ/AmE9VzYDYqucXvSv2x/2i6lwiwrlZaagZ5mns35P
-	 1sgk98K5TOOrhJEM5poHi15RL2TVjhq2ow9zLUove1SWVRZslP3kwxpDa47ltRSE+mcP8
-	 J4LXWsvXDIIB+7wkS4snOpWPuollB6gV/R70FBmnrgnEhSSmIvSqQFZu2N1pZTAPw2FU1
-	 9wX1ISusI8e6nAL2kKacaN4zU39t2QY1pRbAmN0WczqXPPHMJW4pKsscU2Td1YKfpOw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792959146;
+	h=Received:DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version:
+	 Content-Type:Content-Disposition;
+	bh=5cDVAr6+YQe/bNMuDfysPIaGdThTHbdxjIWpI91AGfg=;
+	b=PnAfOQHqoAoLspD6whL37q0v0l2eI6E/W3dGEY+zmZo3EL6e/NSOXbZcAGzBNWUl9/FB
+	 fSq4u/A+GH9kI3R+2eQRrSOjLTsHAwr8P0TY0aLnMZ3LhB+l9LbSeUpqDMCJ7F9m5oziM
+	 9m8d/VakCZSFwX+7loBYpg9x0faMDcnZDqGZXY0+uLtqtnlbD0FNZcbLspWhEBSfagDkd
+	 UglWRmRjoWXwPq7z8n/eYP4LvOKOrz03UfE7WHoMwELHgQy2UGmnZ+RAKPunIYioZmx0S
+	 /waoKBparuM2dw631d0uu2lxuB0Vy/67Ze1eflr3n9sBBnDDnujdqUxNDM25nhgVy+w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=J6C08BAV;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MfRIz22I;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A60606A31B;
-	Sun, 25 Oct 2026 18:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0C5606A31A;
+	Sun, 25 Oct 2026 20:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=J6C08BAV
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D2E91F01828;
-	Sun, 25 Oct 2026 18:47:37 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MfRIz22I
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF2E71F01825;
+	Sun, 25 Oct 2026 20:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792954057;
-	bh=5wnAqR12mDvQqCEE/MRBIlSMPEALxmmJZfIrTK2aMRo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=J6C08BAV+F3iiWM9FlcPNqjRNGrOHJtPKNVu3OUcI7HqHZFW2bJf7N0c8G+JK3kuC
-	 Q9nwKr5QZZOaBx04tv6bryafAtS3l8ddZSESLreLqFOuH9yUyY5YFa2WLyjKrfokOY
-	 I5aQbn4Z7ktlYAGGiVhADA+Z2owm484BBGS0MXEu9+8SJ1Xd+9nopeImLHezCjmbsI
-	 l+b9jyQmwALbi3HX0Fd2Od6jLx4uuOwo/I0r78SNRDtzRGmz0Z0w8l5bueq5IOCdWr
-	 lyimjYWJ1aQUhpScd4g5pAdhgA9k8TZ3KLStW1ngSWF9YCMs/TnFJYzxEr+8kDEq+3
-	 1F+kG3xlNHiHw==
-Date: Sun, 25 Oct 2026 19:47:34 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Srikar Dronamraju <srikar@linux.ibm.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Scott Wood <oss@buserror.net>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Kees Cook <kees@kernel.org>, Jinjie Ruan <ruanjinjie@huawei.com>,
-	mrigendrachaubey <mrigendra.chaubey@gmail.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Pengjie Zhang <zhangpengjie2@huawei.com>,
-	Thierry Reding <treding@nvidia.com>, Xi Ruoyao <xry111@xry111.site>,
-	"Rafael J. Wysocki (Intel)" <rafael@kernel.org>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Rong Bao <rong.bao@csmantle.top>, Hui Wang <hui.wang@canonical.com>,
-	Thorsten Blum <thorsten.blum@linux.dev>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH] sched/hotplug: Remove unused idle_task_exit
-Message-ID: <at5OxorR-UUIxlIe@pavilion.home>
-References: <20261016095711.1364609-1-srikar@linux.ibm.com>
- <attjv8zOftf9Hlqe@localhost.localdomain>
- <20261023165434.GX2823843@noisy.programming.kicks-ass.net>
+	s=k20260515; t=1792959146;
+	bh=5cDVAr6+YQe/bNMuDfysPIaGdThTHbdxjIWpI91AGfg=;
+	h=Date:From:To:Subject;
+	b=MfRIz22IJwgyVKNt9FpVoINAQSpT99boSkbxqUAdKeDzyUv+JzPfFUB2RD0pLLECF
+	 fLISQTuU8XHk6xl2S66dUwkKrMtmoWbx7nI+f8IpV10U1quF2IXnc3b20A5eos1Pgx
+	 56oMWe/uaNi6hC5DhqYdc2rro569RmeXDVMaOcJ/yEMVUZ0iStENgt1zBFoCSChZTK
+	 dTA5odKWM3/u77A1Lbr1AnCJzTkUfYdWQJzh+P33Ei/6DflIbz7pYe3T8Z33cHv82p
+	 IKKogw9Ct9jWe++KC/2pYBZiluwiOQc0iML1eiDXvCMOa/KkW7w9M8A4oy1dtuxNW1
+	 r6CPld1PLL/2Q==
+Date: Sun, 25 Oct 2026 21:12:22 +0100
+From: Helge Deller <deller@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture fixes and updates for v7.4-rc1
+Message-ID: <at5ipgQnz46TtVMC@p100>
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -109,33 +56,70 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20261023165434.GX2823843@noisy.programming.kicks-ass.net>
 
-Le Fri, Oct 23, 2026 at 06:54:34PM +0200, Peter Zijlstra a écrit :
-> On Fri, Oct 23, 2026 at 03:40:15PM +0200, Frederic Weisbecker wrote:
-> > Le Fri, Oct 16, 2026 at 03:26:40PM +0530, Srikar Dronamraju a écrit :
-> > > Commit 21641bd9a7a7 ("lazy tlb: fix hotplug exit race with
-> > > MMU_LAZY_TLB_SHOOTDOWN") moved the handling previously performed by
-> > > idle_task_exit() into the scheduler CPU hotplug path using
-> > > sched_force_init_mm().
-> > > 
-> > > As a result, idle_task_exit() is now an empty stub and the remaining
-> > > architecture call sites have no effect.
-> > > 
-> > > Remove the calls to idle_task_exit() and the now unused stub.
-> > > 
-> > > Signed-off-by: Srikar Dronamraju <srikar@linux.ibm.com>
-> > 
-> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> 
-> Excellent; less is more and all that. Shall I take this through the
-> scheduler tree?
+Hi Linus,
 
-Yes please :-)
+please pull the fixes and updates for parisc for kernel 7.4-rc1.
 
--- 
-Frederic Weisbecker
-SUSE Labs
+One code fix and various code cleanups in the eisa_enumerator driver,
+and lots of typo fixes in header files.
+
+Thanks!
+Helge
+
+----------------------------------------------------------------
+The following changes since commit 734bef548a96e8774d6eef5dfa2026c6edc4e80b:
+
+  Merge tag 'net-next-7.4' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next (2026-10-22 15:58:00 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-7.4-rc1
+
+for you to fetch changes up to 6219ffcc60a5b4a896b95e717c4affd6dead1bde:
+
+  parisc: eisa_enumerator: Code and whitespace cleanups (2026-10-23 14:40:02 +0200)
+
+----------------------------------------------------------------
+parisc architecture fixes and updates for kernel v7.4-rc1:
+
+- fix out-of-bounds read in eisa_enumerator driver
+- drop redundant pte_xxx() macros and use common macros
+- code cleanup in eisa_enumerator driver
+- typo fixes in comments in various header files
+
+----------------------------------------------------------------
+Helge Deller (4):
+      parisc: Drop own implementations for ptep_get() and ptep_test_and_clear_young()
+      parisc: Drop redundant implementation of pte_same()
+      parisc: Drop redundant implementation of ptep_set_wrprotect()
+      parisc: eisa_enumerator: Code and whitespace cleanups
+
+Hemanth Selam (9):
+      parisc: fix typos in comments in pdcpat.h
+      parisc: fix typos in comments in special_insns.h
+      parisc: fix typos in comments in mman.h
+      parisc: fix typos in comments in memcpy.c
+      parisc: fix typos in comments in ccio-dma.c
+      parisc: fix typos in comments in dino.c
+      parisc: fix typos in comments in pdc_stable.c
+      parisc: fix typos in comments in sba_iommu.c
+      parisc: fix typos in comments in parport.c
+
+Jean Delu (1):
+      parisc: eisa_enumerator: Fix out-of-bounds reads of the EEPROM buffer
+
+ arch/parisc/include/asm/pdcpat.h        |   4 +-
+ arch/parisc/include/asm/pgtable.h       |  30 --
+ arch/parisc/include/asm/special_insns.h |   2 +-
+ arch/parisc/include/uapi/asm/mman.h     |   2 +-
+ arch/parisc/lib/memcpy.c                |   2 +-
+ drivers/parisc/ccio-dma.c               |   2 +-
+ drivers/parisc/dino.c                   |   2 +-
+ drivers/parisc/eisa_enumerator.c        | 481 ++++++++++++++------------------
+ drivers/parisc/pdc_stable.c             |   2 +-
+ drivers/parisc/sba_iommu.c              |   2 +-
+ drivers/parport/parport_gsc.c           |   2 +-
+ 11 files changed, 226 insertions(+), 305 deletions(-)
