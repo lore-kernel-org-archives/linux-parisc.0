@@ -1,127 +1,47 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.217.44
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793459705;
-	b=Mj3xbT9JThYWytX1LIors81UDZjveIySuBABLvqj9i+tjQbY5OkuXfYVdLDAzs1xh/OK
-	 8IjZTjZGW1maGcRB5FhuGh3/tTWoSEjtIzMk0+CMiv6a3JEBTg0Fp/uoDElaUrOFdVyd0
-	 YRQnAUJ93WM4EWEDI4RQLQIgY8zOwYmxBWKLHEtD6rOTMXfWESgxBl/LnlF2e23/W+9A2
-	 r+JyBZvcRnCGnQF2/9yhxIsbYuXfxXAHGzLRCgvGs4nFa13lQGWGW/QTPZ7fN0XODWK99
-	 txCO4rZFDiRtTH36lT+1mRkYmY2YGKwRLtrp/2eibso+Du0y8mnBo0HIpMNoKoTrEIg==
+	t=1793491033;
+	b=VeJ21FM1VxpK3gWO9t1iHvgn/JlcMl0gziHm8/7b8ENKfze2Jm7ZNfDKWbpsaql8MdES
+	 e4orFcbLMCw6F+Rj80hEoNPhKr3OuGsa9/Rs4UMByY2Rh6YLA8ax5XyMNpAaKBCHLJVV+
+	 vCndc4nkgt7mlJaZBN3CYEeNsGDp5930/JSKi2MdVaHUDyydBozrXIeEVVARLdQTWmL/v
+	 7OkMzbpK8r8O8xJSPoUQXfLd/52eyxDn4VrBfS6guqM4M31VLOoe2I4nYICL3TTy+hlh3
+	 Wy1ZCkigBPHZVlpdEBgJkm1gPaiKF+UKRgRDMkM/z8CbKcE6FhErVMlwLMCYLvQcJJA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793459705;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=u4AoREHEWHwqK+9vsy9N5I/xo3mEZgUmU5DSaNM6uCY=;
-	b=ThRXMQEKcrwwNKDKTdiAej8H+QmoPFjzHgmjUFkCiDj5O+6ZPeRJHrB7jZaPyd4bNUHw
-	 adi5YzrKr8tDTH4Zg5iWjU5XLMbPYp22Bypf8pmUxMHOdNdj4/miKXC1Ptysc1X1yoc4F
-	 ZRSoc1HhmhiZYs7/3OiDx6MshB+f4KHX1HeIfU2oOtR3IZL/ZKjOmcd3Q1teshJWThmFq
-	 G6wbt5xi799tEsKhYibH8Aas1vOOVT72bNf4SsWhLkpj4a7TFla6xa868Ll9dxrgKItXG
-	 +lG5dc+tzt+aBQG9w2O6D1/HMS0jCy/TD2wYdxDs5lgiMi1XoNDcrzIEiiAhrsXiD8Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793491033;
+	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:To:Cc:References:From:Content-Language:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=MXDZ/tc0FGE+vZKOkRRrWrPdu4KytGFQa3AK0t7MysI=;
+	b=S+SH/DKkXbdBCjUPBqnqJ2rHY2HpFYi4BLYmaQrUSII0VC0jW61iF8frt1q3Ap9WTsWM
+	 VNNG6qpvCq9VS7eecskYJzq9mipCjHCPrfFQQXEHmZETPUSAKBnRch1CvaOVuuuXUkS4u
+	 GUBQr5rNQbLMXA0Amuzn5LuMjurmA9nWQz029zCkqiUs63BFnJ1P7zd7pURs1OhsnhkY4
+	 y6cSnG5jEJOdjmWOk1F4fHjomgTEcGtiFGo5+o4RY266LH23rcre+njSlz6FXP1z3P+Rq
+	 w2K9zh0Ew8HHGOE5p6fUrA6ae1qP+/03wWhh9dN88+Ekb43l0uU3/CFHaGiRAspENug==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="PhqPg/E2";
-	arc=none smtp.remote-ip=209.85.217.44
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WCSgVFKA;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC97606A327
-	for <linux-parisc@vger.kernel.org>; Sat, 31 Oct 2026 15:15:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8AC97606A327
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8684C606A31A;
+	Sat, 31 Oct 2026 23:57:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=PhqPg/E2
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-7cc603a168fso509433137.3
-        for <linux-parisc@vger.kernel.org>; Sat, 31 Oct 2026 08:15:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793459704; x=1794064504; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:subject
-         :references:in-reply-to:message-id:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=u4AoREHEWHwqK+9vsy9N5I/xo3mEZgUmU5DSaNM6uCY=;
-        b=PhqPg/E24VOKRLpfl1ae1ubh4CKpCn29JqhLZjBp/MR26TAAiPCusNfbhZKqTqe7Xj
-         KcQq5Lydqkv/yxQqi5C7ZY3ZDqurJIdEnXH0ucUJaLRRdFFYKlc9/hSNt/FBOqLJJqI7
-         p6jj64s7228VWY/vk1afOCOip01plUgqwJps6dk4WwMDU5fMSszkrzQk+rwDSKDYE+HI
-         68LbUdDAtL6NWwfUTf5zsmuxjMBjVb0I019RVHKueoF64p2AswdpFejX62Xr+afWIrOW
-         DgPY165zFFs16BXhBuygZX7vyRNjKllQEoev9+VtxIjjr17scodCqljZafdWsq6sK09A
-         Fhwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793459704; x=1794064504;
-        h=content-transfer-encoding:content-type:mime-version:subject
-         :references:in-reply-to:message-id:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=u4AoREHEWHwqK+9vsy9N5I/xo3mEZgUmU5DSaNM6uCY=;
-        b=EGYx2dvJiVRBWyXBICHKD9sdAqJM+rw/2RgWKwDrtYbKpMSgoyW6FWjp6/iawN4C5A
-         tj3YgPSi4Qj17L5mMWSODFAA6kfIfsXepn8Fcrkfomz4y6Td2yd1CjNdCarzPvFGRcIx
-         AaSr9Zl5OSFIFzzfBEMY7grkmOttSgZhyAd8M/u2zoZK19rdgNPvNRHexK0o+IBRPIkg
-         VvwO+SCE7XTadaZXAQB/AQfVuOJq6oxE0V4kTXGhcBWje6J6h84X/mF2evWYLp50KSXY
-         fgObus4Ik+BWTI5ZWMcNPYA7ffBlXubuc58BsV4j7pJ5s4daM02pnAPuk2J/fibzF9w9
-         2NNQ==
-X-Forwarded-Encrypted: i=1; AKwUvBxbCAuRw6g/H4Qcn9uuwh7Uk4BiwslX9YeJuDDdzTdkUn+COYxTIWIt+Ql6zVBr2FMQAjyOKk37y4s1T3g=@vger.kernel.org
-X-Gm-Message-State: AFq9FYLmBt7XkXpcCyBrntpLaa4ROQt4BMUli1xJOPJmbd/oTcOwW8Ce
-	co54/hOufIRzXqn6uSKcR+wse/8D9uarbWW52PEMqC17HAZ9HrJzCXlc
-X-Gm-Gg: AYBFou2PV607lcoZ23+viXL4Fx9w4vhTHNe72Bvv2EAYw5twdjB5IxCBttqsuAEWqVW
-	N3KugZoVT3BgPC7IuV/vU3xcBIxR6Cg/8Qw76eroYceYFu0hMlbK2Sf5Nw8zTIqQ/pX/HMUCJMe
-	QQZDGOzwF/QDIUtYwus6aJrur+2eKYjJCQyRv0nFzacHgcUK0E3L5E1hIJz6kWrzZbfPkCMX9DT
-	JeCq+aYSjgbQyKE7ieq9nsG3KKtT7aeNgtNqOZf8ckGvbNC/hlAJTGJ30FszG+b8Cu/rVw/fCFx
-	Rqg0neHL5f8S4MrscyO9al3NydvXfftL4V8dy1H4J6cfWWgfRpaRr+V1mnQtgdddC3hb8Jld81y
-	BANVVQ9S9E0pMi3WMA17s+O+QdfJmSpaAZLgA9QFL+E/He1ZrgLE2UUrhXn2g23ozD7KoZ+pY65
-	O/jtnvv2QRO30Y+mtooe3ho5PsY3/cfQuYJPEluDcjjd8PA+UYeY3aio6UFnOmu6jexb/SHHIbW
-	aLkhk5/xXn+x82L9FqIMrS8G+mFH10WzI6CVrSd3GXXpvZoMTrAuUpYuucb9+iB+QX9Ufvw6uja
-	bshhhBGFXQKNGj9tdqnDwD9st22LQxH+R8VeN1RiC2Dmosv0USXW9GUKYCAw0qTZnvLVw5JuMGt
-	Dkf9SUf1koOUat6YbHvUlUkfjhq2t2cNwuDxkxwSBqo3nA+CRhHrVarw5oet6Doqto2FG
-X-Received: by 2002:a67:e116:0:b0:7a1:fa0f:1106 with SMTP id ada2fe7eead31-7d072d759a9mr2050864137.36.1793459704527;
-        Sat, 31 Oct 2026 08:15:04 -0700 (PDT)
-Received: from gmail.com (111.46.245.35.bc.googleusercontent.com. [35.245.46.111])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5ec69c5d183sm6032016e0c.13.2026.10.31.08.15.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2026 08:15:03 -0700 (PDT)
-Date: Sat, 31 Oct 2026 11:15:03 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Vitaly Zuevsky <vitaly.zuevsky@gcore.com>, 
- netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@kernel.org>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, 
- Jonathan Corbet <corbet@lwn.net>, 
- Shuah Khan <skhan@linuxfoundation.org>, 
- Randy Dunlap <rdunlap@infradead.org>, 
- Richard Henderson <richard.henderson@linaro.org>, 
- Matt Turner <mattst88@gmail.com>, 
- Magnus Lindholm <linmag7@gmail.com>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, 
- Andreas Larsson <andreas@gaisler.com>, 
- Kuniyuki Iwashima <kuniyu@google.com>, 
- Willem de Bruijn <willemb@google.com>, 
- Arnd Bergmann <arnd@arndb.de>, 
- Christian Brauner <brauner@kernel.org>, 
- Andrew Halaney <andrew@amutable.com>, 
- Jori Koolstra <jkoolstra@xs4all.nl>, 
- Alexander Mikhalitsyn <alexander@mihalicyn.com>, 
- Tariq Toukan <tariqt@nvidia.com>, 
- Saeed Mahameed <saeedm@nvidia.com>, 
- Chuang Wang <nashuiliang@gmail.com>, 
- linux-doc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-alpha@vger.kernel.org, 
- linux-mips@vger.kernel.org, 
- linux-parisc@vger.kernel.org, 
- sparclinux@vger.kernel.org, 
- linux-arch@vger.kernel.org
-Message-ID: <willemdebruijn.kernel.e08dc63db124@gmail.com>
-In-Reply-To: <20261031113330.45704-2-vitaly.zuevsky@gcore.com>
-References: <20261031113330.45704-1-vitaly.zuevsky@gcore.com>
- <20261031113330.45704-2-vitaly.zuevsky@gcore.com>
-Subject: Re: [RFC PATCH net-next v1 1/2] net: add SO_NO_RFS to exclude a
- socket from RFS and aRFS
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WCSgVFKA
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0AFC1F000C1;
+	Sat, 31 Oct 2026 23:57:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793491033;
+	bh=MXDZ/tc0FGE+vZKOkRRrWrPdu4KytGFQa3AK0t7MysI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=WCSgVFKAoEiUlBRt6zXiht7Cz+aUqr+u8pkCYORaKRffLYfUiW1nNB4dPLmsuMbPD
+	 1wdBNztG55Vs2jTuRiMMlABj2JgeGWWeUi0URgCasCymnaXvWEwPNj/nLzkqyeSt1d
+	 RUAW1AnfbOdNgZQpaXgh28kEwNxgNzJHuaUgJxLN7iPUIur8rixrRLsbtB+p3SXx96
+	 9Is1q95z9l8bZP/e7z3sUfujx+51XR++hsrV/64+6uWqLPhJX7VgDvH8Mh7LpNUw/Z
+	 mivUDwm3D1icMiSrin0rQa0ZUkEGQ913wYogPYduADhqTvHTif9rOr3XwbKzqwJ4o1
+	 e3xd+HdwD0Zpg==
+Message-ID: <3175caa0-9f49-465d-959e-6b6c9bbb4f01@kernel.org>
+Date: Sat, 31 Oct 2026 16:57:11 -0700
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -131,97 +51,190 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] nios2: ksyms: Declare __mulsi3 export
+To: Arnd Bergmann <arnd@arndb.de>,
+ =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ "schuster.simon@siemens-energy.com" <schuster.simon@siemens-energy.com>,
+ Ley Foon Tan <lftan@altera.com>
+Cc: linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+ linux-snps-arc@lists.infradead.org, linux-parisc@vger.kernel.org,
+ "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>
+References: <20261019-nios2-mulsi3-v1-1-4fd75b1bacef@linutronix.de>
+ <47eb6b48-d664-440f-84b6-ba09f34d5e08@app.fastmail.com>
+From: Vineet Gupta <vgupta@kernel.org>
+Content-Language: en-US
+In-Reply-To: <47eb6b48-d664-440f-84b6-ba09f34d5e08@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Vitaly Zuevsky wrote:
-> RFS and accelerated RFS are enabled per host and per rx queue, but
-> whether steering helps is a property of the flow. A host that carries
-> a few long-lived flows which benefit from steering alongside a large
-> churn of short-lived flows has no way to express that today.
-> 
-> Add a boolean socket option, SO_NO_RFS. When set, sock_rps_record_flow()
-> does not record the socket in rps_sock_flow_table, so get_rps_cpu()
-> finds no match and neither software RFS nor ndo_rx_flow_steer() acts
-> on the flow; it stays on the CPU chosen by RSS or RPS.
-> 
-> The option is kept in sk_flags so that sk_clone_lock() copies it to
-> accepted children: setting it on a listening socket excludes every
-> connection accepted from it, while sockets the same process connects
-> itself remain eligible.
-> 
-> sock_rps_delete_flow() is skipped as well, because a socket that never
-> recorded itself must not clear a table slot that may belong to another
-> flow.
-> 
-> The test sits after the TCP_ESTABLISHED check and inside the
-> rfs_needed static branch, so hosts without RFS pay nothing and hosts
-> with RFS pay one test_bit() on a cache line tcp_recvmsg() already
-> touches.
-> 
-> Signed-off-by: Vitaly Zuevsky <vitaly.zuevsky@gcore.com>
+On 10/19/26 04:16, Arnd Bergmann wrote:
+> On Mon, Oct 19, 2026, at 11:49, Thomas Weißschuh wrote:
+>> GCC may emit libcalls to __mulsi3(). As modpost is not aware that this
+>> function is provided through the linked in libgcc, it fails:
+>>
+>> ERROR: modpost: kernel/locking/test-ww_mutex.ko: symbol '__mulsi3' undefined!
+>> ERROR: modpost: kernel/time/test_udelay.ko: symbol '__mulsi3' undefined!
+>> ERROR: modpost: kernel/resource_kunit.ko: symbol '__mulsi3' undefined!
+>> ERROR: modpost: fs/fuse/virtiofs.ko: symbol '__mulsi3' undefined!
+>> etc.
+>>
+>> Make sure modpost can see the symbol from libgcc.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Closes:
+>> https://lore.kernel.org/oe-kbuild-all/202610171933.J4bFOfL8-lkp@intel.com/
+>> Fixes: 2fc8483fdcde ("nios2: Build infrastructure")
+>> Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>
+> The patch looks correct to me, but it would also be nice to not use
+> libgcc at all. What I see is that only arc, nios2, openrisc and
+> parisc still link against the toolchain-provided libgcc, everything
+> else uses the kernel's own runtime.
+>
+> It's probably not even that hard to do right, here is what I found
+> is imported from libgcc.
 
-The Documentation change can/should be included in the main patch.
+And seems like ARC is the biggest offender, what a shame.
 
-> ---
->  arch/alpha/include/uapi/asm/socket.h  |  2 ++
->  arch/mips/include/uapi/asm/socket.h   |  2 ++
->  arch/parisc/include/uapi/asm/socket.h |  2 ++
->  arch/sparc/include/uapi/asm/socket.h  |  2 ++
->  include/net/rps.h                     | 13 +++++++++++++
->  include/net/sock.h                    |  1 +
->  include/uapi/asm-generic/socket.h     |  2 ++
->  net/core/sock.c                       |  8 ++++++++
->  8 files changed, 32 insertions(+)
-> 
+> * Generic library helper exists, can be enabled through Kconfig:
+>
+> === __lshrdi3 ===
+> arch/arc/kernel/arcksyms.c
+> arch/nios2/kernel/nios2_ksyms.c
+> arch/openrisc/kernel/or32_ksyms.c
+> arch/parisc/kernel/parisc_ksyms.c
+> -> lib/lshrdi3.c
+> === __ashldi3 ===
+> arch/arc/kernel/arcksyms.c
+> arch/nios2/kernel/nios2_ksyms.c
+> arch/openrisc/kernel/or32_ksyms.c
+> arch/parisc/kernel/parisc_ksyms.c
+> -> lib/ashldi3.c
+> === __ashrdi3 ===
+> arch/arc/kernel/arcksyms.c
+> arch/nios2/kernel/nios2_ksyms.c
+> arch/openrisc/kernel/or32_ksyms.c
+> arch/parisc/kernel/parisc_ksyms.c
+> -> lib/ashrdi3.c
+> === __cmpdi2 ===
+> arch/arc/kernel/arcksyms.c
+> -> lib/cmpdi2.c
+> === __muldi3 ===
+> arch/arc/kernel/arcksyms.c
+> arch/nios2/kernel/nios2_ksyms.c
+> arch/openrisc/kernel/or32_ksyms.c
+> arch/parisc/kernel/parisc_ksyms.c
+> -> lib/muldi3.c
+> === __ucmpdi2 ===
+> arch/arc/kernel/arcksyms.c
+> arch/nios2/kernel/nios2_ksyms.c
+> arch/openrisc/kernel/or32_ksyms.c
+> arch/parisc/kernel/parisc_ksyms.c
+> -> lib/ucmpdi2.c
 
-> diff --git a/include/net/rps.h b/include/net/rps.h
-> index e33c6a2fa8bb..5afa48868236 100644
-> --- a/include/net/rps.h
-> +++ b/include/net/rps.h
-> @@ -98,6 +98,13 @@ static inline void _sock_rps_record_flow(const struct sock *sk)
->  	 * [1] : sk_state and sk_prot are in the same cache line.
->  	 */
->  	if (sk->sk_state == TCP_ESTABLISHED) {
-> +		/* SO_NO_RFS: application asked us to never steer this flow.
-> +		 * Tested after sk_state so the common case stays on one
-> +		 * cache line.
-> +		 */
+It seems Palmer added those back in 2018 which ARC was still developed 
+actively, I totally missed them.
+I now have a patch to switch ARC to generic helpers for those.
 
-Avoid verbose comments. Bots comment a lot more than kernel style.
+> * 64-bit division probably should not be provided on arc or
+>    nios2 (and sparc32, which has a private copy).
+>    parisc64 should get these from libgcc/libgcc2.c.
+>
+> === __divdi3 ===
+> arch/parisc/kernel/parisc_ksyms.c
+> === __udivmoddi4 ===
+> arch/nios2/kernel/nios2_ksyms.c
+> === __udivdi3 ===
+> arch/arc/kernel/arcksyms.c
 
-Also arguably incorrect as TCP_ESTABLISHED is the common case.
+It seems in some of the old binaries I have, dw mmc driver was at some 
+point calling 64/64 divide which eventually got fixed.
+But agree as of today there are no callers of 64-bit div/mod. I will get 
+rid of ?div*di* from ARC.
 
-> +		if (unlikely(sock_flag(sk, SOCK_NO_RFS)))
-> +			return;
-> +
->  		/* This READ_ONCE() is paired with the WRITE_ONCE()
->  		 * from sock_rps_save_rxhash() and sock_rps_reset_rxhash().
->  		 */
-> @@ -111,6 +118,12 @@ static inline void _sock_rps_delete_flow(const struct sock *sk)
->  	rps_tag_ptr tag_ptr;
->  	u32 hash, index;
->  
-> +	/* Never recorded, so never clear a slot that may belong to
-> +	 * another flow.
 
-Never is too strong here: can be set during socket lifetime.
+> arch/parisc/kernel/parisc_ksyms.c
+> === __umoddi3 ===
+> arch/nios2/kernel/nios2_ksyms.c
+> arch/parisc/kernel/parisc_ksyms.c
+> === __moddi3 ===
+> arch/nios2/kernel/nios2_ksyms.c
+> arch/parisc/kernel/parisc_ksyms.c
+>
+> * floating-point math should not be provided by kernel:
+>
+> === __divdf3 ===
+> arch/arc/kernel/arcksyms.c
+> === __divsf3 ===
+> arch/arc/kernel/arcksyms.c
+> === __fixunsdfsi ===
+> arch/arc/kernel/arcksyms.c
+> === __floatunsidf ===
+> arch/arc/kernel/arcksyms.c
+> === __floatunsisf ===
+> arch/arc/kernel/arcksyms.c
+> === __muldf3 ===
+> arch/arc/kernel/arcksyms.c
 
-Even if it had been correct, still another example of unnecessary
-verbosity.
+And a second patch gets rid of those. FWIW back in the day some ARCAngel 
+board's HDD driver needed those. Crazy times.
 
-> +	 */
-> +	if (sock_flag(sk, SOCK_NO_RFS))
-> +		return;
-> +
+> * no generic implementation in kernel, need to copy from
+>    libgcc/lib1funcs.S code:
+>
+> === __divsi3 ===
+> arch/arc/kernel/arcksyms.c
+> arch/nios2/kernel/nios2_ksyms.c
+> arch/openrisc/kernel/or32_ksyms.c
+> -> arch/arm/lib/lib1funcs.S
+>     arch/m68k/lib/divsi3.S
+>     arch/microblaze/lib/divsi3.S
+>     arch/xtensa/lib/divsi3.S
+> === __modsi3 ===
+> arch/arc/kernel/arcksyms.c
+> arch/nios2/kernel/nios2_ksyms.c
+> arch/openrisc/kernel/or32_ksyms.c
+> -> arch/m68k/lib/modsi3.S
+>     arch/microblaze/lib/modsi3.S
+>     arch/xtensa/lib/modsi3.S
+> === __udivsi3 ===
+> arch/arc/kernel/arcksyms.c
+> arch/nios2/kernel/nios2_ksyms.c
+> arch/openrisc/kernel/or32_ksyms.c
+> -> arch/arm/lib/lib1funcs.S
+>     arch/m68k/lib/udivsi3.S
+>     arch/microblaze/lib/udivsi3.S
+>     arch/sh/lib/udivsi3.S
+>     arch/xtensa/lib/udivsi3.S
+> === __umodsi3 ===
+> arch/arc/kernel/arcksyms.c
+> arch/nios2/kernel/nios2_ksyms.c
+> arch/openrisc/kernel/or32_ksyms.c
+> -> arch/arm/lib/lib1funcs.S
+>     arch/m68k/lib/umodsi3.S
+>     arch/microblaze/lib/umodsi3.S
+>     arch/xtensa/lib/umodsi3.S
 
-Both here and _sock_rfs_record_flow: probably should be in their
-callers, like the other precondition check rfs_is_needed.
+ARCv2 has hardware divide so these are not needed, but ARC700 doesn't 
+and there's a ton of calls for those.
 
->  	hash = READ_ONCE(sk->sk_rxhash);
+┌───────────┬───────┬───────────┐
+│  routine  │ calls │ functions │
+├───────────┼───────┼───────────┤
+│ __udivsi3 │ 415   │ 238       │
+├───────────┼───────┼───────────┤
+│ __umodsi3 │ 203   │ 131       │
+├───────────┼───────┼───────────┤
+│ __divsi3  │ 77    │ 57        │
+├───────────┼───────┼───────────┤
+│ __modsi3  │ 41    │ 33        │
+└───────────┴───────┴───────────┘
 
-Optionally maybe also skip writing sk_rxhash if this is the only user.
+I can take a stab at providing the generic libgcc implementation in 
+lib/* but I only expect the arches using libgcc version to switch.
 
->  	if (!hash)
->  		return;
+Thx,
+-Vineet
