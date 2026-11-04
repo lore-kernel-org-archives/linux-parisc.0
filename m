@@ -1,74 +1,97 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.69
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793681343;
-	b=rUH7QYL7yuIps1XIeaFScG6cKaaqw3zAk339WWMvKrsFxYeOlVusgI74mlyRPbPNFwh6
-	 GwyhQ9E3lwNeyAGbJl/VISF5qEXZqnqrhtYfgmtMVnujc6srDdJwUs1VOiVC/CshPNYcG
-	 vOcsYp83GLX6DNEb9cqr469CM722fa5VEsIrfORiZwlqC1iitVfhyy11uK31oI7D0FXkh
-	 cmwck8FMYXTT/fFozZkUmx+vr2mjwQ51efRd4edXUIxJtdUWCM7wNNTj/ymAk7F28imQ7
-	 zxbT976qO5btCBiUbaRlKurqugYUzHx7OVX/EZYRC1NJTmccjXwv8QLryh5RaasuDmw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793681343;
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=209.85.210.179
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+	t=1793752869;
+	b=OdDabmjTLArfEXIf9c9/eYj/yKpWKY4/c8ycHHnxQNcfKpSLS9YFLV6UXNwZZ6UO3Zfs
+	 /Lnx6GyO5sR09N6ZsniSxrJOzEW5Nv4I51U2oSNzzxXyPGU+cN59TZE2axG/nZ91ldMrd
+	 +YxRgPitOjB1C9SBZGlwgoPHdZEy4fg5ebKMLD/fKAzNf07xXqWwjEIwv8aUnw8e33FqX
+	 11d36QUwSQF4lqWENmEYWXDYC5vIgJL1ENBBh6XuQU9CMxTpAx4qgIhJQmW7bIDtT9/t6
+	 3OxZgfgqV1B4Rlnv1IS12KMFLMw0EpTxQARKYIBi7gkZ2gDRzLOcBIOlw7HhzYZccsw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793752869;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:Date:In-Reply-To:
-	 Mime-Version:References:Message-ID:Subject:From:To:Cc:Content-Type;
-	bh=xpPM8d6E2sOmuORX+oJQ/3Yb6xz98T79nukjUCv60w0=;
-	b=uDiEVDzw9bxNVoxIQPE8LvD/f/rzfGHc0wuY0mqIyuRtFPjQwjiXp1mtcjoZb9JZirAw
-	 re8/ZGuod/ufLZxXqUfBzgflNO48IpW4eipqYqM2KUkHqFhmblTXpILjgvhpLduCUapdP
-	 JYQR1d1D/Bu23BbIyDFO0EA3NLvWZ05csM7RjKPcZVE9b9ci+3N4VY5QSTxiN3Vv8p6av
-	 SZRmFlZGfyJO+lUczpiel3frhcbFMdQNtLCHTEOxcG9kDo2K3F0+DMAsHVbUrjAnvgQLB
-	 r2wSr3YEHHXS7FkSGWhjFrtbW0JYQRAzckS4YFj7nCJx8amAAv5txOFNHurTYAV+HWQ==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=google.com;
-	spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com;
-	dkim=pass header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=N3yb8+oy;
-	arc=none smtp.remote-ip=209.85.216.69
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=fPNnZyQIDXSKNoVkiNoUdoJZWsQu0g4dBkxCnrIJvKA=;
+	b=5XWVORR+pNKgAcQOPQ1LCC+V2pXbjUHEdvL08oaVZa7V+iwNmWxtD30uclOv0phc4bHk
+	 oL3DecLnfYXH0mh3QBy4o8gfXdRNDiLg7z4aA/+UsuSTHRaSUi4ledZHEFnKM08YjbEft
+	 4f7BC0aeIotI/q2IQ501MIpTngbcNPTDAMs6Vmn8OY94+Y59Kso8pNRiOiVgwMLtddvTX
+	 9ZfCJdLwzgAqcuyVpP8wAFejwjxvY4iMxIHNEhAD5ceUyvOwLgbySJNZ7eerv2Q2xyBGO
+	 zr+PQWbQ/IxqGrneFNUGO8gxJ5+SorgOTZCoBwF3ZHjLti6mXigeeyyDe1fI6ZsKVRQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=paul-moore.com;
+	spf=pass smtp.mailfrom=paul-moore.com;
+	arc=fail smtp.remote-ip=209.85.210.179
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82873606A32C
-	for <linux-parisc@vger.kernel.org>; Tue,  3 Nov 2026 04:49:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 82873606A32C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=N3yb8+oy
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-3b07b06027eso642458a91.0
-        for <linux-parisc@vger.kernel.org>; Mon, 02 Nov 2026 20:49:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E627E606A330
+	for <linux-parisc@vger.kernel.org>; Wed,  4 Nov 2026 00:41:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E627E606A330
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-8a070781f63so95409b3a.1
+        for <linux-parisc@vger.kernel.org>; Tue, 03 Nov 2026 16:41:03 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1793752863; cv=none;
+        d=google.com; s=arc-20260327;
+        b=O4m06V2MGcHbYF3Yjvg89Brc6PL2oMT5q9REnvS91QGC3oezgLEqxGTRKH1sfilbTH
+         cp71Byw6QBRTxTqI9T2uAYHruugJovrtoiDWYm5K1RaQPr8ib/+i+WdHeMzNHJXB8usg
+         DOi1CeF68I2/GHvm/cBmC47Zdy0zBUX9pfa2HeGzYp7MWaEI+QdYr4ZeAdppRIF6lEe+
+         rprWx73/80dqhU+rbq7cl+PZEF3hSVrx/ipXN3uyrLhlMhsmKQkWgv36S/PehvHLTSPw
+         L388VFNy5t+HTORVijuCTexgEdiLya+loh2HxgyI1707aJO7Qjk89B12Hgnl+hwL2xfp
+         nVbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=fPNnZyQIDXSKNoVkiNoUdoJZWsQu0g4dBkxCnrIJvKA=;
+        fh=OnMGUeaZUnmOhdEYbSdDShZHSX+gTbNtsinLB8z7/oI=;
+        b=BUxtERDP3bwlgjQqSX+ltSsBeGfnX13Fsy6sy5DKOCGSWkE3hs6YqPmT0NVQ1uOoWy
+         XkffSR4327hBTVoFeIp9NPl4jmcraYm/mFcGXHAo6Q1ATSFLL6MYwv9c2Ch3HAyNwhML
+         aW8tLHD73PvliT7bZHyah2cg8d8eLCeHSy94oPlE12CFtRpxDCafdbuiDYDMbagzbcoa
+         Ng53VxRyHsIzLDvCx+ka/D9SVRUJYyOuPV/ZCxYml11S1i0OY6v5ljBvKOZY/Hkp+EzY
+         +XyJprykOFp0/sCnUAUnd//ceepRA4jXHhI05DVeaSIVVyM4QlmeV2u46iceD077xeai
+         JTLw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20260707; t=1793681342; x=1794286142; darn=vger.kernel.org;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=xpPM8d6E2sOmuORX+oJQ/3Yb6xz98T79nukjUCv60w0=;
-        b=N3yb8+oyTXT5JmTpHZoNiyTZDZyViCCgxID1pC+ipOJlnaGTUES+eSgUktKLb6Ed7b
-         Bcu40a285vRAYe+p0EBWCbP8XOr475B2EH6Djl7GLJoYXUYnOak+Qc41B04TBNPlJ1Xj
-         X0k4g0c4ECEzScqGR83aMPTeecbGzdCJtSuye0sSmqp+B1QYQGfE8KuLEACn5EFeVu7A
-         tuZkJhYU0SxS6gn3VJyUrE8wull93UwkmYHM4kAEcOcASepeCgbX6ZkGeZvN1IehLwT2
-         mtm8P5HrSKgfxu5TUUyUX/2Dumh0mQK5nuXUhHLDdzDO0Kg08OWhWmCOcRAcA9OmrKVk
-         W7+w==
+        d=paul-moore.com; s=google; t=1793752863; x=1794357663; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=fPNnZyQIDXSKNoVkiNoUdoJZWsQu0g4dBkxCnrIJvKA=;
+        b=PTPniKxw8lSLWSxMbmhmXVodXffwfFqC3M3cDEPYPvY1SsBjNOjXXv95CLFg3rVQFu
+         x1tdyRAr0bqYQ6HVqsjHpfPPU10/1FhE3kd/CHXKlKRa2s8Jf9/RWGaRvSd9s3tWp3+h
+         Tji6Btj/3XlTUrwGPe+aphN7moDM3Ujmyews2MtwEsOdhWo9d1B27IQnIAXxeCj/AgoF
+         TwCZd9YYNW98ENSoBC4GvFAhash4XN0WeHulLfX/snYculqtKEVgWcaAWPf68LjYBfvq
+         i5NzGzwAog4kKLckyYK3n2IY4tOHLEWiT5cJSG6dbW9SW1FZ4MjXmEMstZ0yw7BaSVW5
+         5qpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793681342; x=1794286142;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=xpPM8d6E2sOmuORX+oJQ/3Yb6xz98T79nukjUCv60w0=;
-        b=mSETFrSsrZu/eosrqUbmCiGgDsX11IbynFq808vEP2ZD7lolKebyyUwhx/JCymljg1
-         Gr2xhnlMNM5S31oMYdbwJ9jmUuQTvC4Ro9edsnFW5bvuHhfJJVBW5w9m7CQENkHr2Vi5
-         aRayxAR/IoLEQUW5LuiN7ElxQp0kBaSoueXm1UwPWjBPRxPDyQa7cmk3/zaedfHhet7i
-         lCch7uUCJ6yGOfa8sTrKIwWYbwr7X62Nrg4ITJcf3XFi3BOA3Mk3UUnhCmPAV2wbdXSx
-         WcBCi6YWuCnwanG0JubnJvPDSn50vaGPPSqJ/kUdQpEuDOUxVXkm5CHyZ3yBqXACZkfp
-         2Lhw==
-X-Forwarded-Encrypted: i=1; AKwUvBwPLthH29+Kk7h9oSFUQhMvoY5CEqxUFhefMSsa9kj5b4/qXYt+FUQSUt4o/yzfNLIPCvftUdxAgIhC15g=@vger.kernel.org
-X-Gm-Message-State: APuU4Z/WinlLkfII3XcGSNOC+5TDGw3KSWf2vzL9Q4R0Cstuo3AW69GO
-	8XMne63O7JBwTG1VgKfTPCEXsnMJV8ecLD6vOn0WkY41vNUia0xbCO3RgMY9A/mSavgPiCcquMj
-	+IWgaMg==
-X-Received: from pgbj23-n1.prod.google.com ([2002:a05:6a02:61d7:10b0:ccf:d903:c14c])
- (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:2d8b:b0:3ab:c80:9370
- with SMTP id 98e67ed59e1d1-3ae89724ae3mr8703357a91.20.1793681341720; Mon, 02
- Nov 2026 20:49:01 -0800 (PST)
-Date: Tue, 3 Nov 2026 04:49:01 +0000
-In-Reply-To: <20261031113330.45704-2-vitaly.zuevsky@gcore.com>
+        d=1e100.net; s=20260707; t=1793752863; x=1794357663;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=fPNnZyQIDXSKNoVkiNoUdoJZWsQu0g4dBkxCnrIJvKA=;
+        b=itFLdIZioY0t1TAR0kPSlTG/lnh3uing5+OiM3ORetRiub9sUjK2Bo7A8DxwiYtqXH
+         sDdjG/TvyVEl+D/oWS3d2DyHPjdnwQtXr7ZpUwMWwkAuBzxS9SXWXzpCEE37t4qpqyaB
+         hhe1sxtIbcasoTPlwU9r6W4Vcw1vQuDvqJE9Yd5SYQLR3bWb6QX1nukg8Ka9LRI2zNWZ
+         zFJbWZsATJw5j6Y1ZPh7wCR5sL5mJCU+zNpeK+WWutopf7vpePBkysPYUOK0F67mLtku
+         /Lx5BPvfQPWbGNm7kyn18TjEGyuLVOqAy5bxN78pjaNdtER3A8Upm5LB4/ZLRK9f+jrB
+         4KdQ==
+X-Forwarded-Encrypted: i=1; AKwUvBz2NNucdHxIV4xS5EWchMiyUOZarZ9qkxlowfL54xi9JG38s+TralPbt604jhHtVuDrpuPJf6l0BT7pN6E=@vger.kernel.org
+X-Gm-Message-State: APuU4Z9SVI3TjnmNN8/7bnJeQ5hMxTdvx8GZdjATKOQGkQ65ooL+0zxN
+	ZSaD2AIr6hBhMpxQMW3LLVkqkIveEgyWejMb8NO4ZCR5jhDYmnvsp2DCfjzbdebcUv6VVMWkBUk
+	fyeJu1an/PlgDK7+KfwlKNst695DuKA8j/LBjR6TJ
+X-Gm-Gg: AYBFou1FldqZiBcuBwMJK6wS2bJllRkufz9PKmAff4x+p9Xw5EYZy+Jx/LzSWz2+coD
+	Xs3LsD0urZeI3X+D91biuSaw2+BwGvaVlb6csSm/eWJXkhrCfLncrZ3U1AqwX1u3FOWpGZKdkIW
+	uNKNwFP5+lWCiI5afJO8Oci6b6/275HblQ4U5xDV2ggQz8HaU2bJmU+DSD6Su7w24pWOK8lxgQ7
+	+Y7DqwQ57WprhpYr1pBdYpXQcyXmQ9Gwmf9xKd6fIWxeolejduBBkXKcw5/4wQdmzZ0toG4uOkw
+	mcDvB1j6gJltGZve7DIMpqkiHH88coHYS8k31Wygbf4AaEeW2Fe+V33DmXqV50tplfIKoKcJ/C5
+	7Jc5zsx+0OMtNaXpfDOwCHBAXrfn8YTCj8CrWnzaaTa2YksbpvXWSCGMi7eiSEVBj1+Gh
+X-Received: by 2002:a05:6a00:2d96:b0:88d:4b30:1c11 with SMTP id
+ d2e1a72fcca58-8a9ba703bc9mr11394030b3a.6.1793752863107; Tue, 03 Nov 2026
+ 16:41:03 -0800 (PST)
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -77,232 +100,91 @@ List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0
-References: <20261031113330.45704-1-vitaly.zuevsky@gcore.com> <20261031113330.45704-2-vitaly.zuevsky@gcore.com>
-Message-ID: <aulmWD9VUXcwgp6h@google.com>
-Subject: Re: [RFC PATCH net-next v1 1/2] net: add SO_NO_RFS to exclude a
- socket from RFS and aRFS
-From: Kuniyuki Iwashima <kuniyu@google.com>
-To: Vitaly Zuevsky <vitaly.zuevsky@gcore.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
-	Magnus Lindholm <linmag7@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Willem de Bruijn <willemb@google.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Christian Brauner <brauner@kernel.org>, Andrew Halaney <andrew@amutable.com>, 
-	Jori Koolstra <jkoolstra@xs4all.nl>, Alexander Mikhalitsyn <alexander@mihalicyn.com>, 
-	Tariq Toukan <tariqt@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Chuang Wang <nashuiliang@gmail.com>, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <cover.1790088067.git.rrobaina@redhat.com> <CAHC9VhQ=FFYVNmQdiMsqg+5KDDrSC3SZS+H2=r_GkhfwQox8tg@mail.gmail.com>
+ <CAABTaaBL=TScs8Qqu3b8F6KZPGMyvwy6cBC3teDaBL6MGMucNg@mail.gmail.com>
+ <CAHC9VhROsmzbm+AP63Sm7mqCokgEy6Zu0AVMY0gxp8qY75Pqiw@mail.gmail.com> <CAABTaaBOrPknzdxc5S6L9hGu7hbFu2e1RZG=Sxjb_B1Cs4Sixw@mail.gmail.com>
+In-Reply-To: <CAABTaaBOrPknzdxc5S6L9hGu7hbFu2e1RZG=Sxjb_B1Cs4Sixw@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 3 Nov 2026 19:40:51 -0500
+X-Gm-Features: AclHuK_mzIhdjHPxjnkTYRthyfMgrzjS55JZuNf6mZPYYsQQvO81kKGlvJUv8_0
+Message-ID: <CAHC9VhQ4U-Z2KkGurfMihJgzGgwD3miWSW4wWAjWvUdDxLpH7Q@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] audit: log all six syscall arguments in the
+ SYSCALL record
+To: Ricardo Robaina <rrobaina@redhat.com>
+Cc: audit@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org, bpf@vger.kernel.org, eparis@redhat.com, 
+	sgrubb@redhat.com, oleg@redhat.com, richard.henderson@linaro.org, 
+	mattst88@gmail.com, linmag7@gmail.com, linux@armlinux.org.uk, 
+	catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, monstr@monstr.eu, 
+	tsbogend@alpha.franken.de, jonas@southpole.se, 
+	stefan.kristiansson@saunalahti.fi, shorne@gmail.com, 
+	James.Bottomley@hansenpartnership.com, deller@gmx.de, 
+	ysato@users.sourceforge.jp, dalias@libc.org, glaubitz@physik.fu-berlin.de, 
+	davem@davemloft.net, andreas@gaisler.com, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, chris@zankel.net, 
+	jcmvbkbc@gmail.com, tglx@kernel.org, peterz@infradead.org, luto@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 31 Oct 2026 11:33:29 +0000, Vitaly Zuevsky wrote:
-> RFS and accelerated RFS are enabled per host and per rx queue, but
-> whether steering helps is a property of the flow. A host that carries
-> a few long-lived flows which benefit from steering alongside a large
-> churn of short-lived flows has no way to express that today.
+On Fri, Oct 23, 2026 at 8:45=E2=80=AFAM Ricardo Robaina <rrobaina@redhat.co=
+m> wrote:
+> On Tue, Oct 20, 2026 at 1:39=E2=80=AFPM Paul Moore <paul@paul-moore.com> =
+wrote:
+> > On Tue, Oct 13, 2026 at 8:36=E2=80=AFAM Ricardo Robaina <rrobaina@redha=
+t.com> wrote:
+> > > On Thu, Oct 1, 2026 at 6:06=E2=80=AFPM Paul Moore <paul@paul-moore.co=
+m> wrote:
+> > > > On Tue, Sep 22, 2026 at 3:21=E2=80=AFPM Ricardo Robaina <rrobaina@r=
+edhat.com> wrote:
+> >
+> > ...
+> >
+> > > > * As pointed out by Sashiko, when you were converting all of the
+> > > > arches, it looks like you missed alpha.  I took a quick look and it
+> > > > appears that it should be a pretty straightforward conversion like
+> > > > most of the others.
+> > >
+> > > I've actually dropped the alpha patch as per Magnus's request [1].
+> > >
+> > > [1] https://lore.kernel.org/audit/CA+=3DFv5T4826T2sd0Gbh-nfZsqcWK_phd=
+BKy4BLWOvDTt92t5Eg@mail.gmail.com/
+> >
+> > The problem is that as things stand, this patchset breaks the build on
+> > Alpha.  Perhaps this gets resolved during the current merge window,
+> > but as you know we can't break the kernel build ...
+> >
+> > https://lore.kernel.org/oe-kbuild-all/202610041836.6TatRQSm-lkp@intel.c=
+om
+>
+> Of course, you're absolutely right that we can't break the build. I
+> was afraid that this dependency might cause trouble.
+>
+> I noticed Magnus posted a pull request a few days ago containing the
+> "alpha: enable GENERIC_ENTRY" series [1]. It seems this will get
+> resolved during the current merge window.
 
-FWIW, we have the exact same option in our kernel since 2019,
-it was named SO_BYPASS_RFS with skc_bypass_rfs:1.
+... and it has, or at least it appears to me to be resolved.  I
+rebased the audit/dev-staging branch against v7.4-rc1 and Alpha does
+indeed appear to be using the generic syscall entry/exit code in v7.4.
+I think we should be all set here wrt Alpha, thanks.
 
+> For future reference, what's the best way to handle dependencies on
+> other subsystem changes like this?
 
-> 
-> Add a boolean socket option, SO_NO_RFS. When set, sock_rps_record_flow()
-> does not record the socket in rps_sock_flow_table, so get_rps_cpu()
-> finds no match and neither software RFS nor ndo_rx_flow_steer() acts
-> on the flow; it stays on the CPU chosen by RSS or RPS.
-> 
-> The option is kept in sk_flags so that sk_clone_lock() copies it to
+Generally speaking communication and coordination :)  Talk with the
+subsystem devs/maintainers to understand what they are doing, let them
+know what you want to do, and find the best way to order things so
+that it all lands in Linus' tree without making a mess.  In this
+particular case, with the syscall arg audit patchset not being ready
+(missing maintainer ACKs) and the Alpha changes going into v7.4 it
+turns out to be quite easy, which is an important lesson: sometimes it
+is better to defer a new feature for a release just to ease the
+coordination burden, enable better testing, etc.
 
-I posted this so that you don't need to access to cold cacheline.
-https://lore.kernel.org/netdev/20261103044213.1336347-1-kuniyu@google.com/T/#u
-
-
-> accepted children: setting it on a listening socket excludes every
-> connection accepted from it, while sockets the same process connects
-> itself remain eligible.
-> 
-> sock_rps_delete_flow() is skipped as well, because a socket that never
-> recorded itself must not clear a table slot that may belong to another
-> flow.
-> 
-> The test sits after the TCP_ESTABLISHED check and inside the
-> rfs_needed static branch, so hosts without RFS pay nothing and hosts
-> with RFS pay one test_bit() on a cache line tcp_recvmsg() already
-> touches.
-> 
-> Signed-off-by: Vitaly Zuevsky <vitaly.zuevsky@gcore.com>
-> ---
->  arch/alpha/include/uapi/asm/socket.h  |  2 ++
->  arch/mips/include/uapi/asm/socket.h   |  2 ++
->  arch/parisc/include/uapi/asm/socket.h |  2 ++
->  arch/sparc/include/uapi/asm/socket.h  |  2 ++
->  include/net/rps.h                     | 13 +++++++++++++
->  include/net/sock.h                    |  1 +
->  include/uapi/asm-generic/socket.h     |  2 ++
->  net/core/sock.c                       |  8 ++++++++
->  8 files changed, 32 insertions(+)
-> 
-> diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
-> index 5d3524c26b2b..256d37f5b9b0 100644
-> --- a/arch/alpha/include/uapi/asm/socket.h
-> +++ b/arch/alpha/include/uapi/asm/socket.h
-> @@ -161,6 +161,8 @@
->  
->  #define SO_PEERPIDFD_THREAD    87
->  
-> +#define SO_NO_RFS              88
-> +
->  #if !defined(__KERNEL__)
->  
->  #if __BITS_PER_LONG == 64
-> diff --git a/arch/mips/include/uapi/asm/socket.h b/arch/mips/include/uapi/asm/socket.h
-> index 245a43f52fb1..5b477de463a3 100644
-> --- a/arch/mips/include/uapi/asm/socket.h
-> +++ b/arch/mips/include/uapi/asm/socket.h
-> @@ -172,6 +172,8 @@
->  
->  #define SO_PEERPIDFD_THREAD    87
->  
-> +#define SO_NO_RFS              88
-> +
->  #if !defined(__KERNEL__)
->  
->  #if __BITS_PER_LONG == 64
-> diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/uapi/asm/socket.h
-> index f23710e1c671..b3a4cc2cbc50 100644
-> --- a/arch/parisc/include/uapi/asm/socket.h
-> +++ b/arch/parisc/include/uapi/asm/socket.h
-> @@ -153,6 +153,8 @@
->  
->  #define SO_PEERPIDFD_THREAD	0x4055
->  
-> +#define SO_NO_RFS		0x4056
-> +
->  #if !defined(__KERNEL__)
->  
->  #if __BITS_PER_LONG == 64
-> diff --git a/arch/sparc/include/uapi/asm/socket.h b/arch/sparc/include/uapi/asm/socket.h
-> index b35b25bdefc2..ba5ed7942570 100644
-> --- a/arch/sparc/include/uapi/asm/socket.h
-> +++ b/arch/sparc/include/uapi/asm/socket.h
-> @@ -154,6 +154,8 @@
->  
->  #define SO_PEERPIDFD_THREAD      0x0060
->  
-> +#define SO_NO_RFS                0x0061
-> +
->  #if !defined(__KERNEL__)
->  
->  
-> diff --git a/include/net/rps.h b/include/net/rps.h
-> index e33c6a2fa8bb..5afa48868236 100644
-> --- a/include/net/rps.h
-> +++ b/include/net/rps.h
-> @@ -98,6 +98,13 @@ static inline void _sock_rps_record_flow(const struct sock *sk)
->  	 * [1] : sk_state and sk_prot are in the same cache line.
->  	 */
->  	if (sk->sk_state == TCP_ESTABLISHED) {
-> +		/* SO_NO_RFS: application asked us to never steer this flow.
-> +		 * Tested after sk_state so the common case stays on one
-> +		 * cache line.
-> +		 */
-> +		if (unlikely(sock_flag(sk, SOCK_NO_RFS)))
-
-Move this to just after rfs_is_needed().
-
-With skc_bypss_rfs in the hot bit, access to it and skc_state
-adds no cost.
-
-
-> +			return;
-> +
->  		/* This READ_ONCE() is paired with the WRITE_ONCE()
->  		 * from sock_rps_save_rxhash() and sock_rps_reset_rxhash().
->  		 */
-> @@ -111,6 +118,12 @@ static inline void _sock_rps_delete_flow(const struct sock *sk)
->  	rps_tag_ptr tag_ptr;
->  	u32 hash, index;
->  
-> +	/* Never recorded, so never clear a slot that may belong to
-> +	 * another flow.
-> +	 */
-> +	if (sock_flag(sk, SOCK_NO_RFS))
-> +		return;
-
-Same.
-
-
-> +
->  	hash = READ_ONCE(sk->sk_rxhash);
->  	if (!hash)
->  		return;
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 173b37b2b8bb..4472dc4ed28e 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1024,6 +1024,7 @@ enum sock_flags {
->  	SOCK_RCVMARK, /* Receive SO_MARK  ancillary data with packet */
->  	SOCK_RCVPRIORITY, /* Receive SO_PRIORITY ancillary data with packet */
->  	SOCK_TIMESTAMPING_ANY, /* Copy of sk_tsflags & TSFLAGS_ANY */
-> +	SOCK_NO_RFS, /* SO_NO_RFS: never record this flow for RFS/aRFS */
->  };
->  
->  #define SK_FLAGS_TIMESTAMP ((1UL << SOCK_TIMESTAMP) | (1UL << SOCK_TIMESTAMPING_RX_SOFTWARE))
-> diff --git a/include/uapi/asm-generic/socket.h b/include/uapi/asm-generic/socket.h
-> index 56fed7ab27ab..9bf415b0d470 100644
-> --- a/include/uapi/asm-generic/socket.h
-> +++ b/include/uapi/asm-generic/socket.h
-> @@ -156,6 +156,8 @@
->  
->  #define SO_PEERPIDFD_THREAD	87
->  
-> +#define SO_NO_RFS		88
-> +
->  #if !defined(__KERNEL__)
->  
->  #if __BITS_PER_LONG == 64 || (defined(__x86_64__) && defined(__ILP32__))
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index e7405be8941f..02b8cc4bc1c4 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -1597,6 +1597,10 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
->  		reuseport_update_incoming_cpu(sk, val);
->  		break;
->  
-> +	case SO_NO_RFS:
-> +		sock_valbool_flag(sk, SOCK_NO_RFS, valbool);
-> +		break;
-
-Guard this with CONFIG_RPS.
-
-
-> +
->  	case SO_CNX_ADVICE:
->  		if (val == 1)
->  			dst_negative_advice(sk);
-> @@ -2118,6 +2122,10 @@ int sk_getsockopt(struct sock *sk, int level, int optname,
->  		v.val = READ_ONCE(sk->sk_incoming_cpu);
->  		break;
->  
-> +	case SO_NO_RFS:
-> +		v.val = sock_flag(sk, SOCK_NO_RFS);
-> +		break;
-
-Same here.
-
-
-> +
->  	case SO_MEMINFO:
->  	{
->  		u32 meminfo[SK_MEMINFO_VARS];
-> 
-> base-commit: 734bef548a96e8774d6eef5dfa2026c6edc4e80b
-> -- 
-> 2.34.1
-> 
+--=20
+paul-moore.com
