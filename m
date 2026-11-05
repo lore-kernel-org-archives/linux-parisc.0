@@ -1,88 +1,74 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.37.111.173
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.210.198
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793852255;
-	b=Bm8N+ziePrcHgoePcy3w5rad57BBNJ2kGyCC6eJq5dtMY+TZihFD0kLzI6P0akHAAF5f
-	 KjJHsIxCBgVTCtz8QQDtZlirLcvnY63+mBUXNm5Hpqw0LJYVxH3OEpJG9GnSHdd/vfH+7
-	 cUsX2wBinDffWBWOP7qTKuKvVJSgWqX5WC8bXLvQMNdLLyjvTtC4Gm3i1fU4kAzj7uJwP
-	 gGmc4zGC0bxvW/4fAX3nh1PSfV+0MFbsi2SlOgSC3kXiRZiCTHhv0SgvR/DaldW3FWWQk
-	 TGWlZ6eMGbEyduzxIaTpG4ZMbm1WV6oYE++NWX2dUJeCJGKL0xE905CQuI07WGN47tQ==
+	t=1793911779;
+	b=xhxoC6INuIuh+3DApS+pBe3Ob5yi+Qfqnb7NsDZaDMV5ZkjcN72u5SiZ3kMvT+nxQPzP
+	 P+7YV0v/DRgZKQIZlAdgm+JkCwraq3oRh4HOCQXv+fW0+LjB7gWJb+Ed/YyD5xN/k4urz
+	 2Nj3SRYhKrzazEJWPoW+XjJ3BwYu21loOPeRPWCmKtUtlDpvg26QN761e2P1IRqY+2BZT
+	 DocXxrf2IH93fIG7v9v0jf/2gpGykyVuAg7dC1V0JDkq8YWVeByGQhsK6S6FCG3PEHWrZ
+	 j4hTHj82II95he8K8PCZxq9fEyq2gchf62dwHdFQXykQqOfLaeSa51jcXTEMgO9ucXQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793852255;
-	h=DMARC-Filter:DKIM-Signature:Received:Message-ID:Subject:From:To:Cc:
-	 Date:Autocrypt:Content-Type:Content-Transfer-Encoding:User-Agent:
-	 MIME-Version;
-	bh=mOD6YSGbVam4U+8skMw5qd6Gb3h93hyyBsMSX80qt+4=;
-	b=CHNx3IwjpPfBQQkhzq65PNPOUZodfiLL2YYm4bdC4CbeT/VV54M7SqH8Ezq9U/pz7BeL
-	 27pFzS3eUnpOCxwj1poiRPgtlLYMqpH3c9Hhjiler+EXsq+hwDLmSpJ94OVZRpkbQW6Hh
-	 eEkyaMDNNgYqMkJ1Tnx9V2KXPCQiI+bCH2fniNNt0klRhKoaM3QmLU+DdWXt17AN+W5f/
-	 R94Zbm9+AF0O3h7gGDFyBEZ22G9zGve1qA7D2OfYbQJICGQCdxoDgMvNmKlZSY48td8b3
-	 Vv4XEqxjYiKmmDf8XlTnQZjVBM5ibZHZ92rENs9J5ZcWLPbDSft+kdJs9hnF5YN9scQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793911779;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:Date:In-Reply-To:
+	 Mime-Version:References:Message-ID:Subject:From:To:Cc:Content-Type;
+	bh=tAx7/usNPVJ7CoJVtZ280YQTJvtxvHPmbZ0zROmpUTY=;
+	b=W5cLvumbbuo+q2Xh6+noOAlqSfZVuCXQOG28iWH5sTAYw0E4mA0YLgR31bb9vBUSgDxq
+	 5EMMR+iqZ5ihYWpB2U2ZBUgoEG8wzeZANI7K78MWVdEtY6lwsvuIhhNxFMfhrjb2wFC/z
+	 C9vNbvJKTCGpDK/zTcYhe3wzQA3ta0kSIJDNVQUb5WlgUvPqFXM8DXBaYmeIEh6CQHh6e
+	 AA1vJ722hxe1pUB/y4PGtqjw6be8LGQbXWlqVZgORRLL9sKsouT81zyBpGON5UXG1XUn2
+	 RitO6KN5jykBVlLNcAGXiAm/3Xs7k5irOV+E40eLC1ZFCN7OerxlVCuBeG0RjsdvDrA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=HansenPartnership.com;
-	spf=pass smtp.mailfrom=HansenPartnership.com;
-	dkim=pass header.d=hansenpartnership.com header.i=@hansenpartnership.com header.a=rsa-sha256 header.s=20151216 header.b=rAqapkph;
-	arc=none smtp.remote-ip=198.37.111.173
-Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=pass header.from=google.com;
+	spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com;
+	dkim=pass header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=dxBFD7eg;
+	arc=none smtp.remote-ip=209.85.210.198
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8828606A31B
-	for <linux-parisc@vger.kernel.org>; Thu,  5 Nov 2026 04:17:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C8828606A31B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 077BA606A32E
+	for <linux-parisc@vger.kernel.org>; Thu,  5 Nov 2026 20:49:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 077BA606A32E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.a=rsa-sha256 header.s=20151216 header.b=rAqapkph
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1793852253;
-	bh=mOD6YSGbVam4U+8skMw5qd6Gb3h93hyyBsMSX80qt+4=;
-	h=Message-ID:Subject:From:To:Date:From;
-	b=rAqapkphOxXDj4zPYTt7GARjh+aBrMt8PWCweun9UZopo48vPmSxJ94DVAIL6oVoc
-	 yETN3sp35flGPIurXQHNFLpo6zpRls3oQMwd577Y4HOvWRjJZkTxgaD8CGWakN+WVc
-	 D3qwYCI9H/6RmlKX/zHhP08hZhL+GSBUWp3NBpRA=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4300:d341::8309])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519MLKEM768 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 5F8CC1C00DB;
-	Wed, 04 Nov 2026 23:17:33 -0500 (EST)
-Message-ID: <e771fca03d92444b3bffc717db8e884948ee3a5d.camel@HansenPartnership.com>
-Subject: Re: [STATIC AUDIT] 8 Unguarded Execution Path(s) in
- `arch/parisc/kernel/firmware.c` (linux-master 7.4rc)
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: security@ulshe.ai
-Cc: Parisc List <linux-parisc@vger.kernel.org>
-Date: Wed, 04 Nov 2026 23:17:32 -0500
-Autocrypt: addr=James.Bottomley@HansenPartnership.com;
- keydata=mQENBE58FlABCADPM714lRLxGmba4JFjkocqpj1/6/Cx+IXezcS22azZetzCXDpm2MfNE
- lecY3qkFjfnoffQiw5rrOO0/oRSATOh8+2fmJ6el7naRbDuh+i8lVESfdlkoqX57H5R8h/UTIp6gn
- 1mpNlxjQv6QSZbl551zQ1nmkSVRbA5TbEp4br5GZeJ58esmYDCBwxuFTsSsdzbOBNthLcudWpJZHU
- RfMc0ew24By1nldL9F37AktNcCipKpC2U0NtGlJjYPNSVXrCd1izxKmO7te7BLP+7B4DNj1VRnaf8
- X9+VIApCi/l4Kdx+ZR3aLTqSuNsIMmXUJ3T8JRl+ag7kby/KBp+0OpotABEBAAG0N0phbWVzIEJvd
- HRvbWxleSA8SmFtZXMuQm90dG9tbGV5QEhhbnNlblBhcnRuZXJzaGlwLmNvbT6JAVgEEwEIAEICGw
- MGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAhkBFiEE1WBuc8i0YnG+rZrfgUrkfCFIVNYFAml2ZBI
- FCS3GUMIACgkQgUrkfCFIVNZKjQf/deRzlXZClKxTC/Ee2yEPqqS7mm/INUA49KdQQ5oIhSxkUBy0
- 9J4qjMIo5F8ZFkFTqikBqeL35LKu7O7rn8WETfX8Bxvos3HUsl3jHo34DES4MUFIpoQPgtiLRGwLb
- K0cVCAArR2u2qj4ABmTRrs1I1kvdjEw6gatOuXtEe/j5O2fvfzTq9GBr0Q3n2IAsFXi4hLlx6VPE8
- tyWUZ8BWJKtih3JAeUiXFvASL3McV0rV9RnU0VbjEQEhSE7PMYhWpnDC9AyBb0lXJllQRvC3NSkUB
- 8KVQgNNxRPss0WE/nBoZ4dFA42jTyzTz8lNylxZoAWV7WJb3QxVg4oCodRVrxxrQhSmFtZXMgQm90
- dG9tbGV5IDxqZWpiQGtlcm5lbC5vcmc+iQFVBBMBCAA/AhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeA
- QIXgBYhBNVgbnPItGJxvq2a34FK5HwhSFTWBQJgS5mYBQkbNYS9AAoJEIFK5HwhSFTWBpwIAL5Bk3
- 5FB34U6iHmDzzgdCbxLTs43T/YQyJpcGIvopBvnI/fDY8oSG6Df64/O6B+1R+A8TDp6ZG5ysUWnCC
- 6GuIaEHemBYkitMPglR6+sGCMQY7O0mlsPvdssvKK1KI9Bno4VU6ogaF2qVzefSqg1Djmf/DcsxWP
- rI/jdJ8FB5AYR2rjIdDFc+zRdAJuavo1/anyY2wgpFh/3R8IOYAEfWV9nGgYkf9+tA4EIn1sxE0I3
- L5oW2N3mbyRrkzuBwO8ztMCwqEPk7moWzhokcZqMXiAIahaZdkashJC+s2X2RZSGCy+g+pvY5NN4B
- BVG5XwLgVBqbHMTcxE0fbmPqz+q6O0LEphbWVzIEJvdHRvbWxleSA8amVqYkBoYW5zZW5wYXJ0bmV
- yc2hpcC5jb20+iQFXBBMBCABBFiEE1WBuc8i0YnG+rZrfgUrkfCFIVNYFAmODZ5ACGwMFCRs1hL0F
- CwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQgUrkfCFIVNZu0Af/TzvL2/NdgAcw9uN3x60H8
- jc4QUq14VpxcFEFEMpcj1morkX/G93V+56HBBaXZj+yK8PhxIA/SIz+sU7C/0YvKuvzakP8ZX/7WJ
- e32SOUtjfr/VTaqjIBzNj6OxLvZpmNbBw7s6DwhhNpHOWqJ/1ml+PtDRDV71IB58yVqQjp1xlNKVl
- ZppcJ5908EJzsFnRIVjiQiDSKoppqB2BCibBbrWcln7CiWMyOC/cco6SIn6twH+f7+aivJ3xGcOE2
- a9gBKF5rNi9TBoX9oyPmshv/TDmnohsVrH7AYXlGYfZTk15SWEiROh1QX8/uD9wl/gcIv5EDUpT/F
- L2jzOsA5663bw==
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 
+	dkim=pass (2048-bit key, unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=dxBFD7eg
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-89fb6a45c48so2042724b3a.1
+        for <linux-parisc@vger.kernel.org>; Thu, 05 Nov 2026 12:49:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20260707; t=1793911777; x=1794516577; darn=vger.kernel.org;
+        h=content-type:cc:to:from:subject:message-id:references:mime-version
+         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=tAx7/usNPVJ7CoJVtZ280YQTJvtxvHPmbZ0zROmpUTY=;
+        b=dxBFD7egkald1diEtbXOBXzH+9cQFK2KeCaFgwFJNeVqQ39GNskIoMvqgylgnntMH9
+         o6cgkIhz7VeqRWc76fFeuaZBrUrsO0KbXGQDOo8UnmsNxd5DuGBZMTkVsx2LFZXyCFih
+         xLmHM8Mx07KTStSbatLB7JBcE69i+TN4sfwyGum4R7QrkX6GMQsP7QDdZp7bkXe4WTSN
+         kjH+OioEJh4aowCsawhV76CFmgsNb84NAEAQfXPTtwRjk+/N+4OfpAi+RPh6ypf7I9Ji
+         LwRr227XUyaN5rK5df3trhjeaIYVx8XGIDVL5DDAgaeqxIBb9EXYuq3EuqROZW7d5HLq
+         L0wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793911777; x=1794516577;
+        h=content-type:cc:to:from:subject:message-id:references:mime-version
+         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=tAx7/usNPVJ7CoJVtZ280YQTJvtxvHPmbZ0zROmpUTY=;
+        b=Erm7ebrbhLVIiTWDLKafKyUZLzprnu9OA/QG5PW5EIq0PhDf5FVdO6SThMGL02lT1O
+         NZyQ5C3CmDBZSMKxEJofk/Xa6NnCcKmFIbk9sM/Y6G/gsdTHJx2LlXmNUCofHeYo9B5c
+         tmr0OZxroWphTSNTwlLslCvs+/7R0qVRqEQSGSRM2OhbbBqO10qz+RoIV4Z+g5kXRV9Y
+         VG0P6EZxrK6VE/cCuQXSXho4yPPjitWFCnEHx6AWLxp7TXaVXqvzFaY6ONLGI/wNx/3/
+         8qr3iaaZKSVuXgvWE7TXr/rlcjGDuEfKs9/yE41ufzUMBnqEenhDF0a6DvPGHzKzT5HB
+         sWVg==
+X-Forwarded-Encrypted: i=1; AKwUvBzuVXhLxPbZqeKhMxLaHBXzdYGPYF/CR4fQP2GtLJE0Omi/T1L2idsLBzwLpW8xIoYiI4nO1jXHkEnyiBw=@vger.kernel.org
+X-Gm-Message-State: APuU4Z9zbafWucbF7ypSdJ/oJsYag02Oe7kEgsJvbjJutak8b8yFPKkS
+	gRwnBvYDVODGmMbgKOnnOhlwEMHdb5ILL9mE/Ny/FeQpVsgP5hXySO/kbBgi+ePNKf6fJGwzzkr
+	b7deeXA==
+X-Received: from pfbkr9.prod.google.com ([2002:a05:6a00:4b49:b0:8a0:70d8:a2ef])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:4f95:b0:89e:89f5:18eb
+ with SMTP id d2e1a72fcca58-8b37aaa87f1mr220362b3a.15.1793911776710; Thu, 05
+ Nov 2026 12:49:36 -0800 (PST)
+Date: Thu, 5 Nov 2026 20:49:36 +0000
+In-Reply-To: <20261102-halaney-scm-creds-thread-v1-1-0b4d75dbf35f@amutable.com>
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -91,42 +77,33 @@ List-Subscribe: <mailto:linux-parisc+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <20261102-halaney-scm-creds-thread-v1-0-0b4d75dbf35f@amutable.com> <20261102-halaney-scm-creds-thread-v1-1-0b4d75dbf35f@amutable.com>
+Message-ID: <auzr1F0HNh1mazaS@google.com>
+Subject: Re: [PATCH net-next 1/3] selftests/net: pass socket options to the
+ scm_pidfd test flows
+From: Kuniyuki Iwashima <kuniyu@google.com>
+To: Andrew Halaney <andrew@amutable.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@kernel.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, Christian Brauner <brauner@kernel.org>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Magnus Lindholm <linmag7@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Willem de Bruijn <willemb@google.com>, Arnd Bergmann <arnd@arndb.de>, 
+	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, 2026-11-04 at 22:37 +0000, John Edward Reagan III (Ulshe AI
-Security) wrote:
-> Hello Maintainer(s) of `arch/parisc/kernel/firmware.c`:
->=20
-> I am John Reagan. This report is being provided to you under
-> responsible reporting practices. It is in no way a critique on your
-> coding skills. You should see the reports on my code, it had more
-> issues than anyone's! Using the tools I built, I've been able to
-> remediate those down to 0 in my own codebase, and I wanted you to
-> have the same opportunity and feeling of knowing you closed potential
-> holes.
->=20
-> My goal is not money or fame, but to help us all to have better, more
-> secure software and systems where people don't have to worry about
-> their privacy. I thank you for taking the time to review the items in
-> this report. If you find issues with the reporting or false
-> positives, please let me know directly at joreag@ulshe.ai=C2=A0so I can
-> make adjustments to hone in on the most likely zero-days.
+On Mon, 02 Nov 2026 17:12:34 -0600, Andrew Halaney wrote:
+> pidfd_flow() and leader_flow() take booleans that pick between
+> SO_PASSPIDFD and SO_PASSPIDFD_THREAD. Make them take a zero-terminated
+> list of socket options for the receiver to enable instead, so tests for
+> further SO_PASS* options can reuse the same flows rather than copying
+> them just to muck with options.
+> 
+> Signed-off-by: Andrew Halaney <andrew@amutable.com>
 
-In the new AI world, I really have no interest in any unverified
-reports ... even in the old world we basically ignored the coverity
-stuff because it was full of false positives.
-
-If you want to contribute you need to join the new AI wave and get a
-prover to show the issues you've found are actually real
-vulnerabilities and then code up fixes which you can send via the
-ordinary patch submission route because we think that anything AI finds
-is ipso facto already disclosed because any old AI will find it.
-
-I've cc'd the parisc list which is where you should send the proven
-fixes you find.
-
-Regards,
-
-James
-
-
+Reviewed-by: Kuniyuki Iwashima <kuniyu@google.com>
