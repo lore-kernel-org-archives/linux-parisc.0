@@ -1,126 +1,62 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=210.118.77.11
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793972724;
-	b=bfrSihhx6XNWwfl1f0eHwT/ZKI5AZbMmtJ/DfDCn3eMAC2odIKL9NpucqS14nWdLcGNm
-	 l3m2UBLsgHDOE5HqyTIGenSNUwJSGfsFkjlIkOdkshFyWYdN+3Xp3qZ6HezLd1PTwHxf5
-	 QaS+vQdIAr3AEDnLSigJiL3pkbRnjqdFENfYtRZO6KylHhF1/NkO7k2Rht8eYc0UlGG7d
-	 kHgTjDLuIUjYz2c+R5wsLSiEPJDSKEfOWwd12/yv1WvWpo2bb6VfDToKgZerFymzFqxH1
-	 AFUu5oFHqDe8bs99UbfJQ4iOVhp2jCMywaiQiWd9qyK8lbeqeLMFwPNMYaQaehKbb1A==
+	t=1793976174;
+	b=mjVl2+2GDzHuiQTzv7Bc6mGhSjdl5m0QsiBI6Mh/yNoOt97ylRb53MDYwYj3QgoFv60c
+	 eqbmY9YzD5+mg2aCLi2ol8+m54SL4RDhYT7jZHWjIsD0RvWHt7mcRQ1Cg+C8T7X4uW60+
+	 8vhp69ACWdzio+Zbvk/TfqfSAAEJ3CVc+srm6/fQ9tuPliF7VxYoy4+/MVvqrJYVlsW0S
+	 OQvig7if3KFIfxs4GInZXoPFEmLP5uDV9ADP7xNmvrehHc6nXlpa1AV1QKQqw6PHvAqgX
+	 ddRICqxvfHPYvDgM/1CbPGrWD15bW9z0Lh+fLzGkQvjOoojQ1p9ZO1DDgWMlJXiW2EQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793972724;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=rx7gGWe+qVjnuJYaCuf3PNKK+ddgMsbwCNHflbLARwg=;
-	b=gvher7n2lihMWZImEVdOEnH1XdJDWiTtML7FsPU3qw+gXqWUywP0SfyjzPghwiBCUCYh
-	 xxdU1GU82o2AORvbFinSMMtcSsdf/BiKnd6SYtAQNjEM+8A2jM6NGr+9Gt8BgrI6pU9RK
-	 M6qIj9X5IgGP7Wh3g+IPnkpGKdoD/G3Z+Oium+5FYSaWdM1uES9DArGboaW52DwmHjCe3
-	 Fr4jnbJAJWsv90G0WNZgiiu0FB8S52F7kD1R6Wpbrt1D2PLBfbJwJWzOzyJkVYCBubOSw
-	 g6kmhuyPM9cNotohPN4ZqUelSl7mOqu9eiNFuwvtmu6QHfrRVeZdtLVd/sBxuNoLRjQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793976174;
+	h=DMARC-Filter:Received:DKIM-Filter:DKIM-Signature:Received:Received:
+	 From:Date:Subject:MIME-Version:Content-Transfer-Encoding:Message-Id:
+	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
+	 X-CMS-MailID:X-Msg-Generator:Content-Type:X-RootMTR:X-EPHeader:
+	 X-CMS-RootMailID:References;
+	bh=78E49OBy2vOoRp7AN/TR4ZTGCJZbMDDSfbiqD0uAN1c=;
+	b=uZcqDCSa0+UfHLJVzcQTjVLWBy2lnj9Ti5XYy9sH8k4UtHPhyuk98QfHDnWRICinmN7/
+	 IXmHnsbWyrcQJwR+DMd6cg/I7jiCDbOC41SV7Pe2rHK5Ph7nIoVLuY8N34tVQkSJ/3hJ9
+	 TDYuZwaNbBZSzByoRG09dIgTMjtJ5hDBf4iB5Z+7ombpZ7GihuAH0uWuDY5JuJuHiKYpD
+	 rOJBgRHQEYEV+I5Y3ZguFyDHp1IkVrIAtrih2uM3CJmy8OWc6ahkXk1g5Uf+dRvk85Q5t
+	 NfFSnrF+ArFQ2OMFjvKrGDeKfz+tpcZI6JUPXNYGcP0HNNdUqyviCUkFUpY+jOuKzNg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linux.intel.com;
-	spf=pass smtp.mailfrom=linux.intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Et9fL52Y;
-	arc=none smtp.remote-ip=198.175.65.12
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dmarc=pass header.from=samsung.com;
+	spf=pass smtp.mailfrom=samsung.com;
+	dkim=pass header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=M8gZZwbj;
+	arc=none smtp.remote-ip=210.118.77.11
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D522606A333;
-	Fri,  6 Nov 2026 13:45:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5D522606A333
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC03F606A339;
+	Fri,  6 Nov 2026 14:42:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EC03F606A339
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Et9fL52Y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1793972723; x=1825508723;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=T4yGvXzWmKxa4531S1rrSDgyYW3DGI1nzB/fVYkEmEs=;
-  b=Et9fL52Y0qNFm43atOHmpqnkysvJjlR1imntmkfbmHuUZKnzRm0NfqC6
-   O87vhL6kYC0iCyFQ47FypBFP25XAzr7t0OEcpaVhvpNFMu2anmHdGaJ2c
-   PlymsfapV006otXYS/cV4wgzu6pTTDH48mPnxAuf2hIBMIO6omGvWxyBG
-   KsHRy0fydf3aLhEXncLShyXGlgN/vHqMFeyKeO59E2Ds7IVPUyUerwEry
-   JFm7B6009qIP6y73O3mfGrVax0kaimSYqPnHZRAbe7FSmEYBUmsyw/rOC
-   PUdlla89QOoGfJAsbqbZRm/UQK6GWnl8lm3XzNLTlhPPy1Kip6YHjHQB8
-   Q==;
-X-CSE-ConnectionGUID: vOh0j7LsRE6mWUzhLBZ0fw==
-X-CSE-MsgGUID: cE8Anu/hTZm3lGTdMUTLpA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11957"; a="2662035"
-X-IronPort-AV: E=Sophos;i="6.27,197,1787036400"; 
-   d="scan'208";a="2662035"
-Received: from fmviesa012.fm.intel.com ([10.60.135.152])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2026 05:45:22 -0800
-X-CSE-ConnectionGUID: BsGBMQ4JR6GY88O+RbhffA==
-X-CSE-MsgGUID: SaRM3n8vRAqJ564RAPZjFw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,197,1787036400"; 
-   d="scan'208";a="9028391"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.104])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2026 05:45:07 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Maciej Grochowski <Maciej.Grochowski@sony.com>,
-	Geramy Loveless <gloveless@jqluv.com>,
-	Eric Auger <eauger@redhat.com>,
-	Alexey Fomenko <alexey.fomenko@intel.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Mesih Kilinc <Mesih.Kilinc@sony.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Magnus Lindholm <linmag7@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Chris Zankel <chris@zankel.net>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	David Airlie <airlied@redhat.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	Simona Vetter <simona@ffwll.ch>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-sh@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org
-Cc: Sashiko <sashiko-bot@kernel.org>
-Subject: [PATCH v5 08/14] PCI: Honor alignment overrides
-Date: Fri,  6 Nov 2026 15:43:29 +0200
-Message-ID: <20261106134341.39493-9-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261106134341.39493-1-ilpo.jarvinen@linux.intel.com>
-References: <20261106134341.39493-1-ilpo.jarvinen@linux.intel.com>
+	dkim=pass (1024-bit key, unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256 header.s=mail20170921 header.b=M8gZZwbj
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20261106144251euoutp0124c3e0e8100b38fae754f436843806e8~le9Kc-C1K2317823178euoutp01Q;
+	Fri,  6 Nov 2026 14:42:51 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20261106144251euoutp0124c3e0e8100b38fae754f436843806e8~le9Kc-C1K2317823178euoutp01Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1793976171;
+	bh=78E49OBy2vOoRp7AN/TR4ZTGCJZbMDDSfbiqD0uAN1c=;
+	h=From:Date:Subject:In-Reply-To:To:Cc:References:From;
+	b=M8gZZwbjD4LgP+xP0uC24mjXC9kKwoMA/TiWFSHNOnP9zE5gyBdPfBpVXF2Y7o78u
+	 JwPYDfW9yoAJKd7B7pt0Y/A1+ivUHknlVBTlWJNJjwfsurupjK6UuIo8GeqoOQqQpZ
+	 n79l67FhNKVWWq212/kD400VVKiW+DDI1gdDo6Ms=
+Received: from eusmtip1.samsung.com (unknown [203.254.199.221]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20261106144250eucas1p23dbd9566bcf265bb48728cedff315031~le9KDaSv51206712067eucas1p2W;
+	Fri,  6 Nov 2026 14:42:50 +0000 (GMT)
+Received: from AMDC4942.eu.corp.samsungelectronics.net (unknown
+	[106.210.136.40]) by eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20261106144249eusmtip1c345bf2ed8b7c6eeaaffcd2c9e7cf626~le9IhzIcG0491904919eusmtip1d;
+	Fri,  6 Nov 2026 14:42:48 +0000 (GMT)
+From: Michal Wilczynski <m.wilczynski@samsung.com>
+Date: Fri, 06 Nov 2026 15:42:42 +0100
+Subject: [PATCH v2 02/15] lib/lz4: remove LZ4_decompress_fast() and its
+ variants
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -130,476 +66,305 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Message-Id: <20261106-lz4-vendor-upstream-v2-2-ee04c3f0d7dc@samsung.com>
+In-Reply-To: <20261106-lz4-vendor-upstream-v2-0-ee04c3f0d7dc@samsung.com>
+To: Michal Wilczynski <m.wilczynski@samsung.com>,  Nathan Chancellor
+	<nathan@kernel.org>,  Nick Desaulniers <ndesaulniers@google.com>,  Bill
+	Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,  Russell
+	King <linux@armlinux.org.uk>,  Thomas Bogendoerfer
+	<tsbogend@alpha.franken.de>,  "James E.J. Bottomley"
+	<James.Bottomley@HansenPartnership.com>,  Helge Deller <deller@gmx.de>,
+	Heiko Carstens <hca@linux.ibm.com>,  Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>,  Christian Borntraeger
+	<borntraeger@linux.ibm.com>,  Sven Schnelle <svens@linux.ibm.com>, Thomas
+	Gleixner <tglx@kernel.org>,  Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+	<bp@alien8.de>,  Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Minchan Kim <minchan@kernel.org>,  Sergey
+	Senozhatsky <senozhatsky@chromium.org>, Jens Axboe <axboe@kernel.dk>, 
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, 
+	linux-block@vger.kernel.org, Yann Collet <yann.collet.73@gmail.com>,  Nick
+	Terrell <terrelln@meta.com>, Gao Xiang <xiang@kernel.org>,  Chao Yu
+	<chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,  Eric Biggers
+	<ebiggers@kernel.org>,  Herbert Xu <herbert@gondor.apana.org.au>,  David
+	Laight <david.laight.linux@gmail.com>,  Sungguk <sungguk.na@samsung.com>,
+	Jaehoon Chung <jh80.chung@samsung.com>,  Marek Szyprowski
+	<m.szyprowski@samsung.com>, linux-erofs@lists.ozlabs.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org
+X-Mailer: b4 0.15-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10729;
+	i=m.wilczynski@samsung.com; h=from:subject:message-id;
+	bh=BKqLz3nPV4nIxU4/LOt8w19Fm/2lu9lum9paP/eOwAI=;
+	b=owGbwMvMwCGWumv6zndzRCIZT6slMWS9fZ4iuFzskPBCtZnBN9LdLrLOYeBuFBe5Emr92Uuqm
+	vX4hhXfO0pZGMQ4GGTFFFnObow2kvzH8LT8+ONfMHNYmUCGMHBxCsBELq5lZOh8PJFvteO7+ZP4
+	xLVXTOmTahE0fHPxvebD+b9n3nRgsuFh+KeVqniopO3Uo1z3c6cOdG9pusOht23+pv3LtkrvWjF
+	VqpIRAA==
+X-Developer-Key: i=m.wilczynski@samsung.com; a=openpgp;
+	fpr=CDB15B3219FE00E577C7E3FA65BA97B9EE9C1459
+X-CMS-MailID: 20261106144250eucas1p23dbd9566bcf265bb48728cedff315031
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20261106144250eucas1p23dbd9566bcf265bb48728cedff315031
+X-EPHeader: CA
+X-CMS-RootMailID: 20261106144250eucas1p23dbd9566bcf265bb48728cedff315031
+References: <20261106-lz4-vendor-upstream-v2-0-ee04c3f0d7dc@samsung.com>
+	<CGME20261106144250eucas1p23dbd9566bcf265bb48728cedff315031@eucas1p2.samsung.com>
 
-pci=resource_alignment argument can override the default alignment for
-the resource. The remainder code introduced in the commit 9036bd0efcb6
-("PCI: Align head space better") can move remainder space (non-aligning
-part of the size) before the aligning left edge which results in
-violating the requested alignment.
+LZ4_decompress_fast(), LZ4_decompress_fast_continue() and
+LZ4_decompress_fast_usingDict() have no users left. Upstream has
+deprecated all three since v1.9: they take only the decompressed size,
+so a corrupt or malicious stream has nothing to stop the decoder from
+reading past the end of its input.
 
-Introduce struct pci_resreq_data to hold device and user-given alignment
-to be able to honor it in pci_align_resource(). When user-given alignment
-is found, any remainder movement is skipped.
+Remove them, their exports and their declarations in <linux/lz4.h>,
+along with the two helpers only they used. Doing it before lib/lz4 moves
+to upstream LZ4 keeps them out of the glue that move adds.
 
-PowerNV will not be able to use the current remainder logic after this
-change because on it pcibios_default_alignment() always results in
-setting min_align but this code is in a transient state and the problem
-will be fixed by an upcoming change that rewrites the resource
-placement algorithm with a more generic approach.
-
-Fixes: 9036bd0efcb6 ("PCI: Align head space better")
-Reported-by: Sashiko <sashiko-bot@kernel.org>
-Link: https://lore.kernel.org/linux-pci/20260923133202.07DF61F000FF@smtp.kernel.org/
-Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Michal Wilczynski <m.wilczynski@samsung.com>
 ---
+ include/linux/lz4.h      | 81 ----------------------------------------------
+ lib/lz4/lz4_decompress.c | 84 ------------------------------------------------
+ 2 files changed, 165 deletions(-)
 
-Jani Nikula <jani.nikula@intel.com> did ack this with a condition that
-there is a proper review done by somebody else so I've not yet included
-his tag.
+diff --git a/include/linux/lz4.h b/include/linux/lz4.h
+index ad6042a718b5428792b795db7a8d4ad44c24a985..0df69e2b1ad523c291e3a96ab5595df9239f7252 100644
+--- a/include/linux/lz4.h
++++ b/include/linux/lz4.h
+@@ -249,27 +249,6 @@ int LZ4_compress_destSize(const char *source, char *dest, int *sourceSizePtr,
+  *	Decompression Functions
+  **************************************************************************/
+ 
+-/**
+- * LZ4_decompress_fast() - Decompresses data from 'source' into 'dest'
+- * @source: source address of the compressed data
+- * @dest: output buffer address of the uncompressed data
+- *	which must be already allocated with 'originalSize' bytes
+- * @originalSize: is the original and therefore uncompressed size
+- *
+- * Decompresses data from 'source' into 'dest'.
+- * This function fully respect memory boundaries for properly formed
+- * compressed data.
+- * It is a bit faster than LZ4_decompress_safe().
+- * However, it does not provide any protection against intentionally
+- * modified data stream (malicious input).
+- * Use this function in trusted environment only
+- * (data to decode comes from a trusted source).
+- *
+- * Return: number of bytes read from the source buffer
+- *	or a negative result if decompression fails.
+- */
+-int LZ4_decompress_fast(const char *source, char *dest, int originalSize);
+-
+ /**
+  * LZ4_decompress_safe() - Decompression protected against buffer overflow
+  * @source: source address of the compressed data
+@@ -561,44 +540,6 @@ int LZ4_decompress_safe_continue(LZ4_streamDecode_t *LZ4_streamDecode,
+ 	const char *source, char *dest, int compressedSize,
+ 	int maxDecompressedSize);
+ 
+-/**
+- * LZ4_decompress_fast_continue() - Decompress blocks in streaming mode
+- * @LZ4_streamDecode: the 'LZ4_streamDecode_t' structure
+- * @source: source address of the compressed data
+- * @dest: output buffer address of the uncompressed data
+- *	which must be already allocated with 'originalSize' bytes
+- * @originalSize: is the original and therefore uncompressed size
+- *
+- * This decoding function allows decompression of multiple blocks
+- * in "streaming" mode.
+- * Previously decoded blocks *must* remain available at the memory position
+- * where they were decoded (up to 64 KB)
+- * In the case of a ring buffers, decoding buffer must be either :
+- *    - Exactly same size as encoding buffer, with same update rule
+- *      (block boundaries at same positions) In which case,
+- *      the decoding & encoding ring buffer can have any size,
+- *      including very small ones ( < 64 KB).
+- *    - Larger than encoding buffer, by a minimum of maxBlockSize more bytes.
+- *      maxBlockSize is implementation dependent.
+- *      It's the maximum size you intend to compress into a single block.
+- *      In which case, encoding and decoding buffers do not need
+- *      to be synchronized, and encoding ring buffer can have any size,
+- *      including small ones ( < 64 KB).
+- *    - _At least_ 64 KB + 8 bytes + maxBlockSize.
+- *      In which case, encoding and decoding buffers do not need to be
+- *      synchronized, and encoding ring buffer can have any size,
+- *      including larger than decoding buffer. W
+- * Whenever these conditions are not possible, save the last 64KB of decoded
+- * data into a safe buffer, and indicate where it is saved
+- * using LZ4_setStreamDecode()
+- *
+- * Return: number of bytes decompressed into destination buffer
+- *	(necessarily <= maxDecompressedSize)
+- *	or a negative result in case of error
+- */
+-int LZ4_decompress_fast_continue(LZ4_streamDecode_t *LZ4_streamDecode,
+-	const char *source, char *dest, int originalSize);
+-
+ /**
+  * LZ4_decompress_safe_usingDict() - Same as LZ4_setStreamDecode()
+  *	followed by LZ4_decompress_safe_continue()
+@@ -623,28 +564,6 @@ int LZ4_decompress_safe_usingDict(const char *source, char *dest,
+ 	int compressedSize, int maxDecompressedSize, const char *dictStart,
+ 	int dictSize);
+ 
+-/**
+- * LZ4_decompress_fast_usingDict() - Same as LZ4_setStreamDecode()
+- *	followed by LZ4_decompress_fast_continue()
+- * @source: source address of the compressed data
+- * @dest: output buffer address of the uncompressed data
+- *	which must be already allocated with 'originalSize' bytes
+- * @originalSize: is the original and therefore uncompressed size
+- * @dictStart: pointer to the start of the dictionary in memory
+- * @dictSize: size of dictionary
+- *
+- * This decoding function works the same as
+- * a combination of LZ4_setStreamDecode() followed by
+- * LZ4_decompress_fast_continue()
+- * It is stand-alone, and doesn't need an LZ4_streamDecode_t structure.
+- *
+- * Return: number of bytes decompressed into destination buffer
+- *	(necessarily <= maxDecompressedSize)
+- *	or a negative result in case of error
+- */
+-int LZ4_decompress_fast_usingDict(const char *source, char *dest,
+-	int originalSize, const char *dictStart, int dictSize);
+-
+ #define LZ4_DECOMPRESS_INPLACE_MARGIN(compressedSize)          (((compressedSize) >> 8) + 32)
+ 
+ #ifndef LZ4_DISTANCE_MAX	/* history window size; can be user-defined at compile time */
+diff --git a/lib/lz4/lz4_decompress.c b/lib/lz4/lz4_decompress.c
+index 3a2cd9acada4a09ef70a344090d48167c46088a1..f89b0e547f2156990c16770f69f89e0d8b46156d 100644
+--- a/lib/lz4/lz4_decompress.c
++++ b/lib/lz4/lz4_decompress.c
+@@ -474,14 +474,6 @@ int LZ4_decompress_safe_partial(const char *src, char *dst,
+ 				      noDict, (BYTE *)dst, NULL, 0);
+ }
+ 
+-int LZ4_decompress_fast(const char *source, char *dest, int originalSize)
+-{
+-	return LZ4_decompress_generic(source, dest, 0, originalSize,
+-				      endOnOutputSize, decode_full_block,
+-				      withPrefix64k,
+-				      (BYTE *)dest - 64 * KB, NULL, 0);
+-}
+-
+ /* ===== Instantiate a few more decoding cases, used more than once. ===== */
+ 
+ static int LZ4_decompress_safe_withPrefix64k(const char *source, char *dest,
+@@ -517,17 +509,6 @@ static int LZ4_decompress_safe_forceExtDict(const char *source, char *dest,
+ 				      (const BYTE *)dictStart, dictSize);
+ }
+ 
+-static int LZ4_decompress_fast_extDict(const char *source, char *dest,
+-				       int originalSize,
+-				       const void *dictStart, size_t dictSize)
+-{
+-	return LZ4_decompress_generic(source, dest,
+-				      0, originalSize,
+-				      endOnOutputSize, decode_full_block,
+-				      usingExtDict, (BYTE *)dest,
+-				      (const BYTE *)dictStart, dictSize);
+-}
+-
+ /*
+  * The "double dictionary" mode, for use with e.g. ring buffers: the first part
+  * of the dictionary is passed as prefix, and the second via dictStart + dictSize.
+@@ -546,18 +527,6 @@ int LZ4_decompress_safe_doubleDict(const char *source, char *dest,
+ 				      (const BYTE *)dictStart, dictSize);
+ }
+ 
+-static FORCE_INLINE
+-int LZ4_decompress_fast_doubleDict(const char *source, char *dest,
+-				   int originalSize, size_t prefixSize,
+-				   const void *dictStart, size_t dictSize)
+-{
+-	return LZ4_decompress_generic(source, dest,
+-				      0, originalSize,
+-				      endOnOutputSize, decode_full_block,
+-				      usingExtDict, (BYTE *)dest - prefixSize,
+-				      (const BYTE *)dictStart, dictSize);
+-}
+-
+ /* ===== streaming decompression functions ===== */
+ 
+ int LZ4_setStreamDecode(LZ4_streamDecode_t *LZ4_streamDecode,
+@@ -636,45 +605,6 @@ int LZ4_decompress_safe_continue(LZ4_streamDecode_t *LZ4_streamDecode,
+ 	return result;
+ }
+ 
+-int LZ4_decompress_fast_continue(LZ4_streamDecode_t *LZ4_streamDecode,
+-	const char *source, char *dest, int originalSize)
+-{
+-	LZ4_streamDecode_t_internal *lz4sd = &LZ4_streamDecode->internal_donotuse;
+-	int result;
+-
+-	if (lz4sd->prefixSize == 0) {
+-		assert(lz4sd->extDictSize == 0);
+-		result = LZ4_decompress_fast(source, dest, originalSize);
+-		if (result <= 0)
+-			return result;
+-		lz4sd->prefixSize = originalSize;
+-		lz4sd->prefixEnd = (BYTE *)dest + originalSize;
+-	} else if (lz4sd->prefixEnd == (BYTE *)dest) {
+-		if (lz4sd->prefixSize >= 64 * KB - 1 ||
+-		    lz4sd->extDictSize == 0)
+-			result = LZ4_decompress_fast(source, dest,
+-						     originalSize);
+-		else
+-			result = LZ4_decompress_fast_doubleDict(source, dest,
+-				originalSize, lz4sd->prefixSize,
+-				lz4sd->externalDict, lz4sd->extDictSize);
+-		if (result <= 0)
+-			return result;
+-		lz4sd->prefixSize += originalSize;
+-		lz4sd->prefixEnd  += originalSize;
+-	} else {
+-		lz4sd->extDictSize = lz4sd->prefixSize;
+-		lz4sd->externalDict = lz4sd->prefixEnd - lz4sd->extDictSize;
+-		result = LZ4_decompress_fast_extDict(source, dest,
+-			originalSize, lz4sd->externalDict, lz4sd->extDictSize);
+-		if (result <= 0)
+-			return result;
+-		lz4sd->prefixSize = originalSize;
+-		lz4sd->prefixEnd = (BYTE *)dest + originalSize;
+-	}
+-	return result;
+-}
+-
+ int LZ4_decompress_safe_usingDict(const char *source, char *dest,
+ 				  int compressedSize, int maxOutputSize,
+ 				  const char *dictStart, int dictSize)
+@@ -693,26 +623,12 @@ int LZ4_decompress_safe_usingDict(const char *source, char *dest,
+ 		compressedSize, maxOutputSize, dictStart, dictSize);
+ }
+ 
+-int LZ4_decompress_fast_usingDict(const char *source, char *dest,
+-				  int originalSize,
+-				  const char *dictStart, int dictSize)
+-{
+-	if (dictSize == 0 || dictStart + dictSize == dest)
+-		return LZ4_decompress_fast(source, dest, originalSize);
+-
+-	return LZ4_decompress_fast_extDict(source, dest, originalSize,
+-		dictStart, dictSize);
+-}
+-
+ #ifndef STATIC
+ EXPORT_SYMBOL(LZ4_decompress_safe);
+ EXPORT_SYMBOL(LZ4_decompress_safe_partial);
+-EXPORT_SYMBOL(LZ4_decompress_fast);
+ EXPORT_SYMBOL(LZ4_setStreamDecode);
+ EXPORT_SYMBOL(LZ4_decompress_safe_continue);
+-EXPORT_SYMBOL(LZ4_decompress_fast_continue);
+ EXPORT_SYMBOL(LZ4_decompress_safe_usingDict);
+-EXPORT_SYMBOL(LZ4_decompress_fast_usingDict);
+ 
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_DESCRIPTION("LZ4 decompressor");
 
- arch/alpha/kernel/pci.c          |  3 ++-
- arch/arm/kernel/bios32.c         |  5 +++--
- arch/m68k/kernel/pcibios.c       |  4 ++--
- arch/mips/pci/pci-generic.c      |  5 +++--
- arch/mips/pci/pci-legacy.c       |  5 +++--
- arch/parisc/kernel/pci.c         |  5 +++--
- arch/powerpc/kernel/pci-common.c |  5 +++--
- arch/sh/drivers/pci/pci.c        |  5 +++--
- arch/x86/pci/i386.c              |  5 +++--
- arch/xtensa/kernel/pci.c         |  5 +++--
- drivers/char/agp/intel-gtt.c     |  5 ++++-
- drivers/gpu/drm/i915/i915_gmch.c |  5 +++--
- drivers/pci/pci.c                |  4 ++--
- drivers/pci/pci.h                |  2 ++
- drivers/pci/setup-res.c          | 33 ++++++++++++++++++++++++++------
- include/linux/pci.h              | 15 +++++++++++++--
- 16 files changed, 79 insertions(+), 32 deletions(-)
-
-diff --git a/arch/alpha/kernel/pci.c b/arch/alpha/kernel/pci.c
-index 11df411b1d18..c5d725a9781f 100644
---- a/arch/alpha/kernel/pci.c
-+++ b/arch/alpha/kernel/pci.c
-@@ -128,7 +128,8 @@ pcibios_align_resource(void *data, const struct resource *res,
- 		       const struct resource *empty_res,
- 		       resource_size_t size, resource_size_t align)
- {
--	struct pci_dev *dev = data;
-+	struct pci_resreq_data *rr = data;
-+	struct pci_dev *dev = rr->dev;
- 	struct pci_controller *hose = dev->sysdata;
- 	unsigned long alignto;
- 	resource_size_t start = res->start;
-diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
-index ac0e890510da..3e61826f07fb 100644
---- a/arch/arm/kernel/bios32.c
-+++ b/arch/arm/kernel/bios32.c
-@@ -564,7 +564,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 				       resource_size_t size,
- 				       resource_size_t align)
- {
--	struct pci_dev *dev = data;
-+	struct pci_resreq_data *rr = data;
-+	struct pci_dev *dev = rr->dev;
- 	resource_size_t start = res->start;
- 	struct pci_host_bridge *host_bridge;
- 
-@@ -578,7 +579,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 				start, size, align);
- 
- 	if (res->flags & IORESOURCE_MEM)
--		return pci_align_resource(dev, res, empty_res, size, align);
-+		return pci_align_resource(rr, res, empty_res, size, align);
- 
- 	return start;
- }
-diff --git a/arch/m68k/kernel/pcibios.c b/arch/m68k/kernel/pcibios.c
-index 7a9e60df79c5..3024408412bc 100644
---- a/arch/m68k/kernel/pcibios.c
-+++ b/arch/m68k/kernel/pcibios.c
-@@ -31,14 +31,14 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 				       resource_size_t size,
- 				       resource_size_t align)
- {
--	struct pci_dev *dev = data;
-+	struct pci_resreq_data *rr = data;
- 	resource_size_t start = res->start;
- 
- 	if ((res->flags & IORESOURCE_IO) && (start & 0x300))
- 		start = (start + 0x3ff) & ~0x3ff;
- 
- 	if (res->flags & IORESOURCE_MEM)
--		return pci_align_resource(dev, res, empty_res, size, align);
-+		return pci_align_resource(rr, res, empty_res, size, align);
- 
- 	return start;
- }
-diff --git a/arch/mips/pci/pci-generic.c b/arch/mips/pci/pci-generic.c
-index c2e23d0c1d77..7f3ecb91b85b 100644
---- a/arch/mips/pci/pci-generic.c
-+++ b/arch/mips/pci/pci-generic.c
-@@ -25,7 +25,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 				       const struct resource *empty_res,
- 				       resource_size_t size, resource_size_t align)
- {
--	struct pci_dev *dev = data;
-+	struct pci_resreq_data *rr = data;
-+	struct pci_dev *dev = rr->dev;
- 	resource_size_t start = res->start;
- 	struct pci_host_bridge *host_bridge;
- 
-@@ -39,7 +40,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 				start, size, align);
- 
- 	if (res->flags & IORESOURCE_MEM)
--		return pci_align_resource(dev, res, empty_res, size, align);
-+		return pci_align_resource(rr, res, empty_res, size, align);
- 
- 	return start;
- }
-diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
-index dae6dafdd6e0..82d4b01db64e 100644
---- a/arch/mips/pci/pci-legacy.c
-+++ b/arch/mips/pci/pci-legacy.c
-@@ -55,7 +55,8 @@ pcibios_align_resource(void *data, const struct resource *res,
- 		       const struct resource *empty_res,
- 		       resource_size_t size, resource_size_t align)
- {
--	struct pci_dev *dev = data;
-+	struct pci_resreq_data *rr = data;
-+	struct pci_dev *dev = rr->dev;
- 	struct pci_controller *hose = dev->sysdata;
- 	resource_size_t start = res->start;
- 
-@@ -70,7 +71,7 @@ pcibios_align_resource(void *data, const struct resource *res,
- 		if (start & 0x300)
- 			start = (start + 0x3ff) & ~0x3ff;
- 	} else if (res->flags & IORESOURCE_MEM) {
--		start = pci_align_resource(dev, res, empty_res, size, align);
-+		start = pci_align_resource(rr, res, empty_res, size, align);
- 
- 		/* Make sure we start at our min on all hoses */
- 		if (start < PCIBIOS_MIN_MEM + hose->mem_resource->start)
-diff --git a/arch/parisc/kernel/pci.c b/arch/parisc/kernel/pci.c
-index 96950fe9c2b7..36a3a439f609 100644
---- a/arch/parisc/kernel/pci.c
-+++ b/arch/parisc/kernel/pci.c
-@@ -193,7 +193,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 				       resource_size_t size,
- 				       resource_size_t alignment)
- {
--	struct pci_dev *dev = data;
-+	struct pci_resreq_data *rr = data;
-+	struct pci_dev *dev = rr->dev;
- 	resource_size_t align, start = res->start;
- 
- 	pci_dbg(dev, "%pR: pcibios_align_resource(%lx, 0x%llx, 0x%llx)\n",
-@@ -205,7 +206,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 	if (align > alignment)
- 		start = ALIGN(start, align);
- 	else
--		start = pci_align_resource(dev, res, empty_res, size, alignment);
-+		start = pci_align_resource(rr, res, empty_res, size, alignment);
- 
- 	return start;
- }
-diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
-index 4fc52c21fe5d..23594759cfe2 100644
---- a/arch/powerpc/kernel/pci-common.c
-+++ b/arch/powerpc/kernel/pci-common.c
-@@ -1131,7 +1131,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 				       resource_size_t size,
- 				       resource_size_t align)
- {
--	struct pci_dev *dev = data;
-+	struct pci_resreq_data *rr = data;
-+	struct pci_dev *dev = rr->dev;
- 	resource_size_t start = res->start;
- 
- 	if (res->flags & IORESOURCE_IO) {
-@@ -1140,7 +1141,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 		if (start & 0x300)
- 			start = (start + 0x3ff) & ~0x3ff;
- 	} else if (res->flags & IORESOURCE_MEM) {
--		start = pci_align_resource(dev, res, empty_res, size, align);
-+		start = pci_align_resource(rr, res, empty_res, size, align);
- 	}
- 
- 	return start;
-diff --git a/arch/sh/drivers/pci/pci.c b/arch/sh/drivers/pci/pci.c
-index 878a27a1acfb..279f2770ff4b 100644
---- a/arch/sh/drivers/pci/pci.c
-+++ b/arch/sh/drivers/pci/pci.c
-@@ -172,7 +172,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 				       resource_size_t size,
- 				       resource_size_t align)
- {
--	struct pci_dev *dev = data;
-+	struct pci_resreq_data *rr = data;
-+	struct pci_dev *dev = rr->dev;
- 	struct pci_channel *hose = dev->sysdata;
- 	resource_size_t start = res->start;
- 
-@@ -186,7 +187,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 		if (start & 0x300)
- 			start = (start + 0x3ff) & ~0x3ff;
- 	} else if (res->flags & IORESOURCE_MEM) {
--		start = pci_align_resource(dev, res, empty_res, size, align);
-+		start = pci_align_resource(rr, res, empty_res, size, align);
- 	}
- 
- 	return start;
-diff --git a/arch/x86/pci/i386.c b/arch/x86/pci/i386.c
-index e2de26b82940..4178ae4380c2 100644
---- a/arch/x86/pci/i386.c
-+++ b/arch/x86/pci/i386.c
-@@ -156,7 +156,8 @@ pcibios_align_resource(void *data, const struct resource *res,
- 		       const struct resource *empty_res,
- 		       resource_size_t size, resource_size_t align)
- {
--	struct pci_dev *dev = data;
-+	struct pci_resreq_data *rr = data;
-+	struct pci_dev *dev = rr->dev;
- 	resource_size_t start = res->start;
- 
- 	if (res->flags & IORESOURCE_IO) {
-@@ -165,7 +166,7 @@ pcibios_align_resource(void *data, const struct resource *res,
- 		if (start & 0x300)
- 			start = (start + 0x3ff) & ~0x3ff;
- 	} else if (res->flags & IORESOURCE_MEM) {
--		start = pci_align_resource(dev, res, empty_res, size, align);
-+		start = pci_align_resource(rr, res, empty_res, size, align);
- 
- 		/* The low 1MB range is reserved for ISA cards */
- 		if (start < BIOS_END)
-diff --git a/arch/xtensa/kernel/pci.c b/arch/xtensa/kernel/pci.c
-index 305031551136..4e8ad4a3c9fe 100644
---- a/arch/xtensa/kernel/pci.c
-+++ b/arch/xtensa/kernel/pci.c
-@@ -42,7 +42,8 @@ pcibios_align_resource(void *data, const struct resource *res,
- 		       const struct resource *empty_res,
- 		       resource_size_t size, resource_size_t align)
- {
--	struct pci_dev *dev = data;
-+	struct pci_resreq_data *rr = data;
-+	struct pci_dev *dev = rr->dev;
- 	resource_size_t start = res->start;
- 
- 	if (res->flags & IORESOURCE_IO) {
-@@ -55,7 +56,7 @@ pcibios_align_resource(void *data, const struct resource *res,
- 		if (start & 0x300)
- 			start = (start + 0x3ff) & ~0x3ff;
- 	} else if (res->flags & IORESOURCE_MEM) {
--		start = pci_align_resource(dev, res, empty_res, size, align);
-+		start = pci_align_resource(rr, res, empty_res, size, align);
- 	}
- 
- 	return start;
-diff --git a/drivers/char/agp/intel-gtt.c b/drivers/char/agp/intel-gtt.c
-index bcc26785175d..06990fad8e48 100644
---- a/drivers/char/agp/intel-gtt.c
-+++ b/drivers/char/agp/intel-gtt.c
-@@ -1038,10 +1038,13 @@ static struct agp_memory *intel_fake_agp_alloc_by_type(size_t pg_count,
- 
- static int intel_alloc_chipset_flush_resource(void)
- {
-+	struct pci_resreq_data rr;
- 	int ret;
-+
-+	pci_init_resreq_data(&rr, intel_private.bridge_dev);
- 	ret = pci_bus_alloc_resource(intel_private.bridge_dev->bus, &intel_private.ifp_resource, PAGE_SIZE,
- 				     PAGE_SIZE, PCIBIOS_MIN_MEM, 0,
--				     pcibios_align_resource, intel_private.bridge_dev);
-+				     pcibios_align_resource, &rr);
- 
- 	return ret;
- }
-diff --git a/drivers/gpu/drm/i915/i915_gmch.c b/drivers/gpu/drm/i915/i915_gmch.c
-index b0ef6ef577a3..f11ed5509095 100644
---- a/drivers/gpu/drm/i915/i915_gmch.c
-+++ b/drivers/gpu/drm/i915/i915_gmch.c
-@@ -38,6 +38,7 @@ static int mchbar_reg(struct drm_i915_private *i915)
- static int
- intel_alloc_mchbar_resource(struct drm_i915_private *i915)
- {
-+	struct pci_resreq_data rr;
- 	u32 temp_lo, temp_hi = 0;
- 	u64 mchbar_addr;
- 	int ret;
-@@ -55,12 +56,12 @@ intel_alloc_mchbar_resource(struct drm_i915_private *i915)
- 	/* Get some space for it */
- 	i915->gmch.mch_res.name = "i915 MCHBAR";
- 	i915->gmch.mch_res.flags = IORESOURCE_MEM;
-+	pci_init_resreq_data(&rr, i915->gmch.pdev);
- 	ret = pci_bus_alloc_resource(i915->gmch.pdev->bus,
- 				     &i915->gmch.mch_res,
- 				     MCHBAR_SIZE, MCHBAR_SIZE,
- 				     PCIBIOS_MIN_MEM,
--				     0, pcibios_align_resource,
--				     i915->gmch.pdev);
-+				     0, pcibios_align_resource, &rr);
- 	if (ret) {
- 		drm_dbg(&i915->drm, "failed bus alloc: %d\n", ret);
- 		i915->gmch.mch_res.start = 0;
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 7c6f2aba8144..8c40f86d75ee 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -6507,8 +6507,8 @@ static DEFINE_SPINLOCK(resource_alignment_lock);
-  * RETURNS: Resource alignment if it is specified.
-  *          Zero if it is not specified.
-  */
--static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
--							bool *resize)
-+resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
-+						 bool *resize)
- {
- 	int align_order, count;
- 	resource_size_t align = pcibios_default_alignment();
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 77efa4c5c960..e6e2afcceb33 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -515,6 +515,8 @@ void devm_pci_alloc_host_bridge_release(void *data);
- struct device *pci_get_host_bridge_device(struct pci_dev *dev);
- void pci_put_host_bridge_device(struct device *dev);
- 
-+resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
-+						 bool *resize);
- void pci_resize_resource_set_size(struct pci_dev *dev, int resno, int size);
- int pci_do_resource_release_and_resize(struct pci_dev *dev, int resno, int size,
- 				       int exclude_bars);
-diff --git a/drivers/pci/setup-res.c b/drivers/pci/setup-res.c
-index 376f09630a4a..9c55b9f9462c 100644
---- a/drivers/pci/setup-res.c
-+++ b/drivers/pci/setup-res.c
-@@ -248,6 +248,20 @@ static int pci_revert_fw_address(struct resource *res, struct pci_dev *dev,
- 	return 0;
- }
- 
-+/*
-+ * TODO: Improve PCI resource assignment interface so that callers outside PCI
-+ * core do not need to know about this detail.
-+ */
-+void pci_init_resreq_data(struct pci_resreq_data *rr, struct pci_dev *dev)
-+{
-+	bool dummy;
-+
-+	memset(rr, 0, sizeof(*rr));
-+	rr->dev = dev;
-+	rr->min_align = pci_specified_resource_alignment(dev, &dummy);
-+}
-+EXPORT_SYMBOL_GPL(pci_init_resreq_data);
-+
- resource_size_t pci_resource_alignment(const struct pci_dev *dev,
- 				       const struct resource *res)
- {
-@@ -265,17 +279,21 @@ resource_size_t pci_resource_alignment(const struct pci_dev *dev,
-  * before res->start if there's enough free space there. This enables
-  * tighter packing for resources.
-  */
--resource_size_t pci_align_resource(struct pci_dev *dev,
-+resource_size_t pci_align_resource(struct pci_resreq_data *rr,
- 				   const struct resource *res,
- 				   const struct resource *empty_res,
- 				   resource_size_t size,
- 				   resource_size_t align)
- {
-+	struct pci_dev *dev = rr->dev;
- 	resource_size_t remainder, start_addr;
- 
- 	if (!(res->flags & IORESOURCE_MEM))
- 		return res->start;
- 
-+	if (rr->min_align)
-+		return res->start;
-+
- 	if (IS_ALIGNED(size, align))
- 		return res->start;
- 
-@@ -306,18 +324,21 @@ resource_size_t __weak pcibios_align_resource(void *data,
- 					      resource_size_t size,
- 					      resource_size_t align)
- {
--	struct pci_dev *dev = data;
-+	struct pci_resreq_data *rr = data;
- 
--	return pci_align_resource(dev, res, empty_res, size, align);
-+	return pci_align_resource(rr, res, empty_res, size, align);
- }
- 
- static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
- 		int resno, resource_size_t size, resource_size_t align)
- {
- 	struct resource *res = pci_resource_n(dev, resno);
-+	struct pci_resreq_data rr;
- 	resource_size_t min;
- 	int ret;
- 
-+	pci_init_resreq_data(&rr, dev);
-+
- 	min = (res->flags & IORESOURCE_IO) ? PCIBIOS_MIN_IO : PCIBIOS_MIN_MEM;
- 
- 	/*
-@@ -329,7 +350,7 @@ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
- 	 */
- 	ret = pci_bus_alloc_resource(bus, res, size, align, min,
- 				     IORESOURCE_PREFETCH | IORESOURCE_MEM_64,
--				     pcibios_align_resource, dev);
-+				     pcibios_align_resource, &rr);
- 	if (ret == 0)
- 		return 0;
- 
-@@ -341,7 +362,7 @@ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
- 	     (IORESOURCE_PREFETCH | IORESOURCE_MEM_64)) {
- 		ret = pci_bus_alloc_resource(bus, res, size, align, min,
- 					     IORESOURCE_PREFETCH,
--					     pcibios_align_resource, dev);
-+					     pcibios_align_resource, &rr);
- 		if (ret == 0)
- 			return 0;
- 	}
-@@ -354,7 +375,7 @@ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
- 	 */
- 	if (res->flags & (IORESOURCE_PREFETCH | IORESOURCE_MEM_64))
- 		ret = pci_bus_alloc_resource(bus, res, size, align, min, 0,
--					     pcibios_align_resource, dev);
-+					     pcibios_align_resource, &rr);
- 
- 	return ret;
- }
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index aa3765a20a96..c945f5753e7c 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -1221,12 +1221,23 @@ int __must_check pcibios_enable_device(struct pci_dev *, int mask);
- /* Architecture-specific versions may override this (weak) */
- char *pcibios_setup(char *str);
- 
--/* Used only when drivers/pci/setup.c is used */
-+/**
-+ * struct pci_resreq_data - Data passed to pcibios_align_resource()
-+ * @dev: PCI device
-+ * @min_align: Minimum alignment bound (from pci=resource_alignment or arch)
-+ */
-+struct pci_resreq_data {
-+	struct pci_dev *dev;
-+	resource_size_t min_align;
-+};
-+
-+void pci_init_resreq_data(struct pci_resreq_data *rr, struct pci_dev *dev);
-+
- resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 				       const struct resource *empty_res,
- 				       resource_size_t size,
- 				       resource_size_t align);
--resource_size_t pci_align_resource(struct pci_dev *dev,
-+resource_size_t pci_align_resource(struct pci_resreq_data *rr,
- 				   const struct resource *res,
- 				   const struct resource *empty_res,
- 				   resource_size_t size,
 -- 
-2.47.3
+2.34.1
 
