@@ -1,101 +1,96 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.47
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794015677;
-	b=qz/vTyRvGZvFbzGUPw9ZaBuPWElSmHSuF8UZDHTCF8iVm/vF8rAt2p7mxcSqwtVngQzN
-	 bRFGqZCcQInKYMgtDg93kkc2zMyP/Ca0DEthaIH9bcrhw/JCQDUo0JkXQFIT3svrryc+Q
-	 YFy8F8SlWYo5h24HbDyzC8J1yMyBKhq4WUwVntY8b7hyFiWD7XQfBiDgFM1BM1KCxU/fS
-	 mbK8GbhrQvK+zpzK0jgcoZR0gby61Y4y1hZKBdFEGbUQcVV22Okz+g4pYeRYkhV0rjrpN
-	 hF2rKKz6lIa2cvwgcM8Cn1PpePafjrzgfB4gnKWXw9Z/FnOiejIfcipmBu45qZyrmFQ==
+	t=1794165655;
+	b=rZ3URZGUrhbywexMKXL04C+VPFluRS/ynolkCxt/RWZWySFr1DVqFDTbukOF6XW9QJXv
+	 ig0wguhDzAiPdgZw9M9myAjCW25WWmW4BepzjMSHcnUty1GxO5l0I/iOA3HjgJgbdzRSe
+	 y9APmPHDjKTTeeohAZNSWVUT3VXZivKvgkkrd9vXk1gGY15MHGLlQiAai5Z6bxOc8V0Qj
+	 F8QY8RnH+mlXYku2ZfQZFJDVpRaKWPuKKQUo1xIOmBgLPQMjfU+NkBinTlsQ35jRYz/cl
+	 pok3G3aHKXW1TwmPwAERdE+YJCOjYcsJu6qQv+kSyH7WIQKBPgmGykM0TqCM87WoWKw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794015677;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=lbyGC7nA73pUh7TjmjuuNPaVYbK+A9mHJCPy/Ni7H2c=;
-	b=FVVCndjNqlA+xkdFsqCVsC1TfCOqvakpfZ6AWqloKliTXRR665YJv4vIvFF/CrPVY0QK
-	 l+qwniA8+lli2laDtYZYYUbwwAFLx8edRxnP0IeFzqQImv6bsM9enOzTbwNYnDKqhH+JB
-	 8gWHLDinxLSeOdTIixuWIpMZ1CTzskF+/qgVHVPcZcdgc6C3MkvD7Rim7ejold8KDMueX
-	 ZB461hNUQCk1siBPN7WXZK3byVPVszaMxYUve+mxTtaJkqgiY+Ynqev/XJjuiH2CU/jIz
-	 vqOt28bN7s5sCdEOAeZfotT1uWGmMDlqxuj1D+68Bk7lNbfGidfNCzqhxYCW0q3NsHA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794165655;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=/BOOKQBNkJ2h331uHqW5sD5W9IEZRjh1wOOx6OQVw2c=;
+	b=FPlX9/cymAkWDPQewi5VTO8EQW0CLe6pGAUKiQ8JuCiCfOw/t9/V4KQuQ/4uJSF8ZPKz
+	 Jl+RpqH2WKIFZCMZ1jchnFSAKCvGVb9nOI1LLxyytRuUkB/A9AxHDXkifupc5S30LIoHc
+	 2y/gaLE1xjj0cUfl4k0N6dCMVd0dyUKYt1jbt8QZIyoXqz4xwoz/0S9BZuVO655tEV4RN
+	 M4Zzm5VkaIjNeMHtj/GlYWiOxPUeYmVG0LL7JpwFL/1UDo4t5nyVGJcRaBJ3wfU8Y7dtH
+	 +n0RxSYtWDrsygOUiBW+9mBwvSWbsfxmnjaZkBukiW9kcdu2VXQRq6JaagKZ4UFQHPg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=intel.com;
-	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=n4hsHIXp;
-	arc=none smtp.remote-ip=192.198.163.11
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="no/4CrUJ";
+	arc=none smtp.remote-ip=209.85.221.47
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA6F606A32C;
-	Sat,  7 Nov 2026 01:41:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0DA6F606A32C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1E4606A322
+	for <linux-parisc@vger.kernel.org>; Sun,  8 Nov 2026 19:20:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5B1E4606A322
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=n4hsHIXp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1794015674; x=1825551674;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aTkvPzAbJN4jNBu0r57eQZHavSgwUMEEjEAJtxIPKcM=;
-  b=n4hsHIXpuxxnc17MxVpmvNkYh+8CET1HOlYdEW9uBN5kwchIUnitQVU/
-   HuhWAXwrkxtdB44ktMAgoWy4LXJSeeJnHL7zK07SdmXJ1xb4EElVl4OP9
-   SNgVP+be+s8rXQ+JgsbNg4VN1B+dchw/3znaM7z7aYm45Y1QCXEIuLbhL
-   J4FV/pIpVJaR+hGZyZC+wBOw685HW7/b+aAa+VT+X/BUxcI5QApodC5Ej
-   fB5XJhy0naHNwU91G+sz/auSVAJum50mhT95f5C9Ko1AxH9U+gjzRuu6R
-   OKoJWa2IfloGU1G3ZkcPA7zmGq7Yb9guGl//xBb3i57PzbGue2/WXrbuN
-   A==;
-X-CSE-ConnectionGUID: z/LW2IUhQNC16SYKBUUs4Q==
-X-CSE-MsgGUID: tqJ67Eh5TFyhBHJ5Vve8Rg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11958"; a="2751741"
-X-IronPort-AV: E=Sophos;i="6.27,199,1787036400"; 
-   d="scan'208";a="2751741"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2026 17:41:13 -0800
-X-CSE-ConnectionGUID: S7ZRecPUTOGgMLkqtEZAag==
-X-CSE-MsgGUID: 4WSfGiz3TyO7e25/Mxp73g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,199,1787036400"; 
-   d="scan'208";a="7567877"
-Received: from lkp-server01.sh.intel.com (HELO 0caa9d2d175c) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 06 Nov 2026 17:41:06 -0800
-Received: from kbuild by 0caa9d2d175c with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1xPVQV-00000000qCZ-0KhF;
-	Sat, 07 Nov 2026 01:41:03 +0000
-Date: Sat, 7 Nov 2026 09:40:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Michal Wilczynski <m.wilczynski@samsung.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org
-Subject: Re: [PATCH v2 10/15] lib/lz4: switch the compressor to the vendored
- sources
-Message-ID: <202611070943.EDg3udaH-lkp@intel.com>
-References: <20261106-lz4-vendor-upstream-v2-10-ee04c3f0d7dc@samsung.com>
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=no/4CrUJ
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-4910b863b84so162615f8f.0
+        for <linux-parisc@vger.kernel.org>; Sun, 08 Nov 2026 11:20:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794165654; x=1794770454; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=/BOOKQBNkJ2h331uHqW5sD5W9IEZRjh1wOOx6OQVw2c=;
+        b=no/4CrUJwSv/ZObw8Fvp8ImnvcHzO0eqwwqjjqLegaeGZohS4Tqgs9NC5SrAgiwGxc
+         TQv4F8lvRKx5uN5G15rNPdQ/6ILpHl+d7CPJ/Az8TS7KATaQJtIiPLznarMwJuu1M8vI
+         5utFUU5FuMszJEJXYkOV8Ev54UZ6k+YtSxiYMtpuwPJjgT5u6lDIUzijITv9G6LuvlFV
+         Vc+0ID7IX98MXs5NNU/rodtzbabZxqBIcOiMB3QVFP2KQav7x5qHdMvtaW3W7x63yrKt
+         g1HF3GLjdpOebBCC1/mObhOZ7CrR/yMfUZ1buaOAGIpouZqrtwPIO0RbDXcwY+3pR00o
+         PDyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794165654; x=1794770454;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=/BOOKQBNkJ2h331uHqW5sD5W9IEZRjh1wOOx6OQVw2c=;
+        b=hNdnWuOwQ99hxDsIHpl1gpedyJLCeOGvuLyUvLxRupKGS9kxpndV7aq6l6SYBvPegG
+         vo3pWc+t5ZQdCf0zRskJ+MI08O3glgdayICUVzRduQn1hUZkcGJh61fNQaoS16c07nK6
+         w1ETuI/yjCZ0aCA9v5hr6ldJ8iOl0P7vFm/lRxw13JenIEtCz6a1/0RZggQ91DSFYWeL
+         f8nI3ghe2FtlvILBt1yO5bpjn4NdP9Dvk1TOluWa9Ztbi9CAmK+0wFK4r3TdOWZXiuGx
+         oZH+EC5BgS3ZsUTHGcBr49EGgB5EWSeEWr6a2m/hoCbbfbfSrzZ4tYQR5nbPfDeUjatP
+         0VtA==
+X-Forwarded-Encrypted: i=1; AL+hErGVocRjZVeQZOfVKJoJgiW/WVGi0Onpm+qbhfGPbU22tEExPjykDerb7a/ZFkW16WDhQyOgshEjyD0ipkc=@vger.kernel.org
+X-Gm-Message-State: APuU4Z/sleIzMNa8XpxfdGOX6tDj6cTEQj2qS/dMu/3cRjHXS3Q22eZ3
+	zRJRCfaeW2/sk839JgftOlF+1Z70+1B+4nD/7ZSqKI1Q9B0xigaMv1+E
+X-Gm-Gg: AYBFou3yyRaG1Q3rL3OaJhLjthgkxRbw80pRorfnbcciqzt0ZRvDRbudqHelWvf50yG
+	Mm3ofHcagY7HamuwxaL88o+ksJ/LJnjgFtbU0JIyp6vNLSaj8dhMLroJnVXqLORkUy9UUxMavZ2
+	pQUwlY1cYiOoJiufso5wQoaKUs+BHrBOo1QzP9FB8vgwCM5i99tYRFkelKy97E8C67H5vvZeenK
+	VZ5uBM8kHQRucek1LU7cSoWdg7DfTheiNbZNEcNsVAU4bUGA8Kj3ZilJ01BHbwtv1zJVLR0uSWy
+	LbtBNqc5MS8maysgKzfcpzuoSxSmO5MYAdcE2+n07+7xn4xCz1wVbUJaCxZK1G67KPM+RQIwMR3
+	gL8kY0poXvZPf/Ro+mD1yVgyg7ZDZy8u3/7l8zGwneEjL4TgCCneTFSmpeh8sm2f0L/0jHajGZ9
+	U/n9Ke4fCJY4jJbagIqQN6Qk3h7LeMR8Mq8gEiOG4ATl/DIGc87YHQfwevX6iRdHli/JZ068xWN
+	3xaAl2Z1IDJOoPDDdzBE12HezOfVX4Yk3RCQeI9NRHSV5Xl787mx6GKyl343UUDCxspX3QrsC4O
+	TPHSTi5+Ma3CnHv7MWDbYx+LTgI4PfgJVG/KeYaP0HpF+16EpSQwzw0nb3RPgj09KZt2Bar4Whz
+	koTemF/JceGCDUBfhJLrNhw869Y4P4g2a8AsWh6t+gL1RjSywuAmVOA8hotXbI/K23FIZ+Xtd+k
+	gky3hkHnS4jqrV0eTFRXw2HPW0zOol8x6S
+X-Received: by 2002:a5d:6f0f:0:b0:488:8347:a110 with SMTP id ffacd0b85a97d-4958852d7camr4675476f8f.7.1794165653516;
+        Sun, 08 Nov 2026 11:20:53 -0800 (PST)
+Received: from localhost.localdomain (dynamic-2a02-3100-a16e-6b01-f478-4cea-a156-2612.310.pool.telefonica.de. [2a02:3100:a16e:6b01:f478:4cea:a156:2612])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49597b2066esm5651250f8f.52.2026.11.08.11.20.51
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sun, 08 Nov 2026 11:20:53 -0800 (PST)
+From: Karl Mehltretter <kmehltretter@gmail.com>
+To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>
+Cc: Karl Mehltretter <kmehltretter@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] parisc: irq: Trace hardirq state in do_cpu_irq_mask()
+Date: Sun,  8 Nov 2026 20:20:41 +0100
+Message-Id: <20261108192042.14425-1-kmehltretter@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -105,235 +100,61 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261106-lz4-vendor-upstream-v2-10-ee04c3f0d7dc@samsung.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Michal,
+intr_extint calls do_cpu_irq_mask() with PSW[I] already clear. Since
+commit 044d0d6de9f5 ("lockdep: Only trace IRQ edges"), its
+local_irq_disable() then skips trace_hardirqs_off(), and lockdep
+assertions fail in the timer tick:
 
-kernel test robot noticed the following build errors:
+  WARNING: kernel/rcu/tree.c:2739 at rcu_sched_clock_irq+0x618/0x1f84
 
-[auto build test ERROR on 93f51579e7df248780214094418f205253383cc5]
+The return to a context with PSW[I] set has not been annotated since
+TRACE_IRQFLAGS_SUPPORT was enabled. Annotate both transitions.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Michal-Wilczynski/lib-decompress_unlz4-use-LZ4_decompress_safe_partial-before-boot/20261106-154241
-base:   93f51579e7df248780214094418f205253383cc5
-patch link:    https://lore.kernel.org/r/20261106-lz4-vendor-upstream-v2-10-ee04c3f0d7dc%40samsung.com
-patch subject: [PATCH v2 10/15] lib/lz4: switch the compressor to the vendored sources
-config: arc-allmodconfig (https://download.01.org/0day-ci/archive/20261107/202611070943.EDg3udaH-lkp@intel.com/config)
-compiler: arc-linux-gcc (GCC) 16.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261107/202611070943.EDg3udaH-lkp@intel.com/reproduce)
+Fixes: 366dd4ea9d5f ("parisc: Fix ftrace function tracer")
+Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
+---
+Assisted by an LLM.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202611070943.EDg3udaH-lkp@intel.com/
+Tested under QEMU hppa (32-bit, -smp 2, PREEMPT, PROVE_LOCKING) on
+mainline d48723711bae: 13 to 18 lockdep warnings per boot before, none
+after (two boots each and one with ftrace=irqsoff). Locking selftests
+pass.
 
-All errors (new ones prefixed by >>):
+The exit annotation assumes intr_return does not call
+preempt_schedule_irq(). It currently never does: intr_do_preempt tests
+PSW_D rather than PSW_I ("bb,<,n %r20, 31 - PSW_SM_I"), and a kprobe
+saw no calls. Fixing that needs the same annotation after
+preempt_schedule_irq().
 
-   In file included from include/linux/rcupdate.h:27,
-                    from include/linux/rbtree.h:24,
-                    from include/linux/mm_types.h:11,
-                    from include/linux/mmzone.h:22,
-                    from include/linux/gfp.h:7,
-                    from include/linux/umh.h:4,
-                    from include/linux/kmod.h:9,
-                    from include/linux/module.h:18,
-                    from lib/lz4/lz4_compress.c:29:
-   include/linux/sched.h: In function 'is_percpu_thread':
->> include/linux/sched.h:1860:17: error: 'current' undeclared (first use in this function)
-    1860 |         return (current->flags & PF_NO_SETAFFINITY) &&
-         |                 ^~~~~~~
-   include/linux/sched.h:1860:17: note: each undeclared identifier is reported only once for each function it appears in
-   include/linux/sched.h: In function 'current_restore_flags':
-   include/linux/sched.h:1918:9: error: 'current' undeclared (first use in this function)
-    1918 |         current->flags &= ~flags;
-         |         ^~~~~~~
-   include/linux/sched.h: In function 'set_need_resched_current':
-   include/linux/sched.h:2127:30: error: 'current' undeclared (first use in this function)
-    2127 |         set_tsk_need_resched(current);
-         |                              ^~~~~~~
-   In file included from include/asm-generic/bug.h:7,
-                    from arch/arc/include/asm/bug.h:30,
-                    from include/linux/bug.h:5,
-                    from lib/lz4/lz4_compress.c:27:
-   include/linux/sched.h: In function '__set_task_blocked_on':
-   include/linux/sched.h:2231:27: error: 'current' undeclared (first use in this function)
-    2231 |         WARN_ON_ONCE(p != current);
-         |                           ^~~~~~~
-   include/linux/once_lite.h:28:41: note: in definition of macro 'DO_ONCE_LITE_IF'
-      28 |                 bool __ret_do_once = !!(condition);                     \
-         |                                         ^~~~~~~~~
-   include/linux/sched.h:2231:9: note: in expansion of macro 'WARN_ON_ONCE'
-    2231 |         WARN_ON_ONCE(p != current);
-         |         ^~~~~~~~~~~~
-   In file included from include/linux/nodemask.h:92,
-                    from include/linux/numa.h:6,
-                    from include/linux/cpumask.h:15,
-                    from include/linux/smp.h:13,
-                    from include/linux/interrupt_rc.h:17,
-                    from include/linux/spinlock.h:60,
-                    from include/linux/mmzone.h:8:
-   include/linux/sched.h: In function 'alloc_tag_save':
-   include/linux/sched.h:2361:14: error: 'current' undeclared (first use in this function)
-    2361 |         swap(current->alloc_tag, tag);
-         |              ^~~~~~~
-   include/linux/minmax.h:308:21: note: in definition of macro 'swap'
-     308 |         do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
-         |                     ^
->> include/linux/minmax.h:308:52: error: assignment to 'struct alloc_tag *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     308 |         do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
-         |                                                    ^
-   include/linux/sched.h:2361:9: note: in expansion of macro 'swap'
-    2361 |         swap(current->alloc_tag, tag);
-         |         ^~~~
-   include/linux/sched.h: In function 'alloc_tag_restore':
-   include/linux/sched.h:2368:14: error: 'current' undeclared (first use in this function)
-    2368 |         WARN(current->alloc_tag != tag, "current->alloc_tag was changed:\n");
-         |              ^~~~~~~
-   include/asm-generic/bug.h:164:32: note: in definition of macro 'WARN'
-     164 |         int __ret_warn_on = !!(condition);                              \
-         |                                ^~~~~~~~~
-   In file included from <command-line>:
-   include/linux/rcupdate.h: In function 'cond_resched_tasks_rcu_qs':
->> include/linux/rcupdate.h:226:22: error: 'current' undeclared (first use in this function)
-     226 |         rcu_tasks_qs(current, false);
-         |                      ^~~~~~~
-   include/linux/compiler_types.h:682:23: note: in definition of macro '__compiletime_assert'
-     682 |                 if (!(condition))                                       \
-         |                       ^~~~~~~~~
-   include/linux/compiler_types.h:702:9: note: in expansion of macro '_compiletime_assert'
-     702 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |         ^~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:28: note: in expansion of macro '__native_word'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |                            ^~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:49:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
-      49 |         compiletime_assert_rwonce_type(x);                              \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/rcupdate.h:185:35: note: in expansion of macro 'READ_ONCE'
-     185 |                 if (!(preempt) && READ_ONCE((t)->rcu_tasks_holdout))    \
-         |                                   ^~~~~~~~~
-   include/linux/rcupdate.h:197:34: note: in expansion of macro 'rcu_tasks_classic_qs'
-     197 | #define rcu_tasks_qs(t, preempt) rcu_tasks_classic_qs((t), (preempt))
-         |                                  ^~~~~~~~~~~~~~~~~~~~
-   include/linux/rcupdate.h:226:9: note: in expansion of macro 'rcu_tasks_qs'
-     226 |         rcu_tasks_qs(current, false);
-         |         ^~~~~~~~~~~~
-   In file included from include/linux/local_lock.h:5,
-                    from include/linux/mmzone.h:24:
-   include/linux/local_lock_internal.h: In function 'local_lock_acquire':
->> include/linux/local_lock_internal.h:48:20: error: 'current' undeclared (first use in this function)
-      48 |         l->owner = current;
-         |                    ^~~~~~~
-   include/linux/local_lock_internal.h: In function 'local_trylock_acquire':
-   include/linux/local_lock_internal.h:55:20: error: 'current' undeclared (first use in this function)
-      55 |         l->owner = current;
-         |                    ^~~~~~~
-   In file included from include/linux/build_bug.h:5,
-                    from lib/lz4/lz4_deps.h:18,
-                    from lib/lz4/lz4_compress.c:16:
-   include/linux/local_lock_internal.h: In function 'local_lock_release':
-   include/linux/local_lock_internal.h:60:41: error: 'current' undeclared (first use in this function)
-      60 |         DEBUG_LOCKS_WARN_ON(l->owner != current);
-         |                                         ^~~~~~~
-   include/linux/compiler.h:77:45: note: in definition of macro 'unlikely'
-      77 | # define unlikely(x)    __builtin_expect(!!(x), 0)
-         |                                             ^
-   include/linux/local_lock_internal.h:60:9: note: in expansion of macro 'DEBUG_LOCKS_WARN_ON'
-      60 |         DEBUG_LOCKS_WARN_ON(l->owner != current);
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/sched/mm.h: In function 'current_gfp_context':
->> include/linux/sched/mm.h:250:41: error: 'current' undeclared (first use in this function)
-     250 |         unsigned int pflags = READ_ONCE(current->flags);
-         |                                         ^~~~~~~
-   include/linux/compiler_types.h:682:23: note: in definition of macro '__compiletime_assert'
-     682 |                 if (!(condition))                                       \
-         |                       ^~~~~~~~~
-   include/linux/compiler_types.h:702:9: note: in expansion of macro '_compiletime_assert'
-     702 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:9: note: in expansion of macro 'compiletime_assert'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |         ^~~~~~~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:36:28: note: in expansion of macro '__native_word'
-      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
-         |                            ^~~~~~~~~~~~~
-   include/asm-generic/rwonce.h:49:9: note: in expansion of macro 'compiletime_assert_rwonce_type'
-      49 |         compiletime_assert_rwonce_type(x);                              \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/sched/mm.h:250:31: note: in expansion of macro 'READ_ONCE'
-     250 |         unsigned int pflags = READ_ONCE(current->flags);
-         |                               ^~~~~~~~~
-   include/linux/sched/mm.h: In function 'memalloc_retry_wait':
-   include/linux/sched.h:170:17: error: 'current' undeclared (first use in this function)
-     170 |                 current->task_state_change = _THIS_IP_;                 \
-         |                 ^~~~~~~
-   include/linux/sched.h:242:17: note: in expansion of macro 'debug_normal_state_change'
-     242 |                 debug_normal_state_change((state_value));               \
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/sched/mm.h:293:9: note: in expansion of macro '__set_current_state'
-     293 |         __set_current_state(TASK_UNINTERRUPTIBLE);
-         |         ^~~~~~~~~~~~~~~~~~~
-   In file included from include/linux/xarray.h:21,
-                    from include/linux/radix-tree.h:21,
-                    from include/linux/idr.h:15,
-                    from include/linux/kernfs.h:12,
-                    from include/linux/sysfs.h:16,
-                    from include/linux/kobject.h:20,
-                    from include/linux/module.h:22:
-   include/linux/sched/mm.h: In function 'might_alloc':
-   include/linux/sched/mm.h:319:13: error: 'current' undeclared (first use in this function)
-     319 |         if (current->flags & PF_MEMALLOC)
-         |             ^~~~~~~
-   include/linux/sched/mm.h: In function 'memalloc_flags_save':
-   include/linux/sched/mm.h:334:30: error: 'current' undeclared (first use in this function)
-     334 |         unsigned oldflags = ~current->flags & flags;
-         |                              ^~~~~~~
-   include/linux/sched/mm.h: In function 'memalloc_flags_restore':
-   include/linux/sched/mm.h:341:9: error: 'current' undeclared (first use in this function)
-     341 |         current->flags &= ~flags;
-         |         ^~~~~~~
-   include/linux/sched/mm.h: In function 'set_active_memcg':
-   include/linux/sched/mm.h:499:23: error: 'current' undeclared (first use in this function)
-     499 |                 old = current->active_memcg;
-         |                       ^~~~~~~
-   include/linux/sched/mm.h: In function 'membarrier_mm_sync_core_before_usermode':
-   include/linux/sched/mm.h:543:13: error: 'current' undeclared (first use in this function)
-     543 |         if (current->mm != mm)
-         |             ^~~~~~~
+ arch/parisc/kernel/irq.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index dff66be65d290..d9f6cb04e4bcf 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -497,7 +497,7 @@ asmlinkage void do_cpu_irq_mask(struct pt_regs *regs)
+ #endif
+ 
+ 	old_regs = set_irq_regs(regs);
+-	local_irq_disable();
++	trace_hardirqs_off();
+ 	irq_enter_rcu();
+ 
+ 	eirr_val = mfctl(23) & cpu_eiem & per_cpu(local_ack_eiem, cpu);
+@@ -535,6 +535,8 @@ asmlinkage void do_cpu_irq_mask(struct pt_regs *regs)
+  out:
+ 	irq_exit_rcu();
+ 	set_irq_regs(old_regs);
++	if (!irqs_disabled_flags(regs->gr[0]))
++		trace_hardirqs_on();
+ 	return;
+ 
+  set_out:
+base-commit: d48723711bae9b8cdc56719c448ba42fef28cbee
 
-vim +308 include/linux/minmax.h
+-- 
+2.39.5 (Apple Git-154)
 
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  285) 
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  286) /**
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  287)  * in_range - Determine if a value lies within a range.
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  288)  * @val: Value to test.
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  289)  * @start: First value in range.
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  290)  * @len: Number of values in range.
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  291)  *
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  292)  * This is more efficient than "if (start <= val && val < (start + len))".
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  293)  * It also gives a different answer if @start + @len overflows the size of
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  294)  * the type by a sufficient amount to encompass @val.  Decide for yourself
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  295)  * which behaviour you want, or prove that start + len never overflow.
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  296)  * Do not blindly replace one form with the other.
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  297)  */
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  298) #define in_range(val, start, len)					\
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  299) 	((sizeof(start) | sizeof(len) | sizeof(val)) <= sizeof(u32) ?	\
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  300) 		in_range32(val, start, len) : in_range64(val, start, len))
-f9bff0e31881d03 Matthew Wilcox (Oracle  2023-08-02  301) 
-b296a6d53339a79 Andy Shevchenko         2020-10-15  302  /**
-b296a6d53339a79 Andy Shevchenko         2020-10-15  303   * swap - swap values of @a and @b
-b296a6d53339a79 Andy Shevchenko         2020-10-15  304   * @a: first value
-b296a6d53339a79 Andy Shevchenko         2020-10-15  305   * @b: second value
-b296a6d53339a79 Andy Shevchenko         2020-10-15  306   */
-b296a6d53339a79 Andy Shevchenko         2020-10-15  307  #define swap(a, b) \
-b296a6d53339a79 Andy Shevchenko         2020-10-15 @308  	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
-b296a6d53339a79 Andy Shevchenko         2020-10-15  309  
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
