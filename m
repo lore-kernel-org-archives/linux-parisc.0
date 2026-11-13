@@ -1,135 +1,47 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=158.69.130.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794575960;
-	b=E5wobEVBHUgJ6PYPoFYa7ApzVKg6rzuAUUYv1sowSxIWGIOI4IYkbXnAY61gYMD4odks
-	 9+JC4T5HRm88X9655KIlUO5fCrdJpKqdGV3H0UIdgDnY3zBKNcnQ7sFkv+iFRnCMdcF4m
-	 DB80EUMn72ziY9gy3MYS0arNUDP4gKKcxpGD5B4rYw+OlnlkQyEQrQmr3EyRBeVSuRn0R
-	 xeuNMMfTjBJToQkN8OA+aZE29iFjE+E4PGXkIOW3ET9lrywrjx+0rcAObd+GsDN0AzToS
-	 LOE8DWica8VgL0GLLDlC9XgLnoBjmXszMjknAFtwTLyh8wgXf5Auz02gOh0ZrqkePqQ==
+	t=1794580577;
+	b=jZ7cWCcmPI/iekvaFLHTY/WGYeTbNdp8pW9W8exRLakStO2JUjmKk15PYwO0Op6+EL2/
+	 EvMCOoyjPU0nOTpdLj6P5OjE8GIxRF0DDv4wzN7/03IDjqX+CP+hVjLgOMRgkWnFx5f73
+	 JXXFq/LLLpY9tCUnfWGigtEynqLwG/EHZDXZ7yCYte9BO93fUkWD9qoQLTN0LcqaavZqd
+	 IXO18ehbtJmYsoEHmX5EcW9RHrSR3U7v7PBWaNctfxRR/mQ79bZHwpdwY7dZfVfz9KjR2
+	 OBcx8tSwwW4wexZUt9ZAdjdpKOQ++ULzIUi5nm5uQVFaN9qgOvo968/8CWwhzTxF6eA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794575960;
-	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
-	 Message-Id:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=uKCrPR60jaWb2Zhk534ZCZD0Kw22aJy6wHHdu9KIW1I=;
-	b=zXDPfj5mk5nFrs9PbSNGudQamiODQsBXStLRlPNwMpmgp91pp3n4fULEipbOPzL4w6+u
-	 snQAe7mJHzCQuxB03E/RGDp5TDGkGvt57oncTgaz+4OgX10VH/jwVZhsw5smBMwRDfQ31
-	 stZadGSDNqHHs9b0BAiSYT2BBtjZBEDu68SMJF7IYeU4SqOtByDJzIrhvWxB8Iu77rDwi
-	 5MQdeVNG4xuFq/YOu9IeiLCU8VUUqcTeQ7y/vAkd2WmtzHajqc76MF5xgQyTOF9daRdue
-	 HD9FVwe1pZ3LhgDffHksOYNFnZ9bqcFHY6OEdX4Uqdhgb32zDLVplSsTmTdHYjCsHXg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794580577;
+	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:To:Cc:References:Content-Language:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=w49hyKAjJNYQc0T0xEVaI68+0oF+m2dcDRcRYzEk8rs=;
+	b=OtwB2aXtZOl+ucpDClDVKDR7uUEqEjuYNerfG4u1kOAqAhopQ4XfofcZyQVUNNtmA4q7
+	 brkJqiBoLRaaYBDufLX9OL2sauWefFNq7hDz4a3DucgEKykUgv/5xSN9zYgUZ8RbjA1qT
+	 k6Xna6VuEQjo5RLTTev5N9tfk3k8VyjHKqZumcYxCWxxs4qS3qiArN+HDKMipLusxYWGq
+	 D3PyRbXGSP2B65jvCrF8LX4SC+DydffFJoGItwEGhbxdgCFh/G8SE3zN3lp7VROF2dRbI
+	 lbkygIl7z57fI5mUAWCKvAIiFF1ZfA7lqwYCPglocO27LO3L5KaSEbM2eFJAw62WouA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=efficios.com;
-	spf=pass smtp.mailfrom=efficios.com;
-	dkim=pass header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b="ZKjZ1/DZ";
-	arc=none smtp.remote-ip=158.69.130.18
-Received: from smtpout.efficios.com (smtpout.efficios.com [158.69.130.18])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jDjzVVrU;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4828B606BC26;
-	Fri, 13 Nov 2026 13:19:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4828B606BC26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EAD0606A327;
+	Fri, 13 Nov 2026 14:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.a=rsa-sha256 header.s=smtpout1 header.b=ZKjZ1/DZ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-	s=smtpout1; t=1794575951;
-	bh=uKCrPR60jaWb2Zhk534ZCZD0Kw22aJy6wHHdu9KIW1I=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZKjZ1/DZ+BbeqkXr02agu+P8pZdpihHKuQ0XAT1QoQwv8CcTezyVrjKPoNObytxzg
-	 ns09pwr2kdmkE3cdfcO60ogsBCpDXvl3CTO+i5kEh8WsasY9QeuWFW4r9+IBTX3c7o
-	 /gthaseC16IfnekPSSS9mO0ZQKu+j2xBewoW1tMjb4uSQSHhiW9JJu/weuCT0PjpK3
-	 rYOVYQuuQK29EbONku9W21tZ9NTcyx1UAUzi4/f/vQKf5yAXXYzSsAktQAPAHe9Swl
-	 r86jY3miUpVYBwYe2XD6xMO9kvo3JTK+G24t7AYcCvdlG7y2pJtCPY0dAqoiChFvVE
-	 4cEP7H5ydYEIg==
-Received: from thinkos.internal.efficios.com (mtl.efficios.com [216.120.195.104])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4jQyWz3y7FzQ2m;
-	Fri, 13 Nov 2026 08:19:11 -0500 (EST)
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>
-Cc: linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Michal Clapinski <mclapinski@google.com>,
-	Andrei Vagin <avagin@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Aniket Gattani <aniketgattani@google.com>,
-	linux-kselftest@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Chris Gellermann <christian.gellermann@codasip.com>,
-	Bala-Vignesh-Reddy <reddybalavignesh9979@gmail.com>,
-	Wei Yang <richard.weiyang@gmail.com>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	loongarch@lists.linux.dev,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	John David Anglin <dave.anglin@bell.net>,
-	linux-parisc@vger.kernel.org,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Paul Walmsley <pjw@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexandre Ghiti <alex@ghiti.fr>,
-	Guo Ren <guoren@kernel.org>,
-	linux-doc@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	Jonas Bonn <jonas@southpole.se>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	Stafford Horne <shorne@gmail.com>,
-	linux-openrisc@vger.kernel.org,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	linux-sh@vger.kernel.org,
-	Chris Zankel <chris@zankel.net>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	linux-arch@vger.kernel.org,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-arm-kernel@lists.infradead.org,
-	Andy Lutomirski <luto@kernel.org>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Andrea Parri <parri.andrea@gmail.com>,
-	Boqun Feng <boqun@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	David Howells <dhowells@redhat.com>,
-	Jade Alglave <j.alglave@ucl.ac.uk>,
-	Luc Maranget <luc.maranget@inria.fr>,
-	Akira Yokosawa <akiyks@gmail.com>,
-	Daniel Lustig <dlustig@nvidia.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	lkmm@lists.linux.dev,
-	bpf@vger.kernel.org,
-	Naveen N Rao <naveen@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-trace-kernel@vger.kernel.org
-Subject: [RFC PATCH 12/16] x86/entry: Remove stale membarrier sync core comments
-Date: Fri, 13 Nov 2026 08:18:59 -0500
-Message-Id: <20261113131903.157186-13-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20261113131903.157186-1-mathieu.desnoyers@efficios.com>
-References: <20261113131903.157186-1-mathieu.desnoyers@efficios.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jDjzVVrU
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88B8A1F000C4;
+	Fri, 13 Nov 2026 14:36:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794580577;
+	bh=w49hyKAjJNYQc0T0xEVaI68+0oF+m2dcDRcRYzEk8rs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=jDjzVVrUjcqqvOcF2zRf/R4D2SkobqauH5sB4E4FWc03X74m4jxFCQSio9YHHHuuR
+	 9Ml4Tlrckfk60OSmZz+hec4p2l9kmjLvQBMrX/YWsRQQvgUFJp0NHQZIrCyw0Gwiek
+	 QZbpgzhogd+cwsY3Nd25gGqUKt3Baw/aKdlCaoUNBkxmn6Z5pyPj2weF8qqKc3/A8M
+	 /Hvf3OTZxfDyyZ1sLXoNdqhyld8LAWFVmEcfNS1X7e6OGeS63NUqhOrnPQq/ZF6Igj
+	 DMtYYds7K9Hh4P0SFcSWYXYIJSddoBhMr/8mdEZ/t7+gx48plf7GD6vYahVdtRVM4l
+	 DMbaEQTybkmNw==
+Message-ID: <3f7af771-87a7-4ae7-9919-bc4c23bd31c9@kernel.org>
+Date: Fri, 13 Nov 2026 15:36:01 +0100
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -139,71 +51,135 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND v8 11/16] powerpc: extend execmem_params for
+ kprobes allocations
+To: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
+ "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>,
+ Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+ Huacai Chen <chenhuacai@kernel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>, Liviu Dudau
+ <liviu@dudau.co.uk>, Luis Chamberlain <mcgrof@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
+ =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Russell King <linux@armlinux.org.uk>, Sam Ravnborg <sam@ravnborg.org>,
+ Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+ bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+References: <20240505160628.2323363-1-rppt@kernel.org>
+ <20240505160628.2323363-12-rppt@kernel.org>
+Content-Language: fr-FR
+From: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+In-Reply-To: <20240505160628.2323363-12-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Two comments state that the membarrier sync core command relies on
-the IRET which returns from the IPI handler. This is no longer true
-since commit a493d1ca1a03 ("x86/membarrier: Get rid of a dubious
-optimization"): sync_core_before_usermode() serializes the core in
-the IPI handler.
+Hi Mike,
 
-Remove both comments.
+Looks like I missed this change ...
 
-The comment of sync_core_before_usermode() lists the instructions
-which return to user-space without serializing the core. Fix a typo
-in it ("sysrel") and add ERETU, which FRED uses.
+Le 05/05/2024 à 18:06, Mike Rapoport a écrit :
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> powerpc overrides kprobes::alloc_insn_page() to remove writable
+> permissions when STRICT_MODULE_RWX is on.
+> 
+> Add definition of EXECMEM_KRPOBES to execmem_params to allow using the
+> generic kprobes::alloc_insn_page() with the desired permissions.
+> 
+> As powerpc uses breakpoint instructions to inject kprobes, it does not
+> need to constrain kprobe allocations to the modules area and can use the
+> entire vmalloc address space.
 
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
----
- arch/x86/entry/entry_32.S        | 5 -----
- arch/x86/entry/entry_64.S        | 4 ----
- arch/x86/include/asm/sync_core.h | 2 +-
- 3 files changed, 1 insertion(+), 10 deletions(-)
+Using breakpoint means the segment must still be executable.
+On book3s/32 VMALLOC segment is not executable, while module segment is.
 
-diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-index 92c0b4a94e0a..d47bb08afb24 100644
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -954,11 +954,6 @@ restore_all_switch_stack:
- 	RESTORE_REGS pop=4			# skip orig_eax/error_code
- 	CLEAR_CPU_BUFFERS
- .Lirq_return:
--	/*
--	 * ARCH_HAS_MEMBARRIER_SYNC_CORE rely on IRET core serialization
--	 * when returning from IPI handler and when returning from
--	 * scheduler to user-space.
--	 */
- 	iret
- 
- .Lasm_iret_error:
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 253f0a585927..b8661064232c 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -626,10 +626,6 @@ SYM_INNER_LABEL(restore_regs_and_return_to_kernel, SYM_L_GLOBAL)
- #endif
- 	POP_REGS
- 	addq	$8, %rsp	/* skip regs->orig_ax */
--	/*
--	 * ARCH_HAS_MEMBARRIER_SYNC_CORE rely on IRET core serialization
--	 * when returning from IPI handler.
--	 */
- #ifdef CONFIG_XEN_PV
- SYM_INNER_LABEL(early_xen_iret_patch, SYM_L_GLOBAL)
- 	ANNOTATE_NOENDBR
-diff --git a/arch/x86/include/asm/sync_core.h b/arch/x86/include/asm/sync_core.h
-index df22113db9cd..0ab91f7e2020 100644
---- a/arch/x86/include/asm/sync_core.h
-+++ b/arch/x86/include/asm/sync_core.h
-@@ -91,7 +91,7 @@ static __always_inline void sync_core(void)
- /*
-  * Ensure that a core serializing instruction is issued before returning
-  * to user-mode. x86 implements return to user-space through sysexit,
-- * sysrel, and sysretq, which are not core serializing.
-+ * sysretl, sysretq and eretu, which are not core serializing.
-  */
- static inline void sync_core_before_usermode(void)
- {
--- 
-2.47.3
+See commit 6ca055322da8 ("powerpc/32s: Use dedicated segment for modules 
+with STRICT_KERNEL_RWX")
+
+See report and fix at 
+https://lore.kernel.org/all/ed03d290d440d579a81ae0b7de5243721291d903.1794543909.git.ritesh.list@gmail.com/
+
+Christophe
+
+
+
+> 
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> ---
+>   arch/powerpc/kernel/kprobes.c | 20 --------------------
+>   arch/powerpc/kernel/module.c  |  7 +++++++
+>   2 files changed, 7 insertions(+), 20 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+> index 9fcd01bb2ce6..14c5ddec3056 100644
+> --- a/arch/powerpc/kernel/kprobes.c
+> +++ b/arch/powerpc/kernel/kprobes.c
+> @@ -126,26 +126,6 @@ kprobe_opcode_t *arch_adjust_kprobe_addr(unsigned long addr, unsigned long offse
+>   	return (kprobe_opcode_t *)(addr + offset);
+>   }
+>   
+> -void *alloc_insn_page(void)
+> -{
+> -	void *page;
+> -
+> -	page = execmem_alloc(EXECMEM_KPROBES, PAGE_SIZE);
+> -	if (!page)
+> -		return NULL;
+> -
+> -	if (strict_module_rwx_enabled()) {
+> -		int err = set_memory_rox((unsigned long)page, 1);
+> -
+> -		if (err)
+> -			goto error;
+> -	}
+> -	return page;
+> -error:
+> -	execmem_free(page);
+> -	return NULL;
+> -}
+> -
+>   int arch_prepare_kprobe(struct kprobe *p)
+>   {
+>   	int ret = 0;
+> diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
+> index ac80559015a3..2a23cf7e141b 100644
+> --- a/arch/powerpc/kernel/module.c
+> +++ b/arch/powerpc/kernel/module.c
+> @@ -94,6 +94,7 @@ static struct execmem_info execmem_info __ro_after_init;
+>   
+>   struct execmem_info __init *execmem_arch_setup(void)
+>   {
+> +	pgprot_t kprobes_prot = strict_module_rwx_enabled() ? PAGE_KERNEL_ROX : PAGE_KERNEL_EXEC;
+>   	pgprot_t prot = strict_module_rwx_enabled() ? PAGE_KERNEL : PAGE_KERNEL_EXEC;
+>   	unsigned long fallback_start = 0, fallback_end = 0;
+>   	unsigned long start, end;
+> @@ -132,6 +133,12 @@ struct execmem_info __init *execmem_arch_setup(void)
+>   				.fallback_start	= fallback_start,
+>   				.fallback_end	= fallback_end,
+>   			},
+> +			[EXECMEM_KPROBES] = {
+> +				.start	= VMALLOC_START,
+> +				.end	= VMALLOC_END,
+> +				.pgprot	= kprobes_prot,
+> +				.alignment = 1,
+> +			},
+>   			[EXECMEM_MODULE_DATA] = {
+>   				.start	= VMALLOC_START,
+>   				.end	= VMALLOC_END,
 
