@@ -1,88 +1,99 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.43
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794605059;
-	b=z44zz/a8LkdjQ8LOSMvBTp8jPuyoQD2OhiZfo+1iZKQRrBHniGM5XMPqgJCtiV6Obtww
-	 dDGtz41N5EiXaXTU/TnorYOWApFAWMxRtoZYAoGXnb97RgqyRzqfCo7XRacqfa0uVGeWR
-	 NQDyOGzFhOvKvcl6oN4PoSh3DjF2hB3W+IU/ISUU+mKvbQWD/Ns/SZCtzitpG2ObIEe17
-	 Czm7zJdAGhjJAFbZXMBMNL8XtKeWPdGWv1OqX+WIhhqi0jD4cDsxy+s2xDTibuHcRk5aW
-	 EkRx6IYWLmizdADHDuhgbzXSdOFITwfNLpojXJ3UgqLkLO1f9rUcBLuRG7Ola5brw+g==
+	t=1794679384;
+	b=m0TJcsk262M3pP6mzag0vAy7QD4mHnOfbZ7Vl4jkVwnznqxXU1+GqQfn7unFEyDdff3f
+	 7O/KmTO/dIyjjLi0NflB+VykJmYPLtrhm+CVGjTPxJ9sGyXkx/Pi6Z0s5uz+Y9X7DKoQP
+	 3qF7+jlV1PuEV0ELGTaQGDf+BvvRGacfXOLXazsA2UgHxoyG6Ssoj2vYTgcYbB/Zvc0j2
+	 88eYOc309IQ0f+MtBdQKHSmaCTlhEf5/cGh7pv68BF9wIh7PrzjgS9Fe0uXl7LgAiexNY
+	 RMybanyh2I7Vmboiwldvs2dxg1Q2w67hzR/SxD5Kar6VLaI7Q8B4wK6Xf+AylqcHJ6A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794605059;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794679384;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:Date:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer;
-	bh=IdFSo6JzzG9qQGdtD5ihKLoQ40g+bsnor4ELUYyg40E=;
-	b=LAa9OkSclFjZfCx4Dxf2Aa6dKjw0aL5eFbe+IDTHS6F1bvvpTZO1oVcg3SGrqs9ET9KM
-	 lxweCZOYJO0qP23vkaXWgEwlosZd0oLNzegELSItAnnsolBlx7Y4Gc9NROLjY+4RhyBGS
-	 C05exzKkC37sFwtS99kyip3oDFuBgykkRlaGZRhox4B8JpfyrM7HWVhWDOlZv6K3OQnPF
-	 M6wxXGQduQnd9jT8UoyMD3YlA35TdOuir2ujzfg8IrFZbDhIcChVFlw94rgIKQRqk4IQf
-	 0jJ0Vln2d5RgBAkaVf55fhV5u1ItD9lwLrgLYTCllKZoW48Q+OedsROJ0oLFppCs6gQ==
+	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=VSe16UOk1kzVzD8ojXb7kA7BsT/+rEGWwW68R+M8TVo=;
+	b=A/B95Lp8KkeGPIeBw3yAhP2/fSgDoSjx2z23PGDgxWUVPI7Io5gVDm4Oom1PLD8vPruS
+	 beIHOKYpsqmr8g/DGb+59XqWBAYJrFxyEun2/eYSk5VPcITXy+XR//nmK6LYEx+dqkunE
+	 slGPyDHaue5FSzqft0DsG6sgDuMrEWcfvGE0XYGxfdN/AWGEdPbDEIPK152wKJcqz3UN/
+	 cbWA7YcKiBirQj+UIABCfnmYs5VwMYCuKtVMVOBSvRLyfl9LBWCpbkv2MsMabf+5TXN87
+	 rEGvZqKCb2pITttngp8xLkXHraLY0uOnN7ncu5/04NeawButWngMAz7+ye7FjExxtdQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RIO3iS2R;
-	arc=none smtp.remote-ip=209.85.128.180
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=K7ni9Co9;
+	arc=none smtp.remote-ip=209.85.128.43
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B96606A88A
-	for <linux-parisc@vger.kernel.org>; Fri, 13 Nov 2026 21:24:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 40B96606A88A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4972D606A32E
+	for <linux-parisc@vger.kernel.org>; Sat, 14 Nov 2026 18:03:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4972D606A32E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RIO3iS2R
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-8b335ef6441so14170577b3.3
-        for <linux-parisc@vger.kernel.org>; Fri, 13 Nov 2026 13:24:18 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=K7ni9Co9
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4bb64c99d2fso6514685e9.3
+        for <linux-parisc@vger.kernel.org>; Sat, 14 Nov 2026 10:03:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794605057; x=1795209857; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=IdFSo6JzzG9qQGdtD5ihKLoQ40g+bsnor4ELUYyg40E=;
-        b=RIO3iS2RV7Tpg6eCUSLoRhHJjC8HOazmZ5idRahgh/6DI5mndK/odzajLwB5rXS2PB
-         fO5JCXtYGxzIdmG5nIvtJwb4sUEuN71rlTc9poJIFgr0r7/vstHZMF9uwSG2u4JYwZxT
-         Qfq7sXk0V3t0DGySNP+FYF7c5tQzLp89rLSJlV4s8cbn9PdIMPfKC4brIz1z8u4CahCx
-         OrRo+rnTFuxrGIdaA4+J69IEh7d/YdQAaQ6QFxqpZGrmcYhwGCGyod9Gyc+mKS7WOmac
-         2e9B9JTwqYgR39wbJw0wzEZLEIKZxVt6oShjzGylmejTQrKlIrcwHxbH6Qfb6hN7FjMX
-         njBQ==
+        d=gmail.com; s=20260707; t=1794679382; x=1795284182; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=VSe16UOk1kzVzD8ojXb7kA7BsT/+rEGWwW68R+M8TVo=;
+        b=K7ni9Co9vimifkbmxN3A/WMhYEcZTJAa1C52yWXd006xAi9Zd15s4JP8+mnRQMKbRR
+         +lI9mw1x5iD1SyXapJ4LLXbLbx0W0aTPRB+ELwPu28rr9fFezG1vashJxl7czosPv08L
+         /0pUylFdOr2pWdxDutsD1m2S7Mzt2PWvApJGbLVCFAwm+T1ANSQ0s8rM4K4t+FCaXsyV
+         bnvoafdIa6uc31zELv5pQwpf8FGTBWABEwD5NGkHFBEaoyilWoOhogh92HJaGfDsZGNj
+         lXmn/CT3BOXSka24PJrVu5INE3MABPZ5wIaSU3A+Z41k5D+mIHS6zyJ8qCRvBVhDc7yC
+         t9IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794605057; x=1795209857;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=IdFSo6JzzG9qQGdtD5ihKLoQ40g+bsnor4ELUYyg40E=;
-        b=fQAHoRnbDXSa/0KKsdms3XWH/RZl3/OJqVwDoPgEZ77IfcrL0FCYYUaVyhbBuxdn3v
-         Q9EJ/fLeyZdMqif8PqJVnl1Ki3uHGgoXAnFtna79iS2UitB1qV9hH66LXoKxyVY1U+Pe
-         8tj/B79GXRlyM0IcZl0/PSkVfoD1HjfA1/wSjdnK0Ku+bh1/WRo+v0YWLPQQ/Jr8Q6GM
-         t/BWeE5+eMGNpmXjamC0JkWvfr9yMBqsvYzd70879d23qdqfnT8m4JaqVKf71a0X4C7b
-         Bhot56MIDiKxleOx1ebqjEwXQaUoNWDkxIUqA0KF0+XJngIVQ/p0yjgJj5v2JWwA88z4
-         jRKg==
-X-Forwarded-Encrypted: i=1; AL+hErElwQMqr09LLwOse8C/yiHC5oVpKmM6LBNw8zey2+gMWxRjRPIc6S214cH71wtbv2nyhJSiHUtI3WaO3DU=@vger.kernel.org
-X-Gm-Message-State: APuU4Z9BY0gHDoh0TsdIfPtCe6gAT512xRqZzKwMbIb55Ms9i22Cuwda
-	hDaO5XMB/GqTPJHlY8wL7O0xN8AHMlGobvs0Dgm8PY/pFmRCRAJk1kI1
-X-Gm-Gg: AYBFou3IONNZRKbQkdLwWQCCnmQ7wMLIo87/CD0tp+9XptGaMEvKfT1vNbAW84oOevT
-	MW2GegCtxtvY4L2OdDjL+bHuSCOFobWqPKesLrnvfvg4e+doVxtiuP1whw09YAGSgEuhBR478Ai
-	uQpUzYHMlG2zDlqcmhoe430UBueTkdgP0JYmxaX31WjlyK4EI/w4Ol00J2Sk9kuKX2Ix2WLXL/R
-	y3OD4qLahJzNRDnB4wxPlno77U12xY5/u0F9MpwnRh7JY9lHhwkA0NsfX+8Iyo11VPeqfFcJhPB
-	u21HOhWTG5D5PGcTzsGoF8nFDU3+irD8M1I+B4hgYEvGOM919YxvWRRNPHkfSb+537xzB1yeypr
-	pDC9ZMVYtm1sH6ct1+fZW21R7SqnTXw6vG+9QAL0E7AOxV5UenHrcSNMt5/4irmjsY91WTvfN5v
-	TVaQWQImcJUf7KmwwA92LfLGUVKP0JePZdBXBpMh2AaaG4Wut8Pl1XveoOclHsGsWk4fvEBSzOa
-	Q6McPI1FpfLvddt/i6A4lGpVL+Y4p1mWP8P4o99QpMVg8mVsEEYKzd7lLUKIECYWjPEnPbmzt21
-	sg1FAIHBnrtLrChmtPu81Tcwfb0TQoiS1Q==
-X-Received: by 2002:a05:690c:f85:b0:8b3:2af9:11f9 with SMTP id 00721157ae682-8b4aa2dd1a7mr23701777b3.26.1794605057150;
-        Fri, 13 Nov 2026 13:24:17 -0800 (PST)
-Received: from [127.0.1.1] ([187.15.141.223])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-8b4aaa1361fsm29539357b3.43.2026.11.13.13.24.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2026 13:24:16 -0800 (PST)
-From: Nicholas Dudar <main.kalliope@gmail.com>
-Date: Fri, 13 Nov 2026 16:24:11 -0500
-Subject: [PATCH bpf-next 2/2] bpf, parisc: Add support for BPF_MOVSX in the
- parisc32 JIT
+        d=1e100.net; s=20260707; t=1794679382; x=1795284182;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=VSe16UOk1kzVzD8ojXb7kA7BsT/+rEGWwW68R+M8TVo=;
+        b=d/BsAXK78S847wBHTC9dNVeix2iE3Fs+G3RJRMrwR8TK3irEgGoES6LzWmFfrFbCXr
+         xObINMIrypcCGzW20VteyZlW/ooNo4TmxGLv4PP+pzkLBO5v4RIIuYD6w6Xqc+mNCkWT
+         0H8ioGXg8nRBsc/lC1Frb7NOYctyEzCdmyxK7t0UYkKtgjxtLIjAcKN/CxrQufvJz9al
+         M0ac0dtbhNUAGf//XKzwLvT6pebWsvbVQfHKi7oDOFnIdQc5gwsd8lb2jNsdUasGJMEz
+         FP413Z70N848s7rwNgK2b3GC1PD9VDakWptFAUidqt8yfvEXJ04iYp5RQwuNT4bA7GJr
+         JwoA==
+X-Forwarded-Encrypted: i=1; AL+hErFQyiTYCP9HDpvRuLb/2TIo8y1eIFGa2RlUG3l9dxeGfDUQG+gR4w1BXN1kvD7YjbkFFhgavEa7xFbuCFA=@vger.kernel.org
+X-Gm-Message-State: APuU4Z99mQFUvPPxGngNkD2NTEe5DXvZ/gEdstgNtvJgmXRfg6sBR754
+	JYL8VMFJeKj+VZiQpyTq3y7qPxdFwvHbtkSMYg8Wuy3ekl89RXrMiLIrAlygD22+
+X-Gm-Gg: AYBFou0e4DViakn0MtUqU9al+ZB6JE32RehtHeBNpeSezqCjwvAZF1GVBndCklCyvlP
+	vHOko2d2JAikKWjUUKatngWOzA7lZa2inIkBlkxlG2XWo5PJJvNThqg8dE8R+MFPxud03nUDLTd
+	A/OYEN0Kkfi76zir8D9o05dp+Su57PFE+sUIw/Svabx2wky8MJygrcSxhVpurB2pBfsBSND8h9K
+	jFZtQTIac1HUgPxrdXn0Bxq/+RuFKuEp5I/iOy1siDzTfz2eNTT83Bh3mwvHeyss0IXwEpgXrdr
+	V4QzljaRg73A/CEXckBMy0xS/rnfYFeafg/H9Yy00Ghke5Ui6c9uo4fX7E7igYka5zjUzSQ8UyZ
+	crHjOB9oJOiA08Lv5/m1AMNutgPKFO84V91RjbOmascKZa1eRkSyUEz9RmjUTuvXKA+6wZVekDI
+	v+weaDdWAYPkK5jvjoN+AoDJKFG0NSHJ/EikWJTpCNPg640cqnkHihDbUL3v0nmq3XL8143cV2d
+	SRXaI6JR9WzuTRJ40mW/TZgz4IopE2fxVpBYe63RsyoOIHVUeIDYcURtOJhBNw/MIf8FOuCN671
+	tQrOdVCbtZneo23WUYOQYtXFrOlMiorEccu+E2iEDIpvuRtQqqms33jo86HaNDLd63UexqiWBkg
+	fJdL1DKGjVfOHptzHS9628Ok78q1+LS4XQPI71ywJTdopo+ooHqYSQMDVNgd3lYrK1Jut5aMMSP
+	1iGxKyS4NDlNwghQfUHTrb+rWtGnjKcKo=
+X-Received: by 2002:a05:600c:6986:b0:4bb:6a2d:b438 with SMTP id 5b1f17b1804b1-4bb6a2db52fmr1309225e9.0.1794679382371;
+        Sat, 14 Nov 2026 10:03:02 -0800 (PST)
+Received: from localhost.localdomain (dynamic-2a02-3100-b358-dd01-fd08-0f0c-fef7-8409.310.pool.telefonica.de. [2a02:3100:b358:dd01:fd08:f0c:fef7:8409])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49c5a32d336sm13422619f8f.0.2026.11.14.10.03.01
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sat, 14 Nov 2026 10:03:01 -0800 (PST)
+From: Karl Mehltretter <kmehltretter@gmail.com>
+To: Helge Deller <deller@gmx.de>,
+	"James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Karl Mehltretter <kmehltretter@gmail.com>,
+	Sven Schnelle <svens@stackframe.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	linux-parisc@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] parisc: Fix register corruption in 32-bit dynamic ftrace
+Date: Sat, 14 Nov 2026 19:02:50 +0100
+Message-Id: <e184f942e0933a1618f161abe672ad8a90bab529.1794672077.git.kmehltretter@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -92,120 +103,66 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261113-parisc_bpf_jit_movsx_20261112-v1-2-7ecc33cdf1b2@gmail.com>
-References: <20261113-parisc_bpf_jit_movsx_20261112-v1-0-7ecc33cdf1b2@gmail.com>
-In-Reply-To: <20261113-parisc_bpf_jit_movsx_20261112-v1-0-7ecc33cdf1b2@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, 
- Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, Jiri Olsa <jolsa@kernel.org>, 
- Emil Tsalapatis <emil@etsalapatis.com>, 
- Ihor Solodrai <ihor.solodrai@linux.dev>, bpf@vger.kernel.org, 
- linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Nicholas Dudar <main.kalliope@gmail.com>
-X-Mailer: b4 0.16.0
+Content-Transfer-Encoding: 8bit
 
-RFC9669 defines BPF_MOV | BPF_X with an offset of 8, 16 or 32 as a
-sign-extending move, dst = (s8,s16,s32)src. The parisc32 JIT handles it
-like an ordinary register move, so r0 = (s8)r0 with 0x80 gives 128
-instead of -128.
+The 32-bit dynamic ftrace trampoline allocates a 64-byte frame.
+ftrace_caller() saves %r26 at offset 20, which overlaps the third
+argument's spill slot for ftrace_function_trampoline().
 
-Add emit_movsx_r(). It sign-extends the low 8 or 16 bits of the source
-low word with extrw,s, or copies the low word for a 32-bit extension,
-and fills the high word with the sign for ALU64. For ALU32,
-bpf_put_reg32() zeroes the high word unless the verifier inserts the
-zero extension.
+In the failing build, GCC spills org_sp_gr3 into that slot, overwriting
+saved %r26 with the original stack pointer. Tracing preempt_count_add()
+then passes that pointer as val and corrupts the preempt count.
 
-Under QEMU on a 32-bit kernel, with test_progs built as a static 32-bit
-binary with jit_insns only:
+Allocate two frames on 32-bit, as 64-bit already does, and update the
+generated trampoline instruction to match.
 
-  # ./test_progs -t jit_insns -w 0
-  [...]
-  #201/33  jit_insns/movsx:OK
-  [...]
-  Summary: 0/40 PASSED, 0 SKIPPED, 2/12 FAILED
-
-Without this change jit_insns/movsx fails as well. The 12 failures left
-fail without this change too.
-
-Signed-off-by: Nicholas Dudar <main.kalliope@gmail.com>
+Fixes: 6ca6366220ed ("parisc: add dynamic ftrace")
+Cc: stable@vger.kernel.org
+Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
 ---
- arch/parisc/net/bpf_jit_comp32.c | 41 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 40 insertions(+), 1 deletion(-)
+Tested with GCC 16.2.0 on a 32-bit SMP kernel under QEMU 10.0.13:
+function tracing of preempt_count_add(), preempt_count_sub() and
+update_rq_clock(), followed by a combined function/function-graph
+workload. No warnings or faults.
 
-diff --git a/arch/parisc/net/bpf_jit_comp32.c b/arch/parisc/net/bpf_jit_comp32.c
-index eea0a34a3bfe..9cfbff3e58bb 100644
---- a/arch/parisc/net/bpf_jit_comp32.c
-+++ b/arch/parisc/net/bpf_jit_comp32.c
-@@ -705,6 +705,35 @@ static void emit_alu_r32(const s8 *dst, const s8 *src,
- 	bpf_put_reg32(dst, rd, ctx);
- }
- 
-+/* dst = sign_extend(src, width) */
-+static void emit_movsx_r(const s8 *dst, const s8 *src,
-+			 struct hppa_jit_context *ctx, u8 width, bool is64)
-+{
-+	const s8 *tmp1 = regmap[TMP_REG_1];
-+	const s8 *tmp2 = regmap[TMP_REG_2];
-+	const s8 *rs = bpf_get_reg32(src, tmp2, ctx);
-+	const s8 *rd;
-+
-+	if (is64)
-+		rd = bpf_get_reg64_ref(dst, tmp1, false, ctx);
-+	else
-+		rd = bpf_get_reg32_ref(dst, tmp1, ctx);
-+
-+	/* Low word: sign-extend the field, or copy it for a 32-bit extension */
-+	if (width == 32)
-+		emit_hppa_copy(lo(rs), lo(rd), ctx);
-+	else
-+		emit(hppa_extrws(lo(rs), 31, 32 - width, lo(rd)), ctx);
-+
-+	if (is64) {
-+		/* High word: copies of the sign bit */
-+		emit(hppa_extrws(lo(rd), 0, 31, hi(rd)), ctx);
-+		bpf_put_reg64(dst, rd, ctx);
-+	} else {
-+		bpf_put_reg32(dst, rd, ctx);
-+	}
-+}
-+
- static int emit_branch_r64(const s8 *src1, const s8 *src2, s32 paoff,
- 			   struct hppa_jit_context *ctx, const u8 op)
- {
-@@ -1145,7 +1174,12 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct hppa_jit_context *ctx,
- 	switch (code) {
- 	/* dst = src */
- 	case BPF_ALU64 | BPF_MOV | BPF_X:
--
-+		if (off == 8 || off == 16 || off == 32) {
-+			/* Sign-extending mov: dst = (s8,s16,s32)src */
-+			emit_movsx_r(dst, src, ctx, off, true);
-+			break;
-+		}
-+		fallthrough;
- 	case BPF_ALU64 | BPF_ADD | BPF_X:
- 	case BPF_ALU64 | BPF_ADD | BPF_K:
- 
-@@ -1196,6 +1230,11 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct hppa_jit_context *ctx,
- 			emit_zext64(dst, ctx);
- 			break;
- 		}
-+		if (off == 8 || off == 16) {
-+			/* Sign-extending mov32: dst = (s8,s16)src */
-+			emit_movsx_r(dst, src, ctx, off, false);
-+			break;
-+		}
- 		fallthrough;
- 	/* dst = dst OP src */
- 	case BPF_ALU | BPF_ADD | BPF_X:
+I used an LLM to help isolate the failure, inspect the generated code,
+write the test harness and prepare the commit message.
 
+ arch/parisc/kernel/entry.S  | 4 ----
+ arch/parisc/kernel/ftrace.c | 2 +-
+ 2 files changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
+index e04c5d806c105..b0728dbee53d7 100644
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -1949,11 +1949,7 @@ ENDPROC_CFI(mcount)
+ 
+ #ifdef CONFIG_DYNAMIC_FTRACE
+ 
+-#ifdef CONFIG_64BIT
+ #define FTRACE_FRAME_SIZE (2*FRAME_SIZE)
+-#else
+-#define FTRACE_FRAME_SIZE FRAME_SIZE
+-#endif
+ ENTRY_CFI(ftrace_caller, caller,frame=FTRACE_FRAME_SIZE,CALLS,SAVE_RP,SAVE_SP)
+ ftrace_caller:
+ 	.global ftrace_caller
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index 10fd5b3e63e75..963a741faa42d 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -146,7 +146,7 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+ #else
+ 	u32 ftrace_trampoline[] = {
+ 		(u32)addr,
+-		0x6fc10080, /* stw,ma r1,40(sp) */
++		0x6fc10100, /* stw,ma r1,80(sp) */
+ 		0x48213fd1, /* ldw -18(r1),r1 */
+ 		0xe820c002, /* bv,n r0(r1) */
+ 		0xe83f1fdf, /* b,l,n .-c,r1 */
+
+base-commit: 7475ea8b58616b33c04afb976cf0fbaad9dd63fb
 -- 
-2.53.0
+2.39.5 (Apple Git-154)
 
