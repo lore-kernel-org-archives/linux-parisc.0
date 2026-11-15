@@ -1,99 +1,89 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794679384;
-	b=m0TJcsk262M3pP6mzag0vAy7QD4mHnOfbZ7Vl4jkVwnznqxXU1+GqQfn7unFEyDdff3f
-	 7O/KmTO/dIyjjLi0NflB+VykJmYPLtrhm+CVGjTPxJ9sGyXkx/Pi6Z0s5uz+Y9X7DKoQP
-	 3qF7+jlV1PuEV0ELGTaQGDf+BvvRGacfXOLXazsA2UgHxoyG6Ssoj2vYTgcYbB/Zvc0j2
-	 88eYOc309IQ0f+MtBdQKHSmaCTlhEf5/cGh7pv68BF9wIh7PrzjgS9Fe0uXl7LgAiexNY
-	 RMybanyh2I7Vmboiwldvs2dxg1Q2w67hzR/SxD5Kar6VLaI7Q8B4wK6Xf+AylqcHJ6A==
+	t=1794724744;
+	b=RfPXdTfAIy1ysjOFvtCTRQMxC+F3xOpE4hDmDl8rVT57PkmAljINPwPslLJGny4jBQCt
+	 eJhagj1Ge7cZZe0fxwGj8K8Xu2yazP7Gfpj03cJtkXUI3NBXM/DlB0QLA0IJhixNbBwjB
+	 mZaPefrO03klqZZk3fBQ5lPo3nN4C8/OZbq8axuE0wOyZjJ3FKc2MIgAmoQXCIgJNweNn
+	 Ai5W3gLl1eMXuxRTj3qqwVmVZJ6MQOuNU6uWF5ucCyOTVlfRTTDGD9BIzrMqznQE++/TE
+	 TV39guLR/nF1vFv2UhTy6olzozYW8q9xiOtLodUNl+4WYJAaUAVDKGv6hBkXITKA6dA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794679384;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=VSe16UOk1kzVzD8ojXb7kA7BsT/+rEGWwW68R+M8TVo=;
-	b=A/B95Lp8KkeGPIeBw3yAhP2/fSgDoSjx2z23PGDgxWUVPI7Io5gVDm4Oom1PLD8vPruS
-	 beIHOKYpsqmr8g/DGb+59XqWBAYJrFxyEun2/eYSk5VPcITXy+XR//nmK6LYEx+dqkunE
-	 slGPyDHaue5FSzqft0DsG6sgDuMrEWcfvGE0XYGxfdN/AWGEdPbDEIPK152wKJcqz3UN/
-	 cbWA7YcKiBirQj+UIABCfnmYs5VwMYCuKtVMVOBSvRLyfl9LBWCpbkv2MsMabf+5TXN87
-	 rEGvZqKCb2pITttngp8xLkXHraLY0uOnN7ncu5/04NeawButWngMAz7+ye7FjExxtdQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794724744;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To;
+	bh=5uzNQjIqKu1Z5H5h4ULFcPsML/9M2qNB6yySUHBpd2Q=;
+	b=h/AP1EZHYqg1tUtXFrQDnze6+q1cmHPahHxpMrVoJED9C10jFUDrV+eTss2V+6e5Txo4
+	 uOtWg177eJ0EYJe3dNwCCMRkmcUdsrobpGfqTlGMbEV4fohtS5UrR9fnNWmDK7yiQKVSo
+	 lvXyluqIVz4JMkc15So0HpwtGomN7fS/5lCGSELj0kYIId9RfS2tDeV6eqBWc5dX+IEW3
+	 vJt/2AI2Tb7/xkrdWLn8j5QdiSbjFlOi02IpXFjszjANEkVaz0SeVJP4qM9YGASjJj+uF
+	 84fasrzTtew0nqHJb1nxrkIZORmmCKztn6nAvhCEDxjWL+1U7gyT/fNoFkBfW5wjJLw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=K7ni9Co9;
-	arc=none smtp.remote-ip=209.85.128.43
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XY6g0QDN;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4972D606A32E
-	for <linux-parisc@vger.kernel.org>; Sat, 14 Nov 2026 18:03:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4972D606A32E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06DB7606A323;
+	Sun, 15 Nov 2026 06:39:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=K7ni9Co9
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4bb64c99d2fso6514685e9.3
-        for <linux-parisc@vger.kernel.org>; Sat, 14 Nov 2026 10:03:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794679382; x=1795284182; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=VSe16UOk1kzVzD8ojXb7kA7BsT/+rEGWwW68R+M8TVo=;
-        b=K7ni9Co9vimifkbmxN3A/WMhYEcZTJAa1C52yWXd006xAi9Zd15s4JP8+mnRQMKbRR
-         +lI9mw1x5iD1SyXapJ4LLXbLbx0W0aTPRB+ELwPu28rr9fFezG1vashJxl7czosPv08L
-         /0pUylFdOr2pWdxDutsD1m2S7Mzt2PWvApJGbLVCFAwm+T1ANSQ0s8rM4K4t+FCaXsyV
-         bnvoafdIa6uc31zELv5pQwpf8FGTBWABEwD5NGkHFBEaoyilWoOhogh92HJaGfDsZGNj
-         lXmn/CT3BOXSka24PJrVu5INE3MABPZ5wIaSU3A+Z41k5D+mIHS6zyJ8qCRvBVhDc7yC
-         t9IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794679382; x=1795284182;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=VSe16UOk1kzVzD8ojXb7kA7BsT/+rEGWwW68R+M8TVo=;
-        b=d/BsAXK78S847wBHTC9dNVeix2iE3Fs+G3RJRMrwR8TK3irEgGoES6LzWmFfrFbCXr
-         xObINMIrypcCGzW20VteyZlW/ooNo4TmxGLv4PP+pzkLBO5v4RIIuYD6w6Xqc+mNCkWT
-         0H8ioGXg8nRBsc/lC1Frb7NOYctyEzCdmyxK7t0UYkKtgjxtLIjAcKN/CxrQufvJz9al
-         M0ac0dtbhNUAGf//XKzwLvT6pebWsvbVQfHKi7oDOFnIdQc5gwsd8lb2jNsdUasGJMEz
-         FP413Z70N848s7rwNgK2b3GC1PD9VDakWptFAUidqt8yfvEXJ04iYp5RQwuNT4bA7GJr
-         JwoA==
-X-Forwarded-Encrypted: i=1; AL+hErFQyiTYCP9HDpvRuLb/2TIo8y1eIFGa2RlUG3l9dxeGfDUQG+gR4w1BXN1kvD7YjbkFFhgavEa7xFbuCFA=@vger.kernel.org
-X-Gm-Message-State: APuU4Z99mQFUvPPxGngNkD2NTEe5DXvZ/gEdstgNtvJgmXRfg6sBR754
-	JYL8VMFJeKj+VZiQpyTq3y7qPxdFwvHbtkSMYg8Wuy3ekl89RXrMiLIrAlygD22+
-X-Gm-Gg: AYBFou0e4DViakn0MtUqU9al+ZB6JE32RehtHeBNpeSezqCjwvAZF1GVBndCklCyvlP
-	vHOko2d2JAikKWjUUKatngWOzA7lZa2inIkBlkxlG2XWo5PJJvNThqg8dE8R+MFPxud03nUDLTd
-	A/OYEN0Kkfi76zir8D9o05dp+Su57PFE+sUIw/Svabx2wky8MJygrcSxhVpurB2pBfsBSND8h9K
-	jFZtQTIac1HUgPxrdXn0Bxq/+RuFKuEp5I/iOy1siDzTfz2eNTT83Bh3mwvHeyss0IXwEpgXrdr
-	V4QzljaRg73A/CEXckBMy0xS/rnfYFeafg/H9Yy00Ghke5Ui6c9uo4fX7E7igYka5zjUzSQ8UyZ
-	crHjOB9oJOiA08Lv5/m1AMNutgPKFO84V91RjbOmascKZa1eRkSyUEz9RmjUTuvXKA+6wZVekDI
-	v+weaDdWAYPkK5jvjoN+AoDJKFG0NSHJ/EikWJTpCNPg640cqnkHihDbUL3v0nmq3XL8143cV2d
-	SRXaI6JR9WzuTRJ40mW/TZgz4IopE2fxVpBYe63RsyoOIHVUeIDYcURtOJhBNw/MIf8FOuCN671
-	tQrOdVCbtZneo23WUYOQYtXFrOlMiorEccu+E2iEDIpvuRtQqqms33jo86HaNDLd63UexqiWBkg
-	fJdL1DKGjVfOHptzHS9628Ok78q1+LS4XQPI71ywJTdopo+ooHqYSQMDVNgd3lYrK1Jut5aMMSP
-	1iGxKyS4NDlNwghQfUHTrb+rWtGnjKcKo=
-X-Received: by 2002:a05:600c:6986:b0:4bb:6a2d:b438 with SMTP id 5b1f17b1804b1-4bb6a2db52fmr1309225e9.0.1794679382371;
-        Sat, 14 Nov 2026 10:03:02 -0800 (PST)
-Received: from localhost.localdomain (dynamic-2a02-3100-b358-dd01-fd08-0f0c-fef7-8409.310.pool.telefonica.de. [2a02:3100:b358:dd01:fd08:f0c:fef7:8409])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49c5a32d336sm13422619f8f.0.2026.11.14.10.03.01
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 14 Nov 2026 10:03:01 -0800 (PST)
-From: Karl Mehltretter <kmehltretter@gmail.com>
-To: Helge Deller <deller@gmx.de>,
-	"James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Karl Mehltretter <kmehltretter@gmail.com>,
-	Sven Schnelle <svens@stackframe.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XY6g0QDN
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FF9C1F000C4;
+	Sun, 15 Nov 2026 06:38:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794724743;
+	bh=5uzNQjIqKu1Z5H5h4ULFcPsML/9M2qNB6yySUHBpd2Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=XY6g0QDNlp+U9PsTjMW6Z7U+4AKhATHLs5He0CZN49f2Nu0bcao4bAPuuwEsft6FI
+	 TWnoj+VGBoUPTmb0EJCJXCsTtwSE0k13bv5Te+OZ5Acn6pVLSE5i/fhLT5QGKgwaOk
+	 Ucb2W6afh0Q1yzMIuWl0IoyL1xjTDc8J5WHHCJWlw82oKPLfFptJE13O1Ok9X62IyP
+	 xkoneXTm1OtIXF7WSDiXJH8M/fRN/bG7+qbjc7kJUeud8mWA9cz/xm6XTt15y1BZge
+	 qGkeMJ/mOBJIxREW4t6uml5kStkcI3+UGIwjK5RYkeEIMSPndyRf3R1y4lpuaoL/kN
+	 M2jExDr2sEOLQ==
+Date: Sun, 15 Nov 2026 08:38:46 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Liviu Dudau <liviu@dudau.co.uk>,
+	Luis Chamberlain <mcgrof@kernel.org>,
 	Mark Rutland <mark.rutland@arm.com>,
-	linux-parisc@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] parisc: Fix register corruption in 32-bit dynamic ftrace
-Date: Sat, 14 Nov 2026 19:02:50 +0100
-Message-Id: <e184f942e0933a1618f161abe672ad8a90bab529.1794672077.git.kmehltretter@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Sam Ravnborg <sam@ravnborg.org>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH RESEND v8 11/16] powerpc: extend execmem_params for
+ kprobes allocations
+Message-ID: <avlTdlK9ErlqVRYl@kernel.org>
+References: <20240505160628.2323363-1-rppt@kernel.org>
+ <20240505160628.2323363-12-rppt@kernel.org>
+ <3f7af771-87a7-4ae7-9919-bc4c23bd31c9@kernel.org>
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -103,66 +93,43 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3f7af771-87a7-4ae7-9919-bc4c23bd31c9@kernel.org>
 
-The 32-bit dynamic ftrace trampoline allocates a 64-byte frame.
-ftrace_caller() saves %r26 at offset 20, which overlaps the third
-argument's spill slot for ftrace_function_trampoline().
+Hi Christophe,
 
-In the failing build, GCC spills org_sp_gr3 into that slot, overwriting
-saved %r26 with the original stack pointer. Tracing preempt_count_add()
-then passes that pointer as val and corrupts the preempt count.
+On Fri, Nov 13, 2026 at 03:36:01PM +0100, Christophe Leroy (CS GROUP) wrote:
+> Hi Mike,
+> 
+> Looks like I missed this change ...
+> 
+> Le 05/05/2024 à 18:06, Mike Rapoport a écrit :
+> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> > 
+> > powerpc overrides kprobes::alloc_insn_page() to remove writable
+> > permissions when STRICT_MODULE_RWX is on.
+> > 
+> > Add definition of EXECMEM_KRPOBES to execmem_params to allow using the
+> > generic kprobes::alloc_insn_page() with the desired permissions.
+> > 
+> > As powerpc uses breakpoint instructions to inject kprobes, it does not
+> > need to constrain kprobe allocations to the modules area and can use the
+> > entire vmalloc address space.
+> 
+> Using breakpoint means the segment must still be executable.
+> On book3s/32 VMALLOC segment is not executable, while module segment is.
+> 
+> See commit 6ca055322da8 ("powerpc/32s: Use dedicated segment for modules
+> with STRICT_KERNEL_RWX")
+> 
+> See report and fix at https://lore.kernel.org/all/ed03d290d440d579a81ae0b7de5243721291d903.1794543909.git.ritesh.list@gmail.com/
 
-Allocate two frames on 32-bit, as 64-bit already does, and update the
-generated trampoline instruction to match.
-
-Fixes: 6ca6366220ed ("parisc: add dynamic ftrace")
-Cc: stable@vger.kernel.org
-Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
----
-Tested with GCC 16.2.0 on a 32-bit SMP kernel under QEMU 10.0.13:
-function tracing of preempt_count_add(), preempt_count_sub() and
-update_rq_clock(), followed by a combined function/function-graph
-workload. No warnings or faults.
-
-I used an LLM to help isolate the failure, inspect the generated code,
-write the test harness and prepare the commit message.
-
- arch/parisc/kernel/entry.S  | 4 ----
- arch/parisc/kernel/ftrace.c | 2 +-
- 2 files changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index e04c5d806c105..b0728dbee53d7 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -1949,11 +1949,7 @@ ENDPROC_CFI(mcount)
+I'll take a look, thanks!
  
- #ifdef CONFIG_DYNAMIC_FTRACE
- 
--#ifdef CONFIG_64BIT
- #define FTRACE_FRAME_SIZE (2*FRAME_SIZE)
--#else
--#define FTRACE_FRAME_SIZE FRAME_SIZE
--#endif
- ENTRY_CFI(ftrace_caller, caller,frame=FTRACE_FRAME_SIZE,CALLS,SAVE_RP,SAVE_SP)
- ftrace_caller:
- 	.global ftrace_caller
-diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-index 10fd5b3e63e75..963a741faa42d 100644
---- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -146,7 +146,7 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
- #else
- 	u32 ftrace_trampoline[] = {
- 		(u32)addr,
--		0x6fc10080, /* stw,ma r1,40(sp) */
-+		0x6fc10100, /* stw,ma r1,80(sp) */
- 		0x48213fd1, /* ldw -18(r1),r1 */
- 		0xe820c002, /* bv,n r0(r1) */
- 		0xe83f1fdf, /* b,l,n .-c,r1 */
+> Christophe
 
-base-commit: 7475ea8b58616b33c04afb976cf0fbaad9dd63fb
 -- 
-2.39.5 (Apple Git-154)
-
+Sincerely yours,
+Mike.
