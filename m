@@ -1,116 +1,98 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.13
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794726812;
-	b=C/TLwPs2bA0sHXYk5wivfabGU7U5Til19RK3K40w48qlRcWo2NhGAlpGylsCS5R3eD1G
-	 8RSI9Gin8LtnkAyxQiYimPd9K91nTAKCEHf3dFmZq2mAgSXzuDWVdxKBh4Es3v8Oy3npR
-	 9GJ50YtxUtXfsBVYGoTrzZnUbTz//QvWKm6XWH1AEXfLSOReQWYEjDL4S4ITkp0OMmH04
-	 4NyYNDFBSssZWp89DV6JZCegMB9Z0xHb1Im+DmWZyc7itbQUG+zaf5HNn8rEpXsbA/YHf
-	 xqsIj15TdOSL1sXRNroYSaTUI/IbFdOWy+x/xxBG+IQ79d4qYf3sXIyyuoY5/txJuEA==
+	t=1794842674;
+	b=P/cvPjaO23iVUlImS7DrALputVvuF7hjDxvadHXIb+wAUfZSz3tbns2kK0UVrELGZ4SH
+	 WOfI79RY6SrlYkvurfOXAoZf9VHgG6zHtKxImTSVMAVX3PM2aQPjf6GnYtidAjp2ZFMQQ
+	 wcd4sLkIwN2YN6mif9gLafojRmWtCQmKJ3DPNf/MjCgldvudSgk0Ea3HMXy3egw9y+QmZ
+	 cjgHmhJsOjqpSgzADBKGwhSZEp/ydDIArnLmfduMawqxH0Ed9k/2j5iGbIieQX2KTndwl
+	 UKeQTNqHM1eIftgvjY+xKDrNunNsqAxqFjEwkq04VdMK4sQxpUIfZ6xGDpilD40zw3w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794726812;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=i0sztYeDoa78GRxByi5DPGRDZ13zK/I8mczcB1W5Z+o=;
-	b=x3GzCQrw+Hwr5SwBIwq0YGmpu2S1XSAIXqf+lv64cQi1LaSj9wAmCe+52F2tirH7RIcg
-	 +HixOe49JSJtHG8fLA3hzYPeW41wgKLHif5mTBY4asTQLKxKNy7ulMhUCfWyVY55UgHzn
-	 4LXP+HPgZ5xpeDFkM7MjfdYLzE518CjDch6QiEVwrZFOeD+sSmsC01XKbRGKCV0ynrAba
-	 ruT/xaueK9q8UB0rcMC3FrfI9Kc5NmuJ37i8ChukHqDYXieVv/S4x096BBPLRREK4lHFL
-	 Tm3s1pHUDRP4eiFPDzXS5L84QjYCqXUpy8XKwXxs6n0/kUay0kP6ot+4F8vnWSd+r4Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794842674;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
+	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=zPcsfexdVFJoJqpUGHtJyBFcgi9bW4vNsT7/VKyzF7c=;
+	b=ZgH652LFqQTlnQwimCHFHxr7H5tl66Kqr5ATo22Amp/NyD0hlUIUwVOSBMGMxc4ob7Y9
+	 YCcAjH3o0zHeGHXBOahBZHNHomAhamFjk+7uf+yALFJDQeMb6iEmoqfWKUYlvF61vX/V+
+	 0gWVOL5sk5+VhHlDDGuVTxq9TMGVGY04nKLmbjK/hYzt9no3rNGtOX8iYyHslmAPxHcoG
+	 lTdCAtGAL1JHoUK0J6wcefr60EmfqF1ClqS8iicxNEzTypikx5OVgV7L+nPcTXApnJ0JY
+	 /jxfDF+jP+0zHJPUnJQoprSly6QX/Fh5Fil9Xitefza5l0U4ie7Yttgotq2sy0hIa7Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=f0EKiv+f;
-	arc=none smtp.remote-ip=74.125.82.182
-Received: from mail-dy1-f182.google.com (mail-dy1-f182.google.com [74.125.82.182])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=linux.intel.com;
+	spf=pass smtp.mailfrom=linux.intel.com;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=JDmj5wL0;
+	arc=none smtp.remote-ip=198.175.65.13
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDE5606A32D
-	for <linux-parisc@vger.kernel.org>; Sun, 15 Nov 2026 07:13:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5DDE5606A32D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD9E606A32A;
+	Mon, 16 Nov 2026 15:24:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3BD9E606A32A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=f0EKiv+f
-Received: by mail-dy1-f182.google.com with SMTP id 5a478bee46e88-37986eb6fa2so2476786eec.0
-        for <linux-parisc@vger.kernel.org>; Sat, 14 Nov 2026 23:13:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794726811; x=1795331611; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :message-id:date:in-reply-to:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=i0sztYeDoa78GRxByi5DPGRDZ13zK/I8mczcB1W5Z+o=;
-        b=f0EKiv+f25sXRcQmBoiK+WsCsclD9PQHa+U5z3sGf3KR1sS3ZNEEroqRh6RNiac07P
-         vGJPEugwLNmQaWqJhCPHikaN8XT33PRVwWCxE9PqkkLJA6butk39sYE2ryU8qCsIMdGI
-         yo50td1Os6it0j1WrNa5HxnLEw4W7aO/qgSsYPJply/RpIro6UCSg0Mbr4ks/thyRkDc
-         jq1OBKLqGUt/bM6QVBsbrIsF1mbjoO/AbvtSri1zHl8+S2Sf3KoNhgqJldsJW2yIuTc5
-         6FJrXgJQKS6UwdWBKS3YQ4l597qJpRKbmN+vGilzta6Rl47F1I/gy3R+i3U13Lj6DU+d
-         z+8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794726811; x=1795331611;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :message-id:date:in-reply-to:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=i0sztYeDoa78GRxByi5DPGRDZ13zK/I8mczcB1W5Z+o=;
-        b=j8Qv19zvj/rFHpxu+wA1kNP7dIBKMLbxPnVqEBIuh+euIWAWHdiyIaPfc5v9fSOrh3
-         6JyqEixJIosFlqaZrxY7yZO9X+3mXKnGKpKvmmGoZg4X9lLFveob+8FcF1fEA/NR4P7D
-         YL+ASYBF5FhVd901wN/pIkKhEjwx5nkil3MpMiEY5lSmOQBl0AgTQCi5Lszqq73UkRYI
-         oe4nHqpwICj/hUtjwEZ/+li8eBVIQXN4kA+4OfdcYYAbJEv8FzXyYE7fWywmKo1QPlPS
-         yNyBujx7VBJpJlLxV8pmdE2EBX5akhCaCble3/y9ygQzKEHXe1jkkjNdvab+3Dvl3YyD
-         +v7w==
-X-Forwarded-Encrypted: i=1; AL+hErGVIckQibIo5D9gJgHIqZKRzufu3alDQ8RZYSNeL6mmUkoWwo3r84i9bVgtt1CZYJ0IbIernWYMdj0W3sc=@vger.kernel.org
-X-Gm-Message-State: APuU4Z8oZeDexJCvnhKab/goXEZTwt81RPonZwDBhjJhQnehnjLQgUj/
-	6bfWkJ30y2kSB44+1EeBQD1LZuhHWp7q9rDzSWn/hARqJ14pDakpoI4F
-X-Gm-Gg: AYBFou2iC3puDHGMayshbsGf3wvyveZsylzp8IXaABoCOSdA4e23FxXWyBMgJM7l4Ru
-	V1PU302eNDmwb8BAyIWyP/fAJ55oKTO2aTAqgLn1kpE2TTHUJnogv5h/rlQtjrT/FPBiw0B7Hfb
-	v8OGFX+K6r+EWfKTJSmlS9qLgbUdszUHAV6gx4GtruaBHtaizRYsU4dNWXm89zL0bzVTNS2cAzn
-	ThhzK1Trd7SM6DPG3WS41dYlaMn5Wl01D2jfqu1EeLGqSU7t5msrgl1V4VXewdxo/M4fRJ2VaeR
-	tREQ//kDq4sU8VJBj05HFwPz9VOCmIGezKdxQfo6g9Lup64SATKfoxepcgp4NJf86e+iifj9Oc2
-	ByE8otO8NYvgGGPjDOKgVkBNK1TJPtq3gE8pf0qrUBZciAlDIpPdDb8ghve4bZ+hEngPJjnaysQ
-	kVG8zGAvHkVLZDK7F7y7r5je58/hCpehtc4oQs1BNMF4vsEvHZSgxCJsGkhZGiW8UZ1EQaMQrcV
-	p+JXDfv1AcGUPxJ/3xA6wktgMwtz+aDV3GMPd7psKsydoEd+wRPGWASd/bnMFiPbr72YjYFNzqa
-	ABuKlub0sGqfC5Cf3rYshyyw8D8=
-X-Received: by 2002:a05:7300:6148:b0:36a:7bb7:4609 with SMTP id 5a478bee46e88-37967dd7e1dmr11471490eec.34.1794726811302;
-        Sat, 14 Nov 2026 23:13:31 -0800 (PST)
-Received: from pve-server ([49.205.216.49])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-37956bad134sm27441185eec.27.2026.11.14.23.13.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2026 23:13:30 -0800 (PST)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Mike Rapoport <rppt@kernel.org>, "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
- Andrew Morton <akpm@linux-foundation.org>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, "David S.
- Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, Donald
- Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, Heiko
- Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen
- <chenhuacai@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>,
- Liviu Dudau <liviu@dudau.co.uk>, Luis Chamberlain <mcgrof@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu
- <mhiramat@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit
- <nadav.amit@gmail.com>, Palmer Dabbelt <palmer@dabbelt.com>, Peter
- Zijlstra <peterz@infradead.org>, Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?=
- <philmd@linaro.org>, Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell
- King <linux@armlinux.org.uk>, Sam Ravnborg <sam@ravnborg.org>, Song Liu
- <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner
- <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mips@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- loongarch@lists.linux.dev, netdev@vger.kernel.org,
- sparclinux@vger.kernel.org, x86@kernel.org, Madhavan Srinivasan
- <maddy@linux.ibm.com>
-Subject: Re: [PATCH RESEND v8 11/16] powerpc: extend execmem_params for kprobes allocations
-In-Reply-To: <avlTdlK9ErlqVRYl@kernel.org>
-Date: Sun, 15 Nov 2026 12:33:31 +0530
-Message-ID: <4idi8tks.ritesh.list@gmail.com>
-References: <20240505160628.2323363-1-rppt@kernel.org> <20240505160628.2323363-12-rppt@kernel.org> <3f7af771-87a7-4ae7-9919-bc4c23bd31c9@kernel.org> <avlTdlK9ErlqVRYl@kernel.org>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=JDmj5wL0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1794842674; x=1826378674;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=LH4mH1ubyxz0IHoQt7RT1+002Vt3ik8/Qr8lqRhqPoo=;
+  b=JDmj5wL0T5x/MIEJZH+6q7+S9e3/u3ssGbBZhqi+En5p0JKKGindKz2Q
+   fooCr44WWGk4dk04U6ITDweTzhsEPjyzUVgK11WRvT61aM6Ek/o2ISdN7
+   Hdr4K2lCwfnPn3chA/ZzKfj2WfrN1NrdcNauyBlHI1C/mZ1gCPJmr91IH
+   q3CSH43qwea7JDtbBj6T3OScGffdYJ9mWTo2y8Kj8PxOWoqmLTfB3BMR5
+   iCvgnXDil1OKitWg3EfcFueCogo29e/MfWAab64hR7ouHBQ06QZwjkB1J
+   ksygVb2YbrCxhNXxO2l9IHo1GmMJs8AClVvpUMiNnEQfM3joCIiCydB3s
+   w==;
+X-CSE-ConnectionGUID: h3kfWtwFQt6OLRR1amiPuA==
+X-CSE-MsgGUID: lVtqlskKSVOgW4hNJvOasw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11968"; a="3457207"
+X-IronPort-AV: E=Sophos;i="6.27,216,1787036400"; 
+   d="scan'208";a="3457207"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2026 07:24:33 -0800
+X-CSE-ConnectionGUID: u0Vf5AQiTyWGUmFyxOEzSg==
+X-CSE-MsgGUID: wAJ2/SvNRjKLGoPhf13KZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,216,1787036400"; 
+   d="scan'208";a="9419868"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.151])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2026 07:24:25 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: linux-pci@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-acpi@vger.kernel.org
+Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 01/13] PCI: Add pci_bus_size_and_assign_resources()
+Date: Mon, 16 Nov 2026 17:23:46 +0200
+Message-ID: <20261116152403.2672-2-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20261116152403.2672-1-ilpo.jarvinen@linux.intel.com>
+References: <20261116152403.2672-1-ilpo.jarvinen@linux.intel.com>
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -120,76 +102,178 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Mike Rapoport <rppt@kernel.org> writes:
+Bridge window sizing and resource assignment must not run concurrently
+with another sizing and assignment pass or with device removal.
+Preventing that requires holding locks across both phases. Many callers
+outside of PCI core call pci_bus_size_bridges() immediately followed by
+pci_bus_assign_resources() and cannot hold the PCI core internal locks
+across the two calls.
 
-> Hi Christophe,
->
-> On Fri, Nov 13, 2026 at 03:36:01PM +0100, Christophe Leroy (CS GROUP) wro=
-te:
->> Hi Mike,
->>=20
->> Looks like I missed this change ...
->>=20
+Add pci_bus_size_and_assign_resources() into PCI core which combines
+these two operations and convert the callers that call them back to
+back.
 
-I didn't initially get what Christophe meant here. Then I came across this
-reply of from him[1]. So looks like somehow between v3 to v8, something got
-changed?=20
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
+ arch/arm/kernel/bios32.c           | 5 ++---
+ arch/m68k/coldfire/pci.c           | 3 +--
+ arch/mips/pci/pci-legacy.c         | 5 ++---
+ arch/sh/drivers/pci/pci.c          | 3 +--
+ drivers/parisc/lba_pci.c           | 7 ++-----
+ drivers/pci/hotplug/acpiphp_glue.c | 3 +--
+ drivers/pci/setup-bus.c            | 7 +++++++
+ drivers/pcmcia/cardbus.c           | 3 +--
+ include/linux/pci.h                | 1 +
+ 9 files changed, 18 insertions(+), 19 deletions(-)
 
-    On powerpc book3s/32, vmalloc space is not executable. Only modules=20
-    space is executable. X/NX cannot be set on a per page basis, it can onl=
-y=20
-    be set on a 256 Mbytes segment basis.
-
-    See commit c49643319715 ("powerpc/32s: Only leave NX unset on segments=
-=20
-    used for modules") and 6ca055322da8 ("powerpc/32s: Use dedicated segmen=
-t=20
-    for modules with STRICT_KERNEL_RWX") and 7bee31ad8e2f ("powerpc/32s: Fi=
-x=20
-    is_module_segment() when MODULES_VADDR is defined").
-
-    So if your intention is still to have an executable kprobes, then you=20
-    can't use vmalloc address space.
-
-[1]: https://lore.kernel.org/all/1cb41761-29d0-5d33-b7c1-0ca3acaa810d@csgro=
-up.eu/
-
->> Le 05/05/2024 =C3=A0 18:06, Mike Rapoport a =C3=A9crit=C2=A0:
->> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
->> >=20
->> > powerpc overrides kprobes::alloc_insn_page() to remove writable
->> > permissions when STRICT_MODULE_RWX is on.
->> >=20
->> > Add definition of EXECMEM_KRPOBES to execmem_params to allow using the
->> > generic kprobes::alloc_insn_page() with the desired permissions.
->> >=20
->> > As powerpc uses breakpoint instructions to inject kprobes, it does not
->> > need to constrain kprobe allocations to the modules area and can use t=
-he
->> > entire vmalloc address space.
->>=20
->> Using breakpoint means the segment must still be executable.
->> On book3s/32 VMALLOC segment is not executable, while module segment is.
->>=20
->> See commit 6ca055322da8 ("powerpc/32s: Use dedicated segment for modules
->> with STRICT_KERNEL_RWX")
->>=20
->> See report and fix at https://lore.kernel.org/all/ed03d290d440d579a81ae0=
-b7de5243721291d903.1794543909.git.ritesh.list@gmail.com/
->
-> I'll take a look, thanks!
->=20=20
-
-Thanks Mike for taking a look. Sorry, I should have ccd'd you there, I
-guess I missed it. However, the changes are these one here [2][3]
-
-[2]: https://lore.kernel.org/linuxppc-dev/82c4973addebd82923c460cb44221f5b7=
-6146afe.1794572365.git.ritesh.list@gmail.com/
-[3]: https://lore.kernel.org/linuxppc-dev/f75f2cf97f44375fd2c8820e0caeab703=
-cdb371c.1794572365.git.ritesh.list@gmail.com/
-
--ritesh
+diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
+index ac0e890510da..555bfb091d30 100644
+--- a/arch/arm/kernel/bios32.c
++++ b/arch/arm/kernel/bios32.c
+@@ -510,15 +510,14 @@ void pci_common_init_dev(struct device *parent, struct hw_pci *hw)
+ 		/*
+ 		 * We insert PCI resources into the iomem_resource and
+ 		 * ioport_resource trees in either pci_bus_claim_resources()
+-		 * or pci_bus_assign_resources().
++		 * or pci_bus_size_and_assign_resources().
+ 		 */
+ 		if (pci_has_flag(PCI_PROBE_ONLY)) {
+ 			pci_bus_claim_resources(bus);
+ 		} else {
+ 			struct pci_bus *child;
+ 
+-			pci_bus_size_bridges(bus);
+-			pci_bus_assign_resources(bus);
++			pci_bus_size_and_assign_resources(bus);
+ 
+ 			list_for_each_entry(child, &bus->children, node)
+ 				pcie_bus_configure_settings(child);
+diff --git a/arch/m68k/coldfire/pci.c b/arch/m68k/coldfire/pci.c
+index 5afb207ccc51..dd21c77c43a6 100644
+--- a/arch/m68k/coldfire/pci.c
++++ b/arch/m68k/coldfire/pci.c
+@@ -250,8 +250,7 @@ static int __init mcf_pci_init(void)
+ 	rootbus->resource[0] = &mcf_pci_io;
+ 	rootbus->resource[1] = &mcf_pci_mem;
+ 
+-	pci_bus_size_bridges(rootbus);
+-	pci_bus_assign_resources(rootbus);
++	pci_bus_size_and_assign_resources(rootbus);
+ 	pci_bus_add_devices(rootbus);
+ 	return 0;
+ }
+diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
+index dae6dafdd6e0..ec0e42d9a895 100644
+--- a/arch/mips/pci/pci-legacy.c
++++ b/arch/mips/pci/pci-legacy.c
+@@ -129,15 +129,14 @@ static void pcibios_scanbus(struct pci_controller *hose)
+ 	/*
+ 	 * We insert PCI resources into the iomem_resource and
+ 	 * ioport_resource trees in either pci_bus_claim_resources()
+-	 * or pci_bus_assign_resources().
++	 * or pci_bus_size_and_assign_resources().
+ 	 */
+ 	if (pci_has_flag(PCI_PROBE_ONLY)) {
+ 		pci_bus_claim_resources(bus);
+ 	} else {
+ 		struct pci_bus *child;
+ 
+-		pci_bus_size_bridges(bus);
+-		pci_bus_assign_resources(bus);
++		pci_bus_size_and_assign_resources(bus);
+ 		list_for_each_entry(child, &bus->children, node)
+ 			pcie_bus_configure_settings(child);
+ 	}
+diff --git a/arch/sh/drivers/pci/pci.c b/arch/sh/drivers/pci/pci.c
+index 878a27a1acfb..c91ca8f4cb1c 100644
+--- a/arch/sh/drivers/pci/pci.c
++++ b/arch/sh/drivers/pci/pci.c
+@@ -81,8 +81,7 @@ static void pcibios_scanbus(struct pci_channel *hose)
+ 		need_domain_info = 1;
+ 	}
+ 
+-	pci_bus_size_bridges(hose->bus);
+-	pci_bus_assign_resources(hose->bus);
++	pci_bus_size_and_assign_resources(hose->bus);
+ 	pci_bus_add_devices(hose->bus);
+ }
+ 
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index 5197a3c93c70..39ab93ba458b 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -1639,11 +1639,8 @@ lba_driver_probe(struct parisc_device *dev)
+ 	if (is_pdc_pat()) {
+ 		/* assign resources to un-initialized devices */
+ 
+-		DBG_PAT("LBA pci_bus_size_bridges()\n");
+-		pci_bus_size_bridges(lba_bus);
+-
+-		DBG_PAT("LBA pci_bus_assign_resources()\n");
+-		pci_bus_assign_resources(lba_bus);
++		DBG_PAT("LBA pci_bus_size_and_assign_resources()\n");
++		pci_bus_size_and_assign_resources(lba_bus);
+ 
+ #ifdef DEBUG_LBA_PAT
+ 		DBG_PAT("\nLBA PIOP resource tree\n");
+diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+index 78e3effbb32d..632344f34cae 100644
+--- a/drivers/pci/hotplug/acpiphp_glue.c
++++ b/drivers/pci/hotplug/acpiphp_glue.c
+@@ -465,8 +465,7 @@ static void acpiphp_native_scan_bridge(struct pci_dev *bridge)
+ 		max = pci_scan_bridge(bus, dev, max, 1);
+ 		if (dev->subordinate) {
+ 			pcibios_resource_survey_bus(dev->subordinate);
+-			pci_bus_size_bridges(dev->subordinate);
+-			pci_bus_assign_resources(dev->subordinate);
++			pci_bus_size_and_assign_resources(dev->subordinate);
+ 		}
+ 	}
+ }
+diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
+index ed16ef7c26fa..29ec9ba59d92 100644
+--- a/drivers/pci/setup-bus.c
++++ b/drivers/pci/setup-bus.c
+@@ -2492,3 +2492,10 @@ void pci_assign_unassigned_bus_resources(struct pci_bus *bus)
+ 	__pci_bus_assign_resources(bus, &add_list, NULL);
+ }
+ EXPORT_SYMBOL_GPL(pci_assign_unassigned_bus_resources);
++
++void pci_bus_size_and_assign_resources(struct pci_bus *bus)
++{
++	pci_bus_size_bridges(bus);
++	__pci_bus_assign_resources(bus, NULL, NULL);
++}
++EXPORT_SYMBOL_GPL(pci_bus_size_and_assign_resources);
+diff --git a/drivers/pcmcia/cardbus.c b/drivers/pcmcia/cardbus.c
+index 5e5cf2c3e2c8..19df3f9228a7 100644
+--- a/drivers/pcmcia/cardbus.c
++++ b/drivers/pcmcia/cardbus.c
+@@ -81,8 +81,7 @@ int __ref cb_alloc(struct pcmcia_socket *s)
+ 	/*
+ 	 * Size all resources below the CardBus controller.
+ 	 */
+-	pci_bus_size_bridges(bus);
+-	pci_bus_assign_resources(bus);
++	pci_bus_size_and_assign_resources(bus);
+ 	cardbus_config_irq_and_cls(bus, s->pci_irq);
+ 
+ 	/* socket specific tune function */
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index aa3765a20a96..d89aeb7c9ff7 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -1569,6 +1569,7 @@ resource_size_t pcibios_retrieve_fw_addr(struct pci_dev *dev, int idx);
+ void pci_bus_assign_resources(const struct pci_bus *bus);
+ void pci_bus_claim_resources(struct pci_bus *bus);
+ void pci_bus_size_bridges(struct pci_bus *bus);
++void pci_bus_size_and_assign_resources(struct pci_bus *bus);
+ int pci_claim_resource(struct pci_dev *, int);
+ int pci_claim_bridge_resource(struct pci_dev *bridge, int i);
+ void pci_assign_unassigned_resources(void);
+-- 
+2.47.3
 
