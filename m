@@ -1,103 +1,51 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.178
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795316693;
-	b=U8+1Pzog2vSFD4slfyubd3YmRhWyJ6ETQ2rbzirj48Tc1gihUK1up+WbYw5ZNToLK7n9
-	 yg9ZL5ArIpENZffSuNZNjKP0pY3BPOZPxP7gzy1Mz2biGX8Vs4S7PRyg+xKe4ykq7DFU3
-	 h1eUszUp4NtAWgOLXoWXHEXQoQ3JzcwipBghg2z2yQu1kN5KkFNA98rBadoJZ/IBiaK3n
-	 0Ibj0PA7GKA5gCHniiU1uLc6bM0weGqMJmMvC8RHwJGieskxTt0ydduPGQKWyEJeiLdKs
-	 nUEO7vmHW00kgrJpSrnS6bNlG33rJctNyFIiOV3W/FLrBU9bNP35Gz+gnfQH3lIHnTg==
+	t=1795333928;
+	b=qk7wk3y0ETGmotioUfG4jEtQf3j568PxVFFWNiwhZHcbLRAn+6TPkss4OiZJEY8T2d6x
+	 aHwp8cA6ir4f5MBVHsjpMhlqsqB87wV3VvDr/nkeeSCeAzlI8UrnHRyjqPoDYFkvjxX3r
+	 YHRSOwhCGDTa4SLa1uYm/101Nt2tPmn7WVTA3G7FKeXMuUkGYKcvmGSzCMC1biSEEfPvD
+	 /JgOglFifIA3q/KEDg7MaUcDX+bockO4bKJqcUSURzRIgSKofeCS996srQnhJ2kEdA69D
+	 gQWyUicdje4k9SaqNyp6Srz2CQmE5675mZG9e8Qw9nZ/fGWQXVufPcwDp0g/XCmdUGg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795316693;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
-	 MIME-Version:Content-Type;
-	bh=NieCLCvG+gDw8VjVQsEmj+Xb3Nuvde1xSdj6TYYBmIA=;
-	b=4UEvw4/WCaB8MtVyR7ncYO/MzDjkhcbfKMSTBSF1IOyDOv1qCaBwzWsh4nJoLhAIkOS6
-	 4spNTyFrnp2C21OG6ya6MURhmPE7Dtr0u8Nhk0E39J0VHVFi5oUAZMSc3zgiKGt2kB5LJ
-	 y6t2R9gSodSBorh42RcAZtY7ve96S6lAIcu1kGiWINO5oKgz+RcvMo4hDIkHCn/uWzZPE
-	 1vGKo4os46s0CEqP01UaYRn4mk4ketyUxaAJQsvnHU/9Nn9+MYasPE3EadCFiVR4b9Pgy
-	 EWdXxC89ES7lgRS/qzFvDduulSMMDaR/n2R0hk8rLezoSTROdaD3tM9csL59ks1FCnQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795333928;
+	h=Received:DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version:
+	 Content-Type:Content-Disposition;
+	bh=c/SfsXQpzDXdeKfcwZ75FBtcxtEfsB2j4cQsJxUTwm4=;
+	b=iIchC9m9rGgQYcy6vLOrvZuqx4tdbFWQ9coGEBjiR+Mm0Yk2JL2tU+HrVXgdUVkJaoSp
+	 UrJ2VwNkiiB1VTYx9H/8mgUpZO9Pn7V1PAe1SLrQ0ts18ZTZCKS8hQYtYVoSBawuEWYd1
+	 7VkxF8i3qQGqQDJtvsAb0p3ydUPq7aCJdx5NBhGKJN9XQww6Ilx60tOJnJPwuYK4LiSeF
+	 XgOBzbI5bltC5VJJiRDHhKbr5GhZL4mkKOxL+J7SMOQRqTw1RM2dk61qHerzIn4efju/K
+	 c7V997NmUA0oUBsRT0PDxygHspMmOU64EErbKivaK0qNAsic8/MAUw5dYmxCIyYV34g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=lQMapLMR;
-	arc=none smtp.remote-ip=74.125.82.178
-Received: from mail-dy1-f178.google.com (mail-dy1-f178.google.com [74.125.82.178])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GTmI1KpM;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7704D606A320
-	for <linux-parisc@vger.kernel.org>; Sun, 22 Nov 2026 03:04:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7704D606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F12606A32C;
+	Sun, 22 Nov 2026 07:52:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=lQMapLMR
-Received: by mail-dy1-f178.google.com with SMTP id 5a478bee46e88-380c28f9e35so3166919eec.1
-        for <linux-parisc@vger.kernel.org>; Sat, 21 Nov 2026 19:04:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795316691; x=1795921491; darn=vger.kernel.org;
-        h=content-type:mime-version:references:message-id:date:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=NieCLCvG+gDw8VjVQsEmj+Xb3Nuvde1xSdj6TYYBmIA=;
-        b=lQMapLMRecxhRuMkTSymbForunIxX0OPXsGQ1CXe025r/577yULQNYi3TNrBG53/Qv
-         zYU80ixAjK16x1kduXUqa1QZW9W/3ti9d/2xwfANhvwcppx94XY1wfu52uKp1wNIi+xo
-         0BbROgPXyu0B62JpFc4+zEJIoiLBcGXeP+W6/munvXDcClY8J5U7eqCSCyRjBp3WeH4+
-         q1p1SE27fCRmjWxB4WY3p9l7b9yn5x1FejoLmUjB8Y+BhmVh9oZGKVtoBu6VvuhXecB+
-         kqHQVq97TpxJ2ylXI5iv8vW2n/kYW3PMkK+9IBmWOkrDx9AQECQxv8quTTJlItW+6/Cb
-         tThQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795316691; x=1795921491;
-        h=content-type:mime-version:references:message-id:date:in-reply-to
-         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=NieCLCvG+gDw8VjVQsEmj+Xb3Nuvde1xSdj6TYYBmIA=;
-        b=FXuDk5HOAjV2saNb9yjQ77V7hcSJ5sGtn3F8swGUqQ9vJIvhBaiDbWwzcdZBfV9l5P
-         y5a5LnXpb1EmGlG9hGMtNTpw2sKVOUBXkWt3vnM8VtiQmWATzDosCfn69yUmitjsJRwV
-         mAmYHZLKGD2X+JrZNm8CsPKnAsM18+eeWbw3L7dimBKpa/dC+lRwnA4F8yLJURHPrklx
-         ffmmYg46a3nUnUSBjESji6dx8+GVTVBSB4SdlpasoUhZT1Qe3XBn7gdfnGv7oPQgjQ66
-         702z9+7uP1NjlbTC1Ba6rRyrKhZPR398GsBG55lb1bPkCxtqYNITrQx63Xt/i1nki8LB
-         qR5g==
-X-Forwarded-Encrypted: i=1; AL+hErEKnl1qMzWbtqLNsfX5MyOZJwxDpAHA0nV02MfTb4RXnIra4luCgKH56CQIK7V32hR+221SFQ760PLfbMQ=@vger.kernel.org
-X-Gm-Message-State: APuU4Z+qQzyVbtRsKVH4YjDXVTgX+0upJBHGoyjzAxdNarmFt0uUYrci
-	ZUmUV9ZZwZlv2NHZqPc0kGRbJyYZLCoTW60SZ9XsVv0NfcmjzgGO7Qxl
-X-Gm-Gg: AZFdTZdGcPezweHFyo57BLS3YdBQLFGOOrwzeY/dXN0PtKbWt2vEZzdqvk6C3AspQEZ
-	ClBgFcpVj5CTQ5RMASD3Zkk4zOkdvc7YBT+6a47nSowxQjS1vwTRMUMGLIPnAmBLXmVOP3LwTaQ
-	eAI9jP/PsOQVgxHe5rlg1g9a5zPocqdjzwNJE+6FfiR0d+sJPEvOpXjWTVvSiTTtyUwIUmBH7jU
-	rUqudOxfjW4yX7wZzjpnh6BQkCZmiPfSGO3NEdoG2NTW8l0HWevyJQmRONcMMhcbnUVpYbR4HbJ
-	JiHNXqwi1v90IrBYpMXLSVaYkGCn4EBS9MZCqJLdEnQ6GxbyfXqak0lxbTx5WhrsYplMeu4Cac8
-	sun829AOSDUuy+66xfYTZpFRJvAqVD57nNUTtLM5Lqzg4NFRQIRRo9Q9VmvG5aAnv8BQito+EAX
-	YCV95HbiXIu5VL1X9yPnCAwaTicEOxY1g9Q9s8xPiTQxx1jAmSwPE/Cn7yPMyrmNdbWW/q77g5u
-	GgKAPuVVZAJOKXDYoHtBlmK5Bw/V1ofMkOfBAJQliZAuwVzXSZF/8h8M6Q1OgkiNSpCfqAVdhvq
-	xWMEZpFSaHh/g+R2C/kHPdSx29QigoNHbAfb0ja/Lyyll6or
-X-Received: by 2002:a05:7300:50fa:b0:383:9f52:e54d with SMTP id 5a478bee46e88-3856ff52e83mr8869235eec.8.1795316691531;
-        Sat, 21 Nov 2026 19:04:51 -0800 (PST)
-Received: from pve-server ([49.205.216.49])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-38567da4f85sm24302948eec.27.2026.11.21.19.04.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2026 19:04:50 -0800 (PST)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: "Mike Rapoport (Microsoft)" <rppt@kernel.org>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Baoquan He <baoquan.he@linux.dev>, Borislav Petkov <bp@alien8.de>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, 
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Pasha Tatashin <pasha.tatashin@soleen.com>, 
-	Paul Walmsley <pjw@kernel.org>, Pratyush Yadav <pratyush@kernel.org>, Rich Felker <dalias@libc.org>, 
-	Russell King <linux@armlinux.org.uk>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Thomas Gleixner <tglx@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, Will Deacon <will@kernel.org>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, x86@kernel.org
-Cc: Alexandre Ghiti <alex@ghiti.fr>, Christian Borntraeger <borntraeger@linux.ibm.com>, "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, Cong Wang <cwang@multikernel.io>, Mark Rutland <mark.rutland@arm.com>, Michael Ellerman <mpe@ellerman.id.au>, Mike Rapoport <rppt@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>, Shrikanth Hegde <sshegde@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, WANG Xuerui <kernel@xen0n.name>, kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev
-Subject: Re: [PATCH 2/2] arch, kexec: declare kexec and crash capabilities in Kconfig.kexec
-In-Reply-To: <20261119-arch-kconfig-v1-2-37c276fe4d26@kernel.org>
-Date: Sun, 22 Nov 2026 08:33:10 +0530
-Message-ID: <wlq5k1ox.ritesh.list@gmail.com>
-References: <20261119-arch-kconfig-v1-0-37c276fe4d26@kernel.org> <20261119-arch-kconfig-v1-2-37c276fe4d26@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GTmI1KpM
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED13E1F000C4;
+	Sun, 22 Nov 2026 07:52:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795333928;
+	bh=c/SfsXQpzDXdeKfcwZ75FBtcxtEfsB2j4cQsJxUTwm4=;
+	h=Date:From:To:Subject;
+	b=GTmI1KpMYpwRO4/Z0JWkhsd3cdMCbdeIEqTiq7lW4eNsd0jP1X9FPyEYvCtsFyLc8
+	 V/WVH7CqYUHz8QGz0kC26znQB6E2+PA4cFJj/DjyjlUPMxspEM0QBvgx8c/k0DePDF
+	 tiPNANYniXwsGmQyWCHxYg51Q3COd+vfKzQrSEorM3+q4KBnM9bmxJp8aNrAN3mdC1
+	 TzJCR7NLF+A0IrNH26/7KVHbr6pDVMzpERGgDNnIBlSHA6P4j9CC+RkRoZOHOQdjjQ
+	 I6yaL82lo9px6aP8Vo8/Dd24lzDlEeqRV7AQcmLtFHGAm2crbpB4TXjs/5CM99fzDT
+	 PZ4B7+R1AgSXA==
+Date: Sun, 22 Nov 2026 08:52:04 +0100
+From: Helge Deller <deller@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture fixes for v7.4-rc4
+Message-ID: <awKfJF_664rOGw4X@p100>
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -107,26 +55,41 @@ List-Unsubscribe: <mailto:linux-parisc+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-"Mike Rapoport (Microsoft)" <rppt@kernel.org> writes:
+Dear Linus,
 
-> The options that let an architecture opt in to kexec and crash dump
-> features, like ARCH_SUPPORTS_KEXEC or ARCH_SUPPORTS_CRASH_DUMP, are
-> defined in each architecture's Kconfig as def_bool, and most of them are
-> copied over several architectures.
->
-> Declare these options once in kernel/Kconfig.kexec next to the options
-> that depend on them, similarly to how mm/Kconfig does it, and make the
-> architectures select them instead.
->
-> Selection conditions are preserved, so there is no functional change.
->
-> Acked-by: Baoquan He <baoquan.he@linux.dev>
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+please pull two fixes for parisc architecture which fix lockdep and ftrace bugs.
 
-No function change observed in this patch (as described in the commit msg).
+Thanks!
+Helge
 
-LGTM, feel free to add:
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com> #powerpc
+----------------------------------------------------------------
+The following changes since commit aebb7274476403040d582c61478df8f4a7bf9cd3:
 
+  Linux 7.4-rc3 (2026-11-15 14:30:11 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-7.4-rc4
+
+for you to fetch changes up to e9c14351f84f2ddf4aae2914979c0378bc14460a:
+
+  parisc: Fix register corruption in 32-bit dynamic ftrace (2026-11-18 23:01:13 +0100)
+
+----------------------------------------------------------------
+parisc architecture fixes for kernel v7.4-rc4:
+
+Fix a register corruption with the 32-bit dynamic ftrace, and
+prevent a lockdep assertion failure in the timer tick.
+
+----------------------------------------------------------------
+Karl Mehltretter (2):
+      parisc: irq: Trace hardirq state in do_cpu_irq_mask()
+      parisc: Fix register corruption in 32-bit dynamic ftrace
+
+ arch/parisc/kernel/entry.S  | 4 ----
+ arch/parisc/kernel/ftrace.c | 2 +-
+ arch/parisc/kernel/irq.c    | 4 +++-
+ 3 files changed, 4 insertions(+), 6 deletions(-)
