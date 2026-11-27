@@ -1,88 +1,89 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.224.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.174
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795750055;
-	b=GMfIRfD9SjhvR0npAA5CTCam/L4g62tputKePYduIY4XribKcv/lYd9HuNP4pCfPer/R
-	 SMt07s8r2iRfZyPQEdeLu3Tn20FsA6oNCkra+YIf+AUof0+kVbN2tDTUAuzax6wX3iFIW
-	 33nc4lnQA0mAKdZO+Tvr/nbMUtHCSGJzIVInGZ16/YHFOYR1xF8j/gKh70CotGbHtvcPe
-	 tVy0L7Tg1qPgmw6TIn38/50wNG9+B0sN5Dbw3PvGFh+Z1q1teJQx+k+9v0dLt+nfvx8DS
-	 j5AThYRzuzJst+g1tsg5rmLLc/8yDixQTneh9gLvJ8DayW7K5uOKN0071Xym45YTytw==
+	t=1795750058;
+	b=yifoouZFXzw0uYww9P9xu4Xy9FEe3UWrC23FbjO8s+JGSyKLbrO9ANNjANx7ajd5t7eW
+	 W/bEZkUF6MAg397LB6UmB746OdcF5dJY/ZPNgYzexBkfR/XQebJTPxQD9bPHd9HxBqKi4
+	 9+NdQYYbLw58PB0sog5TAM6k3PGSAokLShQkVm9/12V7NXaOipA7Uq6WI8AQZUqop831C
+	 rNUCJfzhOXFzUd7AWCrakMYXEZW054+Cx9F3ba5SHhOiWn5UaqoLn/c682XPnxu/WWR2y
+	 o7BE52YkGeAk+oEnqOlnkM4gkEtpoKsSXasa6piCBhg5QuzkK9YBcNYAOcjU4zhRJQw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795750055;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795750058;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:
 	 X-Developer-Key;
-	bh=/mHR8HJ9Al9bQqwkUtiyfMh3C3Sx3b1yAsM2Pctzq9A=;
-	b=ntZhPal4S9ZIu60TTUpnOHQQykjTq9cdl78rwX5/01HfCMWbzgAg1V0IOA3zBaEZmh2j
-	 0UHVsl0P74nGhZFc1F01DEeamyTCr5Ng5AUknrq+MmSDaXfoT/2jn5SX64LqzHAWdYUdj
-	 OsN1e02b6It1byKgHi1bURge4Jr+plknddmjftoR4CgNLty3RuNon9wqpkWjceICuTBp9
-	 kG0afTQPi5iTyvh3oB8aBGa1eFArzQIklCABxdiYF8vfakkmW6skuUvM8EOGP9GIxMZCs
-	 o+LDcegktjP8oE050pQ0CVgR58dv+fmzLGQXQ5N7Q7JhiKrY4Tv9UuOf3mLLbDuTxSQ==
+	bh=VZ1z/Eqql0B1yBrusNWkNOIARxGQ2jjz51Edz1bEiP4=;
+	b=jB5bVq6zclPYa9YW4dRw2/VqyuduBtGMry3cBfeehkM9N1pbo+efaLPDH2zW2ul11bxY
+	 mXWmJUZ3S8NLS29qilpYRT00GDZ/GbBvMF/C1i4d3/lQrliqZYhQyqIN34zMJJR0q5LpO
+	 KwLbXkbA/hwTekpqWLQbQZlCOe/DjPT1d/xJDFw/9idJNSA8G5d5DoLCuMiYWHgCUX8XX
+	 QHt7pbUe1SLIIibVezOIZFtsDeTEm2BVuwZ4+DBqy+Eeb7xAlh1XnBj4jlMZjEdI0kTHM
+	 HmdgIsv0NkRyHmxqJGf+FheizWe3kHkFvz6W+IFaYqEig/Et1Nm0GlagEb+rS0yeAaw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=pZZUfFQ9;
-	arc=none smtp.remote-ip=74.125.224.51
-Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=CZYQA+HH;
+	arc=none smtp.remote-ip=209.85.128.174
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74C4606A321
-	for <linux-parisc@vger.kernel.org>; Fri, 27 Nov 2026 03:27:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C74C4606A321
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98EEF606A31E
+	for <linux-parisc@vger.kernel.org>; Fri, 27 Nov 2026 03:27:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 98EEF606A31E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=pZZUfFQ9
-Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-67db0791748so8797508d50.1
-        for <linux-parisc@vger.kernel.org>; Thu, 26 Nov 2026 19:27:34 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=CZYQA+HH
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-8b4f4095a7aso66432117b3.0
+        for <linux-parisc@vger.kernel.org>; Thu, 26 Nov 2026 19:27:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795750054; x=1796354854; darn=vger.kernel.org;
+        d=gmail.com; s=20260707; t=1795750056; x=1796354856; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=/mHR8HJ9Al9bQqwkUtiyfMh3C3Sx3b1yAsM2Pctzq9A=;
-        b=pZZUfFQ9d+l7wS7FnXklGX6+3O5F3SfcNgShbJtV9Cb/n4NoZiApcBPOtQ4msR2Njr
-         iNU26NvagdAPaE3SsFEeyJfUmdrrFp0qgR76A8b3PKqUXJc2wwiNIzR6oyV8gwG2r8Z6
-         m6FReet4XYNaHZFFZqy9HykJKOKjOIxvjHzgU1CIRkqqmc2YmvWuT68cGcwuhO44Aukl
-         FA/opkwSRqsuBQmQ2Gpax6Urqsai1MEP4WF0mS1BlJhjEW3dha85OIQ1kklgbQlQTTha
-         S9SaQgG+95HGyS4sXlAokPo9TjePp9Bf8PQe16B3NG57u2HojnkDvnrhKX2DeAu1NQQz
-         J9kA==
+        bh=VZ1z/Eqql0B1yBrusNWkNOIARxGQ2jjz51Edz1bEiP4=;
+        b=CZYQA+HHRkGSqjWO/Z7QpcITcGmT6x63yJIczbyD9pJTY+LLrDA61oP3CunZE+2IoV
+         XqTtviMFiCMF5BJU2Q50bLVo0d7OU/H186HyZmQ2+X/yUUN/I6yMz0T4JuJfdnjqltOP
+         bGNnhLOrXq0rFBOtTms9La17/RUNV1Wkd15f+e/WJu9WemnEHGTFQ2uypZdgNm1/SExI
+         bBFDgZbYPufnR78ELHyC+/QWYQYPDvs94GSq8FlGWcfZetfoP3u5YdgYn2PmP5oPIMj2
+         Q/iA84HXiOb+dpO/+D3bHchxeU94qOPzKmv3j1ZGG5lx9VqTbTXKunp0y0+bKmyv6vaq
+         s6LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795750054; x=1796354854;
+        d=1e100.net; s=20260707; t=1795750056; x=1796354856;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=/mHR8HJ9Al9bQqwkUtiyfMh3C3Sx3b1yAsM2Pctzq9A=;
-        b=EZIPVZv+gpQ30nc+aBpaWM5Wf1I4AICfAq2nLXS5GPl3QOgJqKl/6Z5O5wzP8WZqEr
-         NApY35W9MtyDMR1g97P52j7TKWxN3LjvMSTXId7lFLoB04JtvenspgBQlErE5vfxX17M
-         Zk7U/YVGGDwoDbW86nhgqy24D6zGn5HuGQYPUtpdVnrcbZIyHDUehXMiCzjtTlAsNXcy
-         I+vwr8aPrEXP6JzltYRMrB6f3UXHIyle0EfRbrA5VvYbzCek3A7SGiNC/DUkxQN2TTr1
-         5fkahdhMKVNowjTxYOgXGNxHYTant8cOd7aAgeJk/cPrjYNCXKg89opfIRJq2Xa65Rjz
-         SrRg==
-X-Gm-Message-State: APuU4Z/y8bAMWTHXyeRkLLgLSRf8k7Cn6T/QLYXQ8u4gTkHNY9N9Wm0i
-	p0S4wHexyvZIy7R8N9nm0FQVQVOw8mLWpsRnXVZVnN3Oj7ODbTvLHDEHP2ZzAy6I
-X-Gm-Gg: AZFdTZd+c80HQ7w6llgNv2qLSMnK2x9rgAVXREVvj+MIq+Yy4DqPNGsCeQNROVJNt/Z
-	9yRQtnNWM+qF7tVN7IbKAd996dO6PK08RT68yBW1bBLWxJRa0jzMBba+mdgVY2X9xRCVSPY92nw
-	2qzv524PG3NEBX89JmP9lfWZUdlUpIVkCOHegEvd99lKX1/b4RRJauBosCPBjzeopEGuaHOP53M
-	4ZZYPEM/fKSnIocsj3KX8grWXrV3+obBOilUc3pwwzohRtTBMHnJPojwCsL6RNodtoJ3w9nOt6O
-	1RBJF7J77+4YwvVwQCfbeWoE3151TT6o9uP/MeQlKsnNZX3cqXvk6282/r32NkboRDzum7TTO7A
-	wriKMJ4l1ZLsYNbfdm8CwlJXkRM3eW/WYHw8m9uL6HmZ5V3R/jIbOXyBc9iWkskv2kYsbGJ/Dvs
-	j0AOlpEdyyCd5fEakNH9bG8dRB/Ccq52Uv3O4nuA+YqX/2NgepkpM0t2epJNzg8u+OZ6ctIN/Ey
-	eTJG7ueGjPt7UtrOBXlXV0CrvAj7no41SotkgjUx1kHOQxTRiOiYWZHbA8Ph3kkfeh8NKRqnJfb
-	u3wo322YQhSf8Oxr9PKe+Xqe7GCVYAIEnGbSr+hP+p1SbQBB3DkLmTBgTVDLGpAQ1emTXNJOHEw
-	BI12OpIctx5cgY75kBX/TmDEpF8GfSbIl2Ritmsy1JA==
-X-Received: by 2002:a05:690e:12c2:b0:677:d419:8a27 with SMTP id 956f58d0204a3-67df440ef3bmr11430295d50.51.1795750053583;
-        Thu, 26 Nov 2026 19:27:33 -0800 (PST)
+        bh=VZ1z/Eqql0B1yBrusNWkNOIARxGQ2jjz51Edz1bEiP4=;
+        b=h4APi6XTVP9wXI52Leg0D1k5xXUHNr/abQwHWfayhg7v4zqJDi5lun2d4kABgPU5nq
+         As5lHrphxsv6mwT9M85jwI9T3rEScEtIabCSGxaqg14fTFrfUmNO3kM7dEIO0nOb9zIo
+         27flexrc+tzO3e3S3svpqiNQf8RzsuwL3UhJPITrBwSUgWTZ/W+TkslqfcCyr776HBb5
+         W2K8mCvkoRXDGlYPEUOnKz22mW/atsbBvRR9yIiMOanKq9HHsxZMCKnezggbq9bDfVZN
+         Dy1FGljnz67UY4HpryoUcoLszixDdk9102W2aCdU7wQpSA6d2085aG22hDfNC2Sz5n4E
+         2iMg==
+X-Gm-Message-State: APuU4Z865sVJ0R4yEIm5rdGOeVp5ArEhofz+hLrQjGJQYy5d5Bv6rSK/
+	+n6UspBtieFL5DC4rZLCZfXq+MuASG+ubXVTtz5owAPTk/5tVNMDdw1zGRtxvWCl
+X-Gm-Gg: AZFdTZdEc2yOukTheEnZy4DS43vgHrsARitUUkOIcGEUSCFA7/OiOLBcpbTjeEHKc3/
+	6DTSiBJLxKA3bSsxuI6RU3w/9d3m/9jWmalJIz9g3qHLLNzyktnzZZBHs/q+j8dvOHqF24Z3lui
+	BsrZk6uFIXq5IeQnkQkKqlg28hNEu1OVOIWmXUpitXWeODBt+gVP0+HhrdtiwcAvWDiqwIcyf7j
+	Mb6cCOFNjfX6dAqHnITrj/WVRwelmdpLmh118V1dtN16pj0YgblQHCRdgbRg9k1ijZJ/RvEuo9e
+	e/uB0VFyJKY6SPFRp+mfuA0BX2WNAAGJ8O/KvL9kWJACvA0LZpFi7/gDX6VQFjNRplsph/AKINN
+	ua+9N/Laa3K9EYCVvgYUK0KjmXAO6ytQkC1nrAh9FQD4Sn80xiUpKmweN4eGxvozsK9RxIbBBjh
+	LOztKer+Sr/2VVyxhlFOmT+BMf6SegMlDKVTV0k3aR59YLVpDyWhcy1l6Q9/f5BQs9Xyy2QSbom
+	TIifiaWXccifB33+KT3SjKgcLlR6Bg4hgylFXleU5WT2gUjiwlaE3jWIy86RLh+8ubedKcKL/0J
+	ozF3oMcZozogKIqaKzIw+fGJKPCgVAgqk/CqGz2gUtmJ1I0eItS2J91c4voGZcjzjZmJaziyKKj
+	yJJSANZKeiAmawP3ryxJfr66Zb/caxDK8SuYiMNEa3g==
+X-Received: by 2002:a05:690e:4090:b0:67d:a5bf:ac89 with SMTP id 956f58d0204a3-67df42b4d7dmr11725870d50.10.1795750056522;
+        Thu, 26 Nov 2026 19:27:36 -0800 (PST)
 Received: from localhost ([2600:1702:7a90:6f9f:8bc4:8aec:108d:7a04])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-67e6aeb61d7sm337583d50.3.2026.11.26.19.27.30
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-67df31fa545sm10827809d50.2.2026.11.26.19.27.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2026 19:27:31 -0800 (PST)
+        Thu, 26 Nov 2026 19:27:35 -0800 (PST)
 From: Matt Turner <mattst88@gmail.com>
-Date: Thu, 26 Nov 2026 22:27:21 -0500
-Subject: [PATCH 3/6] parisc: Let only one CPU run the HPMC handler
+Date: Thu, 26 Nov 2026 22:27:22 -0500
+Subject: [PATCH 4/6] parisc: Pass the fifth PDC argument in a register in
+ the HPMC handler
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -94,101 +95,62 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261126-parisc-hpmc-fixes-v1-3-80fb55336ac6@gmail.com>
+Message-Id: <20261126-parisc-hpmc-fixes-v1-4-80fb55336ac6@gmail.com>
 References: <20261126-parisc-hpmc-fixes-v1-0-80fb55336ac6@gmail.com>
 In-Reply-To: <20261126-parisc-hpmc-fixes-v1-0-80fb55336ac6@gmail.com>
 To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
  Helge Deller <deller@gmx.de>, Sven Schnelle <svens@stackframe.org>
 Cc: linux-parisc@vger.kernel.org, Matt Turner <mattst88@gmail.com>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2595; i=mattst88@gmail.com;
- h=from:subject:message-id; bh=dm0KN4QStYmJ2rkcMPeYtqwQ2zmCHjUNFuvjWRuingU=;
- b=owGbwMvMwCW25rVmCc8sv+mMp9WSGLI5fky37VrK9UtBe+6Js6zpmju+952ZNlfCerHLjJk/d
- 8fohj3t7/jIwiDGxTBTTJElbr0iy6y2HUt9Tkv/gpnDygQyRFqkgQEIWBj4chPzSo10jPRMtQ31
- DIEMHaN4iJweg0ZmcXFpapFuWkGRQ15+SWJJZn5esV5+QWpeQXqBXlpmWklGRn5RcSrQCL281BJ
- TV0c3I0MDE0tHCzMnC0dTE2dnJ0MnN0dHZ1cnI0tzEwNnS0cTV0tzBi5OAZhrFtky/Hdx+PyZxW
- PNrCOOz2zfzXu9/Jfom5SDsmuDZ+mnb256wDOHkWE67427sc4KNTGrOxx70oN+Cj6RPbwvxe5Us
- 3xFyPz12ewA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1452; i=mattst88@gmail.com;
+ h=from:subject:message-id; bh=Uarh8Z/aMo6oZ8Si+QFLRTVFmJANSN0OjMINz8cEeOg=;
+ b=owGbwMvMwCW25rVmCc8sv+mMp9WSGLI5fkzfJ8Befe//6smVApLxGQ1Li7hT4xL4FO5snHRmQ
+ e2Ss6v5Oj6yMIhxMcwUU2SJW6/IMqttx1Kf09K/YOawMoEMkRZpYAACFga+3MS8UiMdIz1TbUM9
+ QyBDxygeIqfHoJFZXFyaWqSbVlDkkJdfkliSmZ9XrJdfkJpXkF6gl5aZVpKRkV9UnAo0Qi8vtcT
+ U1dHNyNDAxNLRwszJwtHUxNnZydDJzdHR2dXJyNLcxMDZ0tHE1dKcgYtTAOaaClmG/znVrTm9Be
+ 8VWC1SODK9b4Wy9575/bnsm2+gyt2v+ZdFXBn+cEVu+9m+JnHlNmvHyQG3zpud+/RWyI/fcvNRH
+ 608tcI2BgA=
 X-Developer-Key: i=mattst88@gmail.com; a=openpgp;
  fpr=3BB639E56F861FA2E86505690FDD682D974CA72A
 
-An HPMC can be signaled on more than one CPU at once. On a C8000
-(PA-8900), an HPMC caused by one core is taken by both cores of the
-socket, and the firmware branches to os_hpmc on both of them.
+os_hpmc calls PDC_PIM and PDC_IO with five arguments and stores the
+fifth only on the stack, as the narrow calling convention requires.
+Wide firmware takes it from %r22 instead, which is how real64_call()
+passes it. On 64-bit kernels PDC_PIM therefore gets an arbitrary value
+as the size of hpmc_pim_data, and could write past the end of it.
 
-os_hpmc was never written for that, as its own comment says. Both CPUs
-then call PDC_PIM, PDC_IO and PDC_IODC concurrently and share
-hpmc_raddr, hpmc_pim_data and hpmc_iodc_buf, and on the C8000 this
-ended in a second HPMC (a bus timeout inside PDC) instead of a register
-dump.
-
-Take a lock with ldcw on entry. The first CPU to get it runs the
-handler as before; any other CPU spins until the first one resets the
-machine. Once the first CPU has invalidated the os_hpmc checksum, a
-further HPMC on a spinning CPU is handled by the firmware.
+Also load the fifth argument into %r22 on 64-bit kernels. The stack
+copy stays for narrow firmware.
 
 Signed-off-by: Matt Turner <mattst88@gmail.com>
 ---
- arch/parisc/kernel/hpmc.S | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+ arch/parisc/kernel/hpmc.S | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/arch/parisc/kernel/hpmc.S b/arch/parisc/kernel/hpmc.S
-index ee39afb9bebc..b45604a09b7d 100644
+index b45604a09b7d..04d01e183474 100644
 --- a/arch/parisc/kernel/hpmc.S
 +++ b/arch/parisc/kernel/hpmc.S
-@@ -17,13 +17,12 @@
-  * have the option to examine and print values from memory that
-  * would help in debugging an HPMC caused by a software bug.
-  *
-- * There is more to do here:
-+ * Only the first CPU to take an HPMC runs this handler. Any other CPU
-+ * that takes one, at the same time or later, spins forever, as PDC,
-+ * IODC and the buffers below are not safe to use from two CPUs at once.
-  *
-- *      1) On MP systems we need to synchronize processors
-- *         before calling pdc/iodc.
-- *      2) We should be checking the system state and not
-- *         returning to the fault handler if things are really
-- *         bad.
-+ * It should also check the system state and not return to the fault
-+ * handler if things are really bad.
-  *
-  */
+@@ -171,6 +171,9 @@ os_hpmc_1:
+ 	load32	PA(hpmc_pim_data),arg3
+ 	load32	HPMC_PIM_DATA_SIZE,%r4
+ 	stw     %r4,-52(sp)
++#ifdef CONFIG_64BIT
++	copy	%r4,%r22			/* arg4 for wide firmware */
++#endif
  
-@@ -58,6 +57,12 @@ hpmc_iodc_buf:
- hpmc_raddr:
- 	.block 128
+ 	ldil    L%PA(os_hpmc_2), rp
+ 	bv      (r3)                            /* call pdce_proc */
+@@ -186,6 +189,9 @@ os_hpmc_2:
+ 	ldo     0(%r0),arg2                     /* reserved */
+ 	ldo     0(%r0),arg3                     /* reserved */
+ 	stw     %r0,-52(sp)                     /* reserved */
++#ifdef CONFIG_64BIT
++	copy	%r0,%r22			/* arg4 for wide firmware */
++#endif
  
-+	/* Cleared by the first CPU to enter os_hpmc. */
-+	.section .data
-+	.align 16
-+hpmc_lock:
-+	.word 1
-+
- #define HPMC_PIM_DATA_SIZE 896 /* Enough to hold all architected 2.0 state */
- 
- 	.section .bss
-@@ -96,6 +101,11 @@ ENTRY(os_hpmc)
- 	 *   r28  (ret0) return value from procedure
- 	 */
- 
-+	load32	PA(hpmc_lock),%r4
-+1:	LDCW	0(%r4),%r5
-+	cmpib,=	0,%r5,1b
-+	nop
-+
- 	copy    arg0, %r3       /* save address of PDCE_PROC */
- 
- 	/*
-@@ -110,8 +120,6 @@ ENTRY(os_hpmc)
- 	addi    1,%r5,%r5
- 	stw     %r5,52(%r4)
- 
--	/* MP_FIXME: synchronize all processors. */
--
- 	/* Setup stack pointer. */
- 
- 	load32	PA(hpmc_stack),sp
+ 	ldil    L%PA(os_hpmc_3),rp
+ 	bv      (%r3)                           /* call pdce_proc */
 
 -- 
 2.56.1
