@@ -1,103 +1,87 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.224.44
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795693510;
-	b=ZVGqs9FKKtoFPP3Yla2ceRcUYRpQlHylayFG2+QvmE2UKYPfvRiBuVW9mLct86iVjN32
-	 Ie1JXDBnHEtYx+djuTfLoGUki+nH3WkU9ZuMzrI1GHKJOKk0tK+Y7+2UtykNmdycNP7/U
-	 PGK/CAUguHja6esx3s8JvAxU0QuPW+LkP6FhlENS7KBaQHe00U3h/wAQ8sePp8GlegN6X
-	 ej02JparTjcyAU86RZBxqhMVS7/8QZIPWrpXnz4axpo5DDe87fh9cl/tIkwA8z7EiqQp8
-	 bUEtVEIoi2Z3c6meDEI0zJiB793fGAYak8GPJKhjpkYqDA9nONzvM1ywSVkYhtwbXsg==
+	t=1795747138;
+	b=bI8VLTmg17herupAV8o6scswiPZjMuXe6PfnSkam0dV/OH2elM8XoSR535i6MGmeTXm0
+	 uvNhBrsuTdkjE09Sx482hCK7zjlHuE08mLvo4DutJJFIdHtxCeQDLqLHFBidfeUe5kWVO
+	 qvra9bsYNn5XT/2XdCHtTu4FXyMQJoszIN68BlAsaJhhSj2snBVK0XnkANRO802Pl7Et7
+	 OUjR1ueaLx981kf9DMyUa01SQqCUklwPtHkjmiMlLLkcwstZlZF31IUcvh01fLPGW0ZbN
+	 3RdnrzVcpO6hktb6CjcamSrn907mmqBXyMLJ4dmETLH9DEWR2GB5FWdYCfdZmMZenyQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795693510;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=5BVeDoXywdonN8l0fahN7PgNc5xFYXRHYBZPC3PlIr4=;
-	b=FQIXqD2h6S30DF2KnYZMWzg6JGgz1rG3UEJhXS2fkTLTKl7589u4NGLe8cqPMmkWelT2
-	 0tB/a73jYDBZ2GjtSdhwbJ8yMnn5y7NJ4trotY4SEUO53wXyvTU+WnDuQEtAXb1AAr7qt
-	 4QiliWqN6tdUSLUfPJMs402deps049ABrytb71AnQQ9/yTLu83+sdRxC1YltZtYMc/Duu
-	 ZJvN681D5XQiXHPyEZaCnX0UVDcpi+X5WGvc5magQW8zhoOBafoB16alRu1C/eKZC+tZz
-	 m9UWcu/FrFB5ExmejmObyCsYdc0Tb7aRc2U9hGmEwPFOEKrRKRzIZmLD7IbkFk060bg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795747138;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:Date:Subject:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
+	 X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:X-Developer-Signature:
+	 X-Developer-Key;
+	bh=YfuOTmof2gsRmvim2eXfKzstnIYN97rqaWOcrpsbpsw=;
+	b=tLZyoZyfSHiHoP75l45hj+2xQU7xo/Oy2+km3k1/RUmH1G1M4UGl8s0osg/xF3TuMLxL
+	 a51yz0oZfSUVqGY92OYtB8ZUOAhqBuUpUP+apxGLYkWiGuiRmAmPSwDktrdSSSEWQl40D
+	 03pIPbxHOLoNU3Qw68iUqrLa/zJ1VUYD/9YP8KOjoCzcHjafuhABAHoj9coehy083zvvl
+	 B/B87ytK6SkV+WayEY0lrSaMWGCT1ikGMPjAQ0p7+5QodmdhFD9aG/OF5LCqBiQIGU5c6
+	 YAaaV+TbjwmC62zp0Jj2tvpB5h6f6AzmXus4ZbeHVFaZxow5PaLaBO/ezp9guQjFssw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=S2hH+FUi;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=sygmKrOD;
+	arc=none smtp.remote-ip=74.125.224.44
+Received: from mail-yx1-f44.google.com (mail-yx1-f44.google.com [74.125.224.44])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A787F606A334;
-	Thu, 26 Nov 2026 11:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6091E606A31E
+	for <linux-parisc@vger.kernel.org>; Fri, 27 Nov 2026 02:38:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6091E606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=S2hH+FUi
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D8741F000C4;
-	Thu, 26 Nov 2026 11:44:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795693510;
-	bh=5BVeDoXywdonN8l0fahN7PgNc5xFYXRHYBZPC3PlIr4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=S2hH+FUi1whGz3Tc5erJ4wvaQIsa7/tWSP/c6X9vu53OBUKo1B0WiNAclJt6yAFgm
-	 pGz1Ex70shjn/h1DHItCYjmiSeUn89UCHCA4G1w1wWeCAdswE3zJrMKPMwFzKMZlDd
-	 nC0SY1V0v4hU5bqu5wSTOQsO02ln/4LBS8/pU19gTTq8a94zu1u2oRzquyVVWvfoyJ
-	 A9Q9F5dRlSSngm44CD8uAUW6WllAHTLL/ZABWNrv2paiBktHMVqFSwsqVP75fnKoBF
-	 d/7+x6dvllgHhWRvd2tJbeHoIPzncqy0ud8b0/7wXvqdGK8WsxcZSCgR/1wb4XGsOs
-	 rx6swYcSlIfow==
-From: Mike Rapoport <rppt@kernel.org>
-To: Albert Ou <aou@eecs.berkeley.edu>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Baoquan He <baoquan.he@linux.dev>,
-	Borislav Petkov <bp@alien8.de>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Pasha Tatashin <pasha.tatashin@soleen.com>,
-	Paul Walmsley <pjw@kernel.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Rich Felker <dalias@libc.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Will Deacon <will@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	x86@kernel.org,
-	"Mike Rapoport (Microsoft)" <rppt@kernel.org>
-Cc: Alexandre Ghiti <alex@ghiti.fr>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Cong Wang <cwang@multikernel.io>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	WANG Xuerui <kernel@xen0n.name>,
-	kexec@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev
-Subject: Re: [PATCH 0/2] arch, kexec: declare kexec and crash capabilities in Kconfig.kexec
-Date: Thu, 26 Nov 2026 13:44:53 +0200
-Message-ID: <179569348034.4110350.10768570671103859123.b4-ty@b4>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261119-arch-kconfig-v1-0-37c276fe4d26@kernel.org>
-References: <20261119-arch-kconfig-v1-0-37c276fe4d26@kernel.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=sygmKrOD
+Received: by mail-yx1-f44.google.com with SMTP id 956f58d0204a3-67daffde88dso4451101d50.2
+        for <linux-parisc@vger.kernel.org>; Thu, 26 Nov 2026 18:38:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795747137; x=1796351937; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=YfuOTmof2gsRmvim2eXfKzstnIYN97rqaWOcrpsbpsw=;
+        b=sygmKrODaACAkAAGV3Wb+E0VIB1YGKLOS+rXSXqA2u6b4VVRGZXDQVOPKOF7sSlBdy
+         oLojVZhwv9ZcstTV+uvW01uass1hJMz61MocsK6DceNXiAssf8tm3wmbEE/W9CJ2bSw0
+         ypssy2dRrC1/kbI22YRfJdwGzSG6+KxjNVWW+sNvita95vO1d25dKAZH0LUCJFq/Wk1d
+         zzSFumpt7baQSKwkxCPQxtidPyyb0rc1NtOnLY/EEQcxfuF6zpznf6rEcxYVSIfYLeiY
+         s5pn7dEVlPW3KrPAWU6mVOVwl9KXzQ+j8YN/hqLl2bZNJPMkN7TgcSBkEd5SIRGOowPg
+         /+/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795747137; x=1796351937;
+        h=cc:to:message-id:content-transfer-encoding:content-type
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=YfuOTmof2gsRmvim2eXfKzstnIYN97rqaWOcrpsbpsw=;
+        b=Aw77qjbdQCvmRyYy3dO8LM5+ejE07GwK83VKUeXHFw2rfDr3fo+MyijErRt2mz5jaV
+         7ym1ENEoIPdP4azULxfLz8H5fURWqRSdaBS2gvgvG7v0STowtVJhPwIsbC6lRaKg46sA
+         Uuv9Z4lMQLHHMZXZTW3ksMc9wXBoi1hIbU2anVF5rPHP+XcLDea6Jov03Pp5jRfr5jEx
+         w2MUd3976/tiBWq7MDd5IXk3v5u+MCDfiUKxX8gNgaXdJDzdeVjin3DshkHNUUltfIBK
+         nkyvRG89M2CGpjDDcU0FY4+qR5ALQMIAcOIICRdCP5jnE/w9MzhEwvhFkghDzjiYP553
+         ZcVw==
+X-Gm-Message-State: APuU4Z+4sMatZABB6QmbFpy1OjNB3SA9Jn41ywYgiTZBj6W5yX661clv
+	N7kSwVw8h6ZNdOjPc9P6mGYo4ulG1bZQijqpuiupgsAygD4AwHNHQNw1
+X-Gm-Gg: AZFdTZeXtKnaYiHQYyd+KdQNhgi7SKyESoF2SBNGcx29N4xH83xp9q2NAbp9XUSaivX
+	XcC5cGgdeS22vCQEur489gmAANfIAQRyv5DOrFtAxH/RGQ/LaIRXPWd2HZQ3hTf4sninHSZI+R6
+	SRDL+vq1WPA+9YB0+NJ9pp8pKh5v0zGGJZTOhPN/Azlf28rZjMkgqDzfPl3WxJI4GVISROZKfub
+	+eL1DhQwrScQNP5UbZQNwh4Mqg8R9HnfQcSUZAF3FrB1sBcA68vMBKs9K4JbSRWQgpCNdJ7ii0+
+	xmds0+Nlf/oR1RIxA47NbKy9248RZpNyqtQQYK5ko/SOmeoPVIi2MqYM50p39XB8LCAEraqwPtF
+	LOFSnS9imsd6PPNtWMi0ptnE/0rB2cjZvDD5e2rJb7M4KM7ZMeUy6TzVpgohNyfyf/EhKKOG2Ai
+	ywORTP7cWTb6Wdg/gvFkR/QXqYvj5hG4NB202j+9hX+iqIkRcpHoSW41E2e+V8+HzaVuDsdKJYc
+	48F+P339uw5veBPk9ofg0r9PLUpF/1gyEcF5Ph5RFxbXsBb2+RCB6ZoFMAEtjslThH6QhjrDdU4
+	ygBcAOHU6hVJBmlMqPpFTLCYP5pCUJmjzCBvWeVrQPPuIPwe2N0Bd9xiOoXxr6nTUTe9DVduP4J
+	+jmqi/FO49Jf0fsavGKFVgmaxhbqNRS16X+etRK7uFdc=
+X-Received: by 2002:a05:690e:812:10b0:67d:ea5e:e50a with SMTP id 956f58d0204a3-67df442605amr5491951d50.46.1795747137114;
+        Thu, 26 Nov 2026 18:38:57 -0800 (PST)
+Received: from localhost ([2600:1702:7a90:6f9f:66f3:d5d6:2d12:d460])
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-67df3354fe3sm10610891d50.10.2026.11.26.18.38.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2026 18:38:55 -0800 (PST)
+From: Matt Turner <mattst88@gmail.com>
+Date: Thu, 26 Nov 2026 21:38:54 -0500
+Subject: [PATCH] parisc: Mark cr16 clocksource unstable on SMP again
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -108,24 +92,88 @@ List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Message-Id: <20261126-parisc-cr16-smp-v1-1-fb8e1f730eca@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXMQQqDQAxA0atI1gbMKKP0KsWFxrSNoB2SVgri3
+ Z22y7f4fwcXU3G4FDuYbOr6XDOoLIAfw3oX1CkbQhUiUYiYBlNnZKOIviTkWIeWG6a2E8hVMrn
+ p53e89n/7e5yFX98NHMcJOCSLqXMAAAA=
+X-Change-ID: 20261126-parisc-cr16-smp-c6327c4c178e
+To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org, stable@vger.kernel.org, 
+ Matt Turner <mattst88@gmail.com>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2312; i=mattst88@gmail.com;
+ h=from:subject:message-id; bh=cteIzx29elWlpjr9bUBZsIRGIRHKEBsTO5rCfT6X+o0=;
+ b=owGbwMvMwCW25rVmCc8sv+mMp9WSGLI53trusOqPC5U7w9Ky4sKvVq2d6xtemZxIzqt7/6Yxa
+ NrzvyeEOj6yMIhxMcwUU2SJW6/IMqttx1Kf09K/YOawMoEMkRZpYAACFga+3MS8UiMdIz1TbUM9
+ QyBDxygeIqfHoJFZXFyaWqSbVlDkkJdfkliSmZ9XrJdfkJpXkF6gl5aZVpKRkV9UnAo0Qi8vtcT
+ U1dHNyNDAxNLRwszJwtHUxNnZydDJzdHR2dXJyNLcxMDZ0tHE1dKcgYtTAOYa47+MDP8UHzrPe/
+ Fy6QMR3zu5T734PNO0HTIWb3R+zRw4P5g98Qsjw4mH6z7xzEqwWfon5LZqbmrIB312h8Qk9a8ya
+ Vr3S7n2MgAA
+X-Developer-Key: i=mattst88@gmail.com; a=openpgp;
+ fpr=3BB639E56F861FA2E86505690FDD682D974CA72A
 
-From: Mike Rapoport (Microsoft) <rppt@kernel.org>
+Commit 340233dcc016 ("parisc: Mark cr16 clock unstable on all SMP
+machines") stopped the kernel from using cr16 as its clocksource on SMP,
+because the cr16 interval timers of different CPUs are not synchronized.
+Commit b5ff52be8913 ("parisc: Convert to generic clockevents") moved the
+clocksource registration into time_init() and dropped that check, so
+SMP machines use cr16 for timekeeping again.
 
-On Thu, 19 Nov 2026 08:16:56 +0200, Mike Rapoport (Microsoft) wrote:
-> The intention is to take it via kexec tree.
+On a C8000 with two PA-8900s, the cr16 timers of all four CPUs differ,
+by 0.5 seconds between the cores of one processor and by almost 3
+seconds across processors. With cr16 as the clocksource, time jumps
+backwards whenever a task moves to another CPU, and systemd-journald
+keeps rotating its journal with "Time jumped backwards".
 
-Applied to kexec-7.5 branch of liveupdate/linux.git tree, thanks!
+Register the clocksource from a device_initcall() again, once the
+secondary CPUs are online, and mark it unstable on SMP as before.
 
-[1/2] MAINTAINERS: add kernel/Kconfig.kexec to KEXEC
-      commit: 09ade745fcd10af7fa62c73a918cae6814c5b0d8
-[2/2] arch, kexec: declare kexec and crash capabilities in Kconfig.kexec
-      commit: e583fcbe5b58597fdd81bcf150115fb801d6507f
+Fixes: b5ff52be8913 ("parisc: Convert to generic clockevents")
+Cc: stable@vger.kernel.org # v6.12+
+Signed-off-by: Matt Turner <mattst88@gmail.com>
+---
+ arch/parisc/kernel/time.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-tree: https://git.kernel.org/pub/scm/linux/kernel/git/liveupdate/linux
-branch: kexec-7.5
+diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
+index 71c9d5426995..c14fb9002cdd 100644
+--- a/arch/parisc/kernel/time.c
++++ b/arch/parisc/kernel/time.c
+@@ -229,7 +229,23 @@ void __init time_init(void)
+ 
+ 	/* check for free-running 64-bit platform counter */
+ 	parisc_find_64bit_counter();
+-
+-	/* register at clocksource framework */
+-	clocksource_register_hz(&clocksource_cr16, cr16_clock_freq);
+ }
++
++/*
++ * Registered once the secondary CPUs are up: time_init() runs before that,
++ * when num_online_cpus() is still 1.
++ */
++static int __init init_cr16_clocksource(void)
++{
++	/* The cr16 interval timers are not synchronized across CPUs. */
++	if (num_online_cpus() > 1 && !running_on_qemu) {
++		clocksource_cr16.name = "cr16_unstable";
++		clocksource_cr16.flags = CLOCK_SOURCE_UNSTABLE;
++		clocksource_cr16.rating = 0;
++	}
++
++	clocksource_register_hz(&clocksource_cr16, cr16_clock_freq);
++
++	return 0;
++}
++device_initcall(init_cr16_clocksource);
 
---
-Sincerely yours,
-Mike.
+---
+base-commit: 9437ee8b6cf607e883b36e44bd755968daaebd48
+change-id: 20261126-parisc-cr16-smp-c6327c4c178e
+
+Best regards,
+--  
+Matt Turner <mattst88@gmail.com>
 
