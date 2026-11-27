@@ -1,89 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.224.46
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795755799;
-	b=DtAuLxThqdK33qZcWD9sF4Fe0Lz7Cp8SyHZuu70ebCULcnB2TZfUBZrb6LmP5DcQAmXm
-	 XhBA5GisgRGyN1yDzYSMACjQpr8Q1FlpI+yBakKRtfEKM4l/dZoyx42yBAYwE2WmBsaf4
-	 gkgXCnLF3oDXDl8K0hyJm3fLfz7uWqKpD2oVvdRsJAzFXeZkY+O2ws6yAZhwGSWlCzBa7
-	 Qe1yGCLTcu3/Wff+qXXv1kFvyUwJik2Kq2ILeM9EZizsA+eYTGdrsBDzYAoeQ9Tzy22nP
-	 xwbApuJjoqt1LWxtN6cJ88fVXAH5jjA7XN+gLL1vfhk3kECeWqEqNdy5V7RayrDbP9w==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795755799;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:Date:Subject:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
-	 References:In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:
-	 X-Developer-Key;
-	bh=DpIois4Ujh17xwC4T8qgSSKBqN7XNqEPRqIoJONvB+Q=;
-	b=Tr8ZJkGrvDyIWojkVXa6B0LCjUSPKKjp6OCAa6yEBoJhRI8+gTik29eTIVMJc17PsWsn
-	 2MvscHGFKStWtXXe7oQ9rIKml886pWG/bLjpVN9OWvM+KByON3pbyT9d+2m2FmGSSzVy/
-	 ICJzBXubenknJz7J/uBIzBI2Evniw6y3n7nXzqNpe3Ql9Ewpg/BbMhEZEskmxtIcVMA5P
-	 FvWAlWKs8CefIg/Uc/40mPgt80D7epu/dEvH1s7p4K/yuDek+qZC6gAuww8PVdRwRz+0B
-	 +Gm+VYLh3UIy3WM0NvdtPIZKp6hBhuf9nokUYN3lvhNPma/uwNiUPxGgqOFgpE5QXeg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=hlk9Z8pc;
-	arc=none smtp.remote-ip=74.125.224.46
-Received: from mail-yx1-f46.google.com (mail-yx1-f46.google.com [74.125.224.46])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795762373;
+	b=Keg8g7utf0Ho7Ec9ljCk9Xch48XzRmp8WoZnR5D+5oF9rVpcZBBWnmcaeEJG51b9IOhA
+	 stkZO+lp124g9J3XkXALDGpoy85iHMNcoCLrWCU72V6svIa5+pw/1F150HVbzoD/68qUS
+	 G/EJAKNIDX86psXDkxymIzWNqAiXbsQn9YIvlu7FCdZZTmOL8oau7na55qVOqt5iNRz4g
+	 Lq6GtGgEvP9RAF9HVdnzC4zyYEW3Yzp4UGpERQluRQND2Wi0vCRyZ6c1VGqgIG+zAYffd
+	 S5GFAPeb3/uvxPbswIdQoJfO16QTvuCBdr2xJSY9uS6s3JDx3o1cbq5/+GCOQk+Ee4Q==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795762373;
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=MNeHYtelmuSre1UuhlkxnQnbrEWwCRImfv7AOAKbTvw=;
+	b=3CL6KC786ngaHAPe8isaDuDw3wAKQlJ3bJp1IErvpPtuAqPINYMbZvcsmCy/XIp/KUlc
+	 0bts2AWonVv2jGb3Kxb4xJeStoCo4rBuOL+P/vPcdS3xoNh9vP24hZ0OQ2pjiJOCdqnzR
+	 v4PVPDqGaypv8/uh718xQRk9012tPOC0VTdSgo6ti3hR1fV4EYFt9lxcEl8EnMCP7fzpE
+	 tpVqzLZA66LkYuaSX6paFfrM/HR81QkKCYc7q6xqDcmDD4Mqcl0KHr2N2KcZ2dDoKsXNv
+	 qL8L2XvJ0V2PeLN2f+A/6EfmWPy9WW/z+PxnDUQoitlPm6aRxuMmkJPfZJGhriZ39ww==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="fQ9VvL/X";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B6A606A31C;
+	Fri, 27 Nov 2026 06:52:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fQ9VvL/X
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1795762372;
+	b=CVidcvXGu7eyZB54dOXUbPER1+9VFv45Rqc9JluQU7MQ25ocHkcfHqaFSk9YrsWlGgNC
+	 XgQgQy/B8HqTWpJi4UIA/C/l071xeitn5vR8fMoz3Aa9egz7LvQdPnYT030MOQ9UOYdpj
+	 IwVCfv8D7WLKQ2kWYBqnMT3Fqc29pja7E6F6Gw54IcZA2wzqZ7DB6OrMe2Vb7zVlaEA4M
+	 kYY8Qbwgdcl9YL/DD3LmPpRLVbDYRPyOM9xlQfCmvL17MD8oJLub99xcrVz/ZUA/oFyk3
+	 7rkm25njC73ImHqPCSqmg1Dt/2PLPXmIQOXfIXIDET+bHYLtebuiDj8QTNP2VYCw6iw==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1795762372;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=MNeHYtelmuSre1UuhlkxnQnbrEWwCRImfv7AOAKbTvw=;
+	b=0nsFFtjkU6XbsslpvAeOap7MkSDv8VRf8L7dDk4KMwmcC4LTe6Cd0k494rXy3Qnm4LRJ
+	 LsOMxRUmy6eeXUbyVQZ+Zlq257YdO+Xm4ImGGWLmynb3QuK8BwloxzWC8T4j9UN0G27CI
+	 UH96ERqiTFkfUupRW5FHtGOn7oxfvOEul2xV5UZt7weljye4sj2UDM4YOZpFE8wn16jFk
+	 6IqHHb9YuePAzF4cI95bIImXxgoX/JNOC8c/9pIFG79Ne72lva6GPkoIhDfAmr+XmX6Nt
+	 uZsnmx1vzrMGXsHC5a8R4tbpLV7BH2SQdlKY7eP3S8AlEZjbzwdSJUWN9EiQSTgAVWA==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3E88606A32A
-	for <linux-parisc@vger.kernel.org>; Fri, 27 Nov 2026 05:03:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A3E88606A32A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=hlk9Z8pc
-Received: by mail-yx1-f46.google.com with SMTP id 956f58d0204a3-67db6d4054eso8259472d50.1
-        for <linux-parisc@vger.kernel.org>; Thu, 26 Nov 2026 21:03:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795755798; x=1796360598; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=DpIois4Ujh17xwC4T8qgSSKBqN7XNqEPRqIoJONvB+Q=;
-        b=hlk9Z8pcyBpJ/P4JMlWJITIn4co0JCkMXlarSANzmn1IeStCLaacc4/m0GZALXZuVe
-         Ds91ReslKt6vAtCrs+J8rnrBTg/keg+KRUb0D+VOWqQhHxGRw3CeqJ1gnffnV/khjkHe
-         pWiir+cmcTtLvTV41O0IMkRkIKGflXHgmia7W6gwOCB8WPHkuqhkyPeANvcEWc15JE5j
-         zgbaaTqFt28+HK9MgUcf0JQEvwpl41xMIS7FsuqeGSnlsr+XPecqSZTcpufyx6unqpvB
-         mbwunt/kaWhzAKCiMZ7ZHukSQqj2V8utt/pYwDHuZCBoHmE5urjgaot3RARjuxU1Eexb
-         jgxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795755798; x=1796360598;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=DpIois4Ujh17xwC4T8qgSSKBqN7XNqEPRqIoJONvB+Q=;
-        b=Fw9w7JEkDNs2TmknR+HtSQsA1ImJwxTyudHk+QyaOczNa+Az9HBseY2Li2onMDlGFR
-         NYbKj6vTDp59GczD/GxhRsl9fJ0fuy2y8EHOfXqq224J0Fzj1bo0TIotq7WmD9j/gN5T
-         y2tY0YWZR0Y5p2lOijMQriJQDTu5T97X6VZ1etXxhHYUBYrhH2AJegJStoey8phQaC32
-         X3vRansx11b3XCNnkfZ/vvBnCg/jYcu898irKD0ISfYpMOsB1FiuTozFP1LdiYE9smAL
-         iJV0Fi7HBvykGedbGePPgsTGMVQWgvHSEWIxY84yVU0hteB/9K/s8UGXE3bz0ftajui2
-         xqnA==
-X-Gm-Message-State: APuU4Z+BsF1rlFwuOUl16hLAT9ymA9RZFamSlcuNcoAkxummv6WNxqEQ
-	L6yA/au3RFIx9tMHHW+s1g+zU5EKE+Ozm4tHdNjV5kiIj/6peVGejNDn
-X-Gm-Gg: AZFdTZeUg7McCOnvMV58PdDSbJre5wjzjtluSJge5wEN3UH5GaXOC+Jj95lNh1GyzrB
-	cmgtxKzeN4NE7K6DwMN/1ng0NefNesgAw7IYM5oYZdF9CY/5X7b//HOkuxqIaVULsD3SYwnu7E8
-	fCVBJQnQVTzHGk/NTEO7aMPZFcfydvDp0bdJwHl5HRVhL1rt5sJB/jZW4P2nKRayTA4GnvYwtBh
-	ur3DX5UvfPtr7Z8EdQ2jTFsQwq8eJFNUKQjYq9TfmzOqJu9mcVOMLuBx6ZSszKC19LpWpSj4viR
-	yH3FsdYVLwTnj0tR63YpLwpJFnUARl8P5PdK7jShlFmvJl1vOGdCoHpmFD5FQf4HGBU+sdwEuZo
-	5hmqGU93FOoSgqiwgSbSa3E27Wgf9NGW06I0JF9NjJy2u72ZPXpH3RGERtf853GQbZvrDq5OR9Y
-	a9vBBuNEJau6jdlb+KzGkUt+XQ7R7zsokRH0oty/LVr17GF2b+n1Mu7oXXbLrXhrQLc9zGHKSjE
-	fA4M81elw74Q90KY5fd63/qoZEDGzHYRKMpCmvzrbcbQhPN+f1DaQAqAxUakPlcCJiqur5fn7zX
-	JyHMnYLPuzB/me8CBDaUPba8j++cxrECm8XBrfmCqwZUZCpRCZv17ziY68Qwty8d21CsmLsgM00
-	A4Nw9xqORaD6erDVRxoknIqMN8v/FSPJP5KRzd+fBuA==
-X-Received: by 2002:a05:690e:4509:10b0:67b:9051:e335 with SMTP id 956f58d0204a3-67df43fbfccmr6441914d50.48.1795755797623;
-        Thu, 26 Nov 2026 21:03:17 -0800 (PST)
-Received: from localhost ([2600:1702:7a90:6f9f:8bc4:8aec:108d:7a04])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-67df33554b5sm10810155d50.13.2026.11.26.21.03.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2026 21:03:16 -0800 (PST)
-From: Matt Turner <mattst88@gmail.com>
-Date: Fri, 27 Nov 2026 00:03:00 -0500
-Subject: [PATCH 7/7] parisc: perf: add PA-8800/PA-8900 memory and branch
- events
+	by smtp.kernel.org (Postfix) with ESMTPS id 1BF7A1F00897;
+	Fri, 27 Nov 2026 06:52:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795762372;
+	bh=MNeHYtelmuSre1UuhlkxnQnbrEWwCRImfv7AOAKbTvw=;
+	h=From:Date:Subject:To:Cc:Reply-To;
+	b=fQ9VvL/XaFNu0FU7Y0hMVDAqgLsUIVeGBoGWgbtvNFLl0L5aby7INe4HuC5ibOWYd
+	 czvUzUo5bVPyPgjJMpkfQHlSiqFoThCBqIQcFFxZ+qVXXsv0ObIcagACcBkUscnF8d
+	 qv/jJ7L2yxjTLvleYQiiM9Bc9CXv92f6DdmBZmV2feOIsTIuih0Mw/Pfevc0Xme+e/
+	 mhPRj/4utbMFbTZHWEVDdUI9JIzVJcHwZEIWxBxdoWbmoppPcHu1EPnejNq3otSvkE
+	 R+TVpomDyLoQzYRZNXJCGO5W+0Ovak/D9N/PbuznQk3cwp2FBUSYoHI6w4jK8LnN1s
+	 kJVkAI2TlR66g==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 8EFA54B5BB;
+	Fri, 27 Nov 2026 06:52:48 +0000 (UTC)
+From: Anh Nguyen Hoang via B4 Relay <devnull+anhnh.4work.gmail.com@kernel.org>
+Date: Fri, 27 Nov 2026 00:52:48 -0600
+Subject: [PATCH] parisc: pci-dma: Handle allocation failures in
+ arch_dma_alloc()
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -94,341 +84,121 @@ List-Owner: <mailto:linux-parisc+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261127-parisc-perf-pa8800-v1-7-4f3f077010ce@gmail.com>
-References: <20261127-parisc-perf-pa8800-v1-0-4f3f077010ce@gmail.com>
-In-Reply-To: <20261127-parisc-perf-pa8800-v1-0-4f3f077010ce@gmail.com>
+Message-Id: <20261127-kbug-l001-v1-1-db0b44ec71d5@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAL8oCWsC/yXM0QpAMBSA4VfRubba2Qp5FbmwOeMgtCEl7264/
+ OrvvyCQZwpQJhd4OjjwMkdgmoDtm7kjwW00KKkyRJWL0eydmKREYYwutEanXG4h9qsnx+f3qur
+ fYTcD2e0dwH0/vn+DrW0AAAA=
+X-Change-ID: 20261127-kbug-l001-bb38331f2f7c
 To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, Peter Zijlstra <peterz@infradead.org>, 
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
- Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
- Adrian Hunter <adrian.hunter@intel.com>, 
- James Clark <james.clark@linaro.org>
+ Helge Deller <deller@gmx.de>
 Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-perf-users@vger.kernel.org, Matt Turner <mattst88@gmail.com>
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=12408; i=mattst88@gmail.com;
- h=from:subject:message-id; bh=SMG8W+ssDWA7drHBNNX5LXn3gGh1t48pJqH6brkaUS0=;
- b=owGbwMvMwCW25rVmCc8sv+mMp9WSGLI5+f4/bz3Gx1qo96fsx+t7THw+ep/ErM836G2pSte+Y
- pqwtVC24yMLgxgXw0wxRZa49Yoss9p2LPU5Lf0LZg4rE8gQaZEGBiBgYeDLTcwrNdIx0jPVNtQz
- BDJ0jOIhcnoMGpnFxaWpRbppBUUOefkliSWZ+XnFevkFqXkF6QV6aZlpJRkZ+UXFqUAj9PJSS0x
- dHd2MDA1MLB0tzJwsHE1NnJ2dDJ3cHB2dXZ2MLM1NDJwtHU1cLc0ZuDgFYK65YsTI0LF1x5m0i4
- IXwjfxH/AJe6LAHK++rOjg4umu3Xrb7PddSGf4nx++aOrHb6v3Me5UvnS9bMbJlp67t7YsvGTxQ
- ntxwNfl7AwA
-X-Developer-Key: i=mattst88@gmail.com; a=openpgp;
- fpr=3BB639E56F861FA2E86505690FDD682D974CA72A
+ Anh Nguyen Hoang <anhnh.4work@gmail.com>
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795762368; l=3623;
+ i=anhnh.4work@gmail.com; s=20261127; h=from:subject:message-id;
+ bh=LbWh1p0JWyiyRtWO0aSmkJ1gB8M+YbXem8D4tGZGGVc=;
+ b=DJdh6gcbpAwHy70+KQkuktnNPas6c90im+HCxTO8qLwfHB4z5hX/Xy5hEyRxfG6wQMj8OIxBf
+ 3IsrWwsnSBeBw7oJQclHGzpPhL9uUtAV+O0Drfs3mZfRC/gaaQ/bRT9
+X-Developer-Key: i=anhnh.4work@gmail.com; a=ed25519;
+ pk=9NJ/0SKqaFZmt1/I5XY11TZSNY2ys6RWB3gvqzrLHmI=
+X-Endpoint-Received: by B4 Relay for anhnh.4work@gmail.com/20261127 with
+ auth_id=1662
+X-Original-From: Anh Nguyen Hoang <anhnh.4work@gmail.com>
+Reply-To: anhnh.4work@gmail.com
+Content-Transfer-Encoding: 7bit
 
-RDR0_0 bits 0-4 select what ctr2 counts: instructions, loads and stores,
-or loads and stores that miss the D-cache. The loads and stores count
-leaves out most of the accesses that miss: a loop of loads or stores
-that all miss counts about 0.2 of them. Bit 13 narrows the D-cache miss
-count to stores. It narrows the loads and stores count too, but that
-count leaves out the stores that miss, so plain stores are counted on
-ctr0 instead, where RDR0_0 bit 11 makes the instruction count count
-stores.
+From: Anh Nguyen Hoang <anhnh.4work@gmail.com>
 
-The PCX-W branch images carry over to ctr2: their match filter, opcodes
-0x20-0x3f with RDR4_0 bit 247 clear and bits 266, 268 and 271-276 set,
-counts branches, and their RDR4_0 qualifier bytes count taken branches.
+arch_dma_alloc() does not check the return value of __get_free_pages().
+If the allocation fails, the function carries on with paddr == 0: it
+calls flush_kernel_dcache_range(0, size), maps __pa(0) uncached into
+the range reserved by pcxl_alloc_range(), stores __pa(0) in *dma_handle
+and returns the non-NULL virtual address of that range.
 
-Add the events mem-accesses, dcache-misses, stores, store-dcache-misses,
-branches and taken-branches, and map the generic branch-instructions
-event.
+The return value of map_uncached_pages() is ignored as well. It returns
+-ENOMEM when pte_alloc_kernel() fails, in which case the returned
+virtual range is left unmapped.
 
-Signed-off-by: Matt Turner <mattst88@gmail.com>
+In both cases dma_direct_alloc() passes the non-NULL address on, so the
+driver is told that the coherent allocation succeeded and then uses a
+buffer which is not backed by the pages it expects, or not mapped at
+all.
+
+Check both results. If the page allocation fails, release the reserved
+PCXL range and return NULL. If the mapping fails, additionally free
+the pages. Call unmap_uncached_pages() there too, so that the error
+path does not depend on how far the walk got before it failed; it
+skips empty page directory entries and clearing an empty PTE is
+harmless.
+
+This only affects machines with a PCX-L or PCX-L2 CPU, the only ones
+for which arch_dma_alloc() does not return NULL right away.
+
+Found by an automated code scan and confirmed by code inspection.
+Reproduced in qemu (B160L, PCX-L2) with page allocation fault
+injection: without this change a failed page allocation makes
+dma_alloc_coherent() return a valid looking address with DMA handle
+0xf0000000, and a failed page table allocation is reported as success
+too. With this change both return NULL.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Assisted-by: Claude:claude-fable-5-2
+Signed-off-by: Anh Nguyen Hoang <anhnh.4work@gmail.com>
 ---
- arch/parisc/kernel/perf_event_mako.c | 55 +++++++++++++++++++++++++---
- arch/parisc/kernel/perf_mako.c       | 71 ++++++++++++++++++++++++++++++++----
- arch/parisc/kernel/perf_mako.h       | 14 ++++++-
- 3 files changed, 126 insertions(+), 14 deletions(-)
+Tested in qemu-system-hppa 11.1.3 (B160L, PA7300LC) with
+generic-32bit_defconfig plus FAIL_PAGE_ALLOC. A test-only initcall calls
+dma_alloc_coherent() and fails one chosen page allocation through
+current->fail_nth.
+Before: a failed __get_free_pages() returns vaddr 0x00048000 with DMA
+handle 0xf0000000 (__pa(0)); a failed page table allocation also
+returns success.
+After: both return NULL (300 and 297 injected failures), with no leaked
+PCXL ranges or pages.
+No Cc: stable added; please add it if warranted.
 
-diff --git a/arch/parisc/kernel/perf_event_mako.c b/arch/parisc/kernel/perf_event_mako.c
-index 50171267f98b..5898d1c032cd 100644
---- a/arch/parisc/kernel/perf_event_mako.c
-+++ b/arch/parisc/kernel/perf_event_mako.c
-@@ -5,12 +5,17 @@
-  * Each core has four 31-bit counters, which count fixed events chosen by
-  * an event set (see perf_mako.c):
-  *
-- *   ctr0: TLB misses, instruction and data, or only one kind, or
-- *         instructions retired and not nullified
-+ *   ctr0: TLB misses, instruction and data, or only one kind,
-+ *         instructions retired and not nullified, or stores
-  *   ctr1, ctr3: cycles, stall cycles, non-stall cycles or, on the first
-  *               core of a processor, cycles handling TLB misses
-- *   ctr2: instructions retired, optionally filtered by instruction, or
-- *         instructions retired in non-stall cycles
-+ *   ctr2: instructions retired, optionally filtered by instruction,
-+ *         instructions retired in non-stall cycles, loads and stores,
-+ *         D-cache misses, store D-cache misses, branches or taken branches
-+ *
-+ * ctr2's loads and stores count leaves out most of the accesses that miss
-+ * the D-cache: a loop of loads or stores that all miss counts about 0.2
-+ * of them.
-  *
-  * The counters do not interrupt, so only counting is supported, and they
-  * count in all privilege levels. A counter wraps from 0x7fffffff to 0 and
-@@ -56,6 +61,12 @@ enum {
- 	MAKO_EV_ITLB_MISSES,
- 	MAKO_EV_NONNULLIFIED_INSTRUCTIONS,
- 	MAKO_EV_TLB_HANDLER_CYCLES,
-+	MAKO_EV_MEM_ACCESSES,
-+	MAKO_EV_DCACHE_MISSES,
-+	MAKO_EV_STORES,
-+	MAKO_EV_STORE_DCACHE_MISSES,
-+	MAKO_EV_BRANCHES,
-+	MAKO_EV_TAKEN_BRANCHES,
- 	MAKO_EV_MAX,
- };
+Testing:
+- Compile-tested on parisc (allmodconfig, W=1):
+  arch/parisc/kernel/pci-dma.o; no new warnings.
+- checkpatch.pl --strict: no errors or warnings.
+---
+ arch/parisc/kernel/pci-dma.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
+index bf9f192c826e..6e2d340921fe 100644
+--- a/arch/parisc/kernel/pci-dma.c
++++ b/arch/parisc/kernel/pci-dma.c
+@@ -412,12 +412,22 @@ void *arch_dma_alloc(struct device *dev, size_t size,
+ 	size = 1 << (order + PAGE_SHIFT);
+ 	vaddr = pcxl_alloc_range(size);
+ 	paddr = __get_free_pages(gfp | __GFP_ZERO, order);
++	if (!paddr)
++		goto out_free_range;
+ 	flush_kernel_dcache_range(paddr, size);
+ 	paddr = __pa(paddr);
+-	map_uncached_pages(vaddr, size, paddr);
++	if (map_uncached_pages(vaddr, size, paddr))
++		goto out_unmap;
+ 	*dma_handle = (dma_addr_t) paddr;
  
-@@ -76,6 +87,21 @@ static const struct {
- 	[MAKO_EV_ITLB_MISSES]		= { BIT(0), MAKO_EVENTS_DEFAULT },
- 	[MAKO_EV_NONNULLIFIED_INSTRUCTIONS] = { BIT(0), MAKO_EVENTS_DEFAULT },
- 	[MAKO_EV_TLB_HANDLER_CYCLES]	= { BIT(1) | BIT(3), MAKO_EVENTS_TLB_HANDLER },
-+	[MAKO_EV_MEM_ACCESSES]		= { BIT(2), MAKO_EVENTS_DEFAULT },
-+	[MAKO_EV_DCACHE_MISSES]		= { BIT(2), MAKO_EVENTS_DEFAULT },
-+	[MAKO_EV_STORES]		= { BIT(0), MAKO_EVENTS_DEFAULT },
-+	[MAKO_EV_STORE_DCACHE_MISSES]	= { BIT(2), MAKO_EVENTS_DEFAULT },
-+	[MAKO_EV_BRANCHES]		= { BIT(2), MAKO_EVENTS_DEFAULT },
-+	[MAKO_EV_TAKEN_BRANCHES]	= { BIT(2), MAKO_EVENTS_DEFAULT },
-+};
+ 	return (void *)vaddr;
 +
-+/* What ctr2 counts for each event that ctr2 can count. */
-+static const u8 mako_ctr2[MAKO_EV_MAX] = {
-+	[MAKO_EV_MEM_ACCESSES]		= MAKO_CTR2_MEMOPS,
-+	[MAKO_EV_DCACHE_MISSES]		= MAKO_CTR2_DMISSES,
-+	[MAKO_EV_STORE_DCACHE_MISSES]	= MAKO_CTR2_STORE_DMISSES,
-+	[MAKO_EV_BRANCHES]		= MAKO_CTR2_BRANCHES,
-+	[MAKO_EV_TAKEN_BRANCHES]	= MAKO_CTR2_TAKEN,
- };
- 
- #define MAKO_CONFIG_EVENT	GENMASK_ULL(7, 0)
-@@ -141,7 +167,12 @@ static bool mako_schedule(struct perf_event **events, int n, int *idx,
- 		idx[i] = __ffs(free);
- 		used |= BIT(idx[i]);
- 
--		if (code == MAKO_EV_DTLB_MISSES)
-+		if (mako_ctr2[code])
-+			cfg->ctr2 = mako_ctr2[code];
-+
-+		if (code == MAKO_EV_STORES)
-+			cfg->ctr0 = MAKO_CTR0_STORES;
-+		else if (code == MAKO_EV_DTLB_MISSES)
- 			cfg->ctr0 = MAKO_CTR0_DTLB;
- 		else if (code == MAKO_EV_ITLB_MISSES)
- 			cfg->ctr0 = MAKO_CTR0_ITLB;
-@@ -382,6 +413,8 @@ static int mako_map_hw(u64 config)
- 		return MAKO_EV_CYCLES;
- 	case PERF_COUNT_HW_INSTRUCTIONS:
- 		return MAKO_EV_INSTRUCTIONS;
-+	case PERF_COUNT_HW_BRANCH_INSTRUCTIONS:
-+		return MAKO_EV_BRANCHES;
- 	default:
- 		return -ENOENT;
- 	}
-@@ -479,6 +512,12 @@ MAKO_EVENT_ATTR(dtlb-misses, 7);
- MAKO_EVENT_ATTR(itlb-misses, 8);
- MAKO_EVENT_ATTR(nonnullified-instructions, 9);
- MAKO_EVENT_ATTR(tlb-handler-cycles, 10);
-+MAKO_EVENT_ATTR(mem-accesses, 11);
-+MAKO_EVENT_ATTR(dcache-misses, 12);
-+MAKO_EVENT_ATTR(stores, 13);
-+MAKO_EVENT_ATTR(store-dcache-misses, 14);
-+MAKO_EVENT_ATTR(branches, 15);
-+MAKO_EVENT_ATTR(taken-branches, 16);
- 
- static struct attribute *mako_event_attrs[] = {
- 	&mako_attr_0.attr.attr,
-@@ -491,6 +530,12 @@ static struct attribute *mako_event_attrs[] = {
- 	&mako_attr_8.attr.attr,
- 	&mako_attr_9.attr.attr,
- 	&mako_attr_10.attr.attr,
-+	&mako_attr_11.attr.attr,
-+	&mako_attr_12.attr.attr,
-+	&mako_attr_13.attr.attr,
-+	&mako_attr_14.attr.attr,
-+	&mako_attr_15.attr.attr,
-+	&mako_attr_16.attr.attr,
- 	NULL,
- };
- 
-diff --git a/arch/parisc/kernel/perf_mako.c b/arch/parisc/kernel/perf_mako.c
-index da8ffcdaa5eb..a93bcb332c9e 100644
---- a/arch/parisc/kernel/perf_mako.c
-+++ b/arch/parisc/kernel/perf_mako.c
-@@ -15,6 +15,7 @@
-  * are only started on a CPU once the image has been loaded there.
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/bug.h>
- #include <linux/errno.h>
- #include <linux/iopoll.h>
-@@ -63,7 +64,18 @@
-  * misses; bit 6 leaves out the data TLB misses and bit 7 the instruction
-  * TLB misses. With bit 3 set it counts retired instructions that are not
-  * nullified, and bits 4-7 each leave out the instructions at one of the
-- * four word offsets in an aligned 16-byte block.
-+ * four word offsets in an aligned 16-byte block. With bit 3 set, RDR0_0
-+ * bit 11 makes it count stores instead.
-+ *
-+ * RDR0_0 bits 0-4 select what ctr2 counts: instructions (the image's
-+ * 01000), loads and stores (00100) or loads and stores that miss the
-+ * D-cache (00101). The loads and stores count leaves out most of the
-+ * accesses that miss. Bit 13 narrows either count to stores.
-+ *
-+ * The match filter set to opcodes 0x20-0x3f, with RDR4_0 bit 247 clear and
-+ * bits 266, 268 and 271-276 set, counts branches on ctr2. RDR4_0 bytes
-+ * 0-3 set to a0 80 80 a0 count taken branches. Both settings come from the
-+ * PCX-W (PA-8500 to PA-8700) branch images.
-  *
-  * RDR bits are numbered from the most significant bit of the first
-  * doubleword.
-@@ -79,10 +91,22 @@
- #define MAKO_RDR4_0_CTR0_INSNS	3
- #define MAKO_RDR4_0_CTR0_NO_DTLB	6
- #define MAKO_RDR4_0_CTR0_NO_ITLB	7
-+#define MAKO_RDR4_0_BRANCH	247
-+#define MAKO_RDR4_0_TAKEN	0xa08080a0U
-+#define MAKO_RDR0_0_CLASS	GENMASK_ULL(63, 59)
-+#define MAKO_RDR0_0_MEMOPS	0x04
-+#define MAKO_RDR0_0_DMISSES	0x05
-+#define MAKO_RDR0_0_CTR0_STORES	11
-+#define MAKO_RDR0_0_CTR2_STORES	13
-+
-+static const unsigned int perf_mako_rdr4_0_branch_set[] = {
-+	266, 268, 271, 272, 273, 274, 275, 276,
-+};
- 
- struct perf_mako_cpu {
- 	bool			loaded;
- 	struct perf_mako_config	cfg;
-+	uint64_t		rdr0_0[ARRAY_SIZE(perf_mako_rdr0_0)];
- 	uint64_t		rdr4_0[ARRAY_SIZE(perf_mako_rdr4_0)];
- 	uint64_t		rdr16_1[ARRAY_SIZE(perf_mako_rdr16_1)];
- };
-@@ -190,33 +214,62 @@ static void perf_mako_set_bit(uint64_t *buf, unsigned int bit, bool val)
- 		buf[bit / 64] &= ~m;
++out_unmap:
++	unmap_uncached_pages(vaddr, size);
++	free_pages((unsigned long)__va(paddr), order);
++out_free_range:
++	pcxl_free_range(vaddr, size);
++	return NULL;
  }
  
--/* Build this CPU's copies of RDR4_0 and RDR16_1 for cfg. */
-+/* Build this CPU's copies of RDR0_0, RDR4_0 and RDR16_1 for cfg. */
- static int perf_mako_build(struct perf_mako_cpu *pc,
- 			   const struct perf_mako_config *cfg)
- {
- 	bool core_b = perf_mako_core_b();
-+	bool filter = cfg->filter;
-+	uint32_t mask = cfg->mask, match = cfg->match;
- 	unsigned int j;
- 
- 	if (cfg->set == MAKO_EVENTS_TLB_HANDLER && core_b)
- 		return -EOPNOTSUPP;
- 
-+	memcpy(pc->rdr0_0, perf_mako_rdr0_0, sizeof(pc->rdr0_0));
-+	if (cfg->ctr2 == MAKO_CTR2_MEMOPS) {
-+		pc->rdr0_0[0] &= ~MAKO_RDR0_0_CLASS;
-+		pc->rdr0_0[0] |= FIELD_PREP(MAKO_RDR0_0_CLASS, MAKO_RDR0_0_MEMOPS);
-+	} else if (cfg->ctr2 == MAKO_CTR2_DMISSES ||
-+		   cfg->ctr2 == MAKO_CTR2_STORE_DMISSES) {
-+		pc->rdr0_0[0] &= ~MAKO_RDR0_0_CLASS;
-+		pc->rdr0_0[0] |= FIELD_PREP(MAKO_RDR0_0_CLASS, MAKO_RDR0_0_DMISSES);
-+	}
-+	if (cfg->ctr2 == MAKO_CTR2_STORE_DMISSES)
-+		perf_mako_set_bit(pc->rdr0_0, MAKO_RDR0_0_CTR2_STORES, true);
-+	if (cfg->ctr0 == MAKO_CTR0_STORES)
-+		perf_mako_set_bit(pc->rdr0_0, MAKO_RDR0_0_CTR0_STORES, true);
-+
- 	memcpy(pc->rdr4_0, perf_mako_rdr4_0, sizeof(pc->rdr4_0));
-+	if (cfg->ctr2 == MAKO_CTR2_TAKEN) {
-+		pc->rdr4_0[0] &= ~GENMASK_ULL(63, 32);
-+		pc->rdr4_0[0] |= (uint64_t)MAKO_RDR4_0_TAKEN << 32;
-+	}
- 	if (cfg->ctr0 == MAKO_CTR0_DTLB)
- 		perf_mako_set_bit(pc->rdr4_0, MAKO_RDR4_0_CTR0_NO_ITLB, true);
- 	else if (cfg->ctr0 == MAKO_CTR0_ITLB)
- 		perf_mako_set_bit(pc->rdr4_0, MAKO_RDR4_0_CTR0_NO_DTLB, true);
--	else if (cfg->ctr0 == MAKO_CTR0_INSNS)
-+	else if (cfg->ctr0 == MAKO_CTR0_INSNS || cfg->ctr0 == MAKO_CTR0_STORES)
- 		perf_mako_set_bit(pc->rdr4_0, MAKO_RDR4_0_CTR0_INSNS, true);
--	if (cfg->filter) {
-+	if (cfg->ctr2 == MAKO_CTR2_BRANCHES) {
-+		filter = true;
-+		mask = match = 0x80000000;
-+		perf_mako_set_bit(pc->rdr4_0, MAKO_RDR4_0_BRANCH, false);
-+		for (j = 0; j < ARRAY_SIZE(perf_mako_rdr4_0_branch_set); j++)
-+			perf_mako_set_bit(pc->rdr4_0,
-+					  perf_mako_rdr4_0_branch_set[j], true);
-+	}
-+	if (filter) {
- 		for (j = 0; j < 32; j++) {
- 			uint32_t b = 1U << (31 - j);
- 
- 			perf_mako_set_bit(pc->rdr4_0, j <= 18 ? 145 - j : 282 - j,
--					  !(cfg->mask & b));
-+					  !(mask & b));
- 			perf_mako_set_bit(pc->rdr4_0, j <= 18 ? 108 + j : 205 + j,
--					  cfg->match & b);
-+					  match & b);
- 		}
--		perf_mako_set_bit(pc->rdr4_0, MAKO_RDR4_0_INVERT, cfg->invert);
-+		perf_mako_set_bit(pc->rdr4_0, MAKO_RDR4_0_INVERT,
-+				  cfg->filter && cfg->invert);
- 	}
- 
- 	memcpy(pc->rdr16_1, perf_mako_rdr16_1, sizeof(pc->rdr16_1));
-@@ -368,6 +421,8 @@ int perf_mako_load(const struct perf_mako_config *cfg)
- 		 */
- 		if (r->chain == 1 && r->rdr == 15)
- 			perf_mako_ctrs_rw(ctrs, true);
-+		else if (r->chain == 0 && r->rdr == 0)
-+			perf_mako_rdr_merge(r, pc->rdr0_0);
- 		else if (r->chain == 0 && r->rdr == 4)
- 			perf_mako_rdr_merge(r, pc->rdr4_0);
- 		else if (r->chain == 1 && r->rdr == 16)
-@@ -436,7 +491,7 @@ void perf_mako_disable(void)
- static bool perf_mako_cfg_equal(const struct perf_mako_config *a,
- 				const struct perf_mako_config *b)
- {
--	return a->set == b->set && a->ctr0 == b->ctr0 &&
-+	return a->set == b->set && a->ctr0 == b->ctr0 && a->ctr2 == b->ctr2 &&
- 	       a->filter == b->filter &&
- 	       (!a->filter || (a->invert == b->invert &&
- 			       a->mask == b->mask && a->match == b->match));
-diff --git a/arch/parisc/kernel/perf_mako.h b/arch/parisc/kernel/perf_mako.h
-index 15311b9d770c..424e90cd0583 100644
---- a/arch/parisc/kernel/perf_mako.h
-+++ b/arch/parisc/kernel/perf_mako.h
-@@ -37,6 +37,17 @@ enum {
- 	MAKO_CTR0_DTLB,		/* data TLB misses */
- 	MAKO_CTR0_ITLB,		/* instruction TLB misses */
- 	MAKO_CTR0_INSNS,	/* instructions retired and not nullified */
-+	MAKO_CTR0_STORES,	/* stores retired */
-+};
-+
-+/* What ctr2 counts, in the default event set */
-+enum {
-+	MAKO_CTR2_INSNS,	/* instructions retired, maybe filtered */
-+	MAKO_CTR2_MEMOPS,	/* loads and stores, few of those that miss */
-+	MAKO_CTR2_DMISSES,	/* loads and stores that miss the D-cache */
-+	MAKO_CTR2_STORE_DMISSES, /* stores that miss the D-cache */
-+	MAKO_CTR2_BRANCHES,	/* branches retired */
-+	MAKO_CTR2_TAKEN,	/* taken branches retired */
- };
- 
- /*
-@@ -47,7 +58,8 @@ enum {
- struct perf_mako_config {
- 	unsigned int	set;		/* MAKO_EVENTS_* */
- 	unsigned int	ctr0;		/* MAKO_CTR0_* */
--	bool		filter;
-+	unsigned int	ctr2;		/* MAKO_CTR2_* */
-+	bool		filter;		/* filter MAKO_CTR2_INSNS */
- 	bool		invert;
- 	uint32_t	mask;
- 	uint32_t	match;
+ void arch_dma_free(struct device *dev, size_t size, void *vaddr,
 
--- 
-2.56.1
+---
+base-commit: c03c1a14507dfaf8b856c2608f9ac216021fc222
+change-id: 20261127-kbug-l001-bb38331f2f7c
+
+Best regards,
+--  
+Anh Nguyen Hoang <anhnh.4work@gmail.com>
+
 
