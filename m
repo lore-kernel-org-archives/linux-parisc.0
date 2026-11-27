@@ -1,89 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.175
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795750062;
-	b=Y1Zl5M/ezddHJy6lzdiUyMiqOMShwoK4wateuJD8Qqk8lmMublFZcvC9xVMuYi1C+dAO
-	 d4J0/Vd4QYzJXMGCPYx18GXjZ/+GLYQJ/jld7fogRpx29uF+Xyg6pQaq1fBQ7Vr7LT/2b
-	 yt69n4c950v8BnLXr9b97BH9JAbnHHgXldUUoNwzDLroVqKWFKxS9SV8P+6gRzHELyPgz
-	 e6o4yzYVlqsXqc4sDxb/Xwlc5xol0Y+9OgImDqrX6E0wnD9Vz09i7T+IHCHyvYcJKEW43
-	 GIXPREcY+viBhZ/oWP+2/EY6wrjdvcgP5FkFGJGHEBpSCKi/C2X5KMObB/5j1FROzpQ==
+	t=1795755781;
+	b=WkzX2jIywap6e88NwwC6nYAUCRHulCGCGarmxihi5522nx9AhKAcOVf0CtHncYP6BN7U
+	 IfIS2MSZkC3mP6OHvjNgcstC3+pERUHMCkci6xUA3ikC/LMoMyQ5o3VN6p1rrsEKFlOwy
+	 hf8+x++L5NEGc8fk0suKL87WL+YJhZsFhSWV8dJc9Hkj1paoZeOyxhCJYbN5MVaoA6lN0
+	 H8pEWxvqxBHf/az3MrbF6TEUNbVFJcjs5qUk/BavaeBpixcM5MX8NDeR81JCNPPI1RGtQ
+	 sKAaJ40aU/OuEgziYDB+gS8Qz9uuJfLOMbiMSK0HlK5PKq+RqMWfm0qvJHFc1WhN1Rg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795750062;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795755781;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:
 	 X-Developer-Key;
-	bh=wqSrNO+JQc9uQTzjyyG5c1yC7bTUnN/gvCvW9r5anO4=;
-	b=LuZYrsSw5XkzSMHIi3GgCXQEcq5i55IsU11VUEtwSnAbBL/df0wg1Dm6NwOszZtkVA0z
-	 tIsXAMwz0f0Cp8/s1UBnO4+KFxmpR4JlMZlBsHFasSqLfLR5j6pNbYb5DmEV8Nzff8Vy6
-	 /Y/WtWd521vAqKeTD9vUbPhF647lGTOJSjNeiHO2hlsZq7I8CkjqUcFH/EmVXXiS4eqI8
-	 XoG69Xheza7Bci6k4Q//krdJKYKPBDoJao48J3voMcLBDNh1KzmsU2um4YvL1NHwrJtey
-	 k4zoJTlBk9UMO39ZCVmKzmqDj6aSqB4i1pF8gCKXnTNSV6YMNkH0bolGAvCK3cq2FuA==
+	bh=KbI0rhMQhYQfeqR7VyDE1i5BNcfKuKWsIvq9RSQwXvs=;
+	b=rLCa0m0GTdObENnRftDyWaenvfZfxoUJF2/9QnCyaNywXtOAUxlvfo6H0Jd123yXd/Y4
+	 Q3uPHCzLqJ9H6qgJP3si/W7pCTRtbXByJ43oGPo0qLzeyLo90+6hpl8y9mksEXJkzR+KX
+	 BPzeUJuREQYLZBJrUuKc7BcbUiC2Wyn6Y3nil33qmUlTaC9iYqaDz8J0DIUlDub8t/LKq
+	 4se+HbF1hkkBYC1s2R01SenDabfdHqhCI413lwXgZuCB79k2151OyiGdRvDzoj03IrsDR
+	 yoQeqbkc4H3fMYFevCqK6i7wURps7Qhq7wKE5Soa++qK9QmBEedh8OrrtqQ9NnpKDCA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="BL19T/dl";
-	arc=none smtp.remote-ip=209.85.128.182
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=WJp4WUs+;
+	arc=none smtp.remote-ip=209.85.128.175
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B687B606A31C
-	for <linux-parisc@vger.kernel.org>; Fri, 27 Nov 2026 03:27:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B687B606A31C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1FD606A324
+	for <linux-parisc@vger.kernel.org>; Fri, 27 Nov 2026 05:03:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4C1FD606A324
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=BL19T/dl
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-8b4cd576f2aso55826687b3.0
-        for <linux-parisc@vger.kernel.org>; Thu, 26 Nov 2026 19:27:41 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=WJp4WUs+
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-8b4c2da74c0so49939317b3.1
+        for <linux-parisc@vger.kernel.org>; Thu, 26 Nov 2026 21:03:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795750061; x=1796354861; darn=vger.kernel.org;
+        d=gmail.com; s=20260707; t=1795755780; x=1796360580; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=wqSrNO+JQc9uQTzjyyG5c1yC7bTUnN/gvCvW9r5anO4=;
-        b=BL19T/dlHxP2gFLFmB1YeyZ+YrHiRJqGZRkCUFY0PAiVl8UH4iRgY6NaHhgD0aO+CV
-         cMWVmUdiH60djPjPdsiljX0ultTH0RNk/+/f9bSwVoglmMp25KCr062O3cPZTf+RkyxY
-         2Wqk8nSJ7n6SA1dLoIxzyJI6rkep5TMl3qq0v7c5wdgs22ho8RRDy9/ojmpG+FGX4XGu
-         RexRaMtLIwYiP85pvCx2brq0JyzRwQppxw5MqlE1bP/GqyuQ8uZl/btdP79E/FpbhCy+
-         MGQF4OUmfe8pWEEJRJiSyOd+V3cQK2eXy1bRZ4iDiIX/Fl7MAxZ+5JA9DBHOjPcKBEyn
-         jQMg==
+        bh=KbI0rhMQhYQfeqR7VyDE1i5BNcfKuKWsIvq9RSQwXvs=;
+        b=WJp4WUs+hOF9VG1QSWQYjioDKs+09y5DNP/Ts9/hhyycT9+bTSkJ0WIEbSqY2m96QF
+         b9hxVesImOdMOpJJ6BrQM/nrFm4HsauxpvUq3KZ1GgTpr2PbZUhlc6aC1+YZOfIfi/nk
+         qIaYgtqL/5Oz0yaI9cGxu9xPhxxhbbzRWAyICmQXRrLgZJS4Ek1lD2JeXxEXXhyXkUl0
+         V39WIPHbI6wVFBagnLWOzp1WR/YsMHem/2tHdo8IBCmUPVyP6yq7fAw2QWm9PipjBmq6
+         IYf/H2ni8xxQ8dvyMbivl2oS9K0KQgKqe1yOjxLRI0Yth2XA9ib6z3XxmZbQ1sRrVVJU
+         lz7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795750061; x=1796354861;
+        d=1e100.net; s=20260707; t=1795755780; x=1796360580;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=wqSrNO+JQc9uQTzjyyG5c1yC7bTUnN/gvCvW9r5anO4=;
-        b=xKJhaBKy425F7y7od6t2Fg0vbjVEWuKMItdete9ZHpVHBG0OLgfP/dKT3+UGYb9bjn
-         0ISHNhdIffPu81YgWqBKaQH4+9tjv/Sw3yEVBt4uFCA7oV050GlNsQNla4yP8zQG2BgM
-         fznttyhg5OTqWkDYax3MhqlP51/H3OATEYOCIKCdz1zJaFqF1ww6oFVt293AglUdJ0NU
-         GhA9pxoaQ/G/IpGUKtJ3zVlaCCRNBVYpAseD4ZLv7eG8y1I+kADEkTViYXxB5bOY1zV3
-         /HZo8MNwRRxlyJlKBxzmYGtcstWWpmuWlnE2ARbGNIipOt0h25iAd9563Jhjn06/Kx+G
-         nhSw==
-X-Gm-Message-State: APuU4Z/S18teTSIgOevx3FjmWXJi9/Sv0Z4tgFEI1IG1WzlULtHJ5yZM
-	UaNvnR4UFIMNMnZgM8BqyoN4pJblr0gEvOKmejd7shWhcT9BXebgJoqa
-X-Gm-Gg: AZFdTZekNxU+4XLATo5mCU7NcF/x1LiTQmPKiDgCMHr+Wu4dEU+foJHT2568CAclPE/
-	HP34mo9lv+jc07r2S7GUv4xEZt60/JW90IBcWjDmZph4FRG4SQmjkkmAzXK/D5BA/lQ/u7f4GVj
-	+R1pCH8YMd/YtPZeSS6CvEuSQsGAF5lUHqdOX9zwwUTEXOP7rYXDMTGBPXgwqEA39mU1K1mv8YX
-	dWJJidEVH548Va1xNyWzWIUIZLHUMVweVrJKAbINKmpCRMpwnefWi285RaATWokN8sXyy25FJOs
-	rrhUU+qgKhQaIXxS8+4qitIsZKeDV/0p/AKKrKg42CmbxPMChOFnkltmb3DlRjzTjCfee00f6Jt
-	Rjgqnw/0onNilQDe1nKUhbROMl/u1GYqx7WETX2GpXB5uS0Z5D1QHBNS9sqyNMfZe0YSaK5Spqw
-	vW0rSOQBud0u3IHAPF386NKJrwGyCZTxbAOuypXKlzaVv7hyJcPIjqsk+7fYAEJ/hRXiCjMxEiV
-	ht52e2PkdnkdYsgOnYVJN/7S5KkXRIMfs7R0S/N47aU2Gb0qCs6EqwunXSE2x9fAy2WGg1goVp0
-	roSwGFV0hiztq0pmRYluuuZdRRqXrPix+x5NENWoHqyXbVqEltqtKCCwVrGdsnVrTtgigT1obkz
-	BniTiYP6C8CLxTUt/n6h1DJlvJQratm2ulnO9uRT26g==
-X-Received: by 2002:a05:690c:4a03:b0:8a8:5c3d:903 with SMTP id 00721157ae682-8b520519690mr82386877b3.62.1795750060644;
-        Thu, 26 Nov 2026 19:27:40 -0800 (PST)
+        bh=KbI0rhMQhYQfeqR7VyDE1i5BNcfKuKWsIvq9RSQwXvs=;
+        b=HCLREz9Ws5/kbmLv6U4Q12qW+MoWdoLVz16K+IJM1YGFUryHh6wAkeVukczXBEPJZD
+         ITUz4thY6kXSFEH92inJpj/Dgfc6gOTHD4DX3+Dw3peYlxm0AYemK6BG6u0FQlu2Iu4q
+         DhlD+EJxlywbXzg8nvbkg5T1jQFm80eRuBL1SXXLTgaZqEH/uGdXG4nOzo9U1DZry8uK
+         4IoageOhUeOhTR/lPyAlT1lY87esOR1BKH46eSelMjc5iElS0QALmD9/j9StMTF4n7Ye
+         hkLKOp1GbgLi0U0v6fNL45xfnAslPWye42M5tfnLFA5WaZ/dhpF/R7RMm9D215Rhdg+J
+         JPkA==
+X-Gm-Message-State: APuU4Z/gSV6rp/RB+EpW6Ox7fBG6RtXA0dZMOPwwhTEeY+zlPHS3wPqX
+	SIMLJfbYJVwYoKRCKq6zhgHnl0+Xv+FPLw2BLjyfT9wodmX8jngqWTOe
+X-Gm-Gg: AZFdTZcw/bwBvaYSt1r6yTQuW+yq3MtllxqenjPXgZ//r/PIe6NxEBoD3MGQWBhPN5L
+	1ZOyNBVcYzVXjUekvPnyQzqi7YRVLpPzUSNQvKLxS+UHK6Pyp4DV/r5J4+ao36bOInKYvAnBBH2
+	X7Z92usF7ueFiQAvuCuMIuRImuaFaXxNiN0kCW0XgeKk7q17K3QDaaQo5wXVkGjGA0CsW6iUEZX
+	v6bm6KpR+aFGvGzIAnmllA2xamohnHFzy/SyiKubCaCEt3RxTly+5bTPcac0rOvgolRbKc20TMA
+	fS1Yka4urvu2rCZ+ppIS/ZoarLR9ZXwH+IjzbnJlCpogauzx5MaWZWOjOxCAwYkVCrORjkpdGrB
+	jG/5Fh2xE5gJGGlTx8SCZANYt+mjEjHqgEW5tyE2nIuqwtfWyIOk6qYCB/qteVFA6FTb3pptjjo
+	jxlOySLAfMVgXwrU8ExZANrlvT4JICjT7uQ7RE6WWmY/MoOtzDvEl6h9KdhF7RS2S0VwVd4l0rp
+	8zeAyCmHkbk2s7HkIv28PP0+SVo5THsiVTGNpiu9aLYE1JVrt+8bvcjO5SyrC7SbhB6QOwWJN02
+	pZ+Pvn/pSfnheQRk6cIsJSAAW74P8QHiX0YRvm2rit2O7WVSB84z7iOUw26soufrEJfRF/5yoBl
+	1qFkRjQNTErfq4tPanbryIK/JwcG5HAfea7FW3NWsNRw=
+X-Received: by 2002:a05:690c:4d4a:b0:8b3:ba8c:2e77 with SMTP id 00721157ae682-8b52047e4a7mr72735317b3.33.1795755779922;
+        Thu, 26 Nov 2026 21:02:59 -0800 (PST)
 Received: from localhost ([2600:1702:7a90:6f9f:8bc4:8aec:108d:7a04])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-8b520354770sm92613837b3.42.2026.11.26.19.27.39
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-8b52033c2d4sm90735777b3.36.2026.11.26.21.02.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2026 19:27:39 -0800 (PST)
+        Thu, 26 Nov 2026 21:02:59 -0800 (PST)
 From: Matt Turner <mattst88@gmail.com>
-Date: Thu, 26 Nov 2026 22:27:24 -0500
-Subject: [PATCH 6/6] parisc: Print the parisc_terminate() report on nbcon
- consoles
+Date: Fri, 27 Nov 2026 00:02:54 -0500
+Subject: [PATCH 1/7] parisc: perf: swap the PCX-U and PCX-W RDR tables
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -95,63 +94,119 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261126-parisc-hpmc-fixes-v1-6-80fb55336ac6@gmail.com>
-References: <20261126-parisc-hpmc-fixes-v1-0-80fb55336ac6@gmail.com>
-In-Reply-To: <20261126-parisc-hpmc-fixes-v1-0-80fb55336ac6@gmail.com>
+Message-Id: <20261127-parisc-perf-pa8800-v1-1-4f3f077010ce@gmail.com>
+References: <20261127-parisc-perf-pa8800-v1-0-4f3f077010ce@gmail.com>
+In-Reply-To: <20261127-parisc-perf-pa8800-v1-0-4f3f077010ce@gmail.com>
 To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, Sven Schnelle <svens@stackframe.org>
-Cc: linux-parisc@vger.kernel.org, Matt Turner <mattst88@gmail.com>
+ Helge Deller <deller@gmx.de>, Peter Zijlstra <peterz@infradead.org>, 
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
+ Adrian Hunter <adrian.hunter@intel.com>, 
+ James Clark <james.clark@linaro.org>
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-perf-users@vger.kernel.org, Matt Turner <mattst88@gmail.com>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1549; i=mattst88@gmail.com;
- h=from:subject:message-id; bh=nz0uA+drY8wyL4Z/csN+TfOnjYcwN8dyNFJsvfXjbZE=;
- b=owGbwMvMwCW25rVmCc8sv+mMp9WSGLI5fkzX+y1g/bfk/bJ+B6ZJbIt0b0gK68hJ3jMvCub99
- uuwGt/Ljo8sDGJcDDPFFFni1iuyzGrbsdTntPQvmDmsTCBDpEUaGICAhYEvNzGv1EjHSM9U21DP
- EMjQMYqHyOkxaGQWF5emFummFRQ55OWXJJZk5ucV6+UXpOYVpBfopWWmlWRk5BcVpwKN0MtLLTF
- 1dXQzMjQwsXS0MHOycDQ1cXZ2MnRyc3R0dnUysjQ3MXC2dDRxtTRn4OIUgLnmixUjQ6MXr92vaV
- 0ODv1JuV95tHqqc+s6zKUmbejszize/TvsGcMfnsv7dTsbKoubCzPZP4RYJ90WElDzz9/g3WC1Y
- EK3ZRInAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3931; i=mattst88@gmail.com;
+ h=from:subject:message-id; bh=WSGfmKS9u083kTuUTG6vl0t/7ZIxmbwyYW67G7uEfhw=;
+ b=owGbwMvMwCW25rVmCc8sv+mMp9WSGLI5+f61/3F/bFL7Url2tmbx8W+b/25RCHH7VZQi/zry6
+ xmjCU6bOz6yMIhxMcwUU2SJW6/IMqttx1Kf09K/YOawMoEMkRZpYAACFga+3MS8UiMdIz1TbUM9
+ QyBDxygeIqfHoJFZXFyaWqSbVlDkkJdfkliSmZ9XrJdfkJpXkF6gl5aZVpKRkV9UnAo0Qi8vtcT
+ U1dHNyNDAxNLRwszJwtHUxNnZydDJzdHR2dXJyNLcxMDZ0tHE1dKcgYtTAOYa0waG/9lSdd5O2T
+ e3Rn1bm3Fk/1fbsyn1/C0Cnn9vytfcjjcIMGJkWKT5/aDzWgfxg3aP3E9t5t718uiyCfq/GetMj
+ n+YEeL5mR8A
 X-Developer-Key: i=mattst88@gmail.com; a=openpgp;
  fpr=3BB639E56F861FA2E86505690FDD682D974CA72A
 
-parisc_terminate() prints a stack trace and the registers, and then
-calls panic(). It runs with interrupts disabled, and it never enters
-the nbcon emergency state, unlike die_if_kernel(), which calls
-oops_enter().
+perf_rdr_tbl_W holds the PCX-U (PA-8000/PA-8200) RDR widths and
+perf_rdr_tbl_U holds the PCX-W (PA-8500/PA-8600) widths, and it has been
+that way since the driver was added. The driver's own code and data
+show it:
 
-With an nbcon console such as the 8250, a printk() in normal priority
-only stores the message and queues irq_work to wake the console
-printer thread. With interrupts off that irq_work never runs, so
-nothing reaches the console until panic() flushes it. If the machine
-dies before then, the report is lost. On a C8000 an HPMC went through
-os_hpmc and parisc_terminate() as far as the PDC_SOFT_POWER call
-after the register dump, and then took a second HPMC, and nothing at
-all was printed.
+ - The CUDA (PCX-W) counter read takes four 32-bit counters, two
+   doublewords, from RDR15. perf_rdr_tbl_W says RDR15 is 8 bits wide;
+   perf_rdr_tbl_U says 128.
 
-Call oops_enter() first, as die_if_kernel() does, so the report is
-printed as it is generated.
+ - The ONYX (PCX-U) counter read takes the counters from bits 1398 to
+   1529 of RDR16, which needs RDR16 to be 1530 bits wide as in
+   perf_rdr_tbl_W. perf_rdr_tbl_U says 1494.
 
+ - perf_rdr_shift_in_W does nothing for RDR3, RDR7, RDR8, RDR9, RDR12
+   and RDR19, which are absent in perf_rdr_tbl_U. perf_rdr_tbl_W gives
+   RDR3, RDR7, RDR9 and RDR12 non-zero widths.
+
+ - The ONYX images write RDR7, which is absent in perf_rdr_tbl_U, and the
+   CUDA images write RDR15, which is 8 bits in perf_rdr_tbl_W.
+
+ - The images are laid out for the swapped tables. RDR data is
+   left-justified, so the bits past each RDR's width are zero. Read
+   with perf_rdr_tbl_U, none of the 22 cuda_images sets a bit past the
+   width of any RDR; read with perf_rdr_tbl_W, every image does in about
+   two thirds of its RDRs. The same holds the other way round for the 44
+   onyx_images. With the swapped tables both image families end in the
+   same 9 Runway doublewords, and the CUDA images' Runway STATUS word
+   then carries bits inside the 0x0013000000000000 mask that
+   perf_write_image() applies.
+
+ - The PA-8500/PA-8600 PDC firmware (from HP-UX 11.11 patch PHSS_25983)
+   has an RDR description table whose widths equal perf_rdr_tbl_U in
+   every entry.
+
+As a result every CUDA image write shifts each RDR by the wrong amount
+and loads RDR16 one doubleword early, the CUDA counter read returns 8
+bits, and on PCX-U RDR7 is never written and the counters are taken
+from a misaligned RDR16.
+
+Swap the two tables' names, and correct the RDR20/21 and RDR22/23 widths
+in the perf_bitmasks comments. The RDR20/21 mask already covers 158
+bits.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Matt Turner <mattst88@gmail.com>
 ---
- arch/parisc/kernel/traps.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/parisc/kernel/perf.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
-index 4c7c5df80bd0..7c123dc9e9a2 100644
---- a/arch/parisc/kernel/traps.c
-+++ b/arch/parisc/kernel/traps.c
-@@ -422,6 +422,12 @@ void parisc_terminate(char *msg, struct pt_regs *regs, int code, unsigned long o
- {
- 	static DEFINE_SPINLOCK(terminate_lock);
+diff --git a/arch/parisc/kernel/perf.c b/arch/parisc/kernel/perf.c
+index 5e10f98ce7b5..8f9ae67270bd 100644
+--- a/arch/parisc/kernel/perf.c
++++ b/arch/parisc/kernel/perf.c
+@@ -67,8 +67,8 @@ static const int perf_rdrs_W[] =
+ static const int perf_rdrs_U[] =
+ 	{ 0, 1, 4, 5, 6, 7, 16, 17, 18, 20, 21, 22, 23, 24, 25, -1 };
  
-+	/*
-+	 * Print synchronously on nbcon consoles. Interrupts are off from
-+	 * here on, so the console printer thread would never be woken.
-+	 */
-+	oops_enter();
-+
- 	(void)notify_die(DIE_OOPS, msg, regs, 0, code, SIGTRAP);
- 	bust_spinlocks(1);
+-/* RDR register descriptions for PCX-W */
+-static const struct rdr_tbl_ent perf_rdr_tbl_W[] = {
++/* RDR register descriptions for PCX-U */
++static const struct rdr_tbl_ent perf_rdr_tbl_U[] = {
+ 	{ 19,	1,	8 },   /* RDR 0 */
+ 	{ 16,	1,	16 },  /* RDR 1 */
+ 	{ 72,	2,	0 },   /* RDR 2 */
+@@ -103,8 +103,8 @@ static const struct rdr_tbl_ent perf_rdr_tbl_W[] = {
+ 	{ 16,	1,	0 },   /* RDR 31 */
+ };
  
+-/* RDR register descriptions for PCX-U */
+-static const struct rdr_tbl_ent perf_rdr_tbl_U[] = {
++/* RDR register descriptions for PCX-W */
++static const struct rdr_tbl_ent perf_rdr_tbl_W[] = {
+ 	{ 19,	1,	8 },              /* RDR 0 */
+ 	{ 32,	1,	16 },             /* RDR 1 */
+ 	{ 20,	1,	0 },              /* RDR 2 */
+@@ -147,10 +147,10 @@ static const uint64_t perf_bitmasks[] = {
+ 	0x0000000000000000ul,     /* first dbl word must be zero */
+ 	0xfdffe00000000000ul,     /* RDR0 bitmask */
+ 	0x003f000000000000ul,     /* RDR1 bitmask */
+-	0x00fffffffffffffful,     /* RDR20-RDR21 bitmask (152 bits) */
++	0x00fffffffffffffful,     /* RDR20-RDR21 bitmask (158 bits) */
+ 	0xfffffffffffffffful,
+ 	0xfffffffc00000000ul,
+-	0xfffffffffffffffful,     /* RDR22-RDR23 bitmask (233 bits) */
++	0xfffffffffffffffful,     /* RDR22-RDR23 bitmask (194 bits) */
+ 	0xfffffffffffffffful,
+ 	0xfffffffffffffffcul,
+ 	0xff00000000000000ul
 
 -- 
 2.56.1
