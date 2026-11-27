@@ -1,88 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.169
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795755781;
-	b=WkzX2jIywap6e88NwwC6nYAUCRHulCGCGarmxihi5522nx9AhKAcOVf0CtHncYP6BN7U
-	 IfIS2MSZkC3mP6OHvjNgcstC3+pERUHMCkci6xUA3ikC/LMoMyQ5o3VN6p1rrsEKFlOwy
-	 hf8+x++L5NEGc8fk0suKL87WL+YJhZsFhSWV8dJc9Hkj1paoZeOyxhCJYbN5MVaoA6lN0
-	 H8pEWxvqxBHf/az3MrbF6TEUNbVFJcjs5qUk/BavaeBpixcM5MX8NDeR81JCNPPI1RGtQ
-	 sKAaJ40aU/OuEgziYDB+gS8Qz9uuJfLOMbiMSK0HlK5PKq+RqMWfm0qvJHFc1WhN1Rg==
+	t=1795755784;
+	b=w6Zzvh7cFw6C6xOcAVsNPcNm6ym5FEpdUgZ52m0TTxqIL0SfmUoMeOuhEIfVfKfjLjuw
+	 ASMPH6f+uc1CERKWQYO3KUT359iBeU9GiSxOroWsUbgplLhf2VJulTuQwwUYO0+zAXVEu
+	 P0Pg+jFu67gHCCjo+36rOuJQsX75MBeWvwA1bsp1vW838RfQ0vwDALb4jXC/PPdFB2/V2
+	 rbohe7RWYuyUpMsrjUCpZIaTwFETWWoxK+1Zr6A9TL9geokZuhxZvTlGsuX8AS3v3J9LG
+	 5AzIX4eKllYxS8J3PJhRTvrAPWOyLvabs0QZ8s3+8T4ePKXPIQRd4f0vqOT6wvunS+A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795755781;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795755784;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:
 	 X-Developer-Key;
-	bh=KbI0rhMQhYQfeqR7VyDE1i5BNcfKuKWsIvq9RSQwXvs=;
-	b=rLCa0m0GTdObENnRftDyWaenvfZfxoUJF2/9QnCyaNywXtOAUxlvfo6H0Jd123yXd/Y4
-	 Q3uPHCzLqJ9H6qgJP3si/W7pCTRtbXByJ43oGPo0qLzeyLo90+6hpl8y9mksEXJkzR+KX
-	 BPzeUJuREQYLZBJrUuKc7BcbUiC2Wyn6Y3nil33qmUlTaC9iYqaDz8J0DIUlDub8t/LKq
-	 4se+HbF1hkkBYC1s2R01SenDabfdHqhCI413lwXgZuCB79k2151OyiGdRvDzoj03IrsDR
-	 yoQeqbkc4H3fMYFevCqK6i7wURps7Qhq7wKE5Soa++qK9QmBEedh8OrrtqQ9NnpKDCA==
+	bh=a+c+j9Jfk0kuBAX1UCDJb9a3EQrHXPCSakbH3m0yoRM=;
+	b=2hzU0eLFCpg2b9JaCJVw/YVz6k4omQinqSDGmcCZ8fvYWc8Vz1TuhJSrAs9YCqrOf23p
+	 dOrUbeyd9TDd5aR6+tVUxPfJqCdrzY2s2f5O8ZyGucDKBIA0O+BOJPyQSmjfV1nH26JyX
+	 FWFbG++NI9PU6HoLUzzUCDcGj4RDNbaRTjG9G5rE1dxd4916RILoMEQXWe8BBrojGNFea
+	 9KnKe1Z+i9kI36P+uprgtpxLrdKJHMBgRl8eU8mZciocC/9p6gUMvwIG4BO/b8Bb6c6Vu
+	 XtO+X5qRiIQkXSqPFUnagw9V4NKvUBJ1Ew/axHsqAUqDR7WL/WUo4liySi0U4WqvRXg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=WJp4WUs+;
-	arc=none smtp.remote-ip=209.85.128.175
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=vJgaKpIv;
+	arc=none smtp.remote-ip=209.85.128.169
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1FD606A324
-	for <linux-parisc@vger.kernel.org>; Fri, 27 Nov 2026 05:03:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4C1FD606A324
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485D9606A31E
+	for <linux-parisc@vger.kernel.org>; Fri, 27 Nov 2026 05:03:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 485D9606A31E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=WJp4WUs+
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-8b4c2da74c0so49939317b3.1
-        for <linux-parisc@vger.kernel.org>; Thu, 26 Nov 2026 21:03:01 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=vJgaKpIv
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-8b4fb5d96b3so117951977b3.1
+        for <linux-parisc@vger.kernel.org>; Thu, 26 Nov 2026 21:03:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795755780; x=1796360580; darn=vger.kernel.org;
+        d=gmail.com; s=20260707; t=1795755783; x=1796360583; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=KbI0rhMQhYQfeqR7VyDE1i5BNcfKuKWsIvq9RSQwXvs=;
-        b=WJp4WUs+hOF9VG1QSWQYjioDKs+09y5DNP/Ts9/hhyycT9+bTSkJ0WIEbSqY2m96QF
-         b9hxVesImOdMOpJJ6BrQM/nrFm4HsauxpvUq3KZ1GgTpr2PbZUhlc6aC1+YZOfIfi/nk
-         qIaYgtqL/5Oz0yaI9cGxu9xPhxxhbbzRWAyICmQXRrLgZJS4Ek1lD2JeXxEXXhyXkUl0
-         V39WIPHbI6wVFBagnLWOzp1WR/YsMHem/2tHdo8IBCmUPVyP6yq7fAw2QWm9PipjBmq6
-         IYf/H2ni8xxQ8dvyMbivl2oS9K0KQgKqe1yOjxLRI0Yth2XA9ib6z3XxmZbQ1sRrVVJU
-         lz7Q==
+        bh=a+c+j9Jfk0kuBAX1UCDJb9a3EQrHXPCSakbH3m0yoRM=;
+        b=vJgaKpIvECANSshFkilVZbQAfYRAzCrFF/sa6eg2wOlP/BAIAvPBvw/sKmmtqqd9Yp
+         Y98yZcbyp0Jkdtqz3+wx3+1ZQaoxoHOGAW+TiD6nL/1eYVpCbwl2lqUT5rNBQZ/VmOB0
+         Edw8PUC/oSO9EzHlcaBwsomgxXMdHrAYwkIqwjTyHA2mpH/uJwD5RANq0rShYCYmFY1j
+         InQRyk8fueCQzo57/nHl6mbLj+N/hh0VcbTMzQWFUVJkEXB7ZG7WKnYTMpLq2V1ZnF6s
+         Mn2uwdodjM7QDnQcPWgpI8eATqFcja57SKVzKj+cTJ2Wf259dEib3FjatKwEcCP0rb9j
+         sgoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795755780; x=1796360580;
+        d=1e100.net; s=20260707; t=1795755783; x=1796360583;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=KbI0rhMQhYQfeqR7VyDE1i5BNcfKuKWsIvq9RSQwXvs=;
-        b=HCLREz9Ws5/kbmLv6U4Q12qW+MoWdoLVz16K+IJM1YGFUryHh6wAkeVukczXBEPJZD
-         ITUz4thY6kXSFEH92inJpj/Dgfc6gOTHD4DX3+Dw3peYlxm0AYemK6BG6u0FQlu2Iu4q
-         DhlD+EJxlywbXzg8nvbkg5T1jQFm80eRuBL1SXXLTgaZqEH/uGdXG4nOzo9U1DZry8uK
-         4IoageOhUeOhTR/lPyAlT1lY87esOR1BKH46eSelMjc5iElS0QALmD9/j9StMTF4n7Ye
-         hkLKOp1GbgLi0U0v6fNL45xfnAslPWye42M5tfnLFA5WaZ/dhpF/R7RMm9D215Rhdg+J
-         JPkA==
-X-Gm-Message-State: APuU4Z/gSV6rp/RB+EpW6Ox7fBG6RtXA0dZMOPwwhTEeY+zlPHS3wPqX
-	SIMLJfbYJVwYoKRCKq6zhgHnl0+Xv+FPLw2BLjyfT9wodmX8jngqWTOe
-X-Gm-Gg: AZFdTZcw/bwBvaYSt1r6yTQuW+yq3MtllxqenjPXgZ//r/PIe6NxEBoD3MGQWBhPN5L
-	1ZOyNBVcYzVXjUekvPnyQzqi7YRVLpPzUSNQvKLxS+UHK6Pyp4DV/r5J4+ao36bOInKYvAnBBH2
-	X7Z92usF7ueFiQAvuCuMIuRImuaFaXxNiN0kCW0XgeKk7q17K3QDaaQo5wXVkGjGA0CsW6iUEZX
-	v6bm6KpR+aFGvGzIAnmllA2xamohnHFzy/SyiKubCaCEt3RxTly+5bTPcac0rOvgolRbKc20TMA
-	fS1Yka4urvu2rCZ+ppIS/ZoarLR9ZXwH+IjzbnJlCpogauzx5MaWZWOjOxCAwYkVCrORjkpdGrB
-	jG/5Fh2xE5gJGGlTx8SCZANYt+mjEjHqgEW5tyE2nIuqwtfWyIOk6qYCB/qteVFA6FTb3pptjjo
-	jxlOySLAfMVgXwrU8ExZANrlvT4JICjT7uQ7RE6WWmY/MoOtzDvEl6h9KdhF7RS2S0VwVd4l0rp
-	8zeAyCmHkbk2s7HkIv28PP0+SVo5THsiVTGNpiu9aLYE1JVrt+8bvcjO5SyrC7SbhB6QOwWJN02
-	pZ+Pvn/pSfnheQRk6cIsJSAAW74P8QHiX0YRvm2rit2O7WVSB84z7iOUw26soufrEJfRF/5yoBl
-	1qFkRjQNTErfq4tPanbryIK/JwcG5HAfea7FW3NWsNRw=
-X-Received: by 2002:a05:690c:4d4a:b0:8b3:ba8c:2e77 with SMTP id 00721157ae682-8b52047e4a7mr72735317b3.33.1795755779922;
-        Thu, 26 Nov 2026 21:02:59 -0800 (PST)
+        bh=a+c+j9Jfk0kuBAX1UCDJb9a3EQrHXPCSakbH3m0yoRM=;
+        b=h7QhgDwLErlO5Sq9WnmOv5J0Dy0yNClQs0MZdulxY33y9Qa+9OkErLqN1FomMHoPG9
+         BN0V+AkB8bpGfOO/lJRxtff0+sBlJY106r/WOn8PgkK1g/dpTP6rfENPMrThUyn0/C8m
+         QfAg6rIaU8+Hl6L7VTd2PdzpUI4J/LOEehWfIzwr3n6/0vfdeZTunEwBQ9xHfuLYJxYZ
+         RnnJ1E/2W0Epj43tlmOR2ftStG4YCSLB1soiKVRuoD0kKpLZP0eE5wks8Zof5c7eElj9
+         VKWzP11Nymzrvv/qoWwjpI3fVuObuSMFZQ75TAHhc/Ra5WR1omnAlgwkuAjSnSq7cgi2
+         vqOw==
+X-Gm-Message-State: APuU4Z9W7If/w4dcRLpXt83brbn2Pm5NyP6NhIrEDj+nw/0PByZ7IJ0B
+	wpa0ocDIRcQKIS6oPLr63p6oexiRLl6T1CsIpekidR9LyJQPck1RPfSf
+X-Gm-Gg: AZFdTZfFyNcEi7Ih37bvBrTDax45wO2lN2ecKpkGWonx10NxN/X1PLn7vHF8m1yvnAA
+	1+5EWdhDY8n4SphwqaaZOUjL2swhGD4QcyQ9f+KfuWeOt6HlX5rmxCtGSKscGXLewSdY4T2Ez91
+	RYWzGPtwHDIWthn+RVUUKixCjBqJuAVc+Vc+Mx52qwoST7PlL3sfM7AIJesmXe//6FJUiOXNCeS
+	SxhtfWQpY9JcULAZPOaTY9ruD5k6F+u09FHnmmMgqb4l9Fm8A755a7tw5P194KzvJtejoJRQzf9
+	50am+lJE8vxVPDnlvnyphmAzlqNRCdcdJ+XRCpD91PK1p9tZ3gEf7WwEaJa4vNgkVNU/97Ocngt
+	qnKDbi9NYX+TcqVy84yNdkg9KFYuUhVxNzG37cSpcRqiEMmODUFqT7eUt8LkLK1Hqh2ObB3ERnj
+	iksPX2LRsam9zSVG8K1KDmaGTEXJv9iraUeQDP3SCZPoED+xiAg3vNMls9D9fa9LF4y+tfw2B3m
+	AbaFSuRZ2HUTNvKdwKSMx3751h5OBaBuE5oCIE7am96CSDAvqSOqefwUD+PXqwalj/SR/3CSKWw
+	IpjuB38UsYu3az9yH0iPQ7dWUiW58lML4uMB2RlotsG2uJ8nhMntxPu2khb8F8ad/9hWG3QQxx6
+	t+nBX9cFMXaMfnfq/KKC01Un4Ymrk1QFjdeG0JK8vIg==
+X-Received: by 2002:a05:690c:998a:b0:8b2:26d5:7878 with SMTP id 00721157ae682-8b5204db367mr88825427b3.25.1795755783258;
+        Thu, 26 Nov 2026 21:03:03 -0800 (PST)
 Received: from localhost ([2600:1702:7a90:6f9f:8bc4:8aec:108d:7a04])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-8b52033c2d4sm90735777b3.36.2026.11.26.21.02.59
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-8b520309d3esm92048747b3.30.2026.11.26.21.03.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2026 21:02:59 -0800 (PST)
+        Thu, 26 Nov 2026 21:03:01 -0800 (PST)
 From: Matt Turner <mattst88@gmail.com>
-Date: Fri, 27 Nov 2026 00:02:54 -0500
-Subject: [PATCH 1/7] parisc: perf: swap the PCX-U and PCX-W RDR tables
+Date: Fri, 27 Nov 2026 00:02:55 -0500
+Subject: [PATCH 2/7] parisc: perf: add an RDR table for PCX-W2 (PA-8700)
 X-Mailing-List: linux-parisc@vger.kernel.org
 List-Id: <linux-parisc.vger.kernel.org>
 List-Post: <mailto:linux-parisc@vger.kernel.org>
@@ -94,7 +94,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261127-parisc-perf-pa8800-v1-1-4f3f077010ce@gmail.com>
+Message-Id: <20261127-parisc-perf-pa8800-v1-2-4f3f077010ce@gmail.com>
 References: <20261127-parisc-perf-pa8800-v1-0-4f3f077010ce@gmail.com>
 In-Reply-To: <20261127-parisc-perf-pa8800-v1-0-4f3f077010ce@gmail.com>
 To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
@@ -108,105 +108,113 @@ To: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
 Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, 
  linux-perf-users@vger.kernel.org, Matt Turner <mattst88@gmail.com>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3931; i=mattst88@gmail.com;
- h=from:subject:message-id; bh=WSGfmKS9u083kTuUTG6vl0t/7ZIxmbwyYW67G7uEfhw=;
- b=owGbwMvMwCW25rVmCc8sv+mMp9WSGLI5+f61/3F/bFL7Url2tmbx8W+b/25RCHH7VZQi/zry6
- xmjCU6bOz6yMIhxMcwUU2SJW6/IMqttx1Kf09K/YOawMoEMkRZpYAACFga+3MS8UiMdIz1TbUM9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3876; i=mattst88@gmail.com;
+ h=from:subject:message-id; bh=9a5rD6aSbd643KSiqabjGeKvXQKDFwZhmekcKjKATGY=;
+ b=owGbwMvMwCW25rVmCc8sv+mMp9WSGLI5+f7tPsbweo73wm0royw/r5kz001CjbeyeY2WyYTp0
+ pZyClfbOj6yMIhxMcwUU2SJW6/IMqttx1Kf09K/YOawMoEMkRZpYAACFga+3MS8UiMdIz1TbUM9
  QyBDxygeIqfHoJFZXFyaWqSbVlDkkJdfkliSmZ9XrJdfkJpXkF6gl5aZVpKRkV9UnAo0Qi8vtcT
- U1dHNyNDAxNLRwszJwtHUxNnZydDJzdHR2dXJyNLcxMDZ0tHE1dKcgYtTAOYa0waG/9lSdd5O2T
- e3Rn1bm3Fk/1fbsyn1/C0Cnn9vytfcjjcIMGJkWKT5/aDzWgfxg3aP3E9t5t718uiyCfq/GetMj
- n+YEeL5mR8A
+ U1dHNyNDAxNLRwszJwtHUxNnZydDJzdHR2dXJyNLcxMDZ0tHE1dKcgYtTAOaaB48YGVq4PzwX7m
+ f4yZVzWGkrb+bvJ/eW+rfHztZK2eF6fGHoh0cM/32/WkadXLtl9ZXZvb9cf7JFvIi+fOjBDonM9
+ tvnX+WvFmEBAA==
 X-Developer-Key: i=mattst88@gmail.com; a=openpgp;
  fpr=3BB639E56F861FA2E86505690FDD682D974CA72A
 
-perf_rdr_tbl_W holds the PCX-U (PA-8000/PA-8200) RDR widths and
-perf_rdr_tbl_U holds the PCX-W (PA-8500/PA-8600) widths, and it has been
-that way since the driver was added. The driver's own code and data
-show it:
+PCX-W2 uses the PCX-W RDR table, but several of its RDRs have different
+widths. The C3650/C3700/C3750/J6700/J6750 PDC firmware (from HP-UX
+11.11 patch PHSS_29342) describes RDR11, RDR27 and RDR30 as 32 bits,
+RDR12 and RDR13 as 704 bits, and RDR22 and RDR23 as 210 bits.
 
- - The CUDA (PCX-W) counter read takes four 32-bit counters, two
-   doublewords, from RDR15. perf_rdr_tbl_W says RDR15 is 8 bits wide;
-   perf_rdr_tbl_U says 128.
+The RDR22 and RDR23 widths matter: perf_write_image() writes both, and
+perf_rdr_read_ubuf() realigns what it shifts out by the RDR width, so
+with 194 bits the data comes back misaligned. perf_bitmasks_piranha
+already describes RDR22 and RDR23 as 210 bits.
 
- - The ONYX (PCX-U) counter read takes the counters from bits 1398 to
-   1529 of RDR16, which needs RDR16 to be 1530 bits wide as in
-   perf_rdr_tbl_W. perf_rdr_tbl_U says 1494.
-
- - perf_rdr_shift_in_W does nothing for RDR3, RDR7, RDR8, RDR9, RDR12
-   and RDR19, which are absent in perf_rdr_tbl_U. perf_rdr_tbl_W gives
-   RDR3, RDR7, RDR9 and RDR12 non-zero widths.
-
- - The ONYX images write RDR7, which is absent in perf_rdr_tbl_U, and the
-   CUDA images write RDR15, which is 8 bits in perf_rdr_tbl_W.
-
- - The images are laid out for the swapped tables. RDR data is
-   left-justified, so the bits past each RDR's width are zero. Read
-   with perf_rdr_tbl_U, none of the 22 cuda_images sets a bit past the
-   width of any RDR; read with perf_rdr_tbl_W, every image does in about
-   two thirds of its RDRs. The same holds the other way round for the 44
-   onyx_images. With the swapped tables both image families end in the
-   same 9 Runway doublewords, and the CUDA images' Runway STATUS word
-   then carries bits inside the 0x0013000000000000 mask that
-   perf_write_image() applies.
-
- - The PA-8500/PA-8600 PDC firmware (from HP-UX 11.11 patch PHSS_25983)
-   has an RDR description table whose widths equal perf_rdr_tbl_U in
-   every entry.
-
-As a result every CUDA image write shifts each RDR by the wrong amount
-and loads RDR16 one doubleword early, the CUDA counter read returns 8
-bits, and on PCX-U RDR7 is never written and the counters are taken
-from a misaligned RDR16.
-
-Swap the two tables' names, and correct the RDR20/21 and RDR22/23 widths
-in the perf_bitmasks comments. The RDR20/21 mask already covers 158
-bits.
+Add perf_rdr_tbl_piranha with the firmware's widths and use it on
+PCX-W2.
 
 Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Matt Turner <mattst88@gmail.com>
 ---
- arch/parisc/kernel/perf.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/parisc/kernel/perf.c | 45 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
 
 diff --git a/arch/parisc/kernel/perf.c b/arch/parisc/kernel/perf.c
-index 5e10f98ce7b5..8f9ae67270bd 100644
+index 8f9ae67270bd..2494f16bb8fd 100644
 --- a/arch/parisc/kernel/perf.c
 +++ b/arch/parisc/kernel/perf.c
-@@ -67,8 +67,8 @@ static const int perf_rdrs_W[] =
- static const int perf_rdrs_U[] =
- 	{ 0, 1, 4, 5, 6, 7, 16, 17, 18, 20, 21, 22, 23, 24, 25, -1 };
- 
--/* RDR register descriptions for PCX-W */
--static const struct rdr_tbl_ent perf_rdr_tbl_W[] = {
-+/* RDR register descriptions for PCX-U */
-+static const struct rdr_tbl_ent perf_rdr_tbl_U[] = {
- 	{ 19,	1,	8 },   /* RDR 0 */
- 	{ 16,	1,	16 },  /* RDR 1 */
- 	{ 72,	2,	0 },   /* RDR 2 */
-@@ -103,8 +103,8 @@ static const struct rdr_tbl_ent perf_rdr_tbl_W[] = {
- 	{ 16,	1,	0 },   /* RDR 31 */
+@@ -139,6 +139,45 @@ static const struct rdr_tbl_ent perf_rdr_tbl_W[] = {
+ 	{ 16,	1,	0 },              /* RDR 31 */
  };
  
--/* RDR register descriptions for PCX-U */
--static const struct rdr_tbl_ent perf_rdr_tbl_U[] = {
-+/* RDR register descriptions for PCX-W */
-+static const struct rdr_tbl_ent perf_rdr_tbl_W[] = {
- 	{ 19,	1,	8 },              /* RDR 0 */
- 	{ 32,	1,	16 },             /* RDR 1 */
- 	{ 20,	1,	0 },              /* RDR 2 */
-@@ -147,10 +147,10 @@ static const uint64_t perf_bitmasks[] = {
- 	0x0000000000000000ul,     /* first dbl word must be zero */
- 	0xfdffe00000000000ul,     /* RDR0 bitmask */
- 	0x003f000000000000ul,     /* RDR1 bitmask */
--	0x00fffffffffffffful,     /* RDR20-RDR21 bitmask (152 bits) */
-+	0x00fffffffffffffful,     /* RDR20-RDR21 bitmask (158 bits) */
- 	0xfffffffffffffffful,
- 	0xfffffffc00000000ul,
--	0xfffffffffffffffful,     /* RDR22-RDR23 bitmask (233 bits) */
-+	0xfffffffffffffffful,     /* RDR22-RDR23 bitmask (194 bits) */
- 	0xfffffffffffffffful,
- 	0xfffffffffffffffcul,
- 	0xff00000000000000ul
++/*
++ * RDR register descriptions for PCX-W2 (PA-8700). RDR11, RDR12, RDR13,
++ * RDR22, RDR23, RDR27 and RDR30 differ from PCX-W.
++ */
++static const struct rdr_tbl_ent perf_rdr_tbl_piranha[] = {
++	{ 19,	1,	8 },              /* RDR 0 */
++	{ 32,	1,	16 },             /* RDR 1 */
++	{ 20,	1,	0 },              /* RDR 2 */
++	{ 0,	0,	0 },              /* RDR 3 */
++	{ 344,	6,	0 },              /* RDR 4 */
++	{ 176,	3,	0 },              /* RDR 5 */
++	{ 336,	6,	0 },              /* RDR 6 */
++	{ 0,	0,	0 },              /* RDR 7 */
++	{ 0,	0,	0 },              /* RDR 8 */
++	{ 0,	0,	0 },              /* RDR 9 */
++	{ 28,	1,	0 },              /* RDR 10 */
++	{ 32,	1,	0 },              /* RDR 11 */
++	{ 704,	11,	0 },              /* RDR 12 */
++	{ 704,	11,	0 },              /* RDR 13 */
++	{ 32,	1,	0 },              /* RDR 14 */
++	{ 128,	2,	0 },              /* RDR 15 */
++	{ 1494,	24,	0 },              /* RDR 16 */
++	{ 18,	1,	0 },              /* RDR 17 */
++	{ 4,	1,	0 },              /* RDR 18 */
++	{ 0,	0,	0 },              /* RDR 19 */
++	{ 158,	3,	24 },             /* RDR 20 */
++	{ 158,	3,	24 },             /* RDR 21 */
++	{ 210,	4,	48 },             /* RDR 22 */
++	{ 210,	4,	48 },             /* RDR 23 */
++	{ 71,	2,	0 },              /* RDR 24 */
++	{ 71,	2,	0 },              /* RDR 25 */
++	{ 28,	1,	0 },              /* RDR 26 */
++	{ 32,	1,	0 },              /* RDR 27 */
++	{ 88,	2,	0 },              /* RDR 28 */
++	{ 32,	1,	0 },              /* RDR 29 */
++	{ 32,	1,	0 },              /* RDR 30 */
++	{ 16,	1,	0 },              /* RDR 31 */
++};
++
+ /*
+  * A non-zero write_control in the above tables is a byte offset into
+  * this array.
+@@ -174,6 +213,7 @@ static const uint64_t perf_bitmasks_piranha[] = {
+ };
+ 
+ static const uint64_t *bitmask_array;   /* array of bitmasks to use */
++static const struct rdr_tbl_ent *perf_rdr_tbl_cuda __ro_after_init;
+ 
+ /******************************************************************************
+  * Function Prototypes
+@@ -499,6 +539,9 @@ static int __init perf_init(void)
+ 		 boot_cpu_data.cpu_type == mako ||
+ 		 boot_cpu_data.cpu_type == mako2) {
+ 		perf_processor_interface = CUDA_INTF;
++		perf_rdr_tbl_cuda = perf_rdr_tbl_W;
++		if (boot_cpu_data.cpu_type == pcxw2)
++			perf_rdr_tbl_cuda = perf_rdr_tbl_piranha;
+ 		if (boot_cpu_data.cpu_type == pcxw2 ||
+ 		    boot_cpu_data.cpu_type == mako ||
+ 		    boot_cpu_data.cpu_type == mako2)
+@@ -643,7 +686,7 @@ static const struct rdr_tbl_ent * perf_rdr_get_entry(uint32_t rdr_num)
+ 	if (perf_processor_interface == ONYX_INTF) {
+ 		return &perf_rdr_tbl_U[rdr_num];
+ 	} else {
+-		return &perf_rdr_tbl_W[rdr_num];
++		return &perf_rdr_tbl_cuda[rdr_num];
+ 	}
+ }
+ 
 
 -- 
 2.56.1
